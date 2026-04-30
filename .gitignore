@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+*.egg-info/
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment files
+.env.local
+.env.*.local
+
+# Nuxt.js
+.nuxt/
+.output/
+
+# Vue
+*.local
+
+# Docker
+docker-data/
+
+# Uploads
+uploads/
+media/
+
+# Coverage
+coverage/
+.htmlcov/

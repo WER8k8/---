@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: ${DOCKER_TARGET:-development}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NUXT_PUBLIC_API_BASE=http://backend:8000/api/v1
+      - NUXT_PUBLIC_SITE_URL=https://youding.com
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: ${DOCKER_TARGET:-development}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://youding:youding123@postgres:5432/youding_seo
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=youding_admin
+      - MINIO_SECRET_KEY=youding_secret_key
+      - JWT_SECRET_KEY=your-jwt-secret-key-change-in-production
+      - AI_OPENAI_API_KEY=${AI_OPENAI_API_KEY}
+      - AI_ANTHROPIC_API_KEY=${AI_ANTHROPIC_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:15.6
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=youding_seo
+      - POSTGRES_USER=youding
+      - POSTGRES_PASSWORD=youding123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U youding"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=youding_admin
+      - MINIO_ROOT_PASSWORD=youding_secret_key
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  app-network:
+    driver: bridge
