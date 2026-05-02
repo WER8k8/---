@@ -1,0 +1,141 @@
+import type { Config } from 'tailwindcss'
+
+export default {
+  content: [
+    './components/**/*.{vue,js,ts,jsx,tsx}',
+    './layouts/**/*.{vue,js,ts,jsx,tsx}',
+    './pages/**/*.{vue,js,ts,jsx,tsx}',
+    './app.vue',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
+        secondary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        accent: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+        },
+        warm: {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
+          500: '#f59e0b',
+          600: '#d97706',
+          700: '#b45309',
+          800: '#92400e',
+          900: '#78350f',
+        },
+        surface: {
+          DEFAULT: '#ffffff',
+          elevated: '#f8fafc',
+          hover: '#f1f5f9',
+          disabled: '#f9fafb',
+        },
+        border: {
+          DEFAULT: '#e2e8f0',
+          light: '#f1f5f9',
+          dark: '#cbd5e1',
+        },
+        text: {
+          primary: '#0f172a',
+          secondary: '#475569',
+          muted: '#94a3b8',
+          disabled: '#cbd5e1',
+        },
+        brand: {
+          dark: '#0f172a',
+          blue: '#3b82f6',
+          green: '#10b981',
+          orange: '#f59e0b',
+          gray: '#475569',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'Noto Sans SC', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'Noto Sans SC', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'heading-1': ['3rem', { fontWeight: 800, lineHeight: '1.1' }],
+        'heading-2': ['2.5rem', { fontWeight: 700, lineHeight: '1.15' }],
+        'heading-3': ['2rem', { fontWeight: 700, lineHeight: '1.2' }],
+        'heading-4': ['1.5rem', { fontWeight: 600, lineHeight: '1.25' }],
+        'heading-5': ['1.25rem', { fontWeight: 600, lineHeight: '1.3' }],
+      },
+      boxShadow: {
+        soft: '0 2px 8px rgba(0, 0, 0, 0.06)',
+        elevated: '0 4px 16px rgba(0, 0, 0, 0.08)',
+        card: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
+        'card-hover': '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
+      },
+      borderRadius: {
+        'lg': '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.25rem',
+      },
+      transitionDuration: {
+        'fast': '150ms',
+        'normal': '200ms',
+        'slow': '300ms',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'slide-up': 'slideUp 0.5s ease-out forwards',
+        'scale-in': 'scaleIn 0.4s ease-out forwards',
+        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          'from': { opacity: '0' },
+          'to': { opacity: '1' },
+        },
+        slideUp: {
+          'from': { opacity: '0', transform: 'translateY(20px)' },
+          'to': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          'from': { opacity: '0', transform: 'scale(0.95)' },
+          'to': { opacity: '1', transform: 'scale(1)' },
+        },
+        pulseSoft: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config

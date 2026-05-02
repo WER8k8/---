@@ -1,0 +1,431 @@
+{
+  "agents": [
+    {
+      "id": "agent-commander",
+      "name": "超级智能体指挥官",
+      "description": "拥有超越所有智能体的最高权限，负责统筹协调、战略规划、资源调配和跨智能体协作。具备自适应思考能力、长上下文处理能力和多智能体团队管理能力。",
+      "skills": ["agent-commander", "multi-agent-orchestrator", "adaptive-thinking", "auto-fix", "self-improvement", "mcp-tool-creator", "root-cause-analysis", "compute-booster", "architecture-commander", "skills-search", "claude-api", "mcp-builder", "solution-document-writer", "code-analysis", "webapp-testing", "shell-tools", "fullstack-developer", "frontend-architect", "frontend-design", "web-artifacts-builder", "canvas-design", "theme-factory", "brand-guidelines", "algorithmic-art", "slack-gif-creator", "api-integration", "database-tools", "cloud-deployment", "math-analysis", "pdf", "docx", "pptx", "xlsx", "doc-coauthoring", "internal-comms", "git-expert", "algorithm-problem-solver", "top-algorithm-coach", "top-development-environment-expert-auto", "website-designer", "mobile-web-developer", "ai-marketing-website-expert", "display-visual-designer", "backend-page-builder", "insulation-materials-backend-expert", "insulation-backend-expert", "insulation-api-developer", "insulation-backend-architect", "insulation-backend-developer", "insulation-database-architect", "building-materials-database-expert", "insulation-data-warehouse-expert", "insulation-backend-testing-expert", "insulation-code-review-expert", "insulation-backend-security-expert", "insulation-compliance-developer", "insulation-backend-optimization", "insulation-devops-engineer", "insulation-operations-engineer", "insulation-digital-project-manager", "insulation-material-product-manager"],
+      "permissions": ["supreme", "full", "system", "all_agents"]
+    },
+    {
+      "id": "multi-agent-orchestrator",
+      "name": "多智能体协作编排器",
+      "description": "负责管理Agent Teams，实现并行任务执行、分布式计算和协同工作。支持动态智能体分配、负载均衡和任务调度。",
+      "skills": ["multi-agent-orchestrator", "agent-commander", "claude-api", "mcp-builder", "skills-search", "webapp-testing", "shell-tools"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "adaptive-thinking",
+      "name": "自适应思考引擎",
+      "description": "根据任务复杂度自动调整推理深度，实现智能资源分配和最优性能。支持多级努力控制（low/medium/high/max）。",
+      "skills": ["adaptive-thinking", "claude-api", "math-analysis", "code-analysis", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "auto-fix",
+      "name": "自动故障修复引擎",
+      "description": "当场景出现多次出错时自动分析并生成解决方案，使用最新前沿技术进行修复。具备自我诊断、根因分析和自动修复能力。",
+      "skills": ["auto-fix", "root-cause-analysis", "code-analysis", "webapp-testing", "shell-tools", "claude-api", "git-expert", "solution-document-writer"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "self-improvement",
+      "name": "智能体自我优化引擎",
+      "description": "持续分析自身表现，学习最佳实践，自动改进技能和工作流程。具备元认知能力，能够反思自身行为并进行迭代改进。",
+      "skills": ["self-improvement", "skills-search", "claude-api", "solution-document-writer", "doc-coauthoring", "math-analysis"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "mcp-tool-creator",
+      "name": "动态MCP工具创建器",
+      "description": "能够根据需求自行编写和部署新的MCP工具，扩展智能体能力。支持快速原型开发、测试和部署。",
+      "skills": ["mcp-tool-creator", "mcp-builder", "claude-api", "code-analysis", "webapp-testing", "shell-tools"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "root-cause-analysis",
+      "name": "根因分析引擎",
+      "description": "深入分析问题根本原因，提供系统性解决方案。支持5Why、鱼骨图、故障树等多种分析方法。",
+      "skills": ["root-cause-analysis", "code-analysis", "database-tools", "webapp-testing", "solution-document-writer", "claude-api"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "compute-booster",
+      "name": "暴力算力调度器",
+      "description": "当大模型思考迟钝、算力输出慢时，**自动反向调用云端大模型算力**（Claude Opus、GPT-4 Turbo等），调度更多GPU资源、应用推理优化技术（量化、KV Cache、连续批处理、FlashAttention、推测解码），暴力提升推理性能支撑当前项目。",
+      "skills": ["compute-booster", "claude-api", "webapp-testing", "shell-tools", "cloud-deployment", "math-analysis", "adaptive-thinking", "mcp-builder"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "frontend-architect",
+      "name": "前端架构师",
+      "description": "负责前端系统架构设计、技术栈选型、性能优化、代码规范制定",
+      "skills": ["frontend-architect", "frontend-design", "web-artifacts-builder", "theme-factory", "webapp-testing", "brand-guidelines"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "architecture-commander",
+      "name": "系统架构总指挥",
+      "description": "负责整体系统架构设计、微服务拆分、技术方案评审、技术路线规划",
+      "skills": ["architecture-commander", "solution-document-writer", "doc-coauthoring", "claude-api", "mcp-builder"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "fullstack-developer",
+      "name": "全栈开发专家",
+      "description": "负责前后端一体化开发、系统集成、API设计、全链路调试",
+      "skills": ["fullstack-developer", "api-integration", "database-tools", "shell-tools", "webapp-testing", "git-expert"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "git-expert",
+      "name": "Git版本控制专家",
+      "description": "负责代码仓库管理、分支策略制定、代码合并冲突解决、Git工作流优化",
+      "skills": ["git-expert", "shell-tools", "code-analysis"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "algorithm-problem-solver",
+      "name": "算法解题专家",
+      "description": "负责复杂算法设计、数据结构优化、性能瓶颈分析、算法竞赛指导",
+      "skills": ["algorithm-problem-solver", "math-analysis", "code-analysis", "top-algorithm-coach"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "top-algorithm-coach",
+      "name": "顶级算法教练",
+      "description": "负责算法教学、编程指导、竞赛训练、技术提升规划",
+      "skills": ["top-algorithm-coach", "algorithm-problem-solver", "doc-coauthoring", "claude-api"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "top-development-environment-expert-auto",
+      "name": "顶级开发环境配置专家",
+      "description": "负责开发环境搭建、IDE配置、工具链优化、自动化配置",
+      "skills": ["top-development-environment-expert-auto", "shell-tools", "git-expert", "cloud-deployment"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "website-designer",
+      "name": "网站设计师",
+      "description": "负责网站视觉设计、用户体验设计、响应式布局、UI组件设计",
+      "skills": ["website-designer", "frontend-design", "canvas-design", "theme-factory", "brand-guidelines"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "mobile-web-developer",
+      "name": "移动端网页开发师",
+      "description": "负责移动端H5、自适应官网、小程序嵌入页面、响应式网页开发",
+      "skills": ["mobile-web-developer", "frontend-design", "web-artifacts-builder", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "ai-marketing-website-expert",
+      "name": "AI获客官网专家",
+      "description": "负责营销网站设计、AI获客功能开发、SEO优化、用户转化优化",
+      "skills": ["ai-marketing-website-expert", "frontend-design", "solution-document-writer", "web-artifacts-builder"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "display-visual-designer",
+      "name": "陈列视觉设计师",
+      "description": "负责产品陈列设计、视觉营销、品牌视觉、广告创意设计",
+      "skills": ["display-visual-designer", "canvas-design", "theme-factory", "brand-guidelines", "slack-gif-creator"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "backend-page-builder",
+      "name": "后台页面搭建专家",
+      "description": "负责管理后台页面开发、权限管理、数据展示、业务操作界面",
+      "skills": ["backend-page-builder", "frontend-design", "api-integration", "database-tools"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-materials-backend-expert",
+      "name": "保温建材后端专家",
+      "description": "负责保温建材系统后端开发、业务逻辑实现、数据处理、性能优化",
+      "skills": ["insulation-materials-backend-expert", "insulation-backend-expert", "api-integration", "database-tools", "code-analysis"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-backend-expert",
+      "name": "保温建材后端专家(通用)",
+      "description": "负责保温建材系统后端开发、业务逻辑实现",
+      "skills": ["insulation-backend-expert", "insulation-api-developer", "insulation-database-architect", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-api-developer",
+      "name": "保温建材API开发专家",
+      "description": "负责RESTful API设计、接口开发、API网关配置、接口文档编写",
+      "skills": ["insulation-api-developer", "api-integration", "solution-document-writer", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-backend-architect",
+      "name": "保温建材后端架构师",
+      "description": "负责后端系统架构设计、技术选型、方案评审、架构演进",
+      "skills": ["insulation-backend-architect", "architecture-commander", "solution-document-writer", "insulation-database-architect"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-backend-developer",
+      "name": "保温建材后端开发专家",
+      "description": "负责后端业务开发、接口实现、代码编写、单元测试",
+      "skills": ["insulation-backend-developer", "code-analysis", "webapp-testing", "git-expert"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-database-architect",
+      "name": "保温建材数据库架构师",
+      "description": "负责数据库架构设计、分布式数据库、数据分片、高可用方案",
+      "skills": ["insulation-database-architect", "database-tools", "building-materials-database-expert", "insulation-data-warehouse-expert"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "building-materials-database-expert",
+      "name": "建材数据库专家",
+      "description": "负责数据库设计、SQL优化、数据迁移、数据库运维",
+      "skills": ["building-materials-database-expert", "database-tools", "xlsx", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-data-warehouse-expert",
+      "name": "保温建材数据仓库专家",
+      "description": "负责数据仓库设计、ETL开发、数据分析、数据治理",
+      "skills": ["insulation-data-warehouse-expert", "database-tools", "math-analysis", "xlsx"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-backend-testing-expert",
+      "name": "保温建材后端测试专家",
+      "description": "负责自动化测试、性能测试、接口测试、测试策略制定",
+      "skills": ["insulation-backend-testing-expert", "webapp-testing", "code-analysis", "api-integration"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-code-review-expert",
+      "name": "保温建材代码审查专家",
+      "description": "负责代码质量审查、安全漏洞检测、代码规范检查、技术债务评估",
+      "skills": ["insulation-code-review-expert", "code-analysis", "git-expert", "solution-document-writer"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-backend-security-expert",
+      "name": "保温建材后端安全专家",
+      "description": "负责系统安全设计、漏洞防护、安全审计、安全策略制定",
+      "skills": ["insulation-backend-security-expert", "code-analysis", "insulation-compliance-developer", "solution-document-writer"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-compliance-developer",
+      "name": "保温建材合规开发专家",
+      "description": "负责合规性开发、数据安全、隐私保护、行业标准遵循",
+      "skills": ["insulation-compliance-developer", "internal-comms", "pdf", "solution-document-writer"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-backend-optimization",
+      "name": "保温建材后端优化专家",
+      "description": "负责系统性能优化、数据库调优、代码优化、资源配置优化",
+      "skills": ["insulation-backend-optimization", "code-analysis", "database-tools", "math-analysis"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-devops-engineer",
+      "name": "保温建材DevOps工程师",
+      "description": "负责CI/CD流水线搭建、自动化部署、基础设施管理、云原生架构",
+      "skills": ["insulation-devops-engineer", "cloud-deployment", "shell-tools", "git-expert", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-operations-engineer",
+      "name": "保温建材运维工程师",
+      "description": "负责系统运维、故障排查、性能监控、部署发布",
+      "skills": ["insulation-operations-engineer", "cloud-deployment", "shell-tools", "internal-comms"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-digital-project-manager",
+      "name": "保温建材数字项目经理",
+      "description": "负责项目计划制定、进度跟踪、资源协调、风险管控、质量保证",
+      "skills": ["insulation-digital-project-manager", "solution-document-writer", "internal-comms", "xlsx", "pptx"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "insulation-material-product-manager",
+      "name": "保温建材产品经理",
+      "description": "负责产品规划、需求分析、产品设计、产品运营、用户反馈",
+      "skills": ["insulation-material-product-manager", "solution-document-writer", "internal-comms", "pdf", "docx"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "frontend-design",
+      "name": "前端设计专家",
+      "description": "创建独特、生产级的前端界面，具有高品质设计",
+      "skills": ["frontend-design", "web-artifacts-builder", "theme-factory", "brand-guidelines", "canvas-design"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "canvas-design",
+      "name": "画布设计师",
+      "description": "使用设计理念创建精美的视觉艺术作品",
+      "skills": ["canvas-design", "algorithmic-art", "theme-factory", "slack-gif-creator"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "algorithmic-art",
+      "name": "算法艺术创作家",
+      "description": "使用p5.js创建算法艺术，支持种子随机和交互式参数探索",
+      "skills": ["algorithmic-art", "canvas-design", "claude-api"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "theme-factory",
+      "name": "主题工厂专家",
+      "description": "为各种制品应用主题样式",
+      "skills": ["theme-factory", "brand-guidelines", "frontend-design"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "brand-guidelines",
+      "name": "品牌规范专家",
+      "description": "应用Anthropic官方品牌颜色和排版",
+      "skills": ["brand-guidelines", "theme-factory", "frontend-design", "canvas-design"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "slack-gif-creator",
+      "name": "Slack GIF创建者",
+      "description": "创建优化用于Slack的动画GIF",
+      "skills": ["slack-gif-creator", "canvas-design"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "web-artifacts-builder",
+      "name": "Web制品构建专家",
+      "description": "使用现代前端技术创建复杂的多组件HTML制品",
+      "skills": ["web-artifacts-builder", "frontend-design", "theme-factory", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "webapp-testing",
+      "name": "Web应用测试专家",
+      "description": "使用Playwright测试和交互本地Web应用",
+      "skills": ["webapp-testing", "shell-tools", "code-analysis"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "claude-api",
+      "name": "Claude API专家",
+      "description": "使用Claude API或Anthropic SDK构建应用",
+      "skills": ["claude-api", "mcp-builder", "solution-document-writer"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "mcp-builder",
+      "name": "MCP构建专家",
+      "description": "创建高质量的MCP服务器",
+      "skills": ["mcp-builder", "claude-api", "api-integration"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "api-integration",
+      "name": "API集成专家",
+      "description": "RESTful API设计、接口开发、API网关配置",
+      "skills": ["api-integration", "claude-api", "mcp-builder", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "code-analysis",
+      "name": "代码分析专家",
+      "description": "代码审查、bug检测、安全漏洞分析、最佳实践检查",
+      "skills": ["code-analysis", "git-expert", "webapp-testing", "shell-tools"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "shell-tools",
+      "name": "Shell工具专家",
+      "description": "文件系统操作与命令执行",
+      "skills": ["shell-tools", "git-expert", "cloud-deployment"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "database-tools",
+      "name": "数据库工具专家",
+      "description": "SQL查询、数据迁移、数据库管理",
+      "skills": ["database-tools", "xlsx", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "cloud-deployment",
+      "name": "云部署专家",
+      "description": "Docker容器化、Kubernetes编排、CI/CD流水线",
+      "skills": ["cloud-deployment", "shell-tools", "insulation-devops-engineer", "webapp-testing"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "math-analysis",
+      "name": "数学分析专家",
+      "description": "统计分析、金融数学、矩阵运算、复杂计算",
+      "skills": ["math-analysis", "xlsx", "canvas-design", "claude-api"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "skills-search",
+      "name": "技能搜索专家",
+      "description": "智能技能搜索与发现，使用向量嵌入和语义相似度检索",
+      "skills": ["skills-search", "claude-api", "mcp-builder", "doc-coauthoring"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "solution-document-writer",
+      "name": "解决方案文档专家",
+      "description": "技术方案文档编写、需求分析文档、架构设计文档",
+      "skills": ["solution-document-writer", "doc-coauthoring", "pdf", "docx", "pptx"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "doc-coauthoring",
+      "name": "文档协作专家",
+      "description": "引导用户完成结构化文档协作工作流",
+      "skills": ["doc-coauthoring", "docx", "pdf", "internal-comms"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "internal-comms",
+      "name": "内部沟通专家",
+      "description": "编写各种内部沟通文档",
+      "skills": ["internal-comms", "docx", "pptx", "pdf"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "pdf",
+      "name": "PDF处理专家",
+      "description": "PDF文件处理、读取、创建、合并、拆分、OCR",
+      "skills": ["pdf", "canvas-design"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "docx",
+      "name": "Word文档专家",
+      "description": "Word文档创建、读取、编辑、操作",
+      "skills": ["docx", "doc-coauthoring", "internal-comms"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "pptx",
+      "name": "PPT制作专家",
+      "description": "PPT演示文稿创建、编辑、处理",
+      "skills": ["pptx", "theme-factory", "brand-guidelines"],
+      "permissions": ["full"]
+    },
+    {
+      "id": "xlsx",
+      "name": "Excel处理专家",
+      "description": "电子表格处理、公式计算、数据可视化",
+      "skills": ["xlsx", "math-analysis", "database-tools"],
+      "permissions": ["full"]
+    }
+  ]
+}

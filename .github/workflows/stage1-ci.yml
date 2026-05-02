@@ -1,0 +1,80 @@
+name: Phase 1 CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-lint:
+    name: Backend Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install flake8 mypy
+      - name: Lint check
+        run: cd backend && flake8 app --max-line-length=120
+      - name: Type check
+        run: cd backend && mypy app --ignore-missing-imports
+
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: youding
+          POSTGRES_PASSWORD: youding123
+          POSTGRES_DB: youding_seo
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install pytest httpx
+      - name: Run tests
+        run: cd backend && pytest tests/ -v
+        env:
+          DATABASE_URL: postgresql://youding:youding123@localhost:5432/youding_seo
+
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+
+  docker-build:
+    name: Docker Image Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -t youding-backend:latest ./backend
+      - name: Build frontend image
+        run: docker build -t youding-frontend:latest ./frontend

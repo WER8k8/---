@@ -52,3 +52,6 @@ media/
 # Coverage
 coverage/
 .htmlcov/
+
+# Invalid files
+nul

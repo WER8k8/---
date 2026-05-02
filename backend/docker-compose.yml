@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: qingjili-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./app.db}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:8080}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+    depends_on:
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - qingjili-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+        reservations:
+          memory: 512M
+          cpus: "0.5"
+
+  redis:
+    image: redis:7-alpine
+    container_name: qingjili-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - qingjili-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+
+  nginx:
+    image: nginx:alpine
+    container_name: qingjili-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+    networks:
+      - qingjili-network
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    container_name: qingjili-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --email admin@qingjili.com --agree-tos --no-eff-email -d api.qingjili.com
+    networks:
+      - qingjili-network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+
+networks:
+  qingjili-network:
+    driver: bridge
