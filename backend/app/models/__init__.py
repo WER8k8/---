@@ -7,6 +7,7 @@ from app.models.case_study import CaseStudy, CaseImage
 from app.models.schema_markup import SchemaMarkup, SchemaTemplate
 from app.models.eeat import Author, AuthorCertification, ArticleAuthor, EEATScore, TrustSignal
 from app.models.compliance import ComplianceRule, ComplianceScanResult, ComplianceViolation, AdvertisementLawKeyword
+from app.models.ab_test import ABTest, ABTestVariant, ABTestEvent, ABTestConversion
 
 __all__ = [
     "User", "OperationLog",
@@ -18,4 +19,5 @@ __all__ = [
     "SchemaMarkup", "SchemaTemplate",
     "Author", "AuthorCertification", "ArticleAuthor", "EEATScore", "TrustSignal",
     "ComplianceRule", "ComplianceScanResult", "ComplianceViolation", "AdvertisementLawKeyword",
+    "ABTest", "ABTestVariant", "ABTestEvent", "ABTestConversion",
 ]

@@ -1,7 +1,7 @@
 """add keyword ranking tables
 
-Revision ID: 009
-Revises: 008
+Revision ID: 009_add_keyword_ranking_tables
+Revises: 008_add_compliance_tables
 Create Date: 2026-05-02 14:00:00.000000
 
 """
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '009'
-down_revision = '008'
+revision = '009_add_keyword_ranking_tables'
+down_revision = '008_add_compliance_tables'
 branch_labels = None
 depends_on = None
 

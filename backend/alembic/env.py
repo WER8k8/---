@@ -8,7 +8,7 @@ if config.config_file_name is not None:
 
 from app.core.config import settings
 from app.core.database import Base
-from app.models import User, Category, Product, ContentPage, SeoMetadata, Keyword, KeywordRanking, SiteAudit, AiOptimizationLog, LlmsConfig, Inquiry
+from app.models import User, Category, Product, ContentPage, SeoMetadata, Keyword, KeywordRanking, SiteAudit, AiOptimizationLog, LlmsConfig, Inquiry, ABTest, ABTestVariant, ABTestEvent, ABTestConversion
 
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 target_metadata = Base.metadata
