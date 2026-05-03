@@ -108,7 +108,7 @@ export function useApi() {
       const errBody = await response.json().catch(() => ({}))
       if (response.status === 401 && !skipAuth) {
         if (import.meta.client) {
-          localStorage.removeItem('admin_token')
+          setAuthToken(null)
           navigateTo('/admin/login')
         }
       }

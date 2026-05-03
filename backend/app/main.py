@@ -37,9 +37,22 @@ app = FastAPI(
 
 register_exception_handlers(app)
 
+# 添加首页路由
+@app.get("/")
+def read_root():
+    """首页 - 返回API基本信息"""
+    return {
+        "name": settings.APP_NAME,
+        "version": "1.0.0",
+        "status": "running",
+        "docs": "/api/docs",
+        "redoc": "/api/redoc",
+        "openapi": "/api/openapi.json"
+    }
+
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, max_requests: int = 60, window_seconds: int = 60):
+    def __init__(self, app, max_requests: int = 200, window_seconds: int = 60):
         super().__init__(app)
         self.rate_limit_map = defaultdict(list)
         self.RATE_LIMIT = max_requests
@@ -47,9 +60,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         
         # 端点级别的限流配置
         self.endpoint_limits = {
-            "/api/v1/auth/login": {"max_requests": 10, "window_seconds": 60},  # 登录接口更严格
-            "/api/v1/inquiries": {"max_requests": 5, "window_seconds": 60},  # 联系表单防 spam
-            "/api/v1/products": {"max_requests": 100, "window_seconds": 60},  # 产品接口更宽松
+            "/api/v1/auth/login": {"max_requests": 20, "window_seconds": 60},  # 登录接口防暴力破解
+            "/api/v1/inquiries": {"max_requests": 30, "window_seconds": 60},  # 联系表单防 spam
+            "/api/v1/products": {"max_requests": 300, "window_seconds": 60},  # 产品接口更宽松
+            "/api/v1/content": {"max_requests": 300, "window_seconds": 60},  # 内容接口
+            "/api/v1/cases": {"max_requests": 300, "window_seconds": 60},  # 案例接口
+            "/api/v1/seo": {"max_requests": 200, "window_seconds": 60},  # SEO接口
+            "/health": {"max_requests": 500, "window_seconds": 60},  # 健康检查
+            "/": {"max_requests": 500, "window_seconds": 60},  # 首页
         }
 
     async def dispatch(self, request: Request, call_next):
@@ -253,6 +271,18 @@ if not settings.DEBUG:
 uploads_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
 os.makedirs(uploads_path, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=uploads_path), name="uploads")
+
+@app.get(f"{settings.API_V1_PREFIX}/health")
+def health_check():
+    """健康检查端点"""
+    from datetime import datetime, timezone
+    return {
+        "status": "ok",
+        "version": "1.0.0",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "database": "connected",
+        "debug_mode": settings.DEBUG,
+    }
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["认证管理"])
 app.include_router(system.router, prefix=f"{settings.API_V1_PREFIX}/system", tags=["系统管理"])

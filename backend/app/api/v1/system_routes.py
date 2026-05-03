@@ -157,3 +157,25 @@ def clear_audit_logs(
     deleted_count = query.delete()
     db.commit()
     return {"message": f"已删除 {deleted_count} 条日志"}
+
+
+@router.get("/users")
+def list_users(db: Session = Depends(get_db), admin = Depends(require_admin)):
+    """获取用户列表（管理员权限）"""
+    users = db.query(User).all()
+    return {
+        "success": True,
+        "data": [
+            {
+                "id": str(user.id),
+                "username": user.username,
+                "email": user.email,
+                "display_name": user.display_name,
+                "role": user.role,
+                "is_active": user.is_active,
+                "created_at": user.created_at.isoformat() if user.created_at else None,
+            }
+            for user in users
+        ],
+        "total": len(users),
+    }

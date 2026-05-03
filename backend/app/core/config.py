@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
 
     # 安全配置
-    RATE_LIMIT_MAX_REQUESTS: int = 60
+    RATE_LIMIT_MAX_REQUESTS: int = 200
     RATE_LIMIT_WINDOW_SECONDS: int = 60
     MAX_UPLOAD_SIZE_MB: int = 20
     ALLOWED_EXTENSIONS: list[str] = ["jpg", "jpeg", "png", "gif", "webp", "pdf", "doc", "docx", "xls", "xlsx", "dwg", "dxf"]

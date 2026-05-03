@@ -45,9 +45,13 @@ class SchemaTemplateResponse(BaseModel):
 
 
 class GenerateSchemaRequest(BaseModel):
-    schema_type: str
-    data: Dict[str, Any]
+    schema_type: str = ""
+    type: str = ""
+    data: Dict[str, Any] = {}
     include_context: bool = True
+    name: str = ""
+    description: str = ""
+    price: Optional[float] = None
 
 
 class ValidateSchemaRequest(BaseModel):

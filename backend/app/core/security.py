@@ -140,3 +140,15 @@ def get_current_user_optional(
 
     user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
     return user
+
+
+def optional_auth(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security_scheme),
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    """
+    可选认证装饰器 - 在开发/测试环境中允许匿名访问，生产环境强制认证
+    """
+    if not settings.DEBUG:
+        return get_current_user(credentials, db)
+    return get_current_user_optional(credentials, db)

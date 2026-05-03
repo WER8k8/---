@@ -40,12 +40,14 @@ class SeoAnalyzer:
         ).scalar() > 0
 
         keyword_trend_raw = self.db.query(
-            func.date(KeywordRanking.checked_at),
-            func.avg(KeywordRanking.ranking)
+            func.date(KeywordRanking.last_checked_at),
+            func.avg(KeywordRanking.current_position)
+        ).filter(
+            KeywordRanking.last_checked_at.isnot(None)  # 过滤NULL值
         ).group_by(
-            func.date(KeywordRanking.checked_at)
+            func.date(KeywordRanking.last_checked_at)
         ).order_by(
-            func.date(KeywordRanking.checked_at)
+            func.date(KeywordRanking.last_checked_at)
         ).limit(30).all()
 
         keyword_trend = []

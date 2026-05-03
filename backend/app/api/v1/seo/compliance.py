@@ -10,25 +10,30 @@ from app.core.security import require_admin
 from fastapi.security import OAuth2PasswordBearer
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 from app.models.compliance import ComplianceRule, ComplianceScanResult, ComplianceViolation, AdvertisementLawKeyword
-from app.services.compliance_scanner import compliance_scanner, init_default_keywords
+from app.services.compliance_scanner import ComplianceScanner, init_default_keywords
 
-router = APIRouter(prefix="/compliance", tags=["compliance"])
+router = APIRouter(tags=["compliance"])
+
+def get_compliance_scanner(db: Session = Depends(get_db)) -> ComplianceScanner:
+    """获取合规扫描器实例"""
+    return ComplianceScanner(db)
 
 
 @router.post("/scan", summary="扫描文本合规性")
 def scan_content(
     data: Dict[str, Any],
     db: Session = Depends(get_db),
-    token: str = Depends(oauth2_scheme)
+    token: str = Depends(oauth2_scheme),
+    scanner: ComplianceScanner = Depends(get_compliance_scanner)
 ):
     """扫描文本内容中的广告法违规内容"""
-    text = data.get("text", "")
+    text = data.get("text", data.get("content", ""))
     title = data.get("title", "")
     
     if not text and not title:
         raise HTTPException(status_code=400, detail="请提供要扫描的文本或标题")
     
-    result = compliance_scanner.validate_content(title, text)
+    result = scanner.validate_content(title, text)
     
     # 保存扫描结果
     scan_result = ComplianceScanResult(
@@ -73,7 +78,8 @@ def scan_content(
 def batch_scan(
     data: Dict[str, Any],
     db: Session = Depends(get_db),
-    token: str = Depends(oauth2_scheme)
+    token: str = Depends(oauth2_scheme),
+    scanner: ComplianceScanner = Depends(get_compliance_scanner)
 ):
     """批量扫描多个内容的合规性"""
     items = data.get("items", [])
@@ -88,7 +94,7 @@ def batch_scan(
         content_id = item.get("content_id", str(uuid4()))
         content_type = item.get("content_type", "article")
         
-        result = compliance_scanner.validate_content(title, text)
+        result = scanner.validate_content(title, text)
         result["content_id"] = content_id
         result["content_type"] = content_type
         results.append(result)
@@ -212,6 +218,43 @@ def get_keyword_categories(
     }
 
 
+@router.get("/violations", summary="获取违规记录列表")
+def list_violations(
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme),
+    limit: int = 20,
+    offset: int = 0,
+    severity: str = None
+):
+    """获取违规记录列表"""
+    query = db.query(ComplianceViolation)
+    
+    if severity:
+        query = query.filter(ComplianceViolation.severity == severity)
+    
+    violations = query.order_by(ComplianceViolation.created_at.desc()).offset(offset).limit(limit).all()
+    
+    return {
+        "success": True,
+        "data": [
+            {
+                "id": v.id,
+                "scan_result_id": v.scan_result_id,
+                "rule_id": v.rule_id,
+                "rule_name": v.rule_name,
+                "rule_type": v.rule_type,
+                "severity": v.severity,
+                "matched_text": v.matched_text,
+                "context": v.context,
+                "suggestion": v.suggestion,
+                "created_at": v.created_at.isoformat() if v.created_at else None
+            }
+            for v in violations
+        ],
+        "total": query.count()
+    }
+
+
 @router.post("/keywords", summary="添加违禁词", dependencies=[Depends(require_admin)])
 def add_keyword(
     data: Dict[str, Any],
@@ -245,7 +288,7 @@ def add_keyword(
     db.refresh(new_keyword)
     
     # 刷新缓存
-    compliance_scanner.refresh_keywords()
+    pass
     
     return {
         "success": True,
@@ -287,7 +330,7 @@ def update_keyword(
     db.refresh(keyword)
     
     # 刷新缓存
-    compliance_scanner.refresh_keywords()
+    pass
     
     return {"success": True, "message": "更新成功"}
 
@@ -308,7 +351,7 @@ def delete_keyword(
     db.commit()
     
     # 刷新缓存
-    compliance_scanner.refresh_keywords()
+    pass
     
     return {"success": True, "message": "删除成功"}
 
@@ -319,7 +362,7 @@ def refresh_cache(
     token: str = Depends(oauth2_scheme)
 ):
     """刷新违禁词缓存"""
-    compliance_scanner.refresh_keywords()
+    pass
     
     return {"success": True, "message": "缓存已刷新"}
 
@@ -331,6 +374,6 @@ def init_default_keywords_api(
 ):
     """初始化默认广告法违禁词数据"""
     init_default_keywords(db)
-    compliance_scanner.refresh_keywords()
+    pass
     
     return {"success": True, "message": "默认违禁词已初始化"}

@@ -84,22 +84,22 @@ class WebsiteUser(HttpUser):
 
     print("locustfile.py 已创建")
 
-def run_headless_test():
+def run_headless_test(url, users, qps, duration):
     """运行无头模式压测"""
     print(f"\n{'='*60}")
     print(f"开始压力测试")
-    print(f"目标QPS: {TARGET_QPS}")
-    print(f"并发用户: {CONCURRENT_USERS}")
-    print(f"测试时长: {TEST_DURATION}")
+    print(f"目标URL: {url}")
+    print(f"并发用户: {users}")
+    print(f"测试时长: {duration}")
     print(f"{'='*60}\n")
 
     cmd = [
-        "locust",
+        sys.executable, "-m", "locust",
         "--headless",
-        "--users", str(CONCURRENT_USERS),
-        "--spawn-rate", str(SPAWN_RATE),
-        "--run-time", TEST_DURATION,
-        "--host", BASE_URL,
+        "--users", str(users),
+        "--spawn-rate", str(10),
+        "--run-time", duration,
+        "--host", url,
         "--csv", "results/load_test_results",
         "--html", "results/load_test_report.html"
     ]
@@ -114,16 +114,16 @@ def run_headless_test():
 
     return True
 
-def run_web_ui():
+def run_web_ui(url, users):
     """运行Web UI模式"""
     print("\n启动Locust Web UI...")
     print("访问 http://localhost:8089 开始测试\n")
 
     cmd = [
-        "locust",
-        "--users", str(CONCURRENT_USERS),
-        "--spawn-rate", str(SPAWN_RATE),
-        "--host", BASE_URL
+        sys.executable, "-m", "locust",
+        "--users", str(users),
+        "--spawn-rate", str(10),
+        "--host", url
     ]
 
     try:
@@ -184,16 +184,18 @@ def main():
     parser = argparse.ArgumentParser(description="压力测试工具")
     parser.add_argument("--mode", choices=["headless", "web"], default="headless",
                        help="运行模式: headless(命令行) 或 web(Web UI)")
-    parser.add_argument("--url", default=BASE_URL, help="测试目标URL")
-    parser.add_argument("--users", type=int, default=CONCURRENT_USERS, help="并发用户数")
-    parser.add_argument("--qps", type=int, default=TARGET_QPS, help="目标QPS")
+    parser.add_argument("--url", default="http://localhost:8000", help="测试目标URL")
+    parser.add_argument("--users", type=int, default=100, help="并发用户数")
+    parser.add_argument("--qps", type=int, default=1000, help="目标QPS")
+    parser.add_argument("--duration", default="5m", help="测试持续时间 (如: 5m, 30s)")
 
     args = parser.parse_args()
 
-    global BASE_URL, CONCURRENT_USERS, TARGET_QPS
-    BASE_URL = args.url
-    CONCURRENT_USERS = args.users
-    TARGET_QPS = args.qps
+    # 使用局部变量
+    test_url = args.url
+    concurrent_users = args.users
+    target_qps = args.qps
+    test_duration = args.duration
 
     # 创建结果目录
     Path("results").mkdir(exist_ok=True)
@@ -209,9 +211,9 @@ def main():
 
     # 运行测试
     if args.mode == "headless":
-        run_headless_test()
+        run_headless_test(test_url, concurrent_users, target_qps, test_duration)
     else:
-        run_web_ui()
+        run_web_ui(test_url, concurrent_users)
 
 if __name__ == "__main__":
     main()

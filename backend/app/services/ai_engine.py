@@ -100,6 +100,11 @@ class AIEngine:
         llm = self._get_llm("code")
         return await self._generate_response(llm, prompt, language, None, "code")
     
+    async def generate(self, prompt: str, model: str = "gpt-4o", max_tokens: int = 1000) -> Dict[str, Any]:
+        """通用生成方法 - 兼容旧版API调用"""
+        llm = self._get_llm("general")
+        return await self._generate_response(llm, prompt, model, max_tokens, task_type="general")
+    
     async def _generate_response(self, llm, *args, task_type: str) -> Dict[str, Any]:
         """通用响应生成方法，包含重试和降级机制"""
         max_retries = 3
@@ -279,6 +284,23 @@ URL: {url}
                 "token_usage": 500,
                 "cost": 0.01,
                 "technical_params_preserved": True
+            }
+        
+        elif task_type == "general":
+            prompt, model, max_tokens = args
+            messages = [
+                SystemMessage(content="你是一位专业的AI助手。请根据用户需求生成合适的响应。"),
+                HumanMessage(content=prompt)
+            ]
+            
+            response = await llm.agenerate([messages])
+            result = response.generations[0][0].text
+            
+            return {
+                "content": result.strip(),
+                "token_usage": max_tokens,
+                "cost": 0.01,
+                "model": model
             }
     
     def _get_mock_response(self, task_type: str, *args) -> Dict[str, Any]:
@@ -588,6 +610,16 @@ URL: {url}
                 "token_usage": 0,
                 "cost": 0.0,
                 "technical_params_preserved": True,
+                "mock": True
+            }
+        
+        elif task_type == "general":
+            prompt, model, max_tokens = args
+            return {
+                "content": "模拟响应：AI优化已完成",
+                "token_usage": max_tokens,
+                "cost": 0.0,
+                "model": model,
                 "mock": True
             }
 

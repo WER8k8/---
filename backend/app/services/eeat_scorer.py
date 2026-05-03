@@ -194,7 +194,7 @@ class EEATScorer:
     def evaluate_eeat(self, content_data: Dict[str, Any]) -> Dict[str, Any]:
         """综合评估EEAT分数"""
         experience_score, exp_factors = self.calculate_experience_score(content_data)
-        expertise_score, exp_factors = self.calculate_expertise_score(content_data)
+        expertise_score, exp_fctrs = self.calculate_expertise_score(content_data)
         authoritativeness_score, auth_factors = self.calculate_authoritativeness_score(content_data)
         trustworthiness_score, trust_factors = self.calculate_trustworthiness_score(content_data)
         
@@ -222,7 +222,7 @@ class EEATScorer:
             'overall_score': round(overall_score, 2),
             'factors': {
                 'experience': exp_factors,
-                'expertise': exp_factors,
+                'expertise': exp_fctrs,
                 'authoritativeness': auth_factors,
                 'trustworthiness': trust_factors,
             },

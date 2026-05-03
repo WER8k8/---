@@ -14,10 +14,11 @@ ROLE_PERMISSIONS = {
         "cases": ["create", "read", "update", "delete", "publish"],
         "content": ["create", "read", "update", "delete", "publish"],
         "inquiries": ["read", "update", "delete", "export"],
-        "seo": ["read", "update", "batch", "ai_optimize"],
+        "seo": ["read", "update", "batch", "ai_optimize", "optimize"],  # 添加optimize权限
         "analytics": ["read"],
         "users": ["create", "read", "update", "delete"],
         "settings": ["read", "update"],
+        "ab_test": ["create", "read", "update", "delete"],
     },
     Role.EDITOR: {
         "products": ["create", "read", "update", "publish"],
@@ -28,6 +29,7 @@ ROLE_PERMISSIONS = {
         "analytics": ["read"],
         "users": [],
         "settings": [],
+        "ab_test": ["create", "read", "update"],
     },
     Role.SALES: {
         "products": ["read"],

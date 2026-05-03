@@ -1,17 +1,61 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
-from app.core.database import get_db, Base, engine
+from sqlalchemy import create_engine, String
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
-@pytest.fixture(scope="module")
-def test_db():
+import os
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+
+from app.core.config import settings
+settings.DATABASE_URL = "sqlite:///:memory:"
+
+from app.core.database import Base, get_db, get_uuid_column
+from app.core.security import get_password_hash
+from app.models.user import User
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+from app.core import database
+database.UUID_TYPE = String(36)
+database.get_uuid_column = lambda: String(36)
+
+@pytest.fixture(scope="function")
+def db_session():
     Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture
-def client(test_db):
-    return TestClient(app)
+def client(db_session):
+    def override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
+
+    from app.main import app
+    
+    app.user_middleware = [mw for mw in app.user_middleware if mw.cls.__name__ not in ["CsrfProtectionMiddleware", "RateLimitMiddleware"]]
+    
+    app.dependency_overrides[get_db] = override_get_db
+
+    with TestClient(app, base_url="http://localhost") as test_client:
+        yield test_client
+
+    app.dependency_overrides.clear()
 
 class TestInquiryAPI:
     def test_create_inquiry_success(self, client):

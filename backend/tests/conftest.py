@@ -64,8 +64,8 @@ def client(db_session):
     # 延迟导入app以确保数据库配置正确
     from app.main import app
     
-    # 在测试环境中禁用CSRF中间件
-    app.user_middleware = [mw for mw in app.user_middleware if mw.cls.__name__ != "CsrfProtectionMiddleware"]
+    # 在测试环境中禁用CSRF和限流中间件
+    app.user_middleware = [mw for mw in app.user_middleware if mw.cls.__name__ not in ["CsrfProtectionMiddleware", "RateLimitMiddleware"]]
     
     app.dependency_overrides[get_db] = override_get_db
 

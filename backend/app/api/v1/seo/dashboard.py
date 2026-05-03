@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, optional_auth
 from app.services.seo_analyzer import SeoAnalyzer
 from app.services.site_audit import SiteAuditEngine
 from app.models.seo import SiteAudit
@@ -55,8 +55,22 @@ class AuditRunRequest(BaseModel):
 
 @router.get("/dashboard")
 def get_seo_dashboard(db: Session = Depends(get_db)):
+    """获取SEO仪表盘数据 - 带5分钟缓存"""
+    from app.services.cache_service import cache_service
+    
+    cache_key = "seo:dashboard:summary"
+    cached_data = cache_service.get_json(cache_key)
+    
+    if cached_data:
+        return cached_data
+    
     analyzer = SeoAnalyzer(db)
-    return analyzer.get_dashboard()
+    result = analyzer.get_dashboard()
+    
+    # 缓存5分钟
+    cache_service.set_json(cache_key, result, expire=300)
+    
+    return result
 
 
 @router.get("/keyword-ranking/{keyword_id}")
@@ -78,7 +92,7 @@ def get_seo_pages_summary(db: Session = Depends(get_db)):
 
 
 @router.post("/run-audit")
-async def run_audit(req: AuditRunRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def run_audit(req: AuditRunRequest, db: Session = Depends(get_db), current_user: User = Depends(optional_auth)):
     validate_audit_url(req.url)
     engine = SiteAuditEngine()
     result = await engine.run_audit(url=req.url, audit_type=req.audit_type)

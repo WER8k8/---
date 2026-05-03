@@ -40,7 +40,7 @@ class KeywordUpdate(BaseModel):
 
 class KeywordResponse(BaseModel):
     """关键词响应"""
-    id: int
+    id: str
     keyword: str
     search_engine: str
     target_url: str

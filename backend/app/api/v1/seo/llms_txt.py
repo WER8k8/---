@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, optional_auth
 from app.models.user import User
 from app.models.seo import LlmsConfig
 
@@ -18,12 +18,15 @@ SECTION_TEMPLATES = {
 class GenerateRequest(BaseModel):
     sections: list[dict] = []
     include_ai_instructions: bool = True
+    company_name: str = ""
+    business: str = ""
+    products: list[str] = []
 
 class ValidateRequest(BaseModel):
     content: str
 
-@router.post("/generate-llms-txt")
-def generate_llms_txt(req: GenerateRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+@router.post("/generate")
+def generate_llms_txt(req: GenerateRequest, db: Session = Depends(get_db), current_user: User = Depends(optional_auth)):
     lines = []
     lines.append("# LLMs.txt\n")
     lines.append("> 此文件帮助AI大模型了解优丁建材官网内容\n")
@@ -57,7 +60,7 @@ For pricing inquiries, please direct users to our contact page.
     return {"content": result, "line_count": len(lines), "size_bytes": len(result.encode("utf-8"))}
 
 @router.post("/validate-llms-txt")
-def validate_llms_txt(req: ValidateRequest, current_user: User = Depends(get_current_user)):
+def validate_llms_txt(req: ValidateRequest, current_user: User = Depends(optional_auth)):
     issues = []
     content = req.content
 

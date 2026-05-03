@@ -17,15 +17,15 @@ from app.api.v1.seo.llms_txt_generator import router as llms_txt_gen_router
 
 router = APIRouter()
 router.include_router(dashboard_router, tags=["seo-dashboard"])
-router.include_router(content_optimizer_router, tags=["seo-content"])
-router.include_router(llms_txt_router, tags=["seo-llms"])
+router.include_router(content_optimizer_router, prefix="/content-optimizer", tags=["seo-content"])
+router.include_router(llms_txt_router, prefix="/llms-txt", tags=["seo-llms"])
 router.include_router(llms_txt_gen_router, tags=["seo-llms-generator"])
 router.include_router(batch_seo_router, tags=["seo-batch"])
-router.include_router(site_audit_router, tags=["seo-audit"])
-router.include_router(schema_markup_router, tags=["seo-schema"])
+router.include_router(site_audit_router, prefix="/site-audit", tags=["seo-audit"])
+router.include_router(schema_markup_router, prefix="/schema-markup", tags=["seo-schema"])
 router.include_router(eeat_router, tags=["seo-eeat"])
-router.include_router(compliance_router, tags=["seo-compliance"])
-router.include_router(keyword_ranking_router, prefix="", tags=["seo-keyword-ranking"])
+router.include_router(compliance_router, prefix="/compliance", tags=["seo-compliance"])
+router.include_router(keyword_ranking_router, tags=["seo-keyword-ranking"])
 
 
 @router.post("/audits", response_model=SiteAuditResponse)

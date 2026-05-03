@@ -40,8 +40,9 @@ class KeywordRankingResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 class SiteAuditCreate(BaseModel):
-    audit_type: str
+    audit_type: str = "full"
     url: str
+    audit_dimensions: Optional[list[str]] = None
 
 class SiteAuditResponse(BaseModel):
     id: str

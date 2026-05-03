@@ -22,11 +22,21 @@ class KeywordRanking(Base):
     __tablename__ = "keyword_rankings"
 
     id = Column(UUID_TYPE, primary_key=True, default=lambda: str(uuid.uuid4()))
-    keyword_id = Column(UUID_TYPE, nullable=False, index=True)
-    ranking = Column(Integer)
-    page_url = Column(String(500))
+    keyword = Column(String(200), nullable=False, index=True)
     search_engine = Column(String(50), default="baidu")
-    checked_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    target_url = Column(String(500))
+    current_position = Column(Integer)
+    previous_position = Column(Integer)
+    best_position = Column(Integer)
+    search_volume = Column(Integer, default=0)
+    difficulty = Column(String(20), default="medium")
+    cpc = Column(Float, default=0.0)
+    is_tracking = Column(Boolean, default=True)
+    category = Column(String(100))
+    notes = Column(Text)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    last_checked_at = Column(DateTime(timezone=True))
 
 class SiteAudit(Base):
     __tablename__ = "site_audits"

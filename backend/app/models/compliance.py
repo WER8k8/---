@@ -1,9 +1,8 @@
 """合规检查相关数据库模型"""
 from sqlalchemy import Column, String, Text, Boolean, DateTime, JSON, Float, Integer
-from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 
-Base = declarative_base()
+from app.core.database import Base
 
 
 class ComplianceRule(Base):

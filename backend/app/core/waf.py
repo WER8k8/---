@@ -58,6 +58,7 @@ class WAFMiddleware(BaseHTTPMiddleware):
         "/api/docs",
         "/api/redoc",
         "/api/openapi.json",
+        "/openapi.json",  # 添加根路径openapi
         "/health",
         "/api/v1/health",
         "/api/v1/system/login",
@@ -75,6 +76,7 @@ class WAFMiddleware(BaseHTTPMiddleware):
         "/api/v1/metrics",
         "/api/v1/performance",
         "/uploads",
+        "/",  # 添加首页
     ]
     
     async def dispatch(self, request: Request, call_next):

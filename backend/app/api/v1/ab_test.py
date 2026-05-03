@@ -6,7 +6,7 @@ from sqlalchemy import desc, func
 from datetime import datetime
 
 from app.core.database import get_db
-from app.core.permissions import get_current_user, require_permission
+from app.core.security import get_current_user, require_permission
 from app.models.ab_test import ABTest, ABTestVariant, ABTestEvent, ABTestConversion
 from app.models.user import User
 from app.schemas.ab_test import (
@@ -66,7 +66,7 @@ def get_ab_test(
 def create_ab_test(
     test_data: ABTestCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.create")),
+    current_user: User = Depends(require_permission("ab_test", "create")),
 ):
     """创建新的 A/B 测试"""
     # 创建测试
@@ -111,7 +111,7 @@ def update_ab_test(
     test_id: int,
     test_data: ABTestUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """更新 A/B 测试"""
     test = db.query(ABTest).filter(ABTest.id == test_id).first()
@@ -162,7 +162,7 @@ def update_ab_test(
 def delete_ab_test(
     test_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.delete")),
+    current_user: User = Depends(require_permission("ab_test", "delete")),
 ):
     """删除 A/B 测试"""
     test = db.query(ABTest).filter(ABTest.id == test_id).first()
@@ -194,7 +194,7 @@ def create_variant(
     test_id: int,
     variant_data: ABTestVariantCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """为测试添加变体"""
     test = db.query(ABTest).filter(ABTest.id == test_id).first()
@@ -228,7 +228,7 @@ def update_variant(
     variant_id: str,
     variant_data: ABTestVariantUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """更新变体"""
     variant = db.query(ABTestVariant).filter(
@@ -264,7 +264,7 @@ def delete_variant(
     test_id: int,
     variant_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """删除变体"""
     variant = db.query(ABTestVariant).filter(
@@ -457,7 +457,7 @@ def get_test_results(
 def start_test(
     test_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """启动 A/B 测试"""
     test = db.query(ABTest).filter(ABTest.id == test_id).first()
@@ -486,7 +486,7 @@ def start_test(
 def pause_test(
     test_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """暂停 A/B 测试"""
     test = db.query(ABTest).filter(ABTest.id == test_id).first()
@@ -515,7 +515,7 @@ def complete_test(
     test_id: int,
     winner_variant: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission("ab_test.update")),
+    current_user: User = Depends(require_permission("ab_test", "update")),
 ):
     """完成 A/B 测试"""
     test = db.query(ABTest).filter(ABTest.id == test_id).first()

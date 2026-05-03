@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, optional_auth
 from app.models.user import User
 from app.models.seo import SiteAudit, AiOptimizationLog
 from app.schemas.seo import SiteAuditResponse, SiteAuditCreate
 from app.services.site_audit import run_full_audit_service, run_quick_audit_service
 
-router = APIRouter(prefix="/site-audit", tags=["站点审计"])
+router = APIRouter(tags=["站点审计"])
 
 
 @router.post("", response_model=SiteAuditResponse)
-def create_audit(audit_data: SiteAuditCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_audit(audit_data: SiteAuditCreate, db: Session = Depends(get_db), current_user: User = Depends(optional_auth)):
     if audit_data.audit_type == "full":
         result = run_full_audit_service(db, audit_data)
     elif audit_data.audit_type == "quick":

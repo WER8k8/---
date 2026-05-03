@@ -69,6 +69,29 @@ def list_pages(
     
     return {"items": [ContentPageResponse.model_validate(page.__dict__) for page in items], "total": total}
 
+
+@router.get("/pages/search")
+def search_pages(
+    q: str = None,
+    page: int = 1,
+    page_size: int = 20,
+    db: Session = Depends(get_db)
+):
+    """搜索页面内容"""
+    query = db.query(ContentPage).filter(ContentPage.is_active == True)
+    
+    if q:
+        query = query.filter(
+            ContentPage.title.contains(q) | 
+            ContentPage.summary.contains(q) | 
+            ContentPage.content.contains(q)
+        )
+    
+    total = query.count()
+    items = query.order_by(ContentPage.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {"items": [ContentPageResponse.model_validate(page.__dict__) for page in items], "total": total}
+
 @router.get("/pages/{page_id}", response_model=ContentPageResponse)
 def get_page(page_id: str, db: Session = Depends(get_db)):
     page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
@@ -575,6 +598,8 @@ def export_pages(
 
 @router.get("/stats")
 def get_content_stats(db: Session = Depends(get_db)):
+    from sqlalchemy import func
+    
     total_pages = db.query(ContentPage).filter(ContentPage.is_active == True).count()
     published_pages = db.query(ContentPage).filter(ContentPage.status == "published", ContentPage.is_active == True).count()
     draft_pages = db.query(ContentPage).filter(ContentPage.status == "draft", ContentPage.is_active == True).count()
@@ -582,7 +607,7 @@ def get_content_stats(db: Session = Depends(get_db)):
     
     page_type_stats = db.query(
         ContentPage.page_type,
-        db.func.count(ContentPage.id).label('count')
+        func.count(ContentPage.id).label('count')
     ).filter(ContentPage.is_active == True).group_by(ContentPage.page_type).all()
     
     page_type_dict = {pt: count for pt, count in page_type_stats}
