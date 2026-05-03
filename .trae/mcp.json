@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "lingma-assistant": {
+      "name": "灵马辅助开发",
+      "transport": "streamable-http",
+      "timeout": 30,
+      "subscribe_events": [
+        "task_progress",
+        "ui_finish",
+        "file_update"
+      ],
+      "url": "http://127.0.0.1:8787",
+      "headers": {
+        "X-Role": "Trae主开发端"
+      }
+    }
+  }
+}

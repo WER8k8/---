@@ -1,0 +1,228 @@
+{
+  "startTime": "2026-05-03T20:51:37.814Z",
+  "endTime": "2026-05-03T20:51:38.389Z",
+  "duration": 1,
+  "totalTasks": 6,
+  "completedTasks": 6,
+  "failedTasks": 0,
+  "successRate": "100.0",
+  "results": [
+    {
+      "taskId": "seo-1",
+      "status": "success",
+      "agentId": "insulation-backend-developer",
+      "task": "地域管理CRUD：实现省/市/县三级地域词库的增删改查接口，支持树形结构查询、批量导入导出功能",
+      "result": {
+        "success": true,
+        "task": {
+          "id": "task-30",
+          "description": "地域管理CRUD：实现省/市/县三级地域词库的增删改查接口，支持树形结构查询、批量导入导出功能",
+          "agentId": "insulation-backend-developer",
+          "priority": "P0",
+          "status": "in-progress",
+          "createdAt": "2026-05-03T20:51:38.370Z",
+          "startedAt": "2026-05-03T20:51:38.371Z",
+          "completedAt": null,
+          "result": null
+        },
+        "agent": {
+          "id": "insulation-backend-developer",
+          "name": "后端开发专家",
+          "skills": [
+            "backend-development",
+            "api-development",
+            "testing"
+          ],
+          "capacity": 5,
+          "currentLoad": 1,
+          "status": "busy",
+          "assignedTasks": [
+            "task-30"
+          ]
+        },
+        "estimatedTime": "5-15 minutes"
+      }
+    },
+    {
+      "taskId": "seo-2",
+      "status": "success",
+      "agentId": "insulation-backend-developer",
+      "task": "关键词管理+AI组词：实现行业关键词CRUD接口，集成AI生成长尾关键词功能",
+      "result": {
+        "success": true,
+        "task": {
+          "id": "task-31",
+          "description": "关键词管理+AI组词：实现行业关键词CRUD接口，集成AI生成长尾关键词功能",
+          "agentId": "insulation-backend-developer",
+          "priority": "P1",
+          "status": "in-progress",
+          "createdAt": "2026-05-03T20:51:38.376Z",
+          "startedAt": "2026-05-03T20:51:38.376Z",
+          "completedAt": null,
+          "result": null
+        },
+        "agent": {
+          "id": "insulation-backend-developer",
+          "name": "后端开发专家",
+          "skills": [
+            "backend-development",
+            "api-development",
+            "testing"
+          ],
+          "capacity": 5,
+          "currentLoad": 1,
+          "status": "busy",
+          "assignedTasks": [
+            "task-31"
+          ]
+        },
+        "estimatedTime": "5-15 minutes"
+      }
+    },
+    {
+      "taskId": "seo-3",
+      "status": "success",
+      "agentId": "fullstack-developer",
+      "task": "文章管理+AI生成：实现文章CRUD接口，集成AI批量生成文章功能，包含重复率检测和合规性校验",
+      "result": {
+        "success": true,
+        "task": {
+          "id": "task-32",
+          "description": "文章管理+AI生成：实现文章CRUD接口，集成AI批量生成文章功能，包含重复率检测和合规性校验",
+          "agentId": "fullstack-developer",
+          "priority": "P1",
+          "status": "in-progress",
+          "createdAt": "2026-05-03T20:51:38.377Z",
+          "startedAt": "2026-05-03T20:51:38.378Z",
+          "completedAt": null,
+          "result": null
+        },
+        "agent": {
+          "id": "fullstack-developer",
+          "name": "全栈开发专家",
+          "skills": [
+            "frontend",
+            "backend",
+            "integration"
+          ],
+          "capacity": 5,
+          "currentLoad": 1,
+          "status": "busy",
+          "assignedTasks": [
+            "task-32"
+          ]
+        },
+        "estimatedTime": "5-15 minutes"
+      }
+    },
+    {
+      "taskId": "seo-4",
+      "status": "success",
+      "agentId": "insulation-backend-developer",
+      "task": "发布任务管理：实现发布任务创建、状态查询、失败重试接口，集成BullMQ任务队列",
+      "result": {
+        "success": true,
+        "task": {
+          "id": "task-33",
+          "description": "发布任务管理：实现发布任务创建、状态查询、失败重试接口，集成BullMQ任务队列",
+          "agentId": "insulation-backend-developer",
+          "priority": "P1",
+          "status": "in-progress",
+          "createdAt": "2026-05-03T20:51:38.383Z",
+          "startedAt": "2026-05-03T20:51:38.383Z",
+          "completedAt": null,
+          "result": null
+        },
+        "agent": {
+          "id": "insulation-backend-developer",
+          "name": "后端开发专家",
+          "skills": [
+            "backend-development",
+            "api-development",
+            "testing"
+          ],
+          "capacity": 5,
+          "currentLoad": 1,
+          "status": "busy",
+          "assignedTasks": [
+            "task-33"
+          ]
+        },
+        "estimatedTime": "5-15 minutes"
+      }
+    },
+    {
+      "taskId": "seo-5",
+      "status": "success",
+      "agentId": "insulation-backend-developer",
+      "task": "收录监控系统：实现收录检测、异常预警接口，定时检测文章搜索引擎收录状态",
+      "result": {
+        "success": true,
+        "task": {
+          "id": "task-34",
+          "description": "收录监控系统：实现收录检测、异常预警接口，定时检测文章搜索引擎收录状态",
+          "agentId": "insulation-backend-developer",
+          "priority": "P2",
+          "status": "in-progress",
+          "createdAt": "2026-05-03T20:51:38.384Z",
+          "startedAt": "2026-05-03T20:51:38.384Z",
+          "completedAt": null,
+          "result": null
+        },
+        "agent": {
+          "id": "insulation-backend-developer",
+          "name": "后端开发专家",
+          "skills": [
+            "backend-development",
+            "api-development",
+            "testing"
+          ],
+          "capacity": 5,
+          "currentLoad": 2,
+          "status": "busy",
+          "assignedTasks": [
+            "task-33",
+            "task-34"
+          ]
+        },
+        "estimatedTime": "5-15 minutes"
+      }
+    },
+    {
+      "taskId": "seo-6",
+      "status": "success",
+      "agentId": "frontend-architect",
+      "task": "数据看板统计：实现统计图表接口，包含文章数量、发布趋势、收录率等核心指标",
+      "result": {
+        "success": true,
+        "task": {
+          "id": "task-35",
+          "description": "数据看板统计：实现统计图表接口，包含文章数量、发布趋势、收录率等核心指标",
+          "agentId": "frontend-architect",
+          "priority": "P1",
+          "status": "in-progress",
+          "createdAt": "2026-05-03T20:51:38.385Z",
+          "startedAt": "2026-05-03T20:51:38.385Z",
+          "completedAt": null,
+          "result": null
+        },
+        "agent": {
+          "id": "frontend-architect",
+          "name": "前端架构师",
+          "skills": [
+            "frontend-architecture",
+            "component-design",
+            "performance-optimization"
+          ],
+          "capacity": 4,
+          "currentLoad": 1,
+          "status": "busy",
+          "assignedTasks": [
+            "task-35"
+          ]
+        },
+        "estimatedTime": "5-15 minutes"
+      }
+    }
+  ]
+}

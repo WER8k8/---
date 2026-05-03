@@ -66,11 +66,12 @@ def seed():
         admin_id = str(uuid.uuid4())
         from passlib.context import CryptContext
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        admin_password = os.getenv("SEED_ADMIN_PASSWORD", "ChangeMe@2026!")
         admin = User(
             id=admin_id,
             username="admin",
             email="admin@youding.com",
-            hashed_password=pwd_context.hash("admin123"),
+            hashed_password=pwd_context.hash(admin_password),
             display_name="管理员",
             role="admin",
             is_active=True,

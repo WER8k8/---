@@ -1,0 +1,8 @@
+{
+  "autoLoadRules": true,
+  "rulePaths": [
+    ".trae/rules/轻集料混凝土网站开发规则.md"
+  ],
+  "alwaysFollowRules": true,
+  "enforceStrictMode": true
+}

@@ -1,0 +1,8 @@
+{
+  "pid": 21840,
+  "startTime": "2026-05-03T17:28:07+08:00",
+  "version": "2.5.20",
+  "transportType": "Stdio",
+  "httpPort": 37661,
+  "socketPort": 36686
+}
