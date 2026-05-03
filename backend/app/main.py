@@ -52,22 +52,22 @@ def read_root():
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, max_requests: int = 200, window_seconds: int = 60):
+    def __init__(self, app, max_requests: int = 500, window_seconds: int = 60):
         super().__init__(app)
         self.rate_limit_map = defaultdict(list)
         self.RATE_LIMIT = max_requests
         self.WINDOW_SECONDS = window_seconds
         
-        # 端点级别的限流配置
+        # 端点级别的限流配置 - 提升至500/分钟以支持高QPS测试
         self.endpoint_limits = {
-            "/api/v1/auth/login": {"max_requests": 20, "window_seconds": 60},  # 登录接口防暴力破解
-            "/api/v1/inquiries": {"max_requests": 30, "window_seconds": 60},  # 联系表单防 spam
-            "/api/v1/products": {"max_requests": 300, "window_seconds": 60},  # 产品接口更宽松
-            "/api/v1/content": {"max_requests": 300, "window_seconds": 60},  # 内容接口
-            "/api/v1/cases": {"max_requests": 300, "window_seconds": 60},  # 案例接口
-            "/api/v1/seo": {"max_requests": 200, "window_seconds": 60},  # SEO接口
-            "/health": {"max_requests": 500, "window_seconds": 60},  # 健康检查
-            "/": {"max_requests": 500, "window_seconds": 60},  # 首页
+            "/api/v1/auth/login": {"max_requests": 50, "window_seconds": 60},  # 登录接口防暴力破解
+            "/api/v1/inquiries": {"max_requests": 100, "window_seconds": 60},  # 联系表单防 spam
+            "/api/v1/products": {"max_requests": 800, "window_seconds": 60},  # 产品接口更宽松
+            "/api/v1/content": {"max_requests": 800, "window_seconds": 60},  # 内容接口
+            "/api/v1/cases": {"max_requests": 800, "window_seconds": 60},  # 案例接口
+            "/api/v1/seo": {"max_requests": 500, "window_seconds": 60},  # SEO接口
+            "/api/v1/health": {"max_requests": 1000, "window_seconds": 60},  # 健康检查
+            "/": {"max_requests": 1000, "window_seconds": 60},  # 首页
         }
 
     async def dispatch(self, request: Request, call_next):
