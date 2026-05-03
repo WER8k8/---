@@ -26,7 +26,9 @@ class CacheService:
                 settings.REDIS_URL,
                 decode_responses=True,
                 socket_timeout=5,
-                socket_connect_timeout=5
+                socket_connect_timeout=5,
+                retry_on_timeout=True,
+                health_check_interval=10
             )
             # 测试连接
             self.redis_client.ping()
@@ -100,6 +102,33 @@ class CacheService:
             return 0
         except Exception:
             return 0
+    
+    def increment(self, key: str, amount: int = 1) -> Optional[int]:
+        """原子递增计数器"""
+        if not self.redis_client:
+            return None
+        try:
+            return self.redis_client.incr(key, amount)
+        except Exception:
+            return None
+    
+    def expire(self, key: str, seconds: int) -> bool:
+        """设置过期时间"""
+        if not self.redis_client:
+            return False
+        try:
+            return self.redis_client.expire(key, seconds)
+        except Exception:
+            return False
+    
+    def pipeline(self):
+        """获取管道对象用于批量操作"""
+        if not self.redis_client:
+            return None
+        try:
+            return self.redis_client.pipeline()
+        except Exception:
+            return None
 
 
 class ResponseCacheMiddleware(BaseHTTPMiddleware):

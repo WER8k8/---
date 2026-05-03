@@ -12,19 +12,19 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
     display_name = Column(String(100))
-    role = Column(String(20), default="viewer", nullable=False)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    role = Column(String(20), default="viewer", nullable=False, index=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
 
 class OperationLog(Base):
     __tablename__ = "operation_logs"
 
     id = Column(UUID_TYPE, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(UUID_TYPE, nullable=True, index=True)
-    action = Column(String(50), nullable=False)
-    resource_type = Column(String(50), nullable=False)
-    resource_id = Column(String(50))
+    action = Column(String(50), nullable=False, index=True)
+    resource_type = Column(String(50), nullable=False, index=True)
+    resource_id = Column(String(50), index=True)
     detail = Column(Text)
-    ip_address = Column(String(45))
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    ip_address = Column(String(45), index=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False, index=True)

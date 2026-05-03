@@ -43,7 +43,7 @@ export function useResponsive() {
 
   // Update window width on resize
   if (process.client) {
-    let resizeTimer: NodeJS.Timeout
+    let resizeTimer: ReturnType<typeof setTimeout>
     const handleResize = () => {
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(() => {

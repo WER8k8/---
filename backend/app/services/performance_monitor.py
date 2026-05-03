@@ -7,9 +7,11 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from app.core.logging_config import AppLogger
+import logging
 
-logger = AppLogger("performance_monitor")
+from app.core.logging_config import LogConfig
+
+logger = LogConfig.get_logger("performance_monitor")
 
 
 @dataclass

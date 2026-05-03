@@ -95,25 +95,27 @@
       
       <div 
         v-if="isMobileMenuOpen"
-        class="lg:hidden py-4 border-t border-border animate-slide-up"
+        class="lg:hidden py-4 border-t border-border animate-slide-up bg-white/95 backdrop-blur-md"
       >
-        <div class="flex flex-col space-y-1">
+        <div class="flex flex-col space-y-1 px-2">
           <NuxtLink 
             v-for="item in navItems" 
             :key="item.to" 
             :to="item.to"
-            class="px-4 py-3 text-text-secondary font-medium rounded-lg transition-all duration-200 cursor-pointer"
+            class="px-4 py-3 text-text-secondary font-medium rounded-lg transition-all duration-200 cursor-pointer active:bg-primary/5"
             :class="isActive(item.to) ? 'text-primary bg-primary/5' : 'hover:text-primary hover:bg-surface-hover'"
             @click="isMobileMenuOpen = false"
+            @touchstart="handleTouchStart"
+            @touchend="handleTouchEnd"
           >
             {{ item.label }}
           </NuxtLink>
           <a 
             :href="'tel:' + phone" 
-            class="mt-2 px-4 py-3 bg-primary text-white font-semibold rounded-lg text-center"
+            class="mt-2 px-4 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-lg text-center active:opacity-90"
             @click="isMobileMenuOpen = false"
           >
-            {{ phone }}
+            📞 {{ phone }}
           </a>
         </div>
       </div>
@@ -150,6 +152,16 @@ function toggleMobileMenu() {
 
 function handleScroll() {
   isScrolled.value = window.scrollY > 20
+}
+
+function handleTouchStart(e: TouchEvent) {
+  const target = e.currentTarget as HTMLElement
+  if (target) target.style.transform = 'scale(0.98)'
+}
+
+function handleTouchEnd(e: TouchEvent) {
+  const target = e.currentTarget as HTMLElement
+  if (target) target.style.transform = 'scale(1)'
 }
 
 onMounted(() => {

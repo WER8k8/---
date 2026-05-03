@@ -1,6 +1,7 @@
 import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.core.database import get_db
 from app.core.security import require_admin
 from app.models.case_study import CaseStudy, CaseImage
@@ -28,7 +29,6 @@ def list_case_studies(
     total = q.count()
     items = q.order_by(CaseStudy.sort_order, CaseStudy.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
     
-    # 转换字段以匹配前端期望
     result_items = []
     for item in items:
         item_dict = item.__dict__
@@ -40,9 +40,89 @@ def list_case_studies(
     
     return {"items": result_items, "total": total}
 
+@router.get("/stats")
+def get_case_stats(
+    db: Session = Depends(get_db),
+    admin = Depends(require_admin),
+):
+    total = db.query(func.count(CaseStudy.id)).filter(CaseStudy.is_active == True).scalar() or 0
+    published = db.query(func.count(CaseStudy.id)).filter(CaseStudy.is_active == True, CaseStudy.status == "published").scalar() or 0
+    draft = db.query(func.count(CaseStudy.id)).filter(CaseStudy.is_active == True, CaseStudy.status == "draft").scalar() or 0
+    
+    total_images = db.query(func.count(CaseImage.id)).scalar() or 0
+    
+    status_stats = db.query(
+        CaseStudy.status,
+        func.count(CaseStudy.id).label('count')
+    ).filter(CaseStudy.is_active == True).group_by(CaseStudy.status).all()
+    
+    status_dict = {s: count for s, count in status_stats}
+    
+    return {
+        "total": total,
+        "published": published,
+        "draft": draft,
+        "total_images": total_images,
+        "status_stats": status_dict,
+    }
+
+@router.post("/batch-delete")
+def batch_delete_cases(
+    req: dict,
+    db: Session = Depends(get_db),
+    admin = Depends(require_admin),
+):
+    ids = req.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="请提供要删除的案例ID")
+    
+    cases = db.query(CaseStudy).filter(CaseStudy.id.in_(ids), CaseStudy.is_active == True).all()
+    if not cases:
+        raise HTTPException(status_code=404, detail="未找到指定案例")
+    
+    for case in cases:
+        case.is_active = False
+    
+    db.commit()
+    return {"message": f"成功删除 {len(cases)} 个案例", "deleted_count": len(cases)}
+
+@router.post("/batch-update-status")
+def batch_update_case_status(
+    req: dict,
+    db: Session = Depends(get_db),
+    admin = Depends(require_admin),
+):
+    ids = req.get("ids", [])
+    new_status = req.get("status")
+    
+    if not ids or not new_status:
+        raise HTTPException(status_code=400, detail="请提供案例ID和目标状态")
+    
+    if new_status not in ["draft", "published"]:
+        raise HTTPException(status_code=400, detail="无效的状态值")
+    
+    cases = db.query(CaseStudy).filter(CaseStudy.id.in_(ids), CaseStudy.is_active == True).all()
+    if not cases:
+        raise HTTPException(status_code=404, detail="未找到指定案例")
+    
+    for case in cases:
+        case.status = new_status
+    
+    db.commit()
+    return {"message": f"成功更新 {len(cases)} 个案例状态", "updated_count": len(cases)}
+
 @router.get("/by-slug/{slug}", response_model=CaseStudyResponse)
 def get_case_study_by_slug(slug: str, db: Session = Depends(get_db)):
     case = db.query(CaseStudy).filter(CaseStudy.slug == slug).first()
+    if not case:
+        raise HTTPException(status_code=404, detail="案例不存在")
+    case.view_count += 1
+    db.commit()
+    return case
+
+@router.get("/slug/{slug}", response_model=CaseStudyResponse)
+def get_case_study_by_slug_alt(slug: str, db: Session = Depends(get_db)):
+    case = db.query(CaseStudy).filter(CaseStudy.slug == slug, CaseStudy.is_active == True).first()
     if not case:
         raise HTTPException(status_code=404, detail="案例不存在")
     case.view_count += 1
@@ -110,6 +190,15 @@ def add_case_image(case_id: str, data: CaseImageCreate, db: Session = Depends(ge
     db.commit()
     db.refresh(img)
     return img
+
+@router.get("/{case_id}/images", response_model=list[CaseImageResponse])
+def list_case_images(case_id: str, db: Session = Depends(get_db)):
+    case = db.query(CaseStudy).filter(CaseStudy.id == case_id).first()
+    if not case:
+        raise HTTPException(status_code=404, detail="案例不存在")
+    return db.query(CaseImage).filter(
+        CaseImage.case_id == case_id
+    ).order_by(CaseImage.sort_order).all()
 
 @router.delete("/{case_id}/images/{image_id}")
 def delete_case_image(case_id: str, image_id: str, db: Session = Depends(get_db), admin=Depends(require_admin)):

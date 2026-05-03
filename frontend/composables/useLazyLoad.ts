@@ -198,7 +198,7 @@ export function useApiCache(ttl: number = 5 * 60 * 1000) {
  */
 export function useDebouncedRef<T>(initialValue: T, delay: number = 300) {
   const value = ref<T>(initialValue)
-  let timeout: NodeJS.Timeout | null = null
+  let timeout: ReturnType<typeof setTimeout> | null = null
 
   const setValue = (newValue: T) => {
     if (timeout) {

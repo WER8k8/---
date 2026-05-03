@@ -48,6 +48,14 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_MB: int = 20
     ALLOWED_EXTENSIONS: list[str] = ["jpg", "jpeg", "png", "gif", "webp", "pdf", "doc", "docx", "xls", "xlsx", "dwg", "dxf"]
 
+    # 邮件服务配置
+    SMTP_SERVER: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    FROM_EMAIL: str = ""
+    FRONTEND_URL: str = "http://localhost:3000"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
@@ -71,7 +79,7 @@ class Settings(BaseSettings):
                     "  python -c 'import secrets; print(secrets.token_hex(32))'"
                 )
 
-        if self.DB_TYPE == "sqlite" or "postgresql" not in self.DATABASE_URL:
+        if self.DB_TYPE == "sqlite" and "postgresql" not in self.DATABASE_URL:
             if not self.DATABASE_URL.startswith("sqlite"):
                 sqlite_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "youding_dev.db")
                 self.DATABASE_URL = f"sqlite:///{sqlite_path}"

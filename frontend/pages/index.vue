@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <section class="relative overflow-hidden">
+  <div class="homepage">
+    <section class="relative overflow-hidden hero-section">
       <div class="absolute inset-0 gradient-hero" />
       <div class="absolute top-0 right-0 w-1/2 h-full opacity-10">
-        <div class="absolute top-20 right-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-        <div class="absolute bottom-20 right-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+        <div class="absolute top-20 right-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
+        <div class="absolute bottom-20 right-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float-delayed" />
       </div>
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 md:pt-32 md:pb-24">
         <div class="max-w-3xl">
@@ -28,10 +28,10 @@
           >
             <NuxtLink
               to="/products"
-              class="btn-primary btn-primary-lg"
+              class="btn-primary btn-primary-lg group"
             >
               <svg
-                class="w-5 h-5 mr-2"
+                class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -47,10 +47,10 @@
             </NuxtLink>
             <NuxtLink
               to="/contact"
-              class="btn-outline"
+              class="btn-outline group"
             >
               <svg
-                class="w-5 h-5 mr-2"
+                class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -67,24 +67,50 @@
           </div>
         </div>
       </div>
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg
+          class="w-6 h-6 text-primary"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
+        </svg>
+      </div>
     </section>
 
-    <section class="py-20 bg-surface-elevated">
+    <section
+      class="py-20 bg-surface-elevated"
+      v-intersect="onIntersect"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="section-title">
+        <h2
+          class="section-title"
+          :class="{ 'animate-fade-in-up': isVisible }"
+        >
           产品中心
         </h2>
-        <p class="section-subtitle">
+        <p
+          class="section-subtitle"
+          :class="{ 'animate-fade-in-up': isVisible }"
+          style="animation-delay: 0.1s"
+        >
           提供全系列轻集料混凝土产品，满足不同工程需求
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          <div 
-            v-for="(cat, index) in categories" 
-            :key="cat.id" 
+          <div
+            v-for="(cat, index) in categories"
+            :key="cat.id"
             class="card group cursor-pointer"
-            :style="{ animationDelay: `${index * 0.1}s` }"
+            :class="{ 'animate-fade-in-up': isVisible }"
+            :style="{ animationDelay: `${index * 0.1 + 0.2}s` }"
           >
-            <div class="w-14 h-14 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="w-14 h-14 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
               <component
                 :is="cat.icon"
                 class="w-7 h-7 text-primary"
@@ -96,13 +122,13 @@
             <p class="text-text-secondary mb-4">
               {{ cat.description }}
             </p>
-            <NuxtLink 
-              :to="'/products?category=' + cat.id" 
-              class="inline-flex items-center text-primary font-medium hover:text-primary-dark transition-colors"
+            <NuxtLink
+              :to="'/products?category=' + cat.id"
+              class="inline-flex items-center text-primary font-medium hover:text-primary-dark transition-colors group/link"
             >
               了解更多
               <svg
-                class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"
+                class="w-4 h-4 ml-1 group-hover/link:translate-x-2 transition-transform"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -120,21 +146,33 @@
       </div>
     </section>
 
-    <section class="py-20">
+    <section
+      class="py-20"
+      v-intersect="onIntersect"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="section-title">
+        <h2
+          class="section-title"
+          :class="{ 'animate-fade-in-up': isVisible }"
+        >
           为什么选择优丁
         </h2>
-        <p class="section-subtitle">
+        <p
+          class="section-subtitle"
+          :class="{ 'animate-fade-in-up': isVisible }"
+          style="animation-delay: 0.1s"
+        >
           多年的行业经验，为客户提供最优质的建材产品
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <div 
-            v-for="(feature, index) in features" 
-            :key="index" 
-            class="text-center p-8 rounded-2xl bg-surface hover:shadow-elevated transition-all duration-300 group"
+          <div
+            v-for="(feature, index) in features"
+            :key="index"
+            class="text-center p-8 rounded-2xl bg-surface hover:shadow-elevated transition-all duration-500 group"
+            :class="{ 'animate-fade-in-up': isVisible }"
+            :style="{ animationDelay: `${index * 0.15 + 0.2}s` }"
           >
-            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:shadow-soft transition-all duration-300">
+            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-soft transition-all duration-500">
               <component
                 :is="feature.icon"
                 class="w-10 h-10 text-primary"
@@ -151,9 +189,15 @@
       </div>
     </section>
 
-    <section class="py-20 bg-gradient-to-br from-primary/5 via-surface-elevated to-accent/5">
+    <section
+      class="py-20 bg-gradient-to-br from-primary/5 via-surface-elevated to-accent/5"
+      v-intersect="onIntersect"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-surface rounded-2xl shadow-card p-8 md:p-12">
+        <div
+          class="bg-surface rounded-2xl shadow-card p-8 md:p-12"
+          :class="{ 'animate-fade-in-up': isVisible }"
+        >
           <div class="text-center mb-10">
             <h3 class="text-2xl font-bold text-text-primary mb-2">
               企业实力
@@ -163,12 +207,14 @@
             </p>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div 
-              v-for="(stat, index) in stats" 
-              :key="index" 
-              class="text-center p-6 rounded-xl bg-surface-elevated hover:bg-primary/5 transition-colors duration-300"
+            <div
+              v-for="(stat, index) in stats"
+              :key="index"
+              class="text-center p-6 rounded-xl bg-surface-elevated hover:bg-primary/5 transition-all duration-300 group"
+              :class="{ 'animate-fade-in-up': isVisible }"
+              :style="{ animationDelay: `${index * 0.1 + 0.2}s` }"
             >
-              <div class="text-4xl md:text-5xl font-bold text-primary mb-2">
+              <div class="text-4xl md:text-5xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform">
                 {{ stat.value }}
               </div>
               <div class="text-text-secondary">
@@ -180,24 +226,36 @@
       </div>
     </section>
 
-    <section class="py-20 bg-surface-elevated">
+    <section
+      class="py-20 bg-surface-elevated"
+      v-intersect="onIntersect"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="section-title">
+        <h2
+          class="section-title"
+          :class="{ 'animate-fade-in-up': isVisible }"
+        >
           应用领域
         </h2>
-        <p class="section-subtitle">
+        <p
+          class="section-subtitle"
+          :class="{ 'animate-fade-in-up': isVisible }"
+          style="animation-delay: 0.1s"
+        >
           广泛应用于各类建筑工程
         </p>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-          <div 
-            v-for="(area, index) in applications" 
-            :key="index" 
-            class="p-6 rounded-xl bg-surface text-center hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          <div
+            v-for="(area, index) in applications"
+            :key="index"
+            class="p-6 rounded-xl bg-surface text-center hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300 cursor-pointer group"
+            :class="{ 'animate-fade-in-up': isVisible }"
+            :style="{ animationDelay: `${index * 0.05 + 0.2}s` }"
           >
-            <div class="text-3xl mb-3">
+            <div class="text-4xl mb-3 group-hover:scale-125 transition-transform duration-300">
               {{ area.icon }}
             </div>
-            <h4 class="font-semibold text-text-primary">
+            <h4 class="font-semibold text-text-primary group-hover:text-primary transition-colors">
               {{ area.name }}
             </h4>
           </div>
@@ -205,11 +263,17 @@
       </div>
     </section>
 
-    <section class="py-20">
+    <section
+      class="py-20"
+      v-intersect="onIntersect"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-gradient-to-r from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        <div
+          class="bg-gradient-to-r from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden"
+          :class="{ 'animate-fade-in-up': isVisible }"
+        >
+          <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-float" />
+          <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 animate-float-delayed" />
           <div class="relative">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
               立即咨询
@@ -220,10 +284,10 @@
             <div class="flex flex-wrap justify-center gap-4">
               <a
                 href="tel:400-888-8888"
-                class="inline-flex items-center px-8 py-4 bg-white text-primary font-semibold rounded-xl hover:bg-gray-100 transition-all duration-200"
+                class="inline-flex items-center px-8 py-4 bg-white text-primary font-semibold rounded-xl hover:bg-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
               >
                 <svg
-                  class="w-5 h-5 mr-2"
+                  class="w-5 h-5 mr-2 group-hover:animate-pulse"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -239,10 +303,10 @@
               </a>
               <NuxtLink
                 to="/contact"
-                class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-200"
+                class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
               >
                 <svg
-                  class="w-5 h-5 mr-2"
+                  class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -265,55 +329,73 @@
 </template>
 
 <script setup lang="ts">
-import { markRaw, h } from 'vue'
+import { ref } from 'vue'
+import FactoryIcon from '~/components/icons/FactoryIcon.vue'
+import DropletsIcon from '~/components/icons/DropletsIcon.vue'
+import BrickIcon from '~/components/icons/BrickIcon.vue'
+import ThermometerIcon from '~/components/icons/ThermometerIcon.vue'
+import ShieldIcon from '~/components/icons/ShieldIcon.vue'
+import AwardIcon from '~/components/icons/AwardIcon.vue'
 
-const FactoryIcon = markRaw({
-  render() {
-    return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', class: 'w-full h-full' }, [
-      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' })
-    ])
-  }
+useHead({
+  title: '优丁建材 - 专业轻集料混凝土生产企业 | 高品质建筑材料解决方案',
+  meta: [
+    { name: 'description', content: '优丁建材专注新型建筑材料研发与生产20年，提供轻集料混凝土、陶粒混凝土、加气混凝土、保温砂浆等高品质产品，ISO9001认证，年产能力超百万吨' },
+    { name: 'keywords', content: '轻集料混凝土,陶粒混凝土,加气混凝土,保温砂浆,建筑材料,新型建材,环保建材,高性能混凝土' },
+    { property: 'og:title', content: '优丁建材 - 专业轻集料混凝土生产企业' },
+    { property: 'og:description', content: '优丁建材专注新型建筑材料研发与生产，为客户提供优质、环保、高性能的轻集料混凝土产品' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://www.youdingjiancai.com' },
+    { property: 'og:image', content: 'https://www.youdingjiancai.com/images/og-home.jpg' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: '优丁建材 - 专业轻集料混凝土生产企业' },
+    { name: 'twitter:description', content: '优丁建材专注新型建筑材料研发与生产，为客户提供优质、环保、高性能的轻集料混凝土产品' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://www.youdingjiancai.com' }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: '优丁建材有限公司',
+        url: 'https://www.youdingjiancai.com',
+        logo: 'https://www.youdingjiancai.com/images/logo.png',
+        description: '专注新型建筑材料研发与生产20年，提供轻集料混凝土、陶粒混凝土、加气混凝土、保温砂浆等高品质产品',
+        foundingDate: '2006',
+        numberOfEmployees: {
+          '@type': 'QuantitativeValue',
+          minValue: 200,
+          maxValue: 500
+        },
+        contactPoint: {
+          '@type': 'ContactPoint',
+          telephone: '+86-400-888-8888',
+          contactType: 'customer service',
+          availableLanguage: ['Chinese', 'English']
+        },
+        sameAs: [
+          'https://www.youdingjiancai.com'
+        ],
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'CN',
+          addressRegion: '中国'
+        }
+      })
+    }
+  ]
 })
 
-const DropletsIcon = markRaw({
-  render() {
-    return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', class: 'w-full h-full' }, [
-      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z' })
-    ])
-  }
-})
+const isVisible = ref(false)
 
-const BrickIcon = markRaw({
-  render() {
-    return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', class: 'w-full h-full' }, [
-      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4' })
-    ])
+const onIntersect = (isIntersecting: boolean) => {
+  if (isIntersecting) {
+    isVisible.value = true
   }
-})
-
-const ThermometerIcon = markRaw({
-  render() {
-    return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', class: 'w-full h-full' }, [
-      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' })
-    ])
-  }
-})
-
-const ShieldIcon = markRaw({
-  render() {
-    return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', class: 'w-full h-full' }, [
-      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' })
-    ])
-  }
-})
-
-const AwardIcon = markRaw({
-  render() {
-    return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', class: 'w-full h-full' }, [
-      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' })
-    ])
-  }
-})
+}
 
 const categories = [
   { id: '1', name: '轻集料混凝土', description: '各类轻集料混凝土产品，满足不同强度等级需求', icon: FactoryIcon },
@@ -358,3 +440,49 @@ const applications = [
   { name: '地下空间', icon: '🏗️' },
 ]
 </script>
+
+<style scoped>
+.gradient-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.hero-section {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+}
+</style>

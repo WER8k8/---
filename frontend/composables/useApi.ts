@@ -1,5 +1,6 @@
 import { ref, type Ref } from 'vue'
 import { useRuntimeConfig, navigateTo } from '#app'
+import { useCookie } from '#app'
 
 interface ApiState<T> {
   data: Ref<T | null>
@@ -16,11 +17,48 @@ interface RequestOptions {
   immediate?: boolean
 }
 
+let inMemoryToken: string | null = null
+
 function getAuthToken(): string | null {
   if (import.meta.client) {
-    return localStorage.getItem('admin_token')
+    // 优先从内存获取，减少localStorage访问
+    if (inMemoryToken) {
+      return inMemoryToken
+    }
+    const cookieToken = useCookie('admin_token').value
+    if (cookieToken) {
+      inMemoryToken = cookieToken
+      return cookieToken
+    }
+    // 兼容旧版本存储
+    const localStorageToken = localStorage.getItem('admin_token')
+    if (localStorageToken) {
+      inMemoryToken = localStorageToken
+      // 迁移到cookie
+      useCookie('admin_token').value = localStorageToken
+      localStorage.removeItem('admin_token')
+      return localStorageToken
+    }
   }
   return null
+}
+
+function setAuthToken(token: string | null): void {
+  inMemoryToken = token
+  if (import.meta.client) {
+    const adminTokenCookie = useCookie('admin_token', {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7天
+      path: '/',
+      httpOnly: false // Nuxt客户端无法设置httpOnly cookie
+    })
+    if (token) {
+      adminTokenCookie.value = token
+    } else {
+      adminTokenCookie.value = null
+    }
+  }
 }
 
 export function useApi() {
@@ -52,6 +90,10 @@ export function useApi() {
         allHeaders['Authorization'] = `Bearer ${token}`
       }
     }
+
+    // 添加安全头防止XSS
+    allHeaders['X-Content-Type-Options'] = 'nosniff'
+    allHeaders['X-Frame-Options'] = 'DENY'
 
     const fetchOptions: RequestInit = {
       method,
@@ -99,5 +141,5 @@ export function useApi() {
     return { data, loading, error, execute }
   }
 
-  return { request, useRequest }
+  return { request, useRequest, setAuthToken, getAuthToken }
 }

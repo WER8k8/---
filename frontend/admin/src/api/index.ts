@@ -78,11 +78,11 @@ export const seoAPI = {
 }
 
 export const contentAPI = {
-  list: (params?: Record<string, any>) => api.get('/content/', { params }),
-  get: (id: string) => api.get(`/content/${id}`),
-  create: (data: any) => api.post('/content/', data),
-  update: (id: string, data: any) => api.put(`/content/${id}`, data),
-  delete: (id: string) => api.delete(`/content/${id}`),
+  list: (params?: Record<string, any>) => api.get('/content/pages', { params }),
+  get: (id: string) => api.get(`/content/pages/${id}`),
+  create: (data: any) => api.post('/content/pages', data),
+  update: (id: string, data: any) => api.put(`/content/pages/${id}`, data),
+  delete: (id: string) => api.delete(`/content/pages/${id}`),
   aiGenerate: (data: any) => api.post('/content/ai/generate', data),
   aiPolish: (data: any) => api.post('/content/ai/polish', data),
 }
@@ -104,13 +104,17 @@ export const inquiriesAPI = {
 
 export const systemAPI = {
   login: (data: any) => api.post('/system/login', data),
-  users: (params?: Record<string, any>) => api.get('/system/users', { params }),
-  createUser: (data: any) => api.post('/system/users', data),
-  updateUser: (id: string, data: any) => api.put(`/system/users/${id}`, data),
-  deleteUser: (id: string) => api.delete(`/system/users/${id}`),
-  logs: (params?: Record<string, any>) => api.get('/system/logs', { params }),
-  aiConfig: () => api.get('/system/ai-config'),
-  updateAIConfig: (data: any) => api.put('/system/ai-config', data),
+  contact: (data: any) => api.post('/system/contact', data),
+  auditLogs: (params?: Record<string, any>) => api.get('/system/audit/logs', { params }),
+  deleteAuditLog: (id: string) => api.delete(`/system/audit/logs/${id}`),
+  clearAuditLogs: (params?: Record<string, any>) => api.delete('/system/audit/logs', { params }),
+}
+
+export const usersAPI = {
+  list: (params?: Record<string, any>) => api.get('/users', { params }),
+  create: (data: any) => api.post('/users', data),
+  update: (id: string, data: any) => api.put(`/users/${id}`, data),
+  delete: (id: string) => api.delete(`/users/${id}`),
 }
 
 export default api

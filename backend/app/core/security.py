@@ -13,7 +13,12 @@ from app.core.database import get_db
 from app.core.permissions import Role, ROLE_PERMISSIONS, has_permission
 from app.models.user import User
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__min_rounds=12,
+    bcrypt__default_rounds=14,
+)
 security_scheme = HTTPBearer(auto_error=False)
 
 

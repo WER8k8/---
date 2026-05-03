@@ -127,8 +127,15 @@
                   <input
                     v-model="form.name"
                     required
-                    class="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:border-secondary-500 focus:ring-2 focus:ring-secondary-500/20 transition-all"
+                    :class="['w-full px-4 py-3 bg-surface-elevated border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all', formErrors.name ? 'border-danger focus:border-danger focus:ring-danger/20' : 'border-border focus:border-secondary-500 focus:ring-secondary-500/20']"
+                    placeholder="请输入您的姓名"
                   >
+                  <p
+                    v-if="formErrors.name"
+                    class="text-danger text-xs mt-1"
+                  >
+                    {{ formErrors.name }}
+                  </p>
                 </div>
                 <div>
                   <label class="block text-sm font-semibold text-primary-900 mb-2">电话 <span class="text-danger">*</span></label>
@@ -136,8 +143,15 @@
                     v-model="form.phone"
                     required
                     type="tel"
-                    class="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:border-secondary-500 focus:ring-2 focus:ring-secondary-500/20 transition-all"
+                    :class="['w-full px-4 py-3 bg-surface-elevated border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all', formErrors.phone ? 'border-danger focus:border-danger focus:ring-danger/20' : 'border-border focus:border-secondary-500 focus:ring-secondary-500/20']"
+                    placeholder="请输入手机号码"
                   >
+                  <p
+                    v-if="formErrors.phone"
+                    class="text-danger text-xs mt-1"
+                  >
+                    {{ formErrors.phone }}
+                  </p>
                 </div>
               </div>
               <div>
@@ -145,8 +159,15 @@
                 <input
                   v-model="form.email"
                   type="email"
-                  class="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:border-secondary-500 focus:ring-2 focus:ring-secondary-500/20 transition-all"
+                  :class="['w-full px-4 py-3 bg-surface-elevated border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all', formErrors.email ? 'border-danger focus:border-danger focus:ring-danger/20' : 'border-border focus:border-secondary-500 focus:ring-secondary-500/20']"
+                  placeholder="example@email.com"
                 >
+                <p
+                  v-if="formErrors.email"
+                  class="text-danger text-xs mt-1"
+                >
+                  {{ formErrors.email }}
+                </p>
               </div>
               <div>
                 <label class="block text-sm font-semibold text-primary-900 mb-2">产品需求</label>
@@ -180,9 +201,18 @@
                   v-model="form.message"
                   required
                   rows="5"
-                  class="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:border-secondary-500 focus:ring-2 focus:ring-secondary-500/20 transition-all resize-none"
-                  placeholder="请描述您的需求和信息..."
+                  :class="['w-full px-4 py-3 bg-surface-elevated border rounded-xl text-primary-900 placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all resize-none', formErrors.message ? 'border-danger focus:border-danger focus:ring-danger/20' : 'border-border focus:border-secondary-500 focus:ring-secondary-500/20']"
+                  placeholder="请描述您的需求和信息（至少10个字符）..."
                 />
+                <p
+                  v-if="formErrors.message"
+                  class="text-danger text-xs mt-1"
+                >
+                  {{ formErrors.message }}
+                </p>
+                <p class="text-text-muted text-xs mt-1">
+                  {{ form.message.length }}/500
+                </p>
               </div>
               <button
                 type="submit"
@@ -290,14 +320,71 @@ const form = reactive({
   message: '',
 })
 
+const formErrors = reactive({
+  name: '',
+  phone: '',
+  email: '',
+  message: '',
+})
+
 const submitting = ref(false)
 const submitSuccess = ref(false)
 const submitError = ref('')
 
+function validateForm(): boolean {
+  let isValid = true
+  
+  // 重置错误
+  formErrors.name = ''
+  formErrors.phone = ''
+  formErrors.email = ''
+  formErrors.message = ''
+  
+  // 姓名验证
+  if (!form.name.trim()) {
+    formErrors.name = '请输入姓名'
+    isValid = false
+  } else if (form.name.trim().length < 2) {
+    formErrors.name = '姓名至少2个字符'
+    isValid = false
+  }
+  
+  // 电话验证
+  if (!form.phone.trim()) {
+    formErrors.phone = '请输入联系电话'
+    isValid = false
+  } else if (!/^1[3-9]\d{9}$/.test(form.phone)) {
+    formErrors.phone = '请输入有效的手机号码'
+    isValid = false
+  }
+  
+  // 邮箱验证（可选但格式要正确）
+  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    formErrors.email = '邮箱格式不正确'
+    isValid = false
+  }
+  
+  // 留言内容验证
+  if (!form.message.trim()) {
+    formErrors.message = '请输入留言内容'
+    isValid = false
+  } else if (form.message.trim().length < 10) {
+    formErrors.message = '留言内容至少10个字符'
+    isValid = false
+  }
+  
+  return isValid
+}
+
 async function handleSubmit() {
-  submitting.value = true
   submitSuccess.value = false
   submitError.value = ''
+  
+  if (!validateForm()) {
+    return
+  }
+  
+  submitting.value = true
   try {
     await request('/inquiries', { method: 'POST', body: { ...form } })
     submitSuccess.value = true
@@ -306,6 +393,10 @@ async function handleSubmit() {
     form.email = ''
     form.product = ''
     form.message = ''
+    // 3秒后隐藏成功消息
+    setTimeout(() => {
+      submitSuccess.value = false
+    }, 3000)
   } catch (e: any) {
     submitError.value = e.message || '提交失败，请稍后重试'
   } finally {

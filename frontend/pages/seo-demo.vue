@@ -14,19 +14,25 @@
             </h2>
             <div class="bg-gray-50 rounded-lg p-6 space-y-4">
               <div>
-                <h3 class="font-medium text-gray-700 mb-2">页面标题</h3>
+                <h3 class="font-medium text-gray-700 mb-2">
+                  页面标题
+                </h3>
                 <p class="text-sm text-gray-600">
                   {{ seoConfig.title }}
                 </p>
               </div>
               <div>
-                <h3 class="font-medium text-gray-700 mb-2">页面描述</h3>
+                <h3 class="font-medium text-gray-700 mb-2">
+                  页面描述
+                </h3>
                 <p class="text-sm text-gray-600">
                   {{ seoConfig.description }}
                 </p>
               </div>
               <div>
-                <h3 class="font-medium text-gray-700 mb-2">关键词</h3>
+                <h3 class="font-medium text-gray-700 mb-2">
+                  关键词
+                </h3>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="keyword in seoConfig.keywords"
@@ -48,13 +54,17 @@
             <div class="bg-gray-50 rounded-lg p-6 space-y-4">
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <h3 class="font-medium text-gray-700 mb-2">OG Type</h3>
+                  <h3 class="font-medium text-gray-700 mb-2">
+                    OG Type
+                  </h3>
                   <p class="text-sm text-gray-600">
                     {{ seoConfig.ogType }}
                   </p>
                 </div>
                 <div>
-                  <h3 class="font-medium text-gray-700 mb-2">OG Image</h3>
+                  <h3 class="font-medium text-gray-700 mb-2">
+                    OG Image
+                  </h3>
                   <p class="text-sm text-gray-600">
                     {{ seoConfig.ogImage || '使用默认图片' }}
                   </p>
@@ -71,13 +81,17 @@
             <div class="bg-gray-50 rounded-lg p-6 space-y-4">
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <h3 class="font-medium text-gray-700 mb-2">Card Type</h3>
+                  <h3 class="font-medium text-gray-700 mb-2">
+                    Card Type
+                  </h3>
                   <p class="text-sm text-gray-600">
                     {{ seoConfig.twitterCard }}
                   </p>
                 </div>
                 <div>
-                  <h3 class="font-medium text-gray-700 mb-2">Twitter Image</h3>
+                  <h3 class="font-medium text-gray-700 mb-2">
+                    Twitter Image
+                  </h3>
                   <p class="text-sm text-gray-600">
                     {{ seoConfig.twitterImage || '使用默认图片' }}
                   </p>

@@ -261,8 +261,8 @@ async function fetchLogs(page = 1) {
   loading.value = true
   logPagination.value.current = page
   try {
-    const res = await systemAPI.logs({ page, page_size: logPagination.value.pageSize })
-    logs.value = res.data.items || []
+    const res = await systemAPI.auditLogs({ page, page_size: logPagination.value.pageSize })
+    logs.value = res.data.data || []
     logPagination.value.total = res.data.total || 0
   } catch (e) {
     console.error('Failed to fetch logs:', e)

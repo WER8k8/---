@@ -1,283 +1,173 @@
 <template>
-  <div>
-    <section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-700">
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-secondary-400 rounded-full blur-3xl" />
-        <div class="absolute bottom-1/4 left-1/4 w-80 h-80 bg-accent-400 rounded-full blur-3xl" />
-      </div>
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
-        <NuxtLink
-          to="/products"
-          class="text-white/70 hover:text-white mb-4 inline-block flex items-center gap-1 transition-colors"
-        >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          返回产品列表
-        </NuxtLink>
-        <div class="max-w-4xl">
-          <span class="text-sm font-medium bg-white/10 text-white px-3 py-1 rounded-full">
-            {{ categoryName }}
-          </span>
-          <h1 class="text-3xl md:text-5xl font-bold text-white mt-4 mb-4">
-            {{ product?.name }}
-          </h1>
-          <p
-            v-if="product?.subtitle"
-            class="text-xl text-white/80"
-          >
-            {{ product.subtitle }}
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section
+  <div class="product-detail-page">
+    <div
       v-if="loading"
-      class="py-20 text-center"
+      class="loading-container"
     >
-      <div class="flex items-center justify-center">
-        <div class="w-8 h-8 border-2 border-secondary-500 border-t-transparent rounded-full animate-spin" />
-        <span class="ml-3 text-text-muted">加载中...</span>
-      </div>
-    </section>
+      <div class="loading-spinner" />
+      <p>加载中...</p>
+    </div>
+
+    <div
+      v-else-if="error"
+      class="error-container"
+    >
+      <h2>加载失败</h2>
+      <p>{{ error }}</p>
+      <NuxtLink
+        to="/products"
+        class="btn-primary"
+      >
+        返回产品列表
+      </NuxtLink>
+    </div>
 
     <template v-else-if="product">
-      <section class="py-12 bg-gradient-to-b from-surface-elevated to-surface">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            <div
-              v-if="product.density"
-              class="bg-white rounded-xl p-4 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                密度等级
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ product.density }}
-              </div>
-            </div>
-            <div
-              v-if="product.strength"
-              class="bg-white rounded-xl p-4 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                强度等级
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ product.strength }}
-              </div>
-            </div>
-            <div
-              v-if="product.thermal_conductivity"
-              class="bg-white rounded-xl p-4 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                导热系数
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ product.thermal_conductivity }}
-              </div>
-            </div>
-            <div
-              v-if="product.fire_rating"
-              class="bg-white rounded-xl p-4 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                防火等级
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ product.fire_rating }}
-              </div>
-            </div>
-            <div
-              v-if="product.unit_weight"
-              class="bg-white rounded-xl p-4 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                单位重量
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ product.unit_weight }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="py-16 bg-surface">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div class="lg:col-span-2 space-y-12">
-              <div v-if="product.description">
-                <div class="inline-flex items-center px-3 py-1.5 bg-secondary-50 rounded-full mb-4">
-                  <span class="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2" />
-                  <span class="text-sm font-medium text-secondary-600">产品介绍</span>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-                  关于 {{ product.name }}
-                </h2>
-                <div
-                  class="bg-white rounded-2xl p-8 border border-border"
-                  v-html="renderMarkdown(product.description)"
-                />
-              </div>
-
-              <div v-if="product.technical_params">
-                <div class="inline-flex items-center px-3 py-1.5 bg-accent-50 rounded-full mb-4">
-                  <span class="w-1.5 h-1.5 bg-accent-500 rounded-full mr-2" />
-                  <span class="text-sm font-medium text-accent-600">技术参数</span>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-                  详细技术规格
-                </h2>
-                <div class="bg-white rounded-2xl border border-border overflow-hidden">
-                  <table class="w-full">
-                    <thead>
-                      <tr class="bg-surface-elevated">
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-primary-900">
-                          参数名称
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-primary-900">
-                          参数值
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(param, idx) in parseParams(product.technical_params)"
-                        :key="idx"
-                        class="border-b border-border last:border-0 hover:bg-surface-hover/50 transition-colors"
-                      >
-                        <td class="px-6 py-4 text-text-secondary font-medium w-1/3">
-                          {{ param.label }}
-                        </td>
-                        <td class="px-6 py-4 text-primary-900">
-                          {{ param.value }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div v-if="product.application_scenarios">
-                <div class="inline-flex items-center px-3 py-1.5 bg-warm-50 rounded-full mb-4">
-                  <span class="w-1.5 h-1.5 bg-warm-500 rounded-full mr-2" />
-                  <span class="text-sm font-medium text-warm-600">应用场景</span>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-                  适用场景
-                </h2>
-                <div
-                  class="bg-white rounded-2xl p-8 border border-border"
-                  v-html="renderMarkdown(product.application_scenarios)"
-                />
-              </div>
-
-              <div v-if="product.advantages">
-                <div class="inline-flex items-center px-3 py-1.5 bg-secondary-50 rounded-full mb-4">
-                  <span class="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2" />
-                  <span class="text-sm font-medium text-secondary-600">产品优势</span>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-                  核心优势
-                </h2>
-                <div
-                  class="bg-white rounded-2xl p-8 border border-border"
-                  v-html="renderMarkdown(product.advantages)"
-                />
-              </div>
-
-              <div
-                v-if="documents.length"
-                class="bg-gradient-to-r from-secondary-50 to-accent-50 rounded-2xl p-6 border border-secondary-100"
+      <!-- Breadcrumb -->
+      <AnimatedSection
+        animation="fade-in"
+        :delay="0"
+      >
+        <nav class="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <ol class="flex items-center space-x-2 text-sm text-text-secondary">
+            <li>
+              <NuxtLink
+                to="/"
+                class="hover:text-primary transition-colors"
               >
-                <h2 class="text-xl font-bold text-primary-900 mb-4 flex items-center gap-2">
-                  <svg
-                    class="w-5 h-5 text-secondary-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    />
-                  </svg>
-                  相关下载
-                </h2>
-                <div class="space-y-3">
-                  <a
-                    v-for="doc in documents"
-                    :key="doc.id"
-                    :href="doc.file_path"
-                    target="_blank"
-                    class="flex items-center justify-between bg-white rounded-xl px-5 py-4 hover:bg-surface-hover transition-colors border border-border group"
-                  >
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 bg-gradient-to-br from-secondary-50 to-accent-50 rounded-lg flex items-center justify-center">
-                        <span class="text-lg">{{ docTypeIcon(doc.doc_type) }}</span>
-                      </div>
-                      <div>
-                        <p class="text-sm font-medium text-primary-900">{{ doc.file_name }}</p>
-                        <p class="text-xs text-text-muted">{{ docTypeLabel(doc.doc_type) }}</p>
-                      </div>
-                    </div>
-                    <span class="text-secondary-600 text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      下载
-                      <svg
-                        class="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                        />
-                      </svg>
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
+                首页
+              </NuxtLink>
+            </li>
+            <li><span class="mx-2">/</span></li>
+            <li>
+              <NuxtLink
+                to="/products"
+                class="hover:text-primary transition-colors"
+              >
+                产品中心
+              </NuxtLink>
+            </li>
+            <li><span class="mx-2">/</span></li>
+            <li class="text-text-primary font-medium">
+              {{ product.name }}
+            </li>
+          </ol>
+        </nav>
+      </AnimatedSection>
 
-            <div class="space-y-6">
-              <div class="bg-white rounded-2xl p-6 border border-border shadow-card sticky top-24">
-                <h3 class="text-lg font-semibold text-primary-900 mb-4">
-                  产品咨询
-                </h3>
-                <p class="text-sm text-text-secondary mb-6">
-                  对该产品感兴趣？我们的技术团队为您提供详细参数和报价
+      <!-- Hero Section -->
+      <section class="product-hero bg-gradient-to-br from-primary/5 via-surface to-accent/5 py-12 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <!-- Product Image -->
+            <AnimatedSection
+              animation="slide-right"
+              :delay="100"
+            >
+              <div class="product-image-container rounded-2xl overflow-hidden shadow-card bg-surface-elevated">
+                <img 
+                  :src="product.image_url || '/images/product-default.jpg'" 
+                  :alt="product.name"
+                  class="w-full h-64 md:h-96 object-cover"
+                  loading="lazy"
+                >
+              </div>
+            </AnimatedSection>
+
+            <!-- Product Info -->
+            <AnimatedSection
+              animation="slide-left"
+              :delay="200"
+            >
+              <div class="product-info">
+                <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+                  {{ product.name }}
+                </h1>
+                <p
+                  v-if="product.subtitle"
+                  class="text-xl text-primary font-medium mb-6"
+                >
+                  {{ product.subtitle }}
                 </p>
-                <div class="space-y-3">
+                <p class="text-text-secondary leading-relaxed mb-8">
+                  {{ product.description }}
+                </p>
+
+                <!-- Quick Specs -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                  <div
+                    v-if="product.density"
+                    class="spec-item p-4 bg-surface-elevated rounded-xl"
+                  >
+                    <div class="text-sm text-text-secondary mb-1">
+                      密度
+                    </div>
+                    <div class="text-lg font-semibold text-text-primary">
+                      {{ product.density }}
+                    </div>
+                  </div>
+                  <div
+                    v-if="product.strength"
+                    class="spec-item p-4 bg-surface-elevated rounded-xl"
+                  >
+                    <div class="text-sm text-text-secondary mb-1">
+                      强度
+                    </div>
+                    <div class="text-lg font-semibold text-text-primary">
+                      {{ product.strength }}
+                    </div>
+                  </div>
+                  <div
+                    v-if="product.thermal_conductivity"
+                    class="spec-item p-4 bg-surface-elevated rounded-xl"
+                  >
+                    <div class="text-sm text-text-secondary mb-1">
+                      导热系数
+                    </div>
+                    <div class="text-lg font-semibold text-text-primary">
+                      {{ product.thermal_conductivity }}
+                    </div>
+                  </div>
+                  <div
+                    v-if="product.fire_rating"
+                    class="spec-item p-4 bg-surface-elevated rounded-xl"
+                  >
+                    <div class="text-sm text-text-secondary mb-1">
+                      防火等级
+                    </div>
+                    <div class="text-lg font-semibold text-text-primary">
+                      {{ product.fire_rating }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap gap-4">
                   <NuxtLink
                     to="/contact"
-                    class="inline-flex items-center justify-center w-full px-6 py-4 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white font-semibold rounded-xl hover:from-secondary-600 hover:to-secondary-700 transition-all shadow-lg shadow-secondary-200"
+                    class="btn-primary btn-primary-lg group"
                   >
+                    <svg
+                      class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
                     立即咨询
                   </NuxtLink>
                   <a
-                    href="tel:400-888-8888"
-                    class="flex items-center justify-center w-full px-6 py-4 bg-secondary-50 text-secondary-600 font-medium rounded-xl hover:bg-secondary-100 transition-colors"
+                    :href="`tel:${contactPhone}`"
+                    class="btn-outline group"
                   >
                     <svg
-                      class="w-4 h-4 mr-2"
+                      class="w-5 h-5 mr-2 group-hover:animate-pulse"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -289,236 +179,304 @@
                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                       />
                     </svg>
-                    拨打 400-888-8888
+                    电话咨询
                   </a>
                 </div>
-                <div class="mt-6 pt-6 border-t border-border">
-                  <h4 class="text-sm font-semibold text-primary-900 mb-3">
-                    其他产品
-                  </h4>
-                  <div class="space-y-2">
-                    <NuxtLink
-                      v-for="other in otherProducts"
-                      :key="other.id"
-                      :to="'/products/' + other.slug"
-                      class="block text-sm text-text-secondary hover:text-secondary-600 transition-colors py-1"
-                    >
-                      {{ other.name }}
-                    </NuxtLink>
-                  </div>
+              </div>
+            </AnimatedSection>
+          </div>
+        </div>
+      </section>
+
+      <!-- Technical Parameters -->
+      <section
+        class="py-16 bg-surface-elevated"
+        v-if="product.technical_params"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-12">
+              技术参数
+            </h2>
+          </AnimatedSection>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="100"
+          >
+            <div class="bg-surface rounded-2xl shadow-card p-6 md:p-8">
+              <pre class="whitespace-pre-wrap text-text-secondary leading-relaxed font-sans">{{ product.technical_params }}</pre>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <!-- Application Scenarios -->
+      <section
+        class="py-16"
+        v-if="product.application_scenarios"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-12">
+              应用场景
+            </h2>
+          </AnimatedSection>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="100"
+          >
+            <div class="bg-surface-elevated rounded-2xl shadow-card p-6 md:p-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div 
+                  v-for="(scenario, index) in parseScenarios(product.application_scenarios)" 
+                  :key="index"
+                  class="scenario-item p-4 bg-surface rounded-xl flex items-center space-x-3 hover:shadow-soft transition-all duration-300"
+                >
+                  <svg
+                    class="w-5 h-5 text-primary flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-text-primary">{{ scenario }}</span>
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
+      <!-- Advantages -->
       <section
-        v-if="product.specifications"
-        class="py-16 bg-gradient-to-b from-surface to-surface-elevated"
+        class="py-16 bg-gradient-to-br from-primary/5 via-surface-elevated to-accent/5"
+        v-if="product.advantages"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="inline-flex items-center px-3 py-1.5 bg-accent-50 rounded-full mb-4">
-            <span class="w-1.5 h-1.5 bg-accent-500 rounded-full mr-2" />
-            <span class="text-sm font-medium text-accent-600">规格型号</span>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-12">
+              产品优势
+            </h2>
+          </AnimatedSection>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <AnimatedSection 
+              v-for="(advantage, index) in parseAdvantages(product.advantages)" 
+              :key="index"
+              animation="fade-in-up"
+              :delay="index * 100"
+            >
+              <div class="advantage-card p-6 bg-surface rounded-2xl shadow-card text-center hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300">
+                <div class="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl flex items-center justify-center">
+                  <svg
+                    class="w-6 h-6 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                    />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-text-primary">
+                  {{ advantage }}
+                </h3>
+              </div>
+            </AnimatedSection>
           </div>
-          <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-            产品规格
-          </h2>
-          <div
-            class="bg-white rounded-2xl p-8 border border-border"
-            v-html="renderMarkdown(product.specifications)"
-          />
         </div>
       </section>
 
-      <section class="py-16 bg-gradient-to-r from-secondary-600 via-secondary-500 to-accent-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="text-3xl font-bold text-white mb-4">
-            需要定制化解决方案？
-          </h2>
-          <p class="text-white/80 mb-8 max-w-2xl mx-auto">
-            我们的技术团队拥有丰富的行业经验，可以根据您的具体工程需求提供最优产品方案
-          </p>
-          <div class="flex flex-wrap justify-center gap-4">
-            <NuxtLink
-              to="/contact"
-              class="inline-flex items-center px-8 py-4 bg-white text-secondary-600 font-semibold rounded-xl hover:bg-gray-100 transition-all shadow-lg"
-            >
-              免费获取方案
-            </NuxtLink>
-            <a
-              href="tel:400-888-8888"
-              class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-all"
-            >
-              拨打 400-888-8888
-            </a>
-          </div>
+      <!-- CTA Section -->
+      <section class="py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <div class="bg-gradient-to-r from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-float" />
+              <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 animate-float-delayed" />
+              <div class="relative">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">
+                  需要更多产品信息？
+                </h2>
+                <p class="text-lg text-white/80 mb-8">
+                  专业工程师为您提供产品选型和技术支持
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                  <NuxtLink
+                    to="/contact"
+                    class="inline-flex items-center px-8 py-4 bg-white text-primary font-semibold rounded-xl hover:bg-gray-100 transition-all duration-300"
+                  >
+                    在线留言
+                  </NuxtLink>
+                  <a
+                    :href="`tel:${contactPhone}`"
+                    class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300"
+                  >
+                    电话咨询：{{ contactPhone }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
     </template>
-
-    <section
-      v-else
-      class="py-20 text-center bg-surface"
-    >
-      <div class="w-20 h-20 bg-surface-elevated rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg
-          class="w-10 h-10 text-text-muted"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </div>
-      <p class="text-text-muted text-lg">
-        产品不存在或已下架
-      </p>
-      <NuxtLink
-        to="/products"
-        class="mt-4 inline-flex items-center text-secondary-600 font-medium hover:text-secondary-700"
-      >
-        <svg
-          class="w-4 h-4 mr-1"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        返回产品列表
-      </NuxtLink>
-    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-
-interface ProductDocument {
-  id: string
-  file_name: string
-  file_path: string
-  doc_type: string
-  file_size: number
-}
+import { useProductStore } from '~/stores/product'
+import { SITE_CONFIG } from '~/config/site'
 
 const route = useRoute()
-const loading = ref(false)
-const product = ref<any>(null)
-const documents = ref<ProductDocument[]>([])
+const productStore = useProductStore()
 
-const slug = computed(() => route.params.slug as string)
+const { slug } = route.params as { slug: string }
 
-const categoryName = computed(() => {
-  if (!product.value) return ''
-  return '产品分类'
-})
+await productStore.fetchProductBySlug(slug)
 
-const otherProducts = computed(() => [])
+const product = computed(() => productStore.currentProduct)
+const loading = computed(() => productStore.loading)
+const error = computed(() => productStore.error)
 
-function docTypeIcon(type: string): string {
-  const map: Record<string, string> = {
-    pdf: '📄', cad: '📐', report: '🔬', certificate: '🏆', other: '📎'
-  }
-  return map[type] || '📎'
-}
+const contactPhone = SITE_CONFIG.phone
 
-function docTypeLabel(type: string): string {
-  const map: Record<string, string> = {
-    pdf: 'PDF文档', cad: 'CAD图纸', report: '检测报告', certificate: '资质证书', other: '其他文件'
-  }
-  return map[type] || '其他文件'
-}
-
-function parseParams(text: string | null): Array<{ label: string; value: string }> {
-  if (!text) return []
-  try {
-    const parsed = JSON.parse(text)
-    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
-      return Object.entries(parsed).map(([key, val]) => ({ label: key, value: String(val) }))
-    }
-  } catch {}
-  return text.split('\n').filter(Boolean).map(line => {
-    const sep = line.includes('：') ? '：' : line.includes(':') ? ':' : '|'
-    const idx = line.indexOf(sep)
-    if (idx > 0) return { label: line.slice(0, idx).trim(), value: line.slice(idx + 1).trim() }
-    return { label: '', value: line }
-  })
-}
-
-function renderMarkdown(text: string | null): string {
-  if (!text) return ''
-  let html = text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-  html = html.replace(/### (.+)/g, '<h3 class="text-xl font-semibold text-text-primary mt-6 mb-3">$1</h3>')
-  html = html.replace(/## (.+)/g, '<h2 class="text-2xl font-bold text-text-primary mt-8 mb-4">$1</h2>')
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-  html = html.replace(/\n\s*[-•]\s+(.+)/g, '<li class="text-text-secondary ml-4">$1</li>')
-  html = html.replace(/(<li.+<\/li>)/g, '<ul class="list-disc space-y-1 mb-4">$1</ul>')
-  html = html.replace(/\n\n/g, '</p><p class="text-text-secondary leading-relaxed mb-4">')
-  html = '<p class="text-text-secondary leading-relaxed mb-4">' + html + '</p>'
-  html = html.replace(/<p class="[^"]*"><\/p>/g, '')
-  return html
-}
-
-async function fetchProduct() {
-  loading.value = true
-  try {
-    const res = await fetch(`/api/v1/products/by-slug/${slug.value}`)
-    if (res.ok) {
-      product.value = await res.json()
-      await fetchDocuments()
-    }
-  } catch (e) {
-    console.error(e)
-  } finally {
-    loading.value = false
-  }
-}
-
-async function fetchDocuments() {
-  if (!product.value) return
-  try {
-    const res = await fetch(`/api/v1/products/${product.value.id}/documents`)
-    if (res.ok) {
-      documents.value = await res.json()
-    }
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-onMounted(fetchProduct)
-
-watchEffect(() => {
-  if (product.value) {
-    const metaTitle = product.value.meta_title || `${product.value.name} - 优丁保温材料厂家`
-    const metaDesc = product.value.meta_description
-      || product.value.subtitle
-      || (product.value.description ? product.value.description.replace(/<[^>]+>/g, '').slice(0, 160) : '')
-      || `${product.value.name}技术参数、应用场景和产品优势`
-    useHead({
-      title: metaTitle,
-      meta: [
-        { name: 'description', content: metaDesc },
-        { name: 'keywords', content: `${product.value.name},保温材料,${product.value.category_id || ''}` },
-      ],
+useHead({
+  title: computed(() => product.value ? `${product.value.name} - ${product.value.subtitle || ''} | 优丁建材` : '产品详情 | 优丁建材'),
+  meta: [
+    { name: 'description', content: computed(() => product.value?.meta_description || product.value?.description || '') },
+    { property: 'og:title', content: computed(() => product.value?.name || '') },
+    { property: 'og:description', content: computed(() => product.value?.description || '') },
+    { property: 'og:type', content: 'product' },
+    { property: 'og:url', content: computed(() => `https://www.youdingjiancai.com/products/${slug}`) },
+    { property: 'og:image', content: computed(() => product.value?.image_url || 'https://www.youdingjiancai.com/images/og-default.jpg') },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: computed(() => product.value?.name || '') },
+    { name: 'twitter:description', content: computed(() => product.value?.description || '') }
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.youdingjiancai.com/products/${slug}` }
+  ],
+  script: computed(() => product.value ? [{
+    type: 'application/ld+json',
+    children: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.value.name,
+      description: product.value.description || '',
+      image: product.value.image_url || 'https://www.youdingjiancai.com/images/product-default.jpg',
+      brand: {
+        '@type': 'Brand',
+        name: '优丁建材'
+      },
+      offers: {
+        '@type': 'Offer',
+        url: `https://www.youdingjiancai.com/products/${slug}`,
+        priceCurrency: 'CNY',
+        availability: 'https://schema.org/InStock',
+        seller: {
+          '@type': 'Organization',
+          name: '优丁建材有限公司'
+        }
+      },
+      additionalProperty: [
+        product.value.density && { '@type': 'PropertyValue', name: '密度', value: product.value.density },
+        product.value.strength && { '@type': 'PropertyValue', name: '强度', value: product.value.strength },
+        product.value.thermal_conductivity && { '@type': 'PropertyValue', name: '导热系数', value: product.value.thermal_conductivity },
+        product.value.fire_rating && { '@type': 'PropertyValue', name: '防火等级', value: product.value.fire_rating }
+      ].filter(Boolean)
     })
-  }
+  }] : [])
 })
+
+const parseScenarios = (text: string | null): string[] => {
+  if (!text) return []
+  return text.split('\n').filter(s => s.trim()).map(s => s.replace(/^[-•]\s*/, '').trim())
+}
+
+const parseAdvantages = (text: string | null): string[] => {
+  if (!text) return []
+  return text.split('\n').filter(s => s.trim()).map(s => s.replace(/^[-•]\s*/, '').trim())
+}
 </script>
+
+<style scoped>
+.loading-container {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(102, 126, 234, 0.2);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-container {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.error-container h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ef4444;
+  margin-bottom: 0.5rem;
+}
+
+.error-container p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+</style>

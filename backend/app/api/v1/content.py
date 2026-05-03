@@ -1,12 +1,16 @@
 import os
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Body
+import re
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Body, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
+from pydantic import BaseModel, Field
+from typing import List, Optional
 from app.core.database import get_db
 from app.core.security import require_admin
-from app.models.content import ContentPage, SeoMetadata
-from app.schemas.content import ContentPageCreate, ContentPageUpdate, ContentPageResponse, SeoMetadataCreate, SeoMetadataUpdate, SeoMetadataResponse
+from app.models.content import ContentPage, SeoMetadata, ContentVersion
+from app.schemas.content import ContentPageCreate, ContentPageUpdate, ContentPageResponse, SeoMetadataCreate, SeoMetadataUpdate, SeoMetadataResponse, ContentVersionCreate, ContentVersionResponse, ContentRollbackRequest
 
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -15,19 +19,34 @@ router = APIRouter()
 
 @router.post("/upload")
 async def upload_image(file: UploadFile = File(...), admin = Depends(require_admin)):
-    if file.content_type not in ("image/jpeg", "image/png", "image/gif", "image/webp"):
-        raise HTTPException(status_code=400, detail="仅支持 JPG/PNG/GIF/WebP 格式")
-    ext = file.filename.rsplit(".", 1)[-1] if "." in file.filename else "jpg"
+    ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp"}
+    ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+    
+    if not file.filename or "." not in file.filename:
+        raise HTTPException(status_code=400, detail="无效的文件名")
+    
+    ext = file.filename.rsplit(".", 1)[-1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"不支持的图片格式: .{ext}，仅支持 {', '.join(ALLOWED_EXTENSIONS)}")
+    
+    if file.content_type and file.content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(status_code=400, detail=f"不允许的文件类型: {file.content_type}")
+    
     filename = f"{uuid.uuid4().hex}.{ext}"
     filepath = os.path.join(UPLOAD_DIR, filename)
     content = await file.read()
+    
     if len(content) > 5 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="文件大小不能超过 5MB")
+    
+    if len(content) == 0:
+        raise HTTPException(status_code=400, detail="文件内容为空")
+    
     with open(filepath, "wb") as f:
         f.write(content)
+    
     return {"url": f"/uploads/{filename}", "filename": filename}
 
-@router.get("/")
 @router.get("/pages")
 def list_pages(
     page_type: str = None, 
@@ -50,7 +69,6 @@ def list_pages(
     
     return {"items": [ContentPageResponse.model_validate(page.__dict__) for page in items], "total": total}
 
-@router.get("/{page_id}", response_model=ContentPageResponse)
 @router.get("/pages/{page_id}", response_model=ContentPageResponse)
 def get_page(page_id: str, db: Session = Depends(get_db)):
     page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
@@ -67,7 +85,6 @@ def get_page_by_slug(slug: str, db: Session = Depends(get_db)):
     db.commit()
     return page
 
-@router.post("/", response_model=ContentPageResponse)
 @router.post("/pages", response_model=ContentPageResponse)
 def create_page(req: ContentPageCreate, db: Session = Depends(get_db), admin = Depends(require_admin)):
     page = ContentPage(**req.model_dump())
@@ -76,7 +93,6 @@ def create_page(req: ContentPageCreate, db: Session = Depends(get_db), admin = D
     db.refresh(page)
     return page
 
-@router.put("/{page_id}", response_model=ContentPageResponse)
 @router.put("/pages/{page_id}", response_model=ContentPageResponse)
 def update_page(page_id: str, req: ContentPageUpdate, db: Session = Depends(get_db), admin = Depends(require_admin)):
     page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
@@ -88,7 +104,6 @@ def update_page(page_id: str, req: ContentPageUpdate, db: Session = Depends(get_
     db.refresh(page)
     return page
 
-@router.delete("/{page_id}")
 @router.delete("/pages/{page_id}")
 def delete_page(page_id: str, db: Session = Depends(get_db), admin = Depends(require_admin)):
     page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
@@ -386,4 +401,196 @@ async def ai_polish_content(
         "mock": result.get("mock", False),
         "token_usage": result.get("token_usage", 0),
         "cost": result.get("cost", 0)
+    }
+
+
+# ============= 版本控制API =============
+
+@router.post("/pages/{page_id}/versions", response_model=ContentVersionResponse)
+def create_page_version(page_id: str, req: ContentVersionCreate = None, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
+    if not page:
+        raise HTTPException(status_code=404, detail="页面不存在")
+    
+    max_version = db.query(ContentVersion).filter(ContentVersion.page_id == page_id).count()
+    new_version_number = max_version + 1
+    
+    version = ContentVersion(
+        page_id=page_id,
+        version_number=new_version_number,
+        title=page.title,
+        content=page.content,
+        summary=page.summary,
+        change_log=req.change_log if req else f"版本 {new_version_number}",
+        author_id=page.author_id
+    )
+    db.add(version)
+    db.commit()
+    db.refresh(version)
+    return version
+
+
+@router.get("/pages/{page_id}/versions", response_model=list[ContentVersionResponse])
+def list_page_versions(page_id: str, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
+    if not page:
+        raise HTTPException(status_code=404, detail="页面不存在")
+    
+    return db.query(ContentVersion).filter(
+        ContentVersion.page_id == page_id
+    ).order_by(ContentVersion.version_number.desc()).all()
+
+
+@router.get("/pages/{page_id}/versions/{version_id}", response_model=ContentVersionResponse)
+def get_page_version(page_id: str, version_id: str, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    version = db.query(ContentVersion).filter(
+        ContentVersion.id == version_id,
+        ContentVersion.page_id == page_id
+    ).first()
+    if not version:
+        raise HTTPException(status_code=404, detail="版本不存在")
+    return version
+
+
+@router.post("/pages/{page_id}/rollback")
+def rollback_to_version(page_id: str, req: ContentRollbackRequest, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    page = db.query(ContentPage).filter(ContentPage.id == page_id).first()
+    if not page:
+        raise HTTPException(status_code=404, detail="页面不存在")
+    
+    version = db.query(ContentVersion).filter(
+        ContentVersion.id == req.version_id,
+        ContentVersion.page_id == page_id
+    ).first()
+    if not version:
+        raise HTTPException(status_code=404, detail="版本不存在")
+    
+    page.title = version.title
+    page.content = version.content
+    page.summary = version.summary
+    db.commit()
+    db.refresh(page)
+    
+    return {"message": f"已回滚到版本 {version.version_number}", "page": ContentPageResponse.model_validate(page.__dict__)}
+
+
+# ============= 批量操作API =============
+
+class BatchDeleteRequest(BaseModel):
+    ids: List[str] = Field(..., min_items=1, max_items=100)
+
+class BatchUpdateStatusRequest(BaseModel):
+    ids: List[str] = Field(..., min_items=1, max_items=100)
+    status: str = Field(..., pattern="^(published|draft)$")
+
+class BatchPublishRequest(BaseModel):
+    ids: List[str] = Field(..., min_items=1, max_items=100)
+
+def sanitize_html(content: str) -> str:
+    """清理HTML内容，防止XSS攻击"""
+    dangerous_patterns = [
+        r'<script[^>]*>.*?</script>',
+        r'javascript:',
+        r'on\w+\s*=',
+        r'<iframe[^>]*>.*?</iframe>',
+        r'<object[^>]*>.*?</object>',
+        r'<embed[^>]*>.*?</embed>',
+        r'<form[^>]*>.*?</form>',
+    ]
+    for pattern in dangerous_patterns:
+        content = re.sub(pattern, '', content, flags=re.IGNORECASE | re.DOTALL)
+    return content
+
+@router.post("/pages/batch-delete")
+def batch_delete_pages(req: BatchDeleteRequest, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    pages = db.query(ContentPage).filter(ContentPage.id.in_(req.ids)).all()
+    if not pages:
+        raise HTTPException(status_code=404, detail="未找到指定页面")
+    
+    for page in pages:
+        db.delete(page)
+    
+    db.commit()
+    return {"message": f"成功删除 {len(pages)} 个页面", "deleted_count": len(pages)}
+
+@router.post("/pages/batch-update-status")
+def batch_update_status(req: BatchUpdateStatusRequest, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    pages = db.query(ContentPage).filter(ContentPage.id.in_(req.ids)).all()
+    if not pages:
+        raise HTTPException(status_code=404, detail="未找到指定页面")
+    
+    for page in pages:
+        page.status = req.status
+    
+    db.commit()
+    return {"message": f"成功更新 {len(pages)} 个页面状态", "updated_count": len(pages)}
+
+@router.post("/pages/batch-publish")
+def batch_publish_pages(req: BatchPublishRequest, db: Session = Depends(get_db), admin = Depends(require_admin)):
+    from datetime import datetime, timezone
+    
+    pages = db.query(ContentPage).filter(ContentPage.id.in_(req.ids)).all()
+    if not pages:
+        raise HTTPException(status_code=404, detail="未找到指定页面")
+    
+    now = datetime.now(timezone.utc)
+    for page in pages:
+        page.status = "published"
+        page.published_at = now
+    
+    db.commit()
+    return {"message": f"成功发布 {len(pages)} 个页面", "published_count": len(pages)}
+
+@router.get("/pages/export")
+def export_pages(
+    page_type: Optional[str] = Query(None),
+    status: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    admin = Depends(require_admin)
+):
+    q = db.query(ContentPage).filter(ContentPage.is_active == True)
+    if page_type:
+        q = q.filter(ContentPage.page_type == page_type)
+    if status:
+        q = q.filter(ContentPage.status == status)
+    
+    pages = q.order_by(ContentPage.created_at.desc()).all()
+    
+    export_data = []
+    for page in pages:
+        export_data.append({
+            "id": page.id,
+            "title": page.title,
+            "slug": page.slug,
+            "content": page.content,
+            "summary": page.summary,
+            "page_type": page.page_type,
+            "status": page.status,
+            "view_count": page.view_count,
+            "created_at": page.created_at.isoformat() if page.created_at else None,
+            "published_at": page.published_at.isoformat() if page.published_at else None,
+        })
+    
+    return {"total": len(export_data), "data": export_data}
+
+@router.get("/stats")
+def get_content_stats(db: Session = Depends(get_db)):
+    total_pages = db.query(ContentPage).filter(ContentPage.is_active == True).count()
+    published_pages = db.query(ContentPage).filter(ContentPage.status == "published", ContentPage.is_active == True).count()
+    draft_pages = db.query(ContentPage).filter(ContentPage.status == "draft", ContentPage.is_active == True).count()
+    total_versions = db.query(ContentVersion).count()
+    
+    page_type_stats = db.query(
+        ContentPage.page_type,
+        db.func.count(ContentPage.id).label('count')
+    ).filter(ContentPage.is_active == True).group_by(ContentPage.page_type).all()
+    
+    page_type_dict = {pt: count for pt, count in page_type_stats}
+    
+    return {
+        "total_pages": total_pages,
+        "published_pages": published_pages,
+        "draft_pages": draft_pages,
+        "total_versions": total_versions,
+        "page_type_stats": page_type_dict
     }

@@ -23,7 +23,7 @@ def get_performance_metrics(
 
 
 @router.get("/health", summary="系统健康检查")
-def get_system_health(token: str = Depends(require_admin)):
+def get_system_health():
     """获取系统健康状态"""
     return performance_monitor.get_system_health()
 
@@ -49,7 +49,7 @@ def run_security_audit(
     config = {
         'rbac_enabled': True,
         'cors_origins': settings.CORS_ORIGINS,
-        'jwt_secret': settings.JWT_SECRET_KEY,
+        'jwt_secret_length': len(settings.JWT_SECRET_KEY) if settings.JWT_SECRET_KEY else 0,
         'https_enabled': not settings.DEBUG,
         'orm_enabled': True,
         'input_validation_enabled': True,

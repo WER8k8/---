@@ -41,7 +41,7 @@ const loadTime = ref(0)
 
 let frameCount = 0
 let lastTime = performance.now()
-let fpsInterval: NodeJS.Timeout | null = null
+let fpsInterval: ReturnType<typeof setInterval> | null = null
 
 // Calculate FPS
 const calculateFPS = () => {

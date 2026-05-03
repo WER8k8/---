@@ -4,6 +4,13 @@ from app.schemas.content import ContentPageCreate, ContentPageUpdate, ContentPag
 from app.schemas.seo import KeywordCreate, KeywordUpdate, KeywordResponse, SiteAuditCreate, SiteAuditResponse, KeywordRankingResponse, AiOptimizationLogResponse, LlmsConfigCreate, LlmsConfigUpdate, LlmsConfigResponse
 from app.schemas.inquiry import InquiryCreate, InquiryUpdate, InquiryResponse
 from app.schemas.case_study import CaseStudyCreate, CaseStudyUpdate, CaseStudyResponse, CaseImageCreate, CaseImageUpdate, CaseImageResponse
+from app.schemas.ab_test import (
+    ABTestCreate, ABTestUpdate, ABTestResponse,
+    ABTestVariantCreate, ABTestVariantUpdate, ABTestVariantResponse,
+    ABTestEventCreate, ABTestEventResponse,
+    ABTestConversionCreate, ABTestConversionResponse,
+    ABTestVariantsConfig, ABTestVariantConfig
+)
 
 __all__ = [
     "UserCreate", "UserUpdate", "UserResponse", "TokenResponse", "LoginRequest",
@@ -19,4 +26,9 @@ __all__ = [
     "InquiryCreate", "InquiryUpdate", "InquiryResponse",
     "CaseStudyCreate", "CaseStudyUpdate", "CaseStudyResponse",
     "CaseImageCreate", "CaseImageUpdate", "CaseImageResponse",
+    "ABTestCreate", "ABTestUpdate", "ABTestResponse",
+    "ABTestVariantCreate", "ABTestVariantUpdate", "ABTestVariantResponse",
+    "ABTestEventCreate", "ABTestEventResponse",
+    "ABTestConversionCreate", "ABTestConversionResponse",
+    "ABTestVariantsConfig", "ABTestVariantConfig",
 ]

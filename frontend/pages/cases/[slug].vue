@@ -1,279 +1,226 @@
 <template>
-  <div>
-    <section
-      v-if="loading"
-      class="py-20 text-center"
-    >
-      <div class="flex items-center justify-center">
-        <div class="w-8 h-8 border-2 border-secondary-500 border-t-transparent rounded-full animate-spin" />
-        <span class="ml-3 text-text-muted">加载中...</span>
-      </div>
-    </section>
+  <div class="case-detail-page">
+    <!-- Loading State -->
+    <div v-if="loading" class="min-h-screen flex items-center justify-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-500"></div>
+    </div>
 
-    <template v-else-if="caseItem">
-      <section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-700">
-        <div class="absolute inset-0 opacity-10">
-          <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-secondary-400 rounded-full blur-3xl" />
-          <div class="absolute bottom-1/4 left-1/4 w-80 h-80 bg-accent-400 rounded-full blur-3xl" />
+    <!-- Error State -->
+    <div v-else-if="error" class="min-h-screen flex items-center justify-center">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-text-primary mb-4">案例加载失败</h2>
+        <p class="text-text-secondary mb-6">{{ error }}</p>
+        <NuxtLink to="/cases" class="btn-primary">返回案例列表</NuxtLink>
+      </div>
+    </div>
+
+    <!-- Case Detail -->
+    <div v-else-if="caseItem" class="case-detail">
+      <!-- Hero Section -->
+      <section class="case-hero relative h-96 md:h-[500px] overflow-hidden">
+        <img
+          :src="caseItem.cover_image || '/images/case-default.jpg'"
+          :alt="caseItem.project_name"
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-8 md:p-16">
+          <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-3 py-1 bg-accent/90 text-white text-sm font-medium rounded-full">
+                {{ caseItem.location || '全国' }}
+              </span>
+              <span class="px-3 py-1 bg-white/20 text-white text-sm font-medium rounded-full">
+                {{ caseItem.project_date || '未知' }}
+              </span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">{{ caseItem.project_name }}</h1>
+            <p class="text-lg text-white/80 max-w-2xl">{{ caseItem.description }}</p>
+          </div>
         </div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
-          <NuxtLink
-            to="/cases"
-            class="text-white/70 hover:text-white mb-4 inline-block flex items-center gap-1 transition-colors"
-          >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              />
+      </section>
+
+      <!-- Breadcrumb -->
+      <section class="breadcrumb-section bg-surface-elevated border-b border-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <nav class="flex items-center text-sm text-text-secondary">
+            <NuxtLink to="/" class="hover:text-accent transition-colors">首页</NuxtLink>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-            返回案例列表
-          </NuxtLink>
-          <div class="max-w-4xl">
-            <span class="text-sm font-medium bg-white/10 text-white px-3 py-1 rounded-full">工程案例</span>
-            <h1 class="text-3xl md:text-5xl font-bold text-white mt-4 mb-4">
-              {{ caseItem.project_name }}
-            </h1>
-            <p
-              v-if="caseItem.client_name"
-              class="text-xl text-white/80 flex items-center gap-2"
+            <NuxtLink to="/cases" class="hover:text-accent transition-colors">工程案例</NuxtLink>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+            <span class="text-text-primary">{{ caseItem.project_name }}</span>
+          </nav>
+        </div>
+      </section>
+
+      <!-- Case Info Grid -->
+      <section class="case-info-section py-12 md:py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+              <!-- Project Overview -->
+              <div class="bg-surface-elevated rounded-2xl shadow-card p-8 mb-8">
+                <h2 class="text-2xl font-bold text-text-primary mb-6">项目概况</h2>
+                <div class="prose prose-lg max-w-none text-text-secondary">
+                  <p v-if="caseItem.description">{{ caseItem.description }}</p>
+                  <p v-else class="text-text-secondary/60">暂无详细描述</p>
+                </div>
+              </div>
+
+              <!-- Project Images -->
+              <div v-if="caseItem.images && caseItem.images.length > 0" class="bg-surface-elevated rounded-2xl shadow-card p-8 mb-8">
+                <h2 class="text-2xl font-bold text-text-primary mb-6">项目图片</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div
+                    v-for="image in caseItem.images"
+                    :key="image.id"
+                    class="rounded-xl overflow-hidden aspect-video"
+                  >
+                    <img
+                      :src="image.image_url"
+                      :alt="image.image_alt || caseItem.project_name"
+                      class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Materials Used -->
+              <div v-if="caseItem.materials_used" class="bg-surface-elevated rounded-2xl shadow-card p-8 mb-8">
+                <h2 class="text-2xl font-bold text-text-primary mb-6">使用材料</h2>
+                <div class="prose prose-lg max-w-none text-text-secondary">
+                  <p>{{ caseItem.materials_used }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+              <!-- Project Details -->
+              <div class="bg-surface-elevated rounded-2xl shadow-card p-6 mb-8 sticky top-24">
+                <h3 class="text-xl font-bold text-text-primary mb-6">项目信息</h3>
+                <dl class="space-y-4">
+                  <div v-if="caseItem.client_name">
+                    <dt class="text-sm font-medium text-text-secondary">客户名称</dt>
+                    <dd class="mt-1 text-text-primary">{{ caseItem.client_name }}</dd>
+                  </div>
+                  <div v-if="caseItem.location">
+                    <dt class="text-sm font-medium text-text-secondary">项目地点</dt>
+                    <dd class="mt-1 text-text-primary">{{ caseItem.location }}</dd>
+                  </div>
+                  <div v-if="caseItem.construction_area">
+                    <dt class="text-sm font-medium text-text-secondary">施工面积</dt>
+                    <dd class="mt-1 text-text-primary">{{ caseItem.construction_area }}</dd>
+                  </div>
+                  <div v-if="caseItem.project_date">
+                    <dt class="text-sm font-medium text-text-secondary">项目时间</dt>
+                    <dd class="mt-1 text-text-primary">{{ caseItem.project_date }}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-sm font-medium text-text-secondary">浏览次数</dt>
+                    <dd class="mt-1 text-text-primary">{{ caseItem.view_count }} 次</dd>
+                  </div>
+                </dl>
+
+                <!-- CTA -->
+                <div class="mt-8 pt-6 border-t border-border">
+                  <p class="text-sm text-text-secondary mb-4">对该案例感兴趣？立即咨询</p>
+                  <NuxtLink to="/contact" class="btn-primary w-full text-center block">
+                    立即咨询
+                  </NuxtLink>
+                  <a :href="`tel:${contactPhone}`" class="btn-outline w-full text-center block mt-3">
+                    电话咨询
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Cases -->
+      <section class="related-cases py-12 md:py-16 bg-surface-elevated">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="text-2xl font-bold text-text-primary mb-8">相关案例</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <NuxtLink
+              v-for="related in relatedCases"
+              :key="related.id"
+              :to="`/cases/${related.slug}`"
+              class="case-card group bg-surface rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300"
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              <div class="h-48 overflow-hidden bg-gradient-to-br from-accent/5 to-primary/5">
+                <img
+                  :src="related.cover_image || '/images/case-default.jpg'"
+                  :alt="related.project_name"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
                 />
-              </svg>
-              {{ caseItem.client_name }}
-            </p>
+              </div>
+              <div class="p-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent transition-colors">
+                  {{ related.project_name }}
+                </h3>
+                <p class="text-sm text-text-secondary line-clamp-2">
+                  {{ related.description || '点击查看案例详情' }}
+                </p>
+              </div>
+            </NuxtLink>
           </div>
         </div>
       </section>
-
-      <section class="py-12 bg-gradient-to-b from-surface-elevated to-surface">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div
-              v-if="caseItem.construction_area"
-              class="bg-white rounded-xl p-5 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all text-center"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                施工面积
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ caseItem.construction_area }}
-              </div>
-            </div>
-            <div
-              v-if="caseItem.project_date"
-              class="bg-white rounded-xl p-5 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all text-center"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                完工时间
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ caseItem.project_date }}
-              </div>
-            </div>
-            <div
-              v-if="caseItem.location"
-              class="bg-white rounded-xl p-5 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all text-center"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                项目地点
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ caseItem.location }}
-              </div>
-            </div>
-            <div
-              v-if="caseItem.materials_used"
-              class="bg-white rounded-xl p-5 border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all text-center"
-            >
-              <div class="text-xs text-text-muted mb-1">
-                使用材料
-              </div>
-              <div class="text-lg font-bold text-secondary-600">
-                {{ caseItem.materials_used }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        v-if="caseItem.images && caseItem.images.length"
-        class="py-16 bg-surface"
-      >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="inline-flex items-center px-3 py-1.5 bg-accent-50 rounded-full mb-4">
-            <span class="w-1.5 h-1.5 bg-accent-500 rounded-full mr-2" />
-            <span class="text-sm font-medium text-accent-600">项目图集</span>
-          </div>
-          <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-            项目展示
-          </h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <a
-              v-for="img in caseItem.images"
-              :key="img.id"
-              :href="img.image_url"
-              target="_blank"
-              class="aspect-[4/3] overflow-hidden rounded-xl group"
-            >
-              <img
-                :src="img.image_url"
-                :alt="img.image_alt || caseItem.project_name"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              >
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section
-        v-if="caseItem.description"
-        class="py-16 bg-gradient-to-b from-surface to-surface-elevated"
-      >
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="inline-flex items-center px-3 py-1.5 bg-secondary-50 rounded-full mb-4">
-            <span class="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2" />
-            <span class="text-sm font-medium text-secondary-600">项目详情</span>
-          </div>
-          <h2 class="text-2xl md:text-3xl font-bold text-primary-900 mb-6">
-            项目概述
-          </h2>
-          <div
-            class="bg-white rounded-2xl p-8 border border-border"
-            v-html="caseItem.description"
-          />
-        </div>
-      </section>
-    </template>
-
-    <section
-      v-else
-      class="py-20 text-center bg-surface"
-    >
-      <div class="w-20 h-20 bg-surface-elevated rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg
-          class="w-10 h-10 text-text-muted"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </div>
-      <p class="text-text-muted text-lg">
-        案例不存在
-      </p>
-      <NuxtLink
-        to="/cases"
-        class="mt-4 inline-flex items-center text-secondary-600 font-medium hover:text-secondary-700"
-      >
-        <svg
-          class="w-4 h-4 mr-1"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        返回案例列表
-      </NuxtLink>
-    </section>
-
-    <section class="py-16 bg-gradient-to-r from-secondary-600 via-secondary-500 to-accent-500">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          需要类似解决方案？
-        </h2>
-        <p class="text-white/80 mb-8 max-w-2xl mx-auto">
-          我们的技术团队根据您的工程需求提供定制化保温方案
-        </p>
-        <NuxtLink
-          to="/contact"
-          class="inline-flex items-center px-8 py-4 bg-white text-secondary-600 font-semibold rounded-xl hover:bg-gray-100 transition-all shadow-lg"
-        >
-          <svg
-            class="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-          免费获取方案
-        </NuxtLink>
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useCaseStore } from '~/stores/case'
+import { SITE_CONFIG } from '~/config/site'
 
 const route = useRoute()
-const loading = ref(false)
-const caseItem = ref<any>(null)
+const caseStore = useCaseStore()
+const contactPhone = SITE_CONFIG.phone
 
-const slug = computed(() => route.params.slug as string)
+const { slug } = route.params as { slug: string }
 
-async function fetchCase() {
-  loading.value = true
-  try {
-    const res = await fetch(`/api/v1/cases/by-slug/${slug.value}`)
-    if (res.ok) {
-      caseItem.value = await res.json()
-    }
-  } catch (e) {
-    console.error(e)
-  } finally {
-    loading.value = false
-  }
-}
+await caseStore.fetchCaseBySlug(slug)
 
-onMounted(fetchCase)
+const caseItem = computed(() => caseStore.currentCase)
+const loading = computed(() => caseStore.loading)
+const error = computed(() => caseStore.error)
 
-watchEffect(() => {
-  if (caseItem.value) {
-    useHead({
-      title: `${caseItem.value.project_name} - 优丁保温材料案例`,
-      meta: [
-        { name: 'description', content: `${caseItem.value.project_name}案例，使用${caseItem.value.materials_used || '优质保温材料'}，施工面积${caseItem.value.construction_area || '若干'}，位于${caseItem.value.location || '项目工地'}` },
-      ],
-    })
-  }
+const relatedCases = computed(() => {
+  return caseStore.publishedCases
+    .filter(c => c.id !== caseItem.value?.id)
+    .slice(0, 3)
+})
+
+useHead({
+  title: computed(() => caseItem.value ? `${caseItem.value.project_name} - 工程案例 | 优丁建材` : '案例详情 | 优丁建材'),
+  meta: [
+    { name: 'description', content: computed(() => caseItem.value?.description || '') },
+    { property: 'og:title', content: computed(() => caseItem.value?.project_name || '') },
+    { property: 'og:description', content: computed(() => caseItem.value?.description || '') },
+    { property: 'og:type', content: 'article' },
+    { property: 'og:url', content: computed(() => `https://www.youdingjiancai.com/cases/${slug}`) },
+    { property: 'og:image', content: computed(() => caseItem.value?.cover_image || 'https://www.youdingjiancai.com/images/case-default.jpg') },
+  ],
 })
 </script>
+
+<style scoped>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>

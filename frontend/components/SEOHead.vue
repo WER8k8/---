@@ -5,6 +5,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRuntimeConfig, useRoute, useHead } from '#imports'
+
 /**
  * SEO Head Component - Enhanced SEO metadata management
  * 
@@ -68,14 +71,12 @@ const props = withDefaults(defineProps<SEOProps>(), {
 
 const config = useRuntimeConfig()
 const route = useRoute()
-
-// Base URL from environment or default
-const baseUrl = config.public.siteUrl || 'https://www.youdingjiancai.com'
+const baseUrl = computed(() => config.public?.siteUrl || 'https://www.youdingjiancai.com')
 
 // Generate full URL
 const fullUrl = computed(() => {
   if (props.canonicalUrl) return props.canonicalUrl
-  return `${baseUrl}${route.fullPath}`
+  return `${baseUrl.value}${route.fullPath}`
 })
 
 // Default images
@@ -85,53 +86,53 @@ const defaultTwitterImage = '/images/twitter-card.jpg'
 // Build meta tags
 const metaTags = computed(() => {
   const tags: Array<Record<string, string>> = []
-  
+
   // Basic meta tags
   if (props.description) {
     tags.push({ name: 'description', content: props.description })
   }
-  
+
   if (props.keywords.length > 0) {
     tags.push({ name: 'keywords', content: props.keywords.join(',') })
   }
-  
+
   // Robots meta
   if (props.noindex || props.nofollow || props.robots) {
     const robotsValue = props.robots || `${props.noindex ? 'noindex' : 'index'},${props.nofollow ? 'nofollow' : 'follow'}`
     tags.push({ name: 'robots', content: robotsValue })
   }
-  
+
   // Open Graph tags
   tags.push({ property: 'og:type', content: props.ogType })
   tags.push({ property: 'og:url', content: fullUrl.value })
-  
+
   if (props.title) {
     tags.push({ property: 'og:title', content: props.title })
   }
-  
+
   if (props.description) {
     tags.push({ property: 'og:description', content: props.description })
   }
-  
+
   const ogImage = props.ogImage || defaultOgImage
   tags.push({ property: 'og:image', content: ogImage })
   tags.push({ property: 'og:image:width', content: String(props.ogImageWidth) })
   tags.push({ property: 'og:image:height', content: String(props.ogImageHeight) })
-  
+
   // Twitter Card tags
   tags.push({ name: 'twitter:card', content: props.twitterCard })
-  
+
   if (props.title) {
     tags.push({ name: 'twitter:title', content: props.title })
   }
-  
+
   if (props.description) {
     tags.push({ name: 'twitter:description', content: props.description })
   }
-  
+
   const twitterImage = props.twitterImage || defaultTwitterImage
   tags.push({ name: 'twitter:image', content: twitterImage })
-  
+
   return tags
 })
 

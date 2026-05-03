@@ -35,7 +35,9 @@ class Category(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
-    children = relationship("Category", backref="parent", remote_side=[id])
+    children = relationship("Category", back_populates="parent", remote_side=[id], lazy="select")
+    parent = relationship("Category", remote_side=[id], lazy="select")
+    products = relationship("Product", back_populates="category", lazy="select")
 
 class Product(Base):
     __tablename__ = "products"
@@ -65,7 +67,7 @@ class Product(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
-    category = relationship("Category", backref="products")
+    category = relationship("Category", back_populates="products", lazy="select")
 
 
 class ProductDocument(Base):

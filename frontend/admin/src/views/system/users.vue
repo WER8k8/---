@@ -149,7 +149,7 @@ import {
   SelectOption as ASelectOption,
   Checkbox as ACheckbox,
 } from 'ant-design-vue'
-import { systemAPI } from '@/api'
+import { systemAPI, usersAPI } from '@/api'
 
 const users = ref<any[]>([])
 const loading = ref(false)
@@ -205,7 +205,7 @@ async function fetchUsers(page = 1) {
   loading.value = true
   pagination.value.current = page
   try {
-    const res = await systemAPI.users({ page, page_size: pagination.value.pageSize })
+    const res = await usersAPI.list({ page, page_size: pagination.value.pageSize })
     users.value = res.data.items || []
     pagination.value.total = res.data.total || 0
   } catch (e) {
@@ -229,7 +229,7 @@ function handleEdit(record: any) {
 
 async function handleToggleActive(record: any) {
   try {
-    await systemAPI.updateUser(record.id, { is_active: !record.is_active })
+    await usersAPI.update(record.id, { is_active: !record.is_active })
     await fetchUsers()
     AModal.success({ title: '操作成功' })
   } catch (e: any) {
@@ -259,10 +259,10 @@ async function handleSave() {
     }
 
     if (isEdit.value) {
-      await systemAPI.updateUser(form.value.id, data)
+      await usersAPI.update(form.value.id, data)
       AModal.success({ title: '修改成功' })
     } else {
-      await systemAPI.createUser(data)
+      await usersAPI.create(data)
       AModal.success({ title: '创建成功' })
     }
 
@@ -288,7 +288,7 @@ function handleDelete(record: any) {
     okType: 'danger',
     async onOk() {
       try {
-        await systemAPI.deleteUser(record.id)
+        await usersAPI.delete(record.id)
         await fetchUsers()
         AModal.success({ title: '删除成功' })
       } catch (e: any) {

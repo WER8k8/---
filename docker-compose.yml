@@ -1,102 +1,333 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: ${DOCKER_TARGET:-development}
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      - NUXT_PUBLIC_API_BASE=http://backend:8000/api/v1
-      - NUXT_PUBLIC_SITE_URL=https://youding.com
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
+  # 后端API服务
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: ${DOCKER_TARGET:-development}
+    container_name: youding-backend
+    restart: always
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
     environment:
-      - DATABASE_URL=postgresql://youding:youding123@postgres:5432/youding_seo
+      - DATABASE_URL=postgresql://youding_admin:${DB_PASSWORD:-change_me}@postgres:5432/youding_prod
       - REDIS_URL=redis://redis:6379/0
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY=youding_admin
-      - MINIO_SECRET_KEY=youding_secret_key
-      - JWT_SECRET_KEY=your-jwt-secret-key-change-in-production
-      - AI_OPENAI_API_KEY=${AI_OPENAI_API_KEY}
-      - AI_ANTHROPIC_API_KEY=${AI_ANTHROPIC_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change_me}
+      - DEBUG=False
+      - CORS_ORIGINS=["https://youding.com"]
+      - ALLOWED_HOSTS=["youding.com"]
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - LOGSTASH_HOST=logstash
+    volumes:
+      - backend_logs:/app/logs
+      - backend_uploads:/app/uploads
+      - backend_certs:/app/certs
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     networks:
-      - app-network
+      - youding-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
 
-  postgres:
-    image: postgres:15.6
+  # 前端管理后台
+  frontend:
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile
+    container_name: youding-frontend
+    restart: always
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/admin/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./backend/certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+    networks:
+      - youding-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  # PostgreSQL数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: youding-postgres
+    restart: always
     environment:
-      - POSTGRES_DB=youding_seo
-      - POSTGRES_USER=youding
-      - POSTGRES_PASSWORD=youding123
+      - POSTGRES_DB=youding_prod
+      - POSTGRES_USER=youding_admin
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-change_me}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+      - ./backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U youding"]
+      test: ["CMD-SHELL", "pg_isready -U youding_admin -d youding_prod"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - app-network
+      - youding-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
 
+  # Redis缓存
   redis:
-    image: redis:7.2.4
-    ports:
-      - "6379:6379"
+    image: redis:7-alpine
+    container_name: youding-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-change_me}
     volumes:
       - redis_data:/data
+    ports:
+      - "6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-change_me}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - app-network
+      - youding-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
 
-  minio:
-    image: minio/minio:latest
+  # Jaeger - 分布式追踪
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: youding-jaeger
+    restart: always
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+      - "4317:4317"
+      - "4318:4318"
     environment:
-      - MINIO_ROOT_USER=youding_admin
-      - MINIO_ROOT_PASSWORD=youding_secret_key
-    volumes:
-      - minio_data:/data
-    command: server /data --console-address ":9001"
+      - COLLECTOR_OTLP_ENABLED=true
     networks:
-      - app-network
+      - youding-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    profiles:
+      - monitoring
+
+  # Elasticsearch - 日志存储
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: youding-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - youding-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    profiles:
+      - monitoring
+
+  # Logstash - 日志处理
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    container_name: youding-logstash
+    volumes:
+      - ./deploy/logging/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - backend_logs:/var/log/app:ro
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    networks:
+      - youding-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    profiles:
+      - monitoring
+
+  # Kibana - 日志可视化
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: youding-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - youding-network
+    depends_on:
+      - elasticsearch
+      - logstash
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    profiles:
+      - monitoring
+
+  # Prometheus - 指标收集
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: youding-prometheus
+    volumes:
+      - ./deploy/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - youding-network
+    depends_on:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    profiles:
+      - monitoring
+
+  # Grafana - 监控面板
+  grafana:
+    image: grafana/grafana:latest
+    container_name: youding-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./deploy/monitoring/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+    ports:
+      - "3000:3000"
+    networks:
+      - youding-network
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    profiles:
+      - monitoring
+
+  # Nginx反向代理（可选，用于HTTPS终止）
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: youding-nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/proxy.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./backend/certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - youding-network
+    profiles:
+      - production
+
+  # 数据库备份服务
+  db-backup:
+    image: postgres:15-alpine
+    container_name: youding-db-backup
+    restart: unless-stopped
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=youding_prod
+      - POSTGRES_USER=youding_admin
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-change_me}
+      - BACKUP_DIR=/backups
+      - BACKUP_RETENTION_DAYS=30
+    volumes:
+      - backup_data:/backups
+    command: >
+      sh -c "
+        while true; do
+          pg_dump -h postgres -U youding_admin youding_prod | gzip > /backups/backup_\$(date +%Y%m%d_%H%M%S).sql.gz;
+          find /backups -name '*.sql.gz' -mtime +\${BACKUP_RETENTION_DAYS} -delete;
+          sleep 86400;
+        done
+      "
+    depends_on:
+      - postgres
+    networks:
+      - youding-network
+    profiles:
+      - backup
 
 volumes:
   postgres_data:
+    driver: local
   redis_data:
-  minio_data:
+    driver: local
+  backend_logs:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_certs:
+    driver: local
+  backup_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
 
 networks:
-  app-network:
+  youding-network:
     driver: bridge

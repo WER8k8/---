@@ -29,9 +29,11 @@ class SeoAnalyzer:
         last_audit = self.db.query(SiteAudit).order_by(SiteAudit.created_at.desc()).first()
         last_audit_score = last_audit.score if last_audit else None
 
-        ai_optimized_pages = self.db.query(func.count(AiOptimizationLog.id)).filter(
+        ai_optimized_pages = self.db.query(
+            func.count(func.distinct(AiOptimizationLog.resource_id))
+        ).filter(
             AiOptimizationLog.created_at >= datetime.now(timezone.utc) - timedelta(days=30)
-        ).distinct(AiOptimizationLog.resource_id).scalar() or 0
+        ).scalar() or 0
 
         llms_config_exists = self.db.query(func.count(ContentPage.id)).filter(
             ContentPage.slug == "llms-txt", ContentPage.is_active == True

@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: seo-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-SeoMatrix@2024}
+      MYSQL_DATABASE: seo_matrix_db
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./seo-backend/database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    networks:
+      - seo-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: seo-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - seo-network
+
+  backend:
+    build:
+      context: ./seo-backend
+      dockerfile: Dockerfile
+    container_name: seo-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: seo_matrix_db
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-SeoMatrix@2024}
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-random-secret}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      AI_API_KEY: ${AI_API_KEY}
+      AI_API_BASE_URL: ${AI_API_BASE_URL:-https://api.openai.com/v1}
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - seo-network
+
+  frontend:
+    build:
+      context: ./seo-admin
+      dockerfile: Dockerfile
+    container_name: seo-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - seo-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  seo-network:
+    driver: bridge

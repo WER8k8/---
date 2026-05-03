@@ -1,0 +1,46 @@
+name: SEO Monitoring
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  seo-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 lxml
+      
+      - name: Run SEO checks
+        env:
+          SITE_URL: https://www.youdingjiancai.com
+        run: |
+          python .github/workflows/seo_checker.py
+      
+      - name: Upload SEO report
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-report
+          path: seo-report-*.json
+      
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'SEO检查失败',
+              body: `SEO自动检查未通过，请检查网站状态。\n\n运行时间: ${new Date().toISOString()}`
+            })

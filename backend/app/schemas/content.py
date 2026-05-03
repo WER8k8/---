@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 
 class ContentPageCreate(BaseModel):
@@ -35,6 +35,25 @@ class ContentPageResponse(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+class ContentVersionCreate(BaseModel):
+    change_log: Optional[str] = None
+
+class ContentVersionResponse(BaseModel):
+    id: str
+    page_id: str
+    version_number: int
+    title: str
+    content: Optional[str]
+    summary: Optional[str]
+    change_log: Optional[str]
+    author_id: Optional[str]
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class ContentRollbackRequest(BaseModel):
+    version_id: str
 
 class SeoMetadataCreate(BaseModel):
     resource_type: str

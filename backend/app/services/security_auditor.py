@@ -5,9 +5,11 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 from dataclasses import dataclass, field
 
-from app.core.logging_config import AppLogger
+import logging
 
-logger = AppLogger("security_auditor")
+from app.core.logging_config import LogConfig
+
+logger = LogConfig.get_logger("security_auditor")
 
 
 @dataclass

@@ -1,264 +1,243 @@
 <template>
-  <div>
-    <section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-700">
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-secondary-400 rounded-full blur-3xl" />
-        <div class="absolute bottom-1/4 left-1/4 w-80 h-80 bg-accent-400 rounded-full blur-3xl" />
-      </div>
-      <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
-        <NuxtLink
-          to="/news"
-          class="text-white/70 hover:text-white mb-4 inline-block flex items-center gap-1 transition-colors"
-        >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          返回新闻列表
-        </NuxtLink>
-        <div>
-          <span class="text-sm font-medium bg-white/10 text-white px-3 py-1 rounded-full">
-            {{ categoryLabel }}
-          </span>
-          <h1 class="text-3xl md:text-5xl font-bold text-white mt-4 mb-4">
-            {{ article.title }}
-          </h1>
-          <div class="flex items-center space-x-4 text-white/70">
-            <span class="flex items-center gap-1">
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              {{ article.date }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="news-detail-page">
+    <div v-if="loading" class="min-h-screen flex items-center justify-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-500"></div>
+    </div>
 
-    <section
-      v-if="article.content"
-      class="py-16 bg-surface"
-    >
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-2xl p-8 border border-border">
-          <div
-            v-for="(paragraph, idx) in article.content.paragraphs"
-            :key="idx"
-            class="mb-6"
-          >
-            <p
-              v-if="typeof paragraph === 'string'"
-              class="text-text-secondary leading-relaxed"
-            >
-              {{ paragraph }}
-            </p>
-            <h3
-              v-else-if="paragraph.type === 'subtitle'"
-              class="text-2xl font-semibold text-primary-900 mt-8 mb-4"
-            >
-              <span class="inline-flex items-center px-3 py-1.5 bg-secondary-50 rounded-full text-secondary-600 text-sm font-medium mr-3">
-                {{ idx + 1 }}
+    <div v-else-if="error" class="min-h-screen flex items-center justify-center">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-text-primary mb-4">文章加载失败</h2>
+        <p class="text-text-secondary mb-6">{{ error }}</p>
+        <NuxtLink to="/news" class="btn-primary">返回新闻列表</NuxtLink>
+      </div>
+    </div>
+
+    <div v-else-if="article" class="news-detail">
+      <section class="article-hero relative h-96 md:h-[500px] overflow-hidden">
+        <img
+          :src="article.cover_image || '/images/news-default.jpg'"
+          :alt="article.title"
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-8 md:p-16">
+          <div class="max-w-4xl mx-auto">
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-3 py-1 bg-accent/90 text-white text-sm font-medium rounded-full">
+                {{ categoryLabels[article.category] || article.category }}
               </span>
-              {{ paragraph.text }}
-            </h3>
-            <ul
-              v-else-if="paragraph.type === 'list'"
-              class="list-disc pl-6 space-y-2"
-            >
-              <li
-                v-for="item in paragraph.items"
-                :key="item"
-                class="text-text-secondary flex items-start"
-              >
-                <span class="w-2 h-2 bg-secondary-500 rounded-full mt-2 mr-2 flex-shrink-0" />
-                {{ item }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-16 bg-gradient-to-b from-surface-elevated to-surface">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-2xl p-8 border border-border">
-          <div class="flex items-center space-x-3 mb-6">
-            <div class="w-12 h-12 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-xl flex items-center justify-center">
-              <svg
-                class="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <span v-if="article.author" class="px-3 py-1 bg-white/20 text-white text-sm font-medium rounded-full">
+                {{ article.author }}
+              </span>
             </div>
-            <div>
-              <h3 class="font-semibold text-primary-900">
-                相关链接
-              </h3>
-              <p class="text-sm text-text-muted">
-                了解更多产品信息
-              </p>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">{{ article.title }}</h1>
+            <p v-if="article.subtitle" class="text-xl text-white/80 mb-4">{{ article.subtitle }}</p>
+            <div class="flex flex-wrap gap-4 text-white/70 text-sm">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {{ formatDate(article.published_at) }}
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {{ article.view_count }} 次阅读
+              </span>
             </div>
           </div>
-          <div class="flex flex-wrap justify-center gap-4">
-            <NuxtLink
-              to="/products"
-              class="inline-flex items-center px-6 py-3 bg-secondary-500 text-white font-medium rounded-xl hover:bg-secondary-600 transition-colors"
-            >
-              <svg
-                class="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        </div>
+      </section>
+
+      <section class="article-content bg-surface py-12 md:py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="prose prose-lg max-w-none" v-html="article.content"></div>
+
+          <div v-if="article.tags" class="mt-12 pt-8 border-t border-border">
+            <h3 class="text-sm font-medium text-text-secondary mb-3">标签</h3>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="tag in parseTags(article.tags)"
+                :key="tag"
+                class="px-3 py-1 bg-accent/10 text-accent text-sm rounded-full"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                />
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
+            <NuxtLink to="/news" class="text-accent hover:text-accent/80 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
               </svg>
-              查看产品
+              返回新闻列表
             </NuxtLink>
+            <div class="flex items-center gap-4">
+              <span class="text-text-secondary text-sm">分享：</span>
+              <button class="p-2 rounded-full bg-surface-elevated hover:bg-accent/10 transition-colors" title="微信分享">
+                <svg class="w-5 h-5 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.028.14-.028.213 0 .187.125.34.31.34a.35.35 0 00.16-.04l1.903-1.142a.87.87 0 01.45-.126c.09 0 .18.014.265.042a9.07 9.07 0 002.806.44c.28 0 .555-.014.825-.04a6.13 6.13 0 01-.23-1.65c0-3.38 3.27-6.12 7.31-6.12h.33c-.62-3.32-3.87-5.95-7.83-5.95zm-2.6 4.41c.67 0 1.21.54 1.21 1.21s-.54 1.21-1.21 1.21-1.21-.54-1.21-1.21.54-1.21 1.21-1.21zm5.19 0c.67 0 1.21.54 1.21 1.21s-.54 1.21-1.21 1.21-1.21-.54-1.21-1.21.54-1.21 1.21-1.21zm5.69 3.05c-3.59 0-6.5 2.44-6.5 5.45 0 3.01 2.91 5.45 6.5 5.45.73 0 1.43-.11 2.09-.31a.63.63 0 01.33.09l1.38.83a.25.25 0 00.12.03c.13 0 .23-.1.23-.24a.6.6 0 00-.02-.15l-.28-1.06a.42.42 0 01.15-.47c1.3-.96 2.13-2.38 2.13-3.96 0-3.01-2.91-5.45-6.5-5.45zm-2.27 3.07c.47 0 .85.38.85.85s-.38.85-.85.85-.85-.38-.85-.85.38-.85.85-.85zm4.54 0c.47 0 .85.38.85.85s-.38.85-.85.85-.85-.38-.85-.85.38-.85.85-.85z"/>
+                </svg>
+              </button>
+              <button class="p-2 rounded-full bg-surface-elevated hover:bg-accent/10 transition-colors" title="微博分享">
+                <svg class="w-5 h-5 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M10.1 18.3c-3.5.4-6.6-1.2-6.8-3.6-.3-2.4 2.4-4.7 5.9-5.1 3.5-.4 6.6 1.2 6.8 3.6.3 2.4-2.4 4.7-5.9 5.1zm6.9-9.4c-.3-.9-1.3-1.4-2.2-1.1l-.1-.1c.1-.3.1-.6.1-.9 0-2.2-2.2-4-5-4s-5 1.8-5 4c0 .3 0 .6.1.9l-.1.1c-.9-.3-1.9.2-2.2 1.1-.3.9.2 1.9 1.1 2.2.1 0 .2.1.3.1-.4.8-.6 1.7-.6 2.6 0 3.3 3.1 6 7 6s7-2.7 7-6c0-.9-.2-1.8-.6-2.6.1 0 .2-.1.3-.1.9-.3 1.4-1.3 1.1-2.2zM9.5 14.5c-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7.3-.1.6.1.7.4.1.3-.1.6-.4.7zm1.8-.6c-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7.3-.1.6.1.7.4.1.3-.1.6-.4.7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="relatedArticles.length > 0" class="related-articles py-12 md:py-16 bg-surface-elevated">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="text-2xl font-bold text-text-primary mb-8">相关文章</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <NuxtLink
-              to="/contact"
-              class="inline-flex items-center px-6 py-3 border-2 border-secondary-500 text-secondary-600 font-medium rounded-xl hover:bg-secondary-50 transition-colors"
+              v-for="related in relatedArticles"
+              :key="related.id"
+              :to="'/news/' + related.slug"
+              class="bg-white rounded-xl border border-border hover:border-accent-500/30 hover:shadow-lg transition-all overflow-hidden group"
             >
-              <svg
-                class="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              <div class="aspect-[16/9] overflow-hidden bg-gradient-to-br from-accent/10 to-primary/10">
+                <img
+                  v-if="related.cover_image"
+                  :src="related.cover_image"
+                  :alt="related.title"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
                 />
-              </svg>
-              联系我们
+                <div v-else class="w-full h-full flex items-center justify-center">
+                  <span class="text-4xl opacity-30">{{ categoryIcons[related.category] || '📰' }}</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="text-base font-semibold text-text-primary line-clamp-2 group-hover:text-accent transition-colors">
+                  {{ related.title }}
+                </h3>
+                <p class="text-text-muted text-sm mt-2">{{ formatDate(related.published_at) }}</p>
+              </div>
             </NuxtLink>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="py-16 bg-gradient-to-r from-secondary-600 via-secondary-500 to-accent-500">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          获取更多行业资讯
-        </h2>
-        <p class="text-white/80 mb-8 max-w-2xl mx-auto">
-          订阅我们的新闻通讯，第一时间获取行业动态和产品信息
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-          <NuxtLink
-            to="/news"
-            class="inline-flex items-center px-8 py-4 bg-white text-secondary-600 font-semibold rounded-xl hover:bg-gray-100 transition-all shadow-lg"
-          >
-            查看全部新闻
-          </NuxtLink>
-          <NuxtLink
-            to="/contact"
-            class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-all"
-          >
-            订阅资讯
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useNewsStore } from '~/stores/news'
+import { SITE_CONFIG } from '~/config/site'
 
 const route = useRoute()
+const newsStore = useNewsStore()
+const contactPhone = SITE_CONFIG.phone
 
-const articles = [
-  {
-    slug: 'light-aggregate-concrete-guide', title: '轻集料混凝土选型指南', category: 'tech', date: '2024-03-15',
-    content: {
-      paragraphs: [
-        { type: 'subtitle', text: '什么是轻集料混凝土' },
-        '轻集料混凝土是一种以轻质骨料替代传统碎石骨料的新型混凝土材料，具有自重轻、保温隔热性能好、抗震性能优越等特点。',
-        '根据GB/T 17431-2010标准，轻集料混凝土按密度等级可分为800-1950kg/m³多个级别。',
-        { type: 'subtitle', text: '选型要点' },
-        { type: 'list', items: ['密度等级：根据结构承重要求选择合适的密度范围', '强度等级：LC5.0-LC50多个等级可选', '导热系数：保温需求越高的项目应选择导热系数≤0.30W/(m·K)的产品', '粒径规格：根据施工方式和构件厚度选择合适的骨料粒径'] },
-        { type: 'subtitle', text: '应用场景推荐' },
-        '高层建筑结构：推荐LC25-LC40级别，密度1400-1600kg/m³。保温填充墙体：推荐LC5.0-LC10级别，密度800-1000kg/m³。',
-        '桥梁工程：推荐LC30-LC50级别，密度1600-1900kg/m³。如需个性化选型建议，欢迎联系我们的技术团队。',
-      ],
-    },
-  },
-  {
-    slug: 'new-production-line', title: '优丁建材新生产线正式投产', category: 'company', date: '2024-02-20',
-    content: {
-      paragraphs: [
-        '2024年2月18日，优丁建材三期生产线正式投产运行。该生产线总投资1.2亿元，引进了国际先进的自动化生产设备。',
-        '新生产线年产能达到50万吨，使公司总产能突破100万吨，成为区域内产能最大的轻集料混凝土生产企业之一。',
-        { type: 'list', items: ['总投资1.2亿元，自动化程度达到90%', '年新增产能50万吨，总产能突破100万吨', '产品合格率99.8%，达到行业领先水平', '单位能耗降低15%，实现绿色生产'] },
-        '公司总经理在投产仪式上表示，新生产线的投产将进一步提升公司的市场竞争力，为更多客户提供优质的产品和服务。',
-      ],
-    },
-  },
-  {
-    slug: 'industry-trends-2024', title: '2024年绿色建材行业发展趋势', category: 'industry', date: '2024-01-10',
-    content: {
-      paragraphs: [
-        '随着国家双碳战略的深入推进，绿色建材行业迎来了前所未有的发展机遇。轻集料混凝土作为绿色环保建材的典型代表，其市场需求持续增长。',
-        { type: 'subtitle', text: '政策利好' },
-        '2023年底，住建部发布了《绿色建筑高质量发展实施方案》，明确提出到2025年绿色建筑占新建建筑比例达到70%以上。',
-        { type: 'subtitle', text: '市场趋势' },
-        { type: 'list', items: ['轻集料混凝土在装配式建筑中的应用快速增长', '高性能轻集料混凝土的研发投入持续加大', '固废资源化利用成为行业新方向', '智能化生产技术加速普及'] },
-        '优丁建材将紧跟行业发展趋势，持续加大研发投入，推动产品升级和技术创新。',
-      ],
-    },
-  },
-]
+const { slug } = route.params as { slug: string }
 
-const article = articles.find(a => a.slug === route.params.slug) || {
-  slug: '', title: '文章未找到', category: '', date: '',
-  content: { paragraphs: ['该文章不存在或已被删除。'] },
-}
+await newsStore.fetchArticleBySlug(slug)
+
+const article = computed(() => newsStore.currentArticle)
+const loading = computed(() => newsStore.loading)
+const error = computed(() => newsStore.error)
+
+const relatedArticles = computed(() => {
+  return newsStore.articles
+    .filter(a => a.id !== article.value?.id && a.category === article.value?.category)
+    .slice(0, 3)
+})
 
 const categoryLabels: Record<string, string> = {
-  company: '公司新闻', industry: '行业资讯', tech: '技术文章',
+  company: '公司新闻',
+  industry: '行业资讯',
+  product: '产品动态',
+  technology: '技术文章',
 }
 
-const categoryLabel = categoryLabels[article.category] || article.category
+const categoryIcons: Record<string, string> = {
+  company: '🏢',
+  industry: '📊',
+  product: '📦',
+  technology: '🔬',
+}
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return '未知'
+  const date = new Date(dateStr)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+function parseTags(tagsStr: string | null): string[] {
+  if (!tagsStr) return []
+  try {
+    return JSON.parse(tagsStr)
+  } catch {
+    return tagsStr.split(',').map(t => t.trim()).filter(Boolean)
+  }
+}
 
 useHead({
-  title: `${article.title} - 优丁建材`,
+  title: computed(() => article.value ? `${article.value.title} - 新闻资讯 | 优丁建材` : '文章详情 | 优丁建材'),
   meta: [
-    { name: 'description', content: typeof article.content?.paragraphs?.[0] === 'string' ? article.content.paragraphs[0].substring(0, 160) : '' },
+    { name: 'description', content: computed(() => article.value?.summary || '') },
+    { property: 'og:title', content: computed(() => article.value?.title || '') },
+    { property: 'og:description', content: computed(() => article.value?.summary || '') },
+    { property: 'og:type', content: 'article' },
+    { property: 'og:url', content: computed(() => `https://www.youdingjiancai.com/news/${slug}`) },
+    { property: 'og:image', content: computed(() => article.value?.cover_image || 'https://www.youdingjiancai.com/images/news-default.jpg') },
   ],
 })
 </script>
+
+<style scoped>
+.prose :deep(h1) {
+  @apply text-3xl font-bold text-text-primary mt-8 mb-4;
+}
+.prose :deep(h2) {
+  @apply text-2xl font-bold text-text-primary mt-6 mb-3;
+}
+.prose :deep(h3) {
+  @apply text-xl font-semibold text-text-primary mt-5 mb-2;
+}
+.prose :deep(p) {
+  @apply text-text-secondary leading-relaxed mb-4;
+}
+.prose :deep(img) {
+  @apply rounded-xl my-6;
+}
+.prose :deep(ul) {
+  @apply list-disc list-inside mb-4;
+}
+.prose :deep(ol) {
+  @apply list-decimal list-inside mb-4;
+}
+.prose :deep(li) {
+  @apply text-text-secondary mb-2;
+}
+.prose :deep(blockquote) {
+  @apply border-l-4 border-accent-500 pl-4 italic text-text-secondary my-6;
+}
+.prose :deep(a) {
+  @apply text-accent hover:text-accent/80 underline;
+}
+.prose :deep(code) {
+  @apply bg-surface-elevated px-2 py-1 rounded text-sm;
+}
+.prose :deep(pre) {
+  @apply bg-surface-elevated p-4 rounded-xl overflow-x-auto my-6;
+}
+.prose :deep(table) {
+  @apply w-full border-collapse my-6;
+}
+.prose :deep(th) {
+  @apply bg-surface-elevated px-4 py-2 text-left font-semibold border border-border;
+}
+.prose :deep(td) {
+  @apply px-4 py-2 border border-border;
+}
+</style>

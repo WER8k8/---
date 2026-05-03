@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.core.database import get_db
 from app.core.security import require_admin
+from app.core.cache_decorator import cache_response
 from app.models.product import Product
 from app.models.case_study import CaseStudy, CaseImage
 from app.models.inquiry import Inquiry
@@ -12,6 +13,7 @@ router = APIRouter()
 
 
 @router.get("/dashboard")
+@cache_response(expire=300, prefix="analytics")
 def get_analytics_dashboard(db: Session = Depends(get_db), admin = Depends(require_admin)):
     total_inquiries = db.query(func.count(Inquiry.id)).filter(Inquiry.is_active == True).scalar() or 0
     pending_inquiries = db.query(func.count(Inquiry.id)).filter(Inquiry.is_active == True, Inquiry.status == "pending").scalar() or 0

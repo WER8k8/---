@@ -1,256 +1,380 @@
 <template>
-  <div>
-    <section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-700">
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-secondary-400 rounded-full blur-3xl" />
-        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-400 rounded-full blur-3xl" />
-      </div>
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
-        <div class="text-center">
-          <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6">
-            <span class="w-2 h-2 bg-secondary-400 rounded-full mr-2" />
-            <span class="text-sm font-medium text-white">产品中心</span>
-          </div>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+  <div class="products-page">
+    <!-- Hero Section -->
+    <section class="products-hero bg-gradient-to-br from-primary/5 via-surface to-accent/5 py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <AnimatedSection
+          animation="fade-in-up"
+          :delay="0"
+        >
+          <h1 class="text-4xl md:text-5xl font-bold text-text-primary mb-4">
             产品中心
           </h1>
-          <p class="text-xl text-white/80">
-            全系列轻集料混凝土产品，满足不同工程需求
+          <p class="text-xl text-text-secondary max-w-2xl mx-auto">
+            专业轻集料混凝土与保温材料，满足各类建筑节能需求
           </p>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
 
-    <section class="py-20 bg-gradient-to-b from-surface-elevated to-surface">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          v-if="loading"
-          class="text-center py-12"
-        >
-          <div class="flex items-center justify-center">
-            <div class="w-8 h-8 border-2 border-secondary-500 border-t-transparent rounded-full animate-spin" />
-            <span class="ml-3 text-text-muted">加载中...</span>
-          </div>
-        </div>
-
-        <template v-else>
-          <div class="flex flex-wrap gap-3 mb-12 justify-center">
-            <button
-              :class="!activeCategory ? 'bg-gradient-to-r from-secondary-500 to-secondary-600 text-white shadow-lg shadow-secondary-200' : 'bg-white text-text-secondary hover:bg-surface-hover border border-border'"
-              class="px-6 py-2.5 rounded-full text-sm font-medium transition-all shadow-card"
-              @click="activeCategory = null"
-            >
-              全部分类
-            </button>
+    <!-- Filter & Search -->
+    <section class="filter-section bg-surface-elevated border-b border-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <!-- Category Filter -->
+          <div class="flex flex-wrap gap-2">
             <button
               v-for="cat in categories"
               :key="cat.id"
-              :class="activeCategory === cat.id ? 'bg-gradient-to-r from-secondary-500 to-secondary-600 text-white shadow-lg shadow-secondary-200' : 'bg-white text-text-secondary hover:bg-surface-hover border border-border'"
-              class="px-6 py-2.5 rounded-full text-sm font-medium transition-all shadow-card"
-              @click="activeCategory = cat.id"
+              @click="selectedCategory = cat.id"
+              :class="[
+                'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                selectedCategory === cat.id
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-surface text-text-secondary hover:bg-primary/10 hover:text-primary'
+              ]"
             >
               {{ cat.name }}
             </button>
           </div>
 
-          <div
-            v-if="filteredProducts.length === 0"
-            class="text-center py-16"
-          >
-            <div class="w-20 h-20 bg-surface-elevated rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                class="w-10 h-10 text-text-muted"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <p class="text-text-muted text-lg">
-              暂无相关产品
-            </p>
-            <NuxtLink
-              to="/contact"
-              class="mt-4 inline-flex items-center text-secondary-600 font-medium hover:text-secondary-700"
+          <!-- Search -->
+          <div class="relative w-full md:w-64">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="搜索产品..."
+              class="w-full pl-10 pr-4 py-2 border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             >
-              联系我们了解更多
-              <svg
-                class="w-4 h-4 ml-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </NuxtLink>
-          </div>
-
-          <div
-            v-else
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            <div
-              v-for="product in filteredProducts"
-              :key="product.id"
-              class="group bg-white rounded-2xl overflow-hidden border border-border hover:border-secondary-200 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
+            <svg
+              class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <div class="h-48 bg-gradient-to-br from-secondary-50 via-white to-accent-50 flex items-center justify-center relative overflow-hidden">
-                <span class="text-5xl text-secondary-400 font-bold">{{ (product.name || '产').charAt(0) }}</span>
-                <div class="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <div class="p-6">
-                <span class="text-xs font-semibold bg-secondary-100 text-secondary-600 px-3 py-1 rounded-full">
-                  {{ categoryMap[product.category_id]?.name || '未分类' }}
-                </span>
-                <h3 class="text-xl font-semibold text-primary-900 mt-3 mb-2 group-hover:text-secondary-600 transition-colors">
-                  <NuxtLink :to="'/products/' + product.slug">
-                    {{ product.name }}
-                  </NuxtLink>
-                </h3>
-                <p
-                  v-if="product.subtitle"
-                  class="text-text-muted text-sm mb-3"
-                >
-                  {{ product.subtitle }}
-                </p>
-                <p class="text-text-secondary text-sm mb-4 line-clamp-3">
-                  {{ product.description }}
-                </p>
-                <div
-                  v-if="product.density || product.strength"
-                  class="flex flex-wrap gap-2 mb-4"
-                >
-                  <span
-                    v-if="product.density"
-                    class="text-xs bg-surface-elevated text-text-secondary px-2.5 py-1 rounded-lg"
-                  >
-                    密度: {{ product.density }}
-                  </span>
-                  <span
-                    v-if="product.strength"
-                    class="text-xs bg-surface-elevated text-text-secondary px-2.5 py-1 rounded-lg"
-                  >
-                    强度: {{ product.strength }}
-                  </span>
-                </div>
-                <NuxtLink
-                  :to="'/products/' + product.slug"
-                  class="inline-flex items-center text-secondary-600 font-medium text-sm group-hover:translate-x-1 transition-all"
-                >
-                  了解详情
-                  <svg
-                    class="w-4 h-4 ml-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </NuxtLink>
-              </div>
-            </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
           </div>
-        </template>
+        </div>
       </div>
     </section>
 
-    <section class="py-16 bg-gradient-to-r from-secondary-600 via-secondary-500 to-accent-500">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          找不到合适的产品？
-        </h2>
-        <p class="text-white/80 mb-8 max-w-2xl mx-auto">
-          我们的技术团队可以根据您的具体需求提供定制化产品方案
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-          <NuxtLink
-            to="/contact"
-            class="inline-flex items-center px-8 py-4 bg-white text-secondary-600 font-semibold rounded-xl hover:bg-gray-100 transition-all shadow-lg"
+    <!-- Products Grid -->
+    <section class="products-section py-12 md:py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Loading State -->
+        <div
+          v-if="loading"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <div
+            v-for="i in 6"
+            :key="i"
+            class="product-card-skeleton animate-pulse"
           >
-            <svg
-              class="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-            立即咨询
-          </NuxtLink>
-          <a
-            href="tel:400-888-8888"
-            class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-all"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-              />
-            </svg>
-            拨打热线 400-888-8888
-          </a>
+            <div class="bg-gray-200 h-48 rounded-t-2xl" />
+            <div class="p-6">
+              <div class="h-6 bg-gray-200 rounded w-3/4 mb-4" />
+              <div class="h-4 bg-gray-200 rounded w-full mb-2" />
+              <div class="h-4 bg-gray-200 rounded w-2/3" />
+            </div>
+          </div>
         </div>
+
+        <!-- Empty State -->
+        <div
+          v-else-if="products.length === 0"
+          class="text-center py-16"
+        >
+          <svg
+            class="w-24 h-24 mx-auto text-text-secondary/30 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+          <h3 class="text-xl font-semibold text-text-primary mb-2">
+            暂无产品
+          </h3>
+          <p class="text-text-secondary">
+            当前分类下暂无产品，请稍后查看
+          </p>
+        </div>
+
+        <!-- Products List -->
+        <div
+          v-else
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <AnimatedSection
+            v-for="(product, index) in paginatedProducts"
+            :key="product.id"
+            animation="fade-in-up"
+            :delay="index * 50"
+          >
+            <NuxtLink
+              :to="`/products/${product.slug}`"
+              class="product-card group bg-surface-elevated rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300"
+            >
+              <!-- Product Image -->
+              <div class="product-image relative h-48 overflow-hidden bg-gradient-to-br from-primary/5 to-accent/5">
+                <img
+                  :src="product.image_url || '/images/product-default.jpg'"
+                  :alt="product.name"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                >
+                <div class="absolute top-4 right-4">
+                  <span
+                    v-if="product.is_active"
+                    class="px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-full"
+                  >
+                    在售
+                  </span>
+                </div>
+              </div>
+
+              <!-- Product Info -->
+              <div class="p-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-2 group-hover:text-primary transition-colors">
+                  {{ product.name }}
+                </h3>
+                <p
+                  v-if="product.subtitle"
+                  class="text-sm text-primary mb-3"
+                >
+                  {{ product.subtitle }}
+                </p>
+                <p class="text-sm text-text-secondary line-clamp-2 mb-4">
+                  {{ product.description || '点击查看详情' }}
+                </p>
+
+                <!-- Quick Specs -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    v-if="product.density"
+                    class="spec-tag px-2 py-1 bg-primary/10 text-primary text-xs rounded-lg"
+                  >
+                    密度 {{ product.density }}
+                  </span>
+                  <span
+                    v-if="product.strength"
+                    class="spec-tag px-2 py-1 bg-accent/10 text-accent text-xs rounded-lg"
+                  >
+                    强度 {{ product.strength }}
+                  </span>
+                </div>
+
+                <!-- View Count -->
+                <div class="flex items-center justify-between text-sm text-text-secondary">
+                  <div class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                    {{ product.view_count }} 次浏览
+                  </div>
+                  <span class="text-primary font-medium group-hover:underline">
+                    查看详情 →
+                  </span>
+                </div>
+              </div>
+            </NuxtLink>
+          </AnimatedSection>
+        </div>
+
+        <!-- Pagination -->
+        <div
+          v-if="totalPages > 1"
+          class="mt-12 flex justify-center"
+        >
+          <nav class="flex items-center gap-2">
+            <button
+              @click="currentPage--"
+              :disabled="currentPage === 1"
+              class="px-4 py-2 rounded-lg border border-border text-text-secondary hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              上一页
+            </button>
+            <button
+              v-for="page in visiblePages"
+              :key="page"
+              @click="currentPage = page"
+              :class="[
+                'w-10 h-10 rounded-lg font-medium transition-all',
+                currentPage === page
+                  ? 'bg-primary text-white'
+                  : 'border border-border text-text-secondary hover:bg-primary/10 hover:text-primary'
+              ]"
+            >
+              {{ page }}
+            </button>
+            <button
+              @click="currentPage++"
+              :disabled="currentPage === totalPages"
+              class="px-4 py-2 rounded-lg border border-border text-text-secondary hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              下一页
+            </button>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-16 bg-gradient-to-br from-primary/5 via-surface-elevated to-accent/5">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <AnimatedSection
+          animation="fade-in-up"
+          :delay="0"
+        >
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-4">
+            找不到合适的产品？
+          </h2>
+          <p class="text-lg text-text-secondary mb-8">
+            我们提供定制化解决方案，满足您的特殊需求
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <NuxtLink
+              to="/contact"
+              class="btn-primary btn-primary-lg"
+            >
+              立即咨询
+            </NuxtLink>
+            <a
+              :href="`tel:${contactPhone}`"
+              class="btn-outline"
+            >
+              电话咨询：{{ contactPhone }}
+            </a>
+          </div>
+        </AnimatedSection>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useProductStore } from '~/stores/product'
+import { SITE_CONFIG } from '~/config/site'
 
-useHead({
-  title: '产品中心 - 优丁轻集料混凝土',
-  meta: [
-    { name: 'description', content: '优丁建材专业生产轻集料混凝土、陶粒混凝土、加气混凝土、保温砂浆等全系列产品，提供详细技术参数和选型指导' },
-    { name: 'keywords', content: '轻集料混凝土,陶粒混凝土,加气混凝土,保温砂浆,优丁建材,轻集料混凝土价格,轻集料混凝土技术参数' },
-  ],
+const productStore = useProductStore()
+const contactPhone = SITE_CONFIG.phone
+
+const selectedCategory = ref<string>('all')
+const searchQuery = ref('')
+const currentPage = ref(1)
+const pageSize = 9
+
+const loading = computed(() => productStore.loading)
+
+const categories = computed(() => [
+  { id: 'all', name: '全部产品' },
+  ...productStore.categories
+])
+
+const products = computed(() => {
+  let filtered = productStore.products
+  
+  if (selectedCategory.value !== 'all') {
+    filtered = filtered.filter(p => p.category_id === selectedCategory.value)
+  }
+  
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      (p.description && p.description.toLowerCase().includes(query))
+    )
+  }
+  
+  return filtered
 })
 
-const store = useProductStore()
-const activeCategory = ref<string | null>(null)
+const totalPages = computed(() => Math.ceil(products.value.length / pageSize))
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return products.value.slice(start, start + pageSize)
+})
 
-const loading = computed(() => store.loading)
-const categories = computed(() => store.categories)
-const categoryMap = computed(() => store.categoryMap)
+const visiblePages = computed(() => {
+  const pages: number[] = []
+  const maxVisible = 5
+  let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2))
+  const end = Math.min(totalPages.value, start + maxVisible - 1)
+  
+  if (end - start + 1 < maxVisible) {
+    start = Math.max(1, end - maxVisible + 1)
+  }
+  
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+  
+  return pages
+})
 
-const filteredProducts = computed(() => {
-  if (!activeCategory.value) return store.products
-  return store.products.filter(p => p.category_id === activeCategory.value)
+watch([selectedCategory, searchQuery], () => {
+  currentPage.value = 1
 })
 
 onMounted(async () => {
-  await Promise.all([
-    store.fetchCategories(),
-    store.fetchProducts(),
-  ])
+  await productStore.fetchCategories()
+  await productStore.fetchProducts()
+})
+
+useHead({
+  title: '产品中心 - 轻集料混凝土与保温材料 | 优丁建材',
+  meta: [
+    { name: 'description', content: '优丁建材产品中心，提供轻集料混凝土、陶粒混凝土、保温材料等系列产品，符合国家标准，品质保证。' },
+    { name: 'keywords', content: '产品中心,轻集料混凝土,陶粒混凝土,保温材料,优丁建材' },
+  ],
 })
 </script>
+
+<style scoped>
+.product-card-skeleton {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.spec-tag {
+  white-space: nowrap;
+}
+</style>

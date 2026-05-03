@@ -107,7 +107,6 @@
               :key="child.name"
               class="relative"
             >
-              <!-- 有二级子菜单的菜单项 -->
               <template v-if="child.children && child.children.length > 0">
                 <button
                   class="w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 mb-1 group"
@@ -127,7 +126,6 @@
                   >
                     {{ child.title }}
                   </span>
-                  <!-- 展开箭头 -->
                   <svg
                     v-if="!collapsed"
                     class="ml-auto w-4 h-4 text-gray-400 transition-transform duration-200"
@@ -144,7 +142,6 @@
                     />
                   </svg>
                 </button>
-                <!-- 二级子菜单 -->
                 <transition name="collapse">
                   <div
                     v-if="expandedSubMenus.includes(child.name)"
@@ -157,7 +154,7 @@
                       :class="currentPath === subChild.path
                         ? 'bg-primary-50 text-primary-600 font-medium'
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
-                      @click="handleNavClick('/admin' + subChild.path)"
+                      @click="handleNavClick(subChild.path)"
                     >
                       <component
                         :is="getIcon(subChild.icon)"
@@ -168,7 +165,6 @@
                   </div>
                 </transition>
               </template>
-              <!-- 无子菜单的菜单项 -->
               <template v-else>
                 <button
                   class="w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 mb-1 group"
@@ -204,195 +200,236 @@
           </div>
         </div>
       </nav>
+
+      <div class="p-3 border-t border-gray-100">
+        <button
+          class="w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+          @click="handleLogout"
+        >
+          <LogoutOutlined class="w-5 h-5 flex-shrink-0" />
+          <span
+            v-if="!collapsed"
+            class="ml-3"
+          >退出登录</span>
+        </button>
+      </div>
     </aside>
+
+    <main
+      class="flex-1 transition-all duration-300"
+      :class="collapsed ? 'ml-16' : 'ml-64'"
+    >
+      <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <h2 class="text-xl font-semibold text-gray-800">
+          {{ currentPageTitle }}
+        </h2>
+        <div class="flex items-center space-x-4">
+          <span class="text-sm text-gray-500">{{ auth.username }}</span>
+        </div>
+      </header>
+      <div class="p-6">
+        <router-view />
+      </div>
+    </main>
   </div>
+</template>
 
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import {
+  DashboardOutlined,
+  PauseOutlined,
+  FolderOpenOutlined,
+  SearchOutlined,
+  FileTextOutlined,
+  MailOutlined,
+  AuditOutlined,
+  CopyOutlined,
+  FileOutlined,
+  PictureOutlined,
+  MessageOutlined,
+  UserOutlined,
+  BarChartOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons-vue'
+import { useAuthStore } from '@/stores/auth'
 
-  <script
-    setup
-    lang="ts"
-  >
-    import { ref, computed } from 'vue'
-    import { useRouter, useRoute } from 'vue-router'
-    import {
-    DashboardOutlined,
-    PauseOutlined,
-    FolderOpenOutlined,
-    SearchOutlined,
-    FileTextOutlined,
-    MailOutlined,
-    AuditOutlined,
-    CopyOutlined,
-    FileOutlined,
-    PictureOutlined,
-    MessageOutlined,
-    UserOutlined,
-    BarChartOutlined,
-    SettingOutlined,
-    LogoutOutlined,
-    } from '@ant-design/icons-vue'
-    import { useAuthStore } from '@/stores/auth'
+const collapsed = ref(false)
 
-    const collapsed = ref(false)
+const router = useRouter()
+const route = useRoute()
+const auth = useAuthStore()
 
-    const router = useRouter()
-    const route = useRoute()
-    const auth = useAuthStore()
+const currentPath = computed(() => route.path)
 
-    const currentPath = computed(() => route.path)
+const expandedSubMenus = ref<string[]>([])
 
-    // 二级子菜单展开状态
-    const expandedSubMenus = ref<string[]>([])
-
-    // 切换二级子菜单展开/折叠
-    function toggleSubMenu(name: string) {
-    const index = expandedSubMenus.value.indexOf(name)
-    if (index > -1) {
+function toggleSubMenu(name: string) {
+  const index = expandedSubMenus.value.indexOf(name)
+  if (index > -1) {
     expandedSubMenus.value.splice(index, 1)
-    } else {
+  } else {
     expandedSubMenus.value.push(name)
-    }
-    }
+  }
+}
 
-    const iconMap: Record<string, any> = {
-    DashboardOutlined,
-    PauseOutlined,
-    FolderOpenOutlined,
-    SearchOutlined,
-    FileTextOutlined,
-    MailOutlined,
-    AuditOutlined,
-    CopyOutlined,
-    FileOutlined,
-    PictureOutlined,
-    MessageOutlined,
-    UserOutlined,
-    BarChartOutlined,
-    SettingOutlined,
-    }
+const iconMap: Record<string, any> = {
+  DashboardOutlined,
+  PauseOutlined,
+  FolderOpenOutlined,
+  SearchOutlined,
+  FileTextOutlined,
+  MailOutlined,
+  AuditOutlined,
+  CopyOutlined,
+  FileOutlined,
+  PictureOutlined,
+  MessageOutlined,
+  UserOutlined,
+  BarChartOutlined,
+  SettingOutlined,
+}
 
-    function getIcon(iconName: string) {
-    return iconMap[iconName] || DashboardOutlined
-    }
+function getIcon(iconName: string) {
+  return iconMap[iconName] || DashboardOutlined
+}
 
-    const menuItems = [
-    {
+const menuItems = [
+  {
     title: '控制台',
     children: [
-    { name: 'Dashboard', path: '/dashboard', title: '数据概览', icon: 'DashboardOutlined' },
+      { name: 'Dashboard', path: '/dashboard', title: '数据概览', icon: 'DashboardOutlined' },
     ],
-    },
-    {
+  },
+  {
     title: '产品管理',
     children: [
-    { name: 'Products', path: '/products', title: '产品列表', icon: 'PauseOutlined' },
-    { name: 'Categories', path: '/products/categories', title: '分类管理', icon: 'FolderOpenOutlined' },
+      { name: 'Products', path: '/products', title: '产品列表', icon: 'PauseOutlined' },
+      { name: 'Categories', path: '/products/categories', title: '分类管理', icon: 'FolderOpenOutlined' },
     ],
-    },
-    {
+  },
+  {
     title: 'SEO优化',
     children: [
-    { name: 'SEO', path: '/seo', title: 'SEO概览', icon: 'SearchOutlined' },
-    { name: 'BatchSEO', path: '/seo/batch-seo', title: '批量SEO管理', icon: 'CopyOutlined' },
-    { name: 'ContentOptimizer', path: '/seo/content-optimizer', title: 'AI内容优化', icon: 'MailOutlined' },
-    { name: 'LLMSTxt', path: '/seo/llms-txt', title: 'LLMs.txt生成', icon: 'FileTextOutlined' },
-    { name: 'SiteAudit', path: '/seo/site-audit', title: '站点审计', icon: 'AuditOutlined' },
+      { name: 'SEO', path: '/seo', title: 'SEO概览', icon: 'SearchOutlined' },
+      { name: 'BatchSEO', path: '/seo/batch-seo', title: '批量SEO管理', icon: 'CopyOutlined' },
+      { name: 'ContentOptimizer', path: '/seo/content-optimizer', title: 'AI内容优化', icon: 'MailOutlined' },
+      { name: 'LLMSTxt', path: '/seo/llms-txt', title: 'LLMs.txt生成', icon: 'FileTextOutlined' },
+      { name: 'SiteAudit', path: '/seo/site-audit', title: '站点审计', icon: 'AuditOutlined' },
     ],
-    },
-    {
+  },
+  {
     title: '内容管理',
     children: [
-    { name: 'Content', path: '/content', title: '内容列表', icon: 'FileOutlined' },
-    { name: 'Cases', path: '/cases', title: '案例管理', icon: 'PictureOutlined' },
+      { name: 'Content', path: '/content', title: '内容列表', icon: 'FileOutlined' },
+      { name: 'Cases', path: '/cases', title: '案例管理', icon: 'PictureOutlined' },
     ],
-    },
-    {
+  },
+  {
     title: '营销获客',
     children: [
-    { name: 'Inquiries', path: '/inquiries', title: '询盘管理', icon: 'MessageOutlined' },
+      { name: 'Inquiries', path: '/inquiries', title: '询盘管理', icon: 'MessageOutlined' },
     ],
-    },
-    {
+  },
+  {
     title: '系统管理',
     children: [
-    { name: 'Users', path: '/users', title: '用户管理', icon: 'UserOutlined' },
-    { name: 'Analytics', path: '/analytics', title: '数据分析', icon: 'BarChartOutlined' },
-    { 
-    name: 'Settings', 
-    path: '/settings', 
-    title: '系统设置', 
-    icon: 'SettingOutlined',
-    children: [
-    { name: 'SettingsMain', path: '/settings', title: '基本设置', icon: 'SettingOutlined' },
-    { name: 'DragModule', path: '/settings/drag-module', title: '自定义拖拽模块', icon: 'SettingOutlined' },
-    { name: 'Effects', path: '/settings/effects', title: '自定义特效组件', icon: 'PictureOutlined' },
-    ]
-    },
+      { name: 'Users', path: '/users', title: '用户管理', icon: 'UserOutlined' },
+      { name: 'Analytics', path: '/analytics', title: '数据分析', icon: 'BarChartOutlined' },
+      { 
+        name: 'Settings', 
+        path: '/settings', 
+        title: '系统设置', 
+        icon: 'SettingOutlined',
+        children: [
+          { name: 'SettingsMain', path: '/settings', title: '基本设置', icon: 'SettingOutlined' },
+          { name: 'DragModule', path: '/settings/drag-module', title: '自定义拖拽模块', icon: 'SettingOutlined' },
+          { name: 'Effects', path: '/settings/effects', title: '自定义特效组件', icon: 'PictureOutlined' },
+        ]
+      },
     ],
-    },
-    ]
+  },
+]
 
-    function handleNavClick(path: string) {
-    router.push(path)
+const currentPageTitle = computed(() => {
+  for (const item of menuItems) {
+    for (const child of item.children) {
+      if (child.children) {
+        for (const subChild of child.children) {
+          if (currentPath.value === subChild.path) {
+            return subChild.title
+          }
+        }
+      }
+      if (currentPath.value === child.path || currentPath.value.startsWith(child.path)) {
+        return child.title
+      }
     }
+  }
+  return '控制台'
+})
 
-    function handleLogout() {
-    auth.logout()
-    router.push('/login')
-    }
-  </script>
+function handleNavClick(path: string) {
+  router.push(path)
+}
 
-  <style scoped>
-    .fade-enter-active,
-    .fade-leave-active {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+function handleLogout() {
+  auth.logout()
+  router.push('/login')
+}
+</script>
 
-    .fade-enter-from {
-    opacity: 0;
-    transform: translateX(20px);
-    }
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    .fade-leave-to {
-    opacity: 0;
-    transform: translateX(-20px);
-    }
+.fade-enter-from {
+  opacity: 0;
+  transform: translateX(20px);
+}
 
-    .collapse-enter-active,
-    .collapse-leave-active {
-    transition: all 0.2s ease-out;
-    overflow: hidden;
-    }
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
 
-    .collapse-enter-from,
-    .collapse-leave-to {
-    opacity: 0;
-    max-height: 0;
-    }
+.collapse-enter-active,
+.collapse-leave-active {
+  transition: all 0.2s ease-out;
+  overflow: hidden;
+}
 
-    .collapse-enter-to,
-    .collapse-leave-from {
-    max-height: 200px;
-    }
+.collapse-enter-from,
+.collapse-leave-to {
+  opacity: 0;
+  max-height: 0;
+}
 
-    /* 滚动条样式 */
-    ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    }
+.collapse-enter-to,
+.collapse-leave-from {
+  max-height: 200px;
+}
 
-    ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-    }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-    ::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-    }
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
 
-    ::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1;
-    }
-  </style>
-</template>
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+</style>
