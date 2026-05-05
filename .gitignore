@@ -1,0 +1,103 @@
+# ====================
+# 前端构建产物和依赖
+# ====================
+frontend/.output/
+frontend/node_modules/
+frontend/.nuxt/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# 管理后台
+frontend/admin/node_modules/
+frontend/admin/dist/
+frontend/admin/.nuxt/
+
+# ====================
+# Python 相关
+# ====================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 虚拟环境
+wang zhan_env/
+*/venv/
+*/env/
+
+# ====================
+# 通用 node
+# ====================
+node_modules/
+.output/
+dist/
+.nuxt/
+
+# ====================
+# 环境配置
+# ====================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ====================
+# 日志
+# ====================
+*.log
+logs/
+
+# ====================
+# IDE / 编辑器
+# ====================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ====================
+# 操作系统
+# ====================
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ====================
+# 编译产物
+# ====================
+*.egg-info/
+*.egg
+dist/
+build/
+*.so
+
+# ====================
+# Windows保留名 / 临时文件
+# ====================
+nul
+NUL
+Nul
+CON
+PRN
+AUX
+LPT1
+COM1
+修复Git忽略.bat.txt
+新建 文本文档.txt
+*文本文档*
+
+# ====================
+# 智能体工作流
+# ====================
+smart_agent_workflow/
+
+# ====================
+# Python缓存
+# ====================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
