@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-06-01T13:48:32.250Z",
+  "base": "http://127.0.0.1:4174",
+  "api": "http://127.0.0.1:8001",
+  "ok": 15,
+  "fail": 0,
+  "files": [
+    "cert-01-login.png",
+    "cert-02-tenants.png",
+    "cert-03-hierarchy.png",
+    "cert-04-aggregation.png",
+    "cert-05-health.png",
+    "cert-06-finance.png",
+    "cert-07-products.png",
+    "cert-08-categories.png",
+    "cert-09-inquiries.png",
+    "cert-10-seo.png",
+    "cert-11-ai-content.png",
+    "cert-12-trade-intel.png",
+    "ux-07-agent-performance.png",
+    "ux-07-client-dashboard.png",
+    "ux-07-platform-dashboard.png"
+  ]
+}

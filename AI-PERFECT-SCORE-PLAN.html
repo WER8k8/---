@@ -1,0 +1,2870 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>满分改造计划 — 10 大模型 × 6 维度全维度 9.5+ 提升方案</title>
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #13161d;
+  --surface2: #1c202b;
+  --surface3: #262b39;
+  --border: #2e3345;
+  --text: #e8eaef;
+  --text2: #9ca3b0;
+  --text3: #6b7280;
+  --gold: #fbbf24;
+  --gold2: #f59e0b;
+  --green: #22c55e;
+  --red: #ef4444;
+  --orange: #f59e0b;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --cyan: #06b6d4;
+  --pink: #ec4899;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 1500px; margin: 0 auto; padding: 40px 24px; }
+
+/* Hero */
+.hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(6,182,212,0.08)); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 32px; }
+.hero h1 { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; }
+.hero .subtitle { color: var(--text2); font-size: 1.1rem; margin-bottom: 24px; }
+.hero-meta { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.hero-meta-item { text-align: center; }
+.hero-meta-item .num { font-size: 2rem; font-weight: 800; color: var(--gold); }
+.hero-meta-item .label { font-size: 0.8rem; color: var(--text2); }
+
+/* Score Card */
+.score-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+.score-card h2 { font-size: 1.3rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.score-card h2 .icon { font-size: 1.5rem; }
+
+/* Dimension Table */
+.dim-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 16px 0; }
+.dim-table th { background: var(--surface2); padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
+.dim-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.dim-table tr:hover td { background: rgba(251,191,36,0.03); }
+.score-before { color: var(--text3); text-decoration: line-through; font-size: 0.85rem; }
+.score-after { color: var(--gold); font-weight: 800; font-size: 1.1rem; margin-left: 6px; }
+.score-up { color: var(--green); font-size: 0.75rem; margin-left: 4px; }
+
+/* Model Section */
+.model-section { margin-bottom: 48px; }
+.model-header { display: flex; align-items: center; gap: 16px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px 12px 0 0; border-bottom: none; }
+.model-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; flex-shrink: 0; }
+.model-name { font-size: 1.5rem; font-weight: 700; }
+.model-tagline { color: var(--gold2); font-size: 0.85rem; font-weight: 600; }
+.model-body { background: var(--surface); border: 1px solid var(--border); border-radius: 0 0 12px 12px; padding: 28px; border-top: 1px solid var(--border); }
+
+/* Dimension Block */
+.dim-block { margin: 28px 0; padding: 20px; background: var(--surface2); border-radius: 10px; border-left: 4px solid; }
+.dim-block h3 { font-size: 1.1rem; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+.dim-block .dim-score { font-size: 0.9rem; color: var(--text2); margin-bottom: 14px; }
+.dim-block .dim-score .before { color: var(--text3); text-decoration: line-through; }
+.dim-block .dim-score .after { color: var(--gold); font-weight: 700; }
+.dim-block .dim-score .delta { color: var(--green); font-weight: 600; margin-left: 6px; }
+
+/* Action Steps */
+.action-step { background: var(--surface3); border-radius: 8px; padding: 14px 18px; margin: 10px 0; }
+.action-step .step-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: var(--gold); color: #000; border-radius: 50%; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+.step-detail { font-size: 0.85rem; color: var(--text2); padding-left: 32px; }
+.step-detail ul { padding-left: 18px; margin: 6px 0; }
+.step-detail li { margin: 4px 0; }
+.step-meta { display: flex; gap: 12px; margin-top: 8px; padding-left: 32px; font-size: 0.75rem; color: var(--text3); }
+.step-meta span { display: flex; align-items: center; gap: 4px; }
+.step-priority { padding: 1px 8px; border-radius: 10px; font-weight: 600; }
+.p0 { background: rgba(239,68,68,0.15); color: #f87171; }
+.p1 { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.p2 { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+/* Summary Grid */
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+.summary-item { background: var(--surface2); border-radius: 8px; padding: 14px; text-align: center; }
+.summary-label { font-size: 0.8rem; color: var(--text2); margin-bottom: 6px; }
+.summary-score { font-size: 1.6rem; font-weight: 800; }
+.summary-bar { height: 6px; background: var(--border); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.summary-bar-fill { height: 100%; border-radius: 3px; }
+
+/* Section Divider */
+.section-divider { display: flex; align-items: center; gap: 12px; margin: 32px 0 20px; }
+.section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-divider span { color: var(--gold2); font-weight: 700; font-size: 1rem; white-space: nowrap; padding: 4px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
+
+/* TOC */
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 32px; }
+.toc h2 { margin-bottom: 16px; font-size: 1.1rem; }
+.toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.toc a { color: var(--text2); text-decoration: none; font-size: 0.88rem; padding: 6px 0; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.toc a:hover { color: var(--gold2); }
+.toc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Roadmap */
+.roadmap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+.phase { background: var(--surface2); border-radius: 10px; padding: 18px; position: relative; }
+.phase::before { content: ''; position: absolute; top: 50%; right: -6px; width: 12px; height: 12px; background: var(--gold); border-radius: 50%; z-index: 1; }
+.phase:last-child::before { display: none; }
+.phase-num { font-size: 0.75rem; color: var(--gold2); font-weight: 700; margin-bottom: 4px; }
+.phase-title { font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+.phase-items { font-size: 0.8rem; color: var(--text2); }
+.phase-items li { margin: 4px 0; list-style: none; }
+.phase-items li::before { content: '✓ '; color: var(--green); }
+
+/* Code Snippet */
+.code-snippet { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; margin: 10px 0; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 0.8rem; color: #c9d1d9; overflow-x: auto; white-space: pre; }
+.code-comment { color: #6e7681; }
+.code-key { color: #79c0ff; }
+.code-str { color: #a5d6ff; }
+.code-fn { color: #d2a8ff; }
+.code-num { color: #79c0ff; }
+
+@media (max-width: 900px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .roadmap { grid-template-columns: 1fr; }
+  .phase::before { display: none; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 1.8rem; }
+  .container { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============== HERO ============== -->
+<div class="hero">
+  <h1>🏆 满分改造计划</h1>
+  <p class="subtitle">10 大 AI 模型 × 6 维度全维度 9.5+ 可实施提升方案</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><div class="num">10</div><div class="label">AI 模型</div></div>
+    <div class="hero-meta-item"><div class="num">6</div><div class="label">核心维度</div></div>
+    <div class="hero-meta-item"><div class="num">120+</div><div class="label">具体行动项</div></div>
+    <div class="hero-meta-item"><div class="num">12周</div><div class="label">预计周期</div></div>
+    <div class="hero-meta-item"><div class="num">9.5+</div><div class="label">目标评分</div></div>
+  </div>
+</div>
+
+<!-- ============== 总览评分对比 ============== -->
+<div class="score-card">
+  <h2><span class="icon">📊</span>改造前后评分对比总览</h2>
+  <div style="overflow-x:auto;">
+  <table class="dim-table">
+    <thead>
+      <tr>
+        <th>模型</th>
+        <th>架构设计</th>
+        <th>安全合规</th>
+        <th>获客能力</th>
+        <th>性能扩展</th>
+        <th>代码质量</th>
+        <th>产品商业</th>
+        <th>综合分</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>DeepSeek-V4-Pro</b></td>
+        <td><span class="score-before">8.0</span><span class="score-after">9.7</span><span class="score-up">+1.7</span></td>
+        <td><span class="score-before">8.5</span><span class="score-after">9.6</span><span class="score-up">+1.1</span></td>
+        <td><span class="score-before">3.5</span><span class="score-after">9.5</span><span class="score-up">+6.0</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.5</span><span class="score-up">+3.0</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.5</span><span class="score-up">+3.5</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.5</span><span class="score-up">+4.0</span></td>
+        <td><span class="score-before">6.3</span><span class="score-after">9.6</span><span class="score-up">+3.3</span></td>
+      </tr>
+      <tr>
+        <td><b>DeepSeek-V4-Flash</b></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.5</span><span class="score-up">+2.0</span></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.5</span><span class="score-up">+2.5</span></td>
+        <td><span class="score-before">3.0</span><span class="score-after">9.5</span><span class="score-up">+6.5</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.5</span><span class="score-up">+3.5</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.5</span><span class="score-up">+4.0</span></td>
+        <td><span class="score-before">5.0</span><span class="score-after">9.5</span><span class="score-up">+4.5</span></td>
+        <td><span class="score-before">5.7</span><span class="score-after">9.5</span><span class="score-up">+3.8</span></td>
+      </tr>
+      <tr>
+        <td><b>Kimi-K2.7-Code</b></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.6</span><span class="score-up">+2.6</span></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.5</span><span class="score-up">+2.0</span></td>
+        <td><span class="score-before">2.5</span><span class="score-after">9.6</span><span class="score-up">+7.1</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.5</span><span class="score-up">+3.0</span></td>
+        <td><span class="score-before">4.5</span><span class="score-after">9.7</span><span class="score-up">+5.2</span></td>
+        <td><span class="score-before">5.0</span><span class="score-after">9.5</span><span class="score-up">+4.5</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.6</span><span class="score-up">+4.1</span></td>
+      </tr>
+      <tr>
+        <td><b>Kimi-K2.6</b></td>
+        <td><span class="score-before">8.5</span><span class="score-after">9.7</span><span class="score-up">+1.2</span></td>
+        <td><span class="score-before">8.0</span><span class="score-after">9.6</span><span class="score-up">+1.6</span></td>
+        <td><span class="score-before">3.0</span><span class="score-after">9.6</span><span class="score-up">+6.6</span></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.5</span><span class="score-up">+2.5</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.6</span><span class="score-up">+3.1</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.5</span><span class="score-up">+3.5</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.6</span><span class="score-up">+3.1</span></td>
+      </tr>
+      <tr>
+        <td><b>MiniMax-M3</b></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.5</span><span class="score-up">+3.0</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.5</span><span class="score-up">+3.0</span></td>
+        <td><span class="score-before">3.5</span><span class="score-after">9.5</span><span class="score-up">+6.0</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.5</span><span class="score-up">+3.5</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.5</span><span class="score-up">+4.0</span></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.7</span><span class="score-up">+2.2</span></td>
+        <td><span class="score-before">5.9</span><span class="score-after">9.5</span><span class="score-up">+3.6</span></td>
+      </tr>
+      <tr>
+        <td><b>Qwen3.7-Plus</b></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.6</span><span class="score-up">+2.1</span></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.6</span><span class="score-up">+2.1</span></td>
+        <td><span class="score-before">3.0</span><span class="score-after">9.6</span><span class="score-up">+6.6</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.6</span><span class="score-up">+3.1</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.6</span><span class="score-up">+3.6</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.6</span><span class="score-up">+4.1</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.6</span><span class="score-up">+3.6</span></td>
+      </tr>
+      <tr>
+        <td><b>Kimi-K3</b></td>
+        <td><span class="score-before">8.0</span><span class="score-after">9.8</span><span class="score-up">+1.8</span></td>
+        <td><span class="score-before">8.0</span><span class="score-after">9.7</span><span class="score-up">+1.7</span></td>
+        <td><span class="score-before">2.5</span><span class="score-after">9.8</span><span class="score-up">+7.3</span></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.7</span><span class="score-up">+2.2</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.7</span><span class="score-up">+3.7</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.7</span><span class="score-up">+3.2</span></td>
+        <td><span class="score-before">6.4</span><span class="score-after">9.7</span><span class="score-up">+3.3</span></td>
+      </tr>
+      <tr>
+        <td><b>GLM-5.2</b></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.6</span><span class="score-up">+2.1</span></td>
+        <td><span class="score-before">9.0</span><span class="score-after">9.8</span><span class="score-up">+0.8</span></td>
+        <td><span class="score-before">3.0</span><span class="score-after">9.6</span><span class="score-up">+6.6</span></td>
+        <td><span class="score-before">6.5</span><span class="score-after">9.5</span><span class="score-up">+3.0</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.6</span><span class="score-up">+4.1</span></td>
+        <td><span class="score-before">5.0</span><span class="score-after">9.5</span><span class="score-up">+4.5</span></td>
+        <td><span class="score-before">6.1</span><span class="score-after">9.6</span><span class="score-up">+3.5</span></td>
+      </tr>
+      <tr>
+        <td><b>GLM-5-Turbo</b></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.5</span><span class="score-up">+2.5</span></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.5</span><span class="score-up">+2.5</span></td>
+        <td><span class="score-before">2.5</span><span class="score-after">9.5</span><span class="score-up">+7.0</span></td>
+        <td><span class="score-before">8.0</span><span class="score-after">9.8</span><span class="score-up">+1.8</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.5</span><span class="score-up">+3.5</span></td>
+        <td><span class="score-before">5.5</span><span class="score-after">9.5</span><span class="score-up">+4.0</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.5</span><span class="score-up">+3.5</span></td>
+      </tr>
+      <tr>
+        <td><b>GLM-5</b></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.6</span><span class="score-up">+2.1</span></td>
+        <td><span class="score-before">7.5</span><span class="score-after">9.6</span><span class="score-up">+2.1</span></td>
+        <td><span class="score-before">3.0</span><span class="score-after">9.6</span><span class="score-up">+6.6</span></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.6</span><span class="score-up">+2.6</span></td>
+        <td><span class="score-before">6.0</span><span class="score-after">9.6</span><span class="score-up">+3.6</span></td>
+        <td><span class="score-before">7.0</span><span class="score-after">9.7</span><span class="score-up">+2.7</span></td>
+        <td><span class="score-before">6.3</span><span class="score-after">9.6</span><span class="score-up">+3.3</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="color:var(--text2);font-size:0.85rem;margin-top:12px;">💡 <b>获客能力</b>是提升空间最大的维度（平均 +6.6 分），也是改造计划的核心重点。<b>代码质量</b>和<b>产品商业</b>紧随其后。</p>
+</div>
+
+<!-- ============== 四阶段路线图 ============== -->
+<div class="score-card">
+  <h2><span class="icon">🗺️</span>12 周四阶段实施路线图</h2>
+  <div class="roadmap">
+    <div class="phase">
+      <div class="phase-num">第 1-2 周</div>
+      <div class="phase-title">止血 & 基础夯实</div>
+      <ul class="phase-items">
+        <li>移除所有 Mock 获客渠道 UI</li>
+        <li>修复安全漏洞（JWT Cookie化）</li>
+        <li>统一代码规范与CI门禁</li>
+        <li>修复数据模型不一致问题</li>
+        <li>搭建基础监控告警</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">第 3-5 周</div>
+      <div class="phase-title">获客核心闭环</div>
+      <ul class="phase-items">
+        <li>接入 Hunter.io + Apollo.io</li>
+        <li>SMTP 邮件发送（Resend）</li>
+        <li>邮箱验证（ZeroBounce）</li>
+        <li>获客漏斗仪表板</li>
+        <li>线索评分与去重</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">第 6-9 周</div>
+      <div class="phase-title">AI 自动化引擎</div>
+      <ul class="phase-items">
+        <li>DeerFlow 获客 pipeline</li>
+        <li>RAG 客户洞察</li>
+        <li>个性化开发信生成</li>
+        <li>LinkedIn 自动化</li>
+        <li>WhatsApp Business API</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">第 10-12 周</div>
+      <div class="phase-title">增长飞轮 & 商业化</div>
+      <ul class="phase-items">
+        <li>获客反馈闭环 → AI 学习</li>
+        <li>多渠道归因分析</li>
+        <li>代理体系运营落地</li>
+        <li>计费体系精细化</li>
+        <li>性能优化 & 压力测试</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============== 目录 ============== -->
+<div class="toc">
+  <h2>📋 10 模型改造方案目录</h2>
+  <div class="toc-grid">
+    <a href="#ds-pro"><span class="toc-dot" style="background:#4d6bfe;"></span>DeepSeek-V4-Pro — 架构推演派</a>
+    <a href="#ds-flash"><span class="toc-dot" style="background:#4d6bfe;"></span>DeepSeek-V4-Flash — 快速落地派</a>
+    <a href="#kimi-code"><span class="toc-dot" style="background:#7c3aed;"></span>Kimi-K2.7-Code — 代码质量派</a>
+    <a href="#kimi-k26"><span class="toc-dot" style="background:#7c3aed;"></span>Kimi-K2.6 — 全局一致派</a>
+    <a href="#minimax"><span class="toc-dot" style="background:#f59e0b;"></span>MiniMax-M3 — 体验设计派</a>
+    <a href="#qwen"><span class="toc-dot" style="background:#22c55e;"></span>Qwen3.7-Plus — 均衡务实派</a>
+    <a href="#kimi-k3"><span class="toc-dot" style="background:#ec4899;"></span>Kimi-K3 — 前瞻演进派</a>
+    <a href="#glm-52"><span class="toc-dot" style="background:#3b82f6;"></span>GLM-5.2 — 安全合规派</a>
+    <a href="#glm-turbo"><span class="toc-dot" style="background:#06b6d4;"></span>GLM-5-Turbo — 性能效率派</a>
+    <a href="#glm-5"><span class="toc-dot" style="background:#8b5cf6;"></span>GLM-5 — 商业价值派</a>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 1: DeepSeek-V4-Pro -->
+<!-- ============================================================ -->
+<div class="model-section" id="ds-pro">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#4d6bfe,#7b93ff);color:#fff;">DS</div>
+    <div>
+      <div class="model-name">DeepSeek-V4-Pro</div>
+      <div class="model-tagline">架构推演派 — 从系统论视角重构获客引擎与整体架构</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">8.0 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">8.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">5.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <!-- 维度1：架构设计 -->
+    <div class="section-divider"><span>维度 1：架构设计 8.0 → 9.7</span></div>
+
+    <div class="dim-block" style="border-color:var(--gold);">
+      <h3>🏛️ 六边形架构 + 领域驱动重构</h3>
+      <div class="dim-score">当前 <span class="before">8.0</span> → 目标 <span class="after">9.7</span> <span class="delta">+1.7</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>后端按领域拆分为模块单体架构</div>
+        <div class="step-detail">
+          将 120+ 路由和 70+ 模型按业务域重组为 6 大模块：
+          <ul>
+            <li><b>commerce/</b> — 产品/询盘/订单/报价/支付（交易核心）</li>
+            <li><b>acquisition/</b> — 获客/UBrain/DeerFlow/邮件（增长引擎）</li>
+            <li><b>content/</b> — 内容/SEO/媒体工厂/建站（内容运营）</li>
+            <li><b>tenant/</b> — 租户/用户/权限/计费（SaaS 基座）</li>
+            <li><b>platform/</b> — 代理/平台运营/合规（平台治理）</li>
+            <li><b>core/</b> — 基础设施（保持不变）</li>
+          </ul>
+          每个模块内部遵循 repository → service → api 三层结构，模块间通过明确的接口调用，禁止跨模块直接访问 ORM。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 4 周</span><span>🔧 架构重构</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>引入事件总线 + 事件驱动架构</div>
+        <div class="step-detail">
+          基于 Redis Streams 实现轻量级事件总线，核心事件：
+          <ul>
+            <li><code>inquiry.created</code> → 触发 AI 自动回复 + 销售通知 + 归因记录</li>
+            <li><code>prospect.found</code> → 触发邮箱验证 + fit_score 评估 + 入队</li>
+            <li><code>email.opened</code> → 更新线索热度 + 触发 follow-up 序列</li>
+            <li><code>customer.converted</code> → 触发归因计算 + 代理分润 + AI 模型学习</li>
+          </ul>
+          用事件解耦获客 → 销售 → 交付各环节，避免同步调用链过长。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🔧 架构演进</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>BFF 层真正落地</div>
+        <div class="step-detail">
+          当前 admin-bff/client-bff 有名无实。真正的 BFF 应：
+          <ul>
+            <li>前端只调 BFF，BFF 聚合后端多个微服务响应</li>
+            <li>获客页面：一次请求返回「线索列表 + 评分分布 + 漏斗统计 + 今日任务」</li>
+            <li>减少 60%+ 的前端 API 请求次数</li>
+            <li>BFF 层做视图组装，后端 service 做业务逻辑</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 前后端协作</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>前端路由按角色壳拆分 + 懒加载优化</div>
+        <div class="step-detail">
+          1930 行 router/index.ts 拆分为：
+          <ul>
+            <li><code>router/platform.ts</code> — 超管路由（懒加载）</li>
+            <li><code>router/client.ts</code> — 租户路由（懒加载）</li>
+            <li><code>router/agent.ts</code> — 代理路由（懒加载）</li>
+            <li><code>router/partner.ts</code> — 省代路由（懒加载）</li>
+            <li><code>router/public.ts</code> — 公开路由（登录/注册/Landing）</li>
+          </ul>
+          主文件只做路由合并和全局守卫。配合 Vite 路由级 code splitting，首屏 JS 体积减少 70%。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 1 周</span><span>🔧 前端重构</span></div>
+      </div>
+    </div>
+
+    <!-- 维度2：安全合规 -->
+    <div class="section-divider"><span>维度 2：安全合规 8.5 → 9.6</span></div>
+
+    <div class="dim-block" style="border-color:var(--green);">
+      <h3>🛡️ 企业级安全体系升级</h3>
+      <div class="dim-score">当前 <span class="before">8.5</span> → 目标 <span class="after">9.6</span> <span class="delta">+1.1</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>JWT 全面迁移到 HttpOnly Secure Cookie</div>
+        <div class="step-detail">
+          从 sessionStorage 迁移到 HttpOnly Cookie 的完整方案：
+          <ul>
+            <li>后端新增 <code>/auth/session</code> 端点，Set-Cookie 时指定 HttpOnly + Secure + SameSite=Strict + Path=/</li>
+            <li>CSRF Token 采用 Double Submit Cookie 模式（Cookie 存 csrf_token，请求头 X-CSRF-Token 带同样的值）</li>
+            <li>前端移除所有 token 存储逻辑，axios 自动携带 Cookie</li>
+            <li>WebSocket 认证改为握手时校验 Cookie + 生成一次性 connection_token</li>
+            <li>提供 30 天过渡期：同时支持 JWT Header 和 Cookie，逐步废弃 Header 方式</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🔧 安全加固</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>国密算法替换为 GmSSL 认证库</div>
+        <div class="step-detail">
+          <ul>
+            <li>替换 <code>gm_crypto.py</code> 自研实现为 <code>gmssl-python</code>（国密局认证算法库）</li>
+            <li>添加 SM2 密钥管理：密钥分离存储，生产环境使用 HSM 或 KMS</li>
+            <li>字段加密增加密钥轮换机制：<code>encryption_key_version</code> 字段标记每条记录使用的密钥版本</li>
+            <li>增加加密数据完整性校验：HMAC-SM3 防篡改</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 密码学升级</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>GDPR / 个人信息保护法合规落地</div>
+        <div class="step-detail">
+          <ul>
+            <li>用户数据导出接口：<code>GET /api/v1/gdpr/export</code> 返回所有个人数据（JSON + CSV）</li>
+            <li>数据删除权：<code>DELETE /api/v1/gdpr/delete</code> 触发 30 天延迟删除（软删除 → 硬删除）</li>
+            <li>同意管理（Consent Management）：邮件营销同意记录 + 可随时撤回</li>
+            <li>数据处理记录（ROPA）：自动记录哪些数据被哪个服务处理、处理目的、保留期限</li>
+            <li>跨境数据传输评估：海外获客数据存储区域与用户所在地一致性检查</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🔧 合规体系</span></div>
+      </div>
+    </div>
+
+    <!-- 维度3：获客能力 -->
+    <div class="section-divider"><span>维度 3：获客能力 3.5 → 9.5（核心改造）</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);background:linear-gradient(to right, rgba(239,68,68,0.08), var(--surface2));">
+      <h3>🎯 获客引擎全面重构 — 从 Mock 到 真正 AI 获客操作系统</h3>
+      <div class="dim-score">当前 <span class="before">3.5</span> → 目标 <span class="after">9.5</span> <span class="delta">+6.0</span> （最大提升维度）</div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>第一阶段：数据基础设施层（第 1-2 周）</div>
+        <div class="step-detail">
+          <b>1.1 统一线索数据模型</b>
+          <ul>
+            <li>定义 <code>ProspectLead</code> 标准模型，统一 6 个渠道的输出格式</li>
+            <li>字段：name/title/company/email/phone/whatsapp/linkedin_url/website/country/industry/company_size/source/confidence_score/fit_score/verification_status</li>
+            <li>所有渠道服务实现同一 Protocol 接口：<code>search(query, filters) → list[ProspectLead]</code></li>
+          </ul>
+          <b>1.2 线索去重引擎</b>
+          <ul>
+            <li>邮箱哈希去重（MD5 + 模糊匹配）</li>
+            <li>公司域名去重（同一公司只保留最高质量联系人）</li>
+            <li>LinkedIn URL 规范化去重</li>
+          </ul>
+          <b>1.3 线索评分引擎 v2</b>
+          <ul>
+            <li>5 维度评分：职位匹配度 / 公司规模 / 行业匹配 / 联系方式完整度 / 互动热度</li>
+            <li>动态权重：基于历史成交数据用 logistic regression 自动调整权重</li>
+            <li>AI 增强：用 LLM 分析对方公司官网/LinkedIn 页面，输出定制化 fit_score 和 切入点建议</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>🔧 基础设施</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>第二阶段：真实渠道接入（第 3-5 周）</div>
+        <div class="step-detail">
+          <b>2.1 核心数据渠道（必接）</b>
+          <ul>
+            <li><b>Hunter.io</b> — 邮箱查找 + 域名搜索 + 邮箱验证（$49/月起，性价比最高）</li>
+            <li><b>Apollo.io</b> — 2.65 亿联系人数据库，按行业/职位/公司规模精准筛选（$49/月起）</li>
+            <li><b>ZoomInfo</b> — 企业级 B2B 数据（备选，预算充足时接入）</li>
+          </ul>
+          <b>2.2 社媒渠道</b>
+          <ul>
+            <li><b>LinkedIn Sales Navigator API</b> — 通过官方 Partner API 或第三方代理（如 Proxycurl）接入</li>
+            <li><b>Google Custom Search</b> — 已有，优化查询构造和结果解析</li>
+          </ul>
+          <b>2.3 验证渠道</b>
+          <ul>
+            <li><b>ZeroBounce</b> / <b>NeverBounce</b> — 邮箱有效性验证（$0.003/次起）</li>
+            <li><b>WhatsApp 号码验证</b> — 通过 WhatsApp Business API profile 检查</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 周</span><span>🔧 第三方集成</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>第三阶段：触达渠道（第 4-6 周）</div>
+        <div class="step-detail">
+          <b>3.1 邮件营销引擎</b>
+          <ul>
+            <li>接入 <b>Resend</b> 或 <b>SendGrid</b> 作为 SMTP 服务商</li>
+            <li>域名配置：DKIM / SPF / DMARC / 自定义追踪域名（提高送达率）</li>
+            <li>邮件序列（Drip Campaign）：欢迎信 → 价值内容 → 案例分享 → 软销售 → 硬销售，共 5-7 封</li>
+            <li>打开/点击追踪：像素追踪 + 链接重定向</li>
+            <li>退订管理：CAN-SPAM / GDPR 合规，一键退订</li>
+          </ul>
+          <b>3.2 WhatsApp 触达</b>
+          <ul>
+            <li>WhatsApp Business Cloud API 正式接入</li>
+            <li>消息模板预审 + 会话内回复（24 小时窗口）</li>
+            <li>群发消息走模板消息，单聊走会话消息</li>
+          </ul>
+          <b>3.3 LinkedIn 触达</b>
+          <ul>
+            <li>连接请求自动发送（带个性化邀请语）</li>
+            <li>通过后自动发送欢迎消息</li>
+            <li>内容点赞/评论互动（养号策略）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 周</span><span>🔧 触达能力</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>第四阶段：AI 个性化引擎（第 6-8 周）</div>
+        <div class="step-detail">
+          <b>4.1 RAG 客户洞察</b>
+          <ul>
+            <li>爬取潜在客户公司官网 → 分块 → pgvector 向量化存储</li>
+            <li>爬取 LinkedIn 公司页 + 联系人主页 → 向量化</li>
+            <li>AI 基于 RAG 生成高度个性化的开发信（提及对方最新产品/新闻/痛点）</li>
+          </ul>
+          <b>4.2 开发信质量评估</b>
+          <ul>
+            <li>AI 自动评分：个性化程度 / 价值清晰度 / CTA 明确度 / 语气专业度</li>
+            <li>A/B 测试：同一线索不同版本开发信，自动选出最优模板</li>
+          </ul>
+          <b>4.3 智能 follow-up</b>
+          <ul>
+            <li>打开未回 → 3 天后发 follow-up</li>
+            <li>点击链接未回 → 2 天后发针对性 follow-up</li>
+            <li>回复后 → AI 分析回复意图，生成回复建议</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🔧 AI 增强</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">5</span>第五阶段：数据飞轮（第 9-12 周）</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>归因闭环</b>：每一个成交客户回溯来源渠道/搜索关键词/开发信版本，计算各渠道 ROI</li>
+            <li><b>模型自学习</b>：基于历史成交数据自动优化线索评分权重和搜索关键词推荐</li>
+            <li><b>成功案例库</b>：高回复率开发信自动归档为最佳实践，供新用户参考</li>
+            <li><b>行业基准</b>：匿名化汇总各行业回复率/转化率，帮助用户 benchmark</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 4 周</span><span>🔧 数据飞轮</span></div>
+      </div>
+    </div>
+
+    <!-- 维度4：性能扩展 -->
+    <div class="section-divider"><span>维度 4：性能扩展 6.5 → 9.5</span></div>
+
+    <div class="dim-block" style="border-color:var(--cyan);">
+      <h3>⚡ 云原生弹性架构</h3>
+      <div class="dim-score">当前 <span class="before">6.5</span> → 目标 <span class="after">9.5</span> <span class="delta">+3.0</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>Celery 多队列 + 自动扩缩</div>
+        <div class="step-detail">
+          <ul>
+            <li>拆分为 6 个专用队列：seo / deerflow / email / media / cross_border / default</li>
+            <li>每个队列独立 worker 池，避免 SEO 任务阻塞邮件发送</li>
+            <li>基于 Redis Queue Length 的 HPA（Kubernetes）或 celery autoscale</li>
+            <li>任务优先级：高优（邮件发送/通知）、中优（SEO/内容生成）、低优（报表/数据同步）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 1 周</span><span>🔧 异步任务</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>数据库读写分离 + 连接池优化</div>
+        <div class="step-detail">
+          <ul>
+            <li>PostgreSQL 主从复制（streaming replication），读请求走 Replica</li>
+            <li>PgBouncer 连接池（Transaction Mode），支持 1000+ 并发连接</li>
+            <li>慢查询自动记录 + 索引建议（pg_stat_statements）</li>
+            <li>关键大表（inquiries / buyer_prospect_leads / chat_messages）增加分区策略（按月分区）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 数据库</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>CDN + 边缘缓存</div>
+        <div class="step-detail">
+          <ul>
+            <li>前端静态资源全量上传 Cloudflare R2 + Cloudflare CDN</li>
+            <li>Nuxt SSR 页面边缘缓存（Cloudflare Cache Rules，TTL 300s + Stale-While-Revalidate）</li>
+            <li>API 响应缓存：公开 API（产品列表/内容页面）走 CDN 边缘缓存，TTL 60s</li>
+            <li>图片自动 WebP/AVIF 转换 + 按需裁剪（Cloudflare Image Resizing）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 CDN/边缘</span></div>
+      </div>
+    </div>
+
+    <!-- 维度5：代码质量 -->
+    <div class="section-divider"><span>维度 5：代码质量 6.0 → 9.5</span></div>
+
+    <div class="dim-block" style="border-color:var(--purple);">
+      <h3>💎 企业级代码质量体系</h3>
+      <div class="dim-score">当前 <span class="before">6.0</span> → 目标 <span class="after">9.5</span> <span class="delta">+3.5</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>后端代码规范 & 质量门禁</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>Ruff</b>（lint）+ <b>Black</b>（format）+ <b>isort</b>（import 排序）+ <b>mypy</b>（类型检查）</li>
+            <li><b>pre-commit hooks</b>：提交前自动运行 lint + format + type check</li>
+            <li><b>CI 门禁</b>：PR 必须通过 lint + type check + 测试覆盖率 ≥ 70%</li>
+            <li><b>Bandit</b>：Python 安全漏洞扫描</li>
+            <li><b>全量 type hint</b>：所有 service/repository/api 函数添加完整类型注解，mypy strict 模式</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周搭建 + 持续</span><span>🔧 工程化</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>测试体系建设</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>单元测试</b>：service 层覆盖率 ≥ 80%，使用 pytest + pytest-asyncio</li>
+            <li><b>集成测试</b>：API 端点测试，使用 TestClient + 测试数据库</li>
+            <li><b>E2E 测试</b>：Playwright 覆盖核心流程（登录/获客搜索/发邮件/询盘管理）</li>
+            <li><b>性能测试</b>：Locust 压测关键 API，确保 QPS ≥ 500，P99 < 500ms</li>
+            <li><b>Mock 服务独立</b>：所有 Mock 移到 tests/mocks/，生产代码零 Mock</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>🔧 测试体系</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>前端代码质量</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>ESLint + Prettier</b>：统一代码风格，pre-commit 自动格式化</li>
+            <li><b>TypeScript strict 模式</b>：启用 strict: true，禁止 any，禁止隐式 any</li>
+            <li><b>消除 fetch 双通道</b>：全面迁移到 axios 封装，统一错误处理和 Token 续期</li>
+            <li><b>Pinia stores 统一导出</b>：所有 store 从 <code>@/stores</code> 导出</li>
+            <li><b>组件单元测试</b>：Vitest + @vue/test-utils，公共组件覆盖率 ≥ 60%</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 前端工程化</span></div>
+      </div>
+    </div>
+
+    <!-- 维度6：产品商业 -->
+    <div class="section-divider"><span>维度 6：产品商业 5.5 → 9.5</span></div>
+
+    <div class="dim-block" style="border-color:var(--orange);">
+      <h3>💰 SaaS 商业化体系完善</h3>
+      <div class="dim-score">当前 <span class="before">5.5</span> → 目标 <span class="after">9.5</span> <span class="delta">+4.0</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>价值主张重新定位</div>
+        <div class="step-detail">
+          从"外贸建站 + SEO"升级为"<b>AI 外贸获客操作系统</b>"：
+          <ul>
+            <li>核心叙事：帮外贸企业找到海外买家 → 触达 → 转化 → 成交</li>
+            <li>建站/SEO 是引流入口，获客+转化是核心价值</li>
+            <li>三大支柱：① AI 智能获客 ② 多语言独立站 ③ 询盘转化管理</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🔧 产品定位</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>精细化计费体系</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>套餐 + 按量</b>混合计费：基础功能月费 + 获客积分（每找到1个验证邮箱消耗积分）</li>
+            <li>5 档套餐清晰化：
+              <ul>
+                <li>Free：100 积分/月，1 用户，基础建站</li>
+                <li>Starter ($49/月)：500 积分/月，3 用户，SEO 工具</li>
+                <li>Pro ($149/月)：2000 积分/月，10 用户，AI 获客 + 邮件序列</li>
+                <li>Business ($499/月)：10000 积分/月，无限用户，API 访问 + 优先支持</li>
+                <li>Enterprise：定制，SSO + 专属部署 + CSM</li>
+              </ul>
+            </li>
+            <li>积分消耗透明：每个操作消耗多少积分实时可见</li>
+            <li>积分包购买：用户可随时充值积分</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 商业化</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>代理体系落地运营</div>
+        <div class="step-detail">
+          <ul>
+            <li>L1 总部 / L2 省代 / L3 市代 / L4 租户 的分润比例明确化</li>
+            <li>代理后台：实时查看下线业绩、佣金计算、提现管理</li>
+            <li>代理分级晋升机制：业绩达标自动升级</li>
+            <li>渠道物料库：销售话术/演示视频/案例/价格表一键下载</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🔧 渠道体系</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>用户成功体系</div>
+        <div class="step-detail">
+          <ul>
+            <li>Onboarding 引导：3 步上手（导入产品 → 配置获客 → 发送第一封开发信）</li>
+            <li>健康度评分：基于功能使用情况计算客户健康度，低健康度自动触发 CSM 介入</li>
+            <li>流失预警：churn 模型预测高风险客户，提前干预</li>
+            <li>知识库 + 视频教程 + 社区论坛（已有 forum 模块，需激活运营）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 4 周</span><span>🔧 客户成功</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 2: DeepSeek-V4-Flash -->
+<!-- ============================================================ -->
+<div class="model-section" id="ds-flash">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#4d6bfe,#a5b4fc);color:#fff;">DF</div>
+    <div>
+      <div class="model-name">DeepSeek-V4-Flash</div>
+      <div class="model-tagline">快速落地派 — 最少代码量实现最大提升，聚焦可快速验证的改造</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">5.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">5.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 3.0 → 9.5：最小可行获客 MVP（2 周上线）</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>⚡ 闪电式获客 MVP — 2 周跑通"找→验→发"闭环</h3>
+      <div class="dim-score">当前 <span class="before">3.0</span> → 目标 <span class="after">9.5</span> <span class="delta">+6.5</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>第 1 周：Hunter.io + 邮件发送，最快闭环</div>
+        <div class="step-detail">
+          <b>为什么选 Hunter.io？</b>API 最简单，文档最清晰，$49/月 500 次搜索 + 无限验证，性价比最高。
+          <ul>
+            <li>接入 <code>GET /v2/domain-search</code> — 按域名找所有公开邮箱</li>
+            <li>接入 <code>GET /v2/email-finder</code> — 按人名+公司名猜邮箱</li>
+            <li>接入 <code>GET /v2/email-verifier</code> — 验证邮箱有效性</li>
+            <li>接入 Resend（$0 起，前 3000 封/月免费）作为 SMTP 发信</li>
+            <li>UI 改造：CustomerFinder 只保留"域名搜索"和"CSV 导入"两个入口，移除所有 Mock 渠道</li>
+          </ul>
+          <b>最小闭环验证</b>：用户输入目标公司域名 → 系统找出 10-20 个公开邮箱 → 一键验证 → 选中有效邮箱 → 发送 AI 生成的开发信 → 发送成功回执。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 5 天</span><span>🔧 最快上线</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>第 2 周：邮件序列 + 打开追踪 + 仪表板</div>
+        <div class="step-detail">
+          <ul>
+            <li>邮件序列（Drip Campaign）：3 封邮件自动按间隔发送（Day 0 / Day 3 / Day 7）</li>
+            <li>打开追踪：1x1 透明像素 + 唯一 token，记录打开时间/次数/地理位置</li>
+            <li>点击追踪：链接重定向到追踪服务，记录点击后跳转到目标 URL</li>
+            <li>获客漏斗仪表板：搜索数 → 验证通过数 → 发送数 → 打开数 → 回复数 → 成交数</li>
+            <li>退订页：一键退订 + 原因调查，CAN-SPAM 合规</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 5 天</span><span>🔧 功能完善</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>快速收益：CSV 导入 + 手动获客的产品化</div>
+        <div class="step-detail">
+          很多外贸人已经有自己的客户名单（展会/阿里巴巴/手动找的），帮他们管理这些名单就是价值：
+          <ul>
+            <li>CSV/Excel 批量导入：支持自定义字段映射</li>
+            <li>导入后自动去重 + 邮箱有效性验证</li>
+            <li>客户分组/标签管理</li>
+            <li>批量发送个性化开发信（变量替换：{{name}} {{company}} {{product}}）</li>
+            <li>导入历史记录 + 导入质量报告</li>
+          </ul>
+          这个功能开发量小（1 周），但对已有客户名单的外贸企业来说价值极高。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 5 天</span><span>🔧 高ROI功能</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>架构设计 7.5 → 9.5：3 个小改动大幅提升</span></div>
+
+    <div class="dim-block" style="border-color:var(--gold);">
+      <h3>🏗️ 3 个低成本高收益的架构改进</h3>
+      <div class="dim-score">当前 <span class="before">7.5</span> → 目标 <span class="after">9.5</span> <span class="delta">+2.0</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>API 路由自动注册（减少 80% 手动 import）</div>
+        <div class="step-detail">
+          写一个 <code>auto_discover_routes()</code> 函数，自动扫描 <code>routes/</code> 目录下所有 <code>*_router.py</code> 文件，通过 importlib 动态加载并注册。
+          <div class="code-snippet"><span class="code-comment"># backend/app/api/v1/routes/__init__.py</span>
+<span class="code-key">from</span> pathlib <span class="code-key">import</span> Path
+<span class="code-key">import</span> importlib
+
+router = APIRouter(prefix=<span class="code-str">"/v1"</span>)
+
+<span class="code-key">def</span> <span class="code-fn">auto_discover_routes</span>():
+    <span class="code-key">for</span> file <span class="code-key">in</span> Path(__file__).parent.glob(<span class="code-str">"*_router.py"</span>):
+        module = importlib.import_module(<span class="code-f">f"app.api.v1.routes.{file.stem}"</span>)
+        <span class="code-key">if hasattr</span>(module, <span class="code-str">"router"</span>):
+            router.include_router(module.router)</div>
+          新增路由文件时不需要修改 <code>__init__.py</code>，减少合并冲突和遗漏。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 小时</span><span>🔧 开发体验</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>前端统一 API 层 + 消除 fetch</div>
+        <div class="step-detail">
+          <ul>
+            <li>全局搜索 <code>.then(</code> 结合 <code>fetch(</code>，找到所有直接使用 fetch 的地方</li>
+            <li>统一替换为 <code>api.xxx.xxx()</code> 调用</li>
+            <li>新增 <code>api.sales</code> 命名空间，封装所有获客相关 API</li>
+            <li>axios 拦截器中统一处理：错误提示 / 401 续期 / loading / 埋点</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 天</span><span>🔧 技术债清理</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>数据模型一致性修复</div>
+        <div class="step-detail">
+          <ul>
+            <li>删除 <code>SeoMetadata</code> 重复类，保留 <code>SEOMetadata</code>（或反之），全局搜索替换</li>
+            <li><code>material_specs</code> 新增 UUID 主键，旧 Integer ID 保留为兼容字段，逐步迁移</li>
+            <li>所有模型统一使用 <code>UUID_TYPE</code> 作为主键类型</li>
+            <li>Alembic 迁移脚本一次性完成</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 天</span><span>🔧 数据一致性</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>安全/性能/代码/商业：快速提升清单</span></div>
+
+    <div class="dim-block" style="border-color:var(--green);">
+      <h3>🚀 快速提升清单 — 每个维度 3 个必做项</h3>
+
+      <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;"><b>安全合规（7.0 → 9.5）</b></p>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">S1</span>Cookie 化 JWT + CSRF Double Submit</div>
+        <div class="step-detail">sessionStorage → HttpOnly Cookie，消除 XSS 窃取 Token 风险。1 周完成。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">S2</span>CI 集成 npm audit + bandit</div>
+        <div class="step-detail">每次 PR 自动扫描依赖漏洞，高危漏洞禁止合并。2 天完成。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">S3</span>敏感字段加密审计</div>
+        <div class="step-detail">所有 PII（邮箱/手机/地址）检查是否加密存储，补全覆盖。3 天完成。</div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.9rem;margin:20px 0 12px;"><b>性能扩展（6.0 → 9.5）</b></p>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">P1</span>Redis 缓存全面铺开</div>
+        <div class="step-detail">产品列表/内容页面/SEO 数据/租户配置全部缓存，命中率目标 ≥ 70%。1 周完成。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">P2</span>Nginx 微缓存 + Gzip 升级</div>
+        <div class="step-detail">API 响应 1s 微缓存 + Brotli 压缩，首屏加载速度提升 40%。3 天完成。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">P3</span>数据库索引优化</div>
+        <div class="step-detail">pg_stat_statements 找出 Top 10 慢查询，添加针对性索引。2 天完成。</div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.9rem;margin:20px 0 12px;"><b>代码质量（5.5 → 9.5）</b></p>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">C1</span>pre-commit + Ruff + Black</div>
+        <div class="step-detail">Python 代码提交前自动格式化 + lint，从源头保证质量。1 天完成。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">C2</span>生产代码移除 Mock</div>
+        <div class="step-detail">所有 <code>_generate_xxx_result()</code> Mock 方法移到 tests/mocks/。3 天完成。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">C3</span>TypeScript strict 模式</div>
+        <div class="step-detail">开启 strict: true，逐步修复 any 类型，目标 0 any。1 周完成。</div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.9rem;margin:20px 0 12px;"><b>产品商业（5.0 → 9.5）</b></p>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">B1</span>获客效果仪表盘 + ROI 计算器</div>
+        <div class="step-detail">让用户看到"花了多少钱 → 获得多少线索 → 多少回复 → 多少成交"的完整漏斗。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">B2</span>推荐奖励机制</div>
+        <div class="step-detail">推荐好友注册送获客积分，已有 referral 模块直接激活运营。</div>
+      </div>
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">B3</span>模板市场</div>
+        <div class="step-detail">开发信模板/邮件序列模板/行业关键词模板，用户可付费购买或积分兑换。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 3: Kimi-K2.7-Code -->
+<!-- ============================================================ -->
+<div class="model-section" id="kimi-code">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;">KC</div>
+    <div>
+      <div class="model-name">Kimi-K2.7-Code</div>
+      <div class="model-tagline">代码质量派 — 从工程视角彻底重构获客代码与全栈工程质量</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">2.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">4.5 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">5.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>代码质量 4.5 → 9.7：本模型核心改造领域（全场最高提升）</span></div>
+
+    <div class="dim-block" style="border-color:var(--purple);background:linear-gradient(to right, rgba(139,92,246,0.08), var(--surface2));">
+      <h3>🧪 代码质量全面工程化 — 从作坊式到企业级</h3>
+      <div class="dim-score">当前 <span class="before">4.5</span> → 目标 <span class="after">9.7</span> <span class="delta">+5.2</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>获客服务重构：策略模式 + 依赖注入</div>
+        <div class="step-detail">
+          <b>问题</b>：6 个 prospect_service 各自为政，没有统一接口，Mock 和生产代码混杂，Super Agent Bridge 硬编码渠道名。
+          <br><br>
+          <b>重构方案</b>：
+          <div class="code-snippet"><span class="code-comment"># app/services/acquisition/protocols.py</span>
+<span class="code-key">from</span> typing <span class="code-key">import</span> Protocol, AsyncIterator
+<span class="code-key">from</span> app.schemas.prospect <span class="code-key">import</span> ProspectLead, SearchQuery, SearchResult
+
+<span class="code-key">class</span> <span class="code-fn">ProspectSearchService</span>(Protocol):
+    <span class="code-str">"""获客搜索服务协议 — 所有渠道必须实现此接口"""</span>
+
+    channel_id: str
+    channel_name: str
+
+    <span class="code-key">async def</span> <span class="code-fn">search</span>(self, query: SearchQuery) -> SearchResult:
+        <span class="code-str">"""执行搜索，返回统一格式的线索列表"""</span>
+        ...
+
+    <span class="code-key">async def</span> <span class="code-fn">verify_email</span>(self, email: str) -> bool:
+        <span class="code-str">"""验证邮箱有效性（可选实现）"""</span>
+        ...
+
+    <span class="code-key">@property</span>
+    <span class="code-key">def</span> <span class="code-fn">is_available</span>(self) -> bool:
+        <span class="code-str">"""该渠道是否配置可用"""</span>
+        ...</div>
+
+          <div class="code-snippet"><span class="code-comment"># app/services/acquisition/registry.py</span>
+_services: dict[str, ProspectSearchService] = {}
+
+<span class="code-key">def</span> <span class="code-fn">register_prospect_service</span>(service: ProspectSearchService):
+    _services[service.channel_id] = service
+
+<span class="code-key">def</span> <span class="code-fn">get_prospect_service</span>(channel_id: str) -> ProspectSearchService:
+    <span class="code-key">return</span> _services[channel_id]
+
+<span class="code-key">def</span> <span class="code-fn">get_available_services</span>() -> list[ProspectSearchService]:
+    <span class="code-key">return</span> [s <span class="code-key">for</span> s <span class="code-key">in</span> _services.values() <span class="code-key">if</span> s.is_available]</div>
+
+          每个渠道服务用装饰器注册：
+          <div class="code-snippet"><span class="code-comment"># app/services/acquisition/channels/hunter_io.py</span>
+<span class="code-key">@register_prospect_service</span>
+<span class="code-key">class</span> <span class="code-fn">HunterIoService</span>:
+    channel_id = <span class="code-str">"hunter_io"</span>
+    channel_name = <span class="code-str">"Hunter.io"</span>
+
+    <span class="code-key">def</span> <span class="code-fn">__init__</span>(self, api_key: str):
+        self.api_key = api_key
+
+    <span class="code-key">async def</span> <span class="code-fn">search</span>(self, query: SearchQuery) -> SearchResult:
+        <span class="code-comment"># 真实 API 调用</span>
+        ...
+
+    <span class="code-key">@property</span>
+    <span class="code-key">def</span> <span class="code-fn">is_available</span>(self) -> bool:
+        <span class="code-key">return bool</span>(self.api_key)</div>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>🔧 架构重构</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>测试体系：单元 + 集成 + E2E 全覆盖</div>
+        <div class="step-detail">
+          <b>测试金字塔</b>：
+          <ul>
+            <li><b>单元测试（70%）</b>：service 层逻辑测试，Mock 外部依赖，pytest + pytest-asyncio
+              <ul>
+                <li>获客服务：每个渠道的 search/verify 方法测试（httpx Mock）</li>
+                <li>评分引擎：fit_score 计算逻辑边界测试</li>
+                <li>去重引擎：各种去重场景测试</li>
+              </ul>
+            </li>
+            <li><b>集成测试（20%）</b>：API 端点 + 数据库，使用 TestClient + 测试 SQLite
+              <ul>
+                <li>获客 API 全流程：搜索 → 验证 → 保存 → 列表 → 详情</li>
+                <li>权限测试：不同角色访问获客 API 的权限</li>
+              </ul>
+            </li>
+            <li><b>E2E 测试（10%）</b>：Playwright 模拟真实用户操作
+              <ul>
+                <li>核心流程：登录 → 进入获客 → 搜索 → 查看详情 → 发邮件</li>
+                <li>回归测试：每次 PR 运行 smoke 测试集</li>
+              </ul>
+            </li>
+          </ul>
+          <b>CI 门禁</b>：覆盖率 < 70% 拒绝合并，lint 不通过拒绝合并，type check 不通过拒绝合并。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>🔧 质量保障</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>类型系统：全栈严格类型化</div>
+        <div class="step-detail">
+          <b>后端 Python</b>：
+          <ul>
+            <li>mypy strict 模式：<code>strict = true</code></li>
+            <li>所有函数参数和返回值必须有 type hint</li>
+            <li>禁止 <code>Any</code>（除了明确标注的边界处）</li>
+            <li>Pydantic v2 严格模式：<code>model_config = ConfigDict(strict=True)</code></li>
+          </ul>
+          <b>前端 TypeScript</b>：
+          <ul>
+            <li><code>strict: true</code> 全量开启</li>
+            <li>eslint <code>@typescript-eslint/no-explicit-any: error</code></li>
+            <li>API 响应类型 100% 覆盖，禁止 <code>as any</code> / <code>// @ts-ignore</code></li>
+            <li>Pinia state/getters/actions 全部类型化</li>
+          </ul>
+          <b>前后端类型共享</b>：
+          <ul>
+            <li>后端 Pydantic Schema → 自动生成 TypeScript 类型（pydantic-to-typescript）</li>
+            <li>保证 API 请求/响应类型前后端一致</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🔧 类型安全</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>代码审查自动化 + 最佳实践沉淀</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>Code Review Checklist</b>：PR 模板包含必检项（安全/性能/测试/类型/命名）</li>
+            <li><b>Danger.js</b>：PR 自动评论（变更文件数/覆盖率变化/大文件警告/TODO 检测）</li>
+            <li><b>SonarQube</b>：代码质量持续扫描，技术债跟踪</li>
+            <li><b>ADR（Architecture Decision Records）</b>：重要技术决策写入文档，避免反复讨论</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 持续改进</span><span>🔧 工程文化</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 2.5 → 9.6：代码视角的获客引擎重构</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>🎯 获客引擎代码级重构方案</h3>
+      <div class="dim-score">当前 <span class="before">2.5</span> → 目标 <span class="after">9.6</span> <span class="delta">+7.1</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>线索处理 Pipeline（责任链模式）</div>
+        <div class="step-detail">
+          每条线索经过标准化 Pipeline 处理：
+          <div class="code-snippet"><span class="code-comment"># app/services/acquisition/pipeline.py</span>
+<span class="code-key">class</span> <span class="code-fn">ProspectPipeline</span>:
+    <span class="code-str">"""线索处理管线 — 责任链模式"""</span>
+
+    stages: list[PipelineStage] = [
+        NormalizeStage(),       <span class="code-comment"># 数据标准化（邮箱小写/姓名首字母大写/URL规范化）</span>
+        DeduplicateStage(),     <span class="code-comment"># 去重（邮箱/域名/LinkedIn URL）</span>
+        EnrichStage(),          <span class="code-comment"># 数据补全（公司规模/行业/地址）</span>
+        VerifyStage(),          <span class="code-comment"># 邮箱验证/电话验证</span>
+        ScoreStage(),           <span class="code-comment"># fit_score 评分</span>
+        PersistStage(),         <span class="code-comment"># 写入数据库</span>
+        NotifyStage(),          <span class="code-comment"># 触发通知事件</span>
+    ]
+
+    <span class="code-key">async def</span> <span class="code-fn">process</span>(self, leads: list[ProspectLead]) -> list[ProspectLead]:
+        <span class="code-key">for</span> stage <span class="code-key">in</span> self.stages:
+            leads = <span class="code-key">await</span> stage.execute(leads)
+            <span class="code-key">if not</span> leads:
+                <span class="code-key">break</span>
+        <span class="code-key">return</span> leads</div>
+          每个阶段独立可测试，可灵活增删调整顺序。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🔧 管线架构</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>邮件发送服务：状态机 + 幂等</div>
+        <div class="step-detail">
+          <div class="code-snippet"><span class="code-comment"># app/services/acquisition/email_service.py</span>
+<span class="code-key">class</span> <span class="code-fn">EmailStatus</span>(str, Enum):
+    DRAFT = <span class="code-str">"draft"</span>
+    QUEUED = <span class="code-str">"queued"</span>
+    SENDING = <span class="code-str">"sending"</span>
+    SENT = <span class="code-str">"sent"</span>
+    FAILED = <span class="code-str">"failed"</span>
+    OPENED = <span class="code-str">"opened"</span>
+    CLICKED = <span class="code-str">"clicked"</span>
+    REPLIED = <span class="code-str">"replied"</span>
+    BOUNCED = <span class="code-str">"bounced"</span>
+    UNSUBSCRIBED = <span class="code-str">"unsubscribed"</span>
+
+<span class="code-key">class</span> <span class="code-fn">EmailService</span>:
+    <span class="code-key">async def</span> <span class="code-fn">send_email</span>(self, email_id: UUID) -> EmailStatus:
+        <span class="code-str">"""发送邮件，保证幂等：同一 email_id 多次调用只发一次"""</span>
+        email = <span class="code-key">await</span> self.repo.get(email_id)
+        <span class="code-key">if</span> email.status <span class="code-key">in</span> (SENT, OPENED, CLICKED):
+            <span class="code-key">return</span> email.status  <span class="code-comment"># 幂等返回</span>
+
+        <span class="code-key">async with</span> self.repo.transaction():
+            email.status = SENDING
+            <span class="code-key">await</span> self.repo.update(email)
+
+            <span class="code-key">try</span>:
+                result = <span class="code-key">await</span> self.provider.send(email)
+                email.status = SENT
+                email.provider_message_id = result.id
+            <span class="code-key">except</span> ProviderError <span class="code-key">as</span> e:
+                email.status = FAILED
+                email.error_message = str(e)
+
+            <span class="code-key">await</span> self.repo.update(email)
+        <span class="code-key">return</span> email.status</div>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🔧 邮件引擎</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 4: Kimi-K2.6 -->
+<!-- ============================================================ -->
+<div class="model-section" id="kimi-k26">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#7c3aed,#c4b5fd);color:#fff;">K2</div>
+    <div>
+      <div class="model-name">Kimi-K2.6</div>
+      <div class="model-tagline">全局一致派 — 长上下文视角，确保系统各层高度协调一致</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">8.5 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">8.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>全局一致性体系 — 让 100+ 模块如同一人开发</span></div>
+
+    <div class="dim-block" style="border-color:var(--cyan);">
+      <h3>🔗 全链路一致性保障体系</h3>
+      <div class="dim-score">核心改进：消除前后端、各模块、各层之间的不一致</div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>API 契约一致性：OpenAPI → TypeScript 自动生成</div>
+        <div class="step-detail">
+          <ul>
+            <li>后端 FastAPI 自动生成 OpenAPI 3.0 规范（已有，需完善 schema 注释）</li>
+            <li>使用 <code>openapi-typescript</code> 自动生成前端 TypeScript 类型定义</li>
+            <li>前端 API 调用层基于生成的类型，实现端到端类型安全</li>
+            <li>CI 中检查：后端 schema 变更 → 前端类型自动更新 → 类型检查</li>
+          </ul>
+          这样后端改了字段类型/名称，前端立刻 TS 报错，不会出现"后端改了前端不知道"的问题。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 1 周</span><span>🔧 前后端一致性</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>获客系统端到端一致性</div>
+        <div class="step-detail">
+          <b>问题</b>：前端展示 6 渠道 → 后端声明 6 渠道 → 实际 2 渠道可用 → 数据模型字段不匹配
+          <br><br>
+          <b>解决方案</b>：
+          <ul>
+            <li><b>能力声明 API</b>：<code>GET /api/v1/acquisition/channels</code> 返回所有渠道的配置状态（available/configured/coming_soon）</li>
+            <li><b>前端 Feature Flag</b>：基于 API 返回动态渲染渠道按钮，未配置的显示"待配置"或"即将上线"</li>
+            <li><b>数据模型对齐</b>：前端 <code>Customer</code> 类型 ↔ 后端 <code>ProspectLead</code> 模型字段一一对应，通过 OpenAPI 生成保证</li>
+            <li><b>状态机对齐</b>：线索状态（new/contacted/qualified/converted）前后端使用同一套枚举</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 天</span><span>🔧 获客一致性</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>角色权限一致性：前端菜单 = 后端权限 = 数据库配置</div>
+        <div class="step-detail">
+          <ul>
+            <li>前端菜单配置从后端 API 动态获取（而非前端硬编码）</li>
+            <li>后端权限码（如 <code>acquisition:search</code>）与前端路由 meta.requiresPerm 一一对应</li>
+            <li>ROLE-SHELL-LOCK-01 硬锁已有的好实践 → 扩展为"能力码"体系</li>
+            <li>新增功能时：后端加权限码 → 数据库加权限记录 → 前端菜单自动出现 → 路由守卫自动生效</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 权限一致性</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>设计系统一致性：Design Tokens 全链路贯通</div>
+        <div class="step-detail">
+          <ul>
+            <li>设计令牌（Design Tokens）单一来源：<code>design-tokens.json</code>（颜色/间距/字号/圆角/阴影）</li>
+            <li>自动生成：SCSS 变量 + CSS 变量 + Tailwind 配置 + TypeScript 常量</li>
+            <li>后端邮件模板也使用同一套设计令牌（保证邮件和界面视觉一致）</li>
+            <li>Nuxt 营销站和 Admin 后台共用一套设计系统</li>
+            <li>消除 design-tokens-v2/v3 并存的问题，统一为 v4 单一版本</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 2 周</span><span>🔧 设计一致性</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 3.0 → 9.6：一致性视角的获客改造</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>🎯 获客能力一致性升级方案</h3>
+      <div class="dim-score">当前 <span class="before">3.0</span> → 目标 <span class="after">9.6</span> <span class="delta">+6.6</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>获客数据模型统一：单一真相来源</div>
+        <div class="step-detail">
+          统一 <code>Prospect</code> 数据模型，所有渠道输出同一格式：
+          <ul>
+            <li><b>Person</b>：个人信息（name/title/email/phone/whatsapp/linkedin_url）</li>
+            <li><b>Company</b>：公司信息（name/website/domain/industry/size/revenue/country）</li>
+            <li><b>Source</b>：来源信息（channel/search_query/found_at/confidence）</li>
+            <li><b>Verification</b>：验证状态（email_verified/phone_verified/verification_source）</li>
+            <li><b>Engagement</b>：互动记录（emails_sent/emails_opened/emails_clicked/last_contact_at）</li>
+            <li><b>Score</b>：评分（fit_score/engagement_score/overall_score）</li>
+          </ul>
+          前端 TypeScript 类型从后端 Pydantic Schema 生成，保证零偏差。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🔧 数据统一</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>获客流程一致性：四步标准流程</div>
+        <div class="step-detail">
+          所有获客渠道遵循统一的用户操作流程：
+          <ol>
+            <li><b>定义目标</b>：输入关键词 / 行业 / 国家 / 职位 → 保存为"搜索策略"</li>
+            <li><b>执行搜索</b>：选择渠道 → 后台异步执行 → 进度条实时反馈 → 完成通知</li>
+            <li><b>筛选评估</b>：按评分/验证状态/公司规模等筛选 → 批量打标签 → 加入"培育池"</li>
+            <li><b>启动触达</b>：选择邮件序列 / 单封开发信 / WhatsApp 消息 → 设置发送时间 → 启动</li>
+          </ol>
+          前端四步 stepper 组件，后端四个 API 端点，所有渠道复用同一套流程组件。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 流程统一</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>渠道能力矩阵：清晰透明的能力声明</div>
+        <div class="step-detail">
+          每个获客渠道有明确的能力声明（Capability Matrix），前端基于此渲染 UI：
+          <table class="dim-table" style="font-size:0.8rem;">
+            <thead>
+              <tr><th>渠道</th><th>搜索</th><th>邮箱验证</th><th>邮件发送</th><th>WhatsApp</th><th>LinkedIn</th><th>状态</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Google CSE</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td class="score score-high">已上线</td></tr>
+              <tr><td>Hunter.io</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td class="score score-high">第3周上线</td></tr>
+              <tr><td>Apollo.io</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td><td class="score score-mid">开发中</td></tr>
+              <tr><td>Resend 邮件</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>❌</td><td class="score score-high">第3周上线</td></tr>
+              <tr><td>WhatsApp Business</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td class="score score-mid">规划中</td></tr>
+              <tr><td>LinkedIn Sales Nav</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td class="score score-mid">规划中</td></tr>
+            </tbody>
+          </table>
+          前端基于此矩阵动态渲染，未上线的功能灰显 + "即将上线" tooltip，不产生虚假预期。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 天</span><span>🔧 透明化</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 5: MiniMax-M3 -->
+<!-- ============================================================ -->
+<div class="model-section" id="minimax">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff;">MM</div>
+    <div>
+      <div class="model-name">MiniMax-M3</div>
+      <div class="model-tagline">体验设计派 — 多模态视角，打造极致获客用户体验</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">5.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客体验 3.5 → 9.5：从功能到体验的全面升级</span></div>
+
+    <div class="dim-block" style="border-color:var(--orange);background:linear-gradient(to right, rgba(245,158,11,0.08), var(--surface2));">
+      <h3>✨ 获客体验设计 — 让外贸人用了就离不开</h3>
+      <div class="dim-score">当前 <span class="before">3.5</span> → 目标 <span class="after">9.5</span> <span class="delta">+6.0</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>获客首页：智能仪表盘 + 今日任务</div>
+        <div class="step-detail">
+          进入获客模块的第一屏不是搜索框，而是<b>个性化仪表盘</b>：
+          <ul>
+            <li><b>顶部数字</b>：今日新增线索 / 待回复邮件 / 本周回复率 / 转化率趋势</li>
+            <li><b>今日任务卡</b>："有 3 封邮件待回复""12 个新线索待筛选""跟进 5 个高意向客户"（可点击直接进入）</li>
+            <li><b>活跃线索流</b>：类似社交信息流，展示最近有互动的客户（打开邮件/点击链接/回复）</li>
+            <li><b>漏斗可视化</b>：线索 → 验证 → 发送 → 打开 → 回复 → 成交，每一步数字 + 百分比</li>
+          </ul>
+          用户一进来就知道"今天该做什么"，而不是面对一个空空的搜索框。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🔧 核心体验</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>智能搜索：AI 辅助构建搜索策略</div>
+        <div class="step-detail">
+          取代传统的表单筛选，用 <b>对话式搜索</b> 降低门槛：
+          <ul>
+            <li>用户输入："帮我找美国做建筑材料的进口商，联系人要是采购经理"</li>
+            <li>AI 自动解析：行业=建筑材料 / 国家=美国 / 职位=采购经理 / 公司类型=进口商</li>
+            <li>AI 推荐相关关键词和同义词（如 "building materials" / "construction supplies"）</li>
+            <li>一键确认后开始多渠道搜索</li>
+            <li>搜索策略可以保存和复用</li>
+          </ul>
+          对外贸新手特别友好，不需要懂各种搜索语法和筛选条件。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 1 周</span><span>🔧 AI 体验</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>线索详情页：360° 客户画像 + AI 洞察</div>
+        <div class="step-detail">
+          点击某个客户，右侧弹出详情面板，包含：
+          <ul>
+            <li><b>基本信息</b>：头像/姓名/职位/公司/联系方式（一键复制）</li>
+            <li><b>公司画像</b>：公司规模/行业/年营收/官网截图/LinkedIn 页面（AI 摘要）</li>
+            <li><b>AI 切入点建议</b>：基于对方公司情况，AI 给出 3 个开发信切入点（如"你们刚推出了新产品X，可以配套我们的Y"）</li>
+            <li><b>互动时间线</b>：邮件往来 / WhatsApp 消息 / 备注 / 任务，按时间轴展示</li>
+            <li><b>快速操作</b>：发邮件 / 发 WhatsApp / 加标签 / 改状态 / 设提醒，一键操作</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>🔧 详情体验</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>邮件编辑器：AI 写作 + 模板市场</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>AI 生成</b>：输入目标客户 + 目的 + 风格，AI 一键生成开发信</li>
+            <li><b>模板市场</b>：按行业/场景/风格分类的开发信模板，可一键套用</li>
+            <li><b>变量插入</b>：{{姓名}} {{公司名}} {{产品名}} 等变量，群发时自动替换</li>
+            <li><b>AI 润色</b>：写完后点"优化"，AI 帮你改得更专业/更有说服力</li>
+            <li><b>回复率预测</b>：AI 预估这封邮件的回复率（高/中/低），并给出改进建议</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔧 内容体验</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">5</span>移动端适配：出差也能做业务</div>
+        <div class="step-detail">
+          外贸人经常出差/参展/见客户，移动端体验至关重要：
+          <ul>
+            <li><b>响应式布局</b>：Admin 后台关键页面（获客/询盘/邮件）适配手机和平板</li>
+            <li><b>推送通知</b>：新询盘 / 邮件回复 / 客户打开邮件 → 实时推送</li>
+            <li><b>快捷回复</b>：手机上用预设模板快速回复客户邮件</li>
+            <li><b>名片扫描</b>：展会拍名片 → OCR 识别 → 自动导入获客系统</li>
+          </ul>
+          已有 Capacitor 依赖，可直接打包为 App（Android/iOS）。
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 3 周</span><span>🔧 移动体验</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>产品商业 7.5 → 9.7：体验驱动的商业增长</span></div>
+
+    <div class="dim-block" style="border-color:var(--gold);">
+      <h3>💎 产品体验商业化 — 让用户愿意付费并主动推荐</h3>
+      <div class="dim-score">当前 <span class="before">7.5</span> → 目标 <span class="after">9.7</span> <span class="delta">+2.2</span> （本模型初始分最高）</div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>Aha Moment 设计：让用户 10 分钟内感受到价值</div>
+        <div class="step-detail">
+          新用户注册后的 Onboarding 流程：
+          <ol>
+            <li><b>第 1 分钟</b>：导入一个产品（AI 自动生成英文描述）</li>
+            <li><b>第 3 分钟</b>：输入目标市场，AI 推荐 3 个搜索策略</li>
+            <li><b>第 5 分钟</b>：一键执行搜索，30 秒内返回第一批线索</li>
+            <li><b>第 8 分钟</b>：选一个客户，AI 生成定制化开发信</li>
+            <li><b>第 10 分钟</b>：发送第一封开发信，显示"已送达 ✓"</li>
+          </ol>
+          10 分钟内完成"建产品 → 找客户 → 写邮件 → 发送"的完整闭环，用户立刻感受到"这东西有用"。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>🔧 Onboarding</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>游戏化设计：让获客变成闯关</div>
+        <div class="step-detail">
+          已有 Hermes Greedy（财迷疯）模块，可扩展到获客场景：
+          <ul>
+            <li><b>每日任务</b>：搜索 1 次 + 5 分，发送 5 封邮件 + 10 分，收到回复 + 50 分</li>
+            <li><b>成就徽章</b>："首单客户""百封邮件达人""回复率冠军"等徽章</li>
+            <li><b>排行榜</b>：团队内/行业内排行榜（匿名化，可选参与）</li>
+            <li><b>等级体系</b>：初级外贸员 → 资深外贸员 → 外贸经理 → 外贸总监，解锁更多功能</li>
+          </ul>
+          用游戏化手段提升用户粘性和日活。
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 2 周</span><span>🔧 游戏化</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>白标方案：代理和大客户的变现利器</div>
+        <div class="step-detail">
+          <ul>
+            <li><b>完全白标</b>：Logo / 域名 / 登录页 / 邮件模板品牌 / 客服联系方式 全部可定制</li>
+            <li><b>子账号管理</b>：代理可创建管理自己的客户，设置套餐和价格</li>
+            <li><b>独立部署</b>：Enterprise 套餐支持私有部署（客户自己的服务器/数据库）</li>
+            <li><b>API 访问</b>：Business 以上套餐开放 API，客户可集成到自己的系统</li>
+          </ul>
+          白标 + 代理体系是高客单价的关键。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🔧 高端商业化</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 6: Qwen3.7-Plus -->
+<!-- ============================================================ -->
+<div class="model-section" id="qwen">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff;">QW</div>
+    <div>
+      <div class="model-name">Qwen3.7-Plus</div>
+      <div class="model-tagline">均衡务实派 — 全面但务实，聚焦投入产出比最高的改造</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">5.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>务实派核心方法论：ROI 优先的 80/20 改造</span></div>
+
+    <div class="dim-block" style="border-color:var(--green);">
+      <h3>🎯 务实派原则：只做 ROI 最高的 20% 事，拿到 80% 的提升</h3>
+      <div class="dim-score">6 个维度全部 9.6 分 — 均衡且务实</div>
+
+      <p style="color:var(--text2);font-size:0.9rem;margin-bottom:16px;">
+        作为均衡模型，我的策略是<b>不追求每个维度都 10 分（成本太高）</b>，而是用合理的投入把所有维度拉到 9.5+。
+        下面是按 ROI 排序的 Top 15 行动项：
+      </p>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>【获客 ROI ★★★★★】接入 Hunter.io + Resend，跑通最小闭环</div>
+        <div class="step-detail">
+          投入：5 天开发 + $49/月 Hunter + $0 Resend（免费额度）
+          <br>
+          收益：获客能力从 3 分直接拉到 7 分（可用水平），用户能真正"找到客户并发邮件"
+          <br>
+          这是整个项目 ROI 最高的一项，没有之一。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 5 天</span><span>💰 最高 ROI</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>【安全 ROI ★★★★★】JWT 迁移到 HttpOnly Cookie</div>
+        <div class="step-detail">
+          投入：1 周开发 + 30 天过渡期
+          <br>
+          收益：从"有 XSS 风险"直接到"企业级安全"，消除最大安全隐患
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>💰 最高 ROI</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>【代码质量 ROI ★★★★☆】pre-commit + Ruff + 统一 API 层</div>
+        <div class="step-detail">
+          投入：1 周搭建 + 持续执行
+          <br>
+          收益：代码一致性大幅提升，bug 率下降 30%+，新人上手更快
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>💰 高 ROI</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>【性能 ROI ★★★★☆】Redis 缓存 + 数据库索引优化</div>
+        <div class="step-detail">
+          投入：3 天
+          <br>
+          收益：页面加载速度提升 50%+，API 响应时间减半
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 天</span><span>💰 高 ROI</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">5</span>【产品 ROI ★★★★☆】获客漏斗仪表板 + Onboarding 引导</div>
+        <div class="step-detail">
+          投入：2 周
+          <br>
+          收益：用户留存提升 40%，付费转化率提升 25%
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>💰 高 ROI</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 3.0 → 9.6：务实派获客路线图</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>🎯 务实获客三阶段 — 先能用，再好用，最后智能化</h3>
+      <div class="dim-score">当前 <span class="before">3.0</span> → 目标 <span class="after">9.6</span> <span class="delta">+6.6</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>第一阶段：能用（第 1-3 周）— 找得到 + 发得出</div>
+        <div class="step-detail">
+          <b>核心目标</b>：让用户能通过系统找到真实客户，并把开发信发出去。
+          <ul>
+            <li>Hunter.io 接入（域名搜索 + 邮箱查找 + 邮箱验证）</li>
+            <li>Google CSE 优化（高级搜索语法 + 多关键词组合）</li>
+            <li>Resend 邮件发送（DKIM/SPF/DMARC 配置 + 模板管理）</li>
+            <li>CSV 导入导出（支持已有客户名单批量导入）</li>
+            <li>基础线索管理（列表/详情/标签/状态/备注）</li>
+          </ul>
+          <b>验收标准</b>：用户可以在 5 分钟内完成"输入公司域名 → 找到联系人 → 发送开发信"的完整流程。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 周</span><span>🔧 基础可用</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>第二阶段：好用（第 4-8 周）— 精准 + 高效 + 可追踪</div>
+        <div class="step-detail">
+          <b>核心目标</b>：提升获客效率和效果，让用户愿意付费。
+          <ul>
+            <li>Apollo.io 接入（2.65 亿联系人数据库，多维度筛选）</li>
+            <li>邮件序列（Drip Campaign）：3-5 封自动 follow-up</li>
+            <li>打开/点击/回复 追踪 + 漏斗分析</li>
+            <li>AI 开发信生成 + 个性化变量替换</li>
+            <li>线索评分引擎（自动排序高价值客户）</li>
+            <li>批量操作（批量打标签/批量发邮件/批量导入导出）</li>
+          </ul>
+          <b>验收标准</b>：Pro 套餐用户月均发送 1000+ 封邮件，平均打开率 ≥ 30%，回复率 ≥ 5%。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 5 周</span><span>🔧 高效好用</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>第三阶段：智能化（第 9-12 周）— AI 驱动 + 数据飞轮</div>
+        <div class="step-detail">
+          <b>核心目标</b>：建立差异化竞争壁垒，让 AI 真正帮用户获客。
+          <ul>
+            <li>RAG 客户洞察（爬取目标公司网站，AI 生成定制化开发信）</li>
+            <li>智能搜索策略（AI 根据产品自动推荐关键词和目标市场）</li>
+            <li>自动 follow-up 优化（AI 决定什么时候发、发什么内容）</li>
+            <li>多渠道归因（追踪每个成交客户的获客来源和成本）</li>
+            <li>数据飞轮（历史成交数据 → 优化评分模型 → 提高精准度）</li>
+            <li>LinkedIn 自动化（连接请求 + 消息 + 互动）</li>
+          </ul>
+          <b>验收标准</b>：使用 AI 功能的用户比不使用的用户回复率高 50% 以上。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>🔧 智能领先</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>其他五维度务实提升方案</span></div>
+
+    <div class="dim-block" style="border-color:var(--gold);">
+      <h3>📊 五维度各 5 项务实改造清单</h3>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:10px;"><b>架构设计（7.5 → 9.6）</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. API 路由按业务域分包子包化（commerce/acquisition/content/tenant/platform/core）<br>
+          2. 前端路由按角色壳拆分 + 懒加载<br>
+          3. BFF 层真正落地（获客页面一次请求返回全部数据）<br>
+          4. 事件总线（Redis Streams）解耦各模块<br>
+          5. Repository 层全面启用（service → repository → ORM）
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>安全合规（7.5 → 9.6）</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. JWT → HttpOnly Secure Cookie + CSRF Double Submit<br>
+          2. 国密算法替换为 GmSSL 认证库<br>
+          3. GDPR 落地（数据导出/删除权/同意管理/ROPA）<br>
+          4. CI 集成 bandit + npm audit + Trivy 漏洞扫描<br>
+          5. 敏感字段加密审计 + 密钥轮换机制
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>性能扩展（6.5 → 9.6）</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. Redis 缓存全面铺开（命中率目标 ≥ 70%）<br>
+          2. 数据库读写分离 + PgBouncer 连接池<br>
+          3. Celery 多队列 + 自动扩缩<br>
+          4. Cloudflare CDN + 边缘缓存<br>
+          5. 关键大表按月分区（inquiries/prospects/chat_messages）
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>代码质量（6.0 → 9.6）</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. pre-commit + Ruff + Black + mypy strict<br>
+          2. 生产代码零 Mock，Mock 全部移到 tests/<br>
+          3. TypeScript strict 模式 + 零 any<br>
+          4. 测试覆盖率 ≥ 70%（单元+集成+E2E）<br>
+          5. SonarQube 持续扫描 + 技术债管理
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>产品商业（5.5 → 9.6）</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. 价值主张升级为"AI 外贸获客操作系统"<br>
+          2. 5 档套餐 + 获客积分混合计费<br>
+          3. 代理体系落地运营（L1-L5 分润 + 晋升机制）<br>
+          4. 用户成功体系（Onboarding + 健康度 + 流失预警）<br>
+          5. 模板市场 + 推荐奖励 + 社区运营
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 7: Kimi-K3 -->
+<!-- ============================================================ -->
+<div class="model-section" id="kimi-k3">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#ec4899,#f472b6);color:#fff;">K3</div>
+    <div>
+      <div class="model-name">Kimi-K3</div>
+      <div class="model-tagline">前瞻演进派 — 下一代架构视角，布局未来 2-3 年的技术演进</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">8.0 → 9.8</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:98%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">8.0 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">2.5 → 9.8</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:98%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 2.5 → 9.8：从工具到 AI Sales Agent 的进化</span></div>
+
+    <div class="dim-block" style="border-color:var(--pink);background:linear-gradient(to right, rgba(236,72,153,0.08), var(--surface2));">
+      <h3>🤖 AI Sales Agent — 下一代获客范式（全场最高 +7.3 分）</h3>
+      <div class="dim-score">当前 <span class="before">2.5</span> → 目标 <span class="after">9.8</span> <span class="delta">+7.3</span> （全场最高提升）</div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>获客 Agent 化：从"用户搜索"到"Agent 主动工作"</div>
+        <div class="step-detail">
+          <b>范式转变</b>：用户不再是"输入关键词 → 看结果 → 发邮件"的操作员，而是"设定目标 → Agent 执行 → 审核结果"的管理者。
+          <br><br>
+          <b>AI Sales Agent 能力清单</b>：
+          <ul>
+            <li><b>目标理解</b>：用户说"我想找美国做钢结构的中型建筑商，采购经理以上职位"，Agent 自动拆解为搜索策略</li>
+            <li><b>自动搜索</b>：Agent 自主选择渠道（先 Apollo 批量，再 Hunter 补全邮箱，最后 Google 验证）</li>
+            <li><b>智能评估</b>：Agent 自动评估每个线索的匹配度，只把高分的推给用户</li>
+            <li><b>个性化触达</b>：Agent 基于目标公司官网/LinkedIn 自动生成高度个性化的开发信</li>
+            <li><b>持续跟进</b>：Agent 自动管理邮件序列，根据对方反应调整策略</li>
+            <li><b>结果汇报</b>：每日推送获客日报（新增 X 线索 / Y 封已发送 / Z 个回复）</li>
+          </ul>
+          这正是 DeerFlow + Super Agent Bridge 架构应该演进的方向。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 8-12 周</span><span>🔮 下一代范式</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>MCP 化获客工具生态</div>
+        <div class="step-detail">
+          将获客能力封装为 <b>MCP (Model Context Protocol) Server</b>：
+          <ul>
+            <li><b>prospect-search MCP</b>：提供 search_prospects / enrich_company / verify_email 等工具</li>
+            <li><b>email-outreach MCP</b>：提供 send_email / create_campaign / track_email 等工具</li>
+            <li><b>sales-intel MCP</b>：提供 company_research / competitor_analysis / industry_insights 等工具</li>
+          </ul>
+          这样任何 AI Agent（包括你自己的 UBrain 和外部的 Claude/GPT）都可以通过 MCP 协议调用获客能力，实现"对话即获客"。
+          <br><br>
+          已有 Stitch MCP 集成经验，可以直接复用。
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 4 周</span><span>🔮 生态化</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>数据飞轮：越用越聪明的获客系统</div>
+        <div class="step-detail">
+          <b>核心机制</b>：每一次获客活动的结果都反馈给系统，AI 持续学习优化。
+          <ul>
+            <li><b>反馈闭环</b>：邮件打开 → 点击 → 回复 → 成交，每一步都作为训练信号</li>
+            <li><b>评分模型自优化</b>：定期用成交数据重新训练 fit_score 权重（在线学习）</li>
+            <li><b>搜索策略推荐</b>：基于行业最佳实践，AI 推荐"你的同行用这些关键词效果最好"</li>
+            <li><b>开发信优化</b>：A/B 测试不同版本，自动选出高回复率模板</li>
+            <li><b>最佳发送时间</b>：基于历史数据分析每个收件人的最佳发送时间</li>
+          </ul>
+          数据飞轮一旦转起来，就是最深的护城河——竞争对手抄得了功能，抄不了数据。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 持续迭代</span><span>🔮 护城河</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>架构设计 8.0 → 9.8：面向未来的云原生演进</span></div>
+
+    <div class="dim-block" style="border-color:var(--cyan);">
+      <h3>☁️ 云原生架构演进路线图</h3>
+      <div class="dim-score">当前 <span class="before">8.0</span> → 目标 <span class="after">9.8</span> <span class="delta">+1.8</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>Kubernetes 化 + GitOps</div>
+        <div class="step-detail">
+          从 docker-compose 演进到 Kubernetes：
+          <ul>
+            <li>Helm Chart 管理所有服务部署</li>
+            <li>ArgoCD GitOps 部署（提交代码 = 自动部署）</li>
+            <li>HPA 自动扩缩（基于 CPU/内存/队列长度）</li>
+            <li>Istio 服务网格（mTLS + 流量管理 + 灰度发布）</li>
+          </ul>
+          支撑 10 倍用户增长而不增加运维复杂度。
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 8 周</span><span>🔮 K8s 化</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>边缘计算：SEO/GEO 下沉到边缘节点</div>
+        <div class="step-detail">
+          利用 Cloudflare Workers 把读多写少的计算下沉到边缘：
+          <ul>
+            <li>GEO 评分计算（按访客国家/地区动态调整内容排序）</li>
+            <li>SEO 元数据动态生成（边缘 SSR）</li>
+            <li>AB 测试分流（边缘决策，不回源）</li>
+            <li>访客画像（边缘计算，保护隐私）</li>
+          </ul>
+          中心服务器只处理写操作和复杂计算，成本下降 40%，全球访问延迟降低 80%。
+        </div>
+        <div class="step-meta"><span class="step-priority p2">P2</span><span>⏱ 6 周</span><span>🔮 边缘计算</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>可观测性全链路打通</div>
+        <div class="step-detail">
+          已有 OpenTelemetry + Jaeger 基础，完善为全链路可观测：
+          <ul>
+            <li><b>Metrics</b>：Prometheus + Grafana，RED/USE 方法全覆盖</li>
+            <li><b>Traces</b>：OpenTelemetry 全链路追踪（前端 → API → DB → 外部服务）</li>
+            <li><b>Logs</b>：ELK / Loki 集中日志，关联 Trace ID</li>
+            <li><b>RUM</b>：前端真实用户监控（LCP/FID/CLS/错误率）</li>
+            <li><b>告警</b>：Alertmanager + PagerDuty/飞书，SLO 驱动的告警策略</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>🔮 可观测性</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>安全/性能/代码/商业：前瞻升级方案</span></div>
+
+    <div class="dim-block" style="border-color:var(--purple);">
+      <h3>🚀 四维度前瞻升级</h3>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:10px;"><b>安全合规（8.0 → 9.7）— 零信任安全架构</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. 零信任网络（Every service verifies every request）<br>
+          2. 机密计算（敏感数据使用 TEE / 同态加密 处理）<br>
+          3. AI 安全审计（LLM 输入输出过滤 + 敏感信息脱敏）<br>
+          4. 供应链安全（SLSA Level 3 + Sigstore 签名验证）<br>
+          5. Bug Bounty 计划（众包安全测试）
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>性能扩展（7.5 → 9.7）— 全球分布式架构</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. 多区域部署（亚太 / 欧美 / 中东，数据就近存储）<br>
+          2. 数据库全球分布（CockroachDB / YugabyteDB）<br>
+          3. AI 推理边缘部署（模型本地化，降低延迟）<br>
+          4. 流式处理（Kafka + Flink，实时数据管道）<br>
+          5. Serverless 化（突发流量自动扩缩到 0）
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>代码质量（6.0 → 9.7）— AI 辅助开发体系</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. AI Code Review（PR 自动 AI 审查 + 安全扫描）<br>
+          2. 自动测试生成（AI 根据代码变更自动生成测试用例）<br>
+          3. 内部开发者平台（IDP）：一键创建服务/部署/调试<br>
+          4. 契约测试（Pact）：前后端 API 契约自动验证<br>
+          5. 混沌工程（Chaos Engineering）：定期注入故障验证韧性
+        </div>
+      </div>
+
+      <p style="color:var(--text2);font-size:0.85rem;margin:16px 0 10px;"><b>产品商业（6.5 → 9.7）— 平台化生态</b></p>
+      <div class="action-step">
+        <div class="step-detail" style="padding-left:0;">
+          1. 应用市场（第三方开发者可开发获客插件/模板/连接器）<br>
+          2. 开放 API 平台（开发者注册 → 获取 API Key → 调用获客能力）<br>
+          3. 行业解决方案（按行业打包：建材/机械/电子/纺织...）<br>
+          4. 数据合作生态（与海关数据/展会数据/行业报告提供商合作）<br>
+          5. AI Agent 商店（用户可购买不同行业的 Sales Agent）
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 8: GLM-5.2 -->
+<!-- ============================================================ -->
+<div class="model-section" id="glm-52">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;">G5</div>
+    <div>
+      <div class="model-name">GLM-5.2</div>
+      <div class="model-tagline">安全合规派 — 学术严谨视角，打造银行级安全合规体系</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">9.0 → 9.8</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:98%;background:#22c55e;"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">6.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">5.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">5.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>安全合规 9.0 → 9.8：从"做得不错"到"行业标杆"</span></div>
+
+    <div class="dim-block" style="border-color:var(--blue);background:linear-gradient(to right, rgba(59,130,246,0.08), var(--surface2));">
+      <h3>🛡️ 企业级安全合规体系 — 银行级标准</h3>
+      <div class="dim-score">当前 <span class="before">9.0</span>（初始分最高）→ 目标 <span class="after">9.8</span> <span class="delta">+0.8</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>认证体系：获取 ISO 27001 + SOC 2 Type II</div>
+        <div class="step-detail">
+          <b>为什么重要</b>：做外贸 SaaS，尤其是处理企业商业数据，安全认证是进入中大型客户的敲门砖。
+          <ul>
+            <li><b>ISO 27001</b>：信息安全管理体系认证，6-12 个月周期</li>
+            <li><b>SOC 2 Type II</b>：服务组织控制报告，面向美国市场，6-9 个月周期</li>
+            <li><b>等保三级</b>：面向国内政企客户（如果做国内市场）</li>
+            <li><b>GDPR 合规认证</b>：面向欧盟市场的数据保护合规</li>
+          </ul>
+          先从 ISO 27001 开始，同步准备 SOC 2。这些认证本身就是产品卖点。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 6-12 月</span><span>🏆 认证体系</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>数据安全：分级分类 + 最小权限</div>
+        <div class="step-detail">
+          <b>数据分级</b>：
+          <ul>
+            <li><b>L1 公开数据</b>：产品公开信息、营销内容 → 公开可访问</li>
+            <li><b>L2 内部数据</b>：租户配置、使用统计 → 租户内可见</li>
+            <li><b>L3 敏感数据</b>：客户联系方式、询盘内容 → 仅授权角色</li>
+            <li><b>L4 高度敏感</b>：支付信息、密码、API Key → 加密存储 + 审计</li>
+          </ul>
+          <b>对应措施</b>：
+          <ul>
+            <li>L3+ 数据加密存储（字段级加密，密钥在 KMS 中管理）</li>
+            <li>L4 数据访问需二次验证（MFA）</li>
+            <li>所有 L3+ 数据访问记录审计日志，不可篡改</li>
+            <li>数据脱敏：非授权角色看到的邮箱是 j***@example.com</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 4 周</span><span>🔒 数据安全</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>获客合规：避免 ToS 违规和法律风险</div>
+        <div class="step-detail">
+          <b>核心风险</b>：通过第三方 API 抓取 LinkedIn/Google 数据可能违反平台 ToS；批量发邮件可能触发反垃圾邮件法规。
+          <br><br>
+          <b>合规方案</b>：
+          <ul>
+            <li><b>数据来源透明化</b>：每条线索标注数据来源和采集方式，用户可选择是否使用</li>
+            <li><b>同意管理</b>：邮件发送前需确认收件人是否同意接收营销邮件（opt-in）</li>
+            <li><b>退订机制</b>：每封邮件底部都有一键退订链接，CAN-SPAM/GDPR 合规</li>
+            <li><b>发送频率限制</b>：系统内置每日发送上限和域名预热策略，避免被拉黑</li>
+            <li><b>官方 API 优先</b>：优先使用官方 Partner API（如 LinkedIn Sales Navigator），避免网页抓取</li>
+            <li><b>用户协议</b>：明确用户不得用于垃圾邮件/骚扰，平台不对用户滥用负责</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 周</span><span>⚖️ 获客合规</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>AI 安全：LLM 时代的新挑战</div>
+        <div class="step-detail">
+          <b>AI 特有安全风险</b>：
+          <ul>
+            <li><b>Prompt Injection</b>：用户通过恶意输入操纵 AI 输出 → 输入过滤 + 输出校验</li>
+            <li><b>数据泄露</b>：敏感数据可能通过 AI 输出泄露 → 上下文脱敏 + 输出过滤</li>
+            <li><b>生成内容合规</b>：AI 生成的开发信可能包含虚假承诺 → 人工审核 + 免责声明</li>
+            <li><b>API Key 安全</b>：用户配置的 AI API Key 需加密存储，不可明文导出</li>
+            <li><b>用量监控</b>：AI Token 用量异常检测，防止滥用和盗刷</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 3 周</span><span>🤖 AI 安全</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 3.0 → 9.6：安全合规前提下的获客</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>🎯 合规获客方案 — 可持续、低风险、高信任</h3>
+      <div class="dim-score">当前 <span class="before">3.0</span> → 目标 <span class="after">9.6</span> <span class="delta">+6.6</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>白帽获客方法论：入站营销 > 出站骚扰</div>
+        <div class="step-detail">
+          <b>理念转变</b>：与其冒着合规风险去"找客户发垃圾邮件"，不如让客户主动来找你。
+          <br><br>
+          <b>入站获客体系</b>：
+          <ul>
+            <li><b>SEO 内容矩阵</b>：已有 SEO 模块，深化为"关键词 → 内容 → 排名 → 流量 → 询盘"的完整闭环</li>
+            <li><b>多语言内容营销</b>：用 AI 生成各语言的行业白皮书/案例/技术文章</li>
+            <li><b>LinkedIn 内容运营</b>：AI 生成行业洞察内容，建立 thought leadership</li>
+            <li><b>YouTube 视频营销</b>：已有视频生成能力，批量产出产品演示/行业解读视频</li>
+            <li><b>落地页优化</b>：每个产品/行业都有高转化率落地页，A/B 测试优化</li>
+          </ul>
+          入站获客的客户质量更高、转化成本更低、合规风险为零。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 持续</span><span>📥 入站营销</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>出站获客合规化：许可式 + 精准化</div>
+        <div class="step-detail">
+          出站获客不是不能做，但要做得合规、精准：
+          <ul>
+            <li><b>只联系决策人</b>：通过 Apollo/Hunter 精准定位采购经理以上级别，不滥发</li>
+            <li><b>高度个性化</b>：每封邮件都是基于对方公司情况定制的，不是模板群发</li>
+            <li><b>明确价值</b>：第一封邮件就说清楚"我为什么联系你 + 对你有什么价值"</li>
+            <li><b>透明退订</b>：每封都有退订链接，尊重收件人意愿</li>
+            <li><b>域名预热</b>：新域名从每天 10 封开始，逐步增量，避免进垃圾箱</li>
+            <li><b>发送频率限制</b>：每个域名每天不超过 50 封，每个收件人每周最多 1 封</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>📤 合规出站</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>数据处理合规框架</div>
+        <div class="step-detail">
+          <b>数据生命周期管理</b>：
+          <ul>
+            <li><b>采集</b>：仅从合法数据源（官方 API / 用户主动提供 / 公开网页）获取</li>
+            <li><b>存储</b>：加密存储，最小化原则（只存必要的）</li>
+            <li><b>使用</b>：仅用于用户授权的目的，不得二次贩卖</li>
+            <li><b>共享</b>：未经用户同意，不得将客户数据共享给第三方</li>
+            <li><b>删除</b>：用户可随时删除其数据，30 天内彻底清除（含备份）</li>
+            <li><b>跨境</b>：欧盟用户数据存储在欧盟区域服务器（如果有 GDPR 需求）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>📋 数据治理</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 9: GLM-5-Turbo -->
+<!-- ============================================================ -->
+<div class="model-section" id="glm-turbo">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);color:#fff;">GT</div>
+    <div>
+      <div class="model-name">GLM-5-Turbo</div>
+      <div class="model-tagline">性能效率派 — 聚焦极致性能、资源效率与运维自动化</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">2.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">8.0 → 9.8</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:98%;background:#22c55e;"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">5.5 → 9.5</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:95%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>性能扩展 8.0 → 9.8：极致性能 + 弹性扩展 + 成本优化</span></div>
+
+    <div class="dim-block" style="border-color:var(--cyan);background:linear-gradient(to right, rgba(6,182,212,0.08), var(--surface2));">
+      <h3>⚡ 性能优化三级跳 — 从够用起飞到行业领先</h3>
+      <div class="dim-score">当前 <span class="before">8.0</span>（初始分最高）→ 目标 <span class="after">9.8</span> <span class="delta">+1.8</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>第一级：缓存优化（命中率从 30% → 90%）</div>
+        <div class="step-detail">
+          <b>多级缓存体系</b>：
+          <ul>
+            <li><b>L1 CDN 缓存</b>：Cloudflare CDN，静态资源 + API 响应缓存（命中率目标 80%）</li>
+            <li><b>L2 Redis 分布式缓存</b>：热点数据（产品列表/租户配置/SEO 数据），TTL 智能调整</li>
+            <li><b>L3 进程内缓存</b>：LRU 缓存极少变化的数据（字典表/配置项）</li>
+          </ul>
+          <b>缓存策略</b>：
+          <ul>
+            <li>读多写少：Cache-Aside + 写失效</li>
+            <li>统计数据：定时预计算 + 缓存（不实时计算）</li>
+            <li>AI 生成结果：缓存相同 prompt 的生成结果（节省 Token 成本 60%+）</li>
+          </ul>
+          <b>目标</b>：P95 API 响应时间 < 100ms（缓存命中时），< 500ms（缓存未命中时）。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>⚡ 缓存体系</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>第二级：数据库性能调优（吞吐量 10 倍）</div>
+        <div class="step-detail">
+          <b>连接层</b>：
+          <ul>
+            <li>PgBouncer 连接池（Transaction Mode），支持 1000+ 并发连接</li>
+            <li>连接池监控：使用率/等待时间/错误率</li>
+          </ul>
+          <b>查询层</b>：
+          <ul>
+            <li>慢查询治理：pg_stat_statements 找出 Top 20 慢查询，逐个优化</li>
+            <li>索引优化：缺失索引全部补上，冗余索引清理</li>
+            <li>查询优化：避免 N+1 查询，使用 join + select_related / prefetch_related</li>
+          </ul>
+          <b>存储层</b>：
+          <ul>
+            <li>读写分离：主库写 + 2 从库读（HAProxy 负载均衡）</li>
+            <li>大表分区：inquiries / buyer_prospect_leads / chat_messages 按月分区</li>
+            <li>归档策略：超过 1 年的历史数据迁移到归档表（或对象存储）</li>
+          </ul>
+          <b>目标</b>：单库 QPS 从 200 → 2000，P95 查询时间从 500ms → 50ms。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 3 周</span><span>🗄️ 数据库</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>第三级：异步化 + 消息驱动（系统解耦 + 削峰填谷）</div>
+        <div class="step-detail">
+          <b>同步改异步的场景</b>：
+          <ul>
+            <li><b>获客搜索</b>：用户提交搜索 → 立即返回任务 ID → 后台异步执行 → WebSocket 推送进度 → 完成通知</li>
+            <li><b>邮件发送</b>：批量发邮件走 Celery 队列，不阻塞 API</li>
+            <li><b>AI 生成</b>：开发信/SEO 内容/视频生成全部异步化</li>
+            <li><b>数据导入</b>：CSV 导入走后台任务，用户可继续操作</li>
+            <li><b>报表生成</b>：月度报表/获客漏斗报表定时预生成</li>
+          </ul>
+          <b>消息队列演进</b>：
+          <ul>
+            <li>当前：Redis + Celery（够用但不完美）</li>
+            <li>中期：Redis Streams（轻量级消息总线，解耦各服务）</li>
+            <li>远期：Kafka（高吞吐 + 持久化 + 流处理）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>🔄 异步化</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>成本优化：用 1/3 的钱跑 3 倍的量</div>
+        <div class="step-detail">
+          <b>AI 成本优化</b>（通常是最大开支）：
+          <ul>
+            <li>模型路由：简单任务用 Flash 模型，复杂任务用 Pro 模型（成本下降 70%）</li>
+            <li>缓存重复请求：相同 prompt 的 AI 生成结果缓存（Token 成本下降 50%+）</li>
+            <li>提示词优化：用更少的 token 达到同样效果（系统 prompt 精简 30%）</li>
+            <li>流式响应：AI 生成结果边生成边返回（用户感知速度提升 5x）</li>
+          </ul>
+          <b>基础设施成本优化</b>：
+          <ul>
+            <li>冷热分层：热数据 PostgreSQL + 冷数据对象存储（成本下降 60%）</li>
+            <li>Spot Instance：无状态服务用竞价实例（成本下降 70%）</li>
+            <li>自动扩缩：按负载自动增减实例（夜间/周末缩容，成本下降 40%）</li>
+            <li>CDN 回源优化：提高缓存命中率，减少回源流量（成本下降 80%）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 持续</span><span>💰 成本优化</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 2.5 → 9.5：高性能获客引擎</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>🚀 高性能获客引擎 — 秒级搜索，万级并发</h3>
+      <div class="dim-score">当前 <span class="before">2.5</span> → 目标 <span class="after">9.5</span> <span class="delta">+7.0</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>获客搜索异步化 + 进度推送</div>
+        <div class="step-detail">
+          <b>问题</b>：当前获客搜索是同步 API，Google CSE 15s 超时，多渠道并行更慢，用户看着转圈圈。
+          <br><br>
+          <b>方案</b>：
+          <ul>
+            <li>用户提交搜索 → 创建搜索任务（status=pending）→ 立即返回 task_id</li>
+            <li>Celery worker 异步执行：多渠道并行搜索 → 去重 → 验证 → 评分 → 写入 DB</li>
+            <li>WebSocket 实时推送进度："已搜索 Google: 23 条 / 正在验证邮箱..."</li>
+            <li>完成后推送通知 + 声音提醒</li>
+            <li>搜索历史可查看、可复用、可重新执行</li>
+          </ul>
+          <b>体验提升</b>：用户不用等，可以先做别的事，完成了通知他。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>⚡ 异步搜索</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>线索搜索引擎：倒排索引 + 向量搜索</div>
+        <div class="step-detail">
+          当线索量达到 10 万+，单纯数据库查询不够快：
+          <ul>
+            <li><b>Elasticsearch / Meilisearch</b>：线索全文搜索 + 多维度筛选 + 聚合统计</li>
+            <li><b>pgvector 语义搜索</b>：按"语义相似度"找相似客户（"找和这个客户差不多的"）</li>
+            <li><b>混合搜索</b>：关键词 + 语义 + 评分权重，返回最相关结果</li>
+            <li><b>搜索建议</b>：输入时实时推荐关键词、公司名、行业</li>
+          </ul>
+          搜索响应从秒级降到毫秒级。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>🔍 搜索引擎</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>邮件发送队列：高吞吐 + 高送达率</div>
+        <div class="step-detail">
+          <b>队列架构</b>：
+          <ul>
+            <li>多优先级队列：高优（回复通知）> 中优（单封邮件）> 低优（批量群发）</li>
+            <li>发送速率控制：每个域名/IP 按预热曲线限速，避免进垃圾箱</li>
+            <li>失败重试：指数退避（30s → 2min → 10min → 1h），最多 3 次</li>
+            <li>熔断机制：某个域名 bounce rate > 10% 自动暂停发送，告警通知</li>
+          </ul>
+          <b>送达率优化</b>：
+          <ul>
+            <li>IP 预热：新 IP 从 10 封/天开始，30 天逐步增加到 500 封/天</li>
+            <li>域名信誉：多域名轮询发送，分散风险</li>
+            <li>内容检测：AI 检测邮件是否容易进垃圾箱，给出优化建议</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周</span><span>📧 邮件架构</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 10: GLM-5 -->
+<!-- ============================================================ -->
+<div class="model-section" id="glm-5">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:#fff;">G5</div>
+    <div>
+      <div class="model-name">GLM-5</div>
+      <div class="model-tagline">商业价值派 — 通用视角，聚焦产品市场匹配度与商业化路径</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">架构设计</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">安全合规</div>
+        <div class="summary-score" style="color:var(--gold);">7.5 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">获客能力</div>
+        <div class="summary-score" style="color:var(--gold);">3.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">性能扩展</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">代码质量</div>
+        <div class="summary-score" style="color:var(--gold);">6.0 → 9.6</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:96%;background:var(--gold);"></div></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">产品商业</div>
+        <div class="summary-score" style="color:var(--gold);">7.0 → 9.7</div>
+        <div class="summary-bar"><div class="summary-bar-fill" style="width:97%;background:var(--gold);"></div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>产品商业 7.0 → 9.7：从工具到平台的商业化跃迁</span></div>
+
+    <div class="dim-block" style="border-color:var(--purple);background:linear-gradient(to right, rgba(139,92,246,0.08), var(--surface2));">
+      <h3>💎 产品商业化体系 — 让产品自己赚钱</h3>
+      <div class="dim-score">当前 <span class="before">7.0</span> → 目标 <span class="after">9.7</span> <span class="delta">+2.7</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>产品定位：从"建站工具"到"AI 外贸获客操作系统"</div>
+        <div class="step-detail">
+          <b>重新定位</b>：
+          <ul>
+            <li><b>旧定位</b>：多语言建站 + SEO 优化工具（同质化严重）</li>
+            <li><b>新定位</b>：AI 驱动的外贸获客操作系统（差异化明显）</li>
+          </ul>
+          <b>三大核心价值主张</b>：
+          <ol>
+            <li><b>AI 智能获客</b>：AI 帮你找海外买家 + 写个性化开发信 + 自动跟进</li>
+            <li><b>多语言独立站</b>：12 语言建站 + SEO 优化 + 快速收录（已有能力）</li>
+            <li><b>询盘转化管理</b>：从询盘到成交的全流程管理（已有能力）</li>
+          </ol>
+          <b>核心叙事</b>："用 AI 帮外贸企业拿到更多订单" — 简单直接，结果导向。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 1 周</span><span>🎯 定位升级</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>定价策略：PLG + SLG 双轮驱动</div>
+        <div class="step-detail">
+          <b>PLG（产品驱动增长）— 自助式套餐</b>：
+          <table class="dim-table" style="font-size:0.8rem;margin:10px 0;">
+            <thead>
+              <tr><th>套餐</th><th>价格</th><th>获客积分</th><th>核心功能</th><th>目标用户</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Free</td><td>¥0</td><td>50/月</td><td>基础建站 + 有限获客</td><td>试用用户</td></tr>
+              <tr><td>Starter</td><td>¥99/月</td><td>500/月</td><td>完整建站 + SEO + 基础获客</td><td>个人/小团队</td></tr>
+              <tr><td>Pro</td><td>¥299/月</td><td>2000/月</td><td>AI 获客 + 邮件序列 + 高级分析</td><td>成长型企业</td></tr>
+              <tr><td>Business</td><td>¥999/月</td><td>10000/月</td><td>API 访问 + 多用户 + 优先支持</td><td>中型企业</td></tr>
+              <tr><td>Enterprise</td><td>定制</td><td>定制</td><td>私有部署 + SSO + 专属 CSM</td><td>大型企业</td></tr>
+            </tbody>
+          </table>
+          <b>SLG（销售驱动增长）— 企业客户</b>：
+          <ul>
+            <li>代理体系：L2 省代 / L3 市代，高比例分润（30-50%）</li>
+            <li>行业解决方案：建材行业包 / 机械行业包 / 电子行业包（+¥500/月）</li>
+            <li>增值服务：代运营 / SEO 服务 / 获客代做（按项目收费）</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>💰 定价体系</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>增长引擎：让用户帮你找用户</div>
+        <div class="step-detail">
+          <b>推荐奖励</b>：
+          <ul>
+            <li>推荐好友注册 → 双方各得 200 获客积分</li>
+            <li>好友付费 → 推荐人获得 20% 佣金（持续 12 个月）</li>
+            <li>专属推荐链接 + 推广素材库（海报/文案/视频）</li>
+          </ul>
+          <b>社区运营</b>：
+          <ul>
+            <li>外贸人社区（已有 forum 模块，需激活）</li>
+            <li>每周外贸干货分享（AI 生成 + 人工编辑）</li>
+            <li>成功案例：用户故事 + 数据说话（"用了我们的系统，询盘增长 3 倍"）</li>
+          </ul>
+          <b>内容营销</b>：
+          <ul>
+            <li>公众号/知乎/LinkedIn/YouTube 多平台内容矩阵</li>
+            <li>SEO 博客："如何找海外客户""外贸开发信模板"等关键词引流</li>
+            <li>免费工具：邮箱格式验证 / 开发信评分器 / 关键词研究工具</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 持续</span><span>📈 增长引擎</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">4</span>客户成功：降低流失，提升 LTV</div>
+        <div class="step-detail">
+          <b>Onboarding 体系</b>：
+          <ul>
+            <li>3 步上手向导：导入产品 → 设置目标市场 → 发送第一封开发信（10 分钟内）</li>
+            <li>新手任务清单：完成每个任务获得积分奖励</li>
+            <li>7 天新手邮件系列：每天一封教学邮件 + 最佳实践</li>
+          </ul>
+          <b>健康度监控</b>：
+          <ul>
+            <li>用户健康度评分：基于功能使用 + 获客效果 + 登录频率</li>
+            <li>低健康度用户自动触发 CSM 介入（邮件/企微/电话）</li>
+            <li>流失预警：30 天未登录 / 获客积分未消耗 / 询盘下降 → 预警</li>
+          </ul>
+          <b>客户成功团队</b>：
+          <ul>
+            <li>Pro 以上用户：专属客户成功经理</li>
+            <li>季度业务回顾：获客效果分析 + 优化建议</li>
+            <li>定期培训：获客技巧 / SEO 优化 / AI 工具使用</li>
+          </ul>
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周</span><span>🤝 客户成功</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>获客能力 3.0 → 9.6：商业视角的获客产品设计</span></div>
+
+    <div class="dim-block" style="border-color:var(--red);">
+      <h3>🎯 获客商业化设计 — 让获客能力直接变现</h3>
+      <div class="dim-score">当前 <span class="before">3.0</span> → 目标 <span class="after">9.6</span> <span class="delta">+6.6</span></div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">1</span>积分制获客：用量化的方式卖获客能力</div>
+        <div class="step-detail">
+          <b>获客积分（Acquisition Credits）</b>：
+          <ul>
+            <li>每次搜索消耗 X 积分（不同渠道不同消耗）</li>
+            <li>每次邮箱验证消耗 Y 积分</li>
+            <li>每发一封邮件消耗 Z 积分（AI 生成额外消耗）</li>
+            <li>套餐包含基础积分，超出可购买积分包</li>
+          </ul>
+          <b>积分消耗表</b>：
+          <table class="dim-table" style="font-size:0.8rem;margin:10px 0;">
+            <thead><tr><th>操作</th><th>积分消耗</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td>Google 搜索（每页 10 条）</td><td>1 积分</td><td>基础搜索</td></tr>
+              <tr><td>Hunter.io 域名搜索</td><td>5 积分/次</td><td>返回所有找到的邮箱</td></tr>
+              <tr><td>邮箱验证</td><td>1 积分/个</td><td>ZeroBounce 实时验证</td></tr>
+              <tr><td>AI 开发信生成</td><td>2 积分/封</td><td>GPT-4 级别生成</td></tr>
+              <tr><td>邮件发送</td><td>0.1 积分/封</td><td>通过 Resend 发送</td></tr>
+              <tr><td>Apollo 联系人导出</td><td>3 积分/个</td><td>含完整联系方式</td></tr>
+            </tbody>
+          </table>
+          好处：用户觉得"用多少付多少"很公平；平台成本可控；鼓励用户多用（越多越便宜）。
+        </div>
+        <div class="step-meta"><span class="step-priority p0">P0</span><span>⏱ 2 周</span><span>💎 积分体系</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">2</span>行业解决方案包：垂直化高客单价</div>
+        <div class="step-detail">
+          <b>为什么做垂直包</b>：通用工具竞争激烈，垂直行业解决方案客单价高、粘性强。
+          <br><br>
+          <b>建材行业包（+¥500/月）</b>：
+          <ul>
+            <li>建材行业关键词库（1000+ 关键词）</li>
+            <li>建材行业开发信模板（20+ 模板）</li>
+            <li>全球建材进口商数据库（10 万+ 联系人）</li>
+            <li>建材行业 SEO 优化方案</li>
+          </ul>
+          <b>机械行业包、电子行业包、纺织行业包... 同理</b>
+          <br><br>
+          每个行业包的研发成本不高（主要是内容 + 数据），但售价可以很高，毛利率 90%+。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 4 周/行业</span><span>📦 垂直包</span></div>
+      </div>
+
+      <div class="action-step">
+        <div class="step-title"><span class="step-num">3</span>代运营服务：用系统能力做服务，利润翻倍</div>
+        <div class="step-detail">
+          <b>获客代运营</b>（¥9,800/月起）：
+          <ul>
+            <li>专业团队帮客户做获客：搜索 + 验证 + 开发信 + 跟进</li>
+            <li>每月保底：100 个有效线索 / 500 封开发信 / 10 个有效回复</li>
+            <li>用系统来做，效率是人工的 10 倍，利润率极高</li>
+          </ul>
+          <b>SEO 代运营</b>（¥4,980/月起）：
+          <ul>
+            <li>用已有的 SEO 矩阵模块 + AI 内容生成</li>
+            <li>每月产出 30 篇 SEO 文章 + 优化 + 排名追踪</li>
+            <li>边际成本极低，主要是人工审核和策略</li>
+          </ul>
+          好处：用服务带动 SaaS 订阅；服务收入高，现金流好；客户粘性强（数据都在系统里）。
+        </div>
+        <div class="step-meta"><span class="step-priority p1">P1</span><span>⏱ 2 周/服务</span><span>🤝 代运营</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== 终极汇总 ==================== -->
+<div class="card" style="margin-top:48px;">
+  <h2>🏆 10 模型共识 — 全维度 9.5+ 行动路线图</h2>
+  <p style="color:var(--text2);font-size:0.88rem;margin-bottom:16px;">
+    综合 10 个模型的方案，以下是优先级最高、投入产出比最大的行动清单，按时间阶段排列。
+  </p>
+
+  <div class="section-divider"><span>第 1-2 周：止血 & 基础（必须做）</span></div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#f87171;">🔴 获客（P0）</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>移除所有 Mock 获客渠道 UI，明确标注"即将上线"</li>
+        <li>接入 Hunter.io（域名搜索 + 邮箱验证）</li>
+        <li>接入 Resend（SMTP 邮件发送 + DKIM/SPF 配置）</li>
+        <li>CSV 导入导出功能</li>
+      </ul>
+    </div>
+    <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#60a5fa;">🔵 安全（P0）</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>修复 get_current_user_optional 敏感端点漏洞</li>
+        <li>JWT 迁移到 HttpOnly Secure Cookie</li>
+        <li>CSRF Double Submit Cookie 保护</li>
+        <li>CI 集成 bandit + npm audit 漏洞扫描</li>
+      </ul>
+    </div>
+    <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#a78bfa;">🟣 代码质量（P0）</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>pre-commit + Ruff + Black + mypy 配置</li>
+        <li>删除 SEOMetadata 重复类</li>
+        <li>material_specs 主键统一为 UUID</li>
+        <li>前端消除 fetch 双通道，统一 axios</li>
+      </ul>
+    </div>
+    <div style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#22d3ee;">🔵 性能（P1）</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>Redis 缓存全面铺开（命中率目标 70%）</li>
+        <li>Top 10 慢查询优化 + 索引补全</li>
+        <li>Nginx microcache + Brotli 压缩</li>
+        <li>前端路由懒加载优化</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>第 3-6 周：核心闭环（重点投入）</span></div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+    <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#fbbf24;">🟡 获客核心</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>Apollo.io 接入（2.65 亿联系人）</li>
+        <li>邮件序列（Drip Campaign）3-5 封自动跟进</li>
+        <li>打开/点击/回复 追踪 + 漏斗分析</li>
+        <li>AI 开发信生成 + 个性化变量</li>
+        <li>线索评分引擎 v2 + 去重引擎</li>
+      </ul>
+    </div>
+    <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#4ade80;">🟢 架构升级</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>API 路由按业务域分包子包化</li>
+        <li>前端路由按角色壳拆分</li>
+        <li>BFF 层落地（获客页面一次请求）</li>
+        <li>事件总线（Redis Streams）</li>
+        <li>Celery 多队列 + 自动扩缩</li>
+      </ul>
+    </div>
+    <div style="background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.3);border-radius:8px;padding:14px;">
+      <b style="color:#f472b6;">🩷 产品商业化</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>获客积分体系设计与上线</li>
+        <li>5 档套餐定价 + 计费系统</li>
+        <li>Onboarding 3 步上手向导</li>
+        <li>获客漏斗仪表板</li>
+        <li>推荐奖励机制</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>第 7-12 周：智能增长（建立壁垒）</span></div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+    <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.4);border-radius:8px;padding:14px;">
+      <b style="color:#a78bfa;">🤖 AI 智能化</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>RAG 客户洞察 + 定制化开发信</li>
+        <li>AI Sales Agent 原型（目标理解→自动执行）</li>
+        <li>数据飞轮（成交数据→优化评分模型）</li>
+        <li>智能搜索策略推荐</li>
+        <li>MCP 化获客工具</li>
+      </ul>
+    </div>
+    <div style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.4);border-radius:8px;padding:14px;">
+      <b style="color:#22d3ee;">⚡ 性能与运维</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>数据库读写分离 + PgBouncer</li>
+        <li>Cloudflare CDN + 边缘缓存</li>
+        <li>可观测性全链路（Metrics/Traces/Logs）</li>
+        <li>Elasticsearch 线索全文搜索</li>
+        <li>大表分区 + 归档策略</li>
+      </ul>
+    </div>
+    <div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.4);border-radius:8px;padding:14px;">
+      <b style="color:#fbbf24;">🏢 商业拓展</b>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;margin-top:8px;">
+        <li>LinkedIn + WhatsApp 渠道接入</li>
+        <li>行业解决方案包（建材/机械/电子）</li>
+        <li>代理体系运营落地</li>
+        <li>ISO 27001 / SOC 2 认证启动</li>
+        <li>代运营服务上线</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="card">
+  <h2>📊 预期效果 — 改造完成后各维度评分</h2>
+  <div style="overflow-x:auto;">
+  <table class="dim-table">
+    <thead>
+      <tr>
+        <th>维度</th>
+        <th>改造前（10 模型平均）</th>
+        <th>改造后（10 模型平均）</th>
+        <th>提升幅度</th>
+        <th>关键里程碑</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>获客能力</b></td>
+        <td class="score score-low">2.9</td>
+        <td class="score score-high">9.6</td>
+        <td class="score score-high">+6.7 ↑</td>
+        <td>Hunter+Apollo+Resend 接入 → 邮件序列 → RAG 个性化 → AI Agent</td>
+      </tr>
+      <tr>
+        <td><b>代码质量</b></td>
+        <td class="score score-mid">5.7</td>
+        <td class="score score-high">9.6</td>
+        <td class="score score-high">+3.9 ↑</td>
+        <td>pre-commit → 严格类型 → 测试70%+ → SonarQube</td>
+      </tr>
+      <tr>
+        <td><b>产品商业</b></td>
+        <td class="score score-mid">5.8</td>
+        <td class="score score-high">9.6</td>
+        <td class="score score-high">+3.8 ↑</td>
+        <td>积分体系 → 5档套餐 → 行业包 → 代运营</td>
+      </tr>
+      <tr>
+        <td><b>性能扩展</b></td>
+        <td class="score score-mid">6.6</td>
+        <td class="score score-high">9.6</td>
+        <td class="score score-high">+3.0 ↑</td>
+        <td>缓存体系 → 读写分离 → CDN → K8s</td>
+      </tr>
+      <tr>
+        <td><b>架构设计</b></td>
+        <td class="score score-high">7.5</td>
+        <td class="score score-high">9.6</td>
+        <td class="score score-high">+2.1 ↑</td>
+        <td>模块拆分 → BFF → 事件驱动 → 云原生</td>
+      </tr>
+      <tr>
+        <td><b>安全合规</b></td>
+        <td class="score score-high">7.7</td>
+        <td class="score score-high">9.6</td>
+        <td class="score score-high">+1.9 ↑</td>
+        <td>Cookie JWT → 数据分级 → GDPR → ISO27001</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<p style="text-align:center;color:var(--text2);font-size:0.8rem;margin-top:40px;padding-bottom:20px;">
+  满分改造计划 · 10 大 AI 模型联合出品 · 2026-07-20 · 仅供内部使用
+</p>
+
+</div>
+</body>
+</html>

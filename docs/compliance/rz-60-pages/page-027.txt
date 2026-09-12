@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+import os
+import secrets
+import warnings
+from pathlib import Path
+from typing import Optional
+
+from pydantic import ConfigDict
+from pydantic_settings import BaseSettings
+
+
+# 优先从 ENV_FILE 环境变量读取配置文件路径
+_env_file = os.environ.get("ENV_FILE", ".env")
+
+class Settings(BaseSettings):
+    model_config = ConfigDict(env_file=_env_file, env_file_encoding="utf-8", extra="ignore")
+    APP_NAME: str = "轻集料混凝土 SEO系统"
+    PROJECT_NAME: str = "轻集料混凝土 SEO系统"
+    PROJECT_DESCRIPTION: str = "保温建材企业官网系统 - 产品管理、内容管理、SEO优化"
+    PROJECT_VERSION: str = "1.0.0"
+    API_V1_PREFIX: str = "/api/v1"
+    DEBUG: bool = False
+    ENVIRONMENT: str = "production"
+    SITE_URL: str = "https://youding.com"
+
+    # CORS配置
+    # SaaS 主域名 (租户子域名基于此)
+    SAAS_PRIMARY_DOMAIN: str = "youding-saas.com"
+
+    # CORS配置 — 支持从环境变量读取逗号分隔的域名列表，也兼容 JSON 数组格式
+    @property
+    def CORS_ORIGINS(self) -> list[str]:
+        raw = os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173,http://localhost:80,https://youding.com,https://youding-saas.com"
+        )
+        raw = raw.strip()
+        if not raw:
+            return []
+        # 兼容 JSON 数组格式，如 '["http://a.com","http://b.com"]'
+        if raw.startswith("["):
+            import json
+            try:
+                parsed = json.loads(raw)
+                if isinstance(parsed, list):
+                    return parsed
+            except json.JSONDecodeError:
+                pass
+        # 逗号分隔格式
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
+    ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1", "youding.com", "youding-saas.com"]

@@ -1,0 +1,11 @@
+[
+  {
+    "file_rel": "app/services/journey_health_service.py",
+    "func_name": "build_journey_health",
+    "func_lineno": 58,
+    "start": 110,
+    "end": 181,
+    "helper_name": "_build_journey_role_insights",
+    "preview": false
+  }
+]

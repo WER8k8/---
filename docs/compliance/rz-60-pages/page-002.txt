@@ -1,0 +1,51 @@
+// FILE: backend\app\api\v1\admin_bff\auth_adapter.py
+"""认证 BFF — HTTP 薄层；转发 legacy auth，输出 Vben 契约"""
+
+from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
+
+from app.api.v1.admin_bff.bridge import forward_success_or_legacy, to_vben_token_pair
+from app.api.v1.admin_bff.tenant_lookup import search_tenants_for_login
+from app.api.v1.routes.auth import login as auth_login
+from app.api.v1.routes.auth import logout as auth_logout
+from app.api.v1.routes.auth import refresh_token as auth_refresh
+from app.core.response import success_response
+from app.db.session import get_db
+from app.schemas.auth import LoginRequest, TokenRefreshRequest
+
+router = APIRouter()
+
+
+class UacLoginBody(BaseModel):
+    username: str = Field(..., description="用户名或邮箱")
+    password: str = Field(..., min_length=1)
+    tenant_code: str | None = None
+    captcha_id: str | None = None
+    captcha_code: str | None = None
+
+
+@router.post("/login")
+def bff_login(body: UacLoginBody, request: Request, db: Session = Depends(get_db)):
+    login_data = LoginRequest(username_or_email=body.username, password=body.password)
+    result = auth_login(login_data, request, db)
+    return forward_success_or_legacy(result, to_vben_token_pair)
+
+
+@router.post("/refresh")
+def bff_refresh(body: TokenRefreshRequest, db: Session = Depends(get_db)):
+    result = auth_refresh(body, db)
+    return forward_success_or_legacy(result, to_vben_token_pair)
+
+
+@router.post("/logout")
+def bff_logout():
+    return auth_logout()
+
+
+@router.get("/captcha")
+def bff_captcha_stub():
+    return success_response(
+        data={"captcha_id": "stub", "image": "", "enabled": False},
+        message="验证码未启用",
+    )

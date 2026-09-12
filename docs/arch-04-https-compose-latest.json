@@ -1,0 +1,21 @@
+﻿{
+    "checks":  {
+                   "ssl_privkey":  true,
+                   "nginx_conf":  true,
+                   "ssl_readme":  true,
+                   "ssl_fullchain":  true,
+                   "compose_prod":  true
+               },
+    "domain_staging":  "demo.youding.local",
+    "pass":  true,
+    "nginx_ssl_check_exit":  0,
+    "docker_ready":  false,
+    "compose_config_error":  "Docker unavailable; SSL self-sign + file checks only",
+    "task":  "ARCH-04",
+    "generated_at":  "2026-06-04T02:34:23.6925237+08:00",
+    "compose_config_ok":  false,
+    "compose_files":  [
+                          "docker-compose.prod.yml",
+                          "docker-compose.dev.yml"
+                      ]
+}

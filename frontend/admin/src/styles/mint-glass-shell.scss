@@ -1,0 +1,388 @@
+/**
+ * Pastel Mint Glass — 浅色玻璃拟态后台（左栏 + 卡片仪表盘）
+ * 马卡龙薄荷 + 磨砂 SaaS · 对齐案例图淡青清新底
+ */
+@use './design-tokens-v2.scss';
+
+:root {
+  /* 薄荷马卡龙基色 */
+  --uj-bg-page: #e2f5f0;
+  --uj-bg-page-mesh:
+    radial-gradient(ellipse 90% 70% at 8% 0%, rgb(168 230 207 / 0.55), transparent 52%),
+    radial-gradient(ellipse 70% 60% at 95% 12%, rgb(186 230 253 / 0.35), transparent 48%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgb(148 210 189 / 0.25), transparent 55%),
+    linear-gradient(165deg, #dff5ee 0%, #e8f7f2 38%, #edf8f4 100%);
+
+  --uj-bg-card: rgb(255 255 255 / 0.72);
+  --uj-border: rgb(255 255 255 / 0.85);
+  --uj-border-soft: rgb(94 181 162 / 0.22);
+
+  --uj-glass-bg: rgb(255 255 255 / 0.92);
+  --uj-glass-bg-strong: rgb(255 255 255 / 0.96);
+  --uj-glass-blur: 20px;
+  --uj-glass-shadow: 0 8px 32px rgb(45 107 96 / 0.08), 0 1px 0 rgb(255 255 255 / 0.9) inset;
+  --uj-glass-shadow-hover: 0 12px 40px rgb(45 107 96 / 0.12);
+
+  --uj-brand: #4a9b8c;
+  --uj-brand-hover: #3d8578;
+  --uj-brand-deep: #2a6b60;
+  --uj-brand-muted: rgb(74 155 140 / 0.14);
+  --uj-text-muted: #5f7d75;
+  --uj-text-secondary: #3d5c54;
+
+  --uj-shell-platform-accent: #5eb8a8;
+  --uj-shell-client-accent: #4a9b8c;
+  --uj-shell-agent-accent: #4db6a0;
+
+  --uj-sidebar-bg: var(--uj-glass-bg-strong);
+  --uj-sidebar-active: rgb(94 200 176 / 0.2);
+  --uj-kpi-bg: rgb(255 255 255 / 0.75);
+  --uj-kpi-border: rgb(255 255 255 / 0.9);
+  --uj-kpi-shadow: var(--uj-glass-shadow);
+  --uj-shadow-card: var(--uj-glass-shadow);
+
+  --uj-mint-pastel-1: #e8faf4;
+  --uj-mint-pastel-2: #dff5ee;
+  --uj-mint-pastel-3: #ecfdf8;
+  --uj-mint-pastel-4: #f0fdf9;
+}
+
+/* 玻璃面板（仪表盘卡片）— 不用 backdrop-filter，避免送检水印穿透造成文字重影 */
+.uj-glass-panel,
+.shell .admin-dashboard .panel {
+  background: var(--uj-glass-bg-strong);
+  border: 1px solid var(--uj-border);
+  box-shadow: var(--uj-glass-shadow);
+  border-radius: var(--uj-radius-xl, 20px);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.uj-glass-panel:hover,
+.shell .admin-dashboard .panel:hover {
+  box-shadow: var(--uj-glass-shadow-hover);
+}
+
+/* ========== 壳层：左栏 + 主区 ========== */
+.shell {
+  background: var(--uj-bg-page-mesh);
+  background-color: var(--uj-bg-page);
+}
+
+.shell .sidebar {
+  background: var(--uj-glass-bg-strong) !important;
+  border-right: 1px solid var(--uj-border) !important;
+  box-shadow: 4px 0 24px rgb(45 107 96 / 0.04);
+}
+
+.shell .sidebar-brand,
+.shell .sidebar-footer {
+  border-color: var(--uj-border-soft) !important;
+}
+
+.shell .sidebar-brand-mark {
+  background: linear-gradient(145deg, #6ec4b4 0%, var(--uj-brand) 55%, var(--uj-brand-deep) 100%) !important;
+  box-shadow: 0 4px 14px rgb(74 155 140 / 0.35);
+}
+
+.shell .main-area {
+  background: transparent;
+}
+
+.shell .main-area > header.topbar,
+.shell .yd-pro-worktabs,
+.shell .yd-context-bar,
+.shell .yd-worktab-bar {
+  background: var(--uj-glass-bg-strong) !important;
+  border-color: var(--uj-border-soft) !important;
+}
+
+.shell .content-area {
+  padding: 12px 16px 24px;
+  background: transparent;
+  font-size: var(--uj-text-body, 15px);
+}
+
+.shell .nav-group-title {
+  color: #7a9a92;
+}
+
+.shell .nav-item {
+  color: #5f7d75;
+}
+
+.shell .nav-item:hover {
+  background: rgb(255 255 255 / 0.55);
+  color: var(--uj-brand-deep);
+}
+
+.shell .nav-item.active {
+  background: var(--uj-brand-muted) !important;
+  color: var(--uj-brand-deep) !important;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset;
+}
+
+.shell .nav-item.active::before {
+  background: var(--uj-brand) !important;
+}
+
+.shell .submenu-item:hover {
+  background: rgb(255 255 255 / 0.45);
+}
+
+.shell .submenu-item.active {
+  color: var(--uj-brand-deep) !important;
+  background: var(--uj-brand-muted) !important;
+}
+
+.shell--platform .nav-item.active,
+.shell--platform .submenu-item.active {
+  background: var(--uj-brand-muted) !important;
+  color: var(--uj-brand-deep) !important;
+}
+
+.shell .search-btn {
+  background: rgb(255 255 255 / 0.5);
+  border-color: var(--uj-border-soft);
+}
+
+.shell .search-btn:hover {
+  border-color: var(--uj-brand);
+  color: var(--uj-brand-deep);
+  background: rgb(255 255 255 / 0.85);
+}
+
+.shell .icon-btn:hover {
+  background: var(--uj-brand-muted);
+  color: var(--uj-brand-deep);
+}
+
+.shell .expand-btn,
+.shell .nav-flyout,
+.shell .notify-panel {
+  background: var(--uj-glass-bg-strong);
+  border-color: var(--uj-border-soft);
+}
+
+.shell .expand-btn:hover {
+  color: var(--uj-brand-deep);
+  border-color: var(--uj-brand);
+}
+
+.shell .notify-panel-footer a {
+  color: var(--uj-brand);
+}
+
+/* Ant 主色跟随薄荷 */
+.shell .ant-btn-primary:not(.risk-cta .ant-btn) {
+  background: var(--uj-brand-deep) !important;
+  border-color: var(--uj-brand-deep) !important;
+}
+
+.shell .ant-btn-primary:not(.risk-cta .ant-btn):hover {
+  background: var(--uj-brand-hover) !important;
+  border-color: var(--uj-brand-hover) !important;
+}
+
+/* 默认按钮：玻璃背景上须深色字 + 白底，避免「看不见」 */
+.shell .ant-btn-default:not(:disabled),
+.yd-page .ant-btn-default:not(:disabled) {
+  background: rgb(255 255 255 / 0.96) !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+.shell .ant-btn-default:not(:disabled):hover,
+.yd-page .ant-btn-default:not(:disabled):hover {
+  border-color: var(--uj-brand) !important;
+  color: var(--uj-brand-deep, #1e4d44) !important;
+  background: #f0faf7 !important;
+}
+
+.shell .ant-btn-default:disabled,
+.yd-page .ant-btn-default:disabled {
+  background: rgb(248 250 252 / 0.92) !important;
+  border-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+}
+
+.shell .ant-tag-processing {
+  color: var(--uj-brand-deep);
+  background: var(--uj-brand-muted);
+  border-color: rgb(94 181 162 / 0.35);
+}
+
+/* KPI 马卡龙薄荷 Pastel */
+.shell .uj-kpi-card,
+.shell .yd-stats-card {
+  background: var(--uj-kpi-bg) !important;
+  border: 1px solid var(--uj-kpi-border) !important;
+  box-shadow: var(--uj-kpi-shadow) !important;
+  border-left: 3px solid var(--uj-brand) !important;
+}
+
+/* —— 全局 Ant / 页面模块：禁止实色纯白卡片 —— */
+.shell .ant-card,
+.shell .ant-card-bordered,
+.yd-page .ant-card,
+.client-shell .ant-card {
+  background: var(--uj-glass-bg-strong) !important;
+  border: 1px solid var(--uj-border) !important;
+  box-shadow: var(--uj-glass-shadow) !important;
+  border-radius: var(--uj-radius-xl, 20px) !important;
+}
+
+.shell .ant-card .ant-card-head {
+  background: transparent !important;
+  border-bottom-color: var(--uj-border-soft) !important;
+}
+
+.shell .ant-modal-content,
+.shell .ant-drawer-content,
+.shell .ant-select-dropdown,
+.shell .ant-dropdown-menu {
+  background: var(--uj-glass-bg-strong) !important;
+  border: 1px solid var(--uj-border);
+  box-shadow: var(--uj-glass-shadow-hover);
+  border-radius: var(--uj-radius-lg, 16px);
+}
+
+.shell .ant-table {
+  background: transparent !important;
+}
+
+.shell .ant-table-container {
+  border-radius: var(--uj-radius-md);
+  overflow: hidden;
+  background: var(--uj-glass-bg-strong);
+}
+
+.yd-page--surface-elevated .yd-page-body > .ant-card,
+.yd-page--surface-elevated .yd-page-body > .yd-panel {
+  background: var(--uj-glass-bg-strong) !important;
+  box-shadow: var(--uj-glass-shadow) !important;
+}
+
+.yd-panel {
+  background: var(--uj-glass-bg-strong);
+  border: 1px solid var(--uj-border);
+  box-shadow: var(--uj-glass-shadow);
+  border-radius: var(--uj-radius-lg);
+}
+
+/* 兜底：内容层禁止磨砂穿透（送检水印开启时尤为重要） */
+.shell .content-area,
+.shell .yd-page-body,
+.client-shell .client-content {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.shell .uj-glass-panel,
+.shell .admin-dashboard .panel,
+.shell .ant-card,
+.shell .yd-panel,
+.shell .yd-stats-card,
+.yd-page .ant-card,
+.yd-page .yd-panel,
+.client-shell .ant-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 送检水印开启时：半透明面板会把对角线水印透出成「文字重影」 */
+.cert-watermark-wrap .shell .admin-dashboard .panel,
+.cert-watermark-wrap .shell .admin-dashboard .topbar.panel,
+.cert-watermark-wrap .yd-page .yd-panel,
+.cert-watermark-wrap .yd-page .ant-card,
+.cert-watermark-wrap .shell .ant-card,
+.cert-watermark-wrap .shell .yd-panel {
+  background: var(--uj-glass-bg-strong, #fff) !important;
+}
+
+/* 侧栏浮雕图标不被裁切 */
+.shell .nav-icon :deep(.yd-relief-icon) {
+  flex-shrink: 0;
+}
+
+.shell .nav-flyout .yd-relief-icon,
+.shell .submenu-item .yd-relief-icon {
+  flex-shrink: 0;
+}
+
+/* 顶栏立体功能按钮 */
+.shell .icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(155deg, rgb(255 255 255 / 0.9), rgb(228 247 240 / 0.85));
+  border: 1px solid var(--uj-border-soft);
+  box-shadow: 0 2px 8px rgb(74 155 140 / 0.12);
+  color: var(--uj-brand-deep);
+}
+
+/* ========== 一壳三 accent（WP-NAV-04）页面底与壳层随角色 ========== */
+.shell--client {
+  --uj-bg-page: #e8f4f2;
+  --uj-bg-page-mesh:
+    radial-gradient(ellipse 90% 70% at 8% 0%, rgb(168 230 207 / 0.5), transparent 52%),
+    radial-gradient(ellipse 70% 60% at 95% 12%, rgb(129 199 178 / 0.35), transparent 48%),
+    linear-gradient(165deg, #e3f0ed 0%, #eef6f4 45%, #f4faf8 100%);
+  --uj-border-soft: rgb(74 155 140 / 0.22);
+}
+
+.shell--client .sidebar {
+  box-shadow: 4px 0 24px rgb(74 155 140 / 0.06);
+}
+
+.shell--client .icon-btn {
+  background: linear-gradient(155deg, rgb(255 255 255 / 0.92), rgb(232 244 240 / 0.88));
+  box-shadow: 0 2px 8px rgb(74 155 140 / 0.1);
+}
+
+.shell--agent,
+.shell--partner {
+  --uj-bg-page: #e6f5f2;
+  --uj-bg-page-mesh:
+    radial-gradient(ellipse 90% 70% at 8% 0%, rgb(153 230 210 / 0.45), transparent 52%),
+    radial-gradient(ellipse 70% 60% at 95% 12%, rgb(167 243 208 / 0.3), transparent 48%),
+    linear-gradient(165deg, #e0f5ef 0%, #ecf9f4 45%, #f2fbf8 100%);
+  --uj-border-soft: rgb(77 182 160 / 0.22);
+}
+
+.shell--agent .sidebar,
+.shell--partner .sidebar {
+  box-shadow: 4px 0 24px rgb(13 148 136 / 0.06);
+}
+
+.shell--agent .icon-btn,
+.shell--partner .icon-btn {
+  background: linear-gradient(155deg, rgb(255 255 255 / 0.92), rgb(224 247 240 / 0.88));
+  box-shadow: 0 2px 8px rgb(13 148 136 / 0.1);
+}
+
+.shell--partner .sidebar-brand-mark {
+  background: linear-gradient(145deg, #7aa8bd 0%, #5f88a0 55%, #4a6d82 100%) !important;
+  box-shadow: 0 4px 14px rgb(95 136 160 / 0.35);
+}
+
+/* Worktabs 角色胶囊随 accent（组件内用 token） */
+.shell .yd-pro-worktabs__role {
+  color: var(--uj-brand-deep);
+  background: var(--uj-brand-muted);
+}
+
+.shell .yd-pro-worktabs__tab.active {
+  color: var(--uj-brand-deep);
+  background: var(--uj-brand-muted);
+  border-color: color-mix(in srgb, var(--uj-brand) 25%, transparent);
+}
+
+.shell .yd-pro-worktabs__tab.active::before {
+  background: var(--uj-brand);
+}
+
+.shell .yd-pro-worktabs__clear:hover {
+  color: var(--uj-brand-deep);
+  background: var(--uj-brand-muted);
+}

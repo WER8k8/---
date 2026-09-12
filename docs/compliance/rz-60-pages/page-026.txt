@@ -1,0 +1,31 @@
+// FILE: backend\app\core\cache_decorator.py
+            result = await func(*args, **kwargs)
+
+            try:
+                redis_client = get_redis_client()
+                if redis_client:
+                    keys = redis_client.keys(f"cache:{pattern}*")
+                    if keys:
+                        redis_client.delete(*keys)
+                        logger.info(
+                            f"Cache invalidated: {pattern}, count: {len(keys)}")
+            except Exception as e:
+                logger.warning(f"Redis cache invalidation failed: {e}")
+
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+def get_cache_stats() -> dict:
+    try:
+        redis_client = get_redis_client()
+        if redis_client:
+            keys = redis_client.keys("cache:*")
+            return {"total_keys": len(keys), "status": "connected"}
+    except Exception as e:
+        logger.warning(f"Cache stats failed: {e}")
+
+    return {"total_keys": 0, "status": "disconnected"}

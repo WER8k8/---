@@ -1,0 +1,15 @@
+# Hermes agency LLM — Ollama 侧车（生产可选）
+# 用法: docker compose -f deploy/production/agency-llm-compose.yml up -d
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: youding-ollama
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # 首次拉模型: docker exec youding-ollama ollama pull llama3.1
+
+volumes:
+  ollama_data:

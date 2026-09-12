@@ -1,0 +1,10 @@
+﻿{
+    "generated_at":  "2026-06-01T10:12:51.2385402+08:00",
+    "pass":  true,
+    "task":  "MOD-02-webhook-smoke",
+    "backend_ready":  true,
+    "channels":  {
+                     "douyin":  true,
+                     "wecom":  true
+                 }
+}

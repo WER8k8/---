@@ -1,0 +1,11 @@
+// FILE: backend\app\api\v1\admin_bff\schemas.py
+
+
+class UacPermissionBundle(BaseModel):
+    shell: str
+    roles: List[str]
+    codes: List[str]
+    homePath: str
+
+
+UacMenuRoute.model_rebuild()

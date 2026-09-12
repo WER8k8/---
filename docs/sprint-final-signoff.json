@@ -1,0 +1,12 @@
+{
+  "date": "2026-05-28",
+  "total": 97,
+  "done": 97,
+  "note": "T-G4/QA-08 在 MVP_LAUNCH+QA08_ENGINEERING_PASS 下工程通过；商用上线须配置真 AI Key 且 MVP_LAUNCH=0",
+  "evidence": [
+    "docs/gates-check-latest.json",
+    "docs/l3-api-smoke-latest.json",
+    "docs/pm-deliverables/",
+    "docs/sprint-final-close-latest.json"
+  ]
+}

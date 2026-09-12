@@ -1,0 +1,10 @@
+﻿{
+    "android_dir":  false,
+    "task":  "MOD-06-capacitor-install",
+    "pass":  false,
+    "generated_at":  "2026-06-01T10:27:14.3083138+08:00",
+    "cap_sync_exit":  0,
+    "ios_dir":  false,
+    "build_cap_exit":  0,
+    "npm_install_exit":  0
+}

@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "violations": [
+    {
+      "id": "no_fake_p1_debt",
+      "severity": "medium",
+      "message": "假交付 P1=11 待修（已记录，非 P0 但不得隐瞒）"
+    }
+  ],
+  "evidence": {
+    "daily_trigger": "scheduled",
+    "daily_finished_at": "2026-06-07T13:50:43.6113587Z",
+    "health_generated_at": "2026-06-07T13:49:00.3246968Z",
+    "scheduled_tasks": [
+      {
+        "task": "YouDing\\Ops-ExpertDailyRoster",
+        "last_run": "",
+        "last_result": ""
+      }
+    ]
+  }
+}

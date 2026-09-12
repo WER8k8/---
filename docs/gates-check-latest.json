@@ -1,0 +1,34 @@
+{
+  "gates": {
+    "G1": {
+      "pass": true,
+      "message": "Accio 四 gap 非 501"
+    },
+    "G2": {
+      "pass": true,
+      "message": "主链 API 已挂载"
+    },
+    "G3": {
+      "pass": true,
+      "message": "开发栈：compose PG/Redis + Celery broker + 备份脚本就绪"
+    },
+    "G4": {
+      "pass": true,
+      "message": "AI Key: ['nvidia'] engine=real"
+    },
+    "G5": {
+      "pass": true,
+      "message": "工程 L3 API 冒烟已通过（待 PM 补签）"
+    },
+    "G6": {
+      "pass": true,
+      "message": "超管路径审计 0 缺口"
+    },
+    "G7": {
+      "pass": true,
+      "message": "实验室菜单已默认隐藏（见 layout labPaths）"
+    }
+  },
+  "auto_pass": 7,
+  "total": 7
+}

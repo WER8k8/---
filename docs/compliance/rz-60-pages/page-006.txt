@@ -1,0 +1,5 @@
+// FILE: backend\app\api\v1\admin_bff\menu_adapter.py
+        codes=codes,
+        homePath=resolve_home_path(shell),
+    )
+    return success_response(data=bundle.model_dump())

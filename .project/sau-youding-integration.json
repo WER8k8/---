@@ -1,0 +1,64 @@
+{
+  "contract_id": "SAU-YOUDING-01",
+  "version": "2026-07-08",
+  "status": "complete",
+  "completion_pct": 100,
+  "summary": "social-auto-upload 作为执行面 Worker，优丁 backend 作为控制面（任务/租户/验真/归因）。三阶段已全部落地。",
+  "architecture": {
+    "control_plane": "backend PublishTask + video_publish_orchestrator + Admin 矩阵",
+    "execution_plane": "SAU CLI（Playwright）+ SAU Sidecar HTTP",
+    "overseas_plane": "AiToEarn（YouTube/LinkedIn 等）",
+    "honesty": "即时发布须 platform_post_url；定时发布 pending/scheduled，禁止假 success"
+  },
+  "integration_phases": [
+    {
+      "phase": "P1",
+      "label": "CLI 能力透传",
+      "status": "complete",
+      "items": [
+        { "id": "schedule", "status": "done", "path": "sau_worker.format_sau_schedule + orchestrator" },
+        { "id": "cover", "status": "done", "path": "media_fetch.download_image_to_temp + --thumbnail" },
+        { "id": "pending", "status": "done", "path": "sau_worker._finalize_sau_outcome" },
+        { "id": "bind_hub", "status": "done", "path": "video_bind_hub_service + VideoPublishBindHub.vue" },
+        { "id": "note", "status": "done", "path": "publish_via_sau_note + POST /publish/video/note-distribute" },
+        { "id": "sau_check_api", "status": "done", "path": "GET /publish/video/sau-check" }
+      ]
+    },
+    {
+      "phase": "P2",
+      "label": "Sidecar HTTP",
+      "status": "complete",
+      "items": [
+        { "id": "adapter", "status": "done", "path": "scripts/sau-sidecar-adapter.py" },
+        { "id": "client", "status": "done", "path": "backend/app/services/publish_workers/sau_sidecar.py" },
+        { "id": "compose", "status": "done", "path": "deploy/sidecar/sau-compose.yml" },
+        { "id": "verify", "status": "done", "path": "scripts/verify-sau-sidecar.py" },
+        { "id": "config", "status": "done", "path": "SAU_SIDECAR_URL in config.py" }
+      ]
+    },
+    {
+      "phase": "P3",
+      "label": "Admin 运营台",
+      "status": "complete",
+      "items": [
+        { "id": "bind_ui", "status": "done", "path": "VideoPublishBindHub.vue sau_bind + cookie poll" },
+        { "id": "schedule_queue", "status": "done", "path": "GET /publish/video/scheduled-queue + queues/publish.vue" },
+        { "id": "webhook", "status": "done", "path": "publish_result_notify_service.py + PUBLISH_RESULT_NOTIFY_ENABLED" },
+        { "id": "tests", "status": "done", "path": "backend/tests/unit/test_sau_worker.py test_sau_sidecar.py" }
+      ]
+    }
+  ],
+  "env_keys": [
+    "SAU_ENABLED",
+    "SAU_CLI_PATH",
+    "SAU_HOME",
+    "SAU_SIDECAR_URL",
+    "SAU_ACCOUNT_PREFIX",
+    "PUBLISH_RESULT_NOTIFY_ENABLED",
+    "PUBLISH_RESULT_WEBHOOK_URL"
+  ],
+  "docs": [
+    "deploy/docs/SAU-SIDECAR-DEPLOY.md",
+    ".project/sau-youding-integration.json"
+  ]
+}

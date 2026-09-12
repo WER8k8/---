@@ -1,0 +1,51 @@
+# FIX-7 + FIX-70: pre-commit hooks — 保障全栈代码质量
+# 安装: pip install pre-commit && pre-commit install
+# 手动运行: pre-commit run --all-files
+
+repos:
+  # ── 后端 Python ──
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^backend/
+      - id: ruff-format
+        files: ^backend/
+
+  # ── 前端 JS/TS/Vue ──
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.16.0
+    hooks:
+      - id: eslint
+        files: ^(frontend)/.*\.(js|ts|vue|jsx|tsx)$
+        types: [file]
+        additional_dependencies:
+          - eslint@^9.16.0
+          - "@vue/eslint-config-typescript"
+          - eslint-plugin-vue
+          - "@typescript-eslint/eslint-plugin"
+          - "@typescript-eslint/parser"
+          - eslint-plugin-import
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0
+    hooks:
+      - id: prettier
+        files: ^(frontend)/.*\.(js|ts|vue|jsx|tsx|css|scss|json|md)$
+        types_or: [javascript, typescript, vue, css, scss, json, markdown]
+
+  # ── 通用 ──
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        files: ^(backend|frontend)/
+      - id: end-of-file-fixer
+        files: ^(backend|frontend)/
+      - id: check-yaml
+        files: \.(yaml|yml)$
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: no-commit-to-branch
+        args: [--branch, main, --branch, master]

@@ -1,0 +1,59 @@
+# 藏云阁容器镜像加速（可选叠加，国内拉取更快）
+# 用法:
+#   docker compose -f docker-compose.dev.yml -f docker-compose.cncfstack.yml up -d postgres redis
+#   docker compose -f docker-compose.prod.yml -f docker-compose.cncfstack.yml up -d
+#   powershell -File scripts/docker-with-cncfstack.ps1 -Profile dev up -d postgres redis
+# 镜像说明: https://cncfstack.com/p/assets/docs/cncfstack/image/
+
+version: "3.8"
+
+services:
+  postgres:
+    image: registry.cncfstack.com/docker.io/pgvector/pgvector:pg15
+
+  redis:
+    image: registry.cncfstack.com/docker.io/library/redis:7-alpine
+
+  nginx:
+    image: registry.cncfstack.com/docker.io/library/nginx:1.26-alpine
+
+  backend:
+    build:
+      args:
+        BASE_IMAGE: registry.cncfstack.com/docker.io/library/python:3.11-slim
+
+  celery-worker:
+    build:
+      args:
+        BASE_IMAGE: registry.cncfstack.com/docker.io/library/python:3.11-slim
+
+  celery-beat:
+    build:
+      args:
+        BASE_IMAGE: registry.cncfstack.com/docker.io/library/python:3.11-slim
+
+  publish-worker-once:
+    build:
+      args:
+        BASE_IMAGE: registry.cncfstack.com/docker.io/library/python:3.11-slim
+
+  db-backup:
+    image: registry.cncfstack.com/docker.io/library/postgres:15-alpine
+
+  minio:
+    image: registry.cncfstack.com/docker.io/minio/minio:RELEASE.2024-11-07T00-52-20Z
+
+  prometheus:
+    image: registry.cncfstack.com/docker.io/prom/prometheus:v3.1.0
+
+  grafana:
+    image: registry.cncfstack.com/docker.io/grafana/grafana:11.5.2
+
+  certbot:
+    image: registry.cncfstack.com/docker.io/certbot/certbot:v2.11.0
+
+  frontend:
+    build:
+      args:
+        NODE_IMAGE: registry.cncfstack.com/docker.io/library/node:20-alpine
+        NGINX_IMAGE: registry.cncfstack.com/docker.io/library/nginx:1.26-alpine

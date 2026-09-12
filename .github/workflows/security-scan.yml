@@ -1,0 +1,125 @@
+# CI/CD 安全扫描配置 — FIX-51
+# 集成 bandit (Python) + npm audit (Node.js) + Trivy (容器)
+# GitHub Actions / GitLab CI 通用配置
+
+name: Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 8 * * 1'  # 每周一 08:00 UTC
+
+jobs:
+  # ============================================================
+  # Python 安全扫描 (Bandit)
+  # ============================================================
+  bandit:
+    name: Bandit Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install bandit
+        run: pip install bandit[toml]
+
+      - name: Run Bandit
+        run: |
+          bandit -r backend/ \
+            -f json \
+            -o bandit-report.json \
+            -ll \
+            -x ./backend/tests,./backend/venv,./backend/__pycache__
+
+      - name: Upload Bandit Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.json
+
+  # ============================================================
+  # Node.js 安全扫描 (npm audit)
+  # ============================================================
+  npm-audit:
+    name: npm Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Audit frontend
+        run: |
+          cd frontend
+          npm audit --json > ../npm-audit-frontend.json || true
+
+      - name: Audit admin
+        run: |
+          cd frontend/admin
+          npm audit --json > ../../npm-audit-admin.json || true
+
+      - name: Upload npm Audit Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-reports
+          path: |
+            npm-audit-frontend.json
+            npm-audit-admin.json
+
+  # ============================================================
+  # 容器镜像扫描 (Trivy)
+  # ============================================================
+  trivy:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t uj-admin:ci -f deploy/Dockerfile .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'uj-admin:ci'
+          format: 'json'
+          output: 'trivy-report.json'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'  # 不阻塞 CI，仅报告
+
+      - name: Upload Trivy Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.json
+
+  # ============================================================
+  # 综合安全报告
+  # ============================================================
+  security-summary:
+    name: Security Summary
+    needs: [bandit, npm-audit, trivy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Scanner | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Bandit (Python) | ${{ needs.bandit.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| npm Audit (Node.js) | ${{ needs.npm-audit.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trivy (Container) | ${{ needs.trivy.result }} |" >> $GITHUB_STEP_SUMMARY

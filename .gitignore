@@ -1,0 +1,121 @@
+# =============================================================================
+# .gitignore — 仓库根级
+# =============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+env/
+
+# Node / 前端
+node_modules/
+dist/
+.nuxt/
+.output/
+.vite/
+.cache/
+
+# IDE / 编辑器
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# 日志 / 临时
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# === 密钥与本地配置(绝不能进 Git) ===
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.local
+backend/config/**/.env
+backend/config/**/.env.local
+
+# 自动生成的 dev 密钥持久化文件
+backend/logs/auto-secret-*.txt
+
+# 数据 / 缓存
+data/
+*.db
+*.sqlite
+*.sqlite3
+backups/
+.minio-data/
+.qiniu-data/
+
+# Docker / 部署
+docker-compose.override.yml
+*.pem
+*.key
+secrets/
+
+# 测试产物
+.coverage
+htmlcov/
+playwright-report/
+test-results/
+screenshots/
+_build_check/
+_build_check2/
+
+# backend 根目录临时产物（已归档到 _archive/）
+backend/_archive/
+backend/*test_output*.txt
+backend/*test_out*.txt
+backend/*_err*.txt
+backend/*_output*.txt
+backend/pytest_output.txt
+backend/pytest-unit-summary.txt
+backend/debug_output.txt
+
+# 系统
+.DS_Store
+desktop.ini
+.secrets.local
+
+# === AI 工具本地状态（绝不进 Git，2026-09-13 增补）===
+.agents/
+.claude/
+.claude.json
+.claude.json.backup
+.codegraph/
+.cursor/
+.playwright-mcp/
+.qoder/
+.trae/
+.trae-html-share-packages/
+.talking-stick/
+.workbuddy/
+.windsurf/
+.icube-remote-ssh/
+
+.git.bak/
+.git.bak2/
+
+# 2026-09-13 初始提交基线：排除环境/外部依赖/临时数据
+Lib/
+staging-data/
+temp/
+backend/external/
+auth.json
+*.removed_*
+backend/config/.env.dev
+backend/config/.env.test
+backend/config/**/.env.dev
+backend/config/**/.env.test

@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+    AI_MIMO_API_KEY: Optional[str] = None
+    AI_MIMO_BASE_URL: str = "https://api.xiaomimimo.com/v1"
+
+    # Meta Llama（开源，通过托管服务访问）
+    AI_META_API_KEY: Optional[str] = None
+    AI_META_BASE_URL: str = ""
+
+    # GPU 优先级链：NVIDIA (H100) → DeepSeek (H800) → OpenAI (CPU)
+    GPU_CODE_PROVIDER_PRIORITY: list[str] = ["nvidia", "deepseek"]
+    GPU_DEFAULT_PROVIDER_PRIORITY: list[str] = ["nvidia", "deepseek", "openai"]
+
+    CELERY_BROKER_URL: str = "redis://localhost:6379/1"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
+
+    # 飞书机器人配置
+    FEISHU_APP_ID: str = ""
+    FEISHU_APP_SECRET: str = ""
+    FEISHU_VERIFICATION_TOKEN: str = ""
+    FEISHU_EVENT_ENCRYPT_KEY: str = ""
+    FEISHU_BOT_NAME: str = "优丁建材助手"
+    FEISHU_API_BASE_URL: str = "https://open.feishu.cn/open-apis"
+    FEISHU_DEFAULT_RECEIVER: str = ""  # 默认消息接收者open_id
+    FEISHU_DEFAULT_GROUP_ID: str = ""  # 默认消息群组ID
+    FEISHU_NOTIFICATION_ENABLED: bool = True  # 是否启用飞书通知（默认开启）
+    FEISHU_WEBHOOK_URL: str = ""  # 飞书群机器人Webhook地址
+    FEISHU_LINGMA_WEBHOOK_URL: str = ""  # 灵码专用飞书群机器人Webhook地址
+
+    # 国密（SM2/SM3/SM4）与创始人专属调试 — 见 docs/安全与国密-源码调试说明.md
+    GM_SM4_KEY: str = ""  # 32 位十六进制优先；空则派生自 SECRET_KEY
+    GM_SM2_PUBLIC_KEY: str = ""
+    GM_SM2_PRIVATE_KEY: str = ""
+    FOUNDER_WECHAT_OPENID: str = ""  # 创始人微信 ID（wechat_xxx 或仅填微信号如 qq979072138）
+    FOUNDER_WECHAT_BIND_KEY: str = ""  # 创始人微信号（与 OPENID 二选一或同时填同一串）
+    FOUNDER_ADMIN_USERNAME: str = ""  # 可选：超管登录名绑死（如与微信号相同）
+    EXPORT_PLATFORM_FOUNDER_ONLY: bool = True  # 全平台 CSV 导出仅创始人（成果保护）
+    FOUNDER_DEBUG_TOKEN: str = ""  # 开发兜底；生产优先 FOUNDER_WECHAT_OPENID
+    FOUNDER_DEBUG_IPS: str = ""  # 可选逗号分隔 IP/CIDR，空则不限制 IP
+
+    # 安全配置
+    RATE_LIMIT_MAX_REQUESTS: int = 200
+    RATE_LIMIT_WINDOW_SECONDS: int = 60
+    MAX_UPLOAD_SIZE_MB: int = 20
+    ALLOWED_EXTENSIONS: list[str] = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "pdf",
+        "doc",

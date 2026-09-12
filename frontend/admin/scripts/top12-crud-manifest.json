@@ -1,0 +1,14 @@
+[
+  { "tag": "询盘管理", "name": "Inquiries", "route": "/api/v1/inquiries/unified", "path": "generated/inquiries" },
+  { "tag": "产品管理", "name": "Products", "route": "/api/v1/products/", "path": "generated/products" },
+  { "tag": "内容管理", "name": "Content", "route": "/api/v1/content/pages", "path": "generated/content" },
+  { "tag": "新闻管理", "name": "News", "route": "/api/v1/news/", "path": "generated/news" },
+  { "tag": "支付管理", "name": "Payment", "route": "/api/v1/payment/channels/status", "path": "generated/payment" },
+  { "tag": "用户管理", "name": "Users", "route": "/api/v1/users/", "path": "generated/users" },
+  { "tag": "数据分析", "name": "Analytics", "route": "/api/v1/analytics/site-context", "path": "generated/analytics" },
+  { "tag": "系统设置", "name": "Settings", "route": "/api/v1/settings/", "path": "generated/settings" },
+  { "tag": "SEO优化", "name": "Seo", "route": "/api/v1/seo/dashboard", "path": "generated/seo" },
+  { "tag": "合规审计", "name": "Compliance", "route": "/api/v1/compliance/", "path": "generated/compliance" },
+  { "tag": "智能体协同", "name": "AgentHub", "route": "/api/v1/agent-hub/", "path": "generated/agent-hub" },
+  { "tag": "A/B测试", "name": "AbTest", "route": "/api/v1/ab-test", "path": "generated/ab-test" }
+]

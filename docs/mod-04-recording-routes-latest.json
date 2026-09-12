@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "task": "MOD-04-routes",
+  "routes": {
+    "/login": true,
+    "/client/dashboard": true,
+    "/client/queues/inquiries": true,
+    "/client/plan-gate": true,
+    "/admin/tenants": true,
+    "/agent/performance": true
+  },
+  "router": "frontend\\admin\\src\\router\\index.ts"
+}

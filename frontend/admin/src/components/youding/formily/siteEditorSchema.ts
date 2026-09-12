@@ -1,0 +1,196 @@
+import type { ISchema } from '@formily/json-schema';
+import { L_PRO_TIER1_SELECT_OPTIONS } from '@/constants/lProTier1Locales';
+
+/** site-editor-lab · Formily Schema（与 BFF 草稿 + L-Pro 发布门禁字段对齐） */
+export const siteEditorFormilySchema: ISchema = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      title: '首页标题',
+      required: true,
+      default: '优丁独立站',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '如：某某建材 · 专业出口供应商' },
+    },
+    hero: {
+      type: 'string',
+      title: '首屏副文案',
+      default: '建材外贸 · AI 营销',
+      'x-decorator': 'FormItem',
+      'x-component': 'TextArea',
+      'x-component-props': { rows: 3, placeholder: '一句话卖点或核心优势' },
+    },
+    brandName: {
+      type: 'string',
+      title: '品牌/公司名称',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '显示在顶栏与页脚' },
+    },
+    aboutText: {
+      type: 'string',
+      title: '关于我们（发布门禁必填）',
+      'x-decorator': 'FormItem',
+      'x-component': 'TextArea',
+      'x-component-props': { rows: 4, placeholder: '工厂背景、产能、出口经验…' },
+    },
+    contactPhone: {
+      type: 'string',
+      title: '联系电话',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '+86-xxx-xxxx' },
+    },
+    contactEmail: {
+      type: 'string',
+      title: '联系邮箱',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: 'sales@example.com' },
+    },
+    ctaLabel: {
+      type: 'string',
+      title: '主按钮文案',
+      default: '立即询盘',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-reactions': {
+        dependencies: ['showCta'],
+        fulfill: {
+          state: {
+            visible: '{{$deps[0] !== false}}',
+          },
+        },
+      },
+    },
+    primaryPromise: {
+      type: 'string',
+      title: '全站主承诺（JTBD · 定位）',
+      'x-decorator': 'FormItem',
+      'x-component': 'TextArea',
+      'x-component-props': {
+        rows: 2,
+        placeholder: '写一句买家能记住的结果 — Hero、数据条、底部 CTA 保持一致',
+      },
+    },
+    inquiryHook: {
+      type: 'string',
+      title: '询盘引导语（JTBD · 转化）',
+      'x-decorator': 'FormItem',
+      'x-component': 'TextArea',
+      'x-component-props': {
+        rows: 2,
+        placeholder: '如：发送图纸/规格，我们回复范围与下一步（勿写未核实的周期数字）',
+      },
+    },
+    stage1Title: {
+      type: 'string',
+      title: '阶段 1 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '如：询盘与可行性' },
+    },
+    stage1Desc: {
+      type: 'string',
+      title: '阶段 1 说明',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    stage2Title: {
+      type: 'string',
+      title: '阶段 2 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '如：打样 / 首件' },
+    },
+    stage2Desc: {
+      type: 'string',
+      title: '阶段 2 说明',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    stage3Title: {
+      type: 'string',
+      title: '阶段 3 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '如：小批试产' },
+    },
+    stage3Desc: {
+      type: 'string',
+      title: '阶段 3 说明',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    stage4Title: {
+      type: 'string',
+      title: '阶段 4 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': { placeholder: '如：批量生产' },
+    },
+    stage4Desc: {
+      type: 'string',
+      title: '阶段 4 说明',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    knowledge1Title: {
+      type: 'string',
+      title: '干货 1 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    knowledge1Hook: {
+      type: 'string',
+      title: '干货 1 摘要',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    knowledge2Title: {
+      type: 'string',
+      title: '干货 2 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    knowledge2Hook: {
+      type: 'string',
+      title: '干货 2 摘要',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    knowledge3Title: {
+      type: 'string',
+      title: '干货 3 标题',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    knowledge3Hook: {
+      type: 'string',
+      title: '干货 3 摘要',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    locale: {
+      type: 'string',
+      title: '默认语言',
+      default: 'zh-CN',
+      'x-decorator': 'FormItem',
+      'x-component': 'Select',
+      'x-component-props': {
+        options: L_PRO_TIER1_SELECT_OPTIONS,
+        showSearch: true,
+        optionFilterProp: 'label',
+      },
+    },
+    showCta: {
+      type: 'boolean',
+      title: '显示询盘按钮',
+      default: true,
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
+  },
+};

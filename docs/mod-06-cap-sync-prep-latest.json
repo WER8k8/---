@@ -1,0 +1,11 @@
+﻿{
+    "capacitor_installed":  false,
+    "npm_build_exit":  0,
+    "validate_mod06_exit":  0,
+    "dist_index_html":  true,
+    "pass":  true,
+    "task":  "MOD-06-cap-sync-prep",
+    "generated_at":  "2026-06-01T10:20:47.1406235+08:00",
+    "note":  "Install @capacitor/* then rerun for cap sync",
+    "cap_sync_exit":  null
+}

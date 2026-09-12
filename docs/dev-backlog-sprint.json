@@ -1,0 +1,1733 @@
+{
+  "schema_version": "2.0",
+  "project": "uj-building-materials-ai-os",
+  "issued_at": "2026-05-24",
+  "target_release": "MVP-卖货闭环-v1.0",
+  "references": {
+    "product": "docs/产品俯视-租户旅程与三轨计费.md",
+    "gap_analysis": "docs/未开发任务清单.md",
+    "handoff": "docs/开发任务下发清单.md",
+    "referral": "docs/呼朋唤友-客户裂变营销方案.md"
+  },
+  "owner_pools": [
+    "backend",
+    "frontend",
+    "fullstack",
+    "devops",
+    "qa",
+    "pm"
+  ],
+  "status_enum": [
+    "pending",
+    "in_progress",
+    "review",
+    "blocked",
+    "done",
+    "cancelled"
+  ],
+  "sprints": [
+    {
+      "id": "sprint-a",
+      "name": "API接线周",
+      "milestone": "M1",
+      "weeks": "1-2",
+      "goal": "消灭管理端404；物流可查询"
+    },
+    {
+      "id": "sprint-b",
+      "name": "统一发布母版",
+      "milestone": "M2",
+      "weeks": "3-5",
+      "goal": "一篇内容多平台任务入队"
+    },
+    {
+      "id": "sprint-c",
+      "name": "独立域与执行面",
+      "milestone": "M3",
+      "weeks": "5-7",
+      "goal": "独立域HTTPS与IP槽位可售"
+    },
+    {
+      "id": "sprint-d",
+      "name": "商业闭环",
+      "milestone": "M4",
+      "weeks": "8-12",
+      "goal": "枢纽与三轨计费"
+    },
+    {
+      "id": "sprint-e",
+      "name": "登录与OAuth对接",
+      "milestone": "M1+",
+      "weeks": "补遗",
+      "goal": "管理端统一登录与第三方OAuth闭环"
+    },
+    {
+      "id": "sprint-f",
+      "name": "差异化与体验补遗",
+      "milestone": "M2+",
+      "weeks": "13+",
+      "goal": "12语种IM、RAG报价护栏、物流回填、SEO报告、养号状态机、实验室折叠"
+    },
+    {
+      "id": "sprint-g",
+      "name": "演示验收与商用准备",
+      "milestone": "MVP-GA",
+      "weeks": "14",
+      "goal": "5+5试点可演示、一键验收脚本、PM彩排清单"
+    },
+    {
+      "id": "sprint-h",
+      "name": "商用上线",
+      "milestone": "GA",
+      "weeks": "15-16",
+      "goal": "40平台seed、快递100、SSL状态机、生产迁移脚本"
+    },
+    {
+      "id": "sprint-i",
+      "name": "上线运维",
+      "milestone": "OPS",
+      "weeks": "17",
+      "goal": "生产预检、就绪探针、备份运维API、上线检查清单"
+    },
+    {
+      "id": "sprint-j",
+      "name": "体验补全与运维告警",
+      "milestone": "GA+",
+      "weeks": "18",
+      "goal": "邮箱登录UI、OAuth绑定、就绪飞书告警"
+    },
+    {
+      "id": "sprint-k",
+      "name": "商业闭环深化",
+      "milestone": "P1",
+      "weeks": "19",
+      "goal": "财务看板、Token停服、枢纽GSC清单"
+    },
+    {
+      "id": "sprint-l",
+      "name": "生产化与架构债",
+      "milestone": "GA",
+      "weeks": "20",
+      "goal": "SMTP发码、API基址环境化、询盘portal"
+    },
+    {
+      "id": "sprint-m",
+      "name": "槽位产品化与入口收敛",
+      "milestone": "P1+",
+      "weeks": "21",
+      "goal": "egress可分配、V2Ray入口收敛"
+    },
+    {
+      "id": "sprint-n",
+      "name": "双栈集成与IP槽位售卖",
+      "milestone": "P1+",
+      "weeks": "22",
+      "goal": "FastAPI主栈可见、套餐配额、支付后自动分配"
+    },
+    {
+      "id": "sprint-o",
+      "name": "商用收尾与统一入口",
+      "milestone": "P1+",
+      "weeks": "23",
+      "goal": "ACME真证书委托、询盘统一、IP加购、集成栈页"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "A-01",
+      "sprint": "sprint-a",
+      "title": "挂载呼朋唤友 referral 路由",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": [
+        "P0-01"
+      ],
+      "files": [
+        "backend/app/api/v1/routes/__init__.py"
+      ],
+      "acceptance": [
+        "GET /api/v1/referral/leaderboard 返回 200（需登录）",
+        "GET /api/v1/referral/my-code 返回邀请码"
+      ],
+      "verify_cmd": "cd backend && python -c \"from app.main import app; assert any('referral' in getattr(r,'path','') for r in app.routes)\""
+    },
+    {
+      "id": "A-02",
+      "sprint": "sprint-a",
+      "title": "挂载 super_admin 整包路由",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": [
+        "P0-02"
+      ],
+      "files": [
+        "backend/app/api/v1/routes/__init__.py",
+        "backend/app/api/v1/super_admin/__init__.py"
+      ],
+      "acceptance": [
+        "运行中 super-admin 路由数 > 100",
+        "GET /api/v1/super-admin/dashboard 或 auth/me 可访问"
+      ],
+      "verify_cmd": "cd backend && python -c \"from app.main import app; n=len([r for r in app.routes if '/super-admin' in getattr(r,'path','')]); print(n); assert n>50\""
+    },
+    {
+      "id": "A-03",
+      "sprint": "sprint-a",
+      "title": "挂载高级 SEO 并处理 stub 冲突",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 1.5,
+      "depends_on": [],
+      "maps_to": [
+        "P0-03",
+        "P0-04"
+      ],
+      "files": [
+        "backend/app/api/v1/routes/__init__.py",
+        "backend/app/api/v1/seo/__init__.py",
+        "backend/app/api/v1/routes/seo.py"
+      ],
+      "acceptance": [
+        "/api/v1/seo/site-audit 或等价高级端点存在",
+        "routes/seo.py 不再返回硬编码 total_keywords=150"
+      ],
+      "verify_cmd": "cd backend && python -c \"from app.main import app; assert any('site-audit' in getattr(r,'path','') or 'run-audit' in getattr(r,'path','') for r in app.routes)\""
+    },
+    {
+      "id": "A-04",
+      "sprint": "sprint-a",
+      "title": "管理端冒烟测试（超管/SEO/呼朋唤友）",
+      "priority": "P0",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [
+        "A-01",
+        "A-02",
+        "A-03"
+      ],
+      "maps_to": [],
+      "files": [
+        "docs/管理端路由与功能映射表.md"
+      ],
+      "acceptance": [
+        "15个关键页面 happy path 通过",
+        "缺陷单带任务ID"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "A-05",
+      "sprint": "sprint-a",
+      "title": "实现 GET /api/v1/logistics/track",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [],
+      "maps_to": [
+        "P0-12"
+      ],
+      "files": [
+        "backend/app/api/v1/routes/logistics.py"
+      ],
+      "acceptance": [
+        "query: tracking_number 返回 status 与 events[]",
+        "对接至少1家快递沙箱或内置mock开关（仅dev）"
+      ],
+      "verify_cmd": "curl -s \"http://127.0.0.1:8000/api/v1/logistics/track?tracking_number=TEST\" -H \"Authorization: Bearer <token>\""
+    },
+    {
+      "id": "A-06",
+      "sprint": "sprint-a",
+      "title": "租户站物流页 API 基址环境化",
+      "priority": "P0",
+      "owner_pool": "frontend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [
+        "A-05"
+      ],
+      "maps_to": [
+        "P0-13"
+      ],
+      "files": [
+        "frontend/pages/logistics/index.vue",
+        "frontend/nuxt.config.ts"
+      ],
+      "acceptance": [
+        "不再硬编码 localhost:8000",
+        "staging 环境可查询运单"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "A-07",
+      "sprint": "sprint-a",
+      "title": "关键路由挂载 CI 检查脚本",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [
+        "A-01",
+        "A-02",
+        "A-03"
+      ],
+      "maps_to": [],
+      "files": [
+        "scripts/check_mounted_routes.py"
+      ],
+      "acceptance": [
+        "脚本检查 referral、super-admin、seo 高级前缀",
+        "CI 失败阻断合并"
+      ],
+      "verify_cmd": "python scripts/check_mounted_routes.py"
+    },
+    {
+      "id": "B-01",
+      "sprint": "sprint-b",
+      "title": "content_master 模型与 CRUD API",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "A-03"
+      ],
+      "maps_to": [
+        "P0-05"
+      ],
+      "files": [
+        "backend/app/models/content_master.py",
+        "backend/app/api/v1/routes/content_master.py"
+      ],
+      "acceptance": [
+        "Alembic 迁移可执行",
+        "POST/GET /api/v1/content-masters 可用"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "B-02",
+      "sprint": "sprint-b",
+      "title": "publish_task 扩展母版与双链字段",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [
+        "B-01"
+      ],
+      "maps_to": [
+        "P1-02"
+      ],
+      "files": [
+        "backend/app/models/",
+        "backend/app/services/publish_service.py"
+      ],
+      "acceptance": [
+        "创建任务必须带 content_master_id",
+        "含 primary_url、secondary_url、region 字段"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "B-03",
+      "sprint": "sprint-b",
+      "title": "平台主数据 40 清单 seed",
+      "priority": "P0",
+      "owner_pool": "pm",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [],
+      "maps_to": [
+        "P0-07"
+      ],
+      "files": [
+        "backend/scripts/seed_platforms.py"
+      ],
+      "acceptance": [
+        "PM 签字确认 cn 20 + global 20 列表",
+        "数据库 platforms 表 region 字段可用"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "B-04",
+      "sprint": "sprint-b",
+      "title": "统一发布台管理端页面",
+      "priority": "P0",
+      "owner_pool": "fullstack",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 3,
+      "depends_on": [
+        "B-01",
+        "B-02",
+        "B-03"
+      ],
+      "maps_to": [
+        "P0-06"
+      ],
+      "files": [
+        "frontend/admin/src/views/publish/unified.vue",
+        "frontend/admin/src/router/index.ts"
+      ],
+      "acceptance": [
+        "选择母版 → 勾选平台 → 提交",
+        "任务列表可见状态"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "B-05",
+      "sprint": "sprint-b",
+      "title": "publish_service 对接 content_master",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "B-02"
+      ],
+      "maps_to": [
+        "P0-06"
+      ],
+      "files": [
+        "backend/app/services/publish_service.py"
+      ],
+      "acceptance": [
+        "提交后任务状态 pending",
+        "失败有 error_message"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "B-06",
+      "sprint": "sprint-b",
+      "title": "ADR：seo-backend 与 FastAPI 主从决策",
+      "priority": "P0",
+      "owner_pool": "devops",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": [],
+      "files": [
+        "docs/adr/seo-backend-vs-fastapi.md"
+      ],
+      "acceptance": [
+        "书面确认主 API 为 FastAPI",
+        "seo-backend 迁移或只读策略"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "B-07",
+      "sprint": "sprint-b",
+      "title": "5+5 平台发布试点验收",
+      "priority": "P0",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "B-04",
+        "B-05"
+      ],
+      "maps_to": [],
+      "files": [],
+      "acceptance": [
+        "10条 publish_task 记录",
+        "截图与任务ID归档"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "C-01",
+      "sprint": "sprint-c",
+      "title": "egress_endpoint 静态 IP 槽位表",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 1.5,
+      "depends_on": [
+        "B-06"
+      ],
+      "maps_to": [
+        "P0-08"
+      ],
+      "files": [
+        "backend/app/models/egress_endpoint.py"
+      ],
+      "acceptance": [
+        "超管分配/回收槽位 API",
+        "tenant_id 绑定"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "C-02",
+      "sprint": "sprint-c",
+      "title": "browser_profile 指纹环境表",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "orchestrator",
+      "status": "done",
+      "estimate_days": 1.5,
+      "depends_on": [
+        "C-01"
+      ],
+      "maps_to": [
+        "P0-08"
+      ],
+      "files": [
+        "backend/app/models/browser_profile.py"
+      ],
+      "acceptance": [
+        "platform_account 可绑定 profile",
+        "指纹 JSON 存储"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "C-03",
+      "sprint": "sprint-c",
+      "title": "发布 Worker 队列消费骨架",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 3,
+      "depends_on": [
+        "B-05",
+        "C-01"
+      ],
+      "maps_to": [
+        "P0-09"
+      ],
+      "files": [
+        "backend/app/workers/publish_worker.py"
+      ],
+      "acceptance": [
+        "worker 进程可启动",
+        "消费后任务状态更新"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "C-04",
+      "sprint": "sprint-c",
+      "title": "Nuxt Host 租户解析 middleware",
+      "priority": "P0",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [],
+      "maps_to": [
+        "P0-10"
+      ],
+      "files": [
+        "frontend/middleware/tenant-host.ts"
+      ],
+      "acceptance": [
+        "自定义域访问对应租户首页",
+        "未知域 404"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "C-05",
+      "sprint": "sprint-c",
+      "title": "独立域 SSL 自动签发",
+      "priority": "P0",
+      "owner_pool": "devops",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "C-04"
+      ],
+      "maps_to": [
+        "P0-11"
+      ],
+      "files": [
+        "docker/",
+        "docs/saas/dns-setup-guide.md"
+      ],
+      "acceptance": [
+        "绑定域 HTTPS 可用",
+        "文档更新操作步骤"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "C-06",
+      "sprint": "sprint-c",
+      "title": "v2ray 菜单改为 IP 槽位管理",
+      "priority": "P1",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [
+        "C-01"
+      ],
+      "maps_to": [
+        "P1-14"
+      ],
+      "files": [
+        "frontend/admin/src/views/admin/v2ray/"
+      ],
+      "acceptance": [
+        "租户侧无自助翻墙入口",
+        "超管可见 IP 槽位"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-01",
+      "sprint": "sprint-d",
+      "title": "总站权重枢纽页 /industry/...",
+      "priority": "P1",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 4,
+      "depends_on": [
+        "B-01",
+        "A-02"
+      ],
+      "maps_to": [
+        "P1-01"
+      ],
+      "files": [
+        "frontend/pages/industry/"
+      ],
+      "acceptance": [
+        "枢纽页可访问",
+        "canonical 指向总站 URL",
+        "正文链出租户 canonical"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-02",
+      "sprint": "sprint-d",
+      "title": "发布任务双链 primary/secondary",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "D-01",
+        "B-02"
+      ],
+      "maps_to": [
+        "P1-02"
+      ],
+      "files": [
+        "backend/app/services/publish_service.py"
+      ],
+      "acceptance": [
+        "平台文案含 UTM 主链次链",
+        "租户站无总站隐藏友链"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-03",
+      "sprint": "sprint-d",
+      "title": "枢纽 sitemap 生成",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [
+        "D-01"
+      ],
+      "maps_to": [
+        "P1-03"
+      ],
+      "files": [],
+      "acceptance": [
+        "总站 sitemap 含 /industry/ URL"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-04",
+      "sprint": "sprint-d",
+      "title": "财务营收台账",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 3,
+      "depends_on": [],
+      "maps_to": [
+        "P1-04"
+      ],
+      "files": [
+        "backend/app/models/finance_ledger.py"
+      ],
+      "acceptance": [
+        "订阅/订单收入可汇总",
+        "超管可按日查询"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-05",
+      "sprint": "sprint-d",
+      "title": "财务成本台账",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "C-01",
+        "D-04"
+      ],
+      "maps_to": [
+        "P1-05"
+      ],
+      "files": [],
+      "acceptance": [
+        "IP 与模型 API 成本可录入"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-06",
+      "sprint": "sprint-d",
+      "title": "代理分润结算单",
+      "priority": "P1",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 3,
+      "depends_on": [
+        "D-04"
+      ],
+      "maps_to": [
+        "P1-06"
+      ],
+      "files": [
+        "frontend/admin/src/views/agent/commission.vue",
+        "backend/app/api/v1/routes/agent_tree.py"
+      ],
+      "acceptance": [
+        "待结算/已结算状态",
+        "与 agent-tree 数据一致"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-07",
+      "sprint": "sprint-d",
+      "title": "Token ledger 与余额不足停服",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 3,
+      "depends_on": [],
+      "maps_to": [
+        "P1-09"
+      ],
+      "files": [
+        "backend/app/services/ai_usage.py"
+      ],
+      "acceptance": [
+        "每次 AI 调用扣减 ledger",
+        "余额≤0 返回 402 或业务错误码"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-08",
+      "sprint": "sprint-d",
+      "title": "支付 webhook 自动开户 Provisioning",
+      "priority": "P1",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 3,
+      "depends_on": [
+        "D-07"
+      ],
+      "maps_to": [
+        "P1-10",
+        "P1-11"
+      ],
+      "files": [
+        "backend/app/api/v1/routes/payment.py",
+        "backend/app/api/v1/routes/tenants.py"
+      ],
+      "acceptance": [
+        "支付成功 → tenant active",
+        "配额与到期日写入"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-09",
+      "sprint": "sprint-d",
+      "title": "呼朋唤友奖励接计费",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [
+        "A-01",
+        "D-08"
+      ],
+      "maps_to": [
+        "P1-12"
+      ],
+      "files": [
+        "backend/app/services/referral_service.py"
+      ],
+      "acceptance": [
+        "有效邀请（认证+首付费）触发奖励",
+        "奖励类型可配置：延长天数/Token"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "D-10",
+      "sprint": "sprint-d",
+      "title": "合并 inquiries v1 与 v2",
+      "priority": "P1",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 2,
+      "depends_on": [],
+      "maps_to": [
+        "P1-13"
+      ],
+      "files": [
+        "backend/app/api/v1/routes/inquiries.py",
+        "backend/app/api/v1/inquiries/"
+      ],
+      "acceptance": [
+        "管理端单一询盘入口",
+        "废弃路由 301 或下线文档说明"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "E-01",
+      "sprint": "sprint-e",
+      "title": "OAuth回调从state解析provider",
+      "priority": "P0",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": [],
+      "files": [
+        "frontend/admin/src/views/login/oauth-callback.vue",
+        "frontend/admin/src/api/oauth.ts"
+      ],
+      "acceptance": [
+        "平台回调仅code+state可完成登录",
+        "sessionStorage校验oauth_state"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "E-02",
+      "sprint": "sprint-e",
+      "title": "GET /auth/oauth/providers登录页探测",
+      "priority": "P1",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [],
+      "maps_to": [],
+      "files": [
+        "backend/app/api/v1/routes/auth.py",
+        "frontend/admin/src/views/login/index.vue"
+      ],
+      "acceptance": [
+        "未配置OAuth按钮置灰",
+        "dev_bypass时显示开发提示"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "E-03",
+      "sprint": "sprint-e",
+      "title": "第三方登录须已绑定管理端用户",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": [],
+      "files": [
+        "backend/app/api/v1/routes/auth.py"
+      ],
+      "acceptance": [
+        "未绑定返回403",
+        "dev模式可绑admin"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "E-04",
+      "sprint": "sprint-e",
+      "title": "管理端登录OAuth开发文档",
+      "priority": "P2",
+      "owner_pool": "pm",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [
+        "E-01",
+        "E-02",
+        "E-03"
+      ],
+      "maps_to": [],
+      "files": [
+        "docs/管理端统一登录与OAuth对接.md",
+        "docs/产品经理-开发文档.md",
+        "docs/4-API接口定义.md"
+      ],
+      "acceptance": [
+        "专项文档含角色入口/env/验收",
+        "总册与下发清单已链入"
+      ],
+      "verify_cmd": null
+    },
+    {
+      "id": "F-01",
+      "sprint": "sprint-f",
+      "title": "12语种IM resolve API",
+      "priority": "P2",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": ["P2-01"],
+      "files": ["backend/app/services/im_locale_service.py", "backend/app/api/v1/im_routing.py"],
+      "acceptance": ["GET /im-routing/languages", "GET /im-routing/resolve"],
+      "verify_cmd": null
+    },
+    {
+      "id": "F-02",
+      "sprint": "sprint-f",
+      "title": "租户RAG禁乱报价校验",
+      "priority": "P2",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P2-02"],
+      "files": ["backend/app/services/rag_pricing_guard.py", "backend/app/api/v1/routes/knowledge.py"],
+      "acceptance": ["POST /knowledge/validate-quote"],
+      "verify_cmd": null
+    },
+    {
+      "id": "F-03",
+      "sprint": "sprint-f",
+      "title": "物流轨迹回填订单",
+      "priority": "P2",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": ["P2-03"],
+      "files": ["backend/app/services/logistics_tracking_service.py", "backend/app/api/v1/routes/logistics.py"],
+      "acceptance": ["POST /logistics/orders/{id}/sync-tracking"],
+      "verify_cmd": null
+    },
+    {
+      "id": "F-04",
+      "sprint": "sprint-f",
+      "title": "SEO报告HTML导出",
+      "priority": "P2",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": ["P2-05"],
+      "files": ["backend/app/services/seo_report_service.py", "backend/app/api/v1/seo/report_export.py"],
+      "acceptance": ["GET /seo/report/export?format=html"],
+      "verify_cmd": null
+    },
+    {
+      "id": "F-05",
+      "sprint": "sprint-f",
+      "title": "海外养号周期状态机",
+      "priority": "P3",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": ["P3-01"],
+      "files": ["backend/app/services/social_nurture_service.py", "backend/app/api/v1/routes/social_nurture.py"],
+      "acceptance": ["POST /social-nurture/cycles", "transition API"],
+      "verify_cmd": null
+    },
+    {
+      "id": "F-06",
+      "sprint": "sprint-f",
+      "title": "实验室模块默认折叠",
+      "priority": "P3",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P3-03"],
+      "files": ["frontend/admin/src/layout/index.vue"],
+      "acceptance": ["实验室分组默认收起", "访问子路由时自动展开"],
+      "verify_cmd": null
+    },
+    {
+      "id": "G-01",
+      "sprint": "sprint-g",
+      "title": "5+5试点平台seed与pilot API",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P0-07"],
+      "files": [
+        "backend/scripts/seed_platforms_pilot.py",
+        "backend/app/api/v1/routes/platform.py"
+      ],
+      "acceptance": ["GET /platforms/pilot", "10个试点平台"],
+      "verify_cmd": "python scripts/seed_platforms_pilot.py"
+    },
+    {
+      "id": "G-02",
+      "sprint": "sprint-g",
+      "title": "B7母版发布冒烟脚本",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": ["G-01"],
+      "maps_to": ["P0-06"],
+      "files": ["backend/scripts/b7_pilot_acceptance.py"],
+      "acceptance": [">=10 publish_task", "worker processed>=10"],
+      "verify_cmd": "python scripts/b7_pilot_acceptance.py"
+    },
+    {
+      "id": "G-03",
+      "sprint": "sprint-g",
+      "title": "一键演示验收run_demo_acceptance",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["G-01", "G-02"],
+      "maps_to": [],
+      "files": ["scripts/run_demo_acceptance.py", "docs/demo-acceptance-latest.json"],
+      "acceptance": ["routes+b7均ok"],
+      "verify_cmd": "python scripts/run_demo_acceptance.py"
+    },
+    {
+      "id": "G-04",
+      "sprint": "sprint-g",
+      "title": "演示验收清单文档",
+      "priority": "P2",
+      "owner_pool": "pm",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["G-03"],
+      "maps_to": [],
+      "files": ["docs/演示验收清单.md"],
+      "acceptance": ["含人工彩排表与PM签字项"],
+      "verify_cmd": null
+    },
+    {
+      "id": "H-01",
+      "sprint": "sprint-h",
+      "title": "40平台全量seed与catalog API",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": ["P0-07"],
+      "files": [
+        "backend/app/services/platform_catalog.py",
+        "backend/scripts/seed_platforms_full.py",
+        "backend/app/api/v1/routes/platform.py"
+      ],
+      "acceptance": ["GET /platforms/catalog ready=true", "40 platforms"],
+      "verify_cmd": "python scripts/seed_platforms_full.py"
+    },
+    {
+      "id": "H-02",
+      "sprint": "sprint-h",
+      "title": "快递100物流适配器",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1.5,
+      "depends_on": [],
+      "maps_to": ["P0-12"],
+      "files": [
+        "backend/app/services/logistics_provider.py",
+        "backend/app/services/logistics_tracking_service.py"
+      ],
+      "acceptance": ["LOGISTICS_PROVIDER=kuaidi100", "demo fallback"],
+      "verify_cmd": null
+    },
+    {
+      "id": "H-03",
+      "sprint": "sprint-h",
+      "title": "SSL证书状态机与domain API",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1.5,
+      "depends_on": [],
+      "maps_to": ["P0-11"],
+      "files": [
+        "backend/app/services/ssl_certificate_service.py",
+        "backend/app/api/v1/routes/domain.py"
+      ],
+      "acceptance": ["POST ssl", "GET domains/ssl", "mock auto active"],
+      "verify_cmd": null
+    },
+    {
+      "id": "H-04",
+      "sprint": "sprint-h",
+      "title": "生产迁移migrate_production",
+      "priority": "P1",
+      "owner_pool": "devops",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["H-01"],
+      "maps_to": [],
+      "files": ["backend/scripts/migrate_production.py"],
+      "acceptance": ["alembic upgrade + seed"],
+      "verify_cmd": "python scripts/migrate_production.py --seed-full"
+    },
+    {
+      "id": "H-05",
+      "sprint": "sprint-h",
+      "title": "Sprint H配置与单元测试",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["H-01", "H-02", "H-03"],
+      "maps_to": [],
+      "files": [
+        "backend/.env.example",
+        "backend/tests/unit/test_sprint_h_services.py"
+      ],
+      "acceptance": ["test_sprint_h passes"],
+      "verify_cmd": null
+    },
+    {
+      "id": "I-01",
+      "sprint": "sprint-i",
+      "title": "production_readiness_service",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": ["H-01"],
+      "maps_to": [],
+      "files": ["backend/app/services/production_readiness_service.py"],
+      "acceptance": ["JWT/DB/物流/平台/备份目录检查"],
+      "verify_cmd": null
+    },
+    {
+      "id": "I-02",
+      "sprint": "sprint-i",
+      "title": "ops readiness API",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["I-01"],
+      "maps_to": [],
+      "files": ["backend/app/api/v1/routes/ops_jobs.py"],
+      "acceptance": ["GET /ops/readiness", "GET /ops/readiness/public"],
+      "verify_cmd": null
+    },
+    {
+      "id": "I-03",
+      "sprint": "sprint-i",
+      "title": "ops backup API",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": [],
+      "files": ["backend/app/services/ops_backup_service.py"],
+      "acceptance": ["POST /ops/backup/run", "GET /ops/backup/status"],
+      "verify_cmd": null
+    },
+    {
+      "id": "I-04",
+      "sprint": "sprint-i",
+      "title": "health/ready 增强",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["I-01"],
+      "maps_to": [],
+      "files": ["backend/app/api/v1/routes/health.py"],
+      "acceptance": ["DB ping", "503 when not ready"],
+      "verify_cmd": null
+    },
+    {
+      "id": "I-05",
+      "sprint": "sprint-i",
+      "title": "run_production_preflight + Sprint I测试文档",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["I-01", "I-02", "I-03", "I-04"],
+      "maps_to": [],
+      "files": [
+        "scripts/run_production_preflight.py",
+        "backend/tests/unit/test_sprint_i_services.py",
+        "docs/Sprint-I-上线运维.md"
+      ],
+      "acceptance": ["test_sprint_i passes", "preflight JSON"],
+      "verify_cmd": "python scripts/run_production_preflight.py"
+    },
+    {
+      "id": "J-01",
+      "sprint": "sprint-j",
+      "title": "管理端邮箱验证码登录 UI",
+      "priority": "P1",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": [],
+      "files": [
+        "frontend/admin/src/views/login/index.vue",
+        "frontend/admin/src/api/emailAuth.ts"
+      ],
+      "acceptance": ["密码/邮箱 Tab", "dev 环境展示验证码"],
+      "verify_cmd": null
+    },
+    {
+      "id": "J-02",
+      "sprint": "sprint-j",
+      "title": "OAuth 账号绑定 API + 管理页",
+      "priority": "P1",
+      "owner_pool": "fullstack",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1.5,
+      "depends_on": ["E-01"],
+      "maps_to": [],
+      "files": [
+        "backend/app/services/oauth_binding_service.py",
+        "frontend/admin/src/views/admin/system/account-bindings.vue"
+      ],
+      "acceptance": ["GET/POST/DELETE bindings", "绑定回调 mode=bind"],
+      "verify_cmd": null
+    },
+    {
+      "id": "J-03",
+      "sprint": "sprint-j",
+      "title": "就绪检查飞书告警",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["I-01"],
+      "maps_to": [],
+      "files": ["backend/app/services/ops_readiness_alert_service.py"],
+      "acceptance": ["POST /ops/alerts/readiness-notify"],
+      "verify_cmd": null
+    },
+    {
+      "id": "J-04",
+      "sprint": "sprint-j",
+      "title": "开发环境邮箱验证码透出",
+      "priority": "P2",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [],
+      "maps_to": [],
+      "files": ["backend/app/api/v1/routes/auth.py"],
+      "acceptance": ["dev_code in development"],
+      "verify_cmd": null
+    },
+    {
+      "id": "J-05",
+      "sprint": "sprint-j",
+      "title": "Sprint J 测试与文档",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["J-01", "J-02", "J-03"],
+      "maps_to": [],
+      "files": [
+        "backend/tests/unit/test_sprint_j_services.py",
+        "docs/Sprint-J-体验补全.md"
+      ],
+      "acceptance": ["test_sprint_j passes"],
+      "verify_cmd": null
+    },
+    {
+      "id": "K-01",
+      "sprint": "sprint-k",
+      "title": "Token 耗尽自动停服",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-09"],
+      "files": ["backend/app/services/token_service.py"],
+      "acceptance": ["balance=0 -> suspended", "credit restores"],
+      "verify_cmd": null
+    },
+    {
+      "id": "K-02",
+      "sprint": "sprint-k",
+      "title": "财务 summary 增强",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-07"],
+      "files": ["backend/app/services/finance_service.py"],
+      "acceptance": ["net_profit", "top tenants"],
+      "verify_cmd": null
+    },
+    {
+      "id": "K-03",
+      "sprint": "sprint-k",
+      "title": "finance/export.csv",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [],
+      "maps_to": ["P1-08"],
+      "files": ["backend/app/api/v1/routes/finance.py"],
+      "acceptance": ["CSV download"],
+      "verify_cmd": null
+    },
+    {
+      "id": "K-04",
+      "sprint": "sprint-k",
+      "title": "枢纽 GSC checklist + ping",
+      "priority": "P2",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-03"],
+      "files": ["backend/app/api/v1/routes/hub.py"],
+      "acceptance": ["checklist", "ping dry_run"],
+      "verify_cmd": null
+    },
+    {
+      "id": "K-05",
+      "sprint": "sprint-k",
+      "title": "管理端财务中台页",
+      "priority": "P1",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": ["K-02", "K-03"],
+      "maps_to": ["P1-07"],
+      "files": ["frontend/admin/src/views/admin/finance/index.vue"],
+      "acceptance": ["/admin/finance"],
+      "verify_cmd": null
+    },
+    {
+      "id": "L-01",
+      "sprint": "sprint-l",
+      "title": "SMTP 邮箱验证码",
+      "priority": "P0",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": [],
+      "files": ["backend/app/services/email_service.py", "backend/app/api/v1/routes/auth.py"],
+      "acceptance": ["production 无 SMTP 返回 503"],
+      "verify_cmd": null
+    },
+    {
+      "id": "L-02",
+      "sprint": "sprint-l",
+      "title": "Nuxt useApiV1 去 localhost",
+      "priority": "P0",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 1,
+      "depends_on": [],
+      "maps_to": ["P0-13"],
+      "files": ["frontend/composables/useApiV1.ts", "frontend/pages/user/*.vue"],
+      "acceptance": ["API_HOST 驱动"],
+      "verify_cmd": null
+    },
+    {
+      "id": "L-03",
+      "sprint": "sprint-l",
+      "title": "inquiries/portal",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-13"],
+      "files": ["backend/app/services/inquiries_portal_service.py"],
+      "acceptance": ["GET /inquiries/portal"],
+      "verify_cmd": null
+    },
+    {
+      "id": "L-04",
+      "sprint": "sprint-l",
+      "title": "物流页 composable",
+      "priority": "P2",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["L-02"],
+      "maps_to": [],
+      "files": ["frontend/pages/logistics/index.vue"],
+      "acceptance": ["useApiV1Url"],
+      "verify_cmd": null
+    },
+    {
+      "id": "L-05",
+      "sprint": "sprint-l",
+      "title": "Sprint L 测试文档",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["L-01", "L-03"],
+      "maps_to": [],
+      "files": ["backend/tests/unit/test_sprint_l_services.py", "docs/Sprint-L-生产化.md"],
+      "acceptance": ["test_sprint_l passes"],
+      "verify_cmd": null
+    },
+    {
+      "id": "M-01",
+      "sprint": "sprint-m",
+      "title": "egress overview API",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [],
+      "maps_to": [],
+      "files": ["backend/app/api/v1/routes/egress.py"],
+      "acceptance": ["GET /egress/overview"],
+      "verify_cmd": null
+    },
+    {
+      "id": "M-02",
+      "sprint": "sprint-m",
+      "title": "egress 槽位分配/释放 API",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-10"],
+      "files": ["backend/app/api/v1/routes/egress.py"],
+      "acceptance": ["POST assign/release"],
+      "verify_cmd": null
+    },
+    {
+      "id": "M-03",
+      "sprint": "sprint-m",
+      "title": "egress 管理页可分配",
+      "priority": "P1",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.75,
+      "depends_on": ["M-01", "M-02"],
+      "maps_to": [],
+      "files": ["frontend/admin/src/views/admin/egress/index.vue"],
+      "acceptance": ["/admin/egress 可分配/释放"],
+      "verify_cmd": null
+    },
+    {
+      "id": "M-04",
+      "sprint": "sprint-m",
+      "title": "移除实验室 V2Ray 入口",
+      "priority": "P2",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [],
+      "maps_to": ["P1-14"],
+      "files": ["frontend/admin/src/layout/index.vue"],
+      "acceptance": ["实验室菜单不再显示 v2ray_legacy_lab"],
+      "verify_cmd": null
+    },
+    {
+      "id": "M-05",
+      "sprint": "sprint-m",
+      "title": "Sprint M 测试文档",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["M-02", "M-03"],
+      "maps_to": [],
+      "files": [
+        "backend/tests/unit/test_sprint_m_services.py",
+        "docs/Sprint-M-槽位产品化.md"
+      ],
+      "acceptance": ["test_sprint_m passes"],
+      "verify_cmd": null
+    },
+    {
+      "id": "N-01",
+      "sprint": "sprint-n",
+      "title": "GET /integrations/status 双栈状态",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P0-04"],
+      "files": [
+        "backend/app/services/integrations_status_service.py",
+        "backend/app/api/v1/routes/integrations.py"
+      ],
+      "acceptance": ["返回 fastapi 路由统计与 seo-backend 探测"],
+      "verify_cmd": null
+    },
+    {
+      "id": "N-02",
+      "sprint": "sprint-n",
+      "title": "套餐 IP 槽位配额服务",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-10"],
+      "files": ["backend/app/services/egress_quota_service.py"],
+      "acceptance": ["plan.code 映射配额，settings.egress_ip_quota 可覆盖"],
+      "verify_cmd": null
+    },
+    {
+      "id": "N-03",
+      "sprint": "sprint-n",
+      "title": "租户自助 GET /egress/my 与 request-slot",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": ["N-02"],
+      "maps_to": [],
+      "files": ["backend/app/api/v1/routes/egress.py"],
+      "acceptance": ["租户在配额内可申领 1 槽"],
+      "verify_cmd": null
+    },
+    {
+      "id": "N-04",
+      "sprint": "sprint-n",
+      "title": "支付成功后自动分配 IP 槽位",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["N-02"],
+      "maps_to": [],
+      "files": ["backend/app/services/provisioning_service.py"],
+      "acceptance": ["provision_after_payment 返回 egress_slots_assigned"],
+      "verify_cmd": null
+    },
+    {
+      "id": "N-05",
+      "sprint": "sprint-n",
+      "title": "Sprint N 测试与文档",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["N-01", "N-03"],
+      "maps_to": [],
+      "files": [
+        "backend/tests/unit/test_sprint_n_services.py",
+        "docs/Sprint-N-双栈与槽位售卖.md",
+        "docs/ADR-seo-dual-stack.md"
+      ],
+      "acceptance": ["test_sprint_n passes"],
+      "verify_cmd": null
+    },
+    {
+      "id": "O-01",
+      "sprint": "sprint-o",
+      "title": "ACME/certbot SSL 委托签发",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P0-11"],
+      "files": ["backend/app/services/ssl_certificate_service.py", "docs/saas/ssl-automation.md"],
+      "acceptance": ["SSL_PROVIDER=acme + ACME_WEBHOOK_URL 可提交与轮询"],
+      "verify_cmd": null
+    },
+    {
+      "id": "O-02",
+      "sprint": "sprint-o",
+      "title": "询盘 unified 服务与 v1 废弃对齐",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-13"],
+      "files": [
+        "backend/app/services/inquiries_unified_service.py",
+        "backend/app/api/v1/routes/inquiries.py"
+      ],
+      "acceptance": ["/inquiries/unified 兼容 B2B 与 SEO 列"],
+      "verify_cmd": null
+    },
+    {
+      "id": "O-03",
+      "sprint": "sprint-o",
+      "title": "IP 槽位加购支付 API",
+      "priority": "P1",
+      "owner_pool": "backend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.5,
+      "depends_on": [],
+      "maps_to": ["P1-10"],
+      "files": [
+        "backend/app/services/egress_addon_service.py",
+        "backend/app/api/v1/routes/payment.py"
+      ],
+      "acceptance": ["POST /payment/addon/egress-ip"],
+      "verify_cmd": null
+    },
+    {
+      "id": "O-04",
+      "sprint": "sprint-o",
+      "title": "管理端集成栈只读页",
+      "priority": "P2",
+      "owner_pool": "frontend",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": [],
+      "maps_to": [],
+      "files": ["frontend/admin/src/views/admin/system/integrations-stack.vue"],
+      "acceptance": ["/admin/system/integrations-stack"],
+      "verify_cmd": null
+    },
+    {
+      "id": "O-05",
+      "sprint": "sprint-o",
+      "title": "Sprint O 测试与文档",
+      "priority": "P1",
+      "owner_pool": "qa",
+      "assignee": "swarm",
+      "status": "done",
+      "estimate_days": 0.25,
+      "depends_on": ["O-01", "O-02", "O-03"],
+      "maps_to": [],
+      "files": [
+        "backend/tests/unit/test_sprint_o_services.py",
+        "docs/Sprint-O-商用收尾.md"
+      ],
+      "acceptance": ["test_sprint_o passes"],
+      "verify_cmd": null
+    }
+  ]
+}

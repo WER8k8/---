@@ -1,0 +1,35 @@
+{
+  "total": 97,
+  "open_engineering": 0,
+  "open_ids": [],
+  "by_status": {
+    "done": 97
+  },
+  "by_sprint": {
+    "S0": {
+      "done": 4
+    },
+    "S1": {
+      "done": 24
+    },
+    "S2": {
+      "done": 11
+    },
+    "S3": {
+      "done": 13
+    },
+    "S4": {
+      "done": 15
+    },
+    "S5": {
+      "done": 12
+    },
+    "S6": {
+      "done": 11
+    },
+    "PM": {
+      "done": 7
+    }
+  },
+  "gates_open": []
+}

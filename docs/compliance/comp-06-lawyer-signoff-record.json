@@ -1,0 +1,11 @@
+{
+  "task": "COMP-06",
+  "status": "pending_lawyer_s2",
+  "draft": "docs/compliance/comp-06-lawyer-review-draft-20260602.md",
+  "bundle": "docs/compliance/comp-evidence-bundle.json",
+  "validation": "docs/compliance/comp-06-validation-latest.json",
+  "signed_by": null,
+  "signed_at": null,
+  "law_firm": null,
+  "notes": "validate-comp-06-bundle.py 绿后律师 S2 签字"
+}

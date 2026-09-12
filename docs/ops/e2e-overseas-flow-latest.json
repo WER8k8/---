@@ -1,0 +1,13 @@
+{
+  "task": "e2e_cross_border_overseas_flow",
+  "generated_at": "2026-06-18T13:53:45+00:00",
+  "status": "pass",
+  "api_base": "http://127.0.0.1:8001",
+  "media_task_id": "e713b374-b871-4b26-bf8c-9aceaf9ba082",
+  "job_id": "5e09f16e-58e5-4155-ba49-f612c26da656",
+  "srt_url": "/uploads/dub_38ec8b0aa3d6.srt",
+  "segments_count": 1,
+  "output_mode": "srt_only",
+  "handoff_url": "/client/distribute?media_task_id=e713b374-b871-4b26-bf8c-9aceaf9ba082",
+  "notes": "subtitle 模式 E2E；ffmpeg WinGet PATH 修复后 backend 可探测配音能力"
+}

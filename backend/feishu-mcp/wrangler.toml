@@ -1,0 +1,22 @@
+name = "feishu-mcp-server"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[vars]
+FEISHU_API_BASE_URL = "https://open.feishu.cn/open-apis"
+FEISHU_LINGMA_WEBHOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/16661e58-b928-4224-b596-2628369fadd5"
+
+[build]
+command = "npm run build"
+
+[env.production]
+name = "feishu-mcp-server-prod"
+[env.production.vars]
+FEISHU_API_BASE_URL = "https://open.feishu.cn/open-apis"
+FEISHU_LINGMA_WEBHOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/16661e58-b928-4224-b596-2628369fadd5"
+
+[env.development]
+name = "feishu-mcp-server-dev"
+[env.development.vars]
+FEISHU_API_BASE_URL = "https://open.feishu.cn/open-apis"
+FEISHU_LINGMA_WEBHOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/16661e58-b928-4224-b596-2628369fadd5"

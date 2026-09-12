@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出海营销 SaaS · 完整项目架构思维导图</title>
+<style>
+:root {
+  --bg: #0b0d12;
+  --bg2: #141720;
+  --bg3: #1c2030;
+  --ink: #e4e7ed;
+  --muted: #8a92a6;
+  --rule: #2a3045;
+  --l1: #4a9b8c;
+  --l2: #8b5cf6;
+  --l3: #3b82f6;
+  --l4: #f59e0b;
+  --l5: #ef4444;
+  --flow: #06b6d4;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 13px;
+  overflow-x: hidden;
+}
+
+.container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 30px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(74,155,140,0.08), rgba(139,92,246,0.08));
+}
+.header h1 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, var(--l1), var(--l2), var(--l3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+.header .badges {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid;
+}
+.badge.l1 { border-color: var(--l1); color: var(--l1); background: rgba(74,155,140,0.1); }
+.badge.l2 { border-color: var(--l2); color: var(--l2); background: rgba(139,92,246,0.1); }
+.badge.l3 { border-color: var(--l3); color: var(--l3); background: rgba(59,130,246,0.1); }
+.badge.l4 { border-color: var(--l4); color: var(--l4); background: rgba(245,158,11,0.1); }
+.badge.l5 { border-color: var(--l5); color: var(--l5); background: rgba(239,68,68,0.1); }
+
+/* Stats Bar */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); }
+.stat-card .num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--l1);
+}
+.stat-card .label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Mindmap Container */
+.mindmap-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+/* Layer Blocks */
+.layer {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  transition: all 0.3s;
+}
+.layer:hover { border-color: var(--l1); }
+
+.layer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.layer-header:hover { background: rgba(255,255,255,0.02); }
+
+.layer-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.layer.l1-layer .layer-num { background: var(--l1); }
+.layer.l2-layer .layer-num { background: var(--l2); }
+.layer.l3-layer .layer-num { background: var(--l3); }
+.layer.l4-layer .layer-num { background: var(--l4); }
+.layer.l5-layer .layer-num { background: var(--l5); }
+
+.layer-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  flex: 1;
+}
+.layer-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-right: 12px;
+}
+.layer-toggle {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: transform 0.2s;
+}
+.layer.collapsed .layer-toggle { transform: rotate(-90deg); }
+
+.layer-body {
+  padding: 0 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.layer.collapsed .layer-body { display: none; }
+
+/* Module Cards */
+.module-card {
+  background: var(--bg3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border-left: 3px solid;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.module-card:hover {
+  transform: translateX(4px);
+  background: rgba(255,255,255,0.04);
+}
+.module-card.l1-border { border-left-color: var(--l1); }
+.module-card.l2-border { border-left-color: var(--l2); }
+.module-card.l3-border { border-left-color: var(--l3); }
+.module-card.l4-border { border-left-color: var(--l4); }
+.module-card.l5-border { border-left-color: var(--l5); }
+
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.module-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.module-icon.l1 { background: rgba(74,155,140,0.15); color: var(--l1); }
+.module-icon.l2 { background: rgba(139,92,246,0.15); color: var(--l2); }
+.module-icon.l3 { background: rgba(59,130,246,0.15); color: var(--l3); }
+.module-icon.l4 { background: rgba(245,158,11,0.15); color: var(--l4); }
+.module-icon.l5 { background: rgba(239,68,68,0.15); color: var(--l5); }
+
+.module-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+.module-count {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: var(--bg2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.module-items {
+  list-style: none;
+  padding: 0;
+}
+.module-items li {
+  font-size: 0.78rem;
+  color: var(--muted);
+  padding: 3px 0;
+  padding-left: 36px;
+  position: relative;
+}
+.module-items li::before {
+  content: "›";
+  position: absolute;
+  left: 22px;
+  color: var(--l1);
+  font-weight: 700;
+}
+.module-items li.tag-new::after {
+  content: "NEW";
+  margin-left: 6px;
+  font-size: 0.6rem;
+  color: var(--l1);
+  border: 1px solid var(--l1);
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+/* Data Flow Section */
+.flow-section {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.flow-section h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--flow);
+}
+.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.flow-card {
+  background: var(--bg3);
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid var(--rule);
+  transition: all 0.2s;
+}
+.flow-card:hover { border-color: var(--flow); }
+.flow-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+.flow-card ol {
+  padding-left: 1.2rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.flow-card ol li { margin-bottom: 6px; }
+.flow-arrow {
+  color: var(--flow);
+  font-weight: 700;
+}
+
+/* Tech Stack */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.tech-item {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.tech-item:hover {
+  border-color: var(--l1);
+  color: var(--ink);
+}
+.tech-item .tech-name {
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+/* Connection Lines SVG */
+.connections-wrap {
+  position: relative;
+  margin: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .stats-bar { grid-template-columns: repeat(4, 1fr); }
+  .flow-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .layer-body { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: repeat(2, 1fr); }
+  .header h1 { font-size: 1.3rem; }
+}
+
+/* Expand/Collapse All */
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  justify-content: flex-end;
+}
+.btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  background: var(--bg2);
+  color: var(--ink);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover { border-color: var(--l1); background: var(--bg3); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>出海营销 SaaS · 完整项目架构思维导图</h1>
+  <p class="subtitle">基于 105 项满分改造计划 · 六维度 9.5 分架构 · 全栈技术图谱</p>
+  <div class="badges">
+    <span class="badge l1">L1 用户接入层</span>
+    <span class="badge l2">L2 AI Agent 层</span>
+    <span class="badge l3">L3 平台服务层</span>
+    <span class="badge l4">L4 数据记忆层</span>
+    <span class="badge l5">L5 基础设施层</span>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat-card"><div class="num">150+</div><div class="label">API 路由</div></div>
+  <div class="stat-card"><div class="num">60+</div><div class="label">后端服务</div></div>
+  <div class="stat-card"><div class="num">80+</div><div class="label">Vue 页面</div></div>
+  <div class="stat-card"><div class="num">39+</div><div class="label">AI Skills</div></div>
+  <div class="stat-card"><div class="num">150</div><div class="label">架构修复</div></div>
+  <div class="stat-card"><div class="num">9.5</div><div class="label">综合评分</div></div>
+  <div class="stat-card"><div class="num">5</div><div class="label">架构层级</div></div>
+  <div class="stat-card"><div class="num">3</div><div class="label">核心数据流</div></div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <button class="btn" onclick="expandAll()">展开全部</button>
+  <button class="btn" onclick="collapseAll()">折叠全部</button>
+</div>
+
+<!-- L1: User Access Layer -->
+<div class="layer l1-layer" data-layer="1">
+  <div class="layer-header" onclick="toggleLayer(1)">
+    <div class="layer-num">L1</div>
+    <div class="layer-title" style="color:var(--l1)">用户接入层 · User Access Layer</div>
+    <div class="layer-desc">多端入口 / 统一登录 / PWA 离线</div>
+    <div class="layer-toggle">▼</div>
+  </div>
+  <div class="layer-body">
+    <div class="module-card l1-border">
+      <div class="module-header">
+        <div class="module-icon l1">🌐</div>
+        <div class="module-name">Nuxt 3 SSR 租户站点</div>
+        <div class="module-count">12+ pages</div>
+      </div>
+      <ul class="module-items">
+        <li>SSR 渲染 / SEO 优化</li>
+        <li>多租户隔离 (tenant slug)</li>
+        <li>GEO 区域适配</li>
+        <li>llms.txt / AI 搜索引擎优化</li>
+      </ul>
+    </div>
+    <div class="module-card l1-border">
+      <div class="module-header">
+        <div class="module-icon l1">⚡</div>
+        <div class="module-name">Vue 3 Admin 管理后台</div>
+        <div class="module-count">80+ views</div>
+      </div>
+      <ul class="module-items">
+        <li>超管 /admin 工作台</li>
+        <li>租户 /client 运营中心</li>
+        <li>代理 /agent 分销后台</li>
+        <li>统一登录页 /login (JWT 分流)</li>
+      </ul>
+    </div>
+    <div class="module-card l1-border">
+      <div class="module-header">
+        <div class="module-icon l1">📱</div>
+        <div class="module-name">Mobile BFF 移动端</div>
+        <div class="module-count">3 BFF</div>
+      </div>
+      <ul class="module-items">
+        <li>App BFF (/app-bff)</li>
+        <li>Client BFF (/client-bff)</li>
+        <li>Platform BFF (/platform-bff)</li>
+        <li class="tag-new">Agent BFF (/agent-bff) NEW</li>
+      </ul>
+    </div>
+    <div class="module-card l1-border">
+      <div class="module-header">
+        <div class="module-icon l1">🔧</div>
+        <div class="module-name">PWA 离线能力</div>
+        <div class="module-count">SW+IDB</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">Service Worker 5 级缓存 NEW</li>
+        <li class="tag-new">Background Sync 离线队列 NEW</li>
+        <li class="tag-new">IndexedDB 操作回放 NEW</li>
+        <li>Manifest.json / 离线首屏</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- L2: AI Agent Layer -->
+<div class="layer l2-layer" data-layer="2">
+  <div class="layer-header" onclick="toggleLayer(2)">
+    <div class="layer-num">L2</div>
+    <div class="layer-title" style="color:var(--l2)">AI Agent 层 · AI Agent Layer</div>
+    <div class="layer-desc">39+ Skills / 工作流 / 向量搜索 / 知识图谱</div>
+    <div class="layer-toggle">▼</div>
+  </div>
+  <div class="layer-body">
+    <div class="module-card l2-border">
+      <div class="module-header">
+        <div class="module-icon l2">🧠</div>
+        <div class="module-name">UBrain AI 核心引擎</div>
+        <div class="module-count">Core</div>
+      </div>
+      <ul class="module-items">
+        <li>多模型路由 (OpenAI/Claude/DeepSeek)</li>
+        <li>Agent 树编排 (agent_tree)</li>
+        <li>超级 Agent (super_agent)</li>
+        <li class="tag-new">决策→执行→反馈 闭环追踪 NEW</li>
+      </ul>
+    </div>
+    <div class="module-card l2-border">
+      <div class="module-header">
+        <div class="module-icon l2">🦌</div>
+        <div class="module-name">DeerFlow 工作流引擎</div>
+        <div class="module-count">Workflow</div>
+      </div>
+      <ul class="module-items">
+        <li>可视化工作流编排</li>
+        <li>节点级执行追踪</li>
+        <li>错误重试 / 补偿机制</li>
+        <li>AccioWork 任务执行</li>
+      </ul>
+    </div>
+    <div class="module-card l2-border">
+      <div class="module-header">
+        <div class="module-icon l2">🎯</div>
+        <div class="module-name">外贸 Skills 技能库</div>
+        <div class="module-count">39+ skills</div>
+      </div>
+      <ul class="module-items">
+        <li>获客: 海关数据 / 竞品分析 / 潜客研究</li>
+        <li>内容: SEO 审计 / 文案生成 / 视频脚本</li>
+        <li>销售:  cold email / 销售赋能 / MEDDPICC</li>
+        <li>OSINT: 邮箱验证 / 制裁名单 / 技术栈探测</li>
+      </ul>
+    </div>
+    <div class="module-card l2-border">
+      <div class="module-header">
+        <div class="module-icon l2">📎</div>
+        <div class="module-name">Paperclip 组织中枢</div>
+        <div class="module-count">Org</div>
+      </div>
+      <ul class="module-items">
+        <li>目标管理 (OKR)</li>
+        <li>审批流 / 心跳检测</li>
+        <li>组织架构图</li>
+        <li> greedy 竞赛排行榜</li>
+      </ul>
+    </div>
+    <div class="module-card l2-border">
+      <div class="module-header">
+        <div class="module-icon l2">🔍</div>
+        <div class="module-name">向量搜索 (Qdrant)</div>
+        <div class="module-count">Vector</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">Qdrant 向量数据库接入 NEW</li>
+        <li class="tag-new">Embedding 服务 (NIM/OpenAI/HF) NEW</li>
+        <li class="tag-new">混合搜索 (Dense + Sparse) NEW</li>
+        <li>pgvector 降级方案</li>
+      </ul>
+    </div>
+    <div class="module-card l2-border">
+      <div class="module-header">
+        <div class="module-icon l2">🕸️</div>
+        <div class="module-name">知识图谱 (Neo4j)</div>
+        <div class="module-count">Graph</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">Neo4j Bolt 协议接入 NEW</li>
+        <li class="tag-new">实体关系构建 / Cypher 查询 NEW</li>
+        <li class="tag-new">最短路径 / 邻居发现 NEW</li>
+        <li>NetworkX 降级方案</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- L3: Platform Services Layer -->
+<div class="layer l3-layer" data-layer="3">
+  <div class="layer-header" onclick="toggleLayer(3)">
+    <div class="layer-num">L3</div>
+    <div class="layer-title" style="color:var(--l3)">平台服务层 · Platform Services Layer</div>
+    <div class="layer-desc">获客 / 邮件 / 商业化 / 增长 / 客服 / ECC</div>
+    <div class="layer-toggle">▼</div>
+  </div>
+  <div class="layer-body">
+    <div class="module-card l3-border">
+      <div class="module-header">
+        <div class="module-icon l3">🎣</div>
+        <div class="module-name">6 大获客渠道</div>
+        <div class="module-count">6 channels</div>
+      </div>
+      <ul class="module-items">
+        <li>SEO / GEO 引擎 (内容→排名→线索)</li>
+        <li>社交媒体 (抖音/小红书/LinkedIn)</li>
+        <li>付费广告 (GSC/Ads 归因)</li>
+        <li>邮件营销 / 线索搜索 / 转介绍</li>
+      </ul>
+    </div>
+    <div class="module-card l3-border">
+      <div class="module-header">
+        <div class="module-icon l3">📧</div>
+        <div class="module-name">邮件基础设施</div>
+        <div class="module-count">Email</div>
+      </div>
+      <ul class="module-items">
+        <li>邮件队列服务 (优先级 + 死信)</li>
+        <li>邮件打开/点击追踪</li>
+        <li>邮件模板 / A/B 测试</li>
+        <li>SMTP 多提供商轮询</li>
+      </ul>
+    </div>
+    <div class="module-card l3-border">
+      <div class="module-header">
+        <div class="module-icon l3">💰</div>
+        <div class="module-name">商业化引擎</div>
+        <div class="module-count">Commerce</div>
+      </div>
+      <ul class="module-items">
+        <li>代理分销 4 级佣金体系</li>
+        <li>模板市场 / 行业方案包</li>
+        <li>代运营服务 / 白标方案</li>
+        <li>Token 账本 / 支付 (支付宝)</li>
+      </ul>
+    </div>
+    <div class="module-card l3-border">
+      <div class="module-header">
+        <div class="module-icon l3">📈</div>
+        <div class="module-name">增长引擎</div>
+        <div class="module-count">Growth</div>
+      </div>
+      <ul class="module-items">
+        <li>客户成功健康分 (6 维度)</li>
+        <li>LTV 计算 / 流失预警</li>
+        <li>内容营销 / 免费工具获客</li>
+        <li>游戏化 (积分/徽章/排行榜)</li>
+      </ul>
+    </div>
+    <div class="module-card l3-border">
+      <div class="module-header">
+        <div class="module-icon l3">💬</div>
+        <div class="module-name">Hermes AI 客服</div>
+        <div class="module-count">Hermes</div>
+      </div>
+      <ul class="module-items">
+        <li>多轮对话 / 意图识别</li>
+        <li>知识库 RAG 问答</li>
+        <li>人工接管 / 会话路由</li>
+        <li>IM 即时通讯集成</li>
+      </ul>
+    </div>
+    <div class="module-card l3-border">
+      <div class="module-header">
+        <div class="module-icon l3">🏢</div>
+        <div class="module-name">ECC 企业控制中心</div>
+        <div class="module-count">ECC</div>
+      </div>
+      <ul class="module-items">
+        <li>多租户管理 (/admin/tenants)</li>
+        <li>平台配置 / 系统监控</li>
+        <li>权限体系 (RBAC)</li>
+        <li>飞书集成 / 命令中心</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- L4: Data & Memory Layer -->
+<div class="layer l4-layer" data-layer="4">
+  <div class="layer-header" onclick="toggleLayer(4)">
+    <div class="layer-num">L4</div>
+    <div class="layer-title" style="color:var(--l4)">数据与记忆层 · Data & Memory Layer</div>
+    <div class="layer-desc">PostgreSQL / Redis / Qdrant / Neo4j / Mem0</div>
+    <div class="layer-toggle">▼</div>
+  </div>
+  <div class="layer-body">
+    <div class="module-card l4-border">
+      <div class="module-header">
+        <div class="module-icon l4">🐘</div>
+        <div class="module-name">PostgreSQL 主库</div>
+        <div class="module-count">50+ tables</div>
+      </div>
+      <ul class="module-items">
+        <li>全 UUID 主键 (Integer 已迁移)</li>
+        <li>JSON 字段带默认值</li>
+        <li>多租户数据隔离</li>
+        <li>EEAT / 建材 B2B 外贸扩展表</li>
+      </ul>
+    </div>
+    <div class="module-card l4-border">
+      <div class="module-header">
+        <div class="module-icon l4">⚡</div>
+        <div class="module-name">Redis 缓存层</div>
+        <div class="module-count">Cache</div>
+      </div>
+      <ul class="module-items">
+        <li>Session / Token 存储</li>
+        <li>热点数据缓存</li>
+        <li>分布式锁 / 限流</li>
+        <li>Celery 任务队列</li>
+      </ul>
+    </div>
+    <div class="module-card l4-border">
+      <div class="module-header">
+        <div class="module-icon l4">🔍</div>
+        <div class="module-name">Qdrant 向量库</div>
+        <div class="module-count">Vector</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">向量集合管理 NEW</li>
+        <li class="tag-new">ANN 近似最近邻搜索 NEW</li>
+        <li class="tag-new">混合搜索 (向量 + 关键词) NEW</li>
+        <li>pgvector 降级方案</li>
+      </ul>
+    </div>
+    <div class="module-card l4-border">
+      <div class="module-header">
+        <div class="module-icon l4">🕸️</div>
+        <div class="module-name">Neo4j 图数据库</div>
+        <div class="module-count">Graph</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">实体节点 / 关系边 NEW</li>
+        <li class="tag-new">Cypher 查询引擎 NEW</li>
+        <li class="tag-new">语义搜索 / 路径发现 NEW</li>
+        <li>NetworkX 内存图降级</li>
+      </ul>
+    </div>
+    <div class="module-card l4-border">
+      <div class="module-header">
+        <div class="module-icon l4">🧠</div>
+        <div class="module-name">Mem0 记忆系统</div>
+        <div class="module-count">Memory</div>
+      </div>
+      <ul class="module-items">
+        <li>用户长期记忆存储</li>
+        <li>对话上下文管理</li>
+        <li>GraphRAG 知识增强</li>
+        <li>记忆检索与更新</li>
+      </ul>
+    </div>
+    <div class="module-card l4-border">
+      <div class="module-header">
+        <div class="module-icon l4">📊</div>
+        <div class="module-name">Analytics 数据湖</div>
+        <div class="module-count">Analytics</div>
+      </div>
+      <ul class="module-items">
+        <li>SiteAnalyticsEvent 事件流</li>
+        <li>用户行为分析</li>
+        <li>归因分析 / 漏斗分析</li>
+        <li class="tag-new">UBrain 决策归因 NEW</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- L5: Infrastructure Layer -->
+<div class="layer l5-layer" data-layer="5">
+  <div class="layer-header" onclick="toggleLayer(5)">
+    <div class="layer-num">L5</div>
+    <div class="layer-title" style="color:var(--l5)">基础设施层 · Infrastructure Layer</div>
+    <div class="layer-desc">FastAPI / Celery / 安全 / CDN / 可观测 / 质量</div>
+    <div class="layer-toggle">▼</div>
+  </div>
+  <div class="layer-body">
+    <div class="module-card l5-border">
+      <div class="module-header">
+        <div class="module-icon l5">🚀</div>
+        <div class="module-name">FastAPI 服务框架</div>
+        <div class="module-count">API</div>
+      </div>
+      <ul class="module-items">
+        <li>130+ 路由 / 自动发现机制</li>
+        <li>统一前缀 / 无重复挂载</li>
+        <li>标准化响应 (success_response)</li>
+        <li>依赖注入 / 生命周期管理</li>
+      </ul>
+    </div>
+    <div class="module-card l5-border">
+      <div class="module-header">
+        <div class="module-icon l5">⏳</div>
+        <div class="module-name">Celery 异步任务</div>
+        <div class="module-count">Worker</div>
+      </div>
+      <ul class="module-items">
+        <li>定时任务 / 延迟队列</li>
+        <li>优先级队列 / 死信处理</li>
+        <li>任务监控 / 重试机制</li>
+        <li>Flower 管理界面</li>
+      </ul>
+    </div>
+    <div class="module-card l5-border">
+      <div class="module-header">
+        <div class="module-icon l5">🔒</div>
+        <div class="module-name">安全体系</div>
+        <div class="module-count">Security</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">国密 SM3/SM4/HMAC-SM3 NEW</li>
+        <li class="tag-new">零信任架构 (设备/上下文) NEW</li>
+        <li>JWT 认证 / Cookie HttpOnly</li>
+        <li>GDPR 合规 / 数据脱敏</li>
+      </ul>
+    </div>
+    <div class="module-card l5-border">
+      <div class="module-header">
+        <div class="module-icon l5">🌐</div>
+        <div class="module-name">CDN & Edge</div>
+        <div class="module-count">Edge</div>
+      </div>
+      <ul class="module-items">
+        <li>Cloudflare 缓存规则生成</li>
+        <li>Nginx 微缓存 + Brotli + HTTP/3</li>
+        <li>全球加速 / 边缘节点预热</li>
+        <li>SSL 证书自动管理</li>
+      </ul>
+    </div>
+    <div class="module-card l5-border">
+      <div class="module-header">
+        <div class="module-icon l5">📡</div>
+        <div class="module-name">可观测性</div>
+        <div class="module-count">Obs</div>
+      </div>
+      <ul class="module-items">
+        <li>分布式链路追踪 (OpenTelemetry)</li>
+        <li>指标采集 / 健康检查</li>
+        <li>日志聚合 / 告警分发</li>
+        <li>系统健康仪表盘</li>
+      </ul>
+    </div>
+    <div class="module-card l5-border">
+      <div class="module-header">
+        <div class="module-icon l5">✅</div>
+        <div class="module-name">代码质量</div>
+        <div class="module-count">Quality</div>
+      </div>
+      <ul class="module-items">
+        <li class="tag-new">ESLint + Prettier + Vitest NEW</li>
+        <li class="tag-new">自动化代码审查引擎 NEW</li>
+        <li class="tag-new">SonarQube 集成 NEW</li>
+        <li>Pre-commit 钩子</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Data Flows -->
+<div class="flow-section">
+  <h2>🔄 三大核心数据流</h2>
+  <div class="flow-grid">
+    <div class="flow-card">
+      <h3>销售飞轮 (Sales Flywheel)</h3>
+      <ol>
+        <li>内容生产 <span class="flow-arrow">→</span> SEO/GEO 发布</li>
+        <li>搜索引擎收录 <span class="flow-arrow">→</span> 排名提升</li>
+        <li>访客进入 <span class="flow-arrow">→</span> 行为追踪</li>
+        <li>线索捕获 <span class="flow-arrow">→</span> 邮件培育</li>
+        <li>转化签约 <span class="flow-arrow">→</span> 数据回流优化</li>
+      </ol>
+    </div>
+    <div class="flow-card">
+      <h3>UBrain 闭环 (AI Decision Loop)</h3>
+      <ol>
+        <li>Agent 决策 (track_decision)</li>
+        <li>任务执行 (track_execution)</li>
+        <li>效果反馈 (track_feedback)</li>
+        <li>归因分析 (attribution)</li>
+        <li>模型调优 <span class="flow-arrow">→</span> 下一轮决策</li>
+      </ol>
+    </div>
+    <div class="flow-card">
+      <h3>向量管道 (Vector Pipeline)</h3>
+      <ol>
+        <li>内容分块 / Embedding 生成</li>
+        <li>Qdrant 向量 upsert</li>
+        <li>语义搜索 / 混合检索</li>
+        <li>Neo4j 知识图谱关联</li>
+        <li>RAG 增强生成 <span class="flow-arrow">→</span> 答案输出</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- Tech Stack -->
+<div class="flow-section">
+  <h2>🛠️ 核心技术栈</h2>
+  <div class="tech-grid">
+    <div class="tech-item"><div class="tech-name">Python 3.11</div>Backend</div>
+    <div class="tech-item"><div class="tech-name">FastAPI</div>API Framework</div>
+    <div class="tech-item"><div class="tech-name">SQLAlchemy</div>ORM</div>
+    <div class="tech-item"><div class="tech-name">Alembic</div>Migrations</div>
+    <div class="tech-item"><div class="tech-name">Celery</div>Task Queue</div>
+    <div class="tech-item"><div class="tech-name">Redis</div>Cache/Broker</div>
+    <div class="tech-item"><div class="tech-name">PostgreSQL</div>Primary DB</div>
+    <div class="tech-item"><div class="tech-name">Qdrant</div>Vector DB NEW</div>
+    <div class="tech-item"><div class="tech-name">Neo4j</div>Graph DB NEW</div>
+    <div class="tech-item"><div class="tech-name">Vue 3</div>Admin Frontend</div>
+    <div class="tech-item"><div class="tech-name">Nuxt 3</div>Tenant SSR</div>
+    <div class="tech-item"><div class="tech-name">Tailwind</div>CSS</div>
+    <div class="tech-item"><div class="tech-name">Ant Design Vue</div>UI Components</div>
+    <div class="tech-item"><div class="tech-name">Pinia</div>State</div>
+    <div class="tech-item"><div class="tech-name">Vite</div>Build</div>
+    <div class="tech-item"><div class="tech-name">TypeScript</div>Type Safety</div>
+    <div class="tech-item"><div class="tech-name">Docker</div>Container</div>
+    <div class="tech-item"><div class="tech-name">Nginx</div>Proxy/CDN</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function toggleLayer(n) {
+  const layer = document.querySelector('.layer[data-layer="' + n + '"]');
+  layer.classList.toggle('collapsed');
+}
+
+function expandAll() {
+  document.querySelectorAll('.layer').forEach(l => l.classList.remove('collapsed'));
+}
+
+function collapseAll() {
+  document.querySelectorAll('.layer').forEach(l => l.classList.add('collapsed'));
+}
+
+// Auto-expand L2 and L3 on load
+setTimeout(() => {
+  expandAll();
+}, 100);
+</script>
+
+</body>
+</html>

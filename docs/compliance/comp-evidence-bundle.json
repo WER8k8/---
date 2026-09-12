@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-05-31T22:45:13.210194+00:00",
+  "open_source_notices": "OPEN-SOURCE-NOTICES.md",
+  "soft_copyright_catalog": "docs/compliance/soft-copyright-code-catalog-v1.md",
+  "rz_60_pages": "docs/compliance/rz-60-pages/",
+  "git_log_file": "docs/compliance/git-log-export.txt",
+  "git_log_lines": 34,
+  "prd_links": [
+    "docs/pm-master-schedule-kpi-20260601.md",
+    "docs/思维导图-优丁SaaS改造全员对齐.md",
+    "docs/ecc-saas-enterprise-value-framework.md",
+    "docs/送检演示脚本-v2-鉴定面.md",
+    "docs/cert-screenshots-checklist.md"
+  ],
+  "cert_screenshots": [
+    "cert-01-login.png",
+    "cert-02-tenants.png",
+    "cert-03-hierarchy.png",
+    "cert-04-aggregation.png",
+    "cert-05-health.png",
+    "cert-06-finance.png",
+    "cert-07-products.png",
+    "cert-08-categories.png",
+    "cert-09-inquiries.png",
+    "cert-10-seo.png",
+    "cert-11-ai-content.png",
+    "cert-12-trade-intel.png",
+    "ux-07-agent-performance.png",
+    "ux-07-client-dashboard.png",
+    "ux-07-platform-dashboard.png"
+  ],
+  "forbidden_list": "docs/compliance/ip-02-forbidden-list.md"
+}

@@ -1,0 +1,1595 @@
+{
+  "generated_at": "2026-06-07T01:22:03.782026+00:00",
+  "plan": "monetize",
+  "focus": "marketingforce",
+  "rounds_planned": 8,
+  "anysearch_cli": "C:\\Users\\97907\\.cursor\\skills\\anysearch\\scripts\\anysearch_cli.py",
+  "constitution": "read_probe + suggest_remediation only; no auto mutate",
+  "signals_summary": {
+    "gw_pending_p0": 0,
+    "patrol_fail": null
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "topic_key": "digital_products_landscape",
+      "topic_label": "网上数字产品变现全景",
+      "lane": "GW-G",
+      "anysearch_query": "sell digital products online 2026 Gumroad Paddle templates courses monetization",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:digital_products_landscape:d4cbd405",
+        "finding": "【网上数字产品变现全景】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io」— - Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position themselves as Merchant of Record solutions for digital sellers, but they serve fundamentall",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io",
+          "url": "https://fungies.io/gumroad-vs-paddle/",
+          "snippet": "- Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position themselves as Merchant of Record solutions for digital sellers, but they serve fundamentally different audiences. This guide breaks down the real differences in fees, features, and use cases—so you can make the ri..."
+        },
+        {
+          "title": "How to Start Selling Digital Products in 2026 (STEP BY ... - YouTube",
+          "url": "https://www.youtube.com/watch?v=QopRRjoOyyg",
+          "snippet": "- In Todays FREE COURSE I show you how to start an online store & build your business selling digital products for beginners 2026 (COMPLETE ..."
+        },
+        {
+          "title": "Gumroad Review (2026) - MakerStack",
+          "url": "https://makerstack.co/reviews/gumroad-review/",
+          "snippet": "- Gumroad lets creators sell digital products with zero upfront costs, but the 10% transaction fee hurts at scale. Best for: solo creators selling ebooks, courses, and templates who want the simplest possible setup. Price: Free (10% per sale). Rating: 7.2/10 Gumroad is a platform for selling digital ...."
+        },
+        {
+          "title": "Gumroad for Selling Digital Products: Honest 2026 Review",
+          "url": "https://mydesigns.io/blog/gumroad-for-selling-digital-products/",
+          "snippet": "- Gumroad is a fast way to validate a digital product idea but the flat 10% fee becomes painful once your revenue starts compounding."
+        },
+        {
+          "title": "Gumroad vs. Paddle Usage and Pricing Comparison",
+          "url": "https://www.wmtips.com/technologies/compare/gumroad-vs-paddle/",
+          "snippet": "- Gumroad is an e-commerce platform serving as a merchant of record that enables creators and digital entrepreneurs to sell digital products, memberships, and other goods directly to their audience. It supports digital downloads, online courses, subscriptions or memberships, license keys for software...."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "网上数字产品变现全景",
+        "models_detected": [
+          {
+            "model_id": "digital_goods_direct",
+            "label": "直售平台",
+            "matched": "gumroad|paddle|lemonsqueezy|stripe"
+          },
+          {
+            "model_id": "agent_as_service",
+            "label": "订阅/微 SaaS",
+            "matched": "subscription|saas|micro.?saas"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "教程型 playbook",
+            "matched": "tutorial|playbook|step.?by.?step|how to"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "gate",
+            "matched": "review|ecc|security|compliance|human|approve"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io",
+            "insight": "- Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position themselves as Merchant of Record solutions for digital sellers, but they serve fundamentally different audience",
+            "url": "https://fungies.io/gumroad-vs-paddle/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "2",
+            "source_title": "How to Start Selling Digital Products in 2026 (STEP BY ... - YouTube",
+            "insight": "- In Todays FREE COURSE I show you how to start an online store & build your business selling digital products for beginners 2026 (COMPLETE ...",
+            "url": "https://www.youtube.com/watch?v=QopRRjoOyyg",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "3",
+            "source_title": "Gumroad Review (2026) - MakerStack",
+            "insight": "- Gumroad lets creators sell digital products with zero upfront costs, but the 10% transaction fee hurts at scale. Best for: solo creators selling ebooks, courses, and templates who want the simplest ",
+            "url": "https://makerstack.co/reviews/gumroad-review/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "4",
+            "source_title": "Gumroad for Selling Digital Products: Honest 2026 Review",
+            "insight": "- Gumroad is a fast way to validate a digital product idea but the flat 10% fee becomes painful once your revenue starts compounding.",
+            "url": "https://mydesigns.io/blog/gumroad-for-selling-digital-products/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "5",
+            "source_title": "Gumroad vs. Paddle Usage and Pricing Comparison",
+            "insight": "- Gumroad is an e-commerce platform serving as a merchant of record that enables creators and digital entrepreneurs to sell digital products, memberships, and other goods directly to their audience. I",
+            "url": "https://www.wmtips.com/technologies/compare/gumroad-vs-paddle/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【网上数字产品变现全景】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io」— - Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position the"
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【网上数字产品变现全景】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io」— - Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position the"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【网上数字产品变现全景】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io」— - Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position the"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_digital_products_landscape_ca208bda15",
+        "price_credits": 18,
+        "invoke_handler": "geo_content_matrix"
+      }
+    },
+    {
+      "round": 2,
+      "topic_key": "ai_agent_monetization",
+      "topic_label": "AI 智能体赚钱模式",
+      "lane": "GW-G",
+      "anysearch_query": "AI agent monetization workflow make money 2026 autonomous agents revenue",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:ai_agent_monetization:bd10e39b",
+        "finding": "【AI 智能体赚钱模式】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem」— - Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actually work for AI agents in 2026. One billing setup ships in a weekend. Zero of it",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem",
+          "url": "https://www.creem.io/blog/how-to-monetize-ai-agents",
+          "snippet": "- Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actually work for AI agents in 2026. One billing setup ships in a weekend. Zero of it requires you to talk to a sales team or stitch together Stripe + a tax lawyer + a refund queue + a VAT spreadsheet. We'l...."
+        },
+        {
+          "title": "How I'd Make Money with AI in 2026 (if I had to Start Over) - YouTube",
+          "url": "https://www.youtube.com/watch?v=Q46OLxFshAQ",
+          "snippet": "- I'm African, and in my country it's rather complicated; I didn't have a laptop, but I managed to get one and get started with automation."
+        },
+        {
+          "title": "How to Monetize AI Agents in 2026: Builder Guide",
+          "url": "https://gravity.fast/blog/how-to-monetize-ai-agents/",
+          "snippet": "- If you can build an AI agent in n8n, LangChain, make.com, or any of the other workflow tools that have eaten the last three years, you can earn from it. The path from a working workflow to actual recurring revenue is shorter than it looks, but most builders never make the trip because the monetizati..."
+        },
+        {
+          "title": "How to Make Money with AI Agents in 2026 | Nevermined",
+          "url": "https://nevermined.ai/blog/make-money-with-ai-agents",
+          "snippet": "- Turn AI agents into revenue with the right pricing, payments, and infrastructure. Learn proven models to monetize agents at scale in 2026."
+        },
+        {
+          "title": "Antigravity Multi-Agent Revenue Automation Master Guide 2026 — Building Autonomous Income Systems with AgentKit 2.0 | Antigravity Lab",
+          "url": "https://antigravitylab.net/en/articles/agents/antigravity-multi-agent-revenue-automation-masterguide-2026",
+          "snippet": "- A comprehensive guide to building autonomous revenue systems using Antigravity's AgentKit 2.0. Covers multi-agent architecture, production-grade guardrails, Cloudflare Workers automation, and ROI monitoring — with complete, working code. AI agents that work autonomously while you sleep, generating ...."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "AI 智能体赚钱模式",
+        "models_detected": [
+          {
+            "model_id": "digital_goods_direct",
+            "label": "直售平台",
+            "matched": "gumroad|paddle|lemonsqueezy|stripe"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "自动化工作流包",
+            "matched": "n8n|make\\.com|zapier|automation workflow"
+          },
+          {
+            "model_id": "agent_as_service",
+            "label": "多智能体编排",
+            "matched": "langgraph|crewai|swarm|multi.?agent"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "orchestrate",
+            "matched": "orchestrat|pm|swarm|crew|langgraph|workflow"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem",
+            "insight": "- Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actually work for AI agents in 2026. One billing setup ships in a weekend. Zero of it requires you to tal",
+            "url": "https://www.creem.io/blog/how-to-monetize-ai-agents",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "2",
+            "source_title": "How I'd Make Money with AI in 2026 (if I had to Start Over) - YouTube",
+            "insight": "- I'm African, and in my country it's rather complicated; I didn't have a laptop, but I managed to get one and get started with automation.",
+            "url": "https://www.youtube.com/watch?v=Q46OLxFshAQ",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "3",
+            "source_title": "How to Monetize AI Agents in 2026: Builder Guide",
+            "insight": "- If you can build an AI agent in n8n, LangChain, make.com, or any of the other workflow tools that have eaten the last three years, you can earn from it. The path from a working workflow to actual re",
+            "url": "https://gravity.fast/blog/how-to-monetize-ai-agents/",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "4",
+            "source_title": "How to Make Money with AI Agents in 2026 | Nevermined",
+            "insight": "- Turn AI agents into revenue with the right pricing, payments, and infrastructure. Learn proven models to monetize agents at scale in 2026.",
+            "url": "https://nevermined.ai/blog/make-money-with-ai-agents",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "5",
+            "source_title": "Antigravity Multi-Agent Revenue Automation Master Guide 2026 — Building Autonomous Income Systems wi",
+            "insight": "- A comprehensive guide to building autonomous revenue systems using Antigravity's AgentKit 2.0. Covers multi-agent architecture, production-grade guardrails, Cloudflare Workers automation, and ROI mo",
+            "url": "https://antigravitylab.net/en/articles/agents/antigravity-multi-agent-revenue-automation-masterguide-2026",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【AI 智能体赚钱模式】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem」— - Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actual"
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【AI 智能体赚钱模式】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem」— - Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actual"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【AI 智能体赚钱模式】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem」— - Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actual"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_ai_agent_monetization_e0e2fb9f01",
+        "price_credits": 18,
+        "invoke_handler": "geo_content_matrix"
+      }
+    },
+    {
+      "round": 3,
+      "topic_key": "cursor_mcp_agent_stack",
+      "topic_label": "Cursor/MCP 智能体技术栈",
+      "lane": "GW-PM",
+      "anysearch_query": "Cursor MCP agent workflow orchestration subagents 2026 developer earn",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:cursor_mcp_agent_stack:7cc712cd",
+        "finding": "【Cursor/MCP 智能体技术栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Age」— - I’m trying to understand what is currently possible in Cursor regarding long-running multi-agent workflows. The important part is that all 18 tasks are completely independent fro",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Agents + Separate PRs) - Help - Cursor - Community Forum",
+          "url": "https://forum.cursor.com/t/workflow-long-running-multi-agent-orchestration-root-agent-parallel-sub-agents-separate-prs/160563",
+          "snippet": "- I’m trying to understand what is currently possible in Cursor regarding long-running multi-agent workflows. The important part is that all 18 tasks are completely independent from each other, so they could theoretically be implemented in parallel. a root/main agent responsible for orchestration m..."
+        },
+        {
+          "title": "GustavoWinter/cursor-agent-orchestrator-mcp",
+          "url": "https://github.com/GustavoWinter/cursor-agent-orchestrator-mcp",
+          "snippet": "- # Cursor Agent Orchestrator MCP An MCP server that runs many `@cursor/sdk` agents in parallel from one Cursor chat — locally or on Cursor Cloud — with a **propose → confirm → execute** flow and one merged event stream. This is a **top-level orchestrator** on top of the Cursor SDK: independent suba....."
+        },
+        {
+          "title": "6 Best Cursor 3 Alternatives for Structured Agent Development",
+          "url": "https://www.augmentcode.com/tools/cursor-3-alternatives",
+          "snippet": "- The best Cursor 3 alternatives for structured agent development are Intent, Kiro, Windsurf, Antigravity, Claude Code, and OpenAI Codex."
+        },
+        {
+          "title": "Claude Code Agent Teams, Subagents, and MCP: The 2026 Playbook",
+          "url": "https://www.developersdigest.tech/blog/claude-code-agent-teams-subagents-2026",
+          "snippet": "- MCP Turns Agents Into Operators ... MCP is the difference between an agent that edits files and an agent that can operate your actual workflow."
+        },
+        {
+          "title": "Cursor 3 Deep Dive: Agents + Composer Review 2026",
+          "url": "https://www.digitalapplied.com/blog/cursor-3-deep-dive-agents-composer-review-2026",
+          "snippet": "- What makes the workflow earn its keep is Composer's tight iteration loop. You prompt, Composer stages a diff, you accept or reject per file ..."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "Cursor/MCP 智能体技术栈",
+        "models_detected": [
+          {
+            "model_id": "agent_as_service",
+            "label": "Agent 编排栈",
+            "matched": "mcp|cursor|subagent|orchestrat"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "教程型 playbook",
+            "matched": "tutorial|playbook|step.?by.?step|how to"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "orchestrate",
+            "matched": "orchestrat|pm|swarm|crew|langgraph|workflow"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          },
+          {
+            "layer_id": "gate",
+            "matched": "review|ecc|security|compliance|human|approve"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Agents + Separate PRs) ",
+            "insight": "- I’m trying to understand what is currently possible in Cursor regarding long-running multi-agent workflows. The important part is that all 18 tasks are completely independent from each other, so the",
+            "url": "https://forum.cursor.com/t/workflow-long-running-multi-agent-orchestration-root-agent-parallel-sub-agents-separate-prs/160563",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "2",
+            "source_title": "GustavoWinter/cursor-agent-orchestrator-mcp",
+            "insight": "- # Cursor Agent Orchestrator MCP An MCP server that runs many `@cursor/sdk` agents in parallel from one Cursor chat — locally or on Cursor Cloud — with a **propose → confirm → execute** flow and one ",
+            "url": "https://github.com/GustavoWinter/cursor-agent-orchestrator-mcp",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "3",
+            "source_title": "6 Best Cursor 3 Alternatives for Structured Agent Development",
+            "insight": "- The best Cursor 3 alternatives for structured agent development are Intent, Kiro, Windsurf, Antigravity, Claude Code, and OpenAI Codex.",
+            "url": "https://www.augmentcode.com/tools/cursor-3-alternatives",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "4",
+            "source_title": "Claude Code Agent Teams, Subagents, and MCP: The 2026 Playbook",
+            "insight": "- MCP Turns Agents Into Operators ... MCP is the difference between an agent that edits files and an agent that can operate your actual workflow.",
+            "url": "https://www.developersdigest.tech/blog/claude-code-agent-teams-subagents-2026",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "5",
+            "source_title": "Cursor 3 Deep Dive: Agents + Composer Review 2026",
+            "insight": "- What makes the workflow earn its keep is Composer's tight iteration loop. You prompt, Composer stages a diff, you accept or reject per file ...",
+            "url": "https://www.digitalapplied.com/blog/cursor-3-deep-dive-agents-composer-review-2026",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【Cursor/MCP 智能体技术栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Age」— - I’m trying to understand what is currently possible in Cursor regarding long-runnin"
+        },
+        {
+          "seat": "ecc",
+          "label": "ECC 技术八席",
+          "action": "review_in_standup",
+          "expert_ids": [],
+          "agent_refs": [
+            "frontend-architect",
+            "insulation-backend-developer",
+            "geo-rank-strategist"
+          ],
+          "note": "【Cursor/MCP 智能体技术栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Age」— - I’m trying to understand what is currently possible in Cursor regarding long-runnin"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【Cursor/MCP 智能体技术栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Age」— - I’m trying to understand what is currently possible in Cursor regarding long-runnin"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_cursor_mcp_agent_stack_81264f4982",
+        "price_credits": 18,
+        "invoke_handler": "market_research"
+      }
+    },
+    {
+      "round": 4,
+      "topic_key": "n8n_automation_business",
+      "topic_label": "n8n/Make 自动化变现",
+      "lane": "GW-G",
+      "anysearch_query": "n8n make.com sell automation workflows digital products agency 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:n8n_automation_business:9d28c15d",
+        "finding": "【n8n/Make 自动化变现】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier」— - TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, with solo operators charging $2,000–$15,000 per client project using tools like n8n, Make, ",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier",
+          "url": "https://betonai.net/how-to-build-a-10k-month-ai-automation-agency-in-2026-n8n-vs-make-vs-zapier-complete-pricing-client-acquisition-and-revenue-playbook/",
+          "snippet": "- TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, with solo operators charging $2,000–$15,000 per client project using tools like n8n, Make, and Zapier. The average AI automation freelancer on Upwork earns $75–$200/hour, and agencies with 3–5 recurring clients re..."
+        },
+        {
+          "title": "Make vs N8N in 2026 | Compare features & pricing",
+          "url": "https://www.make.com/en/compare/make-vs-n8n",
+          "snippet": "- Comparing Make & n8n? Explore our detailed comparison of features, pricing, and use cases. Find the best automation tool for your team or developers."
+        },
+        {
+          "title": "How To Turn An N8n Workflow Into A Real SaaS (step By Step)",
+          "url": "https://buldrr.com/how-to-turn-an-n8n-workflow-into-a-real-saas-step-by-step/",
+          "snippet": "- Most people who build n8n workflows hit the same wall: the automationworks great internally, but they can’t sell it, scale it, or hand itto a customer without giving them access to their n8n instance. This guide solves that. You will take the logic from any n8n workflow,convert it into a proper bac...."
+        },
+        {
+          "title": "Where can I sell my N8N workflow? I am looking for marketplaces ...",
+          "url": "https://community.n8n.io/t/where-can-i-sell-my-n8n-workflow-i-am-looking-for-marketplaces-not-the-creator-hub/212963",
+          "snippet": "- So, I'm looking for alternative marketplaces where creators can sell N8N workflows or automations similar to those on Make. Does anyone know ..."
+        },
+        {
+          "title": "Automation Workflows - Buy & Sell Make.com, n8n, Zapier Templates",
+          "url": "https://automationworkflows.io/",
+          "snippet": "- Automation Workflows - Buy & Sell Make.com, n8n, Zapier Templates The marketplace where automation builders and AI creators sell ready-to-use templates for Make.com, n8n, Zapier, and AI agents. Start selling in minutes. Make.com n8n Open-source workflow automation ## Automation Workflows Disco..."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "n8n/Make 自动化变现",
+        "models_detected": [
+          {
+            "model_id": "digital_goods_direct",
+            "label": "数字下载品",
+            "matched": "course|template|ebook|pdf|download"
+          },
+          {
+            "model_id": "agent_as_service",
+            "label": "订阅/微 SaaS",
+            "matched": "subscription|saas|micro.?saas"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "自动化工作流包",
+            "matched": "n8n|make\\.com|zapier|automation workflow"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "orchestrate",
+            "matched": "orchestrat|pm|swarm|crew|langgraph|workflow"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier",
+            "insight": "- TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, with solo operators charging $2,000–$15,000 per client project using tools like n8n, Make, and Zapier. The aver",
+            "url": "https://betonai.net/how-to-build-a-10k-month-ai-automation-agency-in-2026-n8n-vs-make-vs-zapier-complete-pricing-client-acquisition-and-revenue-playbook/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "2",
+            "source_title": "Make vs N8N in 2026 | Compare features & pricing",
+            "insight": "- Comparing Make & n8n? Explore our detailed comparison of features, pricing, and use cases. Find the best automation tool for your team or developers.",
+            "url": "https://www.make.com/en/compare/make-vs-n8n",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "3",
+            "source_title": "How To Turn An N8n Workflow Into A Real SaaS (step By Step)",
+            "insight": "- Most people who build n8n workflows hit the same wall: the automationworks great internally, but they can’t sell it, scale it, or hand itto a customer without giving them access to their n8n instanc",
+            "url": "https://buldrr.com/how-to-turn-an-n8n-workflow-into-a-real-saas-step-by-step/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "4",
+            "source_title": "Where can I sell my N8N workflow? I am looking for marketplaces ...",
+            "insight": "- So, I'm looking for alternative marketplaces where creators can sell N8N workflows or automations similar to those on Make. Does anyone know ...",
+            "url": "https://community.n8n.io/t/where-can-i-sell-my-n8n-workflow-i-am-looking-for-marketplaces-not-the-creator-hub/212963",
+            "hermes_mapping": "GW-R 研究员 Brief"
+          },
+          {
+            "step": "5",
+            "source_title": "Automation Workflows - Buy & Sell Make.com, n8n, Zapier Templates",
+            "insight": "- Automation Workflows - Buy & Sell Make.com, n8n, Zapier Templates The marketplace where automation builders and AI creators sell ready-to-use templates for Make.com, n8n, Zapier, and AI agents. Star",
+            "url": "https://automationworkflows.io/",
+            "hermes_mapping": "GW-R 研究员 Brief"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【n8n/Make 自动化变现】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier」— - TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, w"
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【n8n/Make 自动化变现】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier」— - TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, w"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【n8n/Make 自动化变现】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier」— - TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, w"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_n8n_automation_business_00d58a7a0b",
+        "price_credits": 18,
+        "invoke_handler": "geo_content_matrix"
+      }
+    },
+    {
+      "round": 5,
+      "topic_key": "indie_hacker_ai_stack",
+      "topic_label": "Indie Hacker AI 产品栈",
+      "lane": "GW-R",
+      "anysearch_query": "indie hacker AI SaaS micro product launch stack 2026 solo founder",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:indie_hacker_ai_stack:427c3850",
+        "finding": "【Indie Hacker AI 产品栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | 」— - Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | TLDL # Indie Hacker SaaS Stack 2026 The tools landscape for indie hackers has changed dramatically",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": [
+          {
+            "id_hint": "GW-R-AGENT-02",
+            "title": "ResearchBrief 经 ECC+PM 门控入登记册",
+            "lane": "GW-R"
+          }
+        ]
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | TLDL",
+          "url": "https://www.tldl.io/resources/indie-hacker-saas-stack-2026",
+          "snippet": "- Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | TLDL # Indie Hacker SaaS Stack 2026 The tools landscape for indie hackers has changed dramatically in the past year. AI coding tools like Cursor and Claude Code cut development time by 3-5x. Free tiers from Supabase, V....."
+        },
+        {
+          "title": "I'm a solo founder. It took me 9 months and at least 3 stack rewrites ...",
+          "url": "https://www.indiehackers.com/post/im-a-solo-founder-it-took-me-9-months-and-at-least-3-stack-rewrites-to-ship-my-saas-a66b5fbe33",
+          "snippet": "- I am a solo founder. Nine months ago I started building an SEO tool. Two weeks ago I got my first Stripe payment. In between, I rewrote the ..."
+        },
+        {
+          "title": "50 Micro SaaS Ideas for 2026 (Real Revenue Data, Free) - IdeaProof",
+          "url": "https://ideaproof.io/lists/micro-saas-ideas",
+          "snippet": "- These 50 micro-SaaS ideas are specifically curated for solo founders who want to build profitable software businesses without venture capital. Each includes ..."
+        },
+        {
+          "title": "Tycoon for Indie Hackers: Ship Faster, Solo",
+          "url": "https://tycoon.us/for/indie-hackers",
+          "snippet": "- The AI workforce for indie hackers. Ship products, run marketing, handle support — without hiring. Bootstrap to $1M ARR solo. Free to startNo credit card requiredUpdated Apr 2026 Your AI CMO drafts launch copy, writes blog posts, schedules tweets, and sends onboarding emails without you opening a ....."
+        },
+        {
+          "title": "Comment 'SAAS' and I'll DM you How to build a Micro ... - Instagram",
+          "url": "https://www.instagram.com/reel/DTptMrED0id/",
+          "snippet": "- I was wrong. In 2026, the barrier to entry is gone. I built a fully functional AI tool from scratch without writing a single line of code. @ ..."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "Indie Hacker AI 产品栈",
+        "models_detected": [
+          {
+            "model_id": "digital_goods_direct",
+            "label": "直售平台",
+            "matched": "gumroad|paddle|lemonsqueezy|stripe"
+          },
+          {
+            "model_id": "agent_as_service",
+            "label": "订阅/微 SaaS",
+            "matched": "subscription|saas|micro.?saas"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "教程型 playbook",
+            "matched": "tutorial|playbook|step.?by.?step|how to"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "orchestrate",
+            "matched": "orchestrat|pm|swarm|crew|langgraph|workflow"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | TLDL",
+            "insight": "- Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | TLDL # Indie Hacker SaaS Stack 2026 The tools landscape for indie hackers has changed dramatically in the past year. A",
+            "url": "https://www.tldl.io/resources/indie-hacker-saas-stack-2026",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "2",
+            "source_title": "I'm a solo founder. It took me 9 months and at least 3 stack rewrites ...",
+            "insight": "- I am a solo founder. Nine months ago I started building an SEO tool. Two weeks ago I got my first Stripe payment. In between, I rewrote the ...",
+            "url": "https://www.indiehackers.com/post/im-a-solo-founder-it-took-me-9-months-and-at-least-3-stack-rewrites-to-ship-my-saas-a66b5fbe33",
+            "hermes_mapping": "GW-G 营销内容 / geo_content_matrix"
+          },
+          {
+            "step": "3",
+            "source_title": "50 Micro SaaS Ideas for 2026 (Real Revenue Data, Free) - IdeaProof",
+            "insight": "- These 50 micro-SaaS ideas are specifically curated for solo founders who want to build profitable software businesses without venture capital. Each includes ...",
+            "url": "https://ideaproof.io/lists/micro-saas-ideas",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          },
+          {
+            "step": "4",
+            "source_title": "Tycoon for Indie Hackers: Ship Faster, Solo",
+            "insight": "- The AI workforce for indie hackers. Ship products, run marketing, handle support — without hiring. Bootstrap to $1M ARR solo. Free to startNo credit card requiredUpdated Apr 2026 Your AI CMO drafts ",
+            "url": "https://tycoon.us/for/indie-hackers",
+            "hermes_mapping": "GW-R 研究员 Brief"
+          },
+          {
+            "step": "5",
+            "source_title": "Comment 'SAAS' and I'll DM you How to build a Micro ... - Instagram",
+            "insight": "- I was wrong. In 2026, the barrier to entry is gone. I built a fully functional AI tool from scratch without writing a single line of code. @ ...",
+            "url": "https://www.instagram.com/reel/DTptMrED0id/",
+            "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "research",
+          "label": "外贸研究员",
+          "action": "extend_deerflow_brief_for_tenants",
+          "expert_ids": [
+            "expert_research"
+          ],
+          "agent_refs": [
+            "市场参谋",
+            "DeerFlow market_research"
+          ],
+          "note": "【Indie Hacker AI 产品栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | 」— - Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | T"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【Indie Hacker AI 产品栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | 」— - Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | T"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_indie_hacker_ai_stack_87bd427471",
+        "price_credits": 18,
+        "invoke_handler": "market_research"
+      }
+    },
+    {
+      "round": 6,
+      "topic_key": "affiliate_digital_funnel",
+      "topic_label": "联盟 + 数字产品漏斗",
+      "lane": "GW-P",
+      "anysearch_query": "affiliate marketing digital product funnel B2B SaaS lead magnet 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:affiliate_digital_funnel:47b90e99",
+        "finding": "【联盟 + 数字产品漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Lead Magnet Conversion Benchmarks 2026: B2B Data Guide」— - HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketing qualified to sales qualified lead — and the ...",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "Lead Magnet Conversion Benchmarks 2026: B2B Data Guide",
+          "url": "https://www.digitalapplied.com/blog/lead-magnet-conversion-benchmarks-2026-b2b-data-reference",
+          "snippet": "- HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketing qualified to sales qualified lead — and the ..."
+        },
+        {
+          "title": "Affiliate Program Management for B2B SaaS: The Complete Operator’s Guide - Nicole Pyzyk",
+          "url": "https://nicolepyzyk.com/affiliate-program-management-for-b2b-saas-the-complete-operators-guide/",
+          "snippet": "- The reality is that affiliate programs require more active management than almost any other marketing channel, not less. They are, at their core, a people business dressed up as a software problem. And in B2B SaaS, where sales cycles run 90 to 180 days, buying committees involve six to ten stakehold..."
+        },
+        {
+          "title": "SaaS Affiliate Program: How to Build One in 2026",
+          "url": "https://track360.io/blog/saas-affiliate-program-build-guide-2026",
+          "snippet": "- How to design and build a SaaS affiliate program in 2026. Commission models that fit recurring revenue, attribution windows for B2B sales cycles, partner segments, the platform requirements, and the operational pattern that produces sustainable SaaS partner programs. A SaaS affiliate program connec...."
+        },
+        {
+          "title": "Best Affiliate Marketing Platforms 2026: Guide for Beginners & Pros",
+          "url": "https://funnelish.com/blog/best-affiliate-marketing-platforms",
+          "snippet": "- Discover high-paying affiliate marketing platforms for 2026. Compare traditional networks vs SaaS programs and learn how to build ..."
+        },
+        {
+          "title": "Your Guide to B2B Affiliate Marketing for SaaS Growth | LinkJolt",
+          "url": "https://www.linkjolt.io/blog/b-2-b-affiliate-marketing",
+          "snippet": "- Imagine hiring a sales team you only pay after they close a deal. That’s the simple, powerful idea behind B2B affiliate marketing. It’s a performance-based partnership where you reward trusted partners for generating real leads or sales, making it one of the most scalable growth channels available t..."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "联盟 + 数字产品漏斗",
+        "models_detected": [
+          {
+            "model_id": "agent_as_service",
+            "label": "订阅/微 SaaS",
+            "matched": "subscription|saas|micro.?saas"
+          },
+          {
+            "model_id": "content_affiliate",
+            "label": "联盟分佣",
+            "matched": "affiliate|commission|referral"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "教程型 playbook",
+            "matched": "tutorial|playbook|step.?by.?step|how to"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "discover",
+            "matched": "search|research|discover|anysearch|scrape|osint"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          },
+          {
+            "layer_id": "measure",
+            "matched": "analytics|utm|attribution|kpi|metric|dashboard"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "Lead Magnet Conversion Benchmarks 2026: B2B Data Guide",
+            "insight": "- HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketing qualified to sales qualified lead — and the ...",
+            "url": "https://www.digitalapplied.com/blog/lead-magnet-conversion-benchmarks-2026-b2b-data-reference",
+            "hermes_mapping": "GW-L 销售 outbound"
+          },
+          {
+            "step": "2",
+            "source_title": "Affiliate Program Management for B2B SaaS: The Complete Operator’s Guide - Nicole Pyzyk",
+            "insight": "- The reality is that affiliate programs require more active management than almost any other marketing channel, not less. They are, at their core, a people business dressed up as a software problem. ",
+            "url": "https://nicolepyzyk.com/affiliate-program-management-for-b2b-saas-the-complete-operators-guide/",
+            "hermes_mapping": "GW-R 研究员 Brief"
+          },
+          {
+            "step": "3",
+            "source_title": "SaaS Affiliate Program: How to Build One in 2026",
+            "insight": "- How to design and build a SaaS affiliate program in 2026. Commission models that fit recurring revenue, attribution windows for B2B sales cycles, partner segments, the platform requirements, and the",
+            "url": "https://track360.io/blog/saas-affiliate-program-build-guide-2026",
+            "hermes_mapping": "GW-L 销售 outbound"
+          },
+          {
+            "step": "4",
+            "source_title": "Best Affiliate Marketing Platforms 2026: Guide for Beginners & Pros",
+            "insight": "- Discover high-paying affiliate marketing platforms for 2026. Compare traditional networks vs SaaS programs and learn how to build ...",
+            "url": "https://funnelish.com/blog/best-affiliate-marketing-platforms",
+            "hermes_mapping": "GW-R 研究员 Brief"
+          },
+          {
+            "step": "5",
+            "source_title": "Your Guide to B2B Affiliate Marketing for SaaS Growth | LinkJolt",
+            "insight": "- Imagine hiring a sales team you only pay after they close a deal. That’s the simple, powerful idea behind B2B affiliate marketing. It’s a performance-based partnership where you reward trusted partn",
+            "url": "https://www.linkjolt.io/blog/b-2-b-affiliate-marketing",
+            "hermes_mapping": "GW-L 销售 outbound"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【联盟 + 数字产品漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Lead Magnet Conversion Benchmarks 2026: B2B Data Guide」— - HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketing qualified to sale"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【联盟 + 数字产品漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Lead Magnet Conversion Benchmarks 2026: B2B Data Guide」— - HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketing qualified to sale"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_affiliate_digital_funnel_20635172e3",
+        "price_credits": 18,
+        "invoke_handler": "market_research"
+      }
+    },
+    {
+      "round": 7,
+      "topic_key": "agent_swarm_pm_orchestration",
+      "topic_label": "多智能体蜂群 PM 编排",
+      "lane": "GW-PM",
+      "anysearch_query": "multi agent orchestration PM swarm workflow LangGraph CrewAI monetization",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:agent_swarm_pm_orchestration:e43fd46e",
+        "finding": "【多智能体蜂群 PM 编排】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied」— - This comprehensive guide provides practical AI agent orchestration patterns, framework selection criteria for business teams, ROI calculation ...",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied",
+          "url": "https://www.digitalapplied.com/blog/ai-agent-orchestration-workflows-guide",
+          "snippet": "- This comprehensive guide provides practical AI agent orchestration patterns, framework selection criteria for business teams, ROI calculation ..."
+        },
+        {
+          "title": "langchain-ai/langgraph-swarm-py",
+          "url": "https://github.com/langchain-ai/langgraph-swarm-py",
+          "snippet": "- # 🤖 LangGraph Multi-Agent Swarm A Python library for creating swarm-style multi-agent systems using LangGraph. A swarm is a type of multi-agent architecture where agents dynamically hand off control to one another based on their specializations. The system remembers which agent was last active, ens...."
+        },
+        {
+          "title": "Best Multi-Agent Frameworks in 2026: LangGraph, CrewAI ...",
+          "url": "https://gurusup.com/blog/best-multi-agent-frameworks-2026",
+          "snippet": "- According to Langfuse's comprehensive framework comparison, LangGraph leads in monthly searches with 27,100, while CrewAI follows with 14,800. But search volume doesn't equal production readiness. Let's examine each framework on its actual technical merits. Released in March 2025, OpenAI's Agents SD..."
+        },
+        {
+          "title": "Multiagent Orchestration Showdown: Comparing CrewAI ... - Medium",
+          "url": "https://medium.com/@saeedhajebi/multiagent-orchestration-showdown-comparing-crewai-smolagents-and-langgraph-0e169b6a293d",
+          "snippet": "- CrewAI excels at role-based collaboration and verbose outputs, SmolAgents shines in dynamic planning and code generation, and LangGraph offers top-notch ..."
+        },
+        {
+          "title": "Multi-Agent Orchestration [CrewAI + LangGraph] | Rapid Claw",
+          "url": "https://rapidclaw.dev/blog/multi-agent-orchestration-patterns-2026",
+          "snippet": "- One agent is a chatbot. Three agents working together is a system — and systems need patterns. This guide covers the five multi-agent orchestration patterns that actually hold up under production load: sequential, parallel, hierarchical, pub-sub, and blackboard. With framework code for CrewAI, LangG..."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "多智能体蜂群 PM 编排",
+        "models_detected": [
+          {
+            "model_id": "agent_as_service",
+            "label": "Agent 编排栈",
+            "matched": "mcp|cursor|subagent|orchestrat"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "discover",
+            "matched": "search|research|discover|anysearch|scrape|osint"
+          },
+          {
+            "layer_id": "orchestrate",
+            "matched": "orchestrat|pm|swarm|crew|langgraph|workflow"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied",
+            "insight": "- This comprehensive guide provides practical AI agent orchestration patterns, framework selection criteria for business teams, ROI calculation ...",
+            "url": "https://www.digitalapplied.com/blog/ai-agent-orchestration-workflows-guide",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "2",
+            "source_title": "langchain-ai/langgraph-swarm-py",
+            "insight": "- # 🤖 LangGraph Multi-Agent Swarm A Python library for creating swarm-style multi-agent systems using LangGraph. A swarm is a type of multi-agent architecture where agents dynamically hand off control",
+            "url": "https://github.com/langchain-ai/langgraph-swarm-py",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "3",
+            "source_title": "Best Multi-Agent Frameworks in 2026: LangGraph, CrewAI ...",
+            "insight": "- According to Langfuse's comprehensive framework comparison, LangGraph leads in monthly searches with 27,100, while CrewAI follows with 14,800. But search volume doesn't equal production readiness. L",
+            "url": "https://gurusup.com/blog/best-multi-agent-frameworks-2026",
+            "hermes_mapping": "GW-P 付费归因"
+          },
+          {
+            "step": "4",
+            "source_title": "Multiagent Orchestration Showdown: Comparing CrewAI ... - Medium",
+            "insight": "- CrewAI excels at role-based collaboration and verbose outputs, SmolAgents shines in dynamic planning and code generation, and LangGraph offers top-notch ...",
+            "url": "https://medium.com/@saeedhajebi/multiagent-orchestration-showdown-comparing-crewai-smolagents-and-langgraph-0e169b6a293d",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "5",
+            "source_title": "Multi-Agent Orchestration [CrewAI + LangGraph] | Rapid Claw",
+            "insight": "- One agent is a chatbot. Three agents working together is a system — and systems need patterns. This guide covers the five multi-agent orchestration patterns that actually hold up under production lo",
+            "url": "https://rapidclaw.dev/blog/multi-agent-orchestration-patterns-2026",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【多智能体蜂群 PM 编排】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied」— - This comprehensive guide provides practical AI agent orchestration patterns, framework selection cri"
+        },
+        {
+          "seat": "ecc",
+          "label": "ECC 技术八席",
+          "action": "review_in_standup",
+          "expert_ids": [],
+          "agent_refs": [
+            "frontend-architect",
+            "insulation-backend-developer",
+            "geo-rank-strategist"
+          ],
+          "note": "【多智能体蜂群 PM 编排】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied」— - This comprehensive guide provides practical AI agent orchestration patterns, framework selection cri"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【多智能体蜂群 PM 编排】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied」— - This comprehensive guide provides practical AI agent orchestration patterns, framework selection cri"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_agent_swarm_pm_orchestration_5ec7e8d749",
+        "price_credits": 18,
+        "invoke_handler": "market_research"
+      }
+    },
+    {
+      "round": 8,
+      "topic_key": "tutorial_agent_playbooks",
+      "topic_label": "教程型智能体工作流 playbook",
+      "lane": "GW-G",
+      "anysearch_query": "AI agent tutorial workflow step by step automation business playbook 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060701:tutorial_agent_playbooks:f8f96782",
+        "finding": "【教程型智能体工作流 playbook】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agents for Business Automation: The Complete 2026 Playbook | Coherence」— - AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for Business Automation: The Complete 2026 Playbook Comprehensive guide to AI agents in busi",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "AI Agents for Business Automation: The Complete 2026 Playbook | Coherence",
+          "url": "https://getcoherence.io/blog/ai-agents-business-automation-complete-guide",
+          "snippet": "- AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for Business Automation: The Complete 2026 Playbook Comprehensive guide to AI agents in business automation. Targets multiple AI visibility queries: AI agents for business, intelligent automation, workflow automa....."
+        },
+        {
+          "title": "How to Build & Sell AI Automations: Ultimate Beginner's Guide",
+          "url": "https://www.youtube.com/watch?v=5TxSqvPbnWw",
+          "snippet": "- How to Build & Sell AI Agents in 2026: Ultimate Beginner's Guide · How to Start an AI Business in 2026 | STEP BY STEP · You NEED to Learn AI ..."
+        },
+        {
+          "title": "How to build an AI agent (2026 operator's guide) · digicore101",
+          "url": "https://digicore101.com/knowledge/how-to-build-an-ai-agent/",
+          "snippet": "- # How to build an AI agent (operator's guide, 2026) A 9-step playbook for shipping a production AI agent — scope, tools, model choice, the loop, evaluation, human-in-the-loop, deploy. Code-light, opinionated, no toy demos. 1. 01You need three things: a model with tool calling, a small set of tools....."
+        },
+        {
+          "title": "AI Agent Development: Complete Business Guide (2026)",
+          "url": "https://valuestreamai.com/blog/ai-agents-development-guide",
+          "snippet": "- The definitive guide to AI agent development in 2026. Learn what agents are, which types exist, which frameworks actually work in production, and how to build and deploy autonomous AI agents that generate real business ROI. | What You Will Get From This Guide | | --- | | Clarity | Understand what A...."
+        },
+        {
+          "title": "AI Agents Unleashed: Playbook for 2026 Success",
+          "url": "https://offers.hubspot.com/view/ai-agents-unleashed-playbook",
+          "snippet": "- This playbook delivers proven frameworks and step-by-step guidance to help you implement high-impact AI agents that drive measurable results— ..."
+        }
+      ],
+      "decomposition": {
+        "topic_label": "教程型智能体工作流 playbook",
+        "models_detected": [
+          {
+            "model_id": "agent_as_service",
+            "label": "人审门控",
+            "matched": "human.?in.?the.?loop|human.?review|approve"
+          },
+          {
+            "model_id": "workflow_packaging",
+            "label": "教程型 playbook",
+            "matched": "tutorial|playbook|step.?by.?step|how to"
+          }
+        ],
+        "stack_layers_detected": [
+          {
+            "layer_id": "orchestrate",
+            "matched": "orchestrat|pm|swarm|crew|langgraph|workflow"
+          },
+          {
+            "layer_id": "execute",
+            "matched": "agent|automation|run|execute|invoke|tool"
+          },
+          {
+            "layer_id": "gate",
+            "matched": "review|ecc|security|compliance|human|approve"
+          },
+          {
+            "layer_id": "monetize",
+            "matched": "pay|revenue|sell|pricing|monetiz|earn|affiliate"
+          }
+        ],
+        "playbook_steps": [
+          {
+            "step": "1",
+            "source_title": "AI Agents for Business Automation: The Complete 2026 Playbook | Coherence",
+            "insight": "- AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for Business Automation: The Complete 2026 Playbook Comprehensive guide to AI agents in business automation. Tar",
+            "url": "https://getcoherence.io/blog/ai-agents-business-automation-complete-guide",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "2",
+            "source_title": "How to Build & Sell AI Automations: Ultimate Beginner's Guide",
+            "insight": "- How to Build & Sell AI Agents in 2026: Ultimate Beginner's Guide · How to Start an AI Business in 2026 | STEP BY STEP · You NEED to Learn AI ...",
+            "url": "https://www.youtube.com/watch?v=5TxSqvPbnWw",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "3",
+            "source_title": "How to build an AI agent (2026 operator's guide) · digicore101",
+            "insight": "- # How to build an AI agent (operator's guide, 2026) A 9-step playbook for shipping a production AI agent — scope, tools, model choice, the loop, evaluation, human-in-the-loop, deploy. Code-light, op",
+            "url": "https://digicore101.com/knowledge/how-to-build-an-ai-agent/",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "4",
+            "source_title": "AI Agent Development: Complete Business Guide (2026)",
+            "insight": "- The definitive guide to AI agent development in 2026. Learn what agents are, which types exist, which frameworks actually work in production, and how to build and deploy autonomous AI agents that ge",
+            "url": "https://valuestreamai.com/blog/ai-agents-development-guide",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          },
+          {
+            "step": "5",
+            "source_title": "AI Agents Unleashed: Playbook for 2026 Success",
+            "insight": "- This playbook delivers proven frameworks and step-by-step guidance to help you implement high-impact AI agents that drive measurable results— ...",
+            "url": "https://offers.hubspot.com/view/ai-agents-unleashed-playbook",
+            "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+          }
+        ],
+        "hit_count": 5
+      },
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【教程型智能体工作流 playbook】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agents for Business Automation: The Complete 2026 Playbook | Coherence」— - AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for"
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【教程型智能体工作流 playbook】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agents for Business Automation: The Complete 2026 Playbook | Coherence」— - AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【教程型智能体工作流 playbook】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agents for Business Automation: The Complete 2026 Playbook | Coherence」— - AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for"
+        }
+      ],
+      "a2a_skill": {
+        "skill_id": "a2a_tutorial_agent_playbooks_510078394f",
+        "price_credits": 18,
+        "invoke_handler": "geo_content_matrix"
+      }
+    }
+  ],
+  "executive_summary": "## Hermes × AnySearch 十轮研究摘要\n\n**R1 网上数字产品变现全景** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【网上数字产品变现全景】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io」— - Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position themselves as Merchant of Record solutions …\n\n**R2 AI 智能体赚钱模式** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【AI 智能体赚钱模式】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem」— - Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actually work for AI agents in 2026. One billi…\n\n**R3 Cursor/MCP 智能体技术栈** (GW-PM) — hits=5 ecc=skip → product, ecc, pm\n- 【Cursor/MCP 智能体技术栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Age」— - I’m trying to understand what is currently possible in Cursor regarding long-running multi-agent workflows. The important p…\n\n**R4 n8n/Make 自动化变现** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【n8n/Make 自动化变现】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier」— - TL;DR: AI automation agencies are one of the fastest-growing freelance niches in 2026, with solo operators charging $2,000–$15,0…\n\n**R5 Indie Hacker AI 产品栈** (GW-R) — hits=5 ecc=skip → research, pm\n- 【Indie Hacker AI 产品栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | 」— - Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | TLDL # Indie Hacker SaaS Stack 2026 The t…\n\n**R6 联盟 + 数字产品漏斗** (GW-P) — hits=5 ecc=skip → marketing, pm\n- 【联盟 + 数字产品漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Lead Magnet Conversion Benchmarks 2026: B2B Data Guide」— - HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketing qualified to sales qualified lead — and the ...…\n\n**R7 多智能体蜂群 PM 编排** (GW-PM) — hits=5 ecc=skip → product, ecc, pm\n- 【多智能体蜂群 PM 编排】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied」— - This comprehensive guide provides practical AI agent orchestration patterns, framework selection criteria for business teams, ROI calculatio…\n\n**R8 教程型智能体工作流 playbook** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【教程型智能体工作流 playbook】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agents for Business Automation: The Complete 2026 Playbook | Coherence」— - AI Agents for Business Automation: The Complete 2026 Playbook | Coherence # AI Agents for Business Automation: The Complete 2026 …\n\n\n**深度解读**\n外网信号显示：数字产品与 Agent 变现的主流路径是 「发现层(搜索/调研) → 编排层(PM/多 Agent) → 执行层(自动化/MCP) → 门控层(人审/合规) → 变现层(直售/订阅/联盟) → 度量层(UTM/KPI)」。本轮 AnySearch 最强信号模型：agent_as_service；栈层：monetize, execute, orchestrate, gate。",
+  "workflow_blueprint": {
+    "workflow_version": "1.0",
+    "title": "Hermes 营销 × AnySearch · 数字产品与智能体变现工作流",
+    "model_ranking": [
+      {
+        "model_id": "agent_as_service",
+        "round_hits": 8
+      },
+      {
+        "model_id": "workflow_packaging",
+        "round_hits": 7
+      },
+      {
+        "model_id": "digital_goods_direct",
+        "round_hits": 4
+      },
+      {
+        "model_id": "content_affiliate",
+        "round_hits": 1
+      }
+    ],
+    "stack_layer_ranking": [
+      {
+        "layer_id": "monetize",
+        "round_hits": 7
+      },
+      {
+        "layer_id": "execute",
+        "round_hits": 7
+      },
+      {
+        "layer_id": "orchestrate",
+        "round_hits": 6
+      },
+      {
+        "layer_id": "gate",
+        "round_hits": 3
+      },
+      {
+        "layer_id": "discover",
+        "round_hits": 2
+      },
+      {
+        "layer_id": "measure",
+        "round_hits": 1
+      }
+    ],
+    "recommended_archetypes": [
+      {
+        "id": "agent_as_service",
+        "label": "智能体即服务",
+        "examples": [
+          "按次调研",
+          "按轮 AnySearch",
+          "建站 ECC 流水线代跑"
+        ],
+        "hermes_fit": "DeerFlow 模板 + Hermes 运维 API + 人审门控",
+        "rail": "SaaS 订阅额度 + 超额按次"
+      },
+      {
+        "id": "workflow_packaging",
+        "label": "工作流打包售卖",
+        "examples": [
+          "n8n 模板",
+          "Cursor rules+skills 包",
+          "外贸营销 SOP 自动化"
+        ],
+        "hermes_fit": "本仓 scripts + docs 可导出为数字交付物",
+        "rail": "数字交付 + 万里汇 B2B TT（平台 survival）"
+      },
+      {
+        "id": "digital_goods_direct",
+        "label": "直售数字品",
+        "examples": [
+          "模板包",
+          "行业研报 PDF",
+          "Prompt/Skill 包",
+          "迷你 SaaS 插件"
+        ],
+        "hermes_fit": "旺财插件 + Research Brief 增值 + A2A 技能挂牌",
+        "rail": "tenant_wechat_alipay_or_worldfirst_b2b"
+      },
+      {
+        "id": "content_affiliate",
+        "label": "内容引流 + 联盟",
+        "examples": [
+          "GEO 文章带联盟链",
+          "教程引流至 SaaS 试用"
+        ],
+        "hermes_fit": "矩阵发帖 + UTM 归因（GW-P）",
+        "rail": "affiliate_payout → survival 台账"
+      }
+    ],
+    "pipeline_dag": {
+      "nodes": [
+        {
+          "id": "L1_discover",
+          "title": "AnySearch 外网采集",
+          "seat": "research",
+          "skill": "anysearch_probe"
+        },
+        {
+          "id": "L2_synthesize",
+          "title": "ResearchBrief 结构化摘要",
+          "seat": "research",
+          "skill": "compose_research_brief"
+        },
+        {
+          "id": "L3_decompose",
+          "title": "变现模型 × 工作流拆解",
+          "seat": "marketing",
+          "skill": "monetize_workflow_decompose"
+        },
+        {
+          "id": "L4_ecc",
+          "title": "ECC 合规与技术门控",
+          "seat": "ecc",
+          "skill": "review_candidate"
+        },
+        {
+          "id": "L5_pm_inbox",
+          "title": "PM 人工采纳队列",
+          "seat": "pm",
+          "skill": "append_brief_inbox"
+        },
+        {
+          "id": "L6_survival_sidecar",
+          "title": "财迷疯机会映射（只读）",
+          "seat": "pm",
+          "skill": "greedy_survival_pulse"
+        }
+      ],
+      "edges": [
+        {
+          "from": "L1_discover",
+          "to": "L2_synthesize"
+        },
+        {
+          "from": "L2_synthesize",
+          "to": "L3_decompose"
+        },
+        {
+          "from": "L3_decompose",
+          "to": "L4_ecc"
+        },
+        {
+          "from": "L4_ecc",
+          "to": "L5_pm_inbox",
+          "condition": "ecc_verdict != fail"
+        },
+        {
+          "from": "L5_pm_inbox",
+          "to": "L6_survival_sidecar",
+          "optional": true
+        }
+      ]
+    },
+    "playbook_highlights": [
+      {
+        "step": "1",
+        "source_title": "Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io",
+        "insight": "- Choosing between Gumroad and Paddle in 2026? You’re not alone. Both platforms position themselves as Merchant of Record solutions for digital sellers, but they serve fundamentally different audience",
+        "url": "https://fungies.io/gumroad-vs-paddle/",
+        "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+      },
+      {
+        "step": "2",
+        "source_title": "How to Start Selling Digital Products in 2026 (STEP BY ... - YouTube",
+        "insight": "- In Todays FREE COURSE I show you how to start an online store & build your business selling digital products for beginners 2026 (COMPLETE ...",
+        "url": "https://www.youtube.com/watch?v=QopRRjoOyyg",
+        "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+      },
+      {
+        "step": "3",
+        "source_title": "Gumroad Review (2026) - MakerStack",
+        "insight": "- Gumroad lets creators sell digital products with zero upfront costs, but the 10% transaction fee hurts at scale. Best for: solo creators selling ebooks, courses, and templates who want the simplest ",
+        "url": "https://makerstack.co/reviews/gumroad-review/",
+        "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+      },
+      {
+        "step": "4",
+        "source_title": "Gumroad for Selling Digital Products: Honest 2026 Review",
+        "insight": "- Gumroad is a fast way to validate a digital product idea but the flat 10% fee becomes painful once your revenue starts compounding.",
+        "url": "https://mydesigns.io/blog/gumroad-for-selling-digital-products/",
+        "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+      },
+      {
+        "step": "5",
+        "source_title": "Gumroad vs. Paddle Usage and Pricing Comparison",
+        "insight": "- Gumroad is an e-commerce platform serving as a merchant of record that enables creators and digital entrepreneurs to sell digital products, memberships, and other goods directly to their audience. I",
+        "url": "https://www.wmtips.com/technologies/compare/gumroad-vs-paddle/",
+        "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+      },
+      {
+        "step": "1",
+        "source_title": "How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem",
+        "insight": "- Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four pricing models actually work for AI agents in 2026. One billing setup ships in a weekend. Zero of it requires you to tal",
+        "url": "https://www.creem.io/blog/how-to-monetize-ai-agents",
+        "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+      },
+      {
+        "step": "2",
+        "source_title": "How I'd Make Money with AI in 2026 (if I had to Start Over) - YouTube",
+        "insight": "- I'm African, and in my country it's rather complicated; I didn't have a laptop, but I managed to get one and get started with automation.",
+        "url": "https://www.youtube.com/watch?v=Q46OLxFshAQ",
+        "hermes_mapping": "GW-G 营销 Lane 人工采纳"
+      },
+      {
+        "step": "3",
+        "source_title": "How to Monetize AI Agents in 2026: Builder Guide",
+        "insight": "- If you can build an AI agent in n8n, LangChain, make.com, or any of the other workflow tools that have eaten the last three years, you can earn from it. The path from a working workflow to actual re",
+        "url": "https://gravity.fast/blog/how-to-monetize-ai-agents/",
+        "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+      },
+      {
+        "step": "4",
+        "source_title": "How to Make Money with AI Agents in 2026 | Nevermined",
+        "insight": "- Turn AI agents into revenue with the right pricing, payments, and infrastructure. Learn proven models to monetize agents at scale in 2026.",
+        "url": "https://nevermined.ai/blog/make-money-with-ai-agents",
+        "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+      },
+      {
+        "step": "5",
+        "source_title": "Antigravity Multi-Agent Revenue Automation Master Guide 2026 — Building Autonomous Income Systems wi",
+        "insight": "- A comprehensive guide to building autonomous revenue systems using Antigravity's AgentKit 2.0. Covers multi-agent architecture, production-grade guardrails, Cloudflare Workers automation, and ROI mo",
+        "url": "https://antigravitylab.net/en/articles/agents/antigravity-multi-agent-revenue-automation-masterguide-2026",
+        "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+      },
+      {
+        "step": "1",
+        "source_title": "[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Agents + Separate PRs) ",
+        "insight": "- I’m trying to understand what is currently possible in Cursor regarding long-running multi-agent workflows. The important part is that all 18 tasks are completely independent from each other, so the",
+        "url": "https://forum.cursor.com/t/workflow-long-running-multi-agent-orchestration-root-agent-parallel-sub-agents-separate-prs/160563",
+        "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+      },
+      {
+        "step": "2",
+        "source_title": "GustavoWinter/cursor-agent-orchestrator-mcp",
+        "insight": "- # Cursor Agent Orchestrator MCP An MCP server that runs many `@cursor/sdk` agents in parallel from one Cursor chat — locally or on Cursor Cloud — with a **propose → confirm → execute** flow and one ",
+        "url": "https://github.com/GustavoWinter/cursor-agent-orchestrator-mcp",
+        "hermes_mapping": "GW-PM PM 蜂群编排 + ECC 门控"
+      }
+    ],
+    "deep_read": {
+      "summary": "外网信号显示：数字产品与 Agent 变现的主流路径是 「发现层(搜索/调研) → 编排层(PM/多 Agent) → 执行层(自动化/MCP) → 门控层(人审/合规) → 变现层(直售/订阅/联盟) → 度量层(UTM/KPI)」。本轮 AnySearch 最强信号模型：agent_as_service；栈层：monetize, execute, orchestrate, gate。",
+      "platform_adaptation": [
+        "直售：Research Brief 模板 + 旺财插件 + 可导出 playbook → 数字交付物",
+        "Agent 即服务：Hermes hourly Brief + AnySearch 按次 + ECC 门控 → 超管/租户增值",
+        "工作流包：本仓 scripts/run-hermes-anysearch + monetize workflow JSON → 可售卖 SOP",
+        "联盟漏斗：矩阵内容(GW-S) + UTM(GW-P) → 万里汇 affiliate 入 survival（超管）"
+      ],
+      "vs_tutorial_agents": [
+        "教程型智能体多强调「单 Agent 循环 + 工具调用」；本仓差异在 ECC 八席 + PM Inbox 硬门控",
+        "外网 n8n/Make 变现偏「卖模板+代运维」；Hermes 偏「B2B 外贸 SaaS 内嵌 Agent + 人审」",
+        "Cursor/MCP 栈与本仓 CodeGraph + AnySearch + Agency 蜂群同构，可打包为开发者数字品"
+      ],
+      "round_findings": [
+        "R1 网上数字产品变现全景: 【网上数字产品变现全景】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Gumroad vs Paddle: The Complete 2026 Comparison for Digital Sellers - Fungies.io」— - Choosing between Gumroad and Paddle in 2026? You’re not alone. Both pl",
+        "R2 AI 智能体赚钱模式: 【AI 智能体赚钱模式】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Monetize AI Agents in 2026: The Indie Builder's Playbook | Creem」— - Pricing models, billing stack, and VAT for AI agents. Ship in a weekend. Four p",
+        "R3 Cursor/MCP 智能体技术栈: 【Cursor/MCP 智能体技术栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「[Workflow] Long-Running Multi-Agent Orchestration (Root Agent + Parallel Sub-Age」— - I’m trying to understand what is currently possible in Cursor r",
+        "R4 n8n/Make 自动化变现: 【n8n/Make 自动化变现】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Build a $10K/Month AI Automation Agency in 2026 | n8n vs Make vs Zapier」— - TL;DR: AI automation agencies are one of the fastest-growing freelan",
+        "R5 Indie Hacker AI 产品栈: 【Indie Hacker AI 产品栈】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete Toolkit) | TLDL | 」— - Indie Hacker SaaS Stack 2026: Build & Launch for $0 (Complete",
+        "R6 联盟 + 数字产品漏斗: 【联盟 + 数字产品漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Lead Magnet Conversion Benchmarks 2026: B2B Data Guide」— - HubSpot's benchmarks (updated February 2026) measure how different sources convert from marketi",
+        "R7 多智能体蜂群 PM 编排: 【多智能体蜂群 PM 编排】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agent Orchestration: Multi-Agent Workflow Guide - Digital Applied」— - This comprehensive guide provides practical AI agent orchestration patterns, fra",
+        "R8 教程型智能体工作流 playbook: 【教程型智能体工作流 playbook】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Agents for Business Automation: The Complete 2026 Playbook | Coherence」— - AI Agents for Business Automation: The Complete 2026 Playbook | Coher"
+      ],
+      "next_human_actions": [
+        "PM Inbox 采纳 1–2 条可落地数字品假设（模板/Skill 包/Brief 增值）",
+        "营销 Lane 用 matrix_publish 发 1 篇「工作流拆解」引流文（人审后）",
+        "财迷疯分身只读映射：哪条通道走 WorldFirst survival vs 租户微信/支付宝"
+      ]
+    },
+    "hermes_marketing_actions": [
+      {
+        "id": "MKT-AS-01",
+        "action": "跑 monetize 八轮 AnySearch",
+        "owner": "agent_research",
+        "lane": "GW-R"
+      },
+      {
+        "id": "MKT-AS-02",
+        "action": "decompose → 营销 playbook 草稿",
+        "owner": "agent_marketing",
+        "lane": "GW-G"
+      },
+      {
+        "id": "MKT-AS-03",
+        "action": "ECC 评审高 impact 变现脚本",
+        "owner": "agent_ecc",
+        "lane": "GW-PM"
+      },
+      {
+        "id": "MKT-AS-04",
+        "action": "PM Inbox 人工采纳 → GW 登记册",
+        "owner": "agent_pm",
+        "lane": "GW-PM"
+      },
+      {
+        "id": "MKT-AS-05",
+        "action": "DeerFlow 模板 chip 一键触发",
+        "owner": "expert_research",
+        "lane": "GW-R"
+      }
+    ]
+  }
+}

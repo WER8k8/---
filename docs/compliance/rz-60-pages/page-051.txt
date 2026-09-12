@@ -1,0 +1,41 @@
+// FILE: backend\app\core\gm_crypto.py
+    raise GMCryptoError("未配置 GM_SM4_KEY 或 SECRET_KEY")
+
+
+def seal_secret(plaintext: str, key_material: str) -> dict:
+    """封装敏感配置：SM3 摘要 + SM4 密文。"""
+    body = plaintext.encode("utf-8")
+    return {
+        "alg": "SM4-ECB+SM3",
+        "sm3": sm3_hex(body),
+        "ciphertext": sm4_encrypt(plaintext, key_material),
+    }
+
+
+def unseal_secret(payload: dict, key_material: str) -> str:
+    plain = sm4_decrypt(str(payload["ciphertext"]), key_material)
+    if sm3_hex(plain) != str(payload.get("sm3", "")):
+        raise GMCryptoError("SM3 校验失败，数据可能被篡改")
+    return plain
+
+
+def self_test(key_material: str, sm2_pub: str = "", sm2_priv: str = "") -> dict:
+    """创始人调试：国密自检。"""
+    sample = "youding-gm-self-test"
+    out: dict = {
+        "gmssl_installed": _GMSSL_AVAILABLE,
+        "sm3_sample": sm3_hex(sample),
+    }
+    if not _GMSSL_AVAILABLE:
+        out["error"] = "pip install gmssl"
+        return out
+    sealed = seal_secret(sample, key_material)
+    out["sm4_roundtrip_ok"] = unseal_secret(sealed, key_material) == sample
+    if sm2_pub and sm2_priv:
+        try:
+            sig = sm2_sign(sample, sm2_priv, sm2_pub)
+            out["sm2_verify_ok"] = sm2_verify(sample, sig, sm2_pub)
+        except Exception as exc:
+            out["sm2_verify_ok"] = False
+            out["sm2_error"] = str(exc)[:200]
+    return out

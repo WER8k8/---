@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@apparaomulpuri/agency-agents": "^1.1.0",
+    "agency-agents": "^0.0.1",
+    "agency-agents-zh": "^1.2.6",
+    "playwright": "^1.60.0"
+  }
+}

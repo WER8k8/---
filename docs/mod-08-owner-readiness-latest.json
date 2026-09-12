@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "task": "MOD-08-owner-readiness",
+  "dev_ready_pct": 100,
+  "owner_cleared_pct": 0,
+  "owner_pending": [
+    "https-demo-domain",
+    "dns-a-record",
+    "certbot-email",
+    "saas-bj01-signoff",
+    "pm06-blocked-written"
+  ],
+  "owner_cleared": [],
+  "dev_scripts": {
+    "scripts/pilot-acme-ssl-issue.ps1": true,
+    "scripts/qa-locust-72h-production.ps1": true,
+    "scripts/run-mod-04-recording-rehearsal.ps1": true,
+    "scripts/validate-mod-04-https-step.py": true,
+    "scripts/apply-pat-02-report-number.py": true,
+    "scripts/apply-comp-06-lawyer-signoff.py": true,
+    "scripts/sync-owner-blockers-from-records.py": true,
+    "docs/r1-owner-handoff-pack.md": true
+  },
+  "handoff": "docs/r1-owner-handoff-pack.md"
+}

@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.1",
+  "updated_at": "2026-06-04",
+  "note": "2026-06-02：admin-overhaul 进度与 ecc-meeting-saas-repo-master-index 对齐；12/12 _ref clone",
+  "sprint_scheduled": { "done": 84, "total": 84, "label": "排期内研发 Sprint（A～O）" },
+  "code_tasks": {
+    "p0_remaining": [],
+    "p1_remaining": [],
+    "ux_ai_remaining": [],
+    "ubrain_x_p0_remaining": [],
+    "app_remaining": [],
+    "p2_deferred": 7
+  },
+  "modules": [
+    { "id": "loop-saas", "name": "七步① 开通 SaaS / 套餐支付", "done": 10, "total": 10, "gap": "—" },
+    { "id": "loop-domain", "name": "七步② 独立域 Host/SSL", "done": 9, "total": 10, "gap": "实机 DNS+真证书（需 HTTPS 演示域）" },
+    { "id": "loop-master", "name": "七步③ 统一发布母版", "done": 10, "total": 10, "gap": "—" },
+    { "id": "loop-publish", "name": "七步④ 40 平台分发", "done": 10, "total": 10, "gap": "PM 正式表签字" },
+    { "id": "loop-inquiry", "name": "七步⑤ 询盘 IM", "done": 9, "total": 10, "gap": "Owner O-2/O-3 + QA 5a/5b/5c 三张截图（见 MOD-02·ITER-03c）" },
+    { "id": "loop-order", "name": "七步⑥ 订单报价", "done": 10, "total": 10, "gap": "—" },
+    { "id": "loop-logistics", "name": "七步⑦ 物流查询", "done": 10, "total": 10, "gap": "—" },
+    { "id": "billing-three", "name": "三轨计费（SaaS/Token/IP）", "done": 10, "total": 10, "gap": "—" },
+    { "id": "finance", "name": "财务中台（营收/成本/分润）", "done": 10, "total": 10, "gap": "—" },
+    { "id": "hub-seo", "name": "总站枢纽 + GSC", "done": 9, "total": 10, "gap": "生产 API_HOST (P1-04 已接 useApiRoot)" },
+    { "id": "egress", "name": "静态 IP 槽位 / egress", "done": 10, "total": 10, "gap": "—" },
+    { "id": "referral", "name": "呼朋唤友裂变", "done": 10, "total": 10, "gap": "—" },
+    { "id": "login-oauth", "name": "管理端登录 / OAuth", "done": 10, "total": 10, "gap": "—" },
+    { "id": "ops", "name": "上线运维 / 预检 / 备份", "done": 9, "total": 10, "gap": "七步录屏归档（MOD-04 prep 就绪，待 HTTPS 域）" },
+    { "id": "commercial-flywheel-os", "name": "商业飞轮 OS（DeerFlow+Accio）", "done": 9, "total": 10, "gap": "生产 alembic 025/026 + D2–D6 实机验收" },
+    { "id": "diff-p2", "name": "差异化 P2（12 语种/RAG/养号等）", "done": 2, "total": 10, "gap": "主叙事外增值" },
+    { "id": "pm-qa", "name": "PM/QA 验收与签字", "done": 5, "total": 10, "gap": "5+5 平台、HTTPS 演示域" },
+    { "id": "ux-four-shell", "name": "2026 四壳体验收口", "done": 10, "total": 10, "gap": "—" },
+    { "id": "ubrain", "name": "UBrain 优丁助手 / UBrain-X", "done": 10, "total": 10, "gap": "—" },
+    { "id": "trade-intel", "name": "出海参谋（贸易情报）", "done": 10, "total": 10, "gap": "PM 矩阵签字 S2；M2 API Key 可选" },
+    { "id": "chuhaiji-app", "name": "出海计 App（必做）", "done": 9, "total": 10, "gap": "商店上架实机包" },
+    { "id": "admin-overhaul", "name": "Admin 百家组装换皮（Vben+kit+BFF）", "done": 9, "total": 10, "gap": "SaaS 专家五问正式签字（BJ-01）；见 docs/bj-01-formily-saas-five-questions.md" }
+  ],
+  "pm_blockers": [
+    "5+5 试点平台名单签字",
+    "正式 40 平台表",
+    "套餐金额与 Token/IP 配额",
+    "1 个 HTTPS 演示独立域",
+    "出海参谋 20×50 品类国家矩阵签字",
+    "四壳菜单删留表签字",
+    "Admin 换皮 PRD Owner 签字（youding-admin-overhaul-prd.md）",
+    "Stub/实验室可见性矩阵（T-PM-02）",
+    "UBrain/出海参谋免责声明法务"
+  ],
+  "swarm_squads": {
+    "sprint_id": "GB25000-Phase3",
+    "label": "GB25000 送检 Phase3 · PM + Staging",
+    "updated_at": "2026-05-31",
+    "squads": [
+      {
+        "id": "pm",
+        "name": "产品经理 / 调度层",
+        "owner": "PM",
+        "tasks": [
+          { "title": "送检功能清单 V1.1 定稿", "status": "done" },
+          { "title": "送检演示脚本（30 分钟）", "status": "done" },
+          { "title": "12 模块截图归档", "status": "pending" },
+          { "title": "l3-signoff.json pm_signed", "status": "pending" }
+        ]
+      },
+      {
+        "id": "arch",
+        "name": "架构 · Staging",
+        "owner": "ARCH",
+        "tasks": [
+          { "title": "STAGING-送检环境清单", "status": "done" },
+          { "title": "run-staging-preflight 0 fail", "status": "done" },
+          { "title": "G4 真实 AI Key", "status": "done" }
+        ]
+      },
+      {
+        "id": "qa",
+        "name": "QA · 验收",
+        "owner": "QA",
+        "tasks": [
+          { "title": "送检用例追溯矩阵", "status": "done" },
+          { "title": "浏览器回归 hierarchy/aggregation", "status": "done" },
+          { "title": "Locust 1000 + 72h 报告", "status": "pending" }
+        ]
+      }
+    ],
+    "previous_sprint": {
+      "sprint_id": "GB25000-P0",
+      "label": "GB25000 送检 P0 · 蜂群并行冲刺",
+      "updated_at": "2026-05-31",
+      "squads": [
+      {
+        "id": "pm",
+        "name": "产品经理 / 调度层",
+        "owner": "PM",
+        "tasks": [
+          { "title": "蜂群任务编排与分工", "status": "done" },
+          { "title": "cert:gate 验收汇总", "status": "done" },
+          { "title": "更新 GB25000 软件产品自测报告", "status": "done" },
+          { "title": "浏览器回归 hierarchy / aggregation", "status": "done" }
+        ]
+      },
+      {
+        "id": "backend",
+        "name": "后端组 · Python",
+        "owner": "Backend",
+        "tasks": [
+          { "title": "修复 test_ai_dashboard 401（optional_auth override）", "status": "done" },
+          { "title": "tests/unit 全量 337 passed", "status": "done" }
+        ]
+      },
+      {
+        "id": "fe-hierarchy",
+        "name": "前端组-A · 层级管理",
+        "owner": "Frontend",
+        "tasks": [
+          { "title": "hierarchy 对接 GET /agent-tree/all-levels", "status": "done" },
+          { "title": "移除硬编码 mockNodes 种子", "status": "done" },
+          { "title": "层级节点写 API（增删改）", "status": "done" }
+        ]
+      },
+      {
+        "id": "fe-article",
+        "name": "前端组-B · AI 文章生成",
+        "owner": "Frontend",
+        "tasks": [
+          { "title": "article-generator 接入 aiGenerateAPI", "status": "done" },
+          { "title": "移除 Math.random 模拟进度", "status": "done" }
+        ]
+      },
+      {
+        "id": "fe-landing",
+        "name": "前端组-C · 落地页",
+        "owner": "Frontend",
+        "tasks": [
+          { "title": "landing 接入 GET /ops/readiness/public", "status": "done" }
+        ]
+      },
+      {
+        "id": "qa",
+        "name": "QA · 门禁验收",
+        "owner": "QA",
+        "tasks": [
+          { "title": "audit-page-stubs P0/P1/P2 清零", "status": "done" },
+          { "title": "check-interactive-stubs 清零", "status": "done" },
+          { "title": "npm run cert:gate ready:true", "status": "done" },
+          { "title": "自测报告与 gate JSON 归档对齐", "status": "done" }
+        ]
+      }
+    ]
+    }
+  }
+}

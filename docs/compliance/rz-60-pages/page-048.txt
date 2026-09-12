@@ -1,0 +1,33 @@
+// FILE: backend\app\core\founder_debug_gate.py
+            db,
+            user,
+            request,
+            ACTION_FOUNDER_DENIED,
+            {"reason": "bad_token"},
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="创始人调试令牌无效（生产请配置 FOUNDER_WECHAT_OPENID）",
+        )
+    from app.services.security_event_service import ACTION_FOUNDER_ACCESS
+
+    _log_founder_event(
+        db,
+        user,
+        request,
+        ACTION_FOUNDER_ACCESS,
+        {"path": str(request.url.path), "gate": "token"},
+    )
+
+
+def founder_debug_configured() -> bool:
+    token = (getattr(settings, "FOUNDER_DEBUG_TOKEN", None) or "").strip()
+    return founder_wechat_configured() or bool(token)
+
+
+def founder_gate_mode() -> str:
+    if founder_wechat_configured():
+        return "wechat"
+    if (getattr(settings, "FOUNDER_DEBUG_TOKEN", None) or "").strip():
+        return "token"
+    return "none"

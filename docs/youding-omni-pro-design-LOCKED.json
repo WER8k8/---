@@ -1,0 +1,64 @@
+{
+  "schema": "youding-omni-pro-lock/v1",
+  "status": "LOCKED",
+  "version": "1.0.0",
+  "lockedAt": "2026-06-02",
+  "authoritativeDoc": "docs/youding-omni-pro-design-LOCKED.md",
+  "cursorRule": ".cursor/rules/00-youding-omni-pro-lock.mdc",
+  "supersedes": {
+    "shellBaseConflict": "youding-admin-overhaul-prd.md §三 Vben唯一底座 → 绞杀现网 admin 为准"
+  },
+  "slogan": "出海营销最顺手的运营 cockpit",
+  "route": "C-then-A",
+  "uiLibrary": "ant-design-vue-only",
+  "layout": "YoudingProLayout",
+  "pageContract": "YdPage",
+  "tableStack": [
+    "useYoudingTable",
+    "useYoudingColumnLayout",
+    "YdDataTable",
+    "YdTableColumnSettings",
+    "YdSearchBar"
+  ],
+  "tasteKnobs": {
+    "global": { "designVariance": 5, "motionIntensity": 3, "visualDensity": 7 },
+    "zones": {
+      "dashboardLogin": { "designVariance": 6, "motionIntensity": 4, "visualDensity": 5 },
+      "listsFinanceInquiries": { "designVariance": 4, "motionIntensity": 2, "visualDensity": 8 },
+      "settingsDrawerForms": { "designVariance": 3, "motionIntensity": 2, "visualDensity": 6 }
+    }
+  },
+  "toneWeights": { "B_stripeArtPro": 0.7, "C_outboundBrand": 0.2, "A_linearFeishu": 0.1 },
+  "surfaceModes": ["default", "elevated", "brand-hero"],
+  "themes": ["light", "dark"],
+  "accentRoles": ["platform", "client", "agent"],
+  "typography": {
+    "display": "Plus Jakarta Sans",
+    "bodyZh": "PingFang SC, Source Han Sans SC",
+    "tabularNums": true
+  },
+  "forbidden": [
+    "raw-a-table-new-pages",
+    "placeholder-copy",
+    "demo-message-info-buttons",
+    "second-ui-library",
+    "layout-fork",
+    "hardcoded-colors",
+    "inter-only-font"
+  ],
+  "p0Pages": [
+    "frontend/admin/src/views/admin/dashboard.vue",
+    "frontend/admin/src/views/admin/tenants.vue",
+    "frontend/admin/src/views/inquiries/index.vue",
+    "frontend/admin/src/layout/index.vue"
+  ],
+  "demoPathSeconds": [
+    { "range": "0-15", "scene": "login-brand-hero" },
+    { "range": "15-30", "scene": "dashboard-kpi-drilldown" },
+    { "range": "30-50", "scene": "tenants-inquiries-pro-table" },
+    { "range": "50-70", "scene": "theme-drawer-dark-accent" },
+    { "range": "70-90", "scene": "client-same-shell-accent" }
+  ],
+  "milestonesWeeks": 6,
+  "testGateAfterWeek": 6
+}

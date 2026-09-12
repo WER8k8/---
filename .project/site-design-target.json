@@ -1,0 +1,179 @@
+{
+  "contract_id": "SITE-DESIGN-01",
+  "version": "2026-06-16",
+  "status": "active",
+  "summary": "租户独立站默认标准 L-Pro：ydalison 信任叙事 + T-Global 产品中心能力；Hermes 只填槽不造版式。",
+  "target_model": {
+    "id": "L-Pro",
+    "label": "ydalison + T-Global 产品中心（合并默认）",
+    "baseline_urls": [
+      "https://www.ydalison.com/",
+      "https://en.ydalison.com/",
+      "https://www.t-global.com/"
+    ],
+    "upgrade_tier": {
+      "id": "L-Plus",
+      "label": "T-Global 全量（区域站、计算器、GDPR 中心等）",
+      "out_of_scope_v1": [
+        "thermal_calculator",
+        "full_gdpr_cookie_center",
+        "8_plus_regional_sites",
+        "ecommerce_checkout"
+      ]
+    }
+  },
+  "page_map": [
+    { "path": "/", "role": "home", "from": "ydalison+tglobal" },
+    { "path": "/about", "role": "trust_factory_narrative", "from": "ydalison" },
+    { "path": "/products", "role": "product_hub", "from": "tglobal" },
+    { "path": "/products/[category]", "role": "category_list_filter", "from": "tglobal" },
+    { "path": "/products/[sku]", "role": "product_detail_specs_inquiry", "from": "tglobal" },
+    { "path": "/solutions", "role": "applications_by_industry", "from": "ydalison" },
+    { "path": "/downloads", "role": "brochures_specs_pdfs", "from": "tglobal" },
+    { "path": "/contact", "role": "multi_channel_inquiry", "from": "ydalison+tglobal" }
+  ],
+  "capability_matrix": {
+    "from_ydalison": [
+      "about_since_year_factory_story",
+      "applications_by_industry",
+      "professional_imagery",
+      "cn_en_primary_locales",
+      "multi_line_contact"
+    ],
+    "from_tglobal": [
+      "multi_level_products_nav",
+      "list_detail_filter_compare",
+      "inquiry_compare_cart_hooks",
+      "download_center"
+    ],
+    "hermes_scope": {
+      "in_scope": [
+        "template_selection",
+        "slot_copy_fill",
+        "seo_meta",
+        "cta_inquiry_hooks",
+        "product_image_binding"
+      ],
+      "out_of_scope": [
+        "layout_generation_from_scratch",
+        "grapesjs_as_default_public_face",
+        "claim_ecc_generates_professional_sites"
+      ]
+    }
+  },
+  "publish_gate": {
+    "description": "未满足则禁止对外宣称已上线 / success 终态",
+    "required": [
+      "premium_template_id_bound",
+      "min_product_count_with_images",
+      "min_spec_fields_per_sku",
+      "contact_channel_at_least_one",
+      "about_page_non_empty",
+      "no_stub_probe_mode_in_production"
+    ],
+    "thresholds": {
+      "min_products_with_images": 3,
+      "min_spec_fields_per_sku": 3
+    },
+    "validator_scripts": [
+      "scripts/validate-no-fake-delivery.py",
+      "scripts/validate-site-l-pro-publish.py",
+      "scripts/validate-site-design-w3.py"
+    ]
+  },
+  "multilingual": {
+    "tier1_core": {
+      "count": 12,
+      "source": "backend/app/services/im_locale_service.py SUPPORTED_LANGUAGES",
+      "policy": "ai_plus_glossary_human_review_for_marketing",
+      "spec_tables_locked": true
+    },
+    "tier2_optional": {
+      "label": "more_languages_auto_translate_widget",
+      "policy": "marketing_text_only",
+      "disclaimer": "technical_specs_in_english_or_source_locale"
+    },
+    "tier3_l_plus": {
+      "label": "regional_urls_human_review",
+      "reference": "t-global.com regional sites"
+    }
+  },
+  "implementation_waves": [
+    {
+      "wave": "W0",
+      "label": "契约与审计",
+      "tasks": [
+        "SITE-DESIGN-01a",
+        "SITE-DESIGN-01b"
+      ],
+      "deliverables": [
+        ".project/site-design-target.json",
+        "docs/product/SITE-DESIGN-01-charter.md",
+        "docs/open-source-audit/17-tenant-premium-storefront.md"
+      ]
+    },
+    {
+      "wave": "W1",
+      "label": "Nuxt 租户站路由与 premium-b2b-v1 模板",
+      "tasks": ["SITE-DESIGN-01c", "SITE-DESIGN-01d"],
+      "paths": ["frontend/pages/tenant/", "frontend/components/tenant/"]
+    },
+    {
+      "wave": "W2",
+      "label": "Hermes 填槽 + 发布门禁",
+      "tasks": ["SITE-DESIGN-01e", "SITE-DESIGN-01f"],
+      "paths": [
+        "backend/app/services/hermes/site_builder_ecc_pipeline.py",
+        "backend/app/data/hermes_site_builder_pipeline.json",
+        "scripts/validate-site-l-pro-publish.py"
+      ]
+    },
+    {
+      "wave": "W3",
+      "label": "多语言 Tier1+2 UI",
+      "tasks": ["SITE-DESIGN-01g"]
+    }
+  ],
+  "open_source_refs": {
+    "clone_script": "scripts/clone-open-source-refs.py",
+    "audit_doc": "docs/open-source-audit/17-tenant-premium-storefront.md",
+    "repos": [
+      "vasilistotskas/grooveshop-storefront-ui-node-nuxt",
+      "grandant/nuxtless",
+      "geeeeeeeek/cf_b2b",
+      "geeeeeeeek/web_b2b",
+      "geins-io/sales-portal"
+    ],
+    "integrate_surface": "frontend Nuxt tenant-site only — no second React stack"
+  },
+  "messaging": {
+    "sell": "L-Pro 专业外贸独立站（信任叙事 + 产品中心 + 统一询盘）",
+    "do_not_sell": "ECC 专家一键生成精美网站",
+    "docs": [
+      "docs/产品俯视-租户旅程与三轨计费.md",
+      "docs/pm-cn-seller-vs-foreign-buyer-pains.md"
+    ]
+  },
+  "backlog_paradigms": {
+    "SITE-JTBD-01": {
+      "status": "complete",
+      "summary": "行业无关 B2B 建站思维（3ERP 抽象）：任务导向 / 阶段结构 / 内容获客 / 单一转化承诺",
+      "contract": ".project/site-b2b-jtbd-backlog.json",
+      "user_confirmed": "2026-07-08",
+      "completed": "2026-07-08"
+    }
+  },
+  "deploy_hygiene": {
+    "upload_script": "scripts/upload-and-deploy.ps1",
+    "exclude_junk": [
+      "_ref",
+      "_build_check",
+      "staging-data",
+      "frontend/.nuxt",
+      "frontend/.output",
+      "frontend/admin/dist"
+    ],
+    "core_runtime_mb_approx": 22,
+    "full_rsync_mb_approx": 434
+  }
+}

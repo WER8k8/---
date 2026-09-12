@@ -1,0 +1,51 @@
+// FILE: backend\app\core\logging_config.py
+"""
+日志轮转和监控告警配置
+"""
+
+import logging
+import os
+from datetime import datetime
+from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
+from pathlib import Path
+
+import requests
+
+from app.core.config import settings
+
+
+class LogConfig:
+    """日志配置类"""
+
+    # 日志目录
+    LOG_DIR = Path(__file__).parent.parent.parent / "logs"
+    LOG_DIR.mkdir(exist_ok=True)
+
+    # 日志格式
+    LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+    # 日志级别
+    LOG_LEVELS = {
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL,
+    }
+
+    @classmethod
+    def setup_logging(
+            cls,
+            log_level: str = "INFO",
+            max_bytes: int = 10 *
+            1024 *
+            1024,
+            backup_count: int = 5):
+        """配置日志系统"""
+
+        # 根日志器
+        root_logger = logging.getLogger()
+        root_logger.setLevel(cls.LOG_LEVELS.get(log_level, logging.INFO))
+
+        # 清除现有处理器

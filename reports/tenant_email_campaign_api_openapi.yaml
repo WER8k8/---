@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: Tenant Email Campaigns API
+  version: '1.0.0'
+  description: |
+    最小租户级邮件活动 API 规范示例。
+    目的：为前端 /client/email-campaigns 提供 tenant-scoped 的活动/邮件/模板管理接口。
+    注意：实际实现需加入 RBAC、限流、租户配置（SMTP）等多租户考虑。
+servers:
+  - url: /api/v1
+paths:
+  /sales/campaigns:
+    get:
+      summary: 列出邮件活动
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: 限制返回条数
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Campaign'
+                  total:
+                    type: integer
+    post:
+      summary: 创建邮件活动
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_name:
+                  type: string
+                customer_list:
+                  type: array
+                  items:
+                    type: object
+                email_type:
+                  type: string
+                language:
+                  type: string
+      responses:
+        '201':
+          description: 已创建
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+  /sales/campaigns/{campaignId}:
+    get:
+      summary: 获取活动详情
+      parameters:
+        - in: path
+          name: campaignId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+    post:
+      summary: 删除/其他操作占位（可扩展）
+      responses:
+        '204':
+          description: 已处理
+  /sales/campaigns/{campaignId}/pause:
+    post:
+      summary: 暂停活动
+      parameters:
+        - in: path
+          name: campaignId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 活动已暂停
+  /sales/campaigns/{campaignId}/resume:
+    post:
+      summary: 恢复活动
+      parameters:
+        - in: path
+          name: campaignId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 活动已恢复
+  /sales/emails:
+    get:
+      summary: 列出邮件
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  emails:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Email'
+                  total:
+                    type: integer
+  /sales/emails/{emailId}:
+    get:
+      summary: 获取邮件详情
+      parameters:
+        - in: path
+          name: emailId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+  /sales/emails/{emailId}/resend:
+    post:
+      summary: 重发邮件
+      parameters:
+        - in: path
+          name: emailId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 已触发重发
+  /sales/templates:
+    get:
+      summary: 列出邮件模板
+      responses:
+        '200':
+          description: 成功
+    post:
+      summary: 创建模板
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailTemplate'
+      responses:
+        '201':
+          description: 已创建
+  /sales/templates/{templateId}:
+    put:
+      summary: 更新模板
+      parameters:
+        - in: path
+          name: templateId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailTemplate'
+      responses:
+        '200':
+          description: 已更新
+    delete:
+      summary: 删除模板
+      parameters:
+        - in: path
+          name: templateId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 已删除
+components:
+  schemas:
+    Campaign:
+      type: object
+      properties:
+        campaign_id:
+          type: string
+        name:
+          type: string
+        total_emails:
+          type: integer
+        sent:
+          type: integer
+        status:
+          type: string
+        open_rate:
+          type: number
+    Email:
+      type: object
+      properties:
+        id:
+          type: string
+        recipient:
+          type: string
+        subject:
+          type: string
+        content:
+          type: string
+        status:
+          type: string
+        sent_at:
+          type: string
+          format: date-time
+    EmailTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        subject:
+          type: string
+        body:
+          type: string
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

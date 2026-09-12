@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IndustryBeltSurveyDeliverable",
+  "description": "廊坊/河间产业带调研交付物 — 调研员填写，PM 审核后 merge 入库",
+  "type": "object",
+  "required": ["survey_id", "region_county", "survey_date", "surveyor", "categories"],
+  "properties": {
+    "survey_id": { "type": "string", "example": "dacheng-2026Q2-01" },
+    "region_county": { "type": "string", "example": "大城县" },
+    "towns_parks": { "type": "array", "items": { "type": "string" } },
+    "survey_date": { "type": "string", "format": "date" },
+    "surveyor": { "type": "string" },
+    "survey_methods": {
+      "type": "array",
+      "items": { "enum": ["field", "phone", "b2b_catalog", "exhibition"] }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "照片/目录 URL/网盘路径，不进 git 大文件时可写外部路径"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category_id", "category_name_zh", "products"],
+        "properties": {
+          "category_id": { "type": "string" },
+          "category_name_zh": { "type": "string" },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string" },
+                "aliases": { "type": "array", "items": { "type": "string" } },
+                "specs_common": { "type": "array", "items": { "type": "string" } },
+                "town_cluster": { "type": "string" },
+                "export_suitable": { "type": "boolean" },
+                "notes": { "type": "string" },
+                "evidence": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "recommended_seo_keywords": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pm_review": {
+      "type": "object",
+      "properties": {
+        "status": { "enum": ["pending", "approved", "rejected"] },
+        "reviewer": { "type": "string" },
+        "reviewed_at": { "type": "string" }
+      }
+    }
+  }
+}

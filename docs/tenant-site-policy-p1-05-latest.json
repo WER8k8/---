@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "task": "P1-05",
+  "checks": 5,
+  "required": 5,
+  "missing": [],
+  "default_hide": true,
+  "api": "/api/v1/mobile/site-policy"
+}

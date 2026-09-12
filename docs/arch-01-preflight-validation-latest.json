@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "task": "ARCH-01",
+  "status": "PASS",
+  "fail_count": 0,
+  "finished_at": "2026-06-01T09:54:23.6729679+08:00",
+  "source": "docs\\staging-preflight-auto-latest.json",
+  "note": "Fast read; full rerun: scripts/run-arch-01-cert-gate.ps1"
+}

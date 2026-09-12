@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "task": "MOD-03",
+  "checks": {
+    "record_json": true,
+    "checklist_md": true,
+    "catalog_count_40": true,
+    "record_lists_40": true,
+    "record_matches_catalog": true
+  },
+  "signed": false,
+  "human_pending": true,
+  "record": "docs\\compliance\\mod-03-platform-signoff-record.json"
+}

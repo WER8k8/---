@@ -1,0 +1,51 @@
+// FILE: backend\app\api\v1\admin_bff\schemas.py
+"""UAC 响应模型"""
+
+from typing import Any, List, Optional
+
+from pydantic import BaseModel, Field
+
+
+class UacAuthMark(BaseModel):
+    title: str
+    authMark: str
+    code: Optional[str] = None
+
+
+class UacRouteMeta(BaseModel):
+    title: str
+    icon: Optional[str] = None
+    order: int = 0
+    keepAlive: bool = False
+    hideInMenu: bool = False
+    hideInTab: bool = False
+    affixTab: bool = False
+    shell: Optional[str] = None
+    roles: List[str] = Field(default_factory=list)
+    authList: List[UacAuthMark] = Field(default_factory=list)
+
+
+class UacMenuRoute(BaseModel):
+    name: str
+    path: str
+    component: Optional[str] = None
+    redirect: Optional[str] = None
+    meta: UacRouteMeta
+    children: List["UacMenuRoute"] = Field(default_factory=list)
+
+
+class UacUserInfo(BaseModel):
+    id: str
+    username: str
+    nickname: Optional[str] = None
+    realName: Optional[str] = None
+    userId: Optional[str] = None
+    avatar: Optional[str] = None
+    roles: List[str]
+    shell: str
+    homePath: str
+    desc: str = ""
+    token: str = ""
+    tenant: Optional[dict[str, Any]] = None
+    onboarding_steps: List[dict[str, Any]] = Field(default_factory=list)
+    plan_usage: dict[str, Any] = Field(default_factory=dict)

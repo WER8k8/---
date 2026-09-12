@@ -1,0 +1,14 @@
+﻿{
+    "launchers":  {
+                      "expert":  "C:\\Users\\97907\\AppData\\Local\\YouDingOps\\launch-expert-daily.ps1",
+                      "health":  "C:\\Users\\97907\\AppData\\Local\\YouDingOps\\launch-daily-health.ps1"
+                  },
+    "honesty_gate":  "scripts/validate-ops-honesty.py",
+    "tasks":  [
+                  "YouDing\\Ops-DailyHealth-Logon",
+                  "YouDing\\Ops-ExpertDailyRoster",
+                  "YouDing\\Ops-WeeklyHardening"
+              ],
+    "repo_root_file":  "C:\\Users\\97907\\AppData\\Local\\YouDingOps\\repo-root.txt",
+    "installed_at":  "2026-06-09T13:17:32.6495797Z"
+}

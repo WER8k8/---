@@ -1,0 +1,15 @@
+{
+  "task": "e2e_cross_border_dub_distribute",
+  "generated_at": "2026-06-18T14:26:48+00:00",
+  "status": "blocked_agent_sandbox",
+  "note": "Agent 沙箱无法执行 WinGet ffmpeg 真二进制；请在本机执行 scripts/run-e2e-dub-distribute.ps1",
+  "prerequisites": ["edge-tts", "ffmpeg via winget", "start-dev-admin.ps1 -ForceRestart"],
+  "expected_pass_criteria": [
+    "output_mode=english_dub",
+    "output_url 本地 mp4 存在",
+    "tenant_site.published=true",
+    "publish_video_url 非空"
+  ],
+  "script": "scripts/e2e_cross_border_dub_distribute.py",
+  "runner": "scripts/run-e2e-dub-distribute.ps1"
+}

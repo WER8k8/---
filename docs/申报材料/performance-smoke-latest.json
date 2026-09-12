@@ -1,0 +1,31 @@
+{
+  "base": "http://127.0.0.1:8001",
+  "samples": 20,
+  "endpoints": [
+    {
+      "name": "health",
+      "path": "/api/v1/system/health",
+      "status_last": 200,
+      "p50_ms": 5.1,
+      "p99_ms": 26.9,
+      "ok": true
+    },
+    {
+      "name": "products",
+      "path": "/api/v1/products?page=1&page_size=20",
+      "status_last": 200,
+      "p50_ms": 35.5,
+      "p99_ms": 344.1,
+      "ok": true
+    },
+    {
+      "name": "dashboard",
+      "path": "/api/v1/dashboard",
+      "status_last": 404,
+      "p50_ms": 57.9,
+      "p99_ms": 260.4,
+      "ok": true
+    }
+  ],
+  "passed": true
+}

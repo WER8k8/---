@@ -1,0 +1,1 @@
+import{k as t}from"./Bqpd76b4.js";import{x as e,a3 as a,a2 as n}from"./Dw5cRyJq.js";import"./cicrfwpc.js";import"./CP305iJ0.js";import"./DiYaDy8a.js";import"./BKQVsGck.js";import"./BYlmoOb2.js";import"./D_vXau2e.js";const x=e({__name:"solutions",setup(r){return(p,m)=>{const o=t;return n(),a(o,{page:"solutions"})}}});export{x as default};

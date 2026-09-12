@@ -1,0 +1,51 @@
+// FILE: backend\app\core\logging_config.py
+        audit_logger = logging.getLogger("audit")
+        audit_logger.setLevel(logging.INFO)
+        audit_logger.addHandler(audit_handler)
+        audit_logger.propagate = False  # 不传播到根日志器
+
+        # 性能日志文件
+        perf_log_file = cls.LOG_DIR / "performance.log"
+        perf_handler = RotatingFileHandler(
+            perf_log_file,
+            maxBytes=max_bytes,
+            backupCount=7,
+            encoding="utf-8")
+        perf_handler.setLevel(logging.INFO)
+        perf_formatter = logging.Formatter(
+            "%(asctime)s - PERFORMANCE - %(message)s",
+            datefmt=cls.DATE_FORMAT)
+        perf_handler.setFormatter(perf_formatter)
+
+        # 性能日志器
+        perf_logger = logging.getLogger("performance")
+        perf_logger.setLevel(logging.INFO)
+        perf_logger.addHandler(perf_handler)
+        perf_logger.propagate = False
+
+        return root_logger, audit_logger, perf_logger
+
+    @classmethod
+    def get_logger(cls, name: str) -> logging.Logger:
+        """获取命名日志器"""
+        return logging.getLogger(name)
+
+
+class AlertManager:
+    """告警管理器"""
+
+    def __init__(self):
+        self.alert_handlers = []
+        self.alert_count = 0
+        self.last_alert_time = None
+
+    def add_handler(self, handler):
+        """添加告警处理器"""
+        self.alert_handlers.append(handler)
+
+    def send_alert(self, level: str, message: str, metadata: dict = None):
+        """发送告警"""
+        self.alert_count += 1
+        self.last_alert_time = datetime.now()
+
+        alert_data = {

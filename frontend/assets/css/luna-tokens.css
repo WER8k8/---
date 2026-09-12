@@ -1,0 +1,207 @@
+/**
+ * LUNA Design Token Bridge
+ * Maps sourcechain LUNA CSS custom properties → UJ brand colors (Tailwind-compatible).
+ *
+ * This file enables pages ported from sourcechain-geo-engine (procurement, alerts, leads)
+ * to render with UJ's teal/green branding without full CSS refactoring.
+ *
+ * NOTE: Pages using these tokens should be progressively migrated to Tailwind.
+ */
+
+:root {
+  /* ===== LUNA color → UJ brand mapping ===== */
+  --luna-color-primary: #4a9b8c;           /* UJ mint */
+  --luna-color-primary-light: #5eb8a8;     /* UJ mint-400 */
+  --luna-color-primary-dark: #2a6b60;      /* UJ mint-800 */
+  --luna-color-accent: #22c55e;            /* UJ green-500 */
+  --luna-color-accent-light: #4ade80;      /* UJ green-400 */
+  --luna-color-accent-dark: #16a34a;       /* UJ green-600 */
+  --luna-color-secondary: #e0f2fe;         /* UJ sky-100 */
+
+  /* Background (adapted from dark theme to light) */
+  --luna-color-bg: #ffffff;
+  --luna-color-bg-dark: #f8fafc;
+  --luna-color-surface: #ffffff;
+  --luna-color-surface-light: #f1f5f9;
+
+  /* Text */
+  --luna-color-text-primary: #0f172a;
+  --luna-color-text-secondary: #475569;
+  --luna-color-text-tertiary: #94a3b8;
+  --luna-color-text-inverse: #ffffff;
+
+  /* Borders */
+  --luna-color-border: #e2e8f0;
+  --luna-color-border-light: #f1f5f9;
+
+  /* Functional colors (same as sourcechain) */
+  --luna-color-success: #10b981;
+  --luna-color-success-bg: #d1fae5;
+  --luna-color-error: #ef4444;
+  --luna-color-error-bg: #fee2e2;
+  --luna-color-warning: #f59e0b;
+  --luna-color-warning-bg: #fef3c7;
+
+  /* Glow effects (toned down for light theme) */
+  --luna-color-glow-primary: rgba(15, 118, 110, 0.25);
+  --luna-color-glow-accent: rgba(34, 197, 94, 0.3);
+
+  /* Gradients (teal/green brand) */
+  --luna-color-gradient-primary: linear-gradient(135deg, #4a9b8c 0%, #10b981 100%);
+  --luna-color-gradient-accent: linear-gradient(135deg, #22c55e 0%, #86efac 100%);
+  --luna-color-gradient-hero: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  --luna-color-gradient-card: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --luna-color-gradient-button: linear-gradient(135deg, #4a9b8c 0%, #5eb8a8 100%);
+
+  /* ===== Bridge: dual-variable references =====
+   * Pages use `var(--color-primary)` from LUNA scope.
+   * We provide BOTH the LUNA-scoped and global names.
+   * Pages in a scoped context will pick up these overrides
+   * when used with `:deep()` or unscoped styles.
+   */
+
+  /* Layout tokens */
+  --luna-page-max-width: 430px;
+  --luna-safe-area-top: env(safe-area-inset-top, 0px);
+  --luna-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --luna-sticky-bar-height: 64px;
+  --luna-tab-nav-height: 56px;
+
+  /* Border radius */
+  --luna-radius-sm: 8px;
+  --luna-radius-md: 12px;
+  --luna-radius-lg: 18px;
+  --luna-radius-xl: 24px;
+  --luna-radius-full: 999px;
+
+  /* Spacing (4px base) */
+  --luna-space-1: 4px;
+  --luna-space-2: 8px;
+  --luna-space-3: 12px;
+  --luna-space-4: 16px;
+  --luna-space-5: 20px;
+  --luna-space-6: 24px;
+  --luna-space-8: 32px;
+  --luna-space-10: 40px;
+  --luna-space-12: 48px;
+
+  /* Typography */
+  --luna-font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --luna-font-size-xs: 12px;
+  --luna-font-size-sm: 14px;
+  --luna-font-size-base: 16px;
+  --luna-font-size-lg: 18px;
+  --luna-font-size-xl: 24px;
+  --luna-font-size-2xl: 28px;
+  --luna-font-size-3xl: 32px;
+  --luna-font-weight-normal: 400;
+  --luna-font-weight-medium: 500;
+  --luna-font-weight-semibold: 600;
+  --luna-font-weight-bold: 700;
+  --luna-line-height-tight: 1.25;
+  --luna-line-height-normal: 1.5;
+  --luna-line-height-relaxed: 1.7;
+
+  /* Shadows */
+  --luna-shadow-sm: 0 1px 3px rgba(15, 118, 110, 0.06);
+  --luna-shadow-md: 0 4px 12px rgba(15, 118, 110, 0.08);
+  --luna-shadow-lg: 0 8px 24px rgba(15, 118, 110, 0.1);
+  --luna-shadow-xl: 0 12px 40px rgba(15, 118, 110, 0.12);
+
+  /* Transitions */
+  --luna-transition-fast: 0.2s ease;
+  --luna-transition-normal: 0.3s ease;
+  --luna-transition-slow: 0.4s ease;
+}
+
+/**
+ * Override the original LUNA variable names used in source page styles.
+ * These scoped styles use `var(--color-primary)` etc. — we rebind them here.
+ */
+.leads-page,
+.procurement-page,
+.alerts-page {
+  --color-primary: var(--luna-color-primary);
+  --color-primary-light: var(--luna-color-primary-light);
+  --color-primary-dark: var(--luna-color-primary-dark);
+  --color-accent: var(--luna-color-accent);
+  --color-accent-light: var(--luna-color-accent-light);
+  --color-accent-dark: var(--luna-color-accent-dark);
+  --color-secondary: var(--luna-color-secondary);
+  --color-bg: var(--luna-color-bg);
+  --color-bg-dark: var(--luna-color-bg-dark);
+  --color-surface: var(--luna-color-surface);
+  --color-surface-light: var(--luna-color-surface-light);
+  --color-text-primary: var(--luna-color-text-primary);
+  --color-text-secondary: var(--luna-color-text-secondary);
+  --color-text-tertiary: var(--luna-color-text-tertiary);
+  --color-text-inverse: var(--luna-color-text-inverse);
+  --color-border: var(--luna-color-border);
+  --color-border-light: var(--luna-color-border-light);
+  --color-success: var(--luna-color-success);
+  --color-success-bg: var(--luna-color-success-bg);
+  --color-error: var(--luna-color-error);
+  --color-error-bg: var(--luna-color-error-bg);
+  --color-warning: var(--luna-color-warning);
+  --color-warning-bg: var(--luna-color-warning-bg);
+  --color-glow-primary: var(--luna-color-glow-primary);
+  --color-glow-accent: var(--luna-color-glow-accent);
+  --color-gradient-primary: var(--luna-color-gradient-primary);
+  --color-gradient-accent: var(--luna-color-gradient-accent);
+  --color-gradient-hero: var(--luna-color-gradient-hero);
+  --color-gradient-card: var(--luna-color-gradient-card);
+  --color-gradient-button: var(--luna-color-gradient-button);
+
+  /* Layout */
+  --page-max-width: var(--luna-page-max-width);
+  --safe-area-top: var(--luna-safe-area-top);
+  --safe-area-bottom: var(--luna-safe-area-bottom);
+  --sticky-bar-height: var(--luna-sticky-bar-height);
+  --tab-nav-height: var(--luna-tab-nav-height);
+
+  /* Radius */
+  --radius-sm: var(--luna-radius-sm);
+  --radius-md: var(--luna-radius-md);
+  --radius-lg: var(--luna-radius-lg);
+  --radius-xl: var(--luna-radius-xl);
+  --radius-full: var(--luna-radius-full);
+
+  /* Spacing */
+  --space-1: var(--luna-space-1);
+  --space-2: var(--luna-space-2);
+  --space-3: var(--luna-space-3);
+  --space-4: var(--luna-space-4);
+  --space-5: var(--luna-space-5);
+  --space-6: var(--luna-space-6);
+  --space-8: var(--luna-space-8);
+  --space-10: var(--luna-space-10);
+  --space-12: var(--luna-space-12);
+
+  /* Typography */
+  --font-family: var(--luna-font-family);
+  --font-size-xs: var(--luna-font-size-xs);
+  --font-size-sm: var(--luna-font-size-sm);
+  --font-size-base: var(--luna-font-size-base);
+  --font-size-lg: var(--luna-font-size-lg);
+  --font-size-xl: var(--luna-font-size-xl);
+  --font-size-2xl: var(--luna-font-size-2xl);
+  --font-size-3xl: var(--luna-font-size-3xl);
+  --font-weight-normal: var(--luna-font-weight-normal);
+  --font-weight-medium: var(--luna-font-weight-medium);
+  --font-weight-semibold: var(--luna-font-weight-semibold);
+  --font-weight-bold: var(--luna-font-weight-bold);
+  --line-height-tight: var(--luna-line-height-tight);
+  --line-height-normal: var(--luna-line-height-normal);
+  --line-height-relaxed: var(--luna-line-height-relaxed);
+
+  /* Shadows */
+  --shadow-sm: var(--luna-shadow-sm);
+  --shadow-md: var(--luna-shadow-md);
+  --shadow-lg: var(--luna-shadow-lg);
+  --shadow-xl: var(--luna-shadow-xl);
+
+  /* Transitions */
+  --transition-fast: var(--luna-transition-fast);
+  --transition-normal: var(--luna-transition-normal);
+  --transition-slow: var(--luna-transition-slow);
+}

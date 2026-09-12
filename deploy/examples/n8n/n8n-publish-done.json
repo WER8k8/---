@@ -1,0 +1,11 @@
+{
+  "event": "manual_pipeline",
+  "tenant_id": "REPLACE_WITH_TENANT_UUID",
+  "job_id": "REPLACE_WITH_PUBLISH_JOB_UUID",
+  "result": {
+    "mode": "seo_publish_done",
+    "channel": "seo_matrix",
+    "published_url": "https://example.com/article?utm_source=seo_matrix",
+    "platform": "baijiahao"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "出海计",
+  "short_name": "出海计",
+  "description": "优丁科技 · 建材外贸工作台与优丁助手",
+  "start_url": "/client/app",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "lang": "zh-CN",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

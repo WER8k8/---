@@ -1,0 +1,20 @@
+"""认证授权领域 — stub（待从 routes/auth.py 迁移）"""
+from fastapi import APIRouter
+from app.domains.base import DomainModule
+
+router = APIRouter(tags=["认证授权"])
+
+class AuthDomain(DomainModule):
+    name = "auth"
+    label = "认证授权"
+    @property
+    def router(self):
+        """router。
+
+        参数说明：
+        :param self: 参数 self
+        :return: 返回处理结果。
+        """
+        return router
+
+__all__ = ["AuthDomain"]

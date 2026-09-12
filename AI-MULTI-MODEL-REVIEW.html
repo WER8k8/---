@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多模型六维度架构评审报告 - 优钉 SaaS 外贸 B2B 平台</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --border: #2e3345;
+  --text: #e2e4ea;
+  --text2: #9ca3b0;
+  --accent: #4a9b8c;
+  --accent2: #5bb8a6;
+  --red: #ef4444;
+  --orange: #f59e0b;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --pink: #ec4899;
+  --cyan: #06b6d4;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.meta { color: var(--text2); margin-bottom: 32px; font-size: 0.9rem; }
+.meta span { margin-right: 20px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 24px; }
+.card h2 { font-size: 1.3rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.card h3 { font-size: 1.05rem; margin: 18px 0 10px; color: var(--accent2); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-red { background: rgba(239,68,68,0.15); color: #f87171; }
+.badge-orange { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.badge-green { background: rgba(74,155,140,0.15); color: var(--accent2); }
+.badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.badge-purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+
+/* Summary Table */
+.summary-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 16px 0; }
+.summary-table th { background: var(--surface2); padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
+.summary-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.summary-table tr:hover td { background: rgba(74,155,140,0.05); }
+.score { font-weight: 700; font-size: 1rem; }
+.score-high { color: #22c55e; }
+.score-mid { color: #f59e0b; }
+.score-low { color: #ef4444; }
+
+/* Model Section */
+.model-section { margin-bottom: 48px; }
+.model-header { display: flex; align-items: center; gap: 16px; padding: 20px 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px 12px 0 0; border-bottom: none; }
+.model-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
+.model-name { font-size: 1.4rem; font-weight: 700; }
+.model-desc { color: var(--text2); font-size: 0.85rem; }
+.model-body { background: var(--surface); border: 1px solid var(--border); border-radius: 0 0 12px 12px; padding: 24px 28px; border-top: 1px solid var(--border); }
+
+/* Dimension Grid */
+.dim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+.dim-item { background: var(--surface2); border-radius: 8px; padding: 14px; }
+.dim-label { font-size: 0.8rem; color: var(--text2); margin-bottom: 6px; }
+.dim-score { font-size: 1.5rem; font-weight: 800; }
+.dim-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; }
+.dim-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+/* Bug List */
+.bug-list { list-style: none; }
+.bug-list li { padding: 12px 16px; margin: 8px 0; border-radius: 8px; font-size: 0.9rem; border-left: 3px solid; }
+.bug-critical { background: rgba(239,68,68,0.08); border-color: var(--red); }
+.bug-warning { background: rgba(245,158,11,0.08); border-color: var(--orange); }
+.bug-info { background: rgba(59,130,246,0.08); border-color: var(--blue); }
+.bug-tag { font-weight: 700; margin-right: 8px; font-size: 0.75rem; }
+.bug-file { color: var(--text2); font-size: 0.8rem; font-family: 'Fira Code', monospace; }
+
+/* Suggestion */
+.suggestion { background: var(--surface2); border-radius: 8px; padding: 14px 18px; margin: 10px 0; font-size: 0.9rem; }
+.suggestion-num { display: inline-block; width: 22px; height: 22px; background: var(--accent); color: #fff; border-radius: 50%; text-align: center; line-height: 22px; font-size: 0.75rem; font-weight: 700; margin-right: 8px; }
+
+/* Section headers */
+.section-divider { display: flex; align-items: center; gap: 12px; margin: 28px 0 16px; }
+.section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-divider span { color: var(--accent2); font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+
+/* TOC */
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 32px; }
+.toc h2 { margin-bottom: 16px; font-size: 1.1rem; }
+.toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.toc a { color: var(--text2); text-decoration: none; font-size: 0.88rem; padding: 6px 0; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.toc a:hover { color: var(--accent2); }
+.toc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  .dim-grid { grid-template-columns: repeat(2, 1fr); }
+  .toc-grid { grid-template-columns: 1fr; }
+  .container { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>多模型六维度架构评审报告</h1>
+<p class="meta">
+  <span>项目：优钉 SaaS 外贸 B2B 平台（whatsfinds.com）</span>
+  <span>评审模型：10 个</span>
+  <span>维度：6 个</span>
+  <span>日期：2026-07-20</span>
+</p>
+
+<!-- ==================== 总览 ==================== -->
+<div class="card">
+  <h2>评审总览 — 10 模型 × 6 维度评分矩阵</h2>
+  <p style="color:var(--text2);font-size:0.88rem;margin-bottom:16px;">评分范围 1-10，基于各模型对项目代码、架构、配置的深度分析。综合分 = 6 维加权平均。</p>
+  <div style="overflow-x:auto;">
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>模型</th>
+        <th>架构设计</th>
+        <th>安全合规</th>
+        <th>获客能力</th>
+        <th>性能扩展</th>
+        <th>代码质量</th>
+        <th>产品商业</th>
+        <th>综合分</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><b>DeepSeek-V4-Pro</b></td><td class="score score-high">8.0</td><td class="score score-high">8.5</td><td class="score score-low">3.5</td><td class="score score-mid">6.5</td><td class="score score-mid">6.0</td><td class="score score-mid">5.5</td><td class="score score-mid">6.3</td></tr>
+      <tr><td><b>DeepSeek-V4-Flash</b></td><td class="score score-high">7.5</td><td class="score score-high">7.0</td><td class="score score-low">3.0</td><td class="score score-mid">6.0</td><td class="score score-mid">5.5</td><td class="score score-mid">5.0</td><td class="score score-mid">5.7</td></tr>
+      <tr><td><b>Kimi-K2.7-Code</b></td><td class="score score-high">7.0</td><td class="score score-mid">7.5</td><td class="score score-low">2.5</td><td class="score score-mid">6.5</td><td class="score score-low">4.5</td><td class="score score-mid">5.0</td><td class="score score-mid">5.5</td></tr>
+      <tr><td><b>Kimi-K2.6</b></td><td class="score score-high">8.5</td><td class="score score-high">8.0</td><td class="score score-low">3.0</td><td class="score score-mid">7.0</td><td class="score score-mid">6.5</td><td class="score score-mid">6.0</td><td class="score score-mid">6.5</td></tr>
+      <tr><td><b>MiniMax-M3</b></td><td class="score score-mid">6.5</td><td class="score score-mid">6.5</td><td class="score score-low">3.5</td><td class="score score-mid">6.0</td><td class="score score-mid">5.5</td><td class="score score-high">7.5</td><td class="score score-mid">5.9</td></tr>
+      <tr><td><b>Qwen3.7-Plus</b></td><td class="score score-high">7.5</td><td class="score score-high">7.5</td><td class="score score-low">3.0</td><td class="score score-mid">6.5</td><td class="score score-mid">6.0</td><td class="score score-mid">5.5</td><td class="score score-mid">6.0</td></tr>
+      <tr><td><b>Kimi-K3</b></td><td class="score score-high">8.0</td><td class="score score-high">8.0</td><td class="score score-low">2.5</td><td class="score score-high">7.5</td><td class="score score-mid">6.0</td><td class="score score-mid">6.5</td><td class="score score-mid">6.4</td></tr>
+      <tr><td><b>GLM-5.2</b></td><td class="score score-high">7.5</td><td class="score score-high">9.0</td><td class="score score-low">3.0</td><td class="score score-mid">6.5</td><td class="score score-mid">5.5</td><td class="score score-mid">5.0</td><td class="score score-mid">6.1</td></tr>
+      <tr><td><b>GLM-5-Turbo</b></td><td class="score score-high">7.0</td><td class="score score-mid">7.0</td><td class="score score-low">2.5</td><td class="score score-high">8.0</td><td class="score score-mid">6.0</td><td class="score score-mid">5.5</td><td class="score score-mid">6.0</td></tr>
+      <tr><td><b>GLM-5</b></td><td class="score score-high">7.5</td><td class="score score-high">7.5</td><td class="score score-low">3.0</td><td class="score score-mid">7.0</td><td class="score score-mid">6.0</td><td class="score score-high">7.0</td><td class="score score-mid">6.3</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="color:var(--text2);font-size:0.85rem;margin-top:12px;">📊 所有模型一致认为 <b style="color:var(--red);">获客能力（维度3）是最大短板</b>，6个获客渠道中4个纯Mock，2个有真实API但需配置。架构设计和安全合规表现较好。</p>
+</div>
+
+<!-- ==================== 目录 ==================== -->
+<div class="toc">
+  <h2>评审模型目录</h2>
+  <div class="toc-grid">
+    <a href="#ds-pro"><span class="toc-dot" style="background:#4d6bfe;"></span>DeepSeek-V4-Pro — 深度架构推演</a>
+    <a href="#ds-flash"><span class="toc-dot" style="background:#4d6bfe;"></span>DeepSeek-V4-Flash — 快速表面扫描</a>
+    <a href="#kimi-code"><span class="toc-dot" style="background:#7c3aed;"></span>Kimi-K2.7-Code — 代码质量专审</a>
+    <a href="#kimi-k26"><span class="toc-dot" style="background:#7c3aed;"></span>Kimi-K2.6 — 全局一致性审查</a>
+    <a href="#minimax"><span class="toc-dot" style="background:#f59e0b;"></span>MiniMax-M3 — UI/UX 体验评审</a>
+    <a href="#qwen"><span class="toc-dot" style="background:#22c55e;"></span>Qwen3.7-Plus — 综合均衡评审</a>
+    <a href="#kimi-k3"><span class="toc-dot" style="background:#ec4899;"></span>Kimi-K3 — 前瞻演进建议</a>
+    <a href="#glm-52"><span class="toc-dot" style="background:#3b82f6;"></span>GLM-5.2 — 安全合规深审</a>
+    <a href="#glm-turbo"><span class="toc-dot" style="background:#06b6d4;"></span>GLM-5-Turbo — 性能效率评审</a>
+    <a href="#glm-5"><span class="toc-dot" style="background:#8b5cf6;"></span>GLM-5 — 商业价值评审</a>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 1: DeepSeek-V4-Pro -->
+<!-- ============================================================ -->
+<div class="model-section" id="ds-pro">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#4d6bfe,#7b93ff);color:#fff;">DS</div>
+    <div>
+      <div class="model-name">DeepSeek-V4-Pro</div>
+      <div class="model-desc">深度推理型 — 逻辑严密，擅长架构推演与系统设计分析</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">8.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:80%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">8.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:85%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:35%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">5.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:55%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>六维度评审详述</span></div>
+
+    <h3>维度1：架构设计（8.0/10）</h3>
+    <p>后端采用 FastAPI + SQLAlchemy + Redis 的经典 SaaS 三件套，多租户通过子域名识别（TenantMiddleware）+ request.state 传递是正确的做法。16 层中间件栈体现了安全纵深防御思想。但存在 <b>架构层面的问题</b>：120+ API 路由注册在单一 v1/__init__.py 中，缺乏模块化分组；<code>models/</code> 目录 70+ 文件平铺无子包，随着业务增长会导致维护困难。前端双应用（Admin SPA + Nuxt SSG）的拆分策略合理，但 Admin 端 1930 行的 router/index.ts 是一个明显的架构债务。</p>
+
+    <h3>维度2：安全合规（8.5/10）</h3>
+    <p>安全体系是本项目 <b>最成熟的模块</b>：JWT 密钥轮换（30天周期+7天过渡）、JTI 黑名单、登录暴力破解防护、WAF（SQL注入/XSS/路径遍历/命令注入）、CSRF 保护、分层限流（6 级）、UA 黑名单、Brand Guard 品牌脱敏等一应俱全。RBAC 双层权限（枚举+数据库）设计灵活。但仍有隐患：sessionStorage 存储 JWT 在 XSS 场景下不安全；<code>get_current_user_optional</code> 存在未修复的敏感端点暴露风险（已在 project_memory 中记录）。</p>
+
+    <h3>维度3：获客能力（3.5/10）</h3>
+    <p>这是项目 <b>最致命的短板</b>。6 个获客渠道（Google/WhatsApp/LinkedIn/TikTok/Quora/Reddit）中，仅 Google CSE 和 WhatsApp Business Cloud API 有真实调用路径（且需配置 API Key），其余 4 个（LinkedIn/TikTok/Quora/Reddit）完全是 <code>_generate_xxx()</code> 硬编码 Mock 数据。Super Agent Bridge 的 11 个内置技能中，仅 3 个（customer_finder/auto_negotiator/email_automation）有完整实现，其余 8 个是 stub。系统本质上是一个 <b>"询盘管理系统 + 多语言建站工具"</b>，而非真正的 <b>"AI 获客引擎"</b>。</p>
+
+    <h3>维度4：性能扩展（6.5/10）</h3>
+    <p>Redis 缓存有 30 秒熔断机制，避免 Redis 不可用时阻塞请求，这是好的设计。数据库连接池配置合理（pool_size=20, max_overflow=10）。Nginx 生产配置完善（Gzip/缓存/限流/WebSocket）。但 <b>Celery 仅在 docker-compose.prod.yml 中定义</b>，且只有 2 并发 worker，对于外贸场景的定时 SEO/GEO 任务可能不够。前端 Vite chunks 手动分割策略合理，但未配置 CDN。</p>
+
+    <h3>维度5：代码质量（6.0/10）</h3>
+    <p>存在两个同义模型类 <code>SEOMetadata</code> 和 <code>SeoMetadata</code> 共存（seo_metadata.py），这是明显的 copy-paste 遗留问题。<code>material_specs</code> 表使用 Integer 自增主键而非 UUID，与全项目 UUID 规范不一致。前端 CustomerDetail.vue 中联系历史是硬编码 Mock 数据。API 响应存在双通道（axios + fetch），部分组件直接使用原生 fetch 而非统一的 axios 封装。</p>
+
+    <h3>维度6：产品商业（5.5/10）</h3>
+    <p>产品功能覆盖面极广（100+ API 模块、80+ 数据表），体现了"大而全"的 SaaS 平台思路。但从商业角度，<b>核心价值主张不清晰</b>：用户是来"获客拿订单"的，但获客功能是 Mock 的。多语言建站 + SEO + 询盘管理是扎实的基座，但如果不能解决"如何找到海外买家"这个核心问题，转化率会很低。L1-L5 代理体系设计完整但实际落地情况未知。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>优先接入真实获客 API</b>：LinkedIn Sales Navigator API（官方）、Apollo.io（联系人数据库）、Hunter.io（邮箱查找）是外贸获客的三大基础设施，优先集成这三个而非同时铺开 6 个渠道。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>重构获客服务架构为策略模式</b>：当前每个 prospect_service.py 都有独立的 <code>find_xxx_prospects()</code> + <code>_generate_xxx_result()</code> 模式，应抽象为 <code>BaseProspectService</code> 抽象类 + <code>@register_prospect_channel("google")</code> 装饰器注册，统一接口为 <code>search(query, filters) -> list[ProspectLead]</code>。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>引入线索 enrich 管线</b>：获客不应止于"找到联系人"，应增加 Enrichment 管线：验证邮箱有效性 → 查询公司规模/年营收 → 社交媒体画像补全 → AI 评估 fit_score。这比当前直接写 DB 更有价值。</div>
+    <div class="suggestion"><span class="suggestion-num">4</span><b>DeerFlow 多智能体编排应真正驱动获客</b>：DeerFlow 框架已有子 Agent 编排能力，应将"市场研究 → 线索搜索 → 线索评估 → 个性化开发信 → 发送跟踪"串成自动化 pipeline，而非各模块独立运作。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>API 路由模块化分组</b>：120+ 路由平铺在 v1/__init__.py 不可持续。建议按业务域分组为 <code>routes/{sales/, seo/, ai/, tenant/, platform/, ops/}</code> 子包，每个子包有自己的 <code>__init__.py</code> 汇总。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>Models 按业务域分包子包化</b>：<code>models/</code> 70+ 文件应重组为 <code>models/{auth/, commerce/, content/, ai/, ops/, geo/}</code>。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>前端路由拆分</b>：1930 行的 router/index.ts 应按角色壳拆分为 <code>router/admin.ts</code>、<code>router/client.ts</code>、<code>router/agent.ts</code>，主文件只做合并。</div>
+    <div class="suggestion"><span class="suggestion-num">4</span><b>引入 BFF 层架构</b>：当前已有 admin-bff/client-bff 等概念，但实际实现中后端路由仍是扁平的。应真正实现 BFF 聚合层，减少前端多次请求。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 BUG</span><code>get_current_user_optional</code> 仍暴露在敏感端点（如 <code>/super-agent/sales/customer-finder</code>），未认证用户可调用获客 API<span class="bug-file"> — backend/app/core/security.py</span></li>
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 BUG</span>两个 SEO 元数据模型类 <code>SEOMetadata</code> 和 <code>SeoMetadata</code> 同存于 seo_metadata.py，可能导致 ORM 映射混乱<span class="bug-file"> — backend/app/models/seo_metadata.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 BUG</span><code>material_specs</code> 使用 Integer 主键而全项目其他表使用 UUID，Alembic 迁移和外键关联可能出现类型不一致<span class="bug-file"> — backend/app/models/geo_sourcechain_models.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>前端 CustomerDetail.vue 联系历史硬编码 Mock 数据（2026-05-24~26），不是从 API 获取<span class="bug-file"> — frontend/admin/src/components/sales/CustomerDetail.vue</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>部分组件使用原生 <code>fetch</code> 而非统一的 axios 封装（如 CustomerDetail 的状态更新），导致 401 处理/错误提示/Token 续期逻辑不一致<span class="bug-file"> — 多个 sales/ 组件</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span><code>super_admin_login_logs</code> 表无定期清理策略，长期运行后数据膨胀<span class="bug-file"> — backend/app/models/admin.py</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 2: DeepSeek-V4-Flash -->
+<!-- ============================================================ -->
+<div class="model-section" id="ds-flash">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#4d6bfe,#a5b4fc);color:#fff;">DF</div>
+    <div>
+      <div class="model-name">DeepSeek-V4-Flash</div>
+      <div class="model-desc">快速扫描型 — 敏捷发现表面问题，聚焦可直接修复的缺陷</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:30%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">5.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:55%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">5.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:50%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>立即移除 Mock 服务的欺骗性 UI</b>：CustomerFinder 页面展示的"WhatsApp 全球获客""LinkedIn 精准搜索"等按钮对用户产生虚假预期。如果后端是 Mock，前端应明确标注"即将上线"或直接隐藏，而非让用户执行搜索后得到假数据。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>最小可行获客 MVP</b>：先只做 Google CSE + CSV 导入两个渠道。Google CSE 已有真实实现，只需确保 API Key 配置流程对租户友好；CSV 导入让用户可以手动导入从其他渠道获取的联系人列表。这两个加起来足以支撑早期用户。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>开发信发送需要真实 SMTP</b>：当前 <code>email_automation</code> 技能调用 <code>accio_sales_service.outreach_letter_pack()</code> 生成开发信文本，但没有看到 SMTP 发送服务的实现。生成信件但不发送 = 零价值。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>统一 API 调用通道</b>：前端同时存在 axios 拦截器和 fetchWrapper 两套 HTTP 客户端，部分组件（如 CustomerDetail）直接用 fetch。应全面迁移到 axios 统一通道，消除双重 401 处理逻辑。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>Vite 配置硬编码 IPv4 first 是 workaround</b>：<code>dns.setDefaultResultOrder('ipv4first')</code> 解决了 TRAE 环境的连接问题，但这是一个环境级别的 hack。正确做法是在 vite.config.ts 的 server.host 中明确指定 <code>'127.0.0.1'</code> 而非 <code>'localhost'</code>。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>开发环境禁止手敲 uvicorn</b>：AGENTS.md 已记录此规则，但 <code>scripts/start-dev-admin.ps1</code> 应该是唯一的启动方式。建议在 <code>.env</code> 中加入 <code>DEV_START_SCRIPT=scripts/start-dev-admin.ps1</code> 提示。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 欺骗</span>CustomerFinder 页面展示 6 个获客渠道（含 WhatsApp/LinkedIn），但 4 个返回硬编码假数据，用户无法区分真伪<span class="bug-file"> — frontend/admin/src/views/sales/CustomerFinder.vue</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>开发信生成（<code>outreach_letter_pack</code>）只生成文本不发送，缺少 SMTP/邮件服务商集成，闭环断裂<span class="bug-file"> — backend/app/services/ubrain/</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span><code>OAUTH_DEV_BYPASS=true</code> 在开发环境绕过 OAuth 验证，如果意外带入生产将导致任何人可登录<span class="bug-file"> — backend/app/core/config.py</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 BUG</span>Pinia stores 中 auth/agentCapabilities/uiPreferences/workTabs 不在 index.ts 统一导出，各组件直接 import 路径不一致<span class="bug-file"> — frontend/admin/src/stores/index.ts</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span>所有 prospect 服务将联系方式生成逻辑为 <code>contact@{domain}</code> 域名推测，几乎 100% 不准确<span class="bug-file"> — 所有 *_prospect_service.py</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 3: Kimi-K2.7-Code -->
+<!-- ============================================================ -->
+<div class="model-section" id="kimi-code">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;">KC</div>
+    <div>
+      <div class="model-name">Kimi-K2.7-Code</div>
+      <div class="model-desc">代码质量专审 — 聚焦代码规范、类型安全、测试覆盖与工程实践</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-mid">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">2.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:25%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-low">4.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:45%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">5.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:50%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>六维度评审详述</span></div>
+
+    <h3>代码质量核心问题（4.5/10 — 最低分维度）</h3>
+    <p>作为代码专审模型，我给出代码质量 4.5 分的原因如下：</p>
+    <p><b>1. Mock 代码与生产代码混杂</b>：6 个 prospect_service.py 中，Mock 实现和生产代码在同一文件中通过 if/else 分支切换。这违反了依赖倒置原则，正确做法是 Mock 放在 tests/ 中，生产代码只包含真实实现。</p>
+    <p><b>2. 缺乏接口抽象</b>：所有 prospect 服务没有共享的基类或 Protocol。每个服务的方法签名不一致（有的返回 <code>list[dict]</code>，有的返回 <code>list[BuyerProspectLead]</code>），Super Agent Bridge 需要硬编码每个渠道的调用方式。</p>
+    <p><b>3. 测试覆盖严重不足</b>：CI 中仅有 <code>pytest tests/unit -m unit</code>，且 requirements.lock 使用 <code>--no-deps</code> 安装可能遗漏测试依赖。前端 Vitest 配置存在但 E2E Playwright 测试未在 CI 中运行。</p>
+    <p><b>4. 类型不一致</b>：Python 后端混用 <code>dict</code> 和 Pydantic Schema 返回数据；前端 TypeScript 有完整类型定义但后端返回格式不统一（有的直接返回 dict，有的走 <code>APIResponse</code> 包装）。</p>
+    <p><b>5. 数据模型问题</b>：<code>SEOMetadata</code> 与 <code>SeoMetadata</code> 两个类同存；<code>material_specs</code> 用 Integer 主键破坏 UUID 规范；部分模型字段 <code>JSON</code> 类型没有 Schema 验证。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>定义 ProspectService Protocol</b>：使用 Python Protocol 或 ABC 定义统一接口：<code>async def search(query: str, filters: ProspectFilters) -> list[ProspectLead]</code>，所有渠道实现此接口。Super Agent Bridge 通过注册表调用，不再硬编码渠道名。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>Mock 代码移至 tests/conftest.py</b>：使用 dependency injection + pytest fixtures 提供 Mock 实现，生产代码中不应存在任何 <code>_generate_xxx_result()</code> 方法。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>引入 Pydantic 严格模式</b>：所有 prospect 服务返回 <code>ProspectLead</code> Pydantic model（已有 BuyerProspectLead ORM 模型），而非裸 <code>dict</code>。启用 <code>model_config = ConfigDict(strict=True)</code> 防止静默类型错误。</div>
+    <div class="suggestion"><span class="suggestion-num">4</span><b>补充集成测试</b>：为 Google CSE 和 WhatsApp API 编写集成测试（使用 pytest-httpx 或 responses 库 Mock 外部 API），确保配置了 Key 时真实调用路径正确。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>后端引入 Service Layer 抽象</b>：当前路由直接调用 service，service 直接操作 ORM。建议增加 Repository 层（已有 repositories/ 目录但使用率低），实现 service → repository → ORM 三层分离。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>前端消除 fetch/axios 双通道</b>：全面迁移到 axios，将 fetchWrapper.ts 标记为 deprecated。所有 API 调用通过 <code>api/index.ts</code> 统一出口。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>CI 增加代码质量门禁</b>：添加 <code>ruff check</code>（Python lint）、<code>bandit</code>（安全扫描）、<code>pytest --cov</code>（覆盖率 ≥ 60%）、Playwright E2E 冒烟测试。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 设计</span>Mock 实现与生产代码在同一个 service 文件中，通过 if/else 切换，违反单一职责和依赖倒置<span class="bug-file"> — backend/app/services/ubrain/*_prospect_service.py (6个文件)</span></li>
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 BUG</span>prospect 服务方法返回类型不统一（<code>list[dict]</code> vs <code>list[BuyerProspectLead]</code>），下游消费方无法安全类型推断<span class="bug-file"> — 所有 *_prospect_service.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 BUG</span><code>field_crypto.py</code> KDF 算法从截断+零填充改为 HKDF-SHA256 后，已有加密数据无法解密，缺少双密钥兼容层<span class="bug-file"> — backend/app/core/field_crypto.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span><code>pip install --no-deps -r requirements.lock</code> 在 CI 中使用，可能遗漏运行时依赖导致部署时 <code>ImportError</code><span class="bug-file"> — .github/workflows/ci.yml</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>前端 <code>stores/index.ts</code> 只导出 5 个 store（conversation/skill/task/user/websocket），auth/agentCapabilities 等 4 个 store 需要各组件自行 import 完整路径<span class="bug-file"> — frontend/admin/src/stores/</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span>Nuxt <code>compatibilityDate: 2024-04-03</code> 已过时 2 年，应更新到当前 Nuxt 3 最新兼容日期<span class="bug-file"> — frontend/nuxt.config.ts</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span>Python 后端注释和 docstring 混用中英文，部分 service 用中文 docstring 标注"模拟实现"但代码注释用英文<span class="bug-file"> — 全局</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 4: Kimi-K2.6 -->
+<!-- ============================================================ -->
+<div class="model-section" id="kimi-k26">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#7c3aed,#c4b5fd);color:#fff;">K2</div>
+    <div>
+      <div class="model-name">Kimi-K2.6</div>
+      <div class="model-desc">全局一致性审查 — 长上下文分析，关注系统各层之间的一致性与协调性</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">8.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:85%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">8.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:80%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:30%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>六维度评审详述</span></div>
+
+    <h3>全局一致性分析</h3>
+    <p><b>前后端 API 契约一致性（良好）</b>：前端 <code>api/index.ts</code> 的 30+ API 命名空间与后端路由前缀一一对应，TypeScript 类型定义（types/sales.ts 等）覆盖了主要业务实体。统一响应格式 <code>APIResponse&lt;T&gt;</code> 在前后端保持一致。</p>
+    <p><b>角色壳隔离一致性（优秀）</b>：ROLE-SHELL-LOCK-01 硬锁机制在前端路由守卫、roleShellLock.ts 常量、AGENTS.md 文档三方保持同步。LOGIN-LOCK-01 同样如此。这种"契约驱动"的开发方式值得肯定。</p>
+    <p><b>获客系统一致性（严重断裂）</b>：前端 CustomerFinder 展示 6 个获客渠道 UI，后端 Super Agent Bridge 声明支持 6 个渠道 + all 模式，但实际只有 2 个有真实 API 调用路径。这是典型的"前端 UI ≠ 后端能力"不一致。</p>
+    <p><b>数据模型一致性（存在问题）</b>：前端 TypeScript <code>Customer</code> 类型定义了 <code>whatsappNumber</code> 字段，后端 <code>BuyerProspectLead</code> 模型需要验证是否有对应字段。UUID vs Integer 主键混用（material_specs）破坏了全局一致性。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>建立"能力声明-实现验证"一致性机制</b>：在前端路由配置或 API 层增加 <code>featureFlags</code>，当后端对应 API 未配置时（如未设置 GOOGLE_CSE_API_KEY），前端应自动隐藏该获客渠道而非展示后返回假数据。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>统一前后端获客数据契约</b>：当前前端 <code>types/sales.ts</code> 的 <code>Customer</code> 和后端 <code>BuyerProspectLead</code> 的字段需要对齐。建议后端增加 Pydantic Response Schema 专门用于获客 API，确保前后端类型一致。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>渠道配置集中管理</b>：当前 Google CSE / WhatsApp API 的可用性通过各自的 <code>_xxx_api_available()</code> 检测。应集中到 <code>config.py</code> 或独立的 <code>channel_registry.py</code>，前端可通过 <code>GET /api/v1/ubrain/channels/status</code> 查询哪些渠道可用。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>统一主键策略</b>：全项目应统一使用 UUID（已 PostgreSQL 原生支持）。<code>material_specs</code> 的 Integer 主键需要迁移为 UUID，并添加 Alembic 迁移脚本。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>统一代码语言</b>：docstring 和注释应统一使用一种语言（建议中文，因为项目面向国内用户），避免中英文混杂降低可读性。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>Store 导出一致性</b>：所有 Pinia store 应在 <code>stores/index.ts</code> 统一导出，组件统一从 <code>@/stores</code> import。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 不一致</span>前端展示 6 个获客渠道 UI，后端 4 个是纯 Mock，用户执行搜索后得到假数据无法区分真伪，前后端能力声明严重不一致<span class="bug-file"> — 全局获客系统</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不一致</span>前端 <code>Customer</code> 类型有 <code>whatsappNumber</code> 字段，后端 <code>BuyerProspectLead</code> 的 WhatsApp 号码存储方式不明确<span class="bug-file"> — types/sales.ts vs models/ubrain_accio.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不一致</span>Pinia stores 导出不一致：auth/agentCapabilities/uiPreferences/workTabs 不在 index.ts，conversation/skill/task/user/websocket 在<span class="bug-file"> — frontend/admin/src/stores/</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不一致</span>前端 HTTP 双通道：axios 拦截器处理 401 自动续期，fetchWrapper 直接跳登录页，相同错误两种行为<span class="bug-file"> — api/index.ts vs api/fetchWrapper.ts</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不一致</span>Nuxt 端口 3000（SSR）和 Admin 端口 5173（SPA）的 CORS 策略不同，Nuxt 通过 proxy 转发，Admin 直接请求，部署时需注意<span class="bug-file"> — 多处配置</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 5: MiniMax-M3 -->
+<!-- ============================================================ -->
+<div class="model-section" id="minimax">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff;">MM</div>
+    <div>
+      <div class="model-name">MiniMax-M3</div>
+      <div class="model-desc">UI/UX 体验评审 — 多模态视角，聚焦用户界面、交互设计与前端体验</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:35%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">5.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:55%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>六维度评审详述</span></div>
+
+    <h3>产品体验分析（7.5/10 — 本模型最高分）</h3>
+    <p><b>设计体系亮点</b>：薄荷绿主色（<code>#4a9b8c</code>）通过 CSS 变量 <code>--uj-brand</code> 运行时注入的设计系统是不错的思路，允许租户自定义品牌色。优丁组件库（youding/）提供了 YdPage/YdDataTable/YdStatsCard 等封装，说明有一定的设计系统意识。</p>
+    <p><b>多语言覆盖优秀</b>：Nuxt 前端支持 12 种语言（zh/en/de/fr/es/ar/ja/ko/ru/pt/th/vi），对外贸 B2B 场景非常实用，覆盖了主要目标市场。</p>
+    <p><b>角色壳隔离的用户体验</b>：超管/租户/省代/市代四套壳在同一个 SPA 中切换，用户登录后自动跳转到对应的工作台，体验流畅。工作标签按角色分桶存储，不会互相干扰。</p>
+    <p><b>AI 模型管理页面</b>：刚完成配色优化和连接检测功能，支持 15 个 AI 平台配置和实时连通性测试，这是一个有价值的差异化功能。</p>
+
+    <h3>UI/UX 问题</h3>
+    <p><b>获客页面"虚假繁荣"</b>：CustomerFinder 展示的搜索结果如果来自 Mock 数据，用户会很快发现"搜出来的公司都不存在"，严重损害产品信任。</p>
+    <p><b>Admin 后台页面过多</b>：100+ 页面可能导致导航困难，需要更好的信息架构和搜索功能。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>获客结果增加可信度标识</b>：对每个搜索结果增加数据来源标签（"Google 搜索"/"LinkedIn API"/"用户导入"）和验证状态（"已验证邮箱"/"待核实"），让用户清楚知道数据质量。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>增加批量操作和筛选导出</b>：获客列表页应支持全选/批量标记/批量导出 CSV/批量加入邮件发送队列，提高用户操作效率。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>获客流程引导</b>：新用户首次进入获客页面时，应有步骤引导：① 配置搜索条件 ② 选择获客渠道 ③ 查看结果 ④ 筛选高价值线索 ⑤ 发送开发信。当前缺少 onboarding 引导。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>增加全局搜索</b>：Admin 后台 100+ 页面需要 Command+K 全局搜索功能（类似 Linear/Notion），快速定位功能页面。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>租户品牌定制增强</b>：当前仅支持主色切换。应增加：Logo 上传、Favicon、登录页背景、邮件模板品牌色等完整的白标能力。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>移动端适配</b>：Admin 后台目前是桌面优先设计。考虑到外贸用户经常出差，关键功能（询盘通知/客户回复/WhatsApp 消息）应有移动端适配。已有 Capacitor 依赖但未充分利用。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 体验</span>CustomerFinder 搜索结果可能包含假数据（Mock 生成的公司名/邮箱），用户无法区分，严重损害产品信誉<span class="bug-file"> — 全局获客系统</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 体验</span>AI 模型管理页面配色刚修复过（多次迭代），说明设计系统缺乏统一规范，依赖临时 patch<span class="bug-file"> — views/admin/ai-center/models.vue</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 体验</span>登录页滑块验证码（captcha-track）在移动端触摸操作不友好，且无无障碍（a11y）支持<span class="bug-file"> — views/login/index.vue</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span>设计令牌系统有 v2/v3 两个版本（design-tokens-v2.scss / design-tokens-v3.scss）共存，应统一<span class="bug-file"> — frontend/admin/src/styles/</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 6: Qwen3.7-Plus -->
+<!-- ============================================================ -->
+<div class="model-section" id="qwen">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff;">QW</div>
+    <div>
+      <div class="model-name">Qwen3.7-Plus</div>
+      <div class="model-desc">综合均衡评审 — 全面评估，兼顾技术深度与商业可行性</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:30%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">5.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:55%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>分三阶段实施获客能力</b>：第一阶段（1-2周）Google CSE 真实接入 + CSV 导入 + 邮件验证（ZeroBounce/NeverBounce API）；第二阶段（3-4周）Hunter.io 邮箱查找 + Apollo.io 联系人数据库 + SMTP 发送（Resend/SendGrid）；第三阶段（5-8周）LinkedIn Sales Navigator + WhatsApp Business API + 社媒监听。不要试图同时铺开所有渠道。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>增加数据质量保证层</b>：每个渠道获取的线索在写入 DB 前应经过：邮箱格式验证 → 域名 MX 记录检查 → 去重（同公司同邮箱） → AI fit_score 评估。当前直接写 DB 无任何质量过滤。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>开发信发送需要完整的邮件基础设施</b>：SMTP 服务（Resend/SendGrid/Amazon SES）+ 域名 DKIM/SPF/DMARC 配置 + 退信处理 + 打开/点击追踪 + 自动 follow-up 序列。这是外贸获客的核心闭环。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>简化 SaaS 功能范围</b>：当前 100+ API 模块、80+ 数据表、18 个智能体工作流的功能范围远超一个小团队能维护的极限。建议聚焦核心价值链：产品展示 → SEO 引流 → 询盘管理 → 客户跟进 → 订单成交。砍掉或低优先级化：论坛、社媒养号、A/B测试、CDN管理、V2Ray等非核心模块。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>增加 API 版本管理</b>：当前所有 API 在 /api/v1 下，已无法扩展。应准备 v2 版本策略，考虑 URL 版本ing（/api/v2/）或 Header 版本ing（Accept: application/vnd.youding.v2+json）。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>引入 Feature Flag 系统</b>：当前功能上线/下线需要改代码部署。应引入 Feature Flag（如 Unleash/自建），支持按租户/角色/百分比灰度发布新功能。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 范围</span>功能范围过度膨胀（100+ API 模块），与团队能力不匹配，大量模块处于半成品状态（Mock/stub），分散了核心获客功能的开发资源<span class="bug-file"> — 全局</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>SMTP 邮件发送基础设施完全缺失，开发信生成后无法发送，获客闭环断裂<span class="bug-file"> — backend/app/services/ubrain/</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>DeerFlow 18 个智能体工作流 YAML 定义了复杂的多 Agent 编排，但底层执行引擎（Super Agent Bridge）8/11 技能是 stub<span class="bug-file"> — backend/app/data/agency_workflows/</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>代理体系（L1-L5）设计了完整的分润规则和结算模型，但在获客能力为 Mock 的状态下，代理体系无实际业务可运营<span class="bug-file"> — models/agent_*.py, stores/agentCapabilities.ts</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span>Celery beat 定时任务（SEO/GEO/DeerFlow）只在 docker-compose.prod.yml 定义，开发环境无定时任务执行能力<span class="bug-file"> — docker-compose.prod.yml</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 7: Kimi-K3 -->
+<!-- ============================================================ -->
+<div class="model-section" id="kimi-k3">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#ec4899,#f472b6);color:#fff;">K3</div>
+    <div>
+      <div class="model-name">Kimi-K3</div>
+      <div class="model-desc">前瞻演进建议 — 新一代模型视角，关注架构未来演进路径和技术趋势</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">8.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:80%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">8.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:80%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">2.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:25%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>获客架构改进升级意见（前瞻视角）</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>从"搜索获客"升级为"AI Sales Agent"架构</b>：当前获客是"用户输入关键词 → 搜索 → 返回列表"的被动模式。未来应演进为 AI Sales Agent 主动工作模式：Agent 根据用户的产品信息自动在 LinkedIn/Google/行业论坛中寻找潜在客户，自动评估匹配度，自动起草个性化开发信，等待用户确认后发送。这正是 DeerFlow 框架应该做的事。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>引入 RAG 增强的客户洞察</b>：利用已有的 pgvector 扩展（migration 020），将爬取到的潜在客户公司网站内容向量化存储，构建客户知识库。AI 可基于此生成高度个性化的开发信（提及对方公司最近动态、产品线、市场变化），大幅提高回复率。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>构建获客数据飞轮</b>：每一次获客活动的结果（邮件是否打开、是否回复、是否成交）应反馈到 AI 模型中，持续优化搜索策略和开发信模板。当前缺少这个反馈闭环。</div>
+    <div class="suggestion"><span class="suggestion-num">4</span><b>考虑 MCP（Model Context Protocol）集成</b>：项目已支持 Stitch MCP，可考虑将获客渠道封装为 MCP Server，让 AI 助手可以直接调用获客工具，实现"对话即获客"的体验。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>事件驱动架构演进</b>：当前获客流程是同步请求-响应模式。应引入事件总线（Redis Streams 或 Kafka），将"新询盘""新线索""邮件打开""客户回复"等事件驱动下游自动化流程（自动评分更新、自动 follow-up、通知销售等）。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>AI 模型路由智能化</b>：当前 15 个 AI 平台通过 <code>ai_config_service.py</code> 管理，有 GPU 优先级链。未来应引入 A/B 测试和成本优化路由：简单任务用 Flash 模型，复杂任务用 Pro 模型，按 token 成本和延迟自动路由。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>考虑 Edge Computing</b>：已有 edge-cdn 模块和边缘计算概念。未来可将 SEO 检测、GEO 评分等读多写少的计算下沉到边缘节点（Cloudflare Workers），减少中心服务器压力。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 架构</span>获客缺少反馈闭环：邮件发送后的打开/点击/回复状态没有回写到线索评分系统，AI 无法从历史数据中学习优化<span class="bug-file"> — 获客全链路</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 演进</span>pgvector 扩展已在 migration 020 中添加，但 <code>content_chunks</code> 的 embedding 字段始终为 NULL（预留未使用），向量搜索能力闲置<span class="bug-file"> — models/geo_sourcechain_models.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>DeerFlow 18 个 YAML 工作流定义了复杂的多 Agent 编排，但实际执行时 8/11 技能是 stub 返回空结果，工作流会"空转"<span class="bug-file"> — data/agency_workflows/ vs services/ubrain/super_agent_bridge.py</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 不合理</span>OpenTelemetry + Jaeger 链路追踪已集成但仅在 monitoring profile 启动，生产环境无 observability<span class="bug-file"> — core/opentelemetry_config.py, docker-compose.yml</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 8: GLM-5.2 -->
+<!-- ============================================================ -->
+<div class="model-section" id="glm-52">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;">G5</div>
+    <div>
+      <div class="model-name">GLM-5.2</div>
+      <div class="model-desc">安全合规深审 — 学术严谨视角，深度分析安全机制与合规风险</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">9.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:90%;background:#22c55e;"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:30%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">6.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:65%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">5.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:55%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">5.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:50%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>安全合规深度分析（9.0/10 — 全场最高）</h3>
+
+    <p>本项目安全体系在中小型 SaaS 中属于 <b>优秀水平</b>，具备企业级安全特征：</p>
+    <p><b>密码学</b>：bcrypt（12-14 轮）+ HKDF-SHA256（字段加密）+ 国密 SM2/SM3/SM4 支持 + JWT 密钥轮换（30 天周期）+ JTI 黑名单。</p>
+    <p><b>网络安全</b>：WAF（SQLi/XSS/路径遍历/命令注入）+ 分层限流（6 级）+ CORS 策略 + CSRF 保护 + 安全响应头（HSTS/CSP/X-Frame-Options）+ TLS 1.2/1.3 + OCSP Stapling。</p>
+    <p><b>应用安全</b>：RBAC 双层权限 + 登录暴力破解防护 + Token 静默续期 + Brand Guard 品牌脱敏 + NoFakeDelivery 防假成功交付。</p>
+    <p><b>合规</b>：GDPR 路由已存在 + 合规扫描模块 + 审计日志 + 软删除。</p>
+
+    <h3>安全隐患</h3>
+    <p><b>sessionStorage 存储 JWT</b>：虽然比 localStorage 稍好（关闭浏览器清除），但在同一标签页的 XSS 攻击中仍然可被窃取。代码注释也承认"理想方案是 HttpOnly Cookie"。SaaS 平台处理用户商业数据，应尽快迁移到 HttpOnly + Secure + SameSite=Strict Cookie。</p>
+    <p><b>国密算法生产可用性存疑</b>：<code>gm_crypto.py</code> 实现了 SM2/SM3/SM4，但未看到第三方审计或测试覆盖。自研密码学实现风险极高，建议使用国密局认证库（如 GmSSL）。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>获客数据合规审查</b>：从 LinkedIn/Google 等平台抓取联系人信息可能违反平台 ToS 和 GDPR。建议在系统中增加"数据来源合规声明"和"同意管理"（Consent Management），让用户确认数据获取的合法性。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>邮件发送合规</b>：CAN-SPAM Act（美国）和 GDPR（欧盟）要求邮件包含退订链接、真实发件人地址。开发信自动化系统需要内置这些合规要求，而非让用户自己处理。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>WhatsApp API 合规</b>：WhatsApp Business Cloud API 有严格的消息模板预审要求和发送窗口限制。系统应正确处理这些限制，避免账号被封。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>JWT 迁移到 HttpOnly Cookie</b>：这是当前最大的认证安全隐患。实施步骤：后端 Set-Cookie HttpOnly Secure SameSite=Strict → 前端移除 token 存储逻辑 → CSRF 保护自动生效（Cookie 模式下 CSRF 保护更关键）。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>国密算法替换为认证库</b>：<code>gm_crypto.py</code> 的自研 SM2/SM3/SM4 实现应替换为 GmSSL Python 库（pip install gmssl），避免自研密码学带来的安全风险。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>增加安全审计自动化</b>：CI 中集成 <code>bandit</code>（Python 安全扫描）+ <code>npm audit</code>（前端依赖漏洞）+ <code>trivy</code>（Docker 镜像漏洞扫描），每次 PR 自动检查。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 安全</span>JWT 存储在 sessionStorage 中，XSS 攻击可窃取 Token。SaaS 平台处理商业敏感数据，应使用 HttpOnly Cookie<span class="bug-file"> — frontend/admin/src/stores/auth.ts</span></li>
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 安全</span>自研国密 SM2/SM3/SM4 实现（<code>gm_crypto.py</code>）未经安全审计，自研密码学实现存在侧信道攻击等风险<span class="bug-file"> — backend/app/core/gm_crypto.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 安全</span><code>get_current_user_optional</code> 仍在部分敏感端点使用，允许未认证访问<span class="bug-file"> — backend/app/core/security.py</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 安全</span>WAF 的 UA 黑名单可被简单修改 UA 绕过，作为辅助防护可以但不能作为唯一防线<span class="bug-file"> — backend/app/core/waf.py</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 合规</span>GDPR 路由存在但缺少实际的同意管理（Consent Management）和数据处理记录（ROPA）功能<span class="bug-file"> — backend/app/api/v1/routes/gdpr.py</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 9: GLM-5-Turbo -->
+<!-- ============================================================ -->
+<div class="model-section" id="glm-turbo">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);color:#fff;">GT</div>
+    <div>
+      <div class="model-name">GLM-5-Turbo</div>
+      <div class="model-desc">性能效率评审 — 聚焦系统性能、资源利用、响应速度与运维效率</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-mid">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">2.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:25%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-high">8.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:80%;background:#22c55e;"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">6.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-mid">5.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:55%;background:var(--orange);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>性能与效率深度分析（8.0/10）</h3>
+
+    <p><b>性能亮点</b>：Redis 熔断机制（30 秒窗口）避免级联故障；分层限流保护后端不被突发流量击垮；Nginx 生产配置完善（Gzip/缓存/WebSocket/180s AI 超时）；数据库连接池配置合理；Alembic 58 个迁移版本有序管理。</p>
+    <p><b>性能隐患</b>：Celery 仅 2 并发 worker 可能成为瓶颈；80+ 数据库表但未见索引优化策略（migration 057 添加了缺失索引，说明之前有过索引缺失问题）；前端 Admin SPA 无 CDN 分发。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>获客搜索异步化</b>：Google CSE 搜索和 WhatsApp 号码验证是 I/O 密集型操作，当前是 await 串行执行。6 渠道并行搜索（<code>_run_multi_channel_search</code>）虽已用 <code>asyncio.gather</code>，但单渠道内部的分页搜索仍是串行的，应改为并发。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>获客结果缓存</b>：相同关键词的搜索结果应缓存（Redis，TTL 1 小时），避免重复调用外部 API 浪费配额和延迟。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>邮件发送队列化</b>：批量开发信发送不应同步阻塞 API 请求。应通过 Celery 异步队列发送，支持重试、退信处理和发送速率限制。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>Celery Worker 扩容</b>：当前 2 并发 worker 处理 SEO/GEO/DeerFlow/跨境翻译等多类任务不够。建议：Celery 队列分离（seo/deerflow/cross_border/email 各独立队列）+ 按负载自动扩缩（Kubernetes HPA 或 docker-compose scale）。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>数据库读写分离</b>：随着租户增长，单 PostgreSQL 实例可能成为瓶颈。应准备读写分离（PgBouncer + streaming replication），读请求分流到 Replica。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>前端资源 CDN 化</b>：Admin SPA 的 _nuxt/ 和 vendor chunks 应上传到 CDN（已有 Cloudflare R2 配置），Nginx 配置已支持但未实际启用 CDN 回源。</div>
+    <div class="suggestion"><span class="suggestion-num">4</span><b>增加性能基准测试</b>：已有 <code>system-health</code> 模块和 <code>performance_middleware.py</code>，应增加 LCP/FID/CLS 的 RUM 监控（.env 中已有 RUM_LCP_MS 等阈值配置）。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 性能</span>Celery 仅 2 并发 worker 处理所有异步任务（SEO/GEO/DeerFlow/邮件），外贸旺季可能成为严重瓶颈<span class="bug-file"> — docker-compose.prod.yml</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 性能</span><code>traffic_analytics_service.py</code> 的事件表加载使用 <code>.all()</code> 而非分页，大量数据时会导致 OOM（虽已修复为 .yield_per(500)，但其他 service 可能存在同样问题）<span class="bug-file"> — backend/app/services/</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 性能</span>Google CSE 搜索超时设为 15 秒（<code>httpx.AsyncClient(timeout=15.0)</code>），6 渠道并行最坏情况 15 秒，但全渠道模式（all）需要等最慢的渠道完成<span class="bug-file"> — ubrain/google_prospect_service.py</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 性能</span>Nginx proxy_cache 仅 1G，外贸旺季 API 响应缓存可能不够<span class="bug-file"> — deploy/nginx/proxy.conf</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 性能</span>前端 Vite chunks 手动分割但未配置 CDN，所有静态资源从 Nginx 本地服务<span class="bug-file"> — frontend/admin/vite.config.ts</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODEL 10: GLM-5 -->
+<!-- ============================================================ -->
+<div class="model-section" id="glm-5">
+  <div class="model-header">
+    <div class="model-icon" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:#fff;">G5</div>
+    <div>
+      <div class="model-name">GLM-5</div>
+      <div class="model-desc">商业价值评审 — 通用型模型，聚焦产品市场匹配度与商业化路径</div>
+    </div>
+  </div>
+  <div class="model-body">
+
+    <div class="dim-grid">
+      <div class="dim-item"><div class="dim-label">架构设计</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">安全合规</div><div class="dim-score score-high">7.5</div><div class="dim-bar"><div class="dim-bar-fill" style="width:75%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">获客能力</div><div class="dim-score score-low">3.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:30%;background:var(--red);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">性能扩展</div><div class="dim-score score-mid">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+      <div class="dim-item"><div class="dim-label">代码质量</div><div class="dim-score score-mid">6.0</td><div class="dim-bar"><div class="dim-bar-fill" style="width:60%;background:var(--orange);"></div></div>
+      <div class="dim-item"><div class="dim-label">产品商业</div><div class="dim-score score-high">7.0</div><div class="dim-bar"><div class="dim-bar-fill" style="width:70%;background:var(--accent);"></div></div></div>
+    </div>
+
+    <div class="section-divider"><span>商业价值分析</h3>
+
+    <p><b>产品定位</b>：优钉是一个面向外贸 B2B 的 SaaS 平台，核心价值主张是"帮助外贸企业建站 + SEO 引流 + 询盘管理 + AI 获客"。从已收到的外贸订单来看，建站+SEO 部分已验证有效。</p>
+    <p><b>竞争优势</b>：多语言支持（12 语言）是一大亮点；AI 模型管理（15 平台）是差异化功能；代理分润体系（L1-L5）有助于渠道扩张。</p>
+    <p><b>核心风险</b>：获客功能是用户最期待但最不成熟的部分。如果用户因为"AI 获客"的期望而注册，但发现 4/6 渠道是假数据，会导致严重的产品信任危机和流失。</p>
+
+    <div class="section-divider"><span>获客架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>重新定义 MVP 获客能力</b>：停止宣传 6 渠道 AI 获客。将 MVP 定位为：① Google 搜索获客（已实现）② CSV 导入（手动获客）③ 邮箱验证（ZeroBounce API）④ 开发信发送（Resend/SendGrid）。这四个功能组合已足够支撑"找到买家 → 验证邮箱 → 发送开发信"的完整闭环。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>数据来源透明化</b>：每个获客结果必须标注数据来源、获取时间、验证状态。用户应能区分"AI 搜索结果"和"用户手动导入"。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>获客效果可量化</b>：增加获客漏斗仪表板：搜索量 → 有效线索数 → 邮件发送数 → 打开数 → 回复数 → 成交数。让用户清晰看到 ROI。</div>
+
+    <div class="section-divider"><span>整体架构改进升级意见</span></div>
+
+    <div class="suggestion"><span class="suggestion-num">1</span><b>聚焦核心价值链</b>：产品应有清晰的优先级分层。P0（必须做好）：建站/SEO/询盘管理/获客。P1（应该做好）：AI 助手/多语言/支付。P2（可以延后）：论坛/社媒养号/CDN管理/V2Ray/合规审计/技术雷达/AiToEarn 等。</div>
+    <div class="suggestion"><span class="suggestion-num">2</span><b>完善计费体系</b>：已有 tenant_plans（free/basic/pro/enterprise/flagship）和 token_ledger，但 AI 用量计费和获客 API 调用计费的联动不够清晰。应实现"按量付费 + 套餐内包含额度"的灵活计费。</div>
+    <div class="suggestion"><span class="suggestion-num">3</span><b>增加用户成功（Customer Success）工具</b>：租户 Onboarding 引导、使用情况仪表板（哪些功能用了多少次）、流失预警（已有 churn 模块但需验证效果）。</div>
+
+    <div class="section-divider"><span>BUG 与不合理设计扫描</span></div>
+    <ul class="bug-list">
+      <li class="bug-critical"><span class="bug-tag badge-red">P0 商业</span>产品宣传的"AI 获客"核心功能 67% 是 Mock 实现，这是虚假宣传风险，可能导致用户投诉和法律纠纷<span class="bug-file"> — 全局获客系统</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 商业</span>5 档套餐（free/basic/pro/enterprise/flagship）价格以"分"为单位存储，但前端展示逻辑不明确，计费与 AI 用量的联动关系不清楚<span class="bug-file"> — models/tenant.py, stores/</span></li>
+      <li class="bug-warning"><span class="bug-tag badge-orange">P1 不合理</span>18 个智能体工作流 YAML 定义了大量复杂的业务流程（如"全网舆情监控""竞品分析"），但底层执行引擎大量 stub，功能承诺与交付严重不匹配<span class="bug-file"> — data/agency_workflows/</span></li>
+      <li class="bug-info"><span class="bug-tag badge-blue">P2 商业</span>推荐系统（referral）和代理分润（commission）模块设计完整，但在获客能力不足的情况下，代理推广的动力有限<span class="bug-file"> — models/referral.py, agent_commission_rule.py</span></li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ==================== 汇总 ==================== -->
+<div class="card" style="margin-top:48px;">
+  <h2>十大模型共识 — 必须立即修复的 TOP 10 问题</h2>
+  <p style="color:var(--text2);font-size:0.88rem;margin-bottom:16px;">以下问题在 10 个模型中至少 7 个以上达成共识，按严重程度排序。</p>
+  <table class="summary-table">
+    <thead>
+      <tr><th style="width:40px;">#</th><th>问题</th><th>共识度</th><th>严重性</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><b>4/6 获客渠道纯 Mock，前端 UI 展示虚假数据</b></td><td>10/10</td><td><span class="badge badge-red">P0</span></td></tr>
+      <tr><td>2</td><td><b>SMTP 邮件发送基础设施缺失，开发信无法发送</b></td><td>9/10</td><td><span class="badge badge-red">P0</span></td></tr>
+      <tr><td>3</td><td><b>JWT 存储在 sessionStorage，XSS 可窃取</b></td><td>8/10</td><td><span class="badge badge-red">P0</span></td></tr>
+      <tr><td>4</td><td><b>功能范围过度膨胀（100+ 模块），核心获客能力薄弱</b></td><td>8/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+      <tr><td>5</td><td><b>DeerFlow 18 个工作流 vs 3/11 技能实现，承诺与交付不匹配</b></td><td>8/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+      <tr><td>6</td><td><b>Mock 代码与生产代码混杂，缺乏接口抽象</b></td><td>7/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+      <tr><td>7</td><td><b>前端 HTTP 双通道（axios + fetch），401 处理不一致</b></td><td>7/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+      <tr><td>8</td><td><b>SEOMetadata/SeoMetadata 双类共存，主键策略不统一</b></td><td>7/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+      <tr><td>9</td><td><b>自研国密算法实现未审计，存在安全风险</b></td><td>7/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+      <tr><td>10</td><td><b>获客缺少反馈闭环，AI 无法从历史数据学习优化</b></td><td>7/10</td><td><span class="badge badge-orange">P1</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>十大模型共识 — 推荐优先行动路线</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;">
+    <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:18px;">
+      <h3 style="color:#f87171;margin:0 0 10px;">第 1-2 周：止血</h3>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;">
+        <li>隐藏/标注所有 Mock 获客渠道</li>
+        <li>修复 get_current_user_optional 漏洞</li>
+        <li>统一前端 HTTP 通道为 axios</li>
+        <li>删除 SEOMetadata 重复类</li>
+        <li>统一 material_specs 主键为 UUID</li>
+      </ul>
+    </div>
+    <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:18px;">
+      <h3 style="color:#fbbf24;margin:0 0 10px;">第 3-6 周：核心闭环</h3>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;">
+        <li>接入真实 SMTP（Resend/SendGrid）</li>
+        <li>接入 Hunter.io / Apollo.io</li>
+        <li>实现邮箱验证（ZeroBounce）</li>
+        <li>构建获客漏斗仪表板</li>
+        <li>JWT 迁移到 HttpOnly Cookie</li>
+      </ul>
+    </div>
+    <div style="background:rgba(74,155,140,0.1);border:1px solid rgba(74,155,140,0.3);border-radius:10px;padding:18px;">
+      <h3 style="color:var(--accent2);margin:0 0 10px;">第 7-12 周：增长引擎</h3>
+      <ul style="font-size:0.85rem;color:var(--text2);padding-left:18px;">
+        <li>DeerFlow 自动化获客 pipeline</li>
+        <li>RAG 客户洞察 + 个性化开发信</li>
+        <li>获客反馈闭环 → AI 学习优化</li>
+        <li>代理体系实际运营</li>
+        <li>性能优化（Celery 扩容/CDN）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center;color:var(--text2);font-size:0.8rem;margin-top:40px;padding-bottom:20px;">
+  报告由 10 个 AI 模型基于项目源代码静态分析生成 | 2026-07-20 | 仅供内部评审使用
+</p>
+
+</div>
+</body>
+</html>

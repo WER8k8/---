@@ -1,0 +1,21 @@
+[
+  {
+    "file_rel": "app/services/n8n/trigger.py",
+    "func_name": "trigger",
+    "func_lineno": 61,
+    "start": 163,
+    "end": 177,
+    "helper_name": "_finalize_n8n_failure",
+    "return_call": true,
+    "preview": false
+  },
+  {
+    "file_rel": "app/services/n8n/trigger.py",
+    "func_name": "trigger",
+    "func_lineno": 61,
+    "start": 88,
+    "end": 103,
+    "helper_name": "_build_n8n_request_headers",
+    "preview": false
+  }
+]

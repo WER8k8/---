@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+    MINIO_SECRET_KEY: str = ""
+    MINIO_SECURE: bool = False
+
+    # JWT配置
+    SECRET_KEY: str = ""
+    JWT_SECRET_KEY: str = ""
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # ========================================
+    # AI 模型配置 — 15大模型平台统一管理
+    # ========================================
+    # OpenAI
+    AI_OPENAI_API_KEY: Optional[str] = None
+    AI_OPENAI_BASE_URL: str = "https://api.openai.com/v1"
+
+    # Anthropic Claude
+    AI_ANTHROPIC_API_KEY: Optional[str] = None        # 已配置 ✅
+    AI_ANTHROPIC_BASE_URL: str = "https://api.anthropic.com"
+
+    # Google Gemini
+    AI_GEMINI_API_KEY: Optional[str] = None
+    AI_GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com"
+
+    # DeepSeek（GPU 云端推理，H800 集群）
+    AI_DEEPSEEK_API_KEY: Optional[str] = None
+    AI_DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
+    AI_DEEPSEEK_MODELS: dict = {
+        "code": "deepseek-coder",
+        "logic": "deepseek-reasoner",
+        "general": "deepseek-chat",
+        "chinese": "deepseek-chat",
+        "vision": "deepseek-chat",
+    }
+
+    # NVIDIA NIM（integrate.api.nvidia.com）
+    # Key 本身不过期；免费额度/计费以 NVIDIA 控制台政策为准，需自行关注用量。
+    AI_NVIDIA_API_KEY: Optional[str] = None
+    AI_NVIDIA_BASE_URL: str = "https://integrate.api.nvidia.com/v1"
+    # Cosmos 视频 NIM 自托管端点（/v1/infer）；托管 catalog 暂不提供 integrate 上的 infer
+    AI_NVIDIA_COSMOS_BASE_URL: Optional[str] = None
+    AI_NVIDIA_MODEL: str = "meta/llama-3.1-70b-instruct"
+    # 按业务场景默认模型（完整列表见 GET /super-admin/ai-config/nvidia/catalog）
+    AI_NVIDIA_MODELS: dict = {
+        "inference": "meta/llama-3.1-8b-instruct",
+        "article": "meta/llama-3.1-70b-instruct",
+        "code": "qwen/qwen3-coder-480b-a35b-instruct",
+        "logic": "mistralai/mistral-large-3-675b-instruct-2512",
+        "general": "meta/llama-3.1-70b-instruct",

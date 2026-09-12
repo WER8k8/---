@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#e8eef8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="出海计" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- 生产建议: 为关键资源添加 <link rel="preload" href="/assets/main-xxx.css" as="style"> -->
+    <title>优丁 · 出海工作台</title>
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('uj-ui-preferences-v1');
+          if (!raw) return;
+          var s = JSON.parse(raw);
+          var root = document.documentElement;
+          if (s.theme) root.dataset.ujTheme = s.theme;
+          if (s.accentRole) root.dataset.ujAccent = s.accentRole;
+          if (s.radiusScale) root.dataset.ujRadius = s.radiusScale;
+          if (s.accentRole === 'platform' && s.primaryColor) {
+            root.style.setProperty('--uj-brand', s.primaryColor);
+          }
+          root.style.colorScheme = s.theme === 'dark' ? 'dark' : 'light';
+        } catch (e) { if (window.__DEV__) console.error('Theme init failed:', e); }
+      })();
+    </script>
+    <style>
+      @font-face { font-family: 'system'; font-display: swap; }
+      .boot-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font: 14px/1.5 'Noto Sans SC', system-ui, sans-serif;
+        color: #64748b;
+        background: linear-gradient(145deg, #e8eef8 0%, #f5f3ef 38%, #eef3fc 72%, #e6edf9 100%);
+      }
+      .boot-splash::after {
+        content: '';
+        width: 28px;
+        height: 28px;
+        margin-left: 10px;
+        border: 3px solid #e2e8f0;
+        border-top-color: #0ea5e9;
+        border-radius: 50%;
+        animation: boot-spin 0.7s linear infinite;
+      }
+      @keyframes boot-spin {
+        to { transform: rotate(360deg); }
+      }
+      /* Global Mobile Responsive */
+      @media (max-width: 768px) {
+        .ant-table { overflow-x: auto; display: block; }
+        .ant-table-content { min-width: 600px; }
+        .ant-card .ant-table { font-size: 12px; }
+        .ant-statistic-content-value { font-size: 1.25rem !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="boot-splash" aria-live="polite">正在加载</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+    MEDIA_CLOUD_UPLOAD_ENABLED: bool = True
+    MEDIA_R2_PRESIGN_SECONDS: int = 604800  # 7 天，海外发布拉取用
+    MEDIA_AUTO_PUBLISH_TENANT_SITE: bool = True  # 上云后自动登记租户视频落地页（SEO/GEO）
+    MEDIA_TENANT_VIDEO_PATH_PREFIX: str = "/v/"
+
+    # 场景失败时自动降级（如 article → inference）
+    AI_SCENARIO_FALLBACK_ENABLED: bool = True
+    AI_SCENARIO_HEALTH_SCHEDULER_ENABLED: bool = False
+    AI_SCENARIO_HEALTH_CHECK_HOUR: int = 7
+    AI_SCENARIO_HEALTH_CHECK_MINUTE: int = 0
+    AI_SCENARIO_HEALTH_INTERVAL_HOURS: int = 0  # >0 时按小时间隔，否则每日定点
+    AI_SCENARIO_HEALTH_CHAT_TIMEOUT: float = 45.0  # glm 等大模型 ping 可能 >25s
+
+    # 百度文心一言
+    AI_BAIDU_API_KEY: Optional[str] = None
+    AI_BAIDU_BASE_URL: str = "https://qianfan.baidubce.com/v2"
+
+    # 阿里通义千问
+    AI_ALIYUN_API_KEY: Optional[str] = None
+    AI_ALIYUN_BASE_URL: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+    # 字节豆包
+    AI_BYTE_API_KEY: Optional[str] = None
+    AI_BYTE_BASE_URL: str = "https://ark.cn-beijing.volces.com/api/v3"
+
+    # 智谱GLM
+    AI_ZHIPU_API_KEY: Optional[str] = None
+    AI_ZHIPU_BASE_URL: str = "https://open.bigmodel.cn/api/paas/v4"
+
+    # Kimi (月之暗面)
+    AI_KIMI_API_KEY: Optional[str] = None
+    AI_KIMI_BASE_URL: str = "https://api.moonshot.cn/v1"
+
+    # 零一万物
+    AI_01WANWU_API_KEY: Optional[str] = None
+    AI_01WANWU_BASE_URL: str = "https://api.lingyiwanwu.com/v1"
+
+    # 硅基流动 (SiliconFlow)
+    AI_SILICONFLOW_API_KEY: Optional[str] = None
+    AI_SILICONFLOW_BASE_URL: str = "https://api.siliconflow.cn/v1"
+
+    # MiniMax
+    AI_MINIMAX_API_KEY: Optional[str] = None
+    AI_MINIMAX_BASE_URL: str = "https://api.minimaxi.chat/v1"
+
+    # 讯飞星火
+    AI_XUNFEI_API_KEY: Optional[str] = None
+    AI_XUNFEI_BASE_URL: str = "https://spark-api-open.xf-yun.com/v1"
+
+    # 小米大模型 (MiMo)

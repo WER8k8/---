@@ -1,0 +1,45 @@
+{
+  "ok": false,
+  "task": "MOD-04-rehearsal-screenshots",
+  "base_url": "http://127.0.0.1:4173",
+  "output_dir": "docs/compliance/mod-04-recordings/rehearsal",
+  "shots": [
+    {
+      "path": "/login",
+      "file": "mod04-01-login.png",
+      "ok": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/login\nCall log:\n  - navigating to \"http://127.0.0.1:4173/login\", waiting until \"domcontentloaded\"\n"
+    },
+    {
+      "path": "/client/dashboard",
+      "file": "mod04-02-pillars.png",
+      "ok": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/client/dashboard\nCall log:\n  - navigating to \"http://127.0.0.1:4173/client/dashboard\", waiting until \"domcontentloaded\"\n"
+    },
+    {
+      "path": "/client/queues/inquiries",
+      "file": "mod04-03-inquiry-queue.png",
+      "ok": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/client/queues/inquiries\nCall log:\n  - navigating to \"http://127.0.0.1:4173/client/queues/inquiries\", waiting until \"domcontentloaded\"\n"
+    },
+    {
+      "path": "/client/plan-gate",
+      "file": "mod04-04-plan-gate.png",
+      "ok": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/client/plan-gate\nCall log:\n  - navigating to \"http://127.0.0.1:4173/client/plan-gate\", waiting until \"domcontentloaded\"\n"
+    },
+    {
+      "path": "/admin/tenants",
+      "file": "mod04-05-platform.png",
+      "ok": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/admin/tenants\nCall log:\n  - navigating to \"http://127.0.0.1:4173/admin/tenants\", waiting until \"domcontentloaded\"\n"
+    },
+    {
+      "path": "/agent/performance",
+      "file": "mod04-06-agent.png",
+      "ok": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/agent/performance\nCall log:\n  - navigating to \"http://127.0.0.1:4173/agent/performance\", waiting until \"domcontentloaded\"\n"
+    }
+  ],
+  "human_pending": "HTTPS 域就绪后替换为正式录屏 mp4"
+}

@@ -1,0 +1,1370 @@
+[
+  {
+    "path": "/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/{test_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/{test_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/{test_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/{test_id}/start",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/ab-test/{test_id}/stop",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/ai-config/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/ai-config/",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/ai-config/provider/{provider_id}/toggle",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/ai-config/stats",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/dashboard",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/export",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/products",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/traffic",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/login",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/login-by-email",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/logout",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/refresh",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/send-email-code",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/third-party-login",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{case_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{case_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{case_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{case_id}/images",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/compliance/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/compliance/audit",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/compliance/issues",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/compliance/issues/{issue_id}/resolve",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/compliance/report",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/batch-delete",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/batch-publish",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/search",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/slug/{slug}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/stats",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/upload-image",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/seo",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/seo",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/seo",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/versions",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/versions",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/versions/{version_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/pages/{page_id}/versions/{version_id}/rollback",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/seo",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/content/seo/{resource_type}/{resource_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/content/seo/{resource_type}/{resource_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/bind",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/bind",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/logs",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/report/daily",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/report/daily/send",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/report/daily/send/all",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/send",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/send/inquiry/{inquiry_id}",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/unbind",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/feishu/webhook",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/export",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/{inquiry_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/{inquiry_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/{inquiry_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/inquiries/{inquiry_id}/status",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/news/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/news/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/news/{news_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/news/{news_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/news/{news_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/products/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/products/batch-delete",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/products/batch-status",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/products/categories",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/categories",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/products/categories/tree",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/categories/{category_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/categories/{category_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/products/categories/{category_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/products/documents/{doc_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/products/popular",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/slug/{slug}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{product_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{product_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{product_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{product_id}/documents",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{product_id}/documents",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/ai-config",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/ai-config",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/check-inclusion",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/cities/{city_id}/districts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/combinatorial-rules",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/combinatorial-rules",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/content-templates",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/content-templates",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/dashboard",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/districts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/districts/{district_id}/toggle",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/generate-content",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/generate-keywords",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/generated-contents",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/generated-contents/{content_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/generated-keywords",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/inclusion-status",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/industry-keywords",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/industry-keywords",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/platform-accounts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/platform-accounts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/platforms",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/provinces",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/provinces/{province_id}/cities",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/publish",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/publish-logs",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/publish-tasks",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/settings",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo-matrix/settings",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/articles/{article_id}/authors",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/articles/{article_id}/authors/{author_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/audits",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/audits",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/audits/{audit_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/authors",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/authors",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/authors/{author_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/authors/{author_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/authors/{author_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/authors/{author_id}/certifications",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/certifications/{cert_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/init-defaults",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/keywords",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/keywords",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/keywords/categories",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/keywords/{keyword_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/keywords/{keyword_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/refresh-cache",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/scan",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/scan-batch",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/scan-history",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/scan-result/{scan_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/compliance/violations",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/content-optimizer/extract-params",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/content-optimizer/optimize",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/content-optimizer/validate-content",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/content/{content_id}/trust-signals",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/content/{content_id}/trust-signals",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/dashboard",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keyword-groups",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keyword-ranking/{keyword_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/batch-import-defaults",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/dashboard/summary",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/track",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/{keyword_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/{keyword_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/keywords/{keyword_id}/history",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms-txt/generate",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms-txt/llms-txt-template",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms-txt/validate-llms-txt",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms.txt",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/llms/{config_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/pages",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/pages/{resource_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/run-audit",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/export/{markup_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/generate",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/template/{schema_type}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/templates",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/types",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/validate",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/{markup_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/{markup_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/schema-markup/{markup_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/score",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/score/{content_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/scores",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/seo-batch-apply-rule",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/seo-batch-list",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/seo-pages-summary",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/site-audit",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/site-audit",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/site-audit/{audit_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/trust-signals",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/seo",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/site",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/system",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/system/audit/logs",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/audit/logs",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/system/audit/logs/{log_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/audit/logs/{log_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/system/cache/clear",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/system/contact",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/system/health",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/health",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/info",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/login",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/system/logs",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/restart",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/system/stats",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/system/users",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/users/",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/users/",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/users/batch-delete",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/users/logs",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/users/me",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}/change-password",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}/status",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/docs",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/docs/oauth2-redirect",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/health",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/openapi.json",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/redoc",
+    "methods": [
+      "GET"
+    ]
+  }
+]

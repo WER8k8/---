@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "task": "MOD-04-prep",
+  "checks": {
+    "checklist_md": true,
+    "archive_dir": true,
+    "archive_readme": true,
+    "seven_steps_in_checklist": true
+  },
+  "recordings_present": [
+    "README.md"
+  ],
+  "human_pending": "HTTPS 域就绪后按清单录屏",
+  "archive_path": "docs\\compliance\\mod-04-recordings"
+}

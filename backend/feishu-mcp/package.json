@@ -1,0 +1,20 @@
+{
+  "name": "feishu-mcp-server",
+  "version": "1.0.0",
+  "description": "Feishu MCP Server for Cloudflare Workers",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20240502.0",
+    "typescript": "^5.4.5",
+    "wrangler": "^3.57.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1",
+    "tsx": "^4.21.0"
+  }
+}

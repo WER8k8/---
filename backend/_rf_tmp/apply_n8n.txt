@@ -1,0 +1,92 @@
+  OK: helper body references all covered.
+### app/services/n8n/trigger.py :: trigger  [163-177]
+  is_method=True is_async=True has_await=False
+  params=['last_error', 'registry', 'start_time', 'workflow_id']
+  returns=[]
+----- HELPER -----
+
+
+    async def _finalize_n8n_failure(self, last_error, registry, start_time, workflow_id):
+        # 全部重试失败
+
+        elapsed = time.monotonic() - start_time
+
+        log.error(
+
+            "n8n 工作流触发最终失败: %s (attempts=%d, elapsed=%.2fs, error=%s)",
+
+            workflow_id, self.max_retries + 1, elapsed, last_error,
+
+        )
+
+        registry.record_trigger(workflow_id, success=False)
+
+        return {
+
+            "success": False,
+
+            "workflow_id": workflow_id,
+
+            "status_code": 0,
+
+            "error": str(last_error) if last_error else "Unknown error",
+
+            "attempts": self.max_retries + 1,
+
+            "elapsed_seconds": round(elapsed, 3),
+
+        }
+
+
+----- CALL -----
+        return await _finalize_n8n_failure(self, last_error, registry, start_time, workflow_id)
+
+-----------------
+WRITTEN.
+  OK: helper body references all covered.
+### app/services/n8n/trigger.py :: trigger  [88-103]
+  is_method=True is_async=True has_await=False
+  params=['headers', 'record', 'workflow_id']
+  returns=['endpoint', 'request_headers']
+----- HELPER -----
+
+
+    async def _build_n8n_request_headers(self, headers, record, workflow_id):
+        endpoint = record.endpoint
+
+        auth_config = record.auth_config or {}
+
+
+        # 构建请求头
+
+        request_headers = {
+
+            "Content-Type": "application/json",
+
+            "X-N8n-Trigger-Source": "uj-backend",
+
+            "X-N8n-Workflow-Id": workflow_id,
+
+        }
+
+        # 添加认证头
+
+        if auth_config.get("auth_type") == "header":
+
+            header_name = auth_config.get("header_name", "X-Api-Key")
+
+            header_value = auth_config.get("header_value", "")
+
+            request_headers[header_name] = header_value
+
+        if headers:
+
+            request_headers.update(headers)
+
+        return (endpoint, request_headers)
+
+----- CALL -----
+        endpoint, request_headers = await _build_n8n_request_headers(self, headers, record, workflow_id)
+
+-----------------
+WRITTEN.

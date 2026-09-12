@@ -1,0 +1,22 @@
+/** 国家/地区选项（ISO 代码 + 中文名，无国旗 emoji） */
+export const COUNTRY_OPTIONS = [
+  { value: 'US', label: '美国' },
+  { value: 'DE', label: '德国' },
+  { value: 'FR', label: '法国' },
+  { value: 'GB', label: '英国' },
+  { value: 'ES', label: '西班牙' },
+  { value: 'IT', label: '意大利' },
+  { value: 'NL', label: '荷兰' },
+  { value: 'SE', label: '瑞典' },
+  { value: 'SA', label: '沙特' },
+  { value: 'AE', label: '阿联酋' },
+  { value: 'TR', label: '土耳其' },
+  { value: 'IN', label: '印度' },
+  { value: 'ID', label: '印度尼西亚' },
+  { value: 'BR', label: '巴西' },
+  { value: 'NG', label: '尼日利亚' },
+  { value: 'ZA', label: '南非' },
+  { value: 'KE', label: '肯尼亚' },
+  { value: 'KR', label: '韩国' },
+  { value: 'VN', label: '越南' },
+] as const;

@@ -1,0 +1,90 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "health",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/health"
+    },
+    {
+      "name": "tenant_login",
+      "ok": true
+    },
+    {
+      "name": "pipeline_summary",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/cross-border/inquiries/pipeline/summary"
+    },
+    {
+      "name": "geo_visibility",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/cross-border/geo-visibility"
+    },
+    {
+      "name": "unified_geo_score",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/cross-border/unified-geo-score?include_probes=false"
+    },
+    {
+      "name": "public_geo_score",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/public/tenants/dev.local/geo-score?include_probes=false"
+    },
+    {
+      "name": "gsc_ads_status",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/foreign-trade/attribution/gsc-ads-status"
+    },
+    {
+      "name": "sidecars_status",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/foreign-trade/integrations/sidecars/status"
+    },
+    {
+      "name": "matrix_oauth_gate",
+      "ok": true,
+      "status": 200,
+      "url": "http://127.0.0.1:8001/api/v1/foreign-trade/integrations/matrix-oauth-gate"
+    }
+  ],
+  "scripts": [
+    {
+      "script": "verify-b2b-sidecars-all.py",
+      "ok": true,
+      "exit": 0
+    },
+    {
+      "script": "validate-site-l-pro-publish-e2e.py",
+      "ok": true,
+      "exit": 0
+    },
+    {
+      "script": "validate-gsc-ads-webhook.py",
+      "ok": true,
+      "exit": 0
+    },
+    {
+      "script": "validate-tenant-seo-audit.py",
+      "ok": true,
+      "exit": 0
+    },
+    {
+      "script": "validate-tenant-geo-audit.py",
+      "ok": true,
+      "exit": 0
+    },
+    {
+      "script": "run-seo-keyword-discover.py",
+      "ok": true,
+      "exit": 0
+    }
+  ],
+  "failed_count": 0
+}

@@ -1,0 +1,51 @@
+// FILE: backend\app\core\exceptions.py
+        self.code = code
+        self.message = message or ERROR_MESSAGES.get(code, "未知错误")
+        self.status_code = status_code
+        self.data = data
+        super().__init__(self.message)
+
+
+def success_response(
+        data: Any = None, message: str = "操作成功") -> Dict[str, Any]:
+    return {
+        "code": ErrorCode.SUCCESS,
+        "message": message,
+        "data": data,
+    }
+
+
+def error_response(
+    code: ErrorCode = ErrorCode.INTERNAL_ERROR,
+    message: Optional[str] = None,
+    data: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    return {
+        "code": code,
+        "message": message or ERROR_MESSAGES.get(code, "未知错误"),
+        "data": data,
+    }
+
+
+async def app_exception_handler(
+        request: Request,
+        exc: AppException) -> JSONResponse:
+    logger.warning(
+        "AppException: code=%s, message=%s, path=%s",
+        exc.code,
+        exc.message,
+        request.url.path,
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=error_response(
+            code=exc.code,
+            message=exc.message,
+            data=exc.data),
+    )
+
+
+async def validation_exception_handler(
+        request: Request,
+        exc: RequestValidationError) -> JSONResponse:
+    errors = []

@@ -1,0 +1,22 @@
+{
+  "tenants_scanned": 18,
+  "tenants_updated": 0,
+  "fields_added_total": 0,
+  "skipped_no_site": 18,
+  "dry_run": true,
+  "overwrite": false,
+  "langs": [
+    "zh",
+    "ar",
+    "es",
+    "pt",
+    "ru",
+    "th",
+    "vi",
+    "id",
+    "ms",
+    "ja",
+    "ko"
+  ],
+  "samples": []
+}

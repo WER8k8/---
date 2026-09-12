@@ -1,0 +1,60 @@
+{
+  "contract_id": "SITE-JTBD-01",
+  "version": "2026-07-08",
+  "status": "complete",
+  "completion_pct": 100,
+  "completed_at": "2026-07-08",
+  "owner_note": "行业无关 B2B 建站思维已全链路落地：预设 → 持久化 → 公网渲染 → 编辑 → 开户检查。",
+  "reference_case": {
+    "name": "3ERP",
+    "url": "https://www.3erp.com/",
+    "takeaway": "卖结果与承接能力，不卖工厂陈列；结构跟客户决策链，不跟车间组织架构。"
+  },
+  "paradigm_four_lines": [
+    "定位：卖结果，不卖陈列（访客带着任务来，不是来逛厂）",
+    "结构：按客户阶段分，不按自己仓库/产线/SKU 分",
+    "内容：先接住搜索意图（知识/工艺/选型），再导到询盘",
+    "转化：单一效率/可靠承诺全站一致（报价周期、打样周期、交付证据）"
+  ],
+  "default_visitor_journey": [
+    { "step": 1, "visitor_question": "我这单你能不能接？", "site_answer": "按项目阶段/能力矩阵展示服务（打样→小批→量产等）" },
+    { "step": 2, "visitor_question": "要多久、靠不靠谱？", "site_answer": "Hero + Stats + CTA 重复同一承诺（可配置，不写假 SLA）" },
+    { "step": 3, "visitor_question": "你们懂不懂我这行？", "site_answer": "技术干货 / 案例 / 认证证据链，非口号墙" },
+    { "step": 4, "visitor_question": "怎么开始？", "site_answer": "RFQ / 询盘 / 上传图纸 — 单一主 CTA" }
+  ],
+  "gap_vs_current_product": {
+    "has_parts": [
+      "site-builder: solutions / advantages / trustBadges / stats / 询盘表单",
+      "SEO/GEO 审计与文章生成链",
+      "industryPresets.ts + jtbd_site_service.py 双端 preset",
+      "Formily 四要素编辑 + jtbd_checklist UI",
+      "Hermes/persist/PUT self 自动 apply_jtbd_site_pass",
+      "L-Pro + Legacy TenantSite 首页区块顺序",
+      "parseVisualHtml JTBD 回写",
+      "visitor_locale 多语键 + backfill 脚本"
+    ],
+    "missing_paradigm": []
+  },
+  "planned_changes": [
+    { "id": "JTBD-01a", "target": "industryPresets.ts + jtbd_site_service.py", "status": "done" },
+    { "id": "JTBD-01b", "target": "buildPageHtml + registerYoudingBlocks + parseVisualHtml", "status": "done" },
+    { "id": "JTBD-01c", "target": "TenantLProHome + TenantSite.vue", "status": "done" },
+    { "id": "JTBD-01d", "target": "onboarding-guides + dashboard + onboarding + site-editor-lab", "status": "done" },
+    { "id": "JTBD-01e", "target": "precision-manufacturing skin", "status": "done" },
+    { "id": "JTBD-01f", "target": "scripts/backfill-jtbd-site-content.py", "status": "done" },
+    { "id": "JTBD-01g", "target": "siteEditorSchema + siteEditorLabSync + lab BFF", "status": "done" },
+    { "id": "JTBD-01h", "target": "journey_health jtbd insights", "status": "done" }
+  ],
+  "out_of_scope_for_this_backlog": [
+    "照抄 3ERP 视觉设计",
+    "新增第二套 GrapesJS 为默认公网门面",
+    "未配置真实报价/打样 SLA 时前端写死假周期（违反 no-fake-delivery）",
+    "L-Pro publish gate 强制 JTBD（仍为 advisory checklist）"
+  ],
+  "links": [
+    ".project/site-design-target.json",
+    "backend/app/services/jtbd_site_service.py",
+    "frontend/admin/src/components/site-builder/JtbdSiteChecklist.vue",
+    "scripts/backfill-jtbd-site-content.py"
+  ]
+}

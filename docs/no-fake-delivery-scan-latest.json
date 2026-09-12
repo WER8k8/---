@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "task": "NO-FAKE-DELIVERY-DEEP",
+  "scanned": {
+    "backend_py": 794,
+    "frontend_vue": 380,
+    "frontend_ts": 142
+  },
+  "p0_count": 0,
+  "p1_count": 0,
+  "p2_count": 0,
+  "findings": [],
+  "p0_findings": [],
+  "p1_findings": []
+}

@@ -1,0 +1,60 @@
+{
+  "version": "1",
+  "gate": "S0",
+  "generated_at": "2026-05-31T22:48:14.715208+00:00",
+  "signed_at": null,
+  "automated_checks": {
+    "qa_three_shell_e2e": true,
+    "qa_bff_three_role": true,
+    "cert_png_count": 15,
+    "cert_png_ok": true
+  },
+  "items": [
+    {
+      "id": "S0-1",
+      "title": "Agent 无超管链",
+      "pass": true,
+      "signer": "auto/FE-03"
+    },
+    {
+      "id": "S0-2",
+      "title": "hierarchy 无 hero-glass",
+      "pass": true,
+      "signer": "auto/FE-05"
+    },
+    {
+      "id": "S0-3",
+      "title": "Stub 矩阵 v1",
+      "pass": true,
+      "signer": "auto/PM-01"
+    },
+    {
+      "id": "S0-4",
+      "title": "Platform 送检菜单",
+      "pass": true,
+      "signer": "auto/FE-10"
+    },
+    {
+      "id": "S0-5",
+      "title": "UX-07 三壳 PNG",
+      "pass": true,
+      "signer": "auto/capture-cert-screenshots"
+    },
+    {
+      "id": "S0-6",
+      "title": "QA-01 三壳 BFF",
+      "pass": true,
+      "signer": "auto/qa-bff"
+    },
+    {
+      "id": "S0-7",
+      "title": "COMP-01 软著目录",
+      "pass": true,
+      "signer": "auto/COMP-01"
+    }
+  ],
+  "owner_pending": [
+    "PM-06 Brand/Trial/窗口",
+    "PM-08 阶段签字"
+  ]
+}

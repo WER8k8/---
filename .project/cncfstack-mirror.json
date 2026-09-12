@@ -1,0 +1,114 @@
+{
+
+  "schema_version": "1.1",
+
+  "updated_at": "2026-06-26",
+
+  "source": "https://www.cncfstack.com/",
+
+  "docs": {
+
+    "image_mirror": "https://cncfstack.com/p/assets/docs/cncfstack/image/",
+
+    "skills_catalog": "https://www.cncfstack.com/skills",
+
+    "blog": "https://cncfstack.com/b/docs/2026/348-cncfstack.com-new-version/"
+
+  },
+
+  "registry_prefix": "registry.cncfstack.com/docker.io",
+
+  "images": {
+
+    "python_3_11_slim": "registry.cncfstack.com/docker.io/library/python:3.11-slim",
+
+    "nginx_1_26_alpine": "registry.cncfstack.com/docker.io/library/nginx:1.26-alpine",
+
+    "nginx_alpine": "registry.cncfstack.com/docker.io/library/nginx:alpine",
+
+    "redis_7_alpine": "registry.cncfstack.com/docker.io/library/redis:7-alpine",
+
+    "pgvector_pg15": "registry.cncfstack.com/docker.io/pgvector/pgvector:pg15",
+
+    "postgres_15_alpine": "registry.cncfstack.com/docker.io/library/postgres:15-alpine",
+
+    "node_18_alpine": "registry.cncfstack.com/docker.io/library/node:18-alpine",
+
+    "node_20_alpine": "registry.cncfstack.com/docker.io/library/node:20-alpine",
+
+    "minio_latest": "registry.cncfstack.com/docker.io/minio/minio:latest",
+
+    "prometheus_latest": "registry.cncfstack.com/docker.io/prom/prometheus:latest",
+
+    "grafana_latest": "registry.cncfstack.com/docker.io/grafana/grafana:latest",
+
+    "certbot_latest": "registry.cncfstack.com/docker.io/certbot/certbot:latest"
+
+  },
+
+  "compose_overlay": "docker-compose.cncfstack.yml",
+
+  "start_script": "scripts/docker-with-cncfstack.ps1",
+
+  "wired_scripts": [
+
+    "scripts/run-staging-preflight-auto.ps1",
+
+    "scripts/run-staging-preflight.ps1",
+
+    "scripts/run-dev-stack.ps1",
+
+    "scripts/deploy-mvp-production.ps1",
+
+    "scripts/deploy.sh",
+
+    "scripts/docker-with-cncfstack.ps1"
+
+  ],
+
+  "recommended_skills": [
+
+    {
+
+      "id": "anthropics/frontend-design",
+
+      "install": "npx skills add https://gitea.cncfstack.com/anthropics/skills.git --skill frontend-design -a cursor -g",
+
+      "use_case": "L-Pro 租户站 / 建站编辑器 UI 补齐"
+
+    },
+
+    {
+
+      "id": "anthropics/docx",
+
+      "install": "npx skills add https://gitea.cncfstack.com/anthropics/skills.git --skill docx -a cursor -g",
+
+      "use_case": "出口报价/交接包 Word 生成"
+
+    },
+
+    {
+
+      "id": "vercel-labs/find-skills",
+
+      "install": "npx skills add https://gitea.cncfstack.com/vercel-labs/skills.git --skill find-skills -a cursor -g",
+
+      "use_case": "Agent 自动发现缺失 skill"
+
+    }
+
+  ],
+
+  "out_of_scope": [
+
+    "不批量安装与 ECC 重复的 security/tdd skill",
+
+    "禁止引入鼓励 mock 假交付的 skill",
+
+    "docker.elastic.co 镜像需单独评估是否上藏云阁镜像"
+
+  ]
+
+}
+

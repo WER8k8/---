@@ -1,0 +1,26 @@
+{
+  "task_id": "PM-MKT-01",
+  "title": "产品经理 × 营销部 · 网站全环节联合审查",
+  "charter": "docs/pm-marketing-full-journey-review-charter.md",
+  "matrix": "docs/pm-marketing-journey-review-matrix.md",
+  "status": "scheduled",
+  "scheduled_sessions": [
+    { "id": "A", "name": "客户旅程", "duration_min": 90, "done": false },
+    { "id": "B", "name": "卖货与传播", "duration_min": 90, "done": false }
+  ],
+  "summary": {
+    "critical_pass": 0,
+    "critical_fail": 0,
+    "copy_only": 0,
+    "overall": "pending"
+  },
+  "segments": [],
+  "blockers": [],
+  "copy_revisions": [],
+  "signoffs": {
+    "pm": { "name": "", "date": "", "result": "pending" },
+    "marketing": { "name": "", "date": "", "result": "pending" },
+    "ops": { "name": "", "date": "", "result": "pending" }
+  },
+  "notes": "会后逐条填写 segments；fail 写入 blockers 并指派 Lane。路由清单：python scripts/export-admin-route-inventory.py。八角色代码审查见 docs/pm-multidisciplinary-journey-review.md 与 pm-multidisciplinary-signoff.json"
+}

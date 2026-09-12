@@ -1,0 +1,74 @@
+{
+  "charter": "expert-autonomy",
+  "version": 2,
+  "personality": "diligent",
+  "motto": "发现即研究，小修自理，大修汇报，每日站会通知 Owner",
+  "honesty_gate": {
+    "hard_gate": true,
+    "rules": [
+      "不得宣称 7 Lane 全量扫描，除非 run_kind=full_roster 且 day=今日",
+      "不得 needs_owner=false 当 expert-daily 过期或仅 health_only",
+      "auto_fixed 仅当 backend+admin 探针双绿",
+      "P1/P2 backlog 可记录，不得宣称已修",
+      "站会写入后必须跑 scripts/validate-ops-honesty.py"
+    ],
+    "script": "scripts/validate-ops-honesty.py",
+    "report": "docs/ops/ops-honesty-latest.json"
+  },
+  "workflow": ["scan", "research", "auto_remediate", "standup", "honesty_gate", "notify_owner", "next_round"],
+  "auto_fix": {
+    "sre_health_down": {
+      "lane_ids": ["sre"],
+      "action": "ops-daily-health-autostart",
+      "description": "后端/Admin 不可达时自动拉起 dev 栈",
+      "max_attempts": 2
+    },
+    "dev_stack_stale": {
+      "lane_ids": ["sre"],
+      "action": "start-dev-admin-background",
+      "description": "健康探针失败第二轮尝试完整启动脚本",
+      "max_attempts": 1,
+      "after": "sre_health_down"
+    }
+  },
+  "owner_review": {
+    "lane_fail": {
+      "severity": "high",
+      "message": "某专家 Lane 当日扫描 FAIL，需 Owner 过目或授权 Cursor 修代码"
+    },
+    "cert_gate_fail": {
+      "lane_ids": ["qa_cert"],
+      "severity": "high"
+    },
+    "no_fake_p0": {
+      "lane_ids": ["security_no_fake"],
+      "report_field": "p0_count",
+      "threshold_gt": 0,
+      "severity": "critical"
+    },
+    "preflight_not_ok": {
+      "lane_ids": ["backend_preflight"],
+      "report_field": "ok",
+      "equals": false,
+      "severity": "medium"
+    },
+    "honesty_conflict": {
+      "severity": "high",
+      "message": "诚实门禁冲突，不得报假绿"
+    }
+  },
+  "small_auto_owner_later": {
+    "no_fake_p1_p2": "记入 backlog 段，Security Lane 排期修，站会如实披露数量",
+    "preflight_warn": "DevOps 自行跟踪"
+  },
+  "notify": {
+    "channels": ["feishu_webhook", "docs/ops/expert-standup-latest.md"],
+    "webhook_env_keys": ["FEISHU_WEBHOOK_URL", "HERMES_ALERT_WEBHOOK_URL", "OPS_READINESS_WEBHOOK_URL"],
+    "notify_when": ["always_daily_summary", "owner_review_items_present", "honesty_p0", "auto_fix_applied"]
+  },
+  "next_round": {
+    "fail_lanes_rerun_next_day": true,
+    "cursor_session_must_fix_owner_review": true,
+    "scheduled_task_launcher": "%LOCALAPPDATA%\\YouDingOps\\launch-expert-daily.ps1"
+  }
+}

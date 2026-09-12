@@ -1,0 +1,56 @@
+{
+  "fastapi_primary": true,
+  "node_readonly_policy": "docs/adr/seo-backend-vs-fastapi.md",
+  "capabilities_covered_in_fastapi": "7/7",
+  "rows": [
+    {
+      "capability": "regions",
+      "label": "省市区",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": true,
+      "parity": true
+    },
+    {
+      "capability": "keywords",
+      "label": "关键词",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": true,
+      "parity": true
+    },
+    {
+      "capability": "content",
+      "label": "内容生成",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": true,
+      "parity": true
+    },
+    {
+      "capability": "publish",
+      "label": "发布任务",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": true,
+      "parity": true
+    },
+    {
+      "capability": "platforms",
+      "label": "平台账号",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": true,
+      "parity": true
+    },
+    {
+      "capability": "inclusion",
+      "label": "收录监控",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": false,
+      "parity": false
+    },
+    {
+      "capability": "risk",
+      "label": "风控",
+      "fastapi_seo_matrix": true,
+      "seo_backend_legacy": false,
+      "parity": false
+    }
+  ]
+}

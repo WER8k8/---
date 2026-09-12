@@ -1,0 +1,225 @@
+{
+  "ok": true,
+  "task": "SEO-KEYWORD-DISCOVER",
+  "generated_at": "2026-07-09T07:43:51.152773+00:00",
+  "weekday": "Thursday",
+  "tenant": "dev.local",
+  "tenant_found": true,
+  "belt_id": "all",
+  "pack_meta": {
+    "belts": 2,
+    "root_version": "2026-06-03"
+  },
+  "suggestion_count": 40,
+  "suggestions": [
+    {
+      "keyword": "开发租户",
+      "source": "tenant_site",
+      "priority": "high"
+    },
+    {
+      "keyword": "Export Products",
+      "source": "tenant_site",
+      "priority": "high"
+    },
+    {
+      "keyword": "manufacturer",
+      "source": "tenant_site",
+      "priority": "high"
+    },
+    {
+      "keyword": "supplier",
+      "source": "tenant_site",
+      "priority": "high"
+    },
+    {
+      "keyword": "factory",
+      "source": "tenant_site",
+      "priority": "high"
+    },
+    {
+      "keyword": "export",
+      "source": "tenant_site",
+      "priority": "high"
+    },
+    {
+      "keyword": "大城县岩棉板厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城玻璃棉保温板批发",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "廊坊橡塑保温管价格",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城聚氨酯保温板厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河北岩棉板A级防火",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城县挤塑板XPS",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "留各庄保温建材厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城酚醛保温板",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "廊坊外墙保温一体板",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城县彩钢岩棉夹芯板",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城净化板厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "廊坊冷库板批发",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城防火涂料",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城县保温钉网格布",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城抗裂砂浆厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河北玻璃棉毡厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城铝箔玻璃棉",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "廊坊B1级橡塑板",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城县防火隔离带",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城保温工程材料批发",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城冷库保温材料",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河北外墙保温材料",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城县PIR保温板",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "廊坊岩棉管壳厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "大城可拆卸保温套",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间橡塑制品厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间橡塑保温管批发",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间EPDM密封条",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间门窗密封条厂家",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间橡胶垫片法兰垫",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间管道支架",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间橡胶软接头",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间保温辅材",
+      "source": "belt_pack",
+      "priority": "medium"
+    },
+    {
+      "keyword": "河间非石棉橡胶板",
+      "source": "belt_pack",
+      "priority": "medium"
+    }
+  ],
+  "next_actions": [
+    "租户管理员可在「SEO 关键词」页 preview/seed 入库",
+    "GEO 引擎用 primary keyword 跑 unified-geo-v1",
+    "未接 DeerFlow 时不宣称已自动排名"
+  ],
+  "out_of_scope": [
+    "无实盘 Baidu 排名",
+    "无 Perplexity Key 时不跑 AI 榜"
+  ]
+}

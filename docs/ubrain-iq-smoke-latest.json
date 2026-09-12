@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-05-31T09:53:36.273158+00:00",
+  "passed": 4,
+  "total": 4,
+  "verdict": "真能用",
+  "results": [
+    {
+      "id": "reasoning",
+      "ok": true,
+      "intent": "general",
+      "tool": "general",
+      "reply_preview": "优先联系这 12 条询盘中尚未成交的 10 条，了解他们的需求和当前进展，争取转化更多成交订单。",
+      "expect_hits": [
+        "询盘",
+        "成交",
+        "优先"
+      ],
+      "reject_hits": [],
+      "mock_suspect": false,
+      "needs_confirmation": false,
+      "http": 200,
+      "code": 0
+    },
+    {
+      "id": "trade_intel",
+      "ok": true,
+      "intent": "export_feasibility",
+      "tool": "export_feasibility",
+      "reply_preview": "【保温板 → VN】谨慎做。HS 第6806章。暂无 保温板→VN 的详细规则，建议人工复核。 证照：请咨询当地进口法规。",
+      "expect_hits": [
+        "VN"
+      ],
+      "reject_hits": [],
+      "mock_suspect": false,
+      "needs_confirmation": false,
+      "http": 200,
+      "code": 0
+    },
+    {
+      "id": "tool_routing",
+      "ok": true,
+      "intent": "hs_lookup",
+      "tool": "hs_lookup",
+      "reply_preview": "轻集料混凝土：建材大类建议从 HS 第 6810 章核查具体税号。",
+      "expect_hits": [
+        "6810",
+        "HS"
+      ],
+      "reject_hits": [],
+      "mock_suspect": false,
+      "needs_confirmation": false,
+      "http": 200,
+      "code": 0
+    },
+    {
+      "id": "anti_template",
+      "ok": true,
+      "intent": "general",
+      "tool": "general",
+      "reply_preview": "42",
+      "expect_hits": [
+        "42"
+      ],
+      "reject_hits": [],
+      "mock_suspect": false,
+      "needs_confirmation": false,
+      "http": 200,
+      "code": 0
+    }
+  ]
+}

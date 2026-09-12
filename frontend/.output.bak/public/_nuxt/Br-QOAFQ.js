@@ -1,0 +1,1 @@
+import{aL as a}from"./cicrfwpc.js";import{x as r,ao as m}from"./Dw5cRyJq.js";import"./CP305iJ0.js";import"./Bqpd76b4.js";import"./DiYaDy8a.js";import"./BKQVsGck.js";import"./BYlmoOb2.js";import"./D_vXau2e.js";const u=r({__name:"saas",async setup(p){let t,o;return[t,o]=m(()=>a("/platform",{})),await t,o(),()=>{}}});export{u as default};

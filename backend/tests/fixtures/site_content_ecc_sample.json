@@ -1,0 +1,17 @@
+{
+  "pages": {
+    "home": {
+      "title": "Rock Wool Insulation Manufacturer",
+      "ctaPrimary": "Request Quotation",
+      "ctaSecondary": "WhatsApp Us",
+      "inquiryHook": "Share your project specs, quantity and destination port — our export team replies within 24 hours with datasheet and sample options.",
+      "description": "OEM/ODM rock wool for EPC and distributors."
+    },
+    "contact": {
+      "inquiryPrompt": "Free sample & technical datasheet available; we reply within 24 hours."
+    }
+  },
+  "meta": {
+    "ecc_pipeline_version": "1.0"
+  }
+}

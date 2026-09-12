@@ -1,0 +1,175 @@
+{
+  "summary": {
+    "cn": 20,
+    "global": 20,
+    "total": 40,
+    "pilot": 10,
+    "target_cn": 20,
+    "target_global": 20,
+    "ready": true
+  },
+  "cn": [
+    {
+      "name": "微信公众号",
+      "type": "wechat"
+    },
+    {
+      "name": "抖音",
+      "type": "byte"
+    },
+    {
+      "name": "快手",
+      "type": "byte"
+    },
+    {
+      "name": "小红书",
+      "type": "social"
+    },
+    {
+      "name": "百家号",
+      "type": "baidu"
+    },
+    {
+      "name": "微博",
+      "type": "social"
+    },
+    {
+      "name": "哔哩哔哩",
+      "type": "video"
+    },
+    {
+      "name": "知乎",
+      "type": "social"
+    },
+    {
+      "name": "头条号",
+      "type": "byte"
+    },
+    {
+      "name": "企鹅号",
+      "type": "tencent"
+    },
+    {
+      "name": "网易号",
+      "type": "portal"
+    },
+    {
+      "name": "搜狐号",
+      "type": "portal"
+    },
+    {
+      "name": "一点资讯",
+      "type": "portal"
+    },
+    {
+      "name": "大鱼号",
+      "type": "byte"
+    },
+    {
+      "name": "简书",
+      "type": "blog"
+    },
+    {
+      "name": "脉脉",
+      "type": "social"
+    },
+    {
+      "name": "微信视频号",
+      "type": "wechat"
+    },
+    {
+      "name": "淘宝逛逛",
+      "type": "ecommerce"
+    },
+    {
+      "name": "1688",
+      "type": "b2b"
+    },
+    {
+      "name": "慧聪网",
+      "type": "b2b"
+    }
+  ],
+  "global": [
+    {
+      "name": "YouTube",
+      "type": "video"
+    },
+    {
+      "name": "TikTok",
+      "type": "byte"
+    },
+    {
+      "name": "LinkedIn",
+      "type": "social"
+    },
+    {
+      "name": "Facebook",
+      "type": "social"
+    },
+    {
+      "name": "Instagram",
+      "type": "social"
+    },
+    {
+      "name": "X (Twitter)",
+      "type": "social"
+    },
+    {
+      "name": "Pinterest",
+      "type": "social"
+    },
+    {
+      "name": "Reddit",
+      "type": "social"
+    },
+    {
+      "name": "Medium",
+      "type": "blog"
+    },
+    {
+      "name": "Tumblr",
+      "type": "blog"
+    },
+    {
+      "name": "Telegram Channel",
+      "type": "social"
+    },
+    {
+      "name": "WhatsApp Business",
+      "type": "social"
+    },
+    {
+      "name": "LINE Official",
+      "type": "social"
+    },
+    {
+      "name": "Zalo",
+      "type": "social"
+    },
+    {
+      "name": "VK",
+      "type": "social"
+    },
+    {
+      "name": "Quora",
+      "type": "social"
+    },
+    {
+      "name": "Blogger",
+      "type": "blog"
+    },
+    {
+      "name": "WordPress.com",
+      "type": "blog"
+    },
+    {
+      "name": "Amazon Seller",
+      "type": "ecommerce"
+    },
+    {
+      "name": "Alibaba.com",
+      "type": "b2b"
+    }
+  ]
+}

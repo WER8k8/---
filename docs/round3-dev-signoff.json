@@ -1,0 +1,22 @@
+{
+  "round": 3,
+  "date": "2026-05-25",
+  "pytest_unit": "329 passed (backend/tests/unit)",
+  "new_tests": [
+    "test_p1_http_sprint.py",
+    "test_ops_backup_manual.py",
+    "test_flywheel_integrations_ai05.py",
+    "test_international_crawl_webhook.py",
+    "test_celery_publish_worker.py"
+  ],
+  "scripts": [
+    "scripts/run-preflight-production.ps1",
+    "scripts/npm-audit-admin.ps1"
+  ],
+  "compose": "docker-compose.dev.yml profile ops publish-worker-once",
+  "sprint": {
+    "done": 70,
+    "open_engineering": 20,
+    "pm_blocked": 7
+  }
+}

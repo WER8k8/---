@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>支付二维码演示</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; background: #f8fafc; }
+    h1 { font-size: 1.25rem; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 16px 0; }
+    .meta { color: #64748b; font-size: 14px; }
+    .url { word-break: break-all; font-size: 12px; color: #475569; }
+    .hint { font-size: 13px; color: #b45309; background: #fffbeb; padding: 8px 12px; border-radius: 8px; }
+    img { display: block; margin: 12px 0; border: 1px solid #e2e8f0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>微信 / 支付宝 Native 二维码（本地演示）</h1>
+  <p>生成时间：本地脚本 payment_qrcode_demo.py</p>
+  
+<section class="card">
+  <h2>WECHAT Native 收款码</h2>
+  <p class="meta">订单号：<code>ORD20260531122231792437E665879C</code></p>
+  <p class="meta">金额：¥99.00 · Mock 演示</p>
+  <p class="meta">支付后状态：<strong>paid ✓</strong></p>
+  <img alt="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&amp;data=weixin%3A%2F%2Fwxpay%2Fbizpayurl%3Fpr%3DMOCK_ORD20260531122231792437E665879C" />
+  <p class="url">weixin://wxpay/bizpayurl?pr=MOCK_ORD20260531122231792437E665879C</p>
+  <p class="hint">开发环境 mock 码无法用真 App 扫付；请用下方「模拟支付成功」或管理端 mock 按钮完成闭环。</p>
+</section>
+
+<section class="card">
+  <h2>ALIPAY Native 收款码</h2>
+  <p class="meta">订单号：<code>ORD202605311222319483171D674797</code></p>
+  <p class="meta">金额：¥99.00 · Mock 演示</p>
+  <p class="meta">支付后状态：<strong>paid ✓</strong></p>
+  <img alt="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&amp;data=alipay%3A%2F%2Fmock%2Fprecreate%3Forder%3DORD202605311222319483171D674797" />
+  <p class="url">alipay://mock/precreate?order=ORD202605311222319483171D674797</p>
+  <p class="hint">开发环境 mock 码无法用真 App 扫付；请用下方「模拟支付成功」或管理端 mock 按钮完成闭环。</p>
+</section>
+
+</body>
+</html>

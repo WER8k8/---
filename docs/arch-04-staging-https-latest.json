@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "task": "ARCH-04-staging-https",
+  "staging_domain": "demo.youding.local",
+  "checks": {
+    "fullchain_pem": true,
+    "privkey_pem": true,
+    "cert_valid_24h": true,
+    "nginx_default_conf": true,
+    "staging_domain_in_ssl_readme": true
+  },
+  "cert_note": null,
+  "https_probe": {
+    "skipped": true,
+    "reason": "port 443 not listening"
+  },
+  "human_pending": "Owner 生产域 + Certbot 替换自签"
+}

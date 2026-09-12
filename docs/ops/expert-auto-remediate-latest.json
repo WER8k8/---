@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "personality": "diligent",
+  "actions": [],
+  "after_probe": {
+    "backend_health": true,
+    "admin_login": true
+  },
+  "auto_fixed": false,
+  "daily_synced": false
+}

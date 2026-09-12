@@ -1,0 +1,52 @@
+{
+  "id": "YOUDING-OPENSOURCE-SIDECAR-01",
+  "version": "2026-06-12",
+  "description": "Linly-Dubbing / YouDub-webui / v2vt 等封装为统一 HTTP sidecar，供优丁 backend MS-H 调用",
+  "base_paths": {
+    "health": "/api/youding/health",
+    "submit": "/api/youding/translate-dub",
+    "job": "/api/youding/jobs/{job_id}"
+  },
+  "submit": {
+    "method": "POST",
+    "content_types": ["application/json", "multipart/form-data"],
+    "json_body": {
+      "video_url": "http://127.0.0.1:8001/uploads/xxx.mp4",
+      "source_lang": "zh",
+      "target_lang": "en",
+      "lip_sync": true,
+      "provider_id": "linly_dubbing"
+    },
+    "multipart_fields": ["file", "source_lang", "target_lang", "lip_sync", "provider_id"],
+    "response_202": {
+      "job_id": "string",
+      "status": "queued"
+    },
+    "response_sync_ok": {
+      "ok": true,
+      "result": {
+        "output_url": "/uploads/out.mp4",
+        "srt_url": "/uploads/out.srt",
+        "transcript_zh": "string",
+        "script_en": "string",
+        "output_mode": "opensource_lip_dub"
+      }
+    }
+  },
+  "job_poll": {
+    "method": "GET",
+    "response_running": { "status": "running", "progress": 45, "hint": "翻译中…" },
+    "response_done": {
+      "status": "done",
+      "progress": 100,
+      "result": {
+        "output_url": "string",
+        "srt_url": "string",
+        "transcript_zh": "string",
+        "script_en": "string"
+      }
+    },
+    "response_failed": { "status": "failed", "error": "string", "hint": "string" }
+  },
+  "honesty": "无 output_url 且无 srt_url 时优丁 backend 必须 ok=false，禁止假成功"
+}

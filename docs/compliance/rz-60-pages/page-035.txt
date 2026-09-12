@@ -1,0 +1,15 @@
+// FILE: backend\app\core\config.py
+        )
+        if not has_matrix_mysql and not self.SEO_MATRIX_SQLITE_PATH:
+            cand = Path(__file__).resolve(
+            ).parents[3] / "seo-backend" / "database" / "database.sqlite"
+            if cand.is_file():
+                self.SEO_MATRIX_SQLITE_PATH = str(cand)
+
+        if self.DB_TYPE == "sqlite" and "postgresql" not in self.DATABASE_URL:
+            from app.core.sqlite_paths import resolve_sqlite_database_url
+
+            self.DATABASE_URL = resolve_sqlite_database_url(self.DATABASE_URL)
+
+
+settings = Settings()

@@ -1,0 +1,2 @@
+C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站.worktrees\agents-install-vscode-cline-deploy-strix\backend\app\core\config.py:855: UserWarning: [DEV] SECRET_KEY 为占位符,已从 logs/auto-secret-dev.txt 复用
+  self._init_secret_key()

@@ -1,0 +1,59 @@
+{
+  "base": "http://127.0.0.1:8001",
+  "path": "/api/v1/system/health",
+  "rounds": 12,
+  "interval_sec": 5,
+  "success_rate": 100.0,
+  "passed": true,
+  "samples": [
+    {
+      "round": 1,
+      "ok": true,
+      "ms": 12.4,
+      "status": 200
+    },
+    {
+      "round": 2,
+      "ok": true,
+      "ms": 6.1,
+      "status": 200
+    },
+    {
+      "round": 3,
+      "ok": true,
+      "ms": 20.3,
+      "status": 200
+    },
+    {
+      "round": 4,
+      "ok": true,
+      "ms": 6.6,
+      "status": 200
+    },
+    {
+      "round": 5,
+      "ok": true,
+      "ms": 6.8,
+      "status": 200
+    },
+    "...",
+    {
+      "round": 10,
+      "ok": true,
+      "ms": 6.5,
+      "status": 200
+    },
+    {
+      "round": 11,
+      "ok": true,
+      "ms": 8.1,
+      "status": 200
+    },
+    {
+      "round": 12,
+      "ok": true,
+      "ms": 21.2,
+      "status": 200
+    }
+  ]
+}

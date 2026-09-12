@@ -1,0 +1,71 @@
+/**
+ * 优丁管理端 — design-tokens v2（UX-01 · W1）
+ * 基线：Linear 克制 · 白底 KPI · Lucide 唯一图标源
+ * 使用：layout 根引入；Vben 壳同步 CSS variables
+ */
+
+@use './design-tokens.scss';
+
+:root {
+  --uj-header-h: 52px;
+  --uj-client-sidebar-w: 232px;
+
+  /* v2 增量 — 三壳统一 */
+  --uj-shell-client-accent: #5a9fd4;
+  --uj-shell-agent-accent: #4db6a0;
+  --uj-shell-platform-accent: #5eb8a8;
+
+  /* KPI 白底卡片（Agent S0） */
+  --uj-kpi-bg: #ffffff;
+  --uj-kpi-border: #e3eaee;
+  --uj-kpi-accent-bar: 3px solid var(--uj-brand);
+  --uj-kpi-shadow: 0 2px 8px rgb(106 126 140 / 0.08);
+
+  /* 禁止项提醒（开发态 outline，生产可关） */
+  --uj-forbidden-gradient: none;
+  --uj-forbidden-glass: none;
+
+  /* 四支柱导航 */
+  --uj-nav-item-height: 44px;
+  --uj-nav-icon-size: 18px;
+
+  /* 送检鉴定面侧栏 */
+  --uj-cert-sidebar-group-gap: 16px;
+  --uj-cert-menu-max-width: 260px;
+}
+
+/* Lucide ↔ Ant Design Icons 映射（现网 admin 过渡期） */
+$uj-icon-map: (
+  'layout-dashboard': 'DashboardOutlined',
+  'inbox': 'InboxOutlined',
+  'package': 'ShoppingOutlined',
+  'file-text': 'FileTextOutlined',
+  'credit-card': 'CreditCardOutlined',
+  'home': 'HomeOutlined',
+  'users': 'TeamOutlined',
+  'user-plus': 'UserAddOutlined',
+  'wallet': 'AccountBookOutlined',
+  'alert-triangle': 'AlertOutlined',
+  'shield': 'SafetyOutlined',
+  'workflow': 'ApartmentOutlined',
+  'settings': 'SettingOutlined',
+);
+
+@mixin uj-kpi-card {
+  background: var(--uj-kpi-bg);
+  border: 1px solid var(--uj-kpi-border);
+  border-radius: var(--uj-radius-md);
+  box-shadow: var(--uj-kpi-shadow);
+  border-left: var(--uj-kpi-accent-bar);
+}
+
+.uj-kpi-card {
+  @include uj-kpi-card;
+}
+
+.uj-page-header {
+  background: var(--uj-bg-card);
+  border-bottom: 1px solid var(--uj-border);
+  padding: var(--uj-space-page);
+  /* 无 hero-glass / 无全宽渐变 */
+}

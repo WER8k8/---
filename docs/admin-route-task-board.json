@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.1",
+  "project": "youding-admin",
+  "description": "智能调度/蜂群领任务：按 tasks[] 顺序或按 priority 领取；验收对照 api_doc 与 route。",
+  "api_spec": "docs/4-API接口定义.md",
+  "routes_dump": "docs/api-routes-dump.json",
+  "task_defaults": {
+    "status": "pending",
+    "owner_pool": "fullstack"
+  },
+  "tasks": [
+    {"id": "login", "title": "登录页", "route": "/login", "api_sections": ["1", "3"], "api_prefixes": ["/auth/login"], "sidebar_group": null, "priority": 10, "acceptance": ["未登录可打开", "登录后跳转 /admin"], "owner_pool": "frontend"},
+    {"id": "hub-admin", "title": "超级管理员工作台", "route": "/admin", "api_sections": [], "api_prefixes": [], "sidebar_group": "控制台", "priority": 5, "acceptance": ["卡片跳转与映射表路由一致"], "owner_pool": "frontend"},
+
+    {"id": "dashboard", "title": "数据概览", "route": "/dashboard", "api_sections": ["8"], "api_prefixes": ["/seo/dashboard"], "sidebar_group": "控制台", "priority": 20, "acceptance": ["页面可访问", "看板数据或降级展示"], "owner_pool": "fullstack"},
+    {"id": "products", "title": "产品列表", "route": "/products", "api_sections": ["3"], "api_prefixes": ["/products"], "sidebar_group": "产品管理", "priority": 30, "acceptance": ["列表与 CRUD 入口"], "owner_pool": "fullstack"},
+    {"id": "products-categories", "title": "分类管理", "route": "/products/categories", "api_sections": ["3"], "api_prefixes": ["/products/categories"], "sidebar_group": "产品管理", "priority": 31, "acceptance": ["分类树/列表"], "owner_pool": "fullstack"},
+    {"id": "content", "title": "内容管理", "route": "/content", "api_sections": ["5"], "api_prefixes": ["/content/pages"], "sidebar_group": "内容管理", "priority": 32, "acceptance": ["页面列表"], "owner_pool": "fullstack"},
+    {"id": "cases", "title": "案例管理", "route": "/cases", "api_sections": ["4"], "api_prefixes": ["/case-studies"], "sidebar_group": "内容管理", "priority": 33, "acceptance": ["案例列表"], "owner_pool": "fullstack"},
+    {"id": "inquiries", "title": "询盘管理", "route": "/inquiries", "api_sections": ["7"], "api_prefixes": ["/inquiries"], "sidebar_group": "营销获客", "priority": 34, "acceptance": ["列表与状态"], "owner_pool": "fullstack"},
+    {"id": "news", "title": "新闻管理", "route": "/news", "api_sections": ["6"], "api_prefixes": ["/news"], "sidebar_group": "营销获客", "priority": 35, "acceptance": ["列表/新建/编辑/删除 与 API 对齐"], "owner_pool": "fullstack"},
+    {"id": "users", "title": "用户管理", "route": "/users", "api_sections": ["2"], "api_prefixes": ["/users"], "sidebar_group": "系统管理", "priority": 36, "acceptance": ["用户列表"], "owner_pool": "fullstack"},
+    {"id": "analytics", "title": "数据分析", "route": "/analytics", "api_sections": ["9"], "api_prefixes": ["/analytics", "/system/audit/logs"], "sidebar_group": "系统管理", "priority": 37, "acceptance": ["概览与审计日志表"], "owner_pool": "fullstack"},
+    {"id": "settings", "title": "系统设置-基本", "route": "/settings", "api_sections": ["10"], "api_prefixes": ["/settings"], "sidebar_group": "系统管理", "priority": 38, "acceptance": ["GET/PUT 站点 SEO 系统 分块"], "owner_pool": "fullstack"},
+    {"id": "settings-drag", "title": "拖拽模块", "route": "/settings/drag-module", "api_sections": [], "api_prefixes": [], "sidebar_group": "系统管理", "priority": 39, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "settings-effects", "title": "特效组件", "route": "/settings/effects", "api_sections": [], "api_prefixes": [], "sidebar_group": "系统管理", "priority": 40, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "compliance-hub", "title": "全局合规治理", "route": "/compliance", "api_sections": ["13"], "api_prefixes": ["/compliance"], "sidebar_group": "集成与治理", "priority": 41, "acceptance": ["概览/审计/报告/问题表"], "owner_pool": "fullstack"},
+    {"id": "ai-config", "title": "AI 配置", "route": "/ai-config", "api_sections": ["11"], "api_prefixes": ["/ai-config"], "sidebar_group": "集成与治理", "priority": 42, "acceptance": ["读配置与 toggle"], "owner_pool": "fullstack"},
+    {"id": "ab-test", "title": "A/B 测试", "route": "/ab-test", "api_sections": ["12"], "api_prefixes": ["/ab-test"], "sidebar_group": "集成与治理", "priority": 43, "acceptance": ["实验列表与启停"], "owner_pool": "fullstack"},
+    {"id": "feishu", "title": "飞书集成", "route": "/feishu", "api_sections": ["15"], "api_prefixes": ["/feishu"], "sidebar_group": "集成与治理", "priority": 44, "acceptance": ["绑定/日志/日报"], "owner_pool": "fullstack"},
+
+    {"id": "seo-index", "title": "SEO 概览", "route": "/seo", "api_sections": ["8"], "api_prefixes": ["/seo"], "sidebar_group": "SEO优化", "priority": 50, "acceptance": ["入口可用"], "owner_pool": "fullstack"},
+    {"id": "seo-batch", "title": "批量 SEO", "route": "/seo/batch-seo", "api_sections": ["8"], "api_prefixes": ["/seo"], "sidebar_group": "SEO优化", "priority": 51, "acceptance": ["功能入口"], "owner_pool": "fullstack"},
+    {"id": "seo-optimizer", "title": "AI 内容优化", "route": "/seo/content-optimizer", "api_sections": ["8"], "api_prefixes": ["/seo/content-optimizer"], "sidebar_group": "SEO优化", "priority": 52, "acceptance": ["优化请求"], "owner_pool": "fullstack"},
+    {"id": "seo-llms", "title": "LLMs.txt", "route": "/seo/llms-txt", "api_sections": ["8"], "api_prefixes": ["/seo/llms-txt"], "sidebar_group": "SEO优化", "priority": 53, "acceptance": ["生成/校验"], "owner_pool": "fullstack"},
+    {"id": "seo-audit", "title": "站点审计", "route": "/seo/site-audit", "api_sections": ["8"], "api_prefixes": ["/seo/site-audit"], "sidebar_group": "SEO优化", "priority": 54, "acceptance": ["创建审计"], "owner_pool": "fullstack"},
+    {"id": "seo-schema", "title": "Schema 标记", "route": "/seo/schema-markup", "api_sections": ["8"], "api_prefixes": ["/seo/schema-markup"], "sidebar_group": "SEO优化", "priority": 55, "acceptance": ["CRUD/导出"], "owner_pool": "fullstack"},
+    {"id": "seo-eeat", "title": "EEAT", "route": "/seo/eeat", "api_sections": ["8"], "api_prefixes": ["/seo/eeat"], "sidebar_group": "SEO优化", "priority": 56, "acceptance": ["作者/信号"], "owner_pool": "fullstack"},
+    {"id": "seo-compliance", "title": "广告法合规(SEO)", "route": "/seo/compliance", "api_sections": ["8"], "api_prefixes": ["/seo/compliance"], "sidebar_group": "SEO优化", "priority": 57, "acceptance": ["扫描入口"], "owner_pool": "fullstack"},
+    {"id": "seo-kw", "title": "关键词排名", "route": "/seo/keyword-ranking", "api_sections": ["8"], "api_prefixes": ["/seo/keywords"], "sidebar_group": "SEO优化", "priority": 58, "acceptance": ["列表/历史"], "owner_pool": "fullstack"},
+    {"id": "seo-perf", "title": "性能与安全", "route": "/seo/performance", "api_sections": ["14"], "api_prefixes": ["/system"], "sidebar_group": "SEO优化", "priority": 59, "acceptance": ["监控页"], "owner_pool": "fullstack"},
+
+    {"id": "matrix-dash", "title": "SEO 矩阵看板", "route": "/seo-matrix", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/dashboard"], "sidebar_group": "SEO矩阵", "priority": 60, "acceptance": ["看板数据"], "owner_pool": "fullstack"},
+    {"id": "matrix-settings", "title": "矩阵设置", "route": "/seo-matrix/settings", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/settings"], "sidebar_group": "SEO矩阵", "priority": 61, "acceptance": ["读写设置"], "owner_pool": "fullstack"},
+    {"id": "matrix-regions", "title": "地域词库", "route": "/seo-matrix/regions", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/provinces"], "sidebar_group": "SEO矩阵", "priority": 62, "acceptance": ["省市区/词"], "owner_pool": "fullstack"},
+    {"id": "matrix-keywords", "title": "矩阵关键词", "route": "/seo-matrix/keywords", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/region-keywords"], "sidebar_group": "SEO矩阵", "priority": 63, "acceptance": ["关键词 CRUD"], "owner_pool": "fullstack"},
+    {"id": "matrix-content", "title": "文案生成", "route": "/seo-matrix/content", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/content-templates"], "sidebar_group": "SEO矩阵", "priority": 64, "acceptance": ["模板/生成"], "owner_pool": "fullstack"},
+    {"id": "matrix-publish", "title": "多平台分发", "route": "/seo-matrix/publish", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/publish-tasks"], "sidebar_group": "SEO矩阵", "priority": 65, "acceptance": ["任务列表"], "owner_pool": "fullstack"},
+    {"id": "matrix-inclusion", "title": "收录监控", "route": "/seo-matrix/inclusion", "api_sections": ["16"], "api_prefixes": ["/seo-matrix/inclusion-status"], "sidebar_group": "SEO矩阵", "priority": 66, "acceptance": ["收录状态"], "owner_pool": "fullstack"},
+
+    {"id": "suite-system", "title": "超管-系统套件根", "route": "/admin/system", "api_sections": ["14"], "api_prefixes": ["/system"], "sidebar_group": "超管套件", "priority": 70, "acceptance": ["子路由可进"], "owner_pool": "frontend"},
+    {"id": "suite-system-users", "title": "超管-系统用户", "route": "/admin/system/users", "api_sections": ["2", "14"], "api_prefixes": ["/users", "/system"], "sidebar_group": "超管套件", "priority": 71, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-system-perm", "title": "超管-权限", "route": "/admin/system/permissions", "api_sections": ["14"], "api_prefixes": ["/system"], "sidebar_group": "超管套件", "priority": 72, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-system-logs", "title": "超管-系统日志", "route": "/admin/system/logs", "api_sections": ["14"], "api_prefixes": ["/system/audit/logs"], "sidebar_group": "超管套件", "priority": 73, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-system-config", "title": "超管-系统配置", "route": "/admin/system/config", "api_sections": ["10", "14"], "api_prefixes": ["/settings", "/system"], "sidebar_group": "超管套件", "priority": 74, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+
+    {"id": "suite-ai", "title": "超管-AI 引擎根", "route": "/admin/ai-engine", "api_sections": ["11"], "api_prefixes": ["/ai-config"], "sidebar_group": "超管套件", "priority": 80, "acceptance": ["子路由可进"], "owner_pool": "frontend"},
+    {"id": "suite-ai-models", "title": "超管-模型管理", "route": "/admin/ai-engine/models", "api_sections": ["11"], "api_prefixes": ["/ai-config"], "sidebar_group": "超管套件", "priority": 81, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-ai-prompts", "title": "超管-提示词", "route": "/admin/ai-engine/prompts", "api_sections": ["11"], "api_prefixes": ["/ai-config"], "sidebar_group": "超管套件", "priority": 82, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-ai-tasks", "title": "超管-AI 任务", "route": "/admin/ai-engine/tasks", "api_sections": ["11"], "api_prefixes": ["/ai-config"], "sidebar_group": "超管套件", "priority": 83, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-ai-analytics", "title": "超管-AI 分析", "route": "/admin/ai-engine/analytics", "api_sections": ["11"], "api_prefixes": ["/ai-config/stats"], "sidebar_group": "超管套件", "priority": 84, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+
+    {"id": "suite-code", "title": "超管-代码工具根", "route": "/admin/code-tools", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 90, "acceptance": ["卡片跳转真实路由", "别名 redirect 有效"], "owner_pool": "frontend"},
+    {"id": "suite-code-gen", "title": "超管-代码生成", "route": "/admin/code-tools/generator", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 91, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-code-refactor", "title": "超管-代码重构", "route": "/admin/code-tools/refactor", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 92, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-code-debug", "title": "超管-代码调试", "route": "/admin/code-tools/debug", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 93, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-code-format", "title": "超管-代码格式化", "route": "/admin/code-tools/format", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 94, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-code-scan", "title": "超管-代码扫描", "route": "/admin/code-tools/scanner", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 95, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-code-review", "title": "超管-代码审查", "route": "/admin/code-tools/review", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 96, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+
+    {"id": "suite-files", "title": "超管-文件管理根", "route": "/admin/file-manager", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 100, "acceptance": ["子路由可进"], "owner_pool": "frontend"},
+    {"id": "suite-files-scan", "title": "超管-文件扫描", "route": "/admin/file-manager/scan", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 101, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-files-search", "title": "超管-文件检索", "route": "/admin/file-manager/search", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 102, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-files-history", "title": "超管-文件历史", "route": "/admin/file-manager/history", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 103, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+
+    {"id": "suite-security", "title": "超管-安全根", "route": "/admin/security", "api_sections": ["13", "14"], "api_prefixes": ["/compliance", "/system"], "sidebar_group": "超管套件", "priority": 110, "acceptance": ["子路由可进"], "owner_pool": "frontend"},
+    {"id": "suite-security-vuln", "title": "超管-漏洞扫描", "route": "/admin/security/vulnerability", "api_sections": ["14"], "api_prefixes": ["/system"], "sidebar_group": "超管套件", "priority": 111, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-security-audit", "title": "超管-安全审计", "route": "/admin/security/audit", "api_sections": ["14"], "api_prefixes": ["/system"], "sidebar_group": "超管套件", "priority": 112, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-security-comp", "title": "超管-安全合规检查", "route": "/admin/security/compliance", "api_sections": ["13"], "api_prefixes": ["/compliance"], "sidebar_group": "超管套件", "priority": 113, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+
+    {"id": "suite-auto", "title": "超管-自动化根", "route": "/admin/automation", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 120, "acceptance": ["子路由可进"], "owner_pool": "frontend"},
+    {"id": "suite-auto-scripts", "title": "超管-脚本管理", "route": "/admin/automation/scripts", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 121, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-auto-sched", "title": "超管-任务调度", "route": "/admin/automation/scheduler", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 122, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-auto-workflow", "title": "超管-工作流", "route": "/admin/automation/workflows", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 123, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+
+    {"id": "suite-projects", "title": "超管-项目中心", "route": "/admin/projects", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 130, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-runtime", "title": "超管-运行时", "route": "/admin/runtime", "api_sections": ["14"], "api_prefixes": ["/system"], "sidebar_group": "超管套件", "priority": 131, "acceptance": ["页面可访问"], "owner_pool": "frontend"},
+    {"id": "suite-scheduler-hub", "title": "超管-调度中心", "route": "/admin/scheduler-hub", "api_sections": [], "api_prefixes": [], "sidebar_group": "超管套件", "priority": 132, "acceptance": ["与 automation/scheduler 区分", "页面可访问"], "owner_pool": "frontend"}
+  ]
+}

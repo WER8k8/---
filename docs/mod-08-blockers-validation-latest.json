@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "task": "MOD-08",
+  "owner_pending_count": 5,
+  "owner_pending_ids": [
+    "https-demo-domain",
+    "dns-a-record",
+    "certbot-email",
+    "saas-bj01-signoff",
+    "pm06-blocked-written"
+  ],
+  "dev_ready_files": {
+    "docs\\compliance\\owner-blocker-checklist-mod-08.md": true,
+    "docs\\compliance\\pm-06-blocked-written-template.md": true,
+    "docs\\r1-owner-handoff-pack.md": true,
+    "scripts\\validate-arch-04-certbot-preflight.py": true,
+    "scripts\\validate-arch-04-staging-https.py": true,
+    "scripts\\qa-locust-72h-production.ps1": true,
+    "scripts\\apply-pat-02-report-number.py": true,
+    "scripts\\apply-comp-06-lawyer-signoff.py": true,
+    "scripts\\run-owner-unblock-rehearsal.ps1": true,
+    "scripts\\validate-mod-08-owner-readiness.py": true
+  },
+  "all_owner_cleared": false
+}

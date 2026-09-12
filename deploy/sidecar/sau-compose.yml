@@ -1,0 +1,30 @@
+# SAU Sidecar — social-auto-upload Worker 机
+# 用法: docker compose -f deploy/sidecar/sau-compose.yml up -d
+
+services:
+  sau-sidecar:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../scripts/sau-sidecar-adapter.py:/app/sau-sidecar-adapter.py:ro
+      - sau-home:/data/sau-home
+      - sau-tmp:/tmp/sau-sidecar
+    environment:
+      SAU_HOME: /data/sau-home
+      SAU_SIDECAR_TMP: /tmp/sau-sidecar
+      # 挂载宿主机 sau CLI 时设置:
+      # SAU_CLI_PATH: /opt/social-auto-upload/.venv/bin/sau
+    ports:
+      - "9910:9910"
+    command: >
+      sh -c "pip install -q httpx &&
+      python /app/sau-sidecar-adapter.py --host 0.0.0.0 --port 9910"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9910/api/youding/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  sau-home:
+  sau-tmp:

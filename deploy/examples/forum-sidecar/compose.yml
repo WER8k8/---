@@ -1,0 +1,19 @@
+# Apache Answer — 问答 Sidecar（开发/预发）
+# 文档：deploy/examples/forum-sidecar/README.md
+
+services:
+  answer:
+    image: apache/answer:2.0.0
+    container_name: youding-forum-answer
+    restart: unless-stopped
+    ports:
+      - "9080:80"
+    volumes:
+      - answer_data:/data
+    environment:
+      - TZ=Asia/Shanghai
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  answer_data:

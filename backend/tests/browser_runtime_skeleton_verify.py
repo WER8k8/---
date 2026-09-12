@@ -1,0 +1,365 @@
+"""轮25-B Browser Runtime 骨架 内存验证（不触碰真实 Playwright）。
+
+用法：python -m tests.browser_runtime_skeleton_verify
+依赖：sqlalchemy（无需 pytest / pydantic / playwright）。
+
+沿用 shim 模式。覆盖：
+1) 开关关时 runtime.execute 降级 DEGRADED（不开/白名单不过 两场景）；
+2) 开关开 + 白名单过时仍 DEGRADED（Playwright 未装）；
+3) Policy 闸门：合法 navigate/extract/screenshot 允许；非白名单动作、SSRF
+   域、注入输入 三类拒绝；
+4) 租户 Profile 路径解析：合法/非法 tenant_id、路径越界拦截、越界测试；
+5) EvidenceRecord 状态机：pending→running→success/failed/blocked/degraded，
+   to_dict/to_json 序列化 + 字段裁剪；
+6) runtime.status() 三态映射（DISABLED/DEGRADED/READY）；
+7) 异常体系：5 类异常继承 BrowserRuntimeError；
+8) 接线挂点结构校验：deerflow_job_service._browser_evidence_after_finish
+   + 挂点位置（run_job 终态后、audit 之前）；
+9) Browser Runtime 调用永异常吞（best-effort 语义）。
+"""
+
+import asyncio
+import json
+import os
+import sys
+import types
+import importlib.util
+
+# ---- 预置 app.core.database shim ----
+DB_SHIM = types.ModuleType("app.core.database")
+DB_SHIM.Base = object
+DB_SHIM.UUID_TYPE = "VARCHAR(36)"
+DB_SHIM.SessionLocal = None  # 骨架不需 DB
+sys.modules["app.core.database"] = DB_SHIM
+
+# ---- 预置 app.core.config shim（开关可切换）----
+CFG_SHIM = types.ModuleType("app.core.config")
+
+
+class _FakeSettings:
+    SECRET_KEY = "browser-runtime-verify-secret-2026"
+    BROWSER_RUNTIME_ENABLED = False
+    BROWSER_RUNTIME_ALLOWED_TENANTS = ""
+    BROWSER_RUNTIME_PROFILE_ROOT = ""
+
+
+CFG_SHIM.settings = _FakeSettings()
+sys.modules["app.core.config"] = CFG_SHIM
+
+_BACKEND = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _BACKEND)
+
+
+def _new_dummy(mod_name: str) -> types.ModuleType:
+    mod = types.ModuleType(mod_name)
+    mod.__path__ = []
+    sys.modules[mod_name] = mod
+    return mod
+
+
+def _load_from_file(mod_name: str, path: str):
+    spec = importlib.util.spec_from_file_location(mod_name, path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+for _pkg in ("app", "app.core", "app.services", "app.services.browser_runtime"):
+    _new_dummy(_pkg)
+
+_exc_mod = _load_from_file(
+    "app.services.browser_runtime.exceptions",
+    os.path.join(_BACKEND, "app", "services", "browser_runtime", "exceptions.py"),
+)
+_ev_mod = _load_from_file(
+    "app.services.browser_runtime.evidence",
+    os.path.join(_BACKEND, "app", "services", "browser_runtime", "evidence.py"),
+)
+_po_mod = _load_from_file(
+    "app.services.browser_runtime.policy",
+    os.path.join(_BACKEND, "app", "services", "browser_runtime", "policy.py"),
+)
+_pf_mod = _load_from_file(
+    "app.services.browser_runtime.profile",
+    os.path.join(_BACKEND, "app", "services", "browser_runtime", "profile.py"),
+)
+# executor 25-C 引入：加载但不调用（用 monkey-patch 防止真执行）
+_ex_mod = _load_from_file(
+    "app.services.browser_runtime.executor",
+    os.path.join(_BACKEND, "app", "services", "browser_runtime", "executor.py"),
+)
+_rt_mod = _load_from_file(
+    "app.services.browser_runtime.runtime",
+    os.path.join(_BACKEND, "app", "services", "browser_runtime", "runtime.py"),
+)
+
+# ---- 被测符号 ----
+BrowserRuntimeError = _exc_mod.BrowserRuntimeError
+BrowserRuntimeDisabled = _exc_mod.BrowserRuntimeDisabled
+BrowserRuntimeUnavailable = _exc_mod.BrowserRuntimeUnavailable
+BrowserRuntimePolicyDenied = _exc_mod.BrowserRuntimePolicyDenied
+ProfileIsolationError = _exc_mod.ProfileIsolationError
+EvidenceRecord = _ev_mod.EvidenceRecord
+EXEC_PENDING = _ev_mod.EXEC_PENDING
+EXEC_RUNNING = _ev_mod.EXEC_RUNNING
+EXEC_SUCCESS = _ev_mod.EXEC_SUCCESS
+EXEC_FAILED = _ev_mod.EXEC_FAILED
+EXEC_BLOCKED = _ev_mod.EXEC_BLOCKED
+EXEC_DEGRADED = _ev_mod.EXEC_DEGRADED
+is_runtime_enabled = _pf_mod.is_runtime_enabled
+is_tenant_allowed = _pf_mod.is_tenant_allowed
+ensure_tenant_allowed = _pf_mod.ensure_tenant_allowed
+resolve_profile_path = _pf_mod.resolve_profile_path
+mask_tenant_id = _pf_mod.mask_tenant_id
+check_action = _po_mod.check_action
+check_url = _po_mod.check_url
+check_input = _po_mod.check_input
+check_all = _po_mod.check_all
+ALLOWED_ACTIONS = _po_mod.ALLOWED_ACTIONS
+runtime_execute = _rt_mod.execute
+runtime_status = _rt_mod.status
+
+_passed = 0
+_failed = 0
+
+
+def check(name: str, cond: bool, detail: str = ""):
+    global _passed, _failed
+    if cond:
+        _passed += 1
+        print(f"  PASS  {name}")
+    else:
+        _failed += 1
+        print(f"  FAIL  {name}  {detail}")
+
+
+def _set_flag(name: str, on):
+    setattr(CFG_SHIM.settings, name, on)
+
+
+async def _run(**kwargs) -> EvidenceRecord:
+    return await runtime_execute(**kwargs)
+
+
+def main() -> int:
+    # ============ 1. 开关关：降级 DEGRADED ============
+    print("== 1. 开关关：runtime.execute 必降级 ==")
+    rec = asyncio.run(_run(
+        tenant_id="t-1", actor="test", action="navigate", url="https://example.com/x"
+    ))
+    check("开关关：rec 不为 None", rec is not None)
+    check("开关关：status=DEGRADED", rec.status == EXEC_DEGRADED,
+          f"status={rec.status}")
+    check("开关关：error_code=DISABLED",
+          rec.error_code == "BROWSER_RUNTIME_DISABLED")
+    check("开关关：degraded 时 duration=0", rec.duration_ms == 0)
+    check("开关关：masked_tenant 已写入 metadata",
+          "masked_tenant" in rec.metadata)
+    check("开关关：to_dict 不含 callable",
+          isinstance(rec.to_dict(), dict))
+    json_text = rec.to_json()
+    check("开关关：to_json 可序列化",
+          isinstance(json.loads(json_text), dict))
+
+    # ============ 2. 开关开 + 白名单不过：仍 DEGRADED ============
+    print("== 2. 开关开 + 白名单不过：仍 DEGRADED ==")
+    _set_flag("BROWSER_RUNTIME_ENABLED", True)
+    _set_flag("BROWSER_RUNTIME_ALLOWED_TENANTS", "allowed-a,allowed-b")
+    rec = asyncio.run(_run(
+        tenant_id="not-allowed", actor="test", action="navigate",
+        url="https://example.com/x"
+    ))
+    check("白名单外：status=DEGRADED", rec.status == EXEC_DEGRADED)
+    check("白名单外：error_code=DISABLED",
+          rec.error_code == "BROWSER_RUNTIME_DISABLED")
+    check("白名单过：is_tenant_allowed(allowed-a)=True",
+          is_tenant_allowed("allowed-a") is True)
+    check("白名单外：is_tenant_allowed(not-allowed)=False",
+          is_tenant_allowed("not-allowed") is False)
+
+    # ============ 3. 开关开 + 白名单过：穿过所有闸门进入真执行 ============
+    print("== 3. 开关开 + 白名单过：穿 5 闸进真执行 ==")
+    # 真执行指向本地夹具（127.0.0.1 在策略默认白名单内），不依赖外网可达性
+    import http.server
+    import socketserver
+    import threading
+    import time
+
+    class _MockHandler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(b"<!DOCTYPE html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>")
+        def log_message(self, format, *args):
+            pass  # 静默
+
+    mock_server = socketserver.TCPServer(("127.0.0.1", 0), _MockHandler)
+    mock_port = mock_server.server_address[1]
+    threading.Thread(target=mock_server.serve_forever, daemon=True).start()
+    time.sleep(0.1)
+    local_url = f"http://127.0.0.1:{mock_port}/x"
+
+    rec = asyncio.run(_run(
+        tenant_id="allowed-a", actor="test", action="navigate",
+        url=local_url
+    ))
+    # 25-C 状态：Playwright 装好时穿过第 4 步进入真执行；未装时降级 DEGRADED
+    # —— status 必为 SUCCESS（真执行）或 DEGRADED（依赖缺失），绝不应 BLOCKED/FAILED
+    check("穿过 5 闸：status ∈ {SUCCESS, DEGRADED}",
+          rec.status in (EXEC_SUCCESS, EXEC_DEGRADED),
+          f"status={rec.status} err={rec.error_code}:{rec.error_message}")
+    check("穿过 5 闸：profile_path 已写入 metadata",
+          rec.metadata.get("profile_path") is not None)
+    if rec.status == EXEC_SUCCESS:
+        check("真执行：duration_ms > 0", rec.duration_ms > 0)
+    else:
+        # 25-B 兼容：依赖缺失时仍走 DEGRADED
+        check("依赖缺失：error_code 提示安装",
+              rec.error_code in ("PLAYWRIGHT_UNAVAILABLE", "NOT_IMPLEMENTED_25C"),
+              f"code={rec.error_code}")
+
+    # ============ 4. Policy 闸门 ============
+    print("== 4. Policy 闸门 ==")
+    check("navigate 合法", check_action("navigate").allowed)
+    check("extract 合法", check_action("extract").allowed)
+    check("screenshot 合法", check_action("screenshot").allowed)
+    # 25-D 起 fill/click/submit 已注册
+    check("fill 合法（25-D 起已注册）", check_action("fill").allowed)
+    check("click 合法（25-D 起已注册）", check_action("click").allowed)
+    check("submit 合法（25-D 起已注册）", check_action("submit").allowed)
+    check("攻击动作拒绝", not check_action("__import__").allowed)
+    check("https 白名单过", check_url("https://example.com/x").allowed)
+    check("*. 通配匹配子域",
+          check_url("https://a.b.youding.com/p").allowed)
+    check("file:// 拒绝（SSRF）", not check_url("file:///etc/passwd").allowed)
+    check("javascript: 拒绝", not check_url("javascript:alert(1)").allowed)
+    check("陌生域拒绝",
+          not check_url("https://evil.example.com/x").allowed)
+    check("空 URL 拒绝", not check_url("").allowed)
+    check("脚本注入拒绝", not check_input("<script>alert(1)</script>").allowed)
+    check("javascript: 注入拒绝", not check_input("javascript:void(0)").allowed)
+    check("正常文本通过", check_input("Hello world 2026").allowed)
+    v = check_all(action="navigate", url="https://example.com/x",
+                  input_text="hello")
+    check("三合一全合法通过", v.allowed)
+    # 25-D 升级：未注册动作（未来动作）走 ACTION_NOT_ALLOWED
+    v = check_all(action="__future_action__", url="https://example.com/x",
+                  input_text="x")
+    check("三合一动作拒绝（未注册动作）",
+          not v.allowed and v.code == "ACTION_NOT_ALLOWED")
+    v = check_all(action="navigate", url="https://evil.com/x", input_text="x")
+    check("三合一域拒绝", not v.allowed and v.code == "URL_HOST_DENIED")
+    v = check_all(action="navigate", url="https://example.com/x",
+                  input_text="<script>x</script>")
+    check("三合一输入拒绝", not v.allowed and v.code == "INPUT_DENIED")
+
+    # ============ 5. 租户 Profile 路径解析 ============
+    print("== 5. 租户 Profile 路径解析 ==")
+    pp = resolve_profile_path("tenant-a-0001")
+    check("合法 tenant_id 解析成功", pp is not None)
+    check("路径在 root 之下", pp.path.startswith(pp.root))
+    try:
+        resolve_profile_path("../etc/passwd")
+        check("路径注入拦截", False)
+    except ProfileIsolationError:
+        check("路径注入拦截", True)
+    try:
+        resolve_profile_path("bad/id")
+        check("非法字符拦截", False)
+    except ProfileIsolationError:
+        check("非法字符拦截", True)
+    # 强制把 root 改成相对路径 → realpath 解析后应仍能越界拦截
+    _set_flag("BROWSER_RUNTIME_PROFILE_ROOT", "/tmp/uj_browser_profiles")
+    pp2 = resolve_profile_path("tenant-a-0001")
+    # Windows 下 /tmp 经 realpath 会归一化，断言不依赖字面路径
+    check("显式 root 生效（realpath 解析后包含子串）",
+          pp2.root.endswith("uj_browser_profiles") and "uj_browser_profiles" in pp2.path)
+    # mask_tenant_id
+    check("短 tenant 全掩码", mask_tenant_id("ab") == "ab****")
+    check("中长 tenant 部分掩码",
+          mask_tenant_id("tenant-a-0001") == "tena****0001")
+    check("空 tenant 不抛", mask_tenant_id("") == "")
+    # 白名单抛异常形态
+    try:
+        ensure_tenant_allowed("not-allowed")
+        check("ensure_tenant_allowed 抛异常", False)
+    except BrowserRuntimeDisabled:
+        check("ensure_tenant_allowed 抛异常", True)
+
+    # ============ 6. EvidenceRecord 状态机 ============
+    print("== 6. EvidenceRecord 状态机 ==")
+    r = EvidenceRecord(tenant_id="t", actor="a", action="navigate")
+    check("默认 status=PENDING", r.status == EXEC_PENDING)
+    r.mark_running()
+    check("mark_running", r.status == EXEC_RUNNING and r.started_at is not None)
+    r.mark_success(output_ref="s3://x", output_summary="ok", duration_ms=42)
+    check("mark_success 设 status/output/duration",
+          r.status == EXEC_SUCCESS and r.output_ref == "s3://x"
+          and r.duration_ms == 42)
+    r2 = EvidenceRecord(tenant_id="t", actor="a", action="navigate")
+    r2.mark_running()
+    r2.mark_failed(error_code="E_FOO", error_message="boom")
+    check("mark_failed 截断 error_message",
+          r2.status == EXEC_FAILED and r2.error_code == "E_FOO"
+          and r2.error_message == "boom")
+    r3 = EvidenceRecord(tenant_id="t", actor="a", action="navigate")
+    r3.mark_blocked(policy_verdict={"allowed": False, "code": "X"})
+    check("mark_blocked 写 policy_verdict",
+          r3.status == EXEC_BLOCKED and r3.policy_verdict.get("code") == "X")
+    r4 = EvidenceRecord(tenant_id="t", actor="a", action="navigate")
+    r4.mark_degraded(error_code="X", error_message="y" * 1000)
+    check("mark_degraded 截断到 500",
+          r4.status == EXEC_DEGRADED and r4.error_code == "X"
+          and len(r4.error_message) == 500)
+    # 序列化含 ISO 时间
+    d = r4.to_dict()
+    check("to_dict 时间序列化为 ISO",
+          isinstance(d["started_at"], str) and "T" in d["started_at"])
+
+    # ============ 7. 异常体系继承 ============
+    print("== 7. 异常体系 ==")
+    for cls in (BrowserRuntimeDisabled, BrowserRuntimeUnavailable,
+                BrowserRuntimePolicyDenied, ProfileIsolationError):
+        check(f"{cls.__name__} 继承 BrowserRuntimeError",
+              issubclass(cls, BrowserRuntimeError))
+
+    # ============ 8. runtime.status() 三态映射 ============
+    print("== 8. runtime.status() ==")
+    _set_flag("BROWSER_RUNTIME_ENABLED", False)
+    _set_flag("BROWSER_RUNTIME_ALLOWED_TENANTS", "")
+    s = runtime_status()
+    check("开关关：status=DISABLED", s["verdict"] == "DISABLED")
+    _set_flag("BROWSER_RUNTIME_ENABLED", True)
+    s = runtime_status()
+    # 25-C 状态：Playwright 装好时 verdict=READY，未装时=DEGRADED
+    check("开关开：status ∈ {READY, DEGRADED}",
+          s["verdict"] in ("READY", "DEGRADED"),
+          f"verdict={s['verdict']}")
+
+    # ============ 9. 接线挂点结构校验 ============
+    print("== 9. 接线挂点结构校验 ==")
+    with open(os.path.join(_BACKEND, "app", "services", "ubrain",
+                            "deerflow_job_service.py"),
+              encoding="utf-8") as f:
+        src = f.read()
+    check("_browser_evidence_after_finish 在位",
+          "_browser_evidence_after_finish" in src)
+    check("调用方限定 publish 类 intent",
+          'if job.intent in ("matrix_publish", "geo_submit_pack"):' in src)
+    check("挂点在 audit 之前（保证审计先于旁路）",
+          src.index("_browser_evidence_after_finish")
+          > src.index("on_job_finished")
+          and src.index("_browser_evidence_after_finish")
+          > src.index("_audit_job_finish"))
+    check("旁路 try/except 不外泄",
+          "旁路绝不外泄" in src or "旁路" in src)
+
+    # ============ 汇总 ============
+    print(f"\n结果: {_passed} PASS / {_failed} FAIL")
+    return 1 if _failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

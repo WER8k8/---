@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.1",
+  "task_id": "T-PM-02",
+  "sprint": "COMM-1",
+  "status": "implemented_dev_2026-06-14",
+  "issued_at": "2026-06-14",
+  "implemented_at": "2026-06-14",
+  "source_of_truth": "frontend/admin/src/constants/stubVisibility.ts",
+  "strategies": {
+    "show": "送检/日常可见",
+    "hide": "菜单隐藏，直达重定向",
+    "lab": "仅 admin_lab_enabled=1 可见",
+    "planGate": "未开通套餐显示升级页",
+    "kill": "评审后从菜单剔除（已实施路由拦截）"
+  },
+  "defaults": {
+    "admin_lab_enabled": "0",
+    "admin_cert_mode": "0"
+  },
+  "platform_killed_prefixes": [
+    { "path": "/admin/geo", "current": "kill", "recommended": "kill", "note": "NCBI 生物基因，与建材无关" },
+    { "path": "/admin/v2ray-legacy", "current": "kill", "recommended": "kill", "note": "遗留壳" },
+    { "path": "/cognitive", "current": "kill", "recommended": "kill", "note": "RAG 养号，非送检" }
+  ],
+  "platform_lab_prefixes": [
+    { "path": "/admin/geo-engine", "current": "lab", "recommended": "lab", "note": "GEO 探测，须配 AI Key" },
+    { "path": "/admin/v2ray", "current": "lab", "recommended": "lab", "note": "出口网络实验" },
+    { "path": "/agent-hub", "current": "lab", "recommended": "lab", "note": "多智能体编排" },
+    { "path": "/media-factory", "current": "lab", "recommended": "planGate", "note": "视频工厂 W3" },
+    { "path": "/admin/code-tools", "current": "lab", "recommended": "lab", "note": "实验室工具，无上游统计" },
+    { "path": "/edge-cdn", "current": "lab", "recommended": "lab", "note": "边缘 CDN 实验" },
+    { "path": "/developer", "current": "lab", "recommended": "lab", "note": "开发者门户" },
+    { "path": "/templates", "current": "lab", "recommended": "lab", "note": "模板市场" },
+    { "path": "/globalization", "current": "lab", "recommended": "lab", "note": "全球化实验" },
+    { "path": "/referral", "current": "lab", "recommended": "planGate", "note": "裂变 Token" },
+    { "path": "/admin/automation", "current": "lab", "recommended": "lab", "note": "自动化编排" },
+    { "path": "/admin/projects", "current": "lab", "recommended": "lab", "note": "项目沙箱" },
+    { "path": "/admin/runtime", "current": "lab", "recommended": "lab", "note": "运行时观测" },
+    { "path": "/admin/scheduler-hub", "current": "lab", "recommended": "lab", "note": "调度中心" },
+    { "path": "/admin/ai-center/article-to-video", "current": "lab", "recommended": "planGate", "note": "文章转视频" },
+    { "path": "/admin/ai-center/article-generator", "current": "lab", "recommended": "lab", "note": "文章生成实验" },
+    { "path": "/admin/ai-center/knowledge", "current": "lab", "recommended": "lab", "note": "知识库 RAG" },
+    { "path": "/tenants/product-showcase", "current": "lab", "recommended": "hide", "note": "租户展示页" },
+    { "path": "/tenants/white-label", "current": "lab", "recommended": "planGate", "note": "白标 Enterprise" }
+  ],
+  "client_stub_rules": [
+    { "path": "/client/media-factory", "current": "planGate", "recommended": "planGate", "feature": "media_factory" },
+    { "path": "/client/article-to-video", "current": "planGate", "recommended": "planGate", "feature": "media_factory" },
+    { "path": "/client/egress", "current": "planGate", "recommended": "planGate", "feature": "egress_ip" },
+    { "path": "/client/ai-scenarios", "current": "planGate", "recommended": "planGate", "feature": "seo_matrix" },
+    { "path": "/client/app", "current": "hide", "recommended": "hide", "note": "出海计 PWA 非送检菜单" },
+    { "path": "/client/copilot", "current": "hide", "recommended": "hide", "note": "卖货副驾研发中" }
+  ],
+  "promoted_out_of_lab": [
+    { "path": "/logistics", "current": "show", "note": "七步⑦主链 · 2026-06-14 移出 PLATFORM_LAB_PREFIXES" },
+    { "path": "/admin/demo-rehearsal", "current": "show", "note": "送检彩排 · 2026-06-14 移出 lab 前缀" }
+  ],
+  "owner_decisions_pending": [
+    "O-1 HTTPS 演示域 DNS",
+    "O-2 询盘 IM/企微生产密钥",
+    "O-3 5+5 平台表 + 套餐价签字"
+  ],
+  "out_of_scope": "Kill 路由 Vue 文件未物理删除，仅拦截+菜单剥离；Owner 三项须实机配置"
+}

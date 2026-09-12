@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://youding.local/schemas/permission.json",
+  "title": "YoudingPermissionBundle",
+  "description": "当前会话权限包 — 路由码 + 按钮码",
+  "type": "object",
+  "required": ["shell", "roles", "codes"],
+  "properties": {
+    "shell": { "type": "string", "enum": ["client", "platform", "agent", "ops"] },
+    "roles": { "type": "array", "items": { "type": "string" } },
+    "codes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "permission_code 列表；super_admin 含 *:*"
+    },
+    "homePath": { "type": "string" }
+  }
+}

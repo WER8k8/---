@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://youding.local/schemas/menu-route.json",
+  "title": "YoudingMenuRoute",
+  "description": "UAC 动态菜单路由节点 — 融合 Vben + Art Edge + Element Admin meta 白名单",
+  "type": "object",
+  "required": ["name", "path", "meta"],
+  "properties": {
+    "name": { "type": "string", "description": "路由 name，唯一" },
+    "path": { "type": "string", "description": "路由 path，相对或绝对" },
+    "component": {
+      "type": "string",
+      "description": "组件路径或 Layout 别名，如 Layout / views/client/dashboard"
+    },
+    "redirect": { "type": "string" },
+    "meta": { "$ref": "#/$defs/RouteMeta" },
+    "children": {
+      "type": "array",
+      "items": { "$ref": "#" }
+    }
+  },
+  "$defs": {
+    "RouteMeta": {
+      "type": "object",
+      "required": ["title"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "icon": { "type": "string", "description": "iconify 或 emoji" },
+        "order": { "type": "integer" },
+        "keepAlive": { "type": "boolean", "default": false },
+        "hideInMenu": { "type": "boolean", "default": false },
+        "hideInTab": { "type": "boolean", "default": false },
+        "affixTab": { "type": "boolean", "default": false },
+        "shell": {
+          "type": "string",
+          "enum": ["client", "platform", "agent", "ops"]
+        },
+        "roles": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "authList": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/AuthMark" }
+        }
+      }
+    },
+    "AuthMark": {
+      "type": "object",
+      "required": ["title", "authMark"],
+      "properties": {
+        "title": { "type": "string" },
+        "authMark": { "type": "string" },
+        "code": { "type": "string", "description": "映射 admin_permissions.code" }
+      }
+    }
+  }
+}

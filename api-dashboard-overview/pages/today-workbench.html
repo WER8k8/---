@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日工作台</title>
+    <style id="theme-vars">
+/* Brand CSS — 租户工作台 Dark Dashboard */
+:root {
+  /* Seed */
+  --seed-color: #4a9b8c;
+
+  /* Core palette */
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+
+  /* Semantic state colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Semantic radius aliases */
+  --brand-radius-sm: 6px;
+  --brand-radius-md: 10px;
+  --brand-radius-lg: 14px;
+  --brand-radius-large: 14px;
+  --brand-radius-small: 6px;
+  --brand-radius-medium: 10px;
+}
+
+/* Semantic alias resolution */
+.brand-background { background-color: var(--color-background); }
+.brand-foreground { color: var(--color-foreground); }
+.brand-card { background-color: var(--color-card); }
+.brand-card-foreground { color: var(--color-card-foreground); }
+.brand-popover { background-color: var(--color-popover); }
+.brand-popover-foreground { color: var(--color-popover-foreground); }
+.brand-primary { background-color: var(--color-primary); }
+.brand-primary-foreground { color: var(--color-primary-foreground); }
+.brand-muted { background-color: var(--color-muted); }
+.brand-muted-foreground { color: var(--color-muted-foreground); }
+.brand-border { border-color: var(--color-border); }
+.brand-input { background-color: var(--color-input); }
+.brand-ring { box-shadow: 0 0 0 2px var(--color-ring); }
+
+/* Typography scale */
+.brand-h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-foreground); }
+.brand-h2 { font-size: 1.3125rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-foreground); }
+.brand-h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--color-foreground); }
+.brand-h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--color-card-foreground); }
+.brand-body { font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--color-muted-foreground); }
+.brand-body-sm { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; color: var(--color-muted-foreground); }
+.brand-caption { font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--color-muted-foreground); }
+.brand-mono { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8125rem; }
+
+/* Font stack */
+.font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-card-foreground: var(--color-card-foreground);
+    --color-popover: var(--color-popover);
+    --color-popover-foreground: var(--color-popover-foreground);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-input: var(--color-input);
+    --color-ring: var(--color-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-card-foreground { background-color: var(--color-card-foreground); }
+      .text-card-foreground { color: var(--color-card-foreground); }
+      .border-card-foreground { border-color: var(--color-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--color-card-foreground); }
+      .bg-popover { background-color: var(--color-popover); }
+      .text-popover { color: var(--color-popover); }
+      .border-popover { border-color: var(--color-popover); }
+      .ring-popover { --tw-ring-color: var(--color-popover); }
+      .bg-popover-foreground { background-color: var(--color-popover-foreground); }
+      .text-popover-foreground { color: var(--color-popover-foreground); }
+      .border-popover-foreground { border-color: var(--color-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--color-popover-foreground); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-primary-foreground { background-color: var(--color-primary-foreground); }
+      .text-primary-foreground { color: var(--color-primary-foreground); }
+      .border-primary-foreground { border-color: var(--color-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--color-primary-foreground); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-muted-foreground { background-color: var(--color-muted-foreground); }
+      .text-muted-foreground { color: var(--color-muted-foreground); }
+      .border-muted-foreground { border-color: var(--color-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--color-muted-foreground); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+      .bg-input { background-color: var(--color-input); }
+      .text-input { color: var(--color-input); }
+      .border-input { border-color: var(--color-input); }
+      .ring-input { --tw-ring-color: var(--color-input); }
+      .bg-ring { background-color: var(--color-ring); }
+      .text-ring { color: var(--color-ring); }
+      .border-ring { border-color: var(--color-ring); }
+      .ring-ring { --tw-ring-color: var(--color-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="h-screen overflow-hidden font-sans antialiased">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo__icon">优</div>
+    <div class="sidebar-logo__text"><span>优</span><span>丁</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Group: 经营总览 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">经营总览</div>
+      <a class="sidebar-item sidebar-item--active" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        今日工作台
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        今日概览
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        数据看板
+      </a>
+    </div>
+
+    <!-- Group: 获客 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">获客</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        询盘管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        智能副驾
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+        出海机 App
+      </a>
+    </div>
+
+    <!-- Group: 发品 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">发品</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        产品管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+        内容管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        发布枢纽
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect width="15" height="20" x="1" y="2" rx="2" ry="2"/></svg>
+        视频出海
+      </a>
+    </div>
+
+    <!-- Group: 履约 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">履约</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        订单管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+        物流追踪
+      </a>
+    </div>
+
+    <!-- Group: 账户 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">账户</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="M16 16l4 4"/><path d="M19 13c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+        套餐与用量
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        域名管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        团队管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        设置
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="sidebar-user__avatar">张</div>
+    <div class="sidebar-user__info">
+      <span class="sidebar-user__name">张建材</span>
+      <span class="sidebar-user__plan">专业版</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content" data-viewport-mode="app-shell">
+  <div class="today-scroll" data-scroll-region="primary">
+
+    <!-- Header Strip -->
+    <section class="today-strip" style="animation-delay:0ms;">
+      <div class="today-strip__main">
+        <div class="today-strip__head">
+          <span class="today-strip__badge">Daily</span>
+          <h2 id="greeting-text">下午好 · 外贸出海工作台</h2>
+        </div>
+        <p class="today-strip__next">有货 <span style="color:var(--color-primary);margin:0 4px;">&#8594;</span> 有曝光 <span style="color:var(--color-primary);margin:0 4px;">&#8594;</span> 能接电话</p>
+        <div class="today-strip__progress">
+          <div class="today-strip__track">
+            <div class="today-strip__fill" id="progress-fill" style="width:33%;background:var(--color-primary);"></div>
+          </div>
+          <span id="progress-label">已完成 1/3</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two-column grid -->
+    <div class="twb-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="twb-left">
+
+        <!-- Focus Card -->
+        <section class="panel twb-focus-card" id="focus-card" style="animation-delay:40ms;">
+          <span class="twb-kicker">现在做这一步</span>
+          <h2 class="twb-focus-title" id="focus-title">检查询盘回复</h2>
+          <p class="twb-focus-desc" id="focus-desc">你有 <strong style="color:var(--color-card-foreground);">5 条新询盘</strong>等待处理，及时回复可提升转化率 40%。优先回复来自美国和欧洲的买家询盘。</p>
+          <div class="twb-focus-actions">
+            <button class="btn btn--primary" id="focus-cta" onclick="completeCurrentStep()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              去回复询盘
+            </button>
+            <button class="btn btn--link">查看全部询盘</button>
+          </div>
+        </section>
+
+        <!-- Checklist Card -->
+        <section class="panel twb-checklist" style="animation-delay:80ms;">
+          <div class="twb-checklist__header">
+            <h3 class="twb-checklist__title">清单</h3>
+            <span class="twb-checklist__count" id="checklist-count">1/3 完成</span>
+          </div>
+
+          <div class="twb-steps" id="steps-container">
+            <!-- Step 1: Done -->
+            <div class="twb-step twb-step--done" data-step="0">
+              <div class="twb-step__marker twb-step__marker--done">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="twb-step__body">
+                <div class="twb-step__titles">
+                  <h4 class="twb-step__name">发布新产品</h4>
+                  <p class="twb-step__sub">上传保温材料系列至产品库</p>
+                </div>
+                <button class="btn btn--default twb-step__btn" disabled style="opacity:0.4;cursor:default;">已完成</button>
+              </div>
+            </div>
+
+            <!-- Step 2: Current -->
+            <div class="twb-step twb-step--current" data-step="1">
+              <div class="twb-step__marker twb-step__marker--current">2</div>
+              <div class="twb-step__body">
+                <div class="twb-step__titles">
+                  <h4 class="twb-step__name">检查询盘回复</h4>
+                  <p class="twb-step__sub">5 条新询盘待处理</p>
+                </div>
+                <button class="btn btn--primary twb-step__btn" id="step-1-cta" onclick="completeCurrentStep()">去处理</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Pending -->
+            <div class="twb-step twb-step--pending" data-step="2">
+              <div class="twb-step__marker twb-step__marker--pending">3</div>
+              <div class="twb-step__body">
+                <div class="twb-step__titles">
+                  <h4 class="twb-step__name">发布内容到社交平台</h4>
+                  <p class="twb-step__sub">将产品文章分发到 LinkedIn、Facebook</p>
+                </div>
+                <button class="btn btn--default twb-step__btn" disabled>稍后处理</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="twb-right">
+
+        <!-- Stats Panel -->
+        <div class="twb-stats" style="animation-delay:60ms;">
+          <div class="panel twb-stat-card">
+            <div class="twb-stat__icon" style="color:var(--color-primary);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="twb-stat__info">
+              <span class="twb-stat__value">23</span>
+              <span class="twb-stat__label">今日访客</span>
+            </div>
+          </div>
+          <div class="panel twb-stat-card">
+            <div class="twb-stat__icon" style="color:var(--color-warning);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="twb-stat__info">
+              <span class="twb-stat__value">5</span>
+              <span class="twb-stat__label">新询盘</span>
+            </div>
+          </div>
+          <div class="panel twb-stat-card">
+            <div class="twb-stat__icon" style="color:var(--color-info);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+            </div>
+            <div class="twb-stat__info">
+              <span class="twb-stat__value">12</span>
+              <span class="twb-stat__label">待发布</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <section class="panel twb-activity" style="animation-delay:100ms;">
+          <h3 class="twb-activity__title">最近动态</h3>
+          <div class="twb-activity__list">
+            <div class="twb-activity__item">
+              <div class="twb-activity__dot" style="background:var(--color-warning);"></div>
+              <div class="twb-activity__body">
+                <p class="twb-activity__text truncate">新询盘来自美国 — 关于保温材料</p>
+                <span class="twb-activity__time">10分钟前</span>
+              </div>
+            </div>
+            <div class="twb-activity__item">
+              <div class="twb-activity__dot" style="background:var(--color-success);"></div>
+              <div class="twb-activity__body">
+                <p class="twb-activity__text truncate">SEO关键词排名提升 #3&#8594;#1</p>
+                <span class="twb-activity__time">1小时前</span>
+              </div>
+            </div>
+            <div class="twb-activity__item">
+              <div class="twb-activity__dot" style="background:var(--color-primary);"></div>
+              <div class="twb-activity__body">
+                <p class="twb-activity__text truncate">产品图片上传完成</p>
+                <span class="twb-activity__time">3小时前</span>
+              </div>
+            </div>
+            <div class="twb-activity__item">
+              <div class="twb-activity__dot" style="background:var(--color-info);"></div>
+              <div class="twb-activity__body">
+                <p class="twb-activity__text truncate">发布队列: 文章已发送至3个平台</p>
+                <span class="twb-activity__time">今天 09:30</span>
+              </div>
+            </div>
+            <div class="twb-activity__item">
+              <div class="twb-activity__dot" style="background:var(--color-muted-foreground);"></div>
+              <div class="twb-activity__body">
+                <p class="twb-activity__text truncate">AI内容助手生成了3篇产品描述</p>
+                <span class="twb-activity__time">昨天 18:00</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    <style>
+/* ============================================================
+   PAGE BACKGROUND
+   ============================================================ */
+body {
+  background: #0c0d10;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(74,155,140,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   SIDEBAR — fixed 232px
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 232px;
+  height: 100vh;
+  background: rgba(17,18,21,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 16px 0;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 16px 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  margin-bottom: 8px;
+}
+.sidebar-logo__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4a9b8c, #3d8f7a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-logo__text {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.sidebar-logo__text span:first-child { font-weight: 700; }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar-group { margin-bottom: 12px; }
+.sidebar-group__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 10px 4px 10px;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  text-decoration: none;
+  border: 1px solid transparent;
+  position: relative;
+}
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+.sidebar-item--active {
+  background: rgba(74,155,140,0.1);
+  color: #fff;
+  border-left: 3px solid #4a9b8c;
+  padding-left: 7px;
+  font-weight: 600;
+}
+.sidebar-item--active svg {
+  color: #4a9b8c;
+  filter: drop-shadow(0 0 4px rgba(74,155,140,0.5));
+}
+.sidebar-item svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.sidebar-item--active svg { opacity: 1; }
+
+.sidebar-user {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 14px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-user__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a9b8c, #3d8f7a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-user__info { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user__name { font-size: 13px; font-weight: 600; color: #fff; }
+.sidebar-user__plan {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+  width: fit-content;
+}
+
+/* ============================================================
+   MAIN CONTENT — app-shell
+   ============================================================ */
+.main-content {
+  margin-left: 232px;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.today-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px;
+}
+.today-scroll::-webkit-scrollbar { width: 5px; }
+.today-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+/* ============================================================
+   TODAY STRIP — header banner
+   ============================================================ */
+.today-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+.today-strip__main { flex: 1; min-width: 240px; }
+.today-strip__head { display: flex; align-items: center; gap: 8px; }
+.today-strip__badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(74,155,140,0.15);
+  color: #4a9b8c;
+}
+.today-strip__head h2 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-foreground);
+  margin: 0;
+}
+.today-strip__next {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--color-muted-foreground);
+  margin-bottom: 0;
+}
+.today-strip__progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+}
+.today-strip__track {
+  flex: 1;
+  max-width: 200px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+.today-strip__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-primary);
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.today-strip__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: ujShimmer 2s ease-in-out infinite;
+  border-radius: 999px;
+}
+
+/* ============================================================
+   TWO-COLUMN GRID
+   ============================================================ */
+.twb-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ============================================================
+   GLASS PANEL
+   ============================================================ */
+.panel {
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+  transition: transform var(--uj-motion-duration) var(--uj-motion-ease),
+              box-shadow var(--uj-motion-duration) var(--uj-motion-ease);
+}
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(74,155,140,0.1);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  border: none;
+  outline: none;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+}
+.btn--primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn--default {
+  background: rgba(255,255,255,0.06);
+  color: var(--color-card-foreground);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn--default:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.12);
+}
+.btn--link {
+  background: none;
+  color: var(--color-primary);
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.btn--link:hover { color: #5eb8a8; text-decoration: underline; }
+
+/* ============================================================
+   FOCUS CARD — primary-tinted border
+   ============================================================ */
+.twb-focus-card {
+  border-color: rgba(74,155,140,0.25);
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.twb-focus-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), rgba(74,155,140,0.3));
+}
+.twb-kicker {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.twb-focus-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.twb-focus-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-muted-foreground);
+  margin: 0 0 18px 0;
+  max-width: 40rem;
+}
+.twb-focus-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ============================================================
+   CHECKLIST
+   ============================================================ */
+.twb-checklist { padding: 20px 24px; }
+.twb-checklist__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.twb-checklist__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0;
+}
+.twb-checklist__count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+  background: rgba(255,255,255,0.04);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.twb-steps { display: flex; flex-direction: column; gap: 4px; }
+.twb-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+}
+.twb-step--done {
+  opacity: 0.55;
+}
+.twb-step--current {
+  background: rgba(74,155,140,0.06);
+  border: 1px solid rgba(74,155,140,0.12);
+}
+.twb-step--pending {
+  opacity: 0.5;
+}
+
+.twb-step__marker {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+}
+.twb-step__marker--done {
+  background: var(--color-success);
+  color: #fff;
+}
+.twb-step__marker--current {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(74,155,140,0.15);
+}
+.twb-step__marker--pending {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-muted-foreground);
+}
+
+.twb-step__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.twb-step__titles { min-width: 0; flex: 1; }
+.twb-step__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-card-foreground);
+  margin: 0 0 2px 0;
+  line-height: 1.4;
+  transition: color var(--uj-motion-duration) var(--uj-motion-ease);
+}
+.twb-step--done .twb-step__name {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,255,255,0.25);
+}
+.twb-step__sub {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.twb-step__btn { flex-shrink: 0; }
+
+/* Step completion animation */
+.twb-step--just-completed {
+  animation: stepComplete 0.4s var(--uj-motion-ease) forwards;
+}
+@keyframes stepComplete {
+  0% { background: rgba(74,155,140,0.06); }
+  50% { background: rgba(16,185,129,0.1); }
+  100% { background: transparent; opacity: 0.55; }
+}
+
+/* ============================================================
+   STATS PANEL
+   ============================================================ */
+.twb-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.twb-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+}
+.twb-stat-card:hover { transform: none; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.twb-stat__icon { flex-shrink: 0; }
+.twb-stat__info { display: flex; flex-direction: column; }
+.twb-stat__value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-foreground);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.twb-stat__label {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   RECENT ACTIVITY
+   ============================================================ */
+.twb-activity { padding: 20px 24px; }
+.twb-activity__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0 0 16px 0;
+}
+.twb-activity__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.twb-activity__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.twb-activity__item:last-child { border-bottom: none; }
+.twb-activity__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.twb-activity__body { flex: 1; min-width: 0; }
+.twb-activity__text {
+  font-size: 13px;
+  color: var(--color-card-foreground);
+  margin: 0 0 3px 0;
+  line-height: 1.4;
+}
+.twb-activity__time {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes ujCardEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+}
+@keyframes ujShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+    
+/* ===== Spring Physics Patch (DESIGN.md §7) ===== */
+@keyframes ujCardEnterSpring {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease-out,
+              border-color 0.3s ease-out;
+}
+.panel:hover {
+  transform: translateY(-3px);
+}
+@keyframes ujPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,155,140,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(74,155,140,0); }
+}
+.uj-pulse { animation: ujPulse 2s ease-in-out infinite; }
+@keyframes ujFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.uj-float { animation: ujFloat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .uj-pulse, .uj-float { animation: none !important; }
+}
+/* ===== End Spring Physics Patch ===== */
+
+
+/* Detail Modal */
+@keyframes detailModalIn {
+  0% { opacity:0; transform:translateY(16px) scale(0.96); }
+  60% { transform:translateY(-2px) scale(1.01); }
+  100% { opacity:1; transform:translateY(0) scale(1); }
+}
+#detailModalOverlay { transition: opacity 0.2s; }
+
+
+@media (max-width: 768px) {
+  .page-grid, .grid, [class*="grid-"], [class*="kpis"], [class*="cards"] {
+    grid-template-columns: 1fr !important;
+  }
+  .sidebar, [class*="sidebar"], [class*="side-"] {
+    display: none;
+  }
+  .panel, [class*="card"] {
+    padding: 12px;
+  }
+  table { font-size: 12px; }
+  th, td { padding: 8px 6px; }
+}
+
+</style>
+
+    <script>
+/* ============================================================
+   INTERACTIVE CHECKLIST LOGIC
+   ============================================================ */
+(function() {
+  const steps = [
+    { title: '发布新产品', desc: '上传保温材料系列至产品库', focusDesc: '你有 <strong style="color:var(--color-card-foreground);">12 篇产品描述</strong>待发布。AI 已自动生成初稿，请审核后一键发布到你的独立站。', focusCta: '去发布产品' },
+    { title: '检查询盘回复', desc: '5 条新询盘待处理', focusDesc: '你有 <strong style="color:var(--color-card-foreground);">5 条新询盘</strong>等待处理，及时回复可提升转化率 40%。优先回复来自美国和欧洲的买家询盘。', focusCta: '去回复询盘' },
+    { title: '发布内容到社交平台', desc: '将产品文章分发到 LinkedIn、Facebook', focusDesc: '发布队列中有 <strong style="color:var(--color-card-foreground);">12 篇内容</strong>等待分发。一键同步到 LinkedIn、Facebook，扩大海外曝光。', focusCta: '去发布内容' }
+  ];
+
+  let completed = [true, false, false];
+
+  function updateUI() {
+    const doneCount = completed.filter(Boolean).length;
+    const total = completed.length;
+
+    // Progress
+    const pct = Math.round((doneCount / total) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = '已完成 ' + doneCount + '/' + total;
+    document.getElementById('checklist-count').textContent = doneCount + '/' + total + ' 完成';
+
+    // If all done, change fill color to success
+    const fill = document.getElementById('progress-fill');
+    if (doneCount === total) {
+      fill.style.background = 'var(--color-success)';
+    } else {
+      fill.style.background = 'var(--color-primary)';
+    }
+
+    // Find current step index (first not completed)
+    const currentIdx = completed.indexOf(false);
+
+    // Update focus card
+    if (currentIdx >= 0) {
+      document.getElementById('focus-title').textContent = steps[currentIdx].title;
+      document.getElementById('focus-desc').innerHTML = steps[currentIdx].focusDesc;
+      document.getElementById('focus-cta').innerHTML = steps[currentIdx].focusCta;
+      document.getElementById('focus-cta').onclick = function() { completeStep(currentIdx); };
+      document.getElementById('focus-card').style.display = '';
+    } else {
+      // All done
+      document.getElementById('focus-title').textContent = '今日任务已全部完成';
+      document.getElementById('focus-desc').innerHTML = '太棒了！你已完成今天的三步任务。保持节奏，持续出海获客。';
+      document.getElementById('focus-cta').textContent = '查看数据看板';
+    }
+
+    // Update steps
+    const container = document.getElementById('steps-container');
+    const stepEls = container.querySelectorAll('.twb-step');
+    stepEls.forEach(function(el, i) {
+      el.classList.remove('twb-step--done', 'twb-step--current', 'twb-step--pending', 'twb-step--just-completed');
+      const marker = el.querySelector('.twb-step__marker');
+      const btn = el.querySelector('.twb-step__btn');
+
+      if (completed[i]) {
+        el.classList.add('twb-step--done');
+        marker.className = 'twb-step__marker twb-step__marker--done';
+        marker.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        btn.className = 'btn btn--default twb-step__btn';
+        btn.disabled = true;
+        btn.style.opacity = '0.4';
+        btn.style.cursor = 'default';
+        btn.textContent = '已完成';
+      } else if (i === currentIdx) {
+        el.classList.add('twb-step--current');
+        marker.className = 'twb-step__marker twb-step__marker--current';
+        marker.textContent = String(i + 1);
+        btn.className = 'btn btn--primary twb-step__btn';
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.style.cursor = '';
+        btn.textContent = '去处理';
+        btn.onclick = function() { completeStep(i); };
+      } else {
+        el.classList.add('twb-step--pending');
+        marker.className = 'twb-step__marker twb-step__marker--pending';
+        marker.textContent = String(i + 1);
+        btn.className = 'btn btn--default twb-step__btn';
+        btn.disabled = true;
+        btn.style.opacity = '';
+        btn.textContent = '稍后处理';
+      }
+    });
+  }
+
+  function completeStep(idx) {
+    if (completed[idx]) return;
+    completed[idx] = true;
+
+    // Animate the step
+    const stepEls = document.getElementById('steps-container').querySelectorAll('.twb-step');
+    const el = stepEls[idx];
+    el.classList.add('twb-step--just-completed');
+
+    setTimeout(updateUI, 350);
+  }
+
+  window.completeCurrentStep = function() {
+    const currentIdx = completed.indexOf(false);
+    if (currentIdx >= 0) completeStep(currentIdx);
+  };
+
+  // Time-based greeting
+  (function() {
+    const h = new Date().getHours();
+    let g = '你好';
+    if (h >= 5 && h < 12) g = '早上好';
+    else if (h >= 12 && h < 18) g = '下午好';
+    else g = '晚上好';
+    document.getElementById('greeting-text').textContent = g + ' \u00B7 外贸出海工作台';
+  })();
+
+  updateUI();
+})();
+    </script>
+    <script>lucide.createIcons();</script>
+
+<!-- Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;">
+  <div id="detailModalOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);"></div>
+  <div id="detailModalContent" style="position:relative;width:min(640px,90vw);max-height:80vh;overflow-y:auto;background:rgba(21,22,26,0.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);padding:0;animation:detailModalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <h3 id="detailModalTitle" style="margin:0;font-size:17px;font-weight:600;color:var(--color-foreground);">详情</h3>
+      <button id="detailModalClose" style="background:none;border:none;color:var(--color-muted-foreground);cursor:pointer;padding:4px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='none'">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+    <div id="detailModalBody" style="padding:20px 24px 24px;font-size:14px;color:var(--color-card-foreground);line-height:1.7;"></div>
+  </div>
+</div>
+
+<script>
+/* Detail Modal Logic */
+(function() {
+  var modal = document.getElementById('detailModal');
+  var overlay = document.getElementById('detailModalOverlay');
+  var closeBtn = document.getElementById('detailModalClose');
+  var titleEl = document.getElementById('detailModalTitle');
+  var bodyEl = document.getElementById('detailModalBody');
+  if (!modal) return;
+
+  function openDetail(title, html) {
+    titleEl.textContent = title;
+    bodyEl.innerHTML = html;
+    modal.style.display = 'flex';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  function closeDetail() { modal.style.display = 'none'; }
+
+  if (overlay) overlay.addEventListener('click', closeDetail);
+  if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDetail(); });
+
+  window.openDetail = openDetail;
+  window.closeDetail = closeDetail;
+
+  /* Auto-bind: KPI cards */
+  document.querySelectorAll('.kpi-card, .stats-card, .yd-stats-card').forEach(function(card) {
+    if (card.dataset.detailBound) return;
+    card.dataset.detailBound = '1';
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      var label = card.querySelector('.kpi-card__label, .stats-card__label, [class*="label"]');
+      var value = card.querySelector('.kpi-card__value, .stats-card__value, [class*="value"]');
+      var l = label ? label.textContent : '指标详情';
+      var v = value ? value.textContent : '';
+      openDetail(l, '<div style="text-align:center;padding:24px 0;">' +
+        '<div style="font-size:48px;font-weight:700;color:var(--color-primary);margin-bottom:8px;">' + v + '</div>' +
+        '<div style="font-size:14px;color:var(--color-muted-foreground);margin-bottom:20px;">' + l + '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">环比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+12.5%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">同比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+8.3%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">目标</div><div style="font-size:16px;font-weight:600;">85%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">趋势</div><div style="font-size:16px;font-weight:600;color:var(--color-info);">上升</div></div>' +
+        '</div></div>');
+    });
+  });
+
+  /* Auto-bind: Table rows */
+  document.querySelectorAll('table tbody tr').forEach(function(row) {
+    if (row.dataset.detailBound) return;
+    row.dataset.detailBound = '1';
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+      var cells = row.querySelectorAll('td');
+      var html = '<div style="display:grid;gap:12px;">';
+      var headers = row.closest('table').querySelectorAll('th');
+      headers.forEach(function(th, i) {
+        if (cells[i]) {
+          html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="color:var(--color-muted-foreground);font-size:13px;">' + th.textContent.trim() + '</span><span style="font-size:13px;font-weight:500;">' + cells[i].textContent.trim() + '</span></div>';
+        }
+      });
+      html += '</div>';
+      var firstCell = cells[0] ? cells[0].textContent.trim() : '记录详情';
+      openDetail(firstCell, html);
+    });
+  });
+
+  /* Auto-bind: Clickable cards with data-detail attribute */
+  document.querySelectorAll('[data-detail]').forEach(function(el) {
+    if (el.dataset.detailBound) return;
+    el.dataset.detailBound = '1';
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function() {
+      openDetail(el.dataset.detailTitle || '详情', el.dataset.detail || '');
+    });
+  });
+})();
+</script>
+
+<script>
+/* Today: click activity items for detail */
+document.querySelectorAll('.activity-item, .recent-activity li, [class*="activity"]').forEach(function(item) {
+  if (item.dataset.detailBound) return;
+  item.dataset.detailBound = '1';
+  item.style.cursor = 'pointer';
+  item.addEventListener('click', function() {
+    var text = item.textContent.trim();
+    openDetail('动态详情', '<div><p style="margin:0 0 16px;color:var(--color-foreground);">' + text + '</p>' +
+      '<div style="display:grid;gap:8px;">' +
+        '<div style="padding:10px;background:rgba(74,155,140,0.08);border-radius:8px;font-size:13px;"><strong>时间：</strong>今天 14:30</div>' +
+        '<div style="padding:10px;background:rgba(59,130,246,0.08);border-radius:8px;font-size:13px;"><strong>来源：</strong>系统自动</div>' +
+        '<div style="padding:10px;background:rgba(245,158,11,0.08);border-radius:8px;font-size:13px;"><strong>优先级：</strong>普通</div>' +
+      '</div></div>');
+  });
+});
+/* Today: click stats cards */
+document.querySelectorAll('.mini-stat, .stat-card, [class*="stat"]').forEach(function(card) {
+  if (card.dataset.detailBound) return;
+  card.dataset.detailBound = '1';
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    var label = card.querySelector('[class*="label"], span:last-child');
+    var value = card.querySelector('[class*="value"], strong, h3');
+    openDetail(label ? label.textContent : '统计', '<div style="text-align:center;padding:16px 0;">' +
+      '<div style="font-size:42px;font-weight:700;color:var(--color-primary);">' + (value ? value.textContent : '-') + '</div>' +
+      '<div style="color:var(--color-muted-foreground);margin-top:4px;">' + (label ? label.textContent : '') + '</div>' +
+    '</div>');
+  });
+});
+</script>
+
+</body>
+</html>

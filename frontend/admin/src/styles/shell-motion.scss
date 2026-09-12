@@ -1,0 +1,107 @@
+/* 四壳页面动效 — 默认弱化，避免 out-in 白屏闪 */
+.shell-page-enter-active,
+.page-enter-active {
+  transition: opacity 0.12s ease;
+}
+
+.shell-page-enter-from,
+.page-enter-from {
+  opacity: 0.85;
+}
+
+/* 不再使用 leave 动画（out-in 会整页闪白） */
+.shell-page-leave-active,
+.page-leave-active {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell-page-enter-active,
+  .page-enter-active,
+  .animate-fade-in {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.animate-fade-in {
+  animation: ujShellFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes ujShellFadeIn {
+  from {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   UX Motion v2 — smooth + personality
+   目标：功能清晰前提下增加顺滑动效
+   ========================================= */
+
+@keyframes ujCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ujDataPulse {
+  0%, 100% {
+    transform: translate(-50%, 50%) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-50%, 50%) scale(1.18);
+    opacity: 1;
+  }
+}
+
+@keyframes ujMetricGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgb(122 160 183 / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(122 160 183 / 0.08);
+  }
+}
+
+/* 卡片 hover / 入场由 coachpro-mint-motion.scss 统一 300ms ease-out */
+
+.admin-dashboard .line-dot,
+.agent-dashboard .line-dot {
+  animation: ujDataPulse 2.2s ease-in-out infinite;
+}
+
+.admin-dashboard .line-dot:nth-child(odd),
+.agent-dashboard .line-dot:nth-child(odd) {
+  animation-delay: 0.35s;
+}
+
+.admin-dashboard .status-pill,
+.agent-dashboard .status-pill,
+.client-dashboard .tenant-alert .dot {
+  animation: ujMetricGlow 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-dashboard .panel,
+  .agent-dashboard .panel,
+  .client-dashboard .panel,
+  .admin-dashboard .line-dot,
+  .agent-dashboard .line-dot,
+  .admin-dashboard .status-pill,
+  .agent-dashboard .status-pill,
+  .client-dashboard .tenant-alert .dot {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

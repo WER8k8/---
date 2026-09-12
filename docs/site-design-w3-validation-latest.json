@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "task": "SITE-DESIGN-01g",
+  "contract_id": "SITE-DESIGN-01",
+  "wave": "W3",
+  "p0": 0,
+  "p1": 0,
+  "pytest_ok": true,
+  "pytest_tail": "......                                                                   [100%]\n============================== warnings summary ===============================\napp\\schemas\\ssl_certificate.py:31\n  C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\schemas\\ssl_certificate.py:31: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class SSLCertificateResponse(SSLCertificateBase):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n6 passed, 1 warning in 1.82s\n",
+  "issues": [],
+  "w3_files_checked": [
+    "frontend/components/tenant/premium/LProLanguagePicker.vue",
+    "frontend/components/tenant/premium/PremiumB2bShell.vue",
+    "frontend/composables/useTenantLanguagePicker.ts",
+    "frontend/utils/l-pro-publish-gate.ts",
+    "frontend/admin/src/components/site-builder/SiteEditorLProPublishBanner.vue",
+    "frontend/admin/src/views/tenants/site-editor.vue",
+    "backend/app/api/v1/routes/public_visitor_context.py"
+  ],
+  "acceptance": [
+    "Tier1 12 语下拉 + Tier2 Google 翻译外链",
+    "visitor-context supported_languages + language 参数切换",
+    "建站页发布就绪 / 还差 N 项提示条"
+  ]
+}

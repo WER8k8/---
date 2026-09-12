@@ -1,0 +1,612 @@
+  OK: helper body references all covered.
+### app/services/aitoearn_publish_adapter.py :: publish_video_via_aitoearn  [564-592]
+  is_method=False is_async=True has_await=False
+  params=['flow_id', 'matched', 'scheduled_at', 'task_by_account']
+  returns=['results']
+----- HELPER -----
+
+
+async def _build_aitoearn_results(flow_id, matched, scheduled_at, task_by_account):
+    results: list[dict[str, Any]] = []
+
+    for acc in matched:
+
+        aid = str(acc.get("accountId") or acc.get("id") or "")
+
+        atype = str(acc.get("accountType") or "")
+
+        task = task_by_account.get(aid) or {}
+
+        err = (task.get("errorMsg") or task.get("error_msg") or "").strip()
+
+        post_url = _task_post_url(task)
+
+        ok = _task_is_success(task) and bool(post_url)
+
+        pending = bool(task) and not ok and not err
+
+        if not task:
+
+            ok = False
+
+            err = err or "AiToEarn 未返回任务状态；若已提交请用 flow_id 在 AiToEarn 控制台核对"
+
+        elif pending:
+
+            err = err or f"已提交 AiToEarn，处理中（flow={flow_id}），请 1~3 分钟后到 {atype} 后台核对"
+
+        results.append(
+
+            {
+
+                "platform_name": atype,
+
+                "account_id": aid,
+
+                "success": ok,
+
+                "pending": pending,
+
+                "platform_post_url": post_url,
+
+                "platform_post_id": task.get("id") or flow_id,
+
+                "flow_id": flow_id,
+
+                "error_message": err or None,
+
+                "via": "aitoearn",
+
+                "verify_hint": f"AiToEarn flow={flow_id}，请到 {atype} 创作者后台核对作品",
+
+                "scheduled": bool(scheduled_at),
+
+            }
+
+        )
+
+    return results
+
+----- CALL -----
+    results = await _build_aitoearn_results(flow_id, matched, scheduled_at, task_by_account)
+
+-----------------
+WRITTEN.
+  OK: helper body references all covered.
+### app/services/growth_tools_service.py :: ai_traffic_overview  [364-451]
+  is_method=False is_async=False has_await=False
+  params=['db', 'engines']
+  returns=['ai_cards', 'behavior_analytics', 'classic_cards', 'domestic_crawl', 'domestic_search', 'global_search', 'headless_snap', 'overall_rate', 'platform_cards', 'probe_ready_count', 'total_included', 'total_tracked']
+----- HELPER -----
+
+
+def _build_traffic_platform_cards(db, engines):
+    def _engine_stats(engine_id: str) -> dict[str, int]:
+
+        """_engine_stats。
+
+
+        参数说明：
+
+        :param engine_id: 参数 engine_id
+
+        :return: 返回处理结果。
+
+        """
+
+        total = 0
+
+        included = 0
+
+        for key in engine_stat_keys(engine_id):
+
+            stats = by_engine.get(key, {"total": 0, "included": 0})
+
+            total += stats["total"]
+
+            included += stats["included"]
+
+        return {"total": total, "included": included}
+
+
+    ranking_rows = (
+
+        db.query(KeywordRanking)
+
+        .order_by(KeywordRanking.updated_at.desc())
+
+        .limit(500)
+
+        .all()
+
+    )
+
+    ranking_by_engine: dict[str, list[dict[str, Any]]] = defaultdict(list)
+
+    for r in ranking_rows:
+
+        eng = (r.search_engine or "unknown").lower()
+
+        ranking_by_engine[eng].append(
+
+            {
+
+                "keyword": r.keyword,
+
+                "rank": r.current_position,
+
+                "url": r.target_url,
+
+            }
+
+        )
+
+
+    platform_cards: list[dict[str, Any]] = []
+
+    total_included = 0
+
+    total_tracked = 0
+
+    probe_ready_count = 0
+
+    for eng in engines:
+
+        stats = _engine_stats(eng.id)
+
+        total = stats["total"]
+
+        included = stats["included"]
+
+        total_tracked += total
+
+        total_included += included
+
+        if eng.probe_ready:
+
+            probe_ready_count += 1
+
+        rate = round(included / total * 100, 1) if total else 0.0
+
+        ranks = []
+
+        for key in engine_stat_keys(eng.id):
+
+            ranks.extend(ranking_by_engine.get(key, []))
+
+        ranks = ranks[:5]
+
+        platform_cards.append(
+
+            {
+
+                "engine_id": eng.id,
+
+                "name": eng.display_name,
+
+                "family": eng.family,
+
+                "market": eng.market,
+
+                "probe_ready": eng.probe_ready,
+
+                "probe_status_label": eng.probe_status_label,
+
+                "distillation_risk": eng.distillation_risk,
+
+                "inclusion_total": total,
+
+                "inclusion_included": included,
+
+                "inclusion_rate": rate,
+
+                "top_rankings": ranks,
+
+                "traffic_signal": "indexed" if included else ("tracking" if total else "idle"),
+
+            }
+
+        )
+
+
+    overall_rate = round(total_included / total_tracked * 100, 1) if total_tracked else 0.0
+
+
+    from app.services.geo.headless_rank_probe_service import (
+
+        load_headless_probe_snapshot,
+
+        merge_snapshot_into_traffic_cards,
+
+    )
+
+
+    headless_snap = load_headless_probe_snapshot(db)
+
+    platform_cards = merge_snapshot_into_traffic_cards(platform_cards, headless_snap)
+
+
+    from app.services.crawlers.ecommerce_crawlers_smart import domestic_crawl_summary_for_traffic
+
+
+    domestic_crawl = domestic_crawl_summary_for_traffic()
+
+
+    from app.services.analytics.user_action_analytics_smart import conversion_summary_for_growth
+
+
+    behavior_analytics = conversion_summary_for_growth()
+
+
+    ai_cards = [c for c in platform_cards if c["engine_id"] in _AI_ENGINE_IDS]
+
+    classic_cards = [c for c in platform_cards if c["engine_id"] not in _AI_ENGINE_IDS]
+
+    domestic_search = [c for c in classic_cards if c["market"] == "domestic"]
+
+    global_search = [c for c in classic_cards if c["market"] == "global"]
+
+    return (ai_cards, behavior_analytics, classic_cards, domestic_crawl, domestic_search, global_search, headless_snap, overall_rate, platform_cards, probe_ready_count, total_included, total_tracked)
+
+----- CALL -----
+    ai_cards, behavior_analytics, classic_cards, domestic_crawl, domestic_search, global_search, headless_snap, overall_rate, platform_cards, probe_ready_count, total_included, total_tracked = _build_traffic_platform_cards(db, engines)
+
+-----------------
+WRITTEN.
+  OK: helper body references all covered.
+  *** WARNING block contains break/continue/raise - semantics may change
+### app/services/evolution/experience_store.py :: extract_from_records  [283-364]
+  is_method=True is_async=False has_await=False
+  params=['cutoff', 'lookback_hours', 'min_samples', 'stats', 'task_type']
+  returns=['new_experiences']
+----- HELPER -----
+
+
+    def _extract_experiences_from_stats(self, cutoff, lookback_hours, min_samples, stats, task_type):
+        new_experiences: list[dict[str, Any]] = []
+
+
+        for row in stats:
+
+            total = int(row.total or 0)
+
+            successes = int(row.successes or 0)
+
+            if total < min_samples:
+
+                continue
+
+
+            success_rate = successes / total
+
+            executor_id = row.executor_id
+
+            executor_type = row.executor_type
+
+
+            # 提取成功模式
+
+            if success_rate >= _HIGH_SUCCESS_RATE:
+
+                exp = self._create_or_update_experience(
+
+                    task_type=task_type,
+
+                    pattern_type="success_pattern",
+
+                    title=f"高成功率模式: {executor_type}/{executor_id}",
+
+                    description=(
+
+                        f"任务 {task_type} 由 {executor_type}/{executor_id} 执行，"
+
+                        f"成功率 {success_rate:.1%}（{total} 次），"
+
+                        f"平均耗时 {int(row.avg_duration or 0)}ms，"
+
+                        f"平均成本 {float(row.avg_cost or 0):.4f}"
+
+                    ),
+
+                    confidence=min(0.95, success_rate),
+
+                    pattern_data={
+
+                        "executor_id": executor_id,
+
+                        "executor_type": executor_type,
+
+                        "success_rate": round(success_rate, 4),
+
+                        "total_invocations": total,
+
+                        "avg_duration_ms": int(row.avg_duration or 0),
+
+                        "avg_cost": round(float(row.avg_cost or 0), 6),
+
+                        "lookback_hours": lookback_hours,
+
+                    },
+
+                )
+
+                if exp:
+
+                    new_experiences.append(exp)
+
+
+            # 提取失败模式
+
+            elif success_rate <= _LOW_SUCCESS_RATE:
+
+                failure_records = (
+
+                    self.db.query(EvolutionTaskRecord)
+
+                    .filter(
+
+                        EvolutionTaskRecord.task_type == task_type,
+
+                        EvolutionTaskRecord.executor_id == executor_id,
+
+                        EvolutionTaskRecord.success.is_(False),
+
+                        EvolutionTaskRecord.created_at >= cutoff,
+
+                    )
+
+                    .order_by(EvolutionTaskRecord.created_at.desc())
+
+                    .limit(10)
+
+                    .all()
+
+                )
+
+                error_codes = list(set(
+
+                    r.error_code for r in failure_records if r.error_code
+
+                ))
+
+                error_samples = [
+
+                    {"code": r.error_code, "msg": (r.error_message or "")[:200]}
+
+                    for r in failure_records[:3]
+
+                ]
+
+
+                exp = self._create_or_update_experience(
+
+                    task_type=task_type,
+
+                    pattern_type="failure_pattern",
+
+                    title=f"失败模式告警: {executor_type}/{executor_id}",
+
+                    description=(
+
+                        f"任务 {task_type} 由 {executor_type}/{executor_id} 执行，"
+
+                        f"成功率仅 {success_rate:.1%}（{total} 次），"
+
+                        f"需排查改进"
+
+                    ),
+
+                    confidence=min(0.90, 1.0 - success_rate),
+
+                    pattern_data={
+
+                        "executor_id": executor_id,
+
+                        "executor_type": executor_type,
+
+                        "success_rate": round(success_rate, 4),
+
+                        "total_invocations": total,
+
+                        "error_codes": error_codes,
+
+                        "error_samples": error_samples,
+
+                        "lookback_hours": lookback_hours,
+
+                    },
+
+                )
+
+                if exp:
+
+                    new_experiences.append(exp)
+
+        return new_experiences
+
+----- CALL -----
+        new_experiences = _extract_experiences_from_stats(self, cutoff, lookback_hours, min_samples, stats, task_type)
+
+-----------------
+WRITTEN.
+  OK: helper body references all covered.
+### app/services/nurture_execution_worker.py :: execute_pending_engagements  [187-273]
+  is_method=False is_async=True has_await=True
+  params=[]
+  returns=[]
+----- HELPER -----
+
+
+async def _process_engagement_items():
+    for item in pending:
+
+        engagement_id = item["id"]
+
+        action_type = item["action_type"]
+
+        account_id = _resolve_account_id(db, item.get("platform_account_id"))
+
+
+        if not account_id:
+
+            _mark_engagement_result(
+
+                db,
+
+                engagement_id=engagement_id,
+
+                success=False,
+
+                error_message="无法解析 AiToEarn account_id",
+
+            )
+
+            failed += 1
+
+            continue
+
+
+        # 频控检查
+
+        cycle_id = item.get("nurture_cycle_id")
+
+        if cycle_id:
+
+            from app.services.social_nurture_service import rate_limit_check
+
+
+            check = rate_limit_check(db, cycle_id=cycle_id, action_type=action_type)
+
+            if not check.get("allowed"):
+
+                logger.debug(
+
+                    "engagement %s rate-limited: %s",
+
+                    engagement_id,
+
+                    check.get("reason"),
+
+                )
+
+                continue
+
+
+        try:
+
+            if action_type == "like":
+
+                result = await _execute_like(
+
+                    account_id=account_id,
+
+                    target_post_id=item.get("target_post_id") or "",
+
+                    platform=item.get("platform", ""),
+
+                )
+
+            elif action_type in ("comment", "reply"):
+
+                result = await _execute_comment(
+
+                    account_id=account_id,
+
+                    target_post_id=item.get("target_post_id") or "",
+
+                    content=item.get("content") or "",
+
+                    platform=item.get("platform", ""),
+
+                )
+
+            elif action_type == "follow":
+
+                result = await _execute_follow(
+
+                    account_id=account_id,
+
+                    target_user_id=item.get("target_author") or item.get("target_post_id") or "",
+
+                    platform=item.get("platform", ""),
+
+                )
+
+            else:
+
+                _mark_engagement_result(
+
+                    db,
+
+                    engagement_id=engagement_id,
+
+                    success=False,
+
+                    error_message=f"不支持的互动类型: {action_type}",
+
+                )
+
+                failed += 1
+
+                continue
+
+
+            ok = not (isinstance(result, dict) and result.get("success") is False)
+
+            _mark_engagement_result(
+
+                db,
+
+                engagement_id=engagement_id,
+
+                success=ok,
+
+                error_message=None if ok else str(result)[:500],
+
+            )
+
+            executed += 1
+
+            if ok:
+
+                succeeded += 1
+
+                cycle_id = item.get("nurture_cycle_id")
+
+                if cycle_id:
+
+                    from app.services.social_nurture_service import record_action
+
+
+                    record_action(db, cycle_id=cycle_id, action_type=action_type)
+
+            else:
+
+                failed += 1
+
+
+        except Exception as exc:
+
+            logger.error("engagement %s execution failed: %s", engagement_id, exc)
+
+            _mark_engagement_result(
+
+                db,
+
+                engagement_id=engagement_id,
+
+                success=False,
+
+                error_message=str(exc)[:500],
+
+            )
+
+            failed += 1
+
+
+
+----- CALL -----
+        await _process_engagement_items()
+
+-----------------
+WRITTEN.

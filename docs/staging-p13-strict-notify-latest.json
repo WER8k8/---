@@ -1,0 +1,75 @@
+﻿{
+    "ok":  true,
+    "strict_verify":  true,
+    "verify_mode":  "strict_unsigned_reject+signed_accept",
+    "public_url":  "https://batboy-unnerve-static.ngrok-free.dev",
+    "discovered_from_ngrok":  false,
+    "health":  {
+                   "ok":  true,
+                   "status_code":  200,
+                   "url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/health"
+               },
+    "notify_urls":  {
+                        "alipay":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                        "wechat":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat"
+                    },
+    "checks":  [
+                   {
+                       "channel":  "alipay",
+                       "notify_url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                       "mode":  "strict_unsigned_reject",
+                       "status_code":  200,
+                       "order_status":  "pending",
+                       "ok":  true
+                   },
+                   {
+                       "channel":  "wechat",
+                       "notify_url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat",
+                       "mode":  "strict_unsigned_reject",
+                       "status_code":  403,
+                       "order_status":  "pending",
+                       "ok":  true
+                   }
+               ],
+    "signed_checks":  [
+                          {
+                              "channel":  "alipay",
+                              "notify_url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify",
+                              "mode":  "strict_webhook_hmac_signed",
+                              "status_code":  200,
+                              "body_ok":  true,
+                              "order_status":  "paid",
+                              "ok":  true
+                          },
+                          {
+                              "channel":  "wechat",
+                              "notify_url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify",
+                              "mode":  "strict_webhook_hmac_signed",
+                              "status_code":  200,
+                              "body_ok":  true,
+                              "order_status":  "paid",
+                              "ok":  true
+                          }
+                      ],
+    "base_url":  "http://127.0.0.1:8001",
+    "via_public":  true,
+    "public_reachability":  {
+                                "ok":  true,
+                                "public_url":  "https://batboy-unnerve-static.ngrok-free.dev",
+                                "discovered_from_ngrok":  false,
+                                "health":  {
+                                               "ok":  true,
+                                               "status_code":  200,
+                                               "url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/health"
+                                           },
+                                "notify_urls":  {
+                                                    "alipay":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                                                    "wechat":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat"
+                                                }
+                            },
+    "public_notify_hint":  {
+                               "alipay":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                               "wechat":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat"
+                           },
+    "hint":  "严验签模式：验收标准为未签名回调被拒绝（ok=true 表示拒绝生效）"
+}

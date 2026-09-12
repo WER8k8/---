@@ -1,0 +1,50 @@
+---
+description: 【强制】产品源码与开发环境工具隔离 + 生产配置隔离
+alwaysApply: true
+---
+
+# 工作区隔离（源码 · 开发工具 · 生产）
+
+<HARD-GATE>
+**本仓库目录 = 产品源码与送检资产。** 开发环境工具（Cursor/ECC、CodeGraph 索引、蜂群 workflow）**不得作为产品代码提交或部署**。
+
+| 层级 | 路径 | 说明 |
+|------|------|------|
+| **产品源码（本仓库，可入库）** | `backend/` `frontend/` `deploy/` `docs/` `scripts/` `.project/` | 改代码、构建、送检 |
+| **开发工具栈（外部，禁止入库）** | `%USERPROFILE%\.devstack\shangxian-website\` | ECC `.cursor/`、workflows、`ecc-install.json` |
+| **本地索引（仓库旁，禁止入库）** | `上线网站/.codegraph/` | CodeGraph 仅本地索引；**gitignore** |
+| **仓库联接（可选）** | `上线网站/.cursor` → 外部目录 | 目录联接/Junction，**gitignore** |
+| **生产部署** | `deploy/production/` + 远程服务器 | 仅模板；真实 `.env` 只在服务器 |
+| **知识库** | `Desktop/出海计` | 文档，不同步源码 |
+| **历史总仓** | `UJ/website CodeBuddy` | 归档；过大不宜整仓开发；**非 docs 同步源** |
+| **本仓库** | `Desktop/上线网站` | 自 CodeBuddy 完整复制的轻量开发副本，见 `docs/SOURCE-REPO.md` |
+
+## 开发工具隔离（必须遵守）
+
+- 安装/升级 ECC：`powershell -File scripts/install-dev-stack-external.ps1`
+- **禁止**将 `.cursor/`、`ecc-install.json`、完整 ECC 技能包写入 git
+- **禁止**把 Agency/ECC 安装器输出直接落在 `backend/`、`frontend/` 内
+- CodeGraph：允许 `repo/.codegraph/` 存在，但必须 **gitignore**，不得进送检包
+- 改产品代码前确认动的是 `product_paths`，不是 dev-stack
+
+## 本地开发只允许
+
+- `scripts/start-dev-admin.ps1`（SQLite、`ENVIRONMENT=development`）
+- API `:8001`、Admin `:5173`
+- 账号 `admin` / `admin123`
+
+## 禁止
+
+- 生产密钥/生产库连接串写入已跟踪文件
+- `ENVIRONMENT=production` 作为日常本地配置
+- 从 CodeBuddy 全量覆盖本仓库源码（除非用户明确要求）
+- 部署时带上 `.cursor/`、`.codegraph/`、`.env`
+
+## 验证
+
+```powershell
+powershell -File scripts/verify-dev-isolation.ps1
+```
+
+配置源：`.project/dev-stack.config.json` · 文档：`docs/DEV-TOOLS-ISOLATION.md`
+</HARD-GATE>

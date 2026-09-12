@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-06-04",
+  "status": "design-gate",
+  "summary": "客户群体 100% 建材外贸 — 页面结构与纯 SaaS 可参考，视觉与文案必须建材语境；三套公网面分工不同，不可混用一套模板。",
+  "audience": {
+    "primary_buyer": "建材工厂老板、外贸经理、市场负责人（买 SaaS 的人）",
+    "secondary_buyer": "省代/市代（卖 SaaS 给建材厂的人）",
+    "end_customer": "海外工程商、经销商、采购商（看租户站/企业官网，不买 SaaS）",
+    "not_target": "开发者、IT 采购、通用 SaaS 用户"
+  },
+  "three_surfaces": [
+    {
+      "id": "corporate-b2b",
+      "path": "/",
+      "who_sees_it": "海外采购商、工程方",
+      "job": "认厂、看产品、发询盘",
+      "design_family": "B2B 工业巨头站（hztyco / Rockwool / cnabm）",
+      "must_not": ["套餐定价", "四级渠道", "登录工作台 CTA 作为主 CTA"]
+    },
+    {
+      "id": "saas-marketing",
+      "path": "/platform",
+      "who_sees_it": "建材厂决策人（已意识到要出海/要系统）",
+      "job": "理解「这套系统帮我获客发品」→ 注册试用",
+      "design_family": "SaaS 落地页结构 + 建材外贸叙事皮肤",
+      "must_not": ["代理/IP/API 等软件业隐喻", "与 / 相同的 Hero 工厂图", "纯紫渐变 devtools 风"]
+    },
+    {
+      "id": "tenant-site",
+      "path": "/tenant",
+      "who_sees_it": "租户的最终客户（采购商）",
+      "job": "租户品牌展示 + 询盘",
+      "design_family": "B2B 工业长页（TenantSite 模板）",
+      "must_not": ["优丁平台 SaaS 文案", "建材总公司 Header"]
+    }
+  ],
+  "same_or_different": {
+    "verdict": "不完全一样 — 用两套设计语言，共用少量 token",
+    "learn_from_software_sites": [
+      "区块节奏：Hero → 能力矩阵 → 价值 Tab → 定价 → 场景 → 信任 → CTA",
+      "卡片信息公式：结果数字 + 建材场景一句 + 明确按钮",
+      "登录后：首屏用量/套餐 +「今日待办」Widget + 可搜列表（ASocks 信息架构）",
+      "定价区：档位对比表、主推档高亮、低门槛试用"
+    ],
+    "learn_from_building_materials_sites": [
+      "信任：Since 年份、产能/出口国/工程数、ISO/工厂直供/OEM",
+      "场景词：轻集料、保温、幕墙、市政、样品/data sheet、24h 回复",
+      "视觉：深海军蓝 + 白底区块 + 实拍/产品占位，忌霓虹与代码风主视觉",
+      "CTA 语气：免费试用 / 预约演示 / 获取方案 — 而非 Buy / API docs 为主"
+    ],
+    "shared_tokens": {
+      "corporate_primary": "#1e3a5f",
+      "saas_accent": "#2563eb",
+      "note": "SaaS 页可用 SaaS 蓝作 accent，但 Hero 配图与案例应偏工厂/外贸，不是 dashboard 假图"
+    }
+  },
+  "saas_marketing_tone": {
+    "headline_formula": "建材外贸 + 可量化结果 + 少功能名",
+    "examples_good": [
+      "帮建材厂把询盘、发品、独立站收进一个工作台",
+      "7 天完成：绑域名 → 发首条产品 → 收到第一条海外询盘",
+      "轻集料/岩棉/橡塑厂都在用的出海日常工具"
+    ],
+    "examples_bad": [
+      "为规模与速度而打造的代理服务基础设施",
+      "650+ 集成与 API 优先工作流",
+      "赋能网页解锁器"
+    ],
+    "hero_visual": "外贸经理看 inbox/发布进度 mock，或工厂+世界地图；禁止纯代码编辑器主图",
+    "trust_row": "建材行业客户 logo / 工程类型 / 「7 天三步」而非 G2+Google（有则加，无则换行业证词）",
+    "use_cases_grid": [
+      "Alibaba / MIC 多平台发品",
+      "独立站询盘 inbox",
+      "SEO 矩阵获客",
+      "样品与 data sheet 跟进",
+      "省代辖区开户",
+      "多 SKU 保温建材品类管理"
+    ]
+  },
+  "workbench_tone": {
+    "reference": "asocks-dashboard 仅借信息架构",
+    "first_screen": ["套餐/用量条", "待回询盘 N 条", "待发品/发布中", "绑域状态"],
+    "labels": "用业务词：询盘、发品、母版、矩阵 — 不用端口、流量池、API key 作主文案",
+    "density": "LOCKED VISUAL_DENSITY 7 — 运营 cockpit，但行话是建材外贸"
+  },
+  "design_gate_checklist": [
+    "Purpose 写清：本页给谁看、促什么动作",
+    "Copy 过 plan-copy-deck，场景词是否建材外贸",
+    "Visual 是否与 / 或 TenantSite 误同构",
+    "CTA 链是否指向 Admin 注册/登录而非建材询盘页",
+    "LOCKED §5：无紫渐变 Hero、无 Inter、动效 ≤ Taste Motion 3"
+  ],
+  "implementation_order_after_gate": [
+    "1. 定稿 /platform 线框（区块顺序 + 文案表）— 不改代码",
+    "2. 评审通过后改 platform/index.vue + saas-marketing.css",
+    "3. Admin /landing 与 /platform 结构对齐",
+    "4. 租户工作台首屏 Widget（ASocks 架构 + 建材标签）"
+  ],
+  "references_reclassified": {
+    "iproyal-cn": "结构参考 primary — 皮肤与文案 secondary",
+    "asocks": "控制台 IA primary — 营销页仅借定价 Toggle 与简洁导航",
+    "b2b_giants": "tenant + corporate 主参考 — 不用于 /platform 主视觉"
+  }
+}

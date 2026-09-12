@@ -1,0 +1,19 @@
+[AUTH] create_access_token OK
+
+=== 未鉴权（应 401/403，证明鉴权中间件生效）===
+  /api/v1/admin/menus -> 404
+
+=== 带 token 的业务端点 ===
+  /api/v1/admin/menus -> 404 :: {"detail":"Not Found"}
+  /api/v1/admin/roles -> 404 :: {"detail":"Not Found"}
+  /api/v1/admin/permissions -> 404 :: {"detail":"Not Found"}
+  /api/v1/products -> 200 :: {"code":0,"message":"success","data":{"items":[{"id":"5e257c1a-ae4f-4ac5-b277-b1a58484dd1c","category_id":"a4f760ce-ffea-4545-80b0-17d1fbecfcd4","name":"LC20轻集料
+  /api/v1/tenants -> 200 :: {"code":0,"message":"success","data":{"stats":{"total_tenants":2,"active_tenants":2,"trial_tenants":0,"suspended_tenants":0,"expiring_soon":0,"new_tenants_this_
+  /api/v1/orders -> 404 :: {"detail":"Not Found"}
+  /api/v1/leads/summary -> 404 :: {"detail":"Not Found"}
+  /api/v1/seo/matrix/dashboard -> 404 :: {"detail":"Not Found"}
+  /api/v1/health -> 200 :: {"code":0,"message":"success","data":{"status":"ok"},"total":null,"page":null,"page_size":null}
+
+=== 数据写入回读（闭环）===
+  POST /api/v1/products -> 307 :: 
+  GET  /api/v1/products -> 200 :: {"code":0,"message":"success","data":{"items":[{"id":"5e257c1a-ae4f-4ac5-b277-b1a58484dd1c","category_id":"a4f760ce-ffea-4545-80b0-17d1fbecfcd4","name":"LC20轻集料混凝土","slug":"lc20-lightweight-concrete",

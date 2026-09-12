@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "task": "MOD-06-cap-prep",
+  "build_prep_pass": true,
+  "capacitor_in_package_json": true,
+  "android_dir": true
+}

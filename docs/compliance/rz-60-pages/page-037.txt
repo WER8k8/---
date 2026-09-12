@@ -1,0 +1,46 @@
+// FILE: backend\app\core\data_export_guard.py
+    if scope == "platform" and _export_founder_only():
+        if not user_is_founder(db, user):
+            log_security_event(
+                db,
+                action=ACTION_DATA_EXPORT_DENIED,
+                user=user,
+                detail={**detail, "reason": "platform_export_founder_only"},
+                request=request,
+                resource_id=export_kind,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="全平台数据导出仅创始人账号可执行（防成果拷贝）",
+            )
+
+    if scope == "tenant":
+        allowed_roles = {
+            "super_admin",
+            "admin",
+            "tenant_admin",
+            "sales",
+            "editor",
+        }
+        if role not in allowed_roles:
+            log_security_event(
+                db,
+                action=ACTION_DATA_EXPORT_DENIED,
+                user=user,
+                detail={**detail, "reason": "role_not_allowed"},
+                request=request,
+                resource_id=export_kind,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="无权导出该数据",
+            )
+
+    log_security_event(
+        db,
+        action=ACTION_DATA_EXPORT,
+        user=user,
+        detail=detail,
+        request=request,
+        resource_id=export_kind,
+    )

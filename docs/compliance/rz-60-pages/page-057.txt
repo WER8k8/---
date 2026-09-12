@@ -1,0 +1,51 @@
+// FILE: backend\app\core\logging_config.py
+alert_manager = AlertManager()
+
+
+def send_to_feishu_bot(message: str, level: str = "INFO") -> bool:
+    """发送消息到飞书机器人（默认渠道）- 永久有效配置"""
+    try:
+        # 检查飞书通知是否启用
+        if not settings.FEISHU_NOTIFICATION_ENABLED:
+            logger = logging.getLogger("alert.feishu")
+            logger.info("飞书通知已禁用，跳过发送")
+            return False
+
+        # 检查飞书配置是否已设置
+        if not settings.FEISHU_APP_ID or not settings.FEISHU_APP_SECRET:
+            logger = logging.getLogger("alert.feishu")
+            logger.warning("飞书AppID或AppSecret未配置，跳过飞书消息发送")
+            return False
+
+        # 构建飞书消息卡片
+        card = {
+            "config": {"wide_screen_mode": True},
+            "header": {
+                "title": {"tag": "plain_text", "content": f"🔔 系统通知 [{level}]"},
+                "template": "red" if level in ["CRITICAL", "ERROR"] else "blue",
+            },
+            "elements": [
+                {"tag": "div", "text": {"tag": "lark_md", "content": f"{message}"}},
+                {
+                    "tag": "div",
+                    "text": {"tag": "plain_text", "content": f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"},
+                },
+            ],
+        }
+
+        # 通过内部API发送
+        from app.services.feishu.client import FeishuClient
+
+        feishu_client = FeishuClient()
+        feishu_client.send_broadcast_message(message, card)
+
+        logger = logging.getLogger("alert.feishu")
+        logger.info(f"飞书消息发送成功: {message[:50]}...")
+        return True
+    except Exception as e:
+        logger = logging.getLogger("alert.feishu")
+        logger.error(f"飞书消息发送失败: {e}")
+        return False
+
+
+def send_work_report_to_feishu(

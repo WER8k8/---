@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "task": "QA-04",
+  "checks": {
+    "smoke_report_pass": true,
+    "dryrun_report_pass": true,
+    "schedule_md": true,
+    "locustfile": true,
+    "script_qa-locust-smoke-with-backend": true,
+    "script_qa-locust-72h-dryrun": true,
+    "script_qa-locust-72h-production": true
+  },
+  "human_pending": "HTTPS 域正式 72h"
+}

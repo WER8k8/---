@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-05-31T09:40:55.237281+00:00",
+  "base": "http://127.0.0.1:8001",
+  "passed": true,
+  "fail_count": 0,
+  "results": [
+    {
+      "name": "login",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "d2_status",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "d3_research_brief",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "d4_pipelines",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "d5_integrations",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "d6_feedback_sync",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "ubrain_chat_live",
+      "ok": true,
+      "detail": "status=200 intent=general len=136"
+    }
+  ]
+}

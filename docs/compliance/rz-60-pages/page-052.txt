@@ -1,0 +1,8 @@
+// FILE: backend\app\core\logging.py
+"""Logging module - compatibility layer for app.core.logging_config"""
+
+from app.core.logging_config import LogConfig
+
+def get_logger(name: str):
+    """Get logger instance - compatibility wrapper."""
+    return LogConfig.get_logger(name)

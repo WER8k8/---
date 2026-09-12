@@ -1,0 +1,1 @@
+import{k as o}from"./Bqpd76b4.js";import{x as e,a3 as r,a2 as a}from"./Dw5cRyJq.js";import"./cicrfwpc.js";import"./CP305iJ0.js";import"./DiYaDy8a.js";import"./BKQVsGck.js";import"./BYlmoOb2.js";import"./D_vXau2e.js";const k=e({__name:"index",setup(p){return(n,m)=>{const t=o;return a(),r(t,{page:"products"})}}});export{k as default};

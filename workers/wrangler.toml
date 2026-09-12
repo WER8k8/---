@@ -1,0 +1,43 @@
+name = "international-crawler"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ===== 路由 =====
+routes = [
+  { pattern = "api/international/crawl", zone_name = "your-domain.com" },
+]
+
+# ===== 环境变量 =====
+# 生产值通过 wrangler secret put 设置，本地开发通过 .dev.vars 或 wrangler dev --var
+# 参考 workers/DEPLOY.md
+
+[vars]
+WEBHOOK_URL = "https://your-domain.com/api/v1/international/webhook"
+ENCRYPTION_KEY = ""
+HMAC_KEY = ""
+PROXY_ENDPOINT = ""
+
+# ===== KV 命名空间（缓存） =====
+[[kv_namespaces]]
+binding = "CRAWLER_CACHE"
+id = ""
+preview_id = ""
+
+# ===== D1 数据库 =====
+[[d1_databases]]
+binding = "CRAWLER_DB"
+database_name = "crawler-db"
+database_id = ""
+
+# ===== 本地开发配置 =====
+# 本地运行时覆盖 vars（优先级高于 [vars]）
+# 创建 .dev.vars 文件（已 gitignore）:
+#   WEBHOOK_URL="http://localhost:9099/webhook"
+#   ENCRYPTION_KEY="000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+#   HMAC_KEY="deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+#   PROXY_ENDPOINT=""
+#
+# 启动方式:
+#   npm run dev              # wrangler dev
+#   npm run dev -- --remote  # 连接远程 KV/D1

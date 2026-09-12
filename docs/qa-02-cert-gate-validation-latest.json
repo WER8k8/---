@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "task": "QA-02",
+  "ready": false,
+  "blocked": true,
+  "blocking_failures": [
+    "audit-page-stubs"
+  ],
+  "generated_at": "2026-06-05T06:15:00.270Z",
+  "source": "docs\\certification-gate-admin-latest.json",
+  "full_rerun": "cd frontend/admin && npm run cert:gate"
+}

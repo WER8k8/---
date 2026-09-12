@@ -1,0 +1,10 @@
+{
+  "task": "PAT-02",
+  "status": "pending_agency",
+  "memo": "docs/专利/PAT-02-novelty-search-memo.md",
+  "handoff_checklist": "docs/专利/PAT-02-agency-handoff-checklist.md",
+  "search_report_number": null,
+  "agency_name": null,
+  "received_at": null,
+  "notes": "代理机构回填 search_report_number 后 status 改为 complete"
+}

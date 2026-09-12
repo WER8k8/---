@@ -1,0 +1,3 @@
+browser_runtime: blocked tenant=t-**** action=fill code=INPUT_DENIED reason=input contains denied pattern
+browser_runtime: blocked tenant=t-**** action=click code=CLICK_TARGET_DENIED reason=click target contains denied pattern (js/script/event)
+browser_runtime: blocked tenant=t-**** action=submit code=SUBMIT_REQUIRES_HUMAN_REVIEW reason=submit requires human review (auto_submit not set)

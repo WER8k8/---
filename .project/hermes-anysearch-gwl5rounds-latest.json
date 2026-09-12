@@ -1,0 +1,390 @@
+{
+  "generated_at": "2026-06-06T23:44:29.093519+00:00",
+  "plan": "gwl",
+  "focus": "marketingforce",
+  "rounds_planned": 5,
+  "anysearch_cli": "C:\\Users\\97907\\.cursor\\skills\\anysearch\\scripts\\anysearch_cli.py",
+  "constitution": "read_probe + suggest_remediation only; no auto mutate",
+  "signals_summary": {
+    "gw_pending_p0": 0,
+    "patrol_fail": null
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "topic_key": "outreach_quality",
+      "topic_label": "开发信送达与反垃圾箱",
+      "lane": "GW-L",
+      "anysearch_query": "B2B cold email deliverability SPF DKIM warmup 2026 best practices",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:outreach_quality:01116f5a",
+        "finding": "开发信链路已接入 deliverability_summary（质量分、时区窗、跟进节奏、SPF 清单）。下一迭代：GW-P-TR-01 UTM 全链路与真实 webhook 打开率。 外网（AnySearch）：「B2B Cold Email Deliverability: 21 Best Practices 2026 - Clay」— - Master B2B cold email deliverability with 21 proven best practices: domain setup, inbox warmup, authentication, and copy tips that keep you out of spam.",
+        "impact": "medium",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "B2B Cold Email Deliverability: 21 Best Practices 2026 - Clay",
+          "url": "https://www.clay.com/blog/b2b-cold-email-deliverability",
+          "snippet": "- Master B2B cold email deliverability with 21 proven best practices: domain setup, inbox warmup, authentication, and copy tips that keep you out of spam."
+        },
+        {
+          "title": "Email Deliverability 101: Warm-Up, SPF, DKIM & DMARC Basics",
+          "url": "https://superhumanprospecting.com/email-deliverability-101-warm-up-spf-dkim-and-dmarc-basics/",
+          "snippet": "- In today’s fiercely competitive B2B landscape, email remains a linchpin for sales, marketing, and customer engagement strategies. Whether you’re a business owner, VP of Sales, VP of Marketing, or part of a dynamic startup’s sales development team, your success hinges on one critical metric: email de..."
+        },
+        {
+          "title": "the complete guide to cold email in 2026. : r/coldemail - Reddit",
+          "url": "https://www.reddit.com/r/coldemail/comments/1rqgf1w/the_complete_guide_to_cold_email_in_2026/",
+          "snippet": "- Cold Email, one of the most effective and scalable methods of B2B outreach. This is a community of entrepreneurs, sales professionals, and ..."
+        },
+        {
+          "title": "Cold Email Deliverability 2026: Definitive Guide to SPF, DKIM, DMARC, Warmup, and Sender Reputation | Knowlee Blog",
+          "url": "https://www.knowlee.ai/blog/cold-email-deliverability-2026",
+          "snippet": "- The good news: deliverability is largely engineering. Unlike reply rates (which depend on the quality of your ICP and messaging), deliverability depends on technical configuration, list hygiene, warmup discipline, and content quality — all of which are controllable. The bad news: the configuration s..."
+        },
+        {
+          "title": "Cold Email in 2026: Domains, Deliverability, Replies - Unify",
+          "url": "https://www.unifygtm.com/explore/cold-email-2026-domain-setup-deliverability-sequences",
+          "snippet": "- Cold Email Deliverability Checklist for 2026 ___Verify your email list using a validation service (ZeroBounce, NeverBounce, or similar). ... ___Check your domain against blacklists using MXToolbox or Google Postmaster Tools. ___Send plain text emails. ... ___Keep emails under 80 words. ... ___Use o…"
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "sales",
+          "label": "销售与 outbound",
+          "action": "adjust_outreach_playbook",
+          "expert_ids": [
+            "expert_letter",
+            "expert_negotiate",
+            "expert_crm",
+            "expert_diligence"
+          ],
+          "agent_refs": [
+            "Outbound 策略师",
+            "赢单策略师",
+            "Discovery 教练"
+          ],
+          "note": "开发信链路已接入 deliverability_summary（质量分、时区窗、跟进节奏、SPF 清单）。下一迭代：GW-P-TR-01 UTM 全链路与真实 webhook 打开率。 外网（AnySearch）：「B2B Cold Email Deliverability: 21 Best Practices 2026 - Clay」— - Master B2B cold email deliverability with 21 proven best practices:"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "开发信链路已接入 deliverability_summary（质量分、时区窗、跟进节奏、SPF 清单）。下一迭代：GW-P-TR-01 UTM 全链路与真实 webhook 打开率。 外网（AnySearch）：「B2B Cold Email Deliverability: 21 Best Practices 2026 - Clay」— - Master B2B cold email deliverability with 21 proven best practices:"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "topic_key": "inquiry_crm",
+      "topic_label": "询盘评分与 MEDDPICC",
+      "lane": "GW-L",
+      "anysearch_query": "B2B export inquiry scoring MEDDPICC CRM pipeline SaaS",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:inquiry_crm:18c7a031",
+        "finding": "【询盘评分与 MEDDPICC】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「The Ultimate Guide to the MEDDPICC Sales Methodology - Forecastio」— - The MEDDPICC sales methodology is a structured, proven approach designed to help sales teams navigate the complexities of enterprise sales.",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "The Ultimate Guide to the MEDDPICC Sales Methodology - Forecastio",
+          "url": "https://forecastio.ai/blog/meddpicc-sales-methodology",
+          "snippet": "- The MEDDPICC sales methodology is a structured, proven approach designed to help sales teams navigate the complexities of enterprise sales."
+        },
+        {
+          "title": "| SalesMethods",
+          "url": "https://salesmethods.com/blog/how-to-use-meddic-in-salesforce/",
+          "snippet": "- In this article, we’ll walk you through both approaches. First, how to implement MEDDIC or MEDDPICC® yourself. Then, we’ll look at a Salesforce-native app that embeds the methodology directly onto opportunity records. We’ll cover the pros and cons of each so you can make the right call for your team..."
+        },
+        {
+          "title": "Best MEDDPICC Metrics to Track in B2B Sales (2026 Guide)",
+          "url": "https://www.coffee.ai/articles/best-meddpicc-metrics-b2b-sales/",
+          "snippet": "- Qualification Score: Average MEDDPICC percentage across pipeline · MEDDPICC is a modern evolution of MEDDIC that adds Paper Process and Competition to address enterprise complexity. The comparison below shows how each element expanded, with the two new components closing gaps around approvals and co..."
+        },
+        {
+          "title": "How MEDDICC helps sellers drive urgency in B2B SaaS sales",
+          "url": "https://saleshood.com/blog/meddicc-sales-methodology/",
+          "snippet": "- MEDDICC is a sales methodology and it is one of the most common strategies used by CROs in B2B software sales to help their sales teams drive urgency."
+        },
+        {
+          "title": "MEDDPICC Deal Scoring: How AI Measures Qualification Quality Before Your Forecast Does",
+          "url": "https://www.spotlight.ai/post/meddpicc-deal-scoring-how-ai-measures-qualification-quality-before-your-forecast-does",
+          "snippet": "- A completed CRM field is not evidence of a qualified deal. It's evidence that someone typed something. Scoring is different. Here's how to tell them apart. Deal scoring assigns a quantitative measure of qualification quality to an opportunity based on the strength of evidence across key dimensions....."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "sales",
+          "label": "销售与 outbound",
+          "action": "adjust_outreach_playbook",
+          "expert_ids": [
+            "expert_letter",
+            "expert_negotiate",
+            "expert_crm",
+            "expert_diligence"
+          ],
+          "agent_refs": [
+            "Outbound 策略师",
+            "赢单策略师",
+            "Discovery 教练"
+          ],
+          "note": "【询盘评分与 MEDDPICC】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「The Ultimate Guide to the MEDDPICC Sales Methodology - Forecastio」— - The MEDDPICC sales methodology is a structured, proven approach designed to help sales teams navigate"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【询盘评分与 MEDDPICC】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「The Ultimate Guide to the MEDDPICC Sales Methodology - Forecastio」— - The MEDDPICC sales methodology is a structured, proven approach designed to help sales teams navigate"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "topic_key": "buyer_scout",
+      "topic_label": "找客画像与人工核实",
+      "lane": "GW-L",
+      "anysearch_query": "AI B2B prospecting human in the loop verification export manufacturing",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:buyer_scout:3008dc9e",
+        "finding": "【找客画像与人工核实】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Human-in-the-Loop AI in Manufacturing: Why the Future Isn't… | Tulip」— - Human-in-the-Loop (HITL) in manufacturing is an operational model where AI systems and human workers collaborate on tasks. The AI processes data and provides recommendations, but",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "Human-in-the-Loop AI in Manufacturing: Why the Future Isn't… | Tulip",
+          "url": "https://tulip.co/blog/human-in-the-loop-ai-explained/",
+          "snippet": "- Human-in-the-Loop (HITL) in manufacturing is an operational model where AI systems and human workers collaborate on tasks. The AI processes data and provides recommendations, but a human expert retains the authority to verify, modify, or execute the final decision — ensuring safety, accountability, ..."
+        },
+        {
+          "title": "Find Verified International Buyers | ITAI Export Assistant",
+          "url": "https://www.internationaltradeai.com/",
+          "snippet": "- Our AI maps global markets, finds best‑fit companies, and delivers verified leads with decision‑maker data. ### B2B prospecting for manufacturers, simplified B2B prospecting starts with a clear ideal buyer profile and ends with booked meetings. We combine company fit scores, role‑based contact ve..."
+        },
+        {
+          "title": "Humans in the Loop | Ethical AI with 99% Data Accuracy",
+          "url": "https://humansintheloop.org/",
+          "snippet": "- Humans in the Loop is a social enterprise which provides ethical dataset collection and annotation services to power your AI solutions."
+        },
+        {
+          "title": "AI-powered Sales Prospecting Platform",
+          "url": "https://overloop.com/",
+          "snippet": "- Overloop AI is an AI-powered sales prospecting platform. Our AI engine runs all your outbound campaigns 100% automatically. Free 90% of your SDRs' time, ..."
+        },
+        {
+          "title": "Fineris | Export Intelligence Platform for Manufacturers",
+          "url": "https://www.fineris.co/",
+          "snippet": "- We help manufacturers, producers and commodity traders identify and connect with qualified international buyers through AI-powered market research and data-driven discovery. AI-powered buyer matching system From market research to qualified conversations, we systematize your international buyer di....."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "sales",
+          "label": "销售与 outbound",
+          "action": "adjust_outreach_playbook",
+          "expert_ids": [
+            "expert_letter",
+            "expert_negotiate",
+            "expert_crm",
+            "expert_diligence"
+          ],
+          "agent_refs": [
+            "Outbound 策略师",
+            "赢单策略师",
+            "Discovery 教练"
+          ],
+          "note": "【找客画像与人工核实】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Human-in-the-Loop AI in Manufacturing: Why the Future Isn't… | Tulip」— - Human-in-the-Loop (HITL) in manufacturing is an operational model where AI systems and human workers co"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【找客画像与人工核实】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Human-in-the-Loop AI in Manufacturing: Why the Future Isn't… | Tulip」— - Human-in-the-Loop (HITL) in manufacturing is an operational model where AI systems and human workers co"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "topic_key": "rfq_negotiation",
+      "topic_label": "RFQ 谈单与成本底线",
+      "lane": "GW-L",
+      "anysearch_query": "B2B RFQ negotiation playbook export manufacturer price defense",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:rfq_negotiation:c262e3d5",
+        "finding": "【RFQ 谈单与成本底线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Online Marketplaces : 10 Best Platforms for Wholesale Buying ...」— - Suppliers (manufacturers, wholesalers, distributors) list products, set pricing tiers, and fulfill orders. Buyers (retailers, procurement teams, resellers) search for products, c",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "B2B Online Marketplaces : 10 Best Platforms for Wholesale Buying ...",
+          "url": "https://acquirex.io/blog/b2b-online-marketplaces/",
+          "snippet": "- Suppliers (manufacturers, wholesalers, distributors) list products, set pricing tiers, and fulfill orders. Buyers (retailers, procurement teams, resellers) search for products, compare suppliers, and place bulk orders. What separates a B2B marketplace from a regular online store? Bulk ordering is st..."
+        },
+        {
+          "title": "B2B Purchasing Negotiation Five Strategies to Reduce ...",
+          "url": "https://www.youtube.com/watch?v=kwfJifxukZ0",
+          "snippet": "- The following video outlines five purchasing and procurement strategies all geared towards lowering vendor prices and or reducing supply ..."
+        },
+        {
+          "title": "The Price Negotiation Playbook: A Practical B2B Guide for Winning ...",
+          "url": "https://www.amazon.com/Price-Negotiation-Playbook-Practical-Confidence/dp/0989723828",
+          "snippet": "- \"Joanne Smith's training workshops at PPS Events have been invaluable for our members worldwide. Her pricing-thought leadership combined with her experience and success at DuPont make \"The Price Negotiation Playbook\" a great read. This playbook will be an invaluable resource to lead B2B sales organi..."
+        },
+        {
+          "title": "Unlocking the Power of Contract Negotiation Playbooks",
+          "url": "https://www.gtlaw-dataprivacydish.com/2023/03/unlocking-the-power-of-contract-negotiation-playbooks/",
+          "snippet": "- A well-crafted “playbook” for contract negotiations can significantly streamline the process, mitigate potential risks, and ultimately save time ..."
+        },
+        {
+          "title": "Meegle | Free Download Contract Negotiation Playbook Template",
+          "url": "https://www.meegle.com/en_us/advanced-templates/rfq_management/contract_negotiation_playbook_template",
+          "snippet": "- The Contract Negotiation Playbook Template is tailored for professionals and teams involved in contract management and negotiation. Typical users include procurement managers, legal advisors, business development executives, and project managers. For instance, a procurement manager in a manufacturin..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "sales",
+          "label": "销售与 outbound",
+          "action": "adjust_outreach_playbook",
+          "expert_ids": [
+            "expert_letter",
+            "expert_negotiate",
+            "expert_crm",
+            "expert_diligence"
+          ],
+          "agent_refs": [
+            "Outbound 策略师",
+            "赢单策略师",
+            "Discovery 教练"
+          ],
+          "note": "【RFQ 谈单与成本底线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Online Marketplaces : 10 Best Platforms for Wholesale Buying ...」— - Suppliers (manufacturers, wholesalers, distributors) list products, set pricing tiers, and fulfill or"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【RFQ 谈单与成本底线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Online Marketplaces : 10 Best Platforms for Wholesale Buying ...」— - Suppliers (manufacturers, wholesalers, distributors) list products, set pricing tiers, and fulfill or"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "topic_key": "email_warmup",
+      "topic_label": "域名预热与 SPF/DKIM",
+      "lane": "GW-L",
+      "anysearch_query": "email domain warmup SPF DKIM DMARC B2B outreach compliance 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:email_warmup:b37df045",
+        "finding": "【域名预热与 SPF/DKIM】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Email Warmup For New Domains: What Actually Works in 2026」— - Email warmup for new domains in 2026 is harder than it has ever been. Google and Microsoft tightened sender guidelines significantly in 2024, then tightened them again in 2025. N",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "Email Warmup For New Domains: What Actually Works in 2026",
+          "url": "https://leadhaste.com/blog/email-warmup-for-new-domains",
+          "snippet": "- Email warmup for new domains in 2026 is harder than it has ever been. Google and Microsoft tightened sender guidelines significantly in 2024, then tightened them again in 2025. New domains start at zero sender reputation, and the warmup process now has to navigate stricter pattern-detection algorith..."
+        },
+        {
+          "title": "Cold email infrastructure: the complete 2026 build guide | The Inbox Ledger",
+          "url": "https://theinboxledger.com/cold-email-infrastructure/",
+          "snippet": "- This guide is the build reference we use when teams ask how to set up cold email infrastructure correctly in 2026. It covers the five layers (secondary domains, DNS authentication, dedicated mailboxes, warmup, and sending tools), the order to build them in, the sending limits that keep domains alive..."
+        },
+        {
+          "title": "Cold Email in 2026: Domains, Deliverability, Replies - Unify",
+          "url": "https://www.unifygtm.com/explore/cold-email-2026-domain-setup-deliverability-sequences",
+          "snippet": "- Key takeaways: Register secondary domains and authenticate with SPF, DKIM, and DMARC before sending a single cold email; Warm up new mailboxes ..."
+        },
+        {
+          "title": "Email Warmup: Complete Guide for B2B | Overloop",
+          "url": "https://overloop.com/blog/email-warmup",
+          "snippet": "- Quick answer: Email warmup is the practice of gradually ramping email volume from a new or inactive sender, mailbox, domain, or IP, so mailbox providers like Gmail, Microsoft 365, Yahoo, and Apple Mail build a positive sender reputation before any high-volume cold outreach begins. It combines two me..."
+        },
+        {
+          "title": "Email Warm Up Guide: 20+ Tips for Better Deliverability (2026)",
+          "url": "https://growthlist.co/email-warm-up-guide/",
+          "snippet": "- Get 20+ proven tips, email warm up strategies, and automated tools to improve email deliverability and avoid spam filters."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "sales",
+          "label": "销售与 outbound",
+          "action": "adjust_outreach_playbook",
+          "expert_ids": [
+            "expert_letter",
+            "expert_negotiate",
+            "expert_crm",
+            "expert_diligence"
+          ],
+          "agent_refs": [
+            "Outbound 策略师",
+            "赢单策略师",
+            "Discovery 教练"
+          ],
+          "note": "【域名预热与 SPF/DKIM】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Email Warmup For New Domains: What Actually Works in 2026」— - Email warmup for new domains in 2026 is harder than it has ever been. Google and Microsoft tightened sender g"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【域名预热与 SPF/DKIM】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Email Warmup For New Domains: What Actually Works in 2026」— - Email warmup for new domains in 2026 is harder than it has ever been. Google and Microsoft tightened sender g"
+        }
+      ]
+    }
+  ],
+  "executive_summary": "## Hermes × AnySearch 十轮研究摘要\n\n**R1 开发信送达与反垃圾箱** (GW-L) — hits=5 ecc=skip → sales, pm\n- 开发信链路已接入 deliverability_summary（质量分、时区窗、跟进节奏、SPF 清单）。下一迭代：GW-P-TR-01 UTM 全链路与真实 webhook 打开率。 外网（AnySearch）：「B2B Cold Email Deliverability: 21 Best Practices 2026 - Clay」— - Master B2B cold email deliverability with 21 proven best practices: domain setup, inbox warmup, authenticat…\n\n**R2 询盘评分与 MEDDPICC** (GW-L) — hits=5 ecc=skip → sales, pm\n- 【询盘评分与 MEDDPICC】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「The Ultimate Guide to the MEDDPICC Sales Methodology - Forecastio」— - The MEDDPICC sales methodology is a structured, proven approach designed to help sales teams navigate the complexities of enterprise sales.…\n\n**R3 找客画像与人工核实** (GW-L) — hits=5 ecc=skip → sales, pm\n- 【找客画像与人工核实】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Human-in-the-Loop AI in Manufacturing: Why the Future Isn't… | Tulip」— - Human-in-the-Loop (HITL) in manufacturing is an operational model where AI systems and human workers collaborate on tasks. The AI processes dat…\n\n**R4 RFQ 谈单与成本底线** (GW-L) — hits=5 ecc=skip → sales, pm\n- 【RFQ 谈单与成本底线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Online Marketplaces : 10 Best Platforms for Wholesale Buying ...」— - Suppliers (manufacturers, wholesalers, distributors) list products, set pricing tiers, and fulfill orders. Buyers (retailers, procurement tea…\n\n**R5 域名预热与 SPF/DKIM** (GW-L) — hits=5 ecc=skip → sales, pm\n- 【域名预热与 SPF/DKIM】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Email Warmup For New Domains: What Actually Works in 2026」— - Email warmup for new domains in 2026 is harder than it has ever been. Google and Microsoft tightened sender guidelines significantly in 2024, then ti…\n"
+}

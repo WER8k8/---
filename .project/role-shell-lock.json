@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-06-12",
+  "decision_id": "ROLE-SHELL-LOCK-01",
+  "title": "租户 / 平台超管 / 代理 登录后壳隔离（硬锁）",
+  "summary": "统一登录页 /login 不变；JWT 角色决定可访问路由前缀、首页、跨壳策略与工作标签 localStorage 分桶。",
+  "pairs_with": "LOGIN-LOCK-01",
+  "authority_doc": "docs/product/ROLE-SHELL-LOCK-CHARTER.md",
+  "code_ssot": "frontend/admin/src/constants/roleShellLock.ts",
+  "verify_scripts": [
+    "frontend/admin/scripts/check-role-shell-lock.mjs",
+    "scripts/verify-role-shell-lock.ps1"
+  ],
+  "personas": [
+    {
+      "id": "platform",
+      "label": "平台超管",
+      "jwt_roles": ["super_admin", "admin", "editor", "viewer"],
+      "home_path": "/admin",
+      "allowed_path_rule": "除 /client/*、/partner/* 外均可（送检模式按 certPathAllowed 开放部分 /client 演示）",
+      "cross_shell_policy": "误入 /client → 重定向到等价超管路径或 /admin；不登出"
+    },
+    {
+      "id": "tenant",
+      "label": "租户管理员",
+      "jwt_roles": ["tenant_admin"],
+      "home_path": "/client/today",
+      "allowed_path_rule": "仅 /client/*",
+      "cross_shell_policy": "误入 /admin/* → 强制登出并回 /login"
+    },
+    {
+      "id": "partner",
+      "label": "省代",
+      "jwt_roles": ["l2"],
+      "home_path": "/partner/performance",
+      "allowed_path_rule": "仅 /partner/*（/agent/* 别名重定向到 /partner/*）",
+      "cross_shell_policy": "误入其他壳 → 重定向到省代首页"
+    },
+    {
+      "id": "agent",
+      "label": "区域代理",
+      "jwt_roles": ["l3", "agent", "sales"],
+      "home_path": "/agent/performance",
+      "allowed_path_rule": "仅 /agent/*",
+      "cross_shell_policy": "误入 /admin、/partner 等 → 重定向到代理首页"
+    }
+  ],
+  "worktab_storage_keys": {
+    "platform": "uj-worktabs-platform-v1",
+    "tenant": "uj-worktabs-client-v1",
+    "partner": "uj-worktabs-partner-v1",
+    "agent": "uj-worktabs-agent-v1",
+    "legacy_migrate_from": "uj-worktabs-v1"
+  },
+  "shell_entries": [
+    {
+      "id": "login",
+      "label": "全员唯一登录（外观固定为平台运营控制台）",
+      "route": "/login",
+      "component": "frontend/admin/src/views/login/index.vue",
+      "note": "不是租户专用页；租户也用此 URL，凭 JWT 角色分流"
+    },
+    {
+      "id": "tenant_client",
+      "label": "租户自用后台",
+      "roles": ["tenant_admin"],
+      "home_route": "/client/today",
+      "route_component": "frontend/admin/src/views/client/today-three.vue",
+      "code_dir": "frontend/admin/src/views/client",
+      "dev_account": "tenant / tenant123"
+    },
+    {
+      "id": "platform_saas_tenants",
+      "label": "超管管 SaaS 租户（不是租户后台）",
+      "roles": ["admin", "super_admin"],
+      "routes": ["/admin/tenants", "/tenants/dashboard"],
+      "component": "frontend/admin/src/views/tenants/dashboard.vue",
+      "forbidden_component": "frontend/admin/src/views/admin/tenants.vue"
+    },
+    {
+      "id": "platform_admin",
+      "label": "平台超管工作台",
+      "roles": ["admin", "super_admin"],
+      "home_route": "/admin",
+      "code_dir": "frontend/admin/src/views/admin"
+    }
+  ],
+  "forbidden_new_files": [
+    "frontend/admin/src/views/admin/tenants.vue",
+    "frontend/admin/src/views/client/login.vue",
+    "frontend/admin/src/views/tenant"
+  ],
+  "forbidden_router_imports": [
+    "@/views/admin/tenants.vue",
+    "views/admin/tenants.vue"
+  ],
+  "forbidden": {
+    "behaviors": [
+      "租户 JWT 访问 /admin/* 且不登出",
+      "代理 JWT 长期停留在 /client/* 或 /admin/*",
+      "四类角色共用同一 worktab localStorage 键导致跨角色污染",
+      "在 router 内手写第二套 tenant_legacy_redirects 表（须引用 roleShellLock.ts）"
+    ]
+  }
+}

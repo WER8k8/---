@@ -1,0 +1,51 @@
+// FILE: backend\app\core\logging_config.py
+        root_logger.handlers.clear()
+
+        # 控制台处理器
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_formatter = logging.Formatter(
+            cls.LOG_FORMAT, datefmt=cls.DATE_FORMAT)
+        console_handler.setFormatter(console_formatter)
+        root_logger.addHandler(console_handler)
+
+        # 主日志文件 - 按大小轮转
+        main_log_file = cls.LOG_DIR / "app.log"
+        main_handler = RotatingFileHandler(
+            main_log_file,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8")
+        main_handler.setLevel(logging.DEBUG)
+        main_formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
+            datefmt=cls.DATE_FORMAT)
+        main_handler.setFormatter(main_formatter)
+        root_logger.addHandler(main_handler)
+
+        # 错误日志文件 - 按时间轮转
+        error_log_file = cls.LOG_DIR / "error.log"
+        error_handler = TimedRotatingFileHandler(
+            error_log_file,
+            when="midnight",
+            interval=1,
+            backupCount=30,
+            encoding="utf-8")
+        error_handler.setLevel(logging.ERROR)
+        error_handler.setFormatter(main_formatter)
+        root_logger.addHandler(error_handler)
+
+        # 审计日志文件
+        audit_log_file = cls.LOG_DIR / "audit.log"
+        audit_handler = RotatingFileHandler(
+            audit_log_file,
+            maxBytes=max_bytes,
+            backupCount=10,
+            encoding="utf-8")
+        audit_handler.setLevel(logging.INFO)
+        audit_formatter = logging.Formatter(
+            "%(asctime)s - AUDIT - %(message)s",
+            datefmt=cls.DATE_FORMAT)
+        audit_handler.setFormatter(audit_formatter)
+
+        # 审计日志器

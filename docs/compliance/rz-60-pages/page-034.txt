@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+        if not self.JWT_SECRET_KEY or len(str(self.JWT_SECRET_KEY).strip()) < 32:
+            if self.ENVIRONMENT == "production":
+                raise ValueError(
+                    "[安全错误] 生产环境必须配置 JWT_SECRET_KEY，长度 >= 32。"
+                    "请通过环境变量设置：export JWT_SECRET_KEY=$(python -c \"import secrets; print(secrets.token_hex(32))\")"
+                )
+            if not self.JWT_SECRET_KEY:
+                warnings.warn("[DEV] 未配置 JWT_SECRET_KEY，自动生成临时密钥（进程重启后失效）", stacklevel=2)
+                self.JWT_SECRET_KEY = secrets.token_hex(32)
+            elif len(str(self.JWT_SECRET_KEY).strip()) < 32:
+                warnings.warn(
+                    f"[DEV] JWT_SECRET_KEY 长度不足（{len(str(self.JWT_SECRET_KEY).strip())}<32），"
+                    "已自动替换为强随机密钥", stacklevel=2
+                )
+                self.JWT_SECRET_KEY = secrets.token_hex(32)
+
+        # 生产环境：关键密钥不得使用示例占位符
+        if self.ENVIRONMENT == "production":
+            weak_patterns = [
+                "change-me", "change_me", "changeme",
+                "your-secret", "your-jwt", "replace-me",
+                "your-password", "your-key",
+            ]
+            for key_name in ["JWT_SECRET_KEY", "REDIS_PASSWORD",
+                             "MINIO_ACCESS_KEY", "MINIO_SECRET_KEY",
+                             "SMTP_PASSWORD"]:
+                val = str(getattr(self, key_name, "") or "").lower()
+                for pat in weak_patterns:
+                    if pat in val:
+                        raise ValueError(
+                            f"[安全错误] 生产环境 {key_name} 包含弱密码模式 '{pat}'。"
+                            f"请立即更换为强随机值。"
+                        )
+            # Also check DATABASE_URL for weak credentials
+            db_url = str(getattr(self, "DATABASE_URL", "") or "").lower()
+            for pat in weak_patterns:
+                if pat in db_url:
+                    raise ValueError(
+                        f"[安全错误] 生产环境 DATABASE_URL 包含弱密码模式 '{pat}'。"
+                        f"请立即更换为强随机值。"
+                    )
+
+        has_matrix_mysql = bool(
+            (self.SEO_MATRIX_DATABASE_URL or "").strip()
+            or (
+                (self.SEO_MATRIX_DB_HOST or "").strip()
+                and (self.SEO_MATRIX_DB_NAME or "").strip()
+                and self.SEO_MATRIX_DB_USER is not None
+                and str(self.SEO_MATRIX_DB_USER).strip() != ""
+            )

@@ -1,0 +1,33 @@
+{
+  "ok": false,
+  "task": "O-4",
+  "checks": {
+    "allow_dev_stub": "0",
+    "upstream_url": "http://127.0.0.1:8080",
+    "sidecar_url": "http://127.0.0.1:8092",
+    "upstream_health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "ai-hunter-upstream-mock",
+        "mode": "mock",
+        "github_ref": "xiongQvQ/AI_Find_Customer",
+        "note": "development wiring only — not real crawl results"
+      }
+    },
+    "sidecar_health": {
+      "status": "ok",
+      "service": "ai-find-customer-sidecar-adapter",
+      "upstream_url": "http://127.0.0.1:8080",
+      "upstream_healthy": true,
+      "upstream_detail": null,
+      "github_ref": "xiongQvQ/AI_Find_Customer"
+    },
+    "backend_allow_dev_stub": false,
+    "smoke_find": false
+  },
+  "errors": [
+    "upstream is ai-hunter-upstream-mock — clone real AI_Find_Customer",
+    "smoke_find returned None — upstream may lack API keys or hunt failed (honest)"
+  ]
+}

@@ -1,0 +1,11 @@
+﻿{
+    "preflight_report":  "C:\\Users\\97907\\Desktop\\上线网站\\docs\\production-preflight-latest.json",
+    "preflight_ok":  true,
+    "started_at":  "2026-06-01T09:53:35.8018184+08:00",
+    "preflight_exit":  0,
+    "docker_ready":  false,
+    "infra_mode":  "embedded-existing",
+    "finished_at":  "2026-06-01T09:54:23.6729679+08:00",
+    "status":  "PASS",
+    "fail_count":  0
+}

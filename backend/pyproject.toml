@@ -1,0 +1,22 @@
+# Backend Python 工具链配置
+# 2026-09-05 审计 A6 新增：此前后端无任何 lint 配置（20 维报告维度 20 P2 项）。
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [
+    ".venv",
+    "venv",
+    "alembic_migrations/versions",  # 历史迁移冻结不改写
+]
+
+[tool.ruff.lint]
+# 首轮门禁从 ruff 默认档起步（语法/未用导入/基础 pyflakes），
+# 收敛后再逐档上调（B/UP/S 等），避免一步到位淹没存量问题。
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# 验证套件走 shim/动态导入，未用符号多为刻意保留
+"tests/*" = ["F401"]
+# 包 __init__ 的"未用导入"多为刻意 re-export，禁止 auto-fix 剥离（防运行期断链）
+"__init__.py" = ["F401", "F811"]

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "task_id": "COMM-PM-03",
+  "implemented_at": "2026-06-14",
+  "matrix_ref": ".project/stub-matrix-T-PM-02-v1.json",
+  "code_paths": [
+    "frontend/admin/src/constants/stubVisibility.ts",
+    "frontend/admin/src/router/index.ts"
+  ],
+  "platform_killed": [
+    "/admin/geo",
+    "/admin/v2ray-legacy",
+    "/cognitive"
+  ],
+  "client_plan_gate_migrated": [
+    "/client/media-factory",
+    "/client/article-to-video",
+    "/client/ai-scenarios"
+  ],
+  "client_hidden_unchanged": [
+    "/client/app",
+    "/client/copilot"
+  ],
+  "validation": [
+    "python scripts/validate-stub-matrix-sync.py",
+    "npm run cert:gate --prefix frontend/admin"
+  ],
+  "honest_note": "研发侧 Kill/PlanGate 已落地；G5 签字与 O-1~O-3 仍待 Owner"
+}

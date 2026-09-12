@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-05-31T09:40:59.296906+00:00",
+  "base_api": "http://127.0.0.1:8001",
+  "admin_ui": "http://127.0.0.1:5173",
+  "passed": true,
+  "checks": [
+    {
+      "name": "login",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "aggregation_api",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "aggregation_page",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "hierarchy_list",
+      "ok": true,
+      "detail": "status=200 nodes=0"
+    },
+    {
+      "name": "hierarchy_crud",
+      "ok": true,
+      "detail": "create=True update=True delete=True"
+    },
+    {
+      "name": "hierarchy_page",
+      "ok": true,
+      "detail": "status=200"
+    }
+  ]
+}

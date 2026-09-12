@@ -1,0 +1,1228 @@
+{
+  "task": "PM-MKT-01",
+  "source": "frontend/admin/src/router/index.ts",
+  "route_count": 198,
+  "by_shell": {
+    "platform": 191,
+    "agent": 1,
+    "client": 2,
+    "acquisition": 4
+  },
+  "routes": [
+    {
+      "path": "/",
+      "name": "Layout",
+      "title": "数据概览",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/agent",
+      "name": "AgentShellLayout",
+      "title": "业绩看板",
+      "shell": "agent",
+      "redirect": true
+    },
+    {
+      "path": "/client/dashboard",
+      "name": null,
+      "title": null,
+      "shell": "client"
+    },
+    {
+      "path": "/client/login",
+      "name": null,
+      "title": null,
+      "shell": "client",
+      "redirect": true
+    },
+    {
+      "path": "/landing",
+      "name": "Landing",
+      "title": "官网首页",
+      "shell": "acquisition"
+    },
+    {
+      "path": "/login",
+      "name": "Login",
+      "title": "登录",
+      "shell": "acquisition"
+    },
+    {
+      "path": "/login/admin",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/login/agent",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/login/oauth-callback",
+      "name": "OAuthCallback",
+      "title": "第三方登录",
+      "shell": "acquisition"
+    },
+    {
+      "path": "/login/partner",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/login/platform",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/partner",
+      "name": "PartnerShellLayout",
+      "title": "省代看板",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/skill-center",
+      "name": "ClientLayout",
+      "title": "工作台",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "/tenants/register",
+      "name": "TenantRegister",
+      "title": "注册开通",
+      "shell": "acquisition"
+    },
+    {
+      "path": "ab-test",
+      "name": "AbTest",
+      "title": "A/B测试",
+      "shell": "platform"
+    },
+    {
+      "path": "access-denied",
+      "name": "AccessDenied",
+      "title": "无权访问",
+      "shell": "platform"
+    },
+    {
+      "path": "account-bindings",
+      "name": "SystemAccountBindings",
+      "title": "账号绑定",
+      "shell": "platform"
+    },
+    {
+      "path": "admin",
+      "name": "Admin",
+      "title": "超级管理员",
+      "shell": "platform"
+    },
+    {
+      "path": "admin/dashboard",
+      "name": "AdminDashboardPage",
+      "title": "运营看板",
+      "shell": "platform"
+    },
+    {
+      "path": "admin/tenants",
+      "name": "AdminTenantsPage",
+      "title": "租户管理",
+      "shell": "platform"
+    },
+    {
+      "path": "agent-capabilities",
+      "name": "SystemAgentCapabilities",
+      "title": "代理能力划拨",
+      "shell": "platform"
+    },
+    {
+      "path": "agent-hub",
+      "name": "AgentHub",
+      "title": "智能体协同",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "aggregation",
+      "name": "AdminAggregation",
+      "title": "数据中心",
+      "shell": "platform"
+    },
+    {
+      "path": "ai-center",
+      "name": "AdminAICenter",
+      "title": "AI中心",
+      "shell": "platform"
+    },
+    {
+      "path": "ai-config",
+      "name": "AiConfig",
+      "title": "AI配置",
+      "shell": "platform"
+    },
+    {
+      "path": "ai-engine",
+      "name": "AdminAIEngine",
+      "title": "AI引擎",
+      "shell": "platform"
+    },
+    {
+      "path": "ai-learning",
+      "name": "AILearning",
+      "title": "AI深度学习",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "ai-scenarios",
+      "name": "ClientAiScenarios",
+      "title": "AI 场景模型",
+      "shell": "platform"
+    },
+    {
+      "path": "analytics",
+      "name": "AICenterAnalytics",
+      "title": "智能分析",
+      "shell": "platform"
+    },
+    {
+      "path": "app",
+      "name": "ChuhaijiApp",
+      "title": "出海计",
+      "shell": "platform"
+    },
+    {
+      "path": "article-generator",
+      "name": "AICenterArticleGenerator",
+      "title": "文章生成器",
+      "shell": "platform"
+    },
+    {
+      "path": "article-to-video",
+      "name": "ClientArticleToVideo",
+      "title": "文章转视频",
+      "shell": "platform"
+    },
+    {
+      "path": "audit",
+      "name": "SecurityAudit",
+      "title": "安全审计",
+      "shell": "platform"
+    },
+    {
+      "path": "auto-ab-test",
+      "name": "AutoABTest",
+      "title": "A/B自动化",
+      "shell": "platform"
+    },
+    {
+      "path": "auto-negotiator",
+      "name": "AutoNegotiator",
+      "title": "自动谈单",
+      "shell": "platform"
+    },
+    {
+      "path": "automation",
+      "name": "AdminAutomation",
+      "title": "自动化",
+      "shell": "platform"
+    },
+    {
+      "path": "backup",
+      "name": "BackupRestore",
+      "title": "备份回滚",
+      "shell": "platform"
+    },
+    {
+      "path": "behavior",
+      "name": "BehaviorAnalysis",
+      "title": "行为分析",
+      "shell": "platform"
+    },
+    {
+      "path": "billing",
+      "name": "TenantBilling",
+      "title": "计费结算",
+      "shell": "platform"
+    },
+    {
+      "path": "browser-companion",
+      "name": "AICenterBrowserCompanion",
+      "title": "浏览器伴侣工作台",
+      "shell": "platform"
+    },
+    {
+      "path": "capability-hub",
+      "name": "AdminCapabilityHub",
+      "title": "能力导航",
+      "shell": "platform"
+    },
+    {
+      "path": "cases",
+      "name": "Cases",
+      "title": "案例管理",
+      "shell": "platform"
+    },
+    {
+      "path": "cases/edit/:id",
+      "name": "CaseEdit",
+      "title": "编辑案例",
+      "shell": "platform"
+    },
+    {
+      "path": "charts",
+      "name": "ChartEngine",
+      "title": "动态图表",
+      "shell": "platform"
+    },
+    {
+      "path": "code-tools",
+      "name": "AdminCodeTools",
+      "title": "代码工具",
+      "shell": "platform"
+    },
+    {
+      "path": "cognitive",
+      "name": "Cognitive",
+      "title": "认知智能",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "command-center",
+      "name": "SystemCommandCenter",
+      "title": "超管司令部",
+      "shell": "platform"
+    },
+    {
+      "path": "compliance",
+      "name": "SecurityCompliance",
+      "title": "合规检查",
+      "shell": "platform"
+    },
+    {
+      "path": "config",
+      "name": "SystemConfig",
+      "title": "系统配置",
+      "shell": "platform"
+    },
+    {
+      "path": "content",
+      "name": "AICenterContent",
+      "title": "AI内容助手",
+      "shell": "platform"
+    },
+    {
+      "path": "content/edit/:id",
+      "name": "ContentEdit",
+      "title": "编辑内容",
+      "shell": "platform"
+    },
+    {
+      "path": "conversion-funnel",
+      "name": "ConversionFunnel",
+      "title": "转化漏斗",
+      "shell": "platform"
+    },
+    {
+      "path": "culture-adapt",
+      "name": "CultureAdapt",
+      "title": "文化适配",
+      "shell": "platform"
+    },
+    {
+      "path": "customer-finder",
+      "name": "CustomerFinder",
+      "title": "客户开发",
+      "shell": "platform"
+    },
+    {
+      "path": "dashboard",
+      "name": "MediaFactoryDashboard",
+      "title": "视频生成",
+      "shell": "platform"
+    },
+    {
+      "path": "debug",
+      "name": "CodeDebug",
+      "title": "代码调试",
+      "shell": "platform"
+    },
+    {
+      "path": "deerflow-monitor",
+      "name": "SystemDeerflowMonitor",
+      "title": "DeerFlow 队列",
+      "shell": "platform"
+    },
+    {
+      "path": "demo-rehearsal",
+      "name": "AdminDemoRehearsal",
+      "title": "七步彩排",
+      "shell": "platform"
+    },
+    {
+      "path": "developer",
+      "name": "Developer",
+      "title": "开发者生态",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "distribute",
+      "name": "ClientContentDistribute",
+      "title": "内容分发中心",
+      "shell": "platform"
+    },
+    {
+      "path": "domain",
+      "name": "TenantDomain",
+      "title": "域名管理",
+      "shell": "platform"
+    },
+    {
+      "path": "drag-module",
+      "name": "DragModule",
+      "title": "自定义拖拽模块",
+      "shell": "platform"
+    },
+    {
+      "path": "ecc-hangar",
+      "name": "SystemEccHangar",
+      "title": "ECC 专家机库",
+      "shell": "platform"
+    },
+    {
+      "path": "edge-cdn",
+      "name": "EdgeCDN",
+      "title": "边缘计算CDN",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "editor",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "effects",
+      "name": "Effects",
+      "title": "自定义特效组件",
+      "shell": "platform"
+    },
+    {
+      "path": "egress",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "email-automation",
+      "name": "EmailAutomation",
+      "title": "开发信管理",
+      "shell": "platform"
+    },
+    {
+      "path": "execution-review",
+      "name": "ExecutionReview",
+      "title": "执行复盘",
+      "shell": "platform"
+    },
+    {
+      "path": "expert-system",
+      "name": "ExpertSystem",
+      "title": "专家系统",
+      "shell": "platform"
+    },
+    {
+      "path": "feishu",
+      "name": "Feishu",
+      "title": "飞书集成",
+      "shell": "platform"
+    },
+    {
+      "path": "file-manager",
+      "name": "AdminFileManager",
+      "title": "文件管理",
+      "shell": "platform"
+    },
+    {
+      "path": "finance",
+      "name": "AdminFinance",
+      "title": "财务中台",
+      "shell": "platform"
+    },
+    {
+      "path": "finance/commission-rules",
+      "name": "AdminFinanceCommissionRules",
+      "title": "分润规则",
+      "shell": "platform"
+    },
+    {
+      "path": "finance/commissions",
+      "name": "AdminFinanceCommissions",
+      "title": "分润结算",
+      "shell": "platform"
+    },
+    {
+      "path": "finance/invoices",
+      "name": "AdminFinanceInvoices",
+      "title": "开票审核",
+      "shell": "platform"
+    },
+    {
+      "path": "finance/ip-pool",
+      "name": "AdminFinanceIpPool",
+      "title": "静态 IP 池",
+      "shell": "platform"
+    },
+    {
+      "path": "finance/payment-ops",
+      "name": "AdminFinancePaymentOps",
+      "title": "支付码与接口",
+      "shell": "platform"
+    },
+    {
+      "path": "finance/payment-orders",
+      "name": "AdminFinancePaymentOrders",
+      "title": "租户支付订单",
+      "shell": "platform"
+    },
+    {
+      "path": "format",
+      "name": "CodeFormat",
+      "title": "代码格式化",
+      "shell": "platform"
+    },
+    {
+      "path": "founder-diagnostics",
+      "name": "AdminFounderDiagnostics",
+      "title": "创始人诊断",
+      "shell": "platform"
+    },
+    {
+      "path": "freight-calc",
+      "name": "FreightCalc",
+      "title": "运费精算",
+      "shell": "platform"
+    },
+    {
+      "path": "generator",
+      "name": "CodeGenerator",
+      "title": "代码生成",
+      "shell": "platform"
+    },
+    {
+      "path": "geo",
+      "name": "AdminGEO",
+      "title": "GEO基因分析",
+      "shell": "platform"
+    },
+    {
+      "path": "geo-engine",
+      "name": "AdminGEOEngine",
+      "title": "GEO引擎模型收录",
+      "shell": "platform"
+    },
+    {
+      "path": "globalization",
+      "name": "Globalization",
+      "title": "全球化多语言",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "glossary",
+      "name": "Glossary",
+      "title": "术语库",
+      "shell": "platform"
+    },
+    {
+      "path": "hierarchy",
+      "name": "AdminHierarchy",
+      "title": "层级管理",
+      "shell": "platform"
+    },
+    {
+      "path": "history",
+      "name": "FileHistory",
+      "title": "历史记录",
+      "shell": "platform"
+    },
+    {
+      "path": "hub",
+      "name": "ContentHub",
+      "title": "总站枢纽",
+      "shell": "platform"
+    },
+    {
+      "path": "inclusion",
+      "name": "SEOMatrixInclusion",
+      "title": "收录监控",
+      "shell": "platform"
+    },
+    {
+      "path": "inquiries",
+      "name": "Inquiries",
+      "title": "询盘管理",
+      "shell": "platform"
+    },
+    {
+      "path": "inquiries/im-routing",
+      "name": "InquiriesIMRouting",
+      "title": "IM 全渠道",
+      "shell": "platform"
+    },
+    {
+      "path": "integrations-stack",
+      "name": "SystemIntegrationsStack",
+      "title": "集成栈",
+      "shell": "platform"
+    },
+    {
+      "path": "international",
+      "name": "International",
+      "title": "国际订单采集",
+      "shell": "platform"
+    },
+    {
+      "path": "keywords",
+      "name": "SEOMatrixKeywords",
+      "title": "关键词管理",
+      "shell": "platform"
+    },
+    {
+      "path": "knowledge",
+      "name": "AICenterKnowledge",
+      "title": "知识库",
+      "shell": "platform"
+    },
+    {
+      "path": "lbs-routing",
+      "name": "LBSRouting",
+      "title": "LBS测距",
+      "shell": "platform"
+    },
+    {
+      "path": "logistics",
+      "name": "Logistics",
+      "title": "智能物流定价",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "logs",
+      "name": "SystemLogs",
+      "title": "系统日志",
+      "shell": "platform"
+    },
+    {
+      "path": "low-code",
+      "name": "LowCode",
+      "title": "低代码平台",
+      "shell": "platform"
+    },
+    {
+      "path": "mcp-bridge",
+      "name": "MCPBridge",
+      "title": "MCP桥接",
+      "shell": "platform"
+    },
+    {
+      "path": "media-factory",
+      "name": "ClientMediaFactory",
+      "title": "视频工厂",
+      "shell": "platform"
+    },
+    {
+      "path": "models",
+      "name": "AICenterModels",
+      "title": "模型管理",
+      "shell": "platform"
+    },
+    {
+      "path": "news",
+      "name": "News",
+      "title": "新闻管理",
+      "shell": "platform"
+    },
+    {
+      "path": "nodes",
+      "name": "EdgeNodes",
+      "title": "边缘节点",
+      "shell": "platform"
+    },
+    {
+      "path": "onboarding",
+      "name": "ClientOnboarding",
+      "title": "开通向导",
+      "shell": "platform"
+    },
+    {
+      "path": "operations/traffic",
+      "name": "OperationsTrafficBoard",
+      "title": "流量看板",
+      "shell": "platform"
+    },
+    {
+      "path": "ops-wrap",
+      "name": "SystemOpsWrap",
+      "title": "运维批处理",
+      "shell": "platform"
+    },
+    {
+      "path": "orders-track",
+      "name": "LogisticsOrdersTrack",
+      "title": "订单运单回填",
+      "shell": "platform"
+    },
+    {
+      "path": "permissions",
+      "name": "SystemPermissions",
+      "title": "权限管理",
+      "shell": "platform"
+    },
+    {
+      "path": "plan-gate",
+      "name": "ClientPlanGate",
+      "title": "升级套餐",
+      "shell": "platform"
+    },
+    {
+      "path": "plans",
+      "name": "TenantPlans",
+      "title": "套餐配置",
+      "shell": "platform"
+    },
+    {
+      "path": "plans/manage",
+      "name": "TenantPlansManage",
+      "title": "套餐配额编辑",
+      "shell": "platform"
+    },
+    {
+      "path": "platform-registry",
+      "name": "AdminPlatformRegistry",
+      "title": "平台来源审计",
+      "shell": "platform"
+    },
+    {
+      "path": "platform-zones",
+      "name": "AdminPlatformZones",
+      "title": "三区治理",
+      "shell": "platform"
+    },
+    {
+      "path": "plugins",
+      "name": "PluginMarket",
+      "title": "插件市场",
+      "shell": "platform"
+    },
+    {
+      "path": "preheat",
+      "name": "ContentPreheat",
+      "title": "内容预热",
+      "shell": "platform"
+    },
+    {
+      "path": "pricing",
+      "name": "TenantPlans",
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "product-showcase",
+      "name": "TenantProductShowcase",
+      "title": "产品展示",
+      "shell": "platform"
+    },
+    {
+      "path": "products",
+      "name": "Products",
+      "title": "产品管理",
+      "shell": "platform"
+    },
+    {
+      "path": "products/categories",
+      "name": "Categories",
+      "title": "分类管理",
+      "shell": "platform"
+    },
+    {
+      "path": "products/edit/:id",
+      "name": "ProductEdit",
+      "title": "编辑产品",
+      "shell": "platform"
+    },
+    {
+      "path": "progress-board",
+      "name": "SystemProgressBoard",
+      "title": "开发进度",
+      "shell": "platform"
+    },
+    {
+      "path": "projects",
+      "name": "AdminProjects",
+      "title": "项目中心",
+      "shell": "platform"
+    },
+    {
+      "path": "prompts",
+      "name": "AIEnginePrompts",
+      "title": "提示词",
+      "shell": "platform"
+    },
+    {
+      "path": "protocol",
+      "name": "ProtocolOpt",
+      "title": "协议优化",
+      "shell": "platform"
+    },
+    {
+      "path": "provider-setup",
+      "name": "AICenterProviderSetup",
+      "title": "模型配置",
+      "shell": "platform"
+    },
+    {
+      "path": "publish",
+      "name": "ClientUnifiedPublish",
+      "title": "GEO 统一发布台",
+      "shell": "platform"
+    },
+    {
+      "path": "publish-history",
+      "name": "SystemPublishHistory",
+      "title": "统一发布历史",
+      "shell": "platform"
+    },
+    {
+      "path": "publish/unified",
+      "name": "UnifiedPublish",
+      "title": "统一发布台",
+      "shell": "platform"
+    },
+    {
+      "path": "qa-engine",
+      "name": "QAEngine",
+      "title": "智能问答",
+      "shell": "platform"
+    },
+    {
+      "path": "queues/fulfillment",
+      "name": "ClientFulfillmentQueue",
+      "title": "履约队列",
+      "shell": "platform"
+    },
+    {
+      "path": "queues/inquiries",
+      "name": "ClientInquiryQueue",
+      "title": "询盘队列",
+      "shell": "platform"
+    },
+    {
+      "path": "queues/publish",
+      "name": "ClientPublishQueue",
+      "title": "发布队列",
+      "shell": "platform"
+    },
+    {
+      "path": "quotation",
+      "name": "Quotation",
+      "title": "报价单生成",
+      "shell": "platform"
+    },
+    {
+      "path": "rank-scheduler",
+      "name": "SystemRankScheduler",
+      "title": "Rank Scheduler",
+      "shell": "platform"
+    },
+    {
+      "path": "redemption",
+      "name": "ReferralRedemption",
+      "title": "现金券核销",
+      "shell": "platform"
+    },
+    {
+      "path": "refactor",
+      "name": "CodeRefactor",
+      "title": "代码重构",
+      "shell": "platform"
+    },
+    {
+      "path": "referral",
+      "name": "Referral",
+      "title": "呼朋唤友",
+      "shell": "platform"
+    },
+    {
+      "path": "regions",
+      "name": "SEOMatrixRegions",
+      "title": "地域词库",
+      "shell": "platform"
+    },
+    {
+      "path": "render-queue",
+      "name": "RenderQueue",
+      "title": "渲染队列",
+      "shell": "platform"
+    },
+    {
+      "path": "resource-monitor",
+      "name": "ResourceMonitor",
+      "title": "资源监控",
+      "shell": "platform"
+    },
+    {
+      "path": "review",
+      "name": "CodeReview",
+      "title": "代码审查",
+      "shell": "platform"
+    },
+    {
+      "path": "rules",
+      "name": "ReferralRules",
+      "title": "活动规则",
+      "shell": "platform"
+    },
+    {
+      "path": "runtime",
+      "name": "AdminRuntime",
+      "title": "运行时",
+      "shell": "platform"
+    },
+    {
+      "path": "sales",
+      "name": "Sales",
+      "title": "销售中心",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "scan",
+      "name": "FileScan",
+      "title": "文件扫描",
+      "shell": "platform"
+    },
+    {
+      "path": "scanner",
+      "name": "CodeScanner",
+      "title": "代码扫描",
+      "shell": "platform"
+    },
+    {
+      "path": "scenario-models",
+      "name": "AICenterScenarioModels",
+      "title": "场景模型切换",
+      "shell": "platform"
+    },
+    {
+      "path": "scheduler",
+      "name": "AutomationScheduler",
+      "title": "任务调度",
+      "shell": "platform"
+    },
+    {
+      "path": "scheduler-hub",
+      "name": "AdminSchedulerHub",
+      "title": "调度中心",
+      "shell": "platform"
+    },
+    {
+      "path": "scripts",
+      "name": "AutomationScripts",
+      "title": "脚本管理",
+      "shell": "platform"
+    },
+    {
+      "path": "sdk",
+      "name": "SDKManager",
+      "title": "SDK管理",
+      "shell": "platform"
+    },
+    {
+      "path": "search",
+      "name": "FileSearch",
+      "title": "全局检索",
+      "shell": "platform"
+    },
+    {
+      "path": "security",
+      "name": "AdminSecurity",
+      "title": "安全合规",
+      "shell": "platform"
+    },
+    {
+      "path": "semantic-index",
+      "name": "SemanticIndex",
+      "title": "语义索引",
+      "shell": "platform"
+    },
+    {
+      "path": "seo",
+      "name": "SEO",
+      "title": "SEO概览",
+      "shell": "platform"
+    },
+    {
+      "path": "seo-matrix",
+      "name": "SEOMatrix",
+      "title": "SEO矩阵系统",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "seo-publish",
+      "name": "ClientSeoPublish",
+      "title": "平台绑定与发布",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/baidu-tools",
+      "name": "BaiduTools",
+      "title": "百度站长工具",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/batch-seo",
+      "name": "BatchSEO",
+      "title": "批量SEO管理",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/building-wiki",
+      "name": "BuildingWiki",
+      "title": "AI建材百科",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/compliance",
+      "name": "Compliance",
+      "title": "广告法合规审查",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/content-optimizer",
+      "name": "ContentOptimizer",
+      "title": "AI内容优化",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/eeat",
+      "name": "EEAT",
+      "title": "EEAT评分管理",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/keyword-ranking",
+      "name": "KeywordRanking",
+      "title": "关键词排名追踪",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/llms-txt",
+      "name": "LLMSTxt",
+      "title": "LLMs.txt生成",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/performance",
+      "name": "SEOPerformance",
+      "title": "性能与安全监控",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/schema-markup",
+      "name": "SchemaMarkup",
+      "title": "Schema标记管理",
+      "shell": "platform"
+    },
+    {
+      "path": "seo/site-audit",
+      "name": "SiteAudit",
+      "title": "站点审计",
+      "shell": "platform"
+    },
+    {
+      "path": "settings",
+      "name": "ClientSettings",
+      "title": "系统设置",
+      "shell": "platform"
+    },
+    {
+      "path": "site-editor",
+      "name": "SiteEditor",
+      "title": "AI智能建站",
+      "shell": "platform"
+    },
+    {
+      "path": "site-editor-lab",
+      "name": "ClientSiteEditorLab",
+      "title": "站点编辑器试点",
+      "shell": "platform"
+    },
+    {
+      "path": "stress-test",
+      "name": "StressTest",
+      "title": "压测管理",
+      "shell": "platform"
+    },
+    {
+      "path": "system",
+      "name": "AdminSystem",
+      "title": "系统管理",
+      "shell": "platform"
+    },
+    {
+      "path": "system-health",
+      "name": "SystemHealth",
+      "title": "系统健康压测",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "task-orchestrator",
+      "name": "TaskOrchestrator",
+      "title": "任务调度",
+      "shell": "platform"
+    },
+    {
+      "path": "tasks",
+      "name": "AIEngineTasks",
+      "title": "任务看板",
+      "shell": "platform"
+    },
+    {
+      "path": "templates",
+      "name": "TemplateGallery",
+      "title": "仪表盘模板",
+      "shell": "platform"
+    },
+    {
+      "path": "templates/data-cockpit",
+      "name": "TemplateDataCockpit",
+      "title": "数据驾驶舱",
+      "shell": "platform"
+    },
+    {
+      "path": "templates/data-screen",
+      "name": "TemplateDataScreen",
+      "title": "数据大屏",
+      "shell": "platform"
+    },
+    {
+      "path": "templates/enterprise",
+      "name": "TemplateEnterprise",
+      "title": "企业后台实战",
+      "shell": "platform"
+    },
+    {
+      "path": "templates/saas",
+      "name": "TemplateSaaS",
+      "title": "SaaS系统风",
+      "shell": "platform"
+    },
+    {
+      "path": "templates/tencent",
+      "name": "TemplateTencent",
+      "title": "大厂极简风",
+      "shell": "platform"
+    },
+    {
+      "path": "tenants",
+      "name": "Tenants",
+      "title": "SaaS租户",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "trade-intel",
+      "name": "AIEngineTradeIntel",
+      "title": "出海参谋",
+      "shell": "platform"
+    },
+    {
+      "path": "traffic-board",
+      "name": "AdminTrafficBoard",
+      "title": "流量看板",
+      "shell": "platform"
+    },
+    {
+      "path": "translator",
+      "name": "Translator",
+      "title": "翻译引擎",
+      "shell": "platform"
+    },
+    {
+      "path": "tts",
+      "name": "TTSStudio",
+      "title": "TTS配音",
+      "shell": "platform"
+    },
+    {
+      "path": "usage",
+      "name": "AICenterUsage",
+      "title": "用量监控",
+      "shell": "platform"
+    },
+    {
+      "path": "users",
+      "name": "SystemUsers",
+      "title": "用户管理",
+      "shell": "platform"
+    },
+    {
+      "path": "v2ray",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "v2ray-legacy",
+      "name": "AdminV2RayLegacy",
+      "title": "V2Ray运维(内部)",
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "video-bind",
+      "name": null,
+      "title": null,
+      "shell": "platform",
+      "redirect": true
+    },
+    {
+      "path": "vulnerability",
+      "name": "SecurityVulnerability",
+      "title": "漏洞扫描",
+      "shell": "platform"
+    },
+    {
+      "path": "white-label",
+      "name": "WhiteLabel",
+      "title": "白标品牌",
+      "shell": "platform"
+    },
+    {
+      "path": "workflows",
+      "name": "AutomationWorkflows",
+      "title": "工作流",
+      "shell": "platform"
+    }
+  ],
+  "matrix_doc": "docs/pm-marketing-journey-review-matrix.md"
+}

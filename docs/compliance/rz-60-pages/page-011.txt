@@ -1,0 +1,51 @@
+// FILE: backend\app\core\admin_auth.py
+"""超级管理员 RBAC 权限鉴权"""
+
+from typing import List, Optional
+
+from fastapi import Depends, HTTPException, Request, status
+from sqlalchemy.orm import Session
+
+from app.core.cache import delete_pattern, get_cache, redis_client, set_cache
+from app.core.config import settings
+from app.core.database import get_db
+from app.core.security import get_current_user
+from app.models.admin import AdminMenu, AdminRole, RolePermission
+from app.models.user import User
+
+
+async def get_current_super_admin(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> User:
+    """超级管理员鉴权依赖 — 仅 super_admin 角色可访问"""
+    if user is None or user.role != "super_admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="需要超级管理员权限",
+        )
+
+    # Redis 会话校验（防止 token 泄露后被吊销的会话仍可使用）
+    token = _extract_token(request)
+    if token and redis_client:
+        jti = _get_token_jti(token)
+        if jti:
+            blacklisted = redis_client.get(f"admin_session_revoked:{user.id}:{jti}")
+            if blacklisted:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="会话已失效，请重新登录",
+                )
+
+    return user
+
+
+async def get_user_permission_codes(
+    user: User, db: Session
+) -> List[str]:
+    """获取用户的所有权限码（带 Redis 缓存）"""
+    cache_key = f"perm:{user.id}"
+    if redis_client:
+        cached = redis_client.get(cache_key)
+        if cached:

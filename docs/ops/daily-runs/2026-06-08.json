@@ -1,0 +1,714 @@
+﻿{
+    "lanes":  [
+                  {
+                      "id":  "sre",
+                      "expert":  "SRE",
+                      "focus":  "服务存活、端口、Admin 代理、自动拉起",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  243,
+                      "report_path":  "docs/ops/daily-health-latest.json",
+                      "report_snapshot":  {
+                                              "run_kind":  "health_only",
+                                              "generated_at":  "2026-06-08T07:07:25.0061110Z",
+                                              "checks":  [
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "backend_health",
+                                                                 "status":  200,
+                                                                 "ms":  52
+                                                             },
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "backend_ready",
+                                                                 "status":  200,
+                                                                 "ms":  27
+                                                             },
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "admin_login",
+                                                                 "status":  200,
+                                                                 "ms":  24
+                                                             },
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "ops_readiness_public",
+                                                                 "status":  200,
+                                                                 "ms":  33
+                                                             }
+                                                         ],
+                                              "ok":  true,
+                                              "hint":  "鍏ㄩ儴姝ｅ父",
+                                              "fail_count":  0,
+                                              "task":  "ops-daily-health"
+                                          },
+                      "detail_tail":  ""
+                  },
+                  {
+                      "id":  "security_no_fake",
+                      "expert":  "Security Engineer",
+                      "focus":  "假交付 / mock 外露扫描",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  860,
+                      "report_path":  "docs/no-fake-delivery-scan-latest.json",
+                      "report_snapshot":  {
+                                              "ok":  true,
+                                              "task":  "NO-FAKE-DELIVERY-DEEP",
+                                              "scanned":  {
+                                                              "backend_py":  708,
+                                                              "frontend_vue":  355,
+                                                              "frontend_ts":  121
+                                                          },
+                                              "p0_count":  0,
+                                              "p1_count":  11,
+                                              "p2_count":  15,
+                                              "findings":  [
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\routes\\media_factory.py",
+                                                                   "line":  437,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\routes\\media_factory.py",
+                                                                   "line":  467,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\seo\\keyword_ranking.py",
+                                                                   "line":  109,
+                                                                   "label":  "SEO 关键词注入静态演示数据",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "STATIC_DEMO_KEYWORDS: List[dict] = ["
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\seo\\keyword_ranking.py",
+                                                                   "line":  173,
+                                                                   "label":  "SEO 关键词注入静态演示数据",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "rows = STATIC_DEMO_KEYWORDS"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\seo\\keyword_ranking.py",
+                                                                   "line":  186,
+                                                                   "label":  "SEO 关键词注入静态演示数据",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "items = rows if rows is not None else STATIC_DEMO_KEYWORDS"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\seo\\keyword_ranking.py",
+                                                                   "line":  183,
+                                                                   "label":  "仪表盘无记录时返回演示摘要",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "def _summary_from_demo("
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\api\\v1\\seo\\keyword_ranking.py",
+                                                                   "line":  225,
+                                                                   "label":  "仪表盘无记录时返回演示摘要",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "return stamp_mock(_summary_from_demo(), reason=\"no_keyword_records\")"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\agent_portal_service.py",
+                                                                   "line":  365,
+                                                                   "label":  "代理趋势硬编码 mock 数据",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "def _mock_trend(label: str) -\u003e Optional[dict[str, Any]]:"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\agent_portal_service.py",
+                                                                   "line":  192,
+                                                                   "label":  "统计 data_source=mock（须确认生产门控）",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "\"data_source\": \"mock\","
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  655,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  692,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True}"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  700,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True}"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  709,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  806,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  840,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  879,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  927,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\ai_engine.py",
+                                                                   "line":  937,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\alipay_client.py",
+                                                                   "line":  143,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\payment_ops_service.py",
+                                                                   "line":  173,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\payment_service.py",
+                                                                   "line":  104,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\payment_service.py",
+                                                                   "line":  198,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True,"
+                                                               },
+                                                               {
+                                                                   "file":  "backend\\app\\services\\payment_service.py",
+                                                                   "line":  408,
+                                                                   "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                   "severity":  "P1",
+                                                                   "snippet":  "\"mock\": True/False"
+                                                               },
+                                                               {
+                                                                   "file":  "frontend\\admin\\src\\views\\admin\\geo\\index.vue",
+                                                                   "line":  134,
+                                                                   "label":  "GEO 页 catch 注入假数据集",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "async function loadDemo() { loading.value = true; try { await api(\u0027/geo/download\u0027, \u0027POST\u0027, { query: \u0027demo\u0027 }); dataset.value = { gds_id: \u0027DE"
+                                                               },
+                                                               {
+                                                                   "file":  "frontend\\admin\\src\\views\\landing\\index.vue",
+                                                                   "line":  253,
+                                                                   "label":  "营销落地页工作台示意数据",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "WORKBENCH_MOCK,"
+                                                               },
+                                                               {
+                                                                   "file":  "frontend\\admin\\src\\views\\landing\\index.vue",
+                                                                   "line":  271,
+                                                                   "label":  "营销落地页工作台示意数据",
+                                                                   "severity":  "P2",
+                                                                   "snippet":  "const mock = WORKBENCH_MOCK;"
+                                                               }
+                                                           ],
+                                              "p0_findings":  [
+
+                                                              ],
+                                              "p1_findings":  [
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  655,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  692,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True}"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  700,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True}"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  709,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  806,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  840,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  879,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  927,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\ai_engine.py",
+                                                                      "line":  937,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\payment_service.py",
+                                                                      "line":  198,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True,"
+                                                                  },
+                                                                  {
+                                                                      "file":  "backend\\app\\services\\payment_service.py",
+                                                                      "line":  408,
+                                                                      "label":  "响应体含 mock:true（须确认生产门控）",
+                                                                      "severity":  "P1",
+                                                                      "snippet":  "\"mock\": True/False"
+                                                                  }
+                                                              ]
+                                          },
+                      "detail_tail":  " \"file\": \"backend\\\\app\\\\services\\\\payment_service.py\",\r\n      \"line\": 198,\r\n      \"label\": \"响应体含 mock:true（须确认生产门控）\",\r\n      \"severity\": \"P1\",\r\n      \"snippet\": \"\\\"mock\\\": True,\"\r\n    },\r\n    {\r\n      \"file\": \"backend\\\\app\\\\services\\\\payment_service.py\",\r\n      \"line\": 408,\r\n      \"label\": \"响应体含 mock:true（须确认生产门控）\",\r\n      \"severity\": \"P1\",\r\n      \"snippet\": \"\\\"mock\\\": True/False\"\r\n    }\r\n  ]\r\n}\r\n"
+                  },
+                  {
+                      "id":  "security_routes",
+                      "expert":  "Security Engineer",
+                      "focus":  "关键 API 路由挂载",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  18832,
+                      "report_path":  null,
+                      "report_snapshot":  null,
+                      "detail_tail":  "aily-run.ps1:57 字符: 17\r\n+                 \u0026 $Py $scriptPath 2\u003e\u00261 | Out-String | ForEach-Object  ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (C:\\Users\\97907\\...生成临时密钥（进程重启后失效）:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n  settings = Settings()\r\nOK: all required route prefixes are mounted.\r\nTotal /api routes: 1228\r\n"
+                  },
+                  {
+                      "id":  "qa_cert",
+                      "expert":  "QA / Evidence Collector",
+                      "focus":  "Admin cert:gate 门禁",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  1210,
+                      "report_path":  "docs/certification-gate-admin-latest.json",
+                      "report_snapshot":  {
+                                              "generatedAt":  "2026-06-08T07:07:45.945Z",
+                                              "target":  "省级软件评测 — 管理端功能门禁",
+                                              "ready":  true,
+                                              "blocked":  false,
+                                              "gates":  [
+                                                            {
+                                                                "script":  "check-login-entry-lock",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "ok",
+                                                                "raw":  {
+                                                                            "ok":  true,
+                                                                            "decision_id":  "LOGIN-LOCK-01",
+                                                                            "login_route":  "/login",
+                                                                            "checked_files":  4,
+                                                                            "legacy_redirects":  5
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "audit-page-stubs",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "P0=0 P1=0 P2=0",
+                                                                "raw":  {
+                                                                            "totalVue":  275,
+                                                                            "flagged":  0,
+                                                                            "P0":  0,
+                                                                            "P1":  0,
+                                                                            "P2":  0,
+                                                                            "items":  [
+
+                                                                                      ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-nav-routes",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "missing=0/92",
+                                                                "raw":  {
+                                                                            "total":  92,
+                                                                            "missing":  [
+
+                                                                                        ],
+                                                                            "source":  "platformShellMenu.ts"
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-nested-routes",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "issues=0",
+                                                                "raw":  {
+                                                                            "nestedParents":  15,
+                                                                            "issues":  [
+
+                                                                                       ],
+                                                                            "menuMissing":  [
+
+                                                                                            ],
+                                                                            "ok":  true
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "find-corrupt-vue",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "corrupt=0",
+                                                                "raw":  {
+                                                                            "corrupt":  0,
+                                                                            "files":  [
+
+                                                                                      ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-interactive-stubs",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "menuLinked=0 flagged=0",
+                                                                "raw":  {
+                                                                            "menuLinked":  0,
+                                                                            "total":  20,
+                                                                            "items":  [
+
+                                                                                      ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-demo-rehearsal-path",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "issues=0",
+                                                                "raw":  {
+                                                                            "ok":  true,
+                                                                            "spec":  "youding-omni-pro-design-LOCKED.md §10",
+                                                                            "steps":  6,
+                                                                            "issues":  [
+
+                                                                                       ]
+                                                                        }
+                                                            }
+                                                        ],
+                                              "recommendation":  "管理端门禁通过；继续完成后端 preflight、测试报告实填、PM 签字与性能/安全附件"
+                                          },
+                      "detail_tail":  "upt=0\"\r\n    },\r\n    {\r\n      \"script\": \"check-interactive-stubs\",\r\n      \"ok\": true,\r\n      \"blocking\": false,\r\n      \"summary\": \"menuLinked=0 flagged=0\"\r\n    },\r\n    {\r\n      \"script\": \"check-demo-rehearsal-path\",\r\n      \"ok\": true,\r\n      \"blocking\": false,\r\n      \"summary\": \"issues=0\"\r\n    }\r\n  ],\r\n  \"outPath\": \"C:\\\\Users\\\\97907\\\\Desktop\\\\涓婄嚎缃戠珯\\\\docs\\\\certification-gate-admin-latest.json\"\r\n}\r\n"
+                  },
+                  {
+                      "id":  "backend_preflight",
+                      "expert":  "DevOps Automator",
+                      "focus":  "生产预检探针",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  43972,
+                      "report_path":  "docs/production-preflight-latest.json",
+                      "report_snapshot":  {
+                                              "generated_at":  "2026-06-08T07:07:46.185467+00:00",
+                                              "steps":  [
+                                                            {
+                                                                "name":  "check_mounted_routes",
+                                                                "ok":  true,
+                                                                "detail":  "OK: all required route prefixes are mounted.\nTotal /api routes: 1228\nC:\\Users\\97907\\Desktop\\������վ\\backend\\app\\core\\config.py:674: UserWarning: [DEV] δ���� SECRET_KEY���Զ�������ʱ��Կ������������ʧЧ��\n  settings = Settings()\n"
+                                                            },
+                                                            {
+                                                                "name":  "seed_platforms_full",
+                                                                "ok":  true,
+                                                                "detail":  "OK: platforms seed {\u0027created\u0027: 0, \u0027updated\u0027: 50, \u0027total\u0027: 50}, summary={\u0027cn\u0027: 20, \u0027global\u0027: 30, \u0027total\u0027: 50, \u0027pilot\u0027: 15, \u0027target_cn\u0027: 20, \u0027target_global\u0027: 30, \u0027target_b2b\u0027: 5, \u0027target_b2c\u0027: 4, \u0027ready\u0027: True}\nC:\\Users\\97907\\Desktop\\������վ\\backend\\app\\core\\config.py:674: UserWarning: [DEV] δ���� SECRET_KEY���Զ�������ʱ��Կ������������ʧЧ��\n  settings = Settings()"
+                                                            }
+                                                        ],
+                                              "readiness":  {
+                                                                "ready":  true,
+                                                                "environment":  "development",
+                                                                "score":  {
+                                                                              "pass":  11,
+                                                                              "warn":  5,
+                                                                              "fail":  0
+                                                                          },
+                                                                "checks":  [
+                                                                               {
+                                                                                   "id":  "jwt_secret",
+                                                                                   "category":  "security",
+                                                                                   "title":  "JWT 密钥强度",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已配置",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "oauth_dev_bypass",
+                                                                                   "category":  "security",
+                                                                                   "title":  "OAuth 开发绕过",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已关闭",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "database_url",
+                                                                                   "category":  "database",
+                                                                                   "title":  "数据库类型",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "当前为 SQLite（仅开发）",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "database_ping",
+                                                                                   "category":  "database",
+                                                                                   "title":  "数据库连通",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "SELECT 1 成功",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "logistics",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "物流",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "当前为 demo（生产建议 kuaidi100）",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "platforms_40",
+                                                                                   "category":  "data",
+                                                                                   "title":  "40 平台主数据",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "无法查询 platforms：(sqlite3.OperationalError) no such table: platforms\n[SQL: SELECT count(platforms.id) AS count_1 \nFROM platforms \nWHERE platforms.region = ? AND platforms.is_active = 1]\n[parameters: (\u0027cn\u0027,)]\n(Background on this error at: https://sqlalche.me/e/20/e3q8)；请执行 migrate_production / seed_platforms_full",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "backup_dir",
+                                                                                   "category":  "ops",
+                                                                                   "title":  "备份目录可写",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "C:\\Users\\97907\\Desktop\\上线网站\\backend\\backups",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "frontend_url",
+                                                                                   "category":  "config",
+                                                                                   "title":  "FRONTEND_URL",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "未设置，OAuth 回调可能异常",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "redis",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "Redis",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "PING 成功",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "celery_broker",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "Celery Broker",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "redis://localhost:6379/0",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "crawl_webhook_secret",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "国际爬虫 Webhook",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "开发环境可暂不配置",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "payment_strict",
+                                                                                   "category":  "security",
+                                                                                   "title":  "支付回调验签",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "开发环境未强制验签",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ssl_provider",
+                                                                                   "category":  "security",
+                                                                                   "title":  "SSL 签发",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "当前 SSL_PROVIDER=mock",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ai_provider",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "AI 提供商",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已配置至少一个 API Key",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ubrain_api",
+                                                                                   "category":  "product",
+                                                                                   "title":  "UBrain / 出海参谋 API",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已挂载",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "routes_mounted",
+                                                                                   "category":  "ops",
+                                                                                   "title":  "关键 API 挂载",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "关键前缀已挂载",
+                                                                                   "required":  true
+                                                                               }
+                                                                           ]
+                                                            },
+                                              "backup":  {
+                                                             "running":  false,
+                                                             "last_run":  null,
+                                                             "backup_count":  0,
+                                                             "backup_dir":  "C:\\Users\\97907\\Desktop\\上线网站\\backend\\backups",
+                                                             "recent_backups":  [
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260606_080150",
+                                                                                        "time":  "2026-06-06T08:01:50.734513",
+                                                                                        "size":  "2.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260605_171009",
+                                                                                        "time":  "2026-06-05T17:10:09.523249",
+                                                                                        "size":  "2.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260605_165937",
+                                                                                        "time":  "2026-06-05T16:59:37.597560",
+                                                                                        "size":  "2.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260605_164913",
+                                                                                        "time":  "2026-06-05T16:49:13.412897",
+                                                                                        "size":  "2.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260605_163916",
+                                                                                        "time":  "2026-06-05T16:39:16.117487",
+                                                                                        "size":  "2.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260605_162846",
+                                                                                        "time":  "2026-06-05T16:28:46.879620",
+                                                                                        "size":  "2.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260605_160343",
+                                                                                        "time":  "2026-06-05T16:03:43.041740",
+                                                                                        "size":  "2.8MB"
+                                                                                    }
+                                                                                ],
+                                                             "errors_recent":  [
+
+                                                                               ],
+                                                             "postgres_hint":  "PostgreSQL 生产环境请配置定时 pg_dump"
+                                                         },
+                                              "preflight_environment":  "development",
+                                              "ok":  true
+                                          },
+                      "detail_tail":  "kup_20260605_162846\",\r\n        \"time\": \"2026-06-05T16:28:46.879620\",\r\n        \"size\": \"2.8MB\"\r\n      },\r\n      {\r\n        \"name\": \"auto_backup_20260605_160343\",\r\n        \"time\": \"2026-06-05T16:03:43.041740\",\r\n        \"size\": \"2.8MB\"\r\n      }\r\n    ],\r\n    \"errors_recent\": [],\r\n    \"postgres_hint\": \"PostgreSQL 鐢熶骇鐜璇烽厤缃畾鏃?pg_dump\"\r\n  },\r\n  \"preflight_environment\": \"development\",\r\n  \"ok\": true\r\n}\r\n"
+                  },
+                  {
+                      "id":  "greedy_readiness",
+                      "expert":  "SRE / Hermes Ops",
+                      "focus":  "摸金校尉就绪单测",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  16986,
+                      "report_path":  null,
+                      "report_snapshot":  null,
+                      "detail_tail":  "ass-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\r\n    class SSLCertificateResponse(SSLCertificateBase):\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n======================== 3 passed, 2 warnings in 1.56s ========================\r\n"
+                  },
+                  {
+                      "id":  "webhook_security",
+                      "expert":  "Security Engineer",
+                      "focus":  "国际爬虫 Webhook 验签",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  18123,
+                      "report_path":  null,
+                      "report_snapshot":  null,
+                      "detail_tail":  "ass-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\r\n    class SSLCertificateResponse(SSLCertificateBase):\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n======================== 3 passed, 2 warnings in 0.98s ========================\r\n"
+                  }
+              ],
+    "run_kind":  "full_roster",
+    "started_at":  "2026-06-08T07:07:24.7605834Z",
+    "pass_count":  7,
+    "day":  "2026-06-08",
+    "ok":  true,
+    "finished_at":  "2026-06-08T07:09:05.0925680Z",
+    "lane_count":  7,
+    "fail_count":  0,
+    "evolution_hint":  "鎬ヨ瘖澶嶇洏: docs/ops/daily-runs/2026-06-08.json + expert-daily-history.jsonl"
+}

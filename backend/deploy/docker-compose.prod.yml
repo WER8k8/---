@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  postgres-master:
+    image: postgres:16-alpine
+    container_name: saas-postgres-master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: MasterPassword123!
+      POSTGRES_DB: saas_production
+    volumes:
+      - pg_master_data:/var/lib/postgresql/data
+      - ./postgres/init-replication.sh:/docker-entrypoint-initdb.d/init-replication.sh
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: saas-postgres-replica
+    environment:
+      PGUSER: postgres
+      PGPASSWORD: MasterPassword123!
+    ports:
+      - "5433:5432"
+    depends_on:
+      postgres-master:
+        condition: service_healthy
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: saas-redis
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "RedisSecret123!"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "RedisSecret123!", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: saas-backend-api
+    environment:
+      DATABASE_URL: postgresql://postgres:MasterPassword123!@postgres-master:5432/saas_production
+      DATABASE_READ_URL: postgresql://postgres:MasterPassword123!@postgres-replica:5432/saas_production
+      REDIS_URL: redis://:RedisSecret123!@redis:6379/0
+      ENVIRONMENT: production
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres-master:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+
+  celery-worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: saas-celery-worker
+    command: ["celery", "-A", "app.core.celery_app.celery_app", "worker", "--loglevel=info", "-c", "4"]
+    environment:
+      DATABASE_URL: postgresql://postgres:MasterPassword123!@postgres-master:5432/saas_production
+      REDIS_URL: redis://:RedisSecret123!@redis:6379/0
+    depends_on:
+      - redis
+      - postgres-master
+    restart: always
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: saas-celery-beat
+    command: ["celery", "-A", "app.core.celery_app.celery_app", "beat", "--loglevel=info"]
+    environment:
+      REDIS_URL: redis://:RedisSecret123!@redis:6379/0
+    depends_on:
+      - redis
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    container_name: saas-nginx-gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend-api
+    restart: always
+
+volumes:
+  pg_master_data:
+  redis_data:

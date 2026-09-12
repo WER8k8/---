@@ -1,0 +1,823 @@
+{
+  "generated_at": "2026-06-06T23:30:01.440295+00:00",
+  "focus": "marketingforce",
+  "rounds_planned": 10,
+  "anysearch_cli": "C:\\Users\\97907\\.cursor\\skills\\anysearch\\scripts\\anysearch_cli.py",
+  "constitution": "read_probe + suggest_remediation only; no auto mutate",
+  "signals_summary": {
+    "gw_pending_p0": 0,
+    "patrol_fail": null
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "topic_key": "geo_rank",
+      "topic_label": "GEO 排名与 AEO 可见性",
+      "lane": "GW-G",
+      "anysearch_query": "迈富时 Marketingforce GEO 生成式引擎优化 T-GEO 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:geo_rank:6b6dbe6d",
+        "finding": "【GEO 排名与 AEO 可见性】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO优化,AI搜索排名优化,抢占AI流量选迈富时GEO智能助手 - 珍岛集团」— - 迈富时GEO智能助手,正规专业的AI搜索推广服务商,提供诊断到效果报告的一对一GEO推广解决方案,覆盖国内外主流AI平台,构建AI搜索信任的内容与引用体系,打通“AI推荐”到 ... 对标：迈富时偏闭源 SaaS 全链路；本仓偏 Agent+人审+可部署源码。",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "GEO优化,AI搜索排名优化,抢占AI流量选迈富时GEO智能助手 - 珍岛集团",
+          "url": "https://www.marketingforce.com/geo.html",
+          "snippet": "- 迈富时GEO智能助手,正规专业的AI搜索推广服务商,提供诊断到效果报告的一对一GEO推广解决方案,覆盖国内外主流AI平台,构建AI搜索信任的内容与引用体系,打通“AI推荐”到 ..."
+        },
+        {
+          "title": "迈富时全新升级GEO智能助手，加速AI Agent战略落地 _ 新闻热点 - 珍岛集团",
+          "url": "https://www.marketingforce.com/about/newsshow/1804.html?lang=cn",
+          "snippet": "- 当前位置：首页>公司热点> 迈富时全新升级GEO智能助手，加速AI Agent战略落地 # 迈富时全新升级GEO智能助手，加速AI Agent战略落地 来 源：迈富时 发布时间：2026-01-12 全球领先的AI应用平台迈富时Marketingforce（股票代码: 02556.HK）全新升级GEO智能助手。强化生成式引擎优化（GEO）技术，构建全链路AI原生营销闭环，助力企业抢占AGI时代AI搜索流量高地，沉淀品牌AI认知资产，筑牢消费者决策全链路竞争优势。 传统SEO“排名为王”逻辑正被AI“ 彻底颠覆。品牌可见性核心逻辑转向“获得AI信任与引用”。如何在AI对话中被精准发现、..."
+        },
+        {
+          "title": "Wealth, Stewardship, and the Strategic Priorities for 2026",
+          "url": "https://techbullion.com/wealth-stewardship-and-the-strategic-priorities-for-2026/",
+          "snippet": "- Platforms such as WealthForce.ai are increasingly being used not to replace advisory judgment, but to provide the cognitive and operational foundation that allows institutions to deliver advice at scale while preserving trust."
+        },
+        {
+          "title": "AI Is Killing Marketing As We Know It — So What Comes Next?",
+          "url": "https://www.forbes.com/sites/stevenwolfepereira/2025/06/24/ai-is-ending-marketing-as-we-know-itso-what-comes-next/",
+          "snippet": "- AI agents are expected to cut 60% of marketing jobs by 2028, move from SEO to GEO and create AI-to-AI commerce. Here are three things companies need to do to survive."
+        },
+        {
+          "title": "迈富时GEO:工程化技术体系驱动AI搜索新增长|AI|富时|工程化_新浪科技_新浪网",
+          "url": "https://finance.sina.com.cn/tech/roll/2026-01-19/doc-inhhuzkc7083779.shtml",
+          "snippet": "- 导语:在生成式AI重构信息获取范式的当下,企业营销可见性的竞争已从传统搜索引擎排名转向AI平台引用与推荐。迈富时(珍岛集团)凭借自研T-GEO™生成引擎认知工程模型与十余年AISaaS技术积累,构建起从用户意图洞察、语义空间建模到多平台智能适配的完整工程化体系,为企业在AI搜索时代提供可量化、可持续的数字化营销解决方案。 迈富时(珍岛集团)作为连续7年排名前列的AISaaS影响力企业,将十余年在智能营销领域的技术积累转化为GEO业务的核心竞争力。公司自研的T-GEO™生成引擎认知工程模型(GEC),建立起五层认知架构,将GEO从经验式操作提升为可标准化、可工程化、可持续优化的科学体系。 用....."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【GEO 排名与 AEO 可见性】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO优化,AI搜索排名优化,抢占AI流量选迈富时GEO智能助手 - 珍岛集团」— - 迈富时GEO智能助手,正规专业的AI搜索推广服务商,提供诊断到效果报告的一对一GEO推广解决方案,覆盖国内外主流AI平台,构建AI搜索信任的内容与引用体系,打通“AI推荐”到 ... 对标：迈富时偏闭源 SaaS 全链路；本仓偏 Agent+人审+可部"
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【GEO 排名与 AEO 可见性】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO优化,AI搜索排名优化,抢占AI流量选迈富时GEO智能助手 - 珍岛集团」— - 迈富时GEO智能助手,正规专业的AI搜索推广服务商,提供诊断到效果报告的一对一GEO推广解决方案,覆盖国内外主流AI平台,构建AI搜索信任的内容与引用体系,打通“AI推荐”到 ... 对标：迈富时偏闭源 SaaS 全链路；本仓偏 Agent+人审+可部"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【GEO 排名与 AEO 可见性】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO优化,AI搜索排名优化,抢占AI流量选迈富时GEO智能助手 - 珍岛集团」— - 迈富时GEO智能助手,正规专业的AI搜索推广服务商,提供诊断到效果报告的一对一GEO推广解决方案,覆盖国内外主流AI平台,构建AI搜索信任的内容与引用体系,打通“AI推荐”到 ... 对标：迈富时偏闭源 SaaS 全链路；本仓偏 Agent+人审+可部"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "topic_key": "aeo_citation",
+      "topic_label": "AI 引文与站点事实一致",
+      "lane": "GW-G",
+      "anysearch_query": "B2B 外贸 AEO GEO AI citation optimization SaaS 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:aeo_citation:2be81aeb",
+        "finding": "【AI 引文与站点事实一致】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently」— - GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently Skip to main content B2B software companies win AI citations by publishing technical, well-structure",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently",
+          "url": "https://contently.com/2026/03/31/geo-for-saas/",
+          "snippet": "- GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently Skip to main content B2B software companies win AI citations by publishing technical, well-structured content that LLMs trust as authoritative. The fastest path is documentation-grade pages, comparison tables, definitive ...."
+        },
+        {
+          "title": "AI Search Optimization for B2B SaaS - AEO GEO - YouTube",
+          "url": "https://www.youtube.com/watch?v=LCtPpQg0pHg",
+          "snippet": "- How B2B SaaS teams get picked (and cited) by Google's AI Overviews and LLMs like ChatGPT, Gemini, Claude, and Perplexity through AI search ..."
+        },
+        {
+          "title": "GEO for B2B SaaS: What Actually Works",
+          "url": "https://www.getgeology.com/reports/geo-for-b2b-saas",
+          "snippet": "- We ran 3,000+ prompts across ChatGPT, Google AI Overviews, and Perplexity. 3,352 citations. 12 hypotheses tested. Most popular GEO advice was wrong. - Content length matters. A lot. Pages over 5,000 words received 50% more AI citations than mid-length pages (r=0.393, n=41). The most widely repeated...."
+        },
+        {
+          "title": "9 Best AEO Agencies For B2B SaaS Companies (2026 Ranked)",
+          "url": "https://discoveredlabs.com/blog/6-best-aeo-agencies-for-b2b-saas-companies-2026-ranked",
+          "snippet": "- Compare top AEO and GEO agencies for B2B SaaS companies. Discovered Labs leads with proprietary tracking and proven pipeline impact."
+        },
+        {
+          "title": "AEO for B2B SaaS: The 2026 Practitioner Playbook | StartupCookie",
+          "url": "https://startupcookie.com/guides/aeo-for-b2b-saas/",
+          "snippet": "- AEO (Answer Engine Optimization) is the practice of structuring your website content so AI assistants like ChatGPT, Claude, Perplexity, and Google AI Overviews extract, cite, and recommend your brand in their answers. For B2B SaaS in 2026, AEO is the single highest-impact growth channel a small comp..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【AI 引文与站点事实一致】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently」— - GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently Skip to main "
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【AI 引文与站点事实一致】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently」— - GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently Skip to main "
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【AI 引文与站点事实一致】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently」— - GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently Skip to main "
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "topic_key": "matrix_publish",
+      "topic_label": "矩阵发帖与平台绑定",
+      "lane": "GW-S",
+      "anysearch_query": "外贸 社媒矩阵 多平台发布 SaaS LinkedIn 抖音 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:matrix_publish:e3ae0453",
+        "finding": "【矩阵发帖与平台绑定】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2026年TikTok、Facebook、Linkedln平台SNS社媒推广代运营...」— - 2026年全球社交媒体营销市场规模预计突破3200亿美元，其中外贸企业贡献率从2024年的28%提升至39%。中国出海企业在这波浪潮中表现尤为亮眼，贡献了全球外贸社媒营销支出的35%，成为不可忽视的力量。 · 根据艾瑞咨询发布的《2026中国跨境电商社媒营销发展报告》，社媒代运营服务市场规模达到420亿美元，年复合增长率保持在31.5%的高位。这一数据背",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "2026年TikTok、Facebook、Linkedln平台SNS社媒推广代运营...",
+          "url": "https://www.cnblogs.com/hke28/p/19627748",
+          "snippet": "- 2026年全球社交媒体营销市场规模预计突破3200亿美元，其中外贸企业贡献率从2024年的28%提升至39%。中国出海企业在这波浪潮中表现尤为亮眼，贡献了全球外贸社媒营销支出的35%，成为不可忽视的力量。 · 根据艾瑞咨询发布的《2026中国跨境电商社媒营销发展报告》，社媒代运营服务市场规模达到420亿美元，年复合增长率保持在31.5%的高位。这一数据背后，是越来越多企业意识到：专业的事交给专业的人做，才是最高效的出海策略。"
+        },
+        {
+          "title": "思帆出海 - AI驱动社媒增长，智联全球",
+          "url": "https://www.svant.ai/",
+          "snippet": "- ### 矩阵布局 一键管理多平台社媒账号 ### 挑战：多平台账号管理繁琐，效率低下？ #### 我们的方案：一站式社媒矩阵管理系统 我们的系统让您在一个后台管理所有主流社媒账号，支持团队协作、内容定时发布、数据统一监控，将运营效率提升10倍以上。 ### 社媒矩阵系统 一键管理全球社媒账号，高效发布，智能分析 - 竞品智能分析 - 数据实时监控 - 内容定时发布 - 多平台统一管理 ## 社媒矩阵 一站式管理全球主流社交媒体平台 ### Facebook & Instagram 深度整合Facebook生态系统，智能优化广告投放，提升品牌曝光度 - 实时数据分析 - ..."
+        },
+        {
+          "title": "“一个人管理上千海外社媒账号”？2026年跨境卖家终于等来这棵“救命稻草”！-创新中国",
+          "url": "http://www.geceo.com/news/2603/166851.html",
+          "snippet": "- 带着这些问题，雨果网近日专访了出海帮CEO张建洲。这家在跨境数字营销领域深耕超过十年的老牌服务商，刚刚交出了一份令人惊讶的成绩单：服务超100000+用户，覆盖200+国家和地区，触达10亿+消费者。他们的核心武器——“全球推”AI自动化矩阵营销系统，正在成为不少卖家口中的“救命稻草” “你看，这个客户同时在管理TikTok、Facebook、Instagram、WhatsApp、Telegram、Viber、LinkedIn、YouTube、Google Email、Twitter十个渠道的账号矩阵。”他指着一个跳动着的数字说，“放在三年前，这需要一个十几人的运营团队。现在，一个人就够了。...."
+        },
+        {
+          "title": "2026海外社媒营销服务商推荐合集， Facebook、Link...",
+          "url": "https://hainan.ifeng.com/c/8sNBGA3Q53l",
+          "snippet": "- 社交媒体矩阵运营：聚焦Facebook、LinkedIn等平台，通过内容策划与线索挖掘实现品牌曝光与商机转化。 · 跨境短视频营销：依托TikTok等平台，制作专业短视频内容，快速提升品牌知名度与潜在客户资源。 ... 垂直领域深耕，专注B2B外贸场景；多渠道整合，打通搜索引擎、社媒、短视频等全渠道资源；数据驱动优化策略。"
+        },
+        {
+          "title": "一、数字化转型下的出海营销新趋势 - QQ.com",
+          "url": "https://news.qq.com/rain/a/20260326A06ZYZ00",
+          "snippet": "- 2026年，一批专注于B2B领域的营销服务商凭借AI技术与行业深耕经验，为企业提供从独立站建设到社媒运营的全链路支持，帮助企业在激烈的国际竞争中实现稳健增长 ..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【矩阵发帖与平台绑定】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2026年TikTok、Facebook、Linkedln平台SNS社媒推广代运营...」— - 2026年全球社交媒体营销市场规模预计突破3200亿美元，其中外贸企业贡献率从2024年的28%提升至39%。中国出海企业在这波浪潮中表现尤为亮眼，贡献了全球外贸社媒营销支出的35%，成为不可忽视的力量。 · 根据艾瑞咨询发布的《2026中国跨境电商社媒"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【矩阵发帖与平台绑定】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2026年TikTok、Facebook、Linkedln平台SNS社媒推广代运营...」— - 2026年全球社交媒体营销市场规模预计突破3200亿美元，其中外贸企业贡献率从2024年的28%提升至39%。中国出海企业在这波浪潮中表现尤为亮眼，贡献了全球外贸社媒营销支出的35%，成为不可忽视的力量。 · 根据艾瑞咨询发布的《2026中国跨境电商社媒"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "topic_key": "content_variants",
+      "topic_label": "1→N 内容变体",
+      "lane": "GW-G",
+      "anysearch_query": "content repurposing B2B export marketing one to many platforms",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:content_variants:b3ab3948",
+        "finding": "【1→N 内容变体】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Repurpose Content for B2B Demand Generation Success」— - Discover how to repurpose content to boost demand generation. Learn proven workflows, AI tools, and strategies to maximize your B2B ...",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "How to Repurpose Content for B2B Demand Generation Success",
+          "url": "https://www.theinsightcollective.com/insights/content-repurposing",
+          "snippet": "- Discover how to repurpose content to boost demand generation. Learn proven workflows, AI tools, and strategies to maximize your B2B ..."
+        },
+        {
+          "title": "From One To Many: How To Maximize B2B Content Reuse - Forrester",
+          "url": "https://www.forrester.com/report/from-one-to-many-how-to-maximize-b2b-content-reuse/RES177582",
+          "snippet": "- Learn how to use a primary and derivatives content approach to increase content production scale and maximize an organization's content asset ROI."
+        },
+        {
+          "title": "8 B2B Content Repurposing Strategies That Work (2025) - Fame.so",
+          "url": "https://www.fame.so/post/content-repurposing-strategies",
+          "snippet": "- Discover 8 powerful content repurposing strategies for your B2B podcast and video. Maximize reach, authority, and ROI with our expert guide."
+        },
+        {
+          "title": "AI Content Repurposing: One-to-Many Workflow (2026)",
+          "url": "https://ravitz.co/blog/ai-content-repurposing/",
+          "snippet": "- That’s the waste problem AI content repurposing actually solves. Not “we made 100 posts from one article and went viral.” The real version: one well-written core piece becomes 8-12 atomic units across the formats and channels your audience already uses, the original keeps earning, and the team stops..."
+        },
+        {
+          "title": "How do you handle content repurposing as an agency - Reddit",
+          "url": "https://www.reddit.com/r/b2bmarketing/comments/1tdsj3m/how_do_you_handle_content_repurposing_as_an_agency/",
+          "snippet": "- We treat repurposing like a pipeline, not a creative task every time. One solid source asset gets broken into predefined formats, newsletter ..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【1→N 内容变体】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Repurpose Content for B2B Demand Generation Success」— - Discover how to repurpose content to boost demand generation. Learn proven workflows, AI tools, and strategies to "
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【1→N 内容变体】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Repurpose Content for B2B Demand Generation Success」— - Discover how to repurpose content to boost demand generation. Learn proven workflows, AI tools, and strategies to "
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【1→N 内容变体】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Repurpose Content for B2B Demand Generation Success」— - Discover how to repurpose content to boost demand generation. Learn proven workflows, AI tools, and strategies to "
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "topic_key": "paid_attribution",
+      "topic_label": "UTM 归因与付费漏斗",
+      "lane": "GW-P",
+      "anysearch_query": "B2B marketing UTM attribution inquiry pipeline SaaS",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:paid_attribution:d44d7763",
+        "finding": "【UTM 归因与付费漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Marketing Attribution Guide 2026: Models, Tools & ROI」— - Complete 2026 guide to B2B attribution: multi-touch models, MMM, incrementality testing, platform comparison, and implementation roadmap for ...",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "B2B Marketing Attribution Guide 2026: Models, Tools & ROI",
+          "url": "https://improvado.io/blog/b2b-marketing-attribution",
+          "snippet": "- Complete 2026 guide to B2B attribution: multi-touch models, MMM, incrementality testing, platform comparison, and implementation roadmap for ..."
+        },
+        {
+          "title": "UTM Parameters: The Complete Guide for B2B SaaS Marketers (2026) | UTMStandard",
+          "url": "https://utmstandard.com/blog/utm-parameters-guide",
+          "snippet": "- UTM parameters tell you exactly where your traffic comes from — but most marketers get them wrong. All 5 parameters explained with real examples and the mistakes that silently corrupt your attribution. UTM parameters are five URL tags that tell GA4 (and your CRM) exactly where a visitor came from. ...."
+        },
+        {
+          "title": "Marketing Attribution Guide for B2B SaaS (2026) - ORM Technologies",
+          "url": "https://orm-tech.com/blog/marketing-attribution-guide/",
+          "snippet": "- I have spent two decades building revenue analytics for B2B SaaS companies. This guide covers what marketing attribution actually is, why every ..."
+        },
+        {
+          "title": "Attribution For B2b Saas Companies: The Complete Guide",
+          "url": "https://www.cometly.com/post/attribution-for-b2b-saas-companies",
+          "snippet": "- Attribution for B2B SaaS companies is the practice of identifying which marketing touchpoints, channels, and campaigns actually influenced a deal from first awareness to closed-won revenue. Done well, it transforms how you allocate budget, prioritize channels, and scale what works. Done poorly, or i..."
+        },
+        {
+          "title": "The State of B2B Marketing Attribution 2025",
+          "url": "https://www.revsure.ai/resources/whitepapers/the-state-of-b2b-marketing-attribution-2025",
+          "snippet": "- To uncover how marketing leaders are navigating this transformation, RevSure interviewed over 60 senior marketers from leading B2B SaaS companies. This report, based on qualified responses, reveals systemic gaps in attribution capabilities across the funnel, from anonymous visitor tracking and buyin..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【UTM 归因与付费漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Marketing Attribution Guide 2026: Models, Tools & ROI」— - Complete 2026 guide to B2B attribution: multi-touch models, MMM, incrementality testing, platform comparison, an"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【UTM 归因与付费漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Marketing Attribution Guide 2026: Models, Tools & ROI」— - Complete 2026 guide to B2B attribution: multi-touch models, MMM, incrementality testing, platform comparison, an"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "topic_key": "market_research",
+      "topic_label": "迈富时外贸战略与第二曲线",
+      "lane": "GW-R",
+      "anysearch_query": "迈富时 T云外贸版 出海 收入增长 2025 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:market_research:bbe71d21",
+        "finding": "【迈富时外贸战略与第二曲线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「海外收入增长134.4% 迈富时全球化＂走进去＂战略...」— - 2025年，迈富时（02556.HK）外贸相关收入同比增长134.4%，成为增速最快的业务板块。这一数字的背后，是迈富时全球化战略从\"帮助中国企业出海\"升级为\"直接深入本地市场\"的战略转型，是以T云外贸版为核心的出海产品矩阵在全球多语言市场的规模渗透，也是迈富时从港股上市公司到真正意义上全球化企业的关键一步。 对标：迈富时偏闭源 SaaS 全链路；本仓偏 Agent+人审+可部署源码。",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": [
+          {
+            "id_hint": "GW-R-AGENT-02",
+            "title": "ResearchBrief 经 ECC+PM 门控入登记册",
+            "lane": "GW-R"
+          }
+        ]
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "海外收入增长134.4% 迈富时全球化＂走进去＂战略...",
+          "url": "https://www.jiemian.com/article/14179716.html",
+          "snippet": "- 2025年，迈富时（02556.HK）外贸相关收入同比增长134.4%，成为增速最快的业务板块。这一数字的背后，是迈富时全球化战略从\"帮助中国企业出海\"升级为\"直接深入本地市场\"的战略转型，是以T云外贸版为核心的出海产品矩阵在全球多语言市场的规模渗透，也是迈富时从港股上市公司到真正意义上全球化企业的关键一步。"
+        },
+        {
+          "title": "迈富时（02556.HK）",
+          "url": "https://pdf.dfcfw.com/pdf/H3_AP202603301820852746_1.pdf?1774878617000.pdf=",
+          "snippet": "- 精准营销业务 86%。 单位广告客户平均收入大幅提升。该板块毛利率同比下滑 9.0pct 至 5.0%，主要归因于媒体流量采购成本随行业政策变化而上升，且毛利率 更低的在线广告解决方案服务收入占比被动提升。战略层面，公司推进 国际化加速与商业模式向 Token 演进。2025 年外贸业务收入达 0.8 亿 元，同比增长 134%。公司目前已在中国香港、美国、新加坡设立子公 司，中国香港地区已落地本地客户，预计 2026 年将进一步拓展东南亚、 中东及欧美市场。公司坚守高毛利与强现金流底线，收费模式正从传统 的 SaaS 订阅制，向按效果核算及 Token 用量计费拓展，我们认为有望 加深客....."
+        },
+        {
+          "title": "【光大海外】迈富时（2556.HK）首次覆盖报告：如...",
+          "url": "https://finance.sina.com.cn/stock/hkstock/hkzmt/2025-07-24/doc-infhprww2278609.shtml",
+          "snippet": "- 公司的精准营销服务包括在线广告解决方案服务与在线广告分发服务，2023、2024年在线广告解决方案占精准营销毛收入的7.1%、8.7%，随着客户认知度提升，预计在线广告解决方案占精准营销毛收入比重将逐渐提高，预计2025-2027年占毛收入比重分别为9.9%、10.7%、11.2%；而在线广告分发服务因平台竞争加剧导致的投流成本上升，该业务会计收入占毛收入比重预计逐年下降，我们假设2025年为过去三年均值1.46%，2026-2027年分别为1.45%、1.44%。精准营销服务毛收入方"
+        },
+        {
+          "title": "迈富时(02556.HK)年报发布：总收入28.2亿元，增幅高达80.8%，AI收入三年复合增速有望达到70%",
+          "url": "https://m.gelonghui.com/p/4202072",
+          "snippet": "- 全球化纵深：海外收入增134.4%，本土化落地突破 国际化是2025年的核心增长极。迈富时外贸相关收入同比增长134.4%，这一增长不仅来自\"服务中国企业出海\"，更源于公司开启国际化第二阶段：从\"跟出去\"到\"走进去\"，直接服务海外本土企业。 目前，公司已设立中国香港、美国、新加坡子公司，中国香港已有本地客户落地。依托T云外贸版的49种语言版本，公司AI能力正在东南亚、中东、拉美等市场逐步渗透。管理层表示，海外客户的付费能力远高于国内，结合国内人力与电力成本优势，有望在未来大幅提升利润水平。 2026展望：把跑通的路跑宽、跑深、跑远 在迈富时2025年度业绩发布会上，面对已开启的2026..."
+        },
+        {
+          "title": "全球领先的AI应用平台 迈富时Marketingforce（珍岛集...",
+          "url": "https://www.marketingforce.com/",
+          "snippet": "- 由中国信息通信研究院（以下简称“中国信通院”）牵头制定、迈富时等多家行业头部企业共同参与的《面向企业用户的客户关系管理系统智能化能力成熟度模型》（团体标准T/ISC 0108-2026）正式发布。该标准是国内首份系统性衡量CRM系统智能化能力的团体标准，填补了行业空白，为企业评估和选型智能CRM提供了科学依据。 查看详情 ... 中国科学院《互联网周刊》、德本咨询与eNet研究院联合主办的“2025年度金i奖”评选结果正式揭晓。全球领先的AI应用平台迈富时Marketingforce凭借其国产替代、智能驱动的“AI原生CRM”斩获“2025年度产品”大奖。 查看详情"
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "research",
+          "label": "外贸研究员",
+          "action": "extend_deerflow_brief_for_tenants",
+          "expert_ids": [
+            "expert_research"
+          ],
+          "agent_refs": [
+            "市场参谋",
+            "DeerFlow market_research"
+          ],
+          "note": "【迈富时外贸战略与第二曲线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「海外收入增长134.4% 迈富时全球化＂走进去＂战略...」— - 2025年，迈富时（02556.HK）外贸相关收入同比增长134.4%，成为增速最快的业务板块。这一数字的背后，是迈富时全球化战略从\"帮助中国企业出海\"升级为\"直接深入本地市场\"的战略转型，是以T云外贸版为核心的出海产品矩阵在全球多语言市场的规模渗透，也是迈富时从港股上市公司到"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【迈富时外贸战略与第二曲线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「海外收入增长134.4% 迈富时全球化＂走进去＂战略...」— - 2025年，迈富时（02556.HK）外贸相关收入同比增长134.4%，成为增速最快的业务板块。这一数字的背后，是迈富时全球化战略从\"帮助中国企业出海\"升级为\"直接深入本地市场\"的战略转型，是以T云外贸版为核心的出海产品矩阵在全球多语言市场的规模渗透，也是迈富时从港股上市公司到"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "topic_key": "competitor_cf_b2b",
+      "topic_label": "外贸营销 SaaS 竞品对照",
+      "lane": "GW-PM",
+      "anysearch_query": "外贸独立站 营销云 SEO GEO 竞品 中小外贸企业",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:competitor_cf_b2b:2c526eaa",
+        "finding": "【外贸营销 SaaS 竞品对照】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2025外贸企业独立站SEO和GEO策略」— - 本文旨在为外贸企业的独立站运营提供全面的SEO和GEO策略，以提升网站在搜索引擎和新兴AI搜索平台上的可见性。报告强调了针对传统搜索引擎（如Google、Bing等 ...",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "2025外贸企业独立站SEO和GEO策略",
+          "url": "https://www.leadscloud.com/2025waimaoqiyeduai/",
+          "snippet": "- 本文旨在为外贸企业的独立站运营提供全面的SEO和GEO策略，以提升网站在搜索引擎和新兴AI搜索平台上的可见性。报告强调了针对传统搜索引擎（如Google、Bing等 ..."
+        },
+        {
+          "title": "外贸独立站SEO与GEO双驱动架构实操指南｜提升国际搜索曝光与转化",
+          "url": "https://cnabke.com/blogs/cross-border-seo-geo-architecture.html",
+          "snippet": "- 外贸独立站SEO与GEO双驱动架构实操指南｜提升国际搜索曝光与转化 # 外贸独立站：从0到1构建SEO与GEO双驱动架构的实操指南 ## 本文为出口商与制造商提供一套从0到1构建外贸独立站SEO与GEO（生成式引擎优化）双驱动架构的实操指南。通过系统方法论、多语言内容管理、结构化数据与AI内容推荐的落地策略，结合真实案例与关键数据，帮助数字营销与外贸决策者快速提升国际搜索曝光、获取精准流量并提高客户转化效率。 在当下，传统搜索引擎优化（SEO）仍是获取高意向买家的主通道；而生成式引擎（如大型语言模型与生成式搜索）开始影响买家信息获取路径与搜索意图呈现。单做SEO容易在“关键词覆盖+技术优..."
+        },
+        {
+          "title": "焦点领动AI建站, 外贸独立站建设运营推广, 谷歌SEO供应商 ...",
+          "url": "https://www.leadong.com/",
+          "snippet": "- 专注外贸企业的网站建设服务，提供定制化、多语言、SEO、GEO优化的外贸独立站解决方案。帮助企业提升网站转化率，获取更多询盘！ ... 独立站品牌出海，云营销货通全球. 预 ..."
+        },
+        {
+          "title": "外贸独立站SEO完全指南：从零打造谷歌引流增长引擎 ...",
+          "url": "https://cn.williejiang.com/blog/seo-guide-for-export-companies/",
+          "snippet": "- 数字化转型大潮下，外贸独立站SEO已经从锦上添花变成了基本盘。它不仅是获客工具，更是品牌建设和市场教育的重要阵地。"
+        },
+        {
+          "title": "外贸独立站 SEO 哪家强？五大服务商深度对比 - 知乎",
+          "url": "https://zhuanlan.zhihu.com/p/1969441942485071339",
+          "snippet": "- 在2025的外贸竞争环境下，独立站SEO早已不只是“让网站上首页”这么简单。随着AI搜索引擎（如ChatGPT、DeepSeek、Perplexity等）的兴起，企业网站的优化逻辑从关键词堆砌走向语义理解、内容原创和知识化表达。外贸企业要想真正让网站“被看见”，需要的不仅是流量，更是能被AI理解和引用的内容体系。"
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【外贸营销 SaaS 竞品对照】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2025外贸企业独立站SEO和GEO策略」— - 本文旨在为外贸企业的独立站运营提供全面的SEO和GEO策略，以提升网站在搜索引擎和新兴AI搜索平台上的可见性。报告强调了针对传统搜索引擎（如Google、Bing等 ..."
+        },
+        {
+          "seat": "ecc",
+          "label": "ECC 技术八席",
+          "action": "review_in_standup",
+          "expert_ids": [],
+          "agent_refs": [
+            "frontend-architect",
+            "insulation-backend-developer",
+            "geo-rank-strategist"
+          ],
+          "note": "【外贸营销 SaaS 竞品对照】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2025外贸企业独立站SEO和GEO策略」— - 本文旨在为外贸企业的独立站运营提供全面的SEO和GEO策略，以提升网站在搜索引擎和新兴AI搜索平台上的可见性。报告强调了针对传统搜索引擎（如Google、Bing等 ..."
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【外贸营销 SaaS 竞品对照】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2025外贸企业独立站SEO和GEO策略」— - 本文旨在为外贸企业的独立站运营提供全面的SEO和GEO策略，以提升网站在搜索引擎和新兴AI搜索平台上的可见性。报告强调了针对传统搜索引擎（如Google、Bing等 ..."
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "topic_key": "ads_creative",
+      "topic_label": "广告创意与真投放差距",
+      "lane": "GW-P",
+      "anysearch_query": "Google Ads Meta B2B export lead generation automation 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:ads_creative:65d0293c",
+        "finding": "【广告创意与真投放差距】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Meta Ads for B2B Lead Generation Guide (2026 Strategy)」— - Complete guide to AI-powered Meta Ads for B2B lead generation. Setup, targeting, optimization, and advanced automation tactics for higher quality leads.",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "AI Meta Ads for B2B Lead Generation Guide (2026 Strategy)",
+          "url": "https://www.get-ryze.ai/blog/ai-meta-ads-for-b2b-lead-generation-guide",
+          "snippet": "- Complete guide to AI-powered Meta Ads for B2B lead generation. Setup, targeting, optimization, and advanced automation tactics for higher quality leads."
+        },
+        {
+          "title": "Google Ads Strategy 2026: 18 Tips For Quality B2B Lead Generation",
+          "url": "https://www.factors.ai/blog/google-ads-strategy",
+          "snippet": "- For example, a marketing workflow automation product might target marketing directors at companies with over 500 employees in the e-commerce industry within Virginia, USA. In many B2B industries, the competition can be high, especially for high-value keywords."
+        },
+        {
+          "title": "Meta Ads B2B Lead Generation Strategy 2026 | Involve Digital",
+          "url": "https://www.involvedigital.com/insights/meta-ads-b2b-lead-generation-strategy",
+          "snippet": "- The practical approach: always have 4–5 creative variants running per campaign, using Meta's Dynamic Creative feature to automatically serve the best-performing combination of headlines, images, and body copy. This extends the effective lifespan of each creative concept while providing statistically..."
+        },
+        {
+          "title": "Export leads automatically using Zapier - Google Ads Help",
+          "url": "https://support.google.com/google-ads/answer/11351975?hl=en",
+          "snippet": "- You can automatically export leads from lead form assets to your lead management system or customer relationship management (CRM) system using the “Export leads from Google Ads” card in your Google Ads account. The Google Ads integration with Zapier, a third-party data partner, enables you to link t..."
+        },
+        {
+          "title": "Conversions API for CRM Integration",
+          "url": "https://developers.facebook.com/docs/marketing-api/conversions-api/conversion-leads-integration/",
+          "snippet": "- Conversion Leads Integration Conversions API for CRM for # Conversions API for CRM Integration You may already have Meta’s Conversions API set up for your business to upload server events for your web traffic. If you are using Facebook/Instagram to generate leads for your business to convert into..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【广告创意与真投放差距】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Meta Ads for B2B Lead Generation Guide (2026 Strategy)」— - Complete guide to AI-powered Meta Ads for B2B lead generation. Setup, targeting, optimization, and advanced autom"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【广告创意与真投放差距】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Meta Ads for B2B Lead Generation Guide (2026 Strategy)」— - Complete guide to AI-powered Meta Ads for B2B lead generation. Setup, targeting, optimization, and advanced autom"
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "topic_key": "linkedin_b2b",
+      "topic_label": "LinkedIn B2B 出海内容",
+      "lane": "GW-S",
+      "anysearch_query": "LinkedIn B2B manufacturing export content strategy 2026",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:linkedin_b2b:71a528e8",
+        "finding": "【LinkedIn B2B 出海内容】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「LinkedIn Marketing Strategy 2026: Complete B2B Guide」— - Complete LinkedIn marketing guide 2026: Profile optimization, content strategy, engagement tactics, paid ads, analytics. Everything B2B teams need to grow.",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "LinkedIn Marketing Strategy 2026: Complete B2B Guide",
+          "url": "https://lagrowthmachine.com/linkedin-marketing-strategy-2026/",
+          "snippet": "- Complete LinkedIn marketing guide 2026: Profile optimization, content strategy, engagement tactics, paid ads, analytics. Everything B2B teams need to grow."
+        },
+        {
+          "title": "B2B Lead Generation for Manufacturers Using LinkedIn & SEO (2026)",
+          "url": "https://www.softrica.com/2026/04/24/b2b-lead-generation-manufacturers-linkedin-seo/",
+          "snippet": "- B2B Lead Generation for Manufacturers Using LinkedIn & SEO (2026) Surat is home to thousands of manufacturers — textiles, chemicals, diamonds, packaging, and engineering goods. Most of them still generate leads the old way: trade fairs, referrals, and cold calls. In 2026, LinkedIn and SEO have quie...."
+        },
+        {
+          "title": "B2B Manufacturing Content Strategy for Growth in 2026",
+          "url": "https://manufacturing-seo.agency/blog/b2b-manufacturing-content-strategy",
+          "snippet": "- A B2B manufacturing content strategy is a documented program that maps technical content (process pages, material guides, certification explainers, case studies, spec sheets, videos) to every stage of the procurement journey, from initial supplier discovery through RFQ submission and final supplier ..."
+        },
+        {
+          "title": "LinkedIn for B2B Marketing: The Complete Strategy Guide for 2026 ...",
+          "url": "https://heropost.io/linkedin-b2b-marketing-strategy-2026/",
+          "snippet": "- A piece of content that speaks to those challenges reaches them at exactly the right moment. This guide covers how to build a LinkedIn B2B marketing strategy that drives real pipeline — not just follower counts. Several platform shifts in 2025-2026 have changed how LinkedIn works for B2B brands:"
+        },
+        {
+          "title": "LinkedIn B2B Marketing in 2026: New Strategies & Changes You ...",
+          "url": "https://www.linkedin.com/pulse/linkedin-b2b-marketing-2026-new-strategies-changes-you-raymond-b0qzc",
+          "snippet": "- LinkedIn has changed. Learn what really works for B2B marketing in 2026, from strategy and positioning to Company Pages and employees."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【LinkedIn B2B 出海内容】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「LinkedIn Marketing Strategy 2026: Complete B2B Guide」— - Complete LinkedIn marketing guide 2026: Profile optimization, content strategy, engagement tactics, paid ads, a"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【LinkedIn B2B 出海内容】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「LinkedIn Marketing Strategy 2026: Complete B2B Guide」— - Complete LinkedIn marketing guide 2026: Profile optimization, content strategy, engagement tactics, paid ads, a"
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "topic_key": "site_onboarding",
+      "topic_label": "独立域建站与 ICP onboarding",
+      "lane": "GW-G",
+      "anysearch_query": "B2B website ICP onboarding export manufacturer SaaS",
+      "anysearch_ok": true,
+      "anysearch_hits": 5,
+      "brief": {
+        "brief_id": "2026060623:site_onboarding:016baa15",
+        "finding": "【独立域建站与 ICP onboarding】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Ideal Customer Profile (ICP) for B2B SaaS: Examples & Guide」— - Your ICP template should include the following sections: Company overview: Industry, company size, revenue range, location, and growth stage.",
+        "impact": "low",
+        "confidence": "high",
+        "suggested_tasks": []
+      },
+      "anysearch_hits_detail": [
+        {
+          "title": "Ideal Customer Profile (ICP) for B2B SaaS: Examples & Guide",
+          "url": "https://rightleftagency.com/ideal-customer-profile/",
+          "snippet": "- Your ICP template should include the following sections: Company overview: Industry, company size, revenue range, location, and growth stage."
+        },
+        {
+          "title": "Ideal Customer Profile Template for B2B SaaS | ICP Guide - Only-B2B",
+          "url": "https://www.only-b2b.com/blog/ideal-customer-profile-template-b2b-saas/",
+          "snippet": "- For example, a SaaS collaboration tool designed for distributed teams may align naturally with mid-market technology companies rather than small local businesses. Technographic insight focuses on the technology environment inside the target organization. Common technographic indicators include: ... ..."
+        },
+        {
+          "title": "Export Manufacturing CRM AI | International Distributor Management | Multilingual B2B Sales | Caramel",
+          "url": "https://joincaramel.com/use-cases/export-manufacturing/",
+          "snippet": "- Export Manufacturing CRM AI | International Distributor Management | Multilingual B2B Sales | Caramel # Export & Manufacturing CRM — From Trade Show Contact to Signed Distribution Agreement Caramel captures trade show contacts, qualifies international distributors, and nurtures cross-border buyers....."
+        },
+        {
+          "title": "Boost B2B SaaS Visibility with ICP and Use Case Landing Pages",
+          "url": "https://www.linkedin.com/posts/john-ozuysal_if-youre-a-b2b-saas-company-theres-one-activity-7416491672538136578-UYjJ",
+          "snippet": "- These pages send clear signals about where your product fits. Long-tail, intent-driven pages are much easier for LLMs to surface than a generic ..."
+        },
+        {
+          "title": "AI-Powered Customer Onboarding for Manufacturing Businesses | Arahi AI",
+          "url": "https://arahi.ai/ai-agent/manufacturing/customer-onboarding",
+          "snippet": "- AI-Powered Customer Onboarding for Manufacturing Businesses | Arahi AI AI-Powered Customer Onboarding for Manufacturing Businesses | Arahi AI # Customer Onboarding Automation for Manufacturing Businesses Transform how your Manufacturing business handles Customer Onboarding. Arahi AI agents work 2..."
+        }
+      ],
+      "ecc_verdict": "skip",
+      "ecc_reviews": [],
+      "departments": [
+        {
+          "seat": "marketing",
+          "label": "营销与内容",
+          "action": "draft_content_or_campaign_hypothesis",
+          "expert_ids": [
+            "expert_matrix",
+            "expert_ads"
+          ],
+          "agent_refs": [
+            "内容创作者",
+            "SEO 专家",
+            "社交媒体策略师",
+            "TikTok 策略师"
+          ],
+          "note": "【独立域建站与 ICP onboarding】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Ideal Customer Profile (ICP) for B2B SaaS: Examples & Guide」— - Your ICP template should include the following sections: Company overview: Industry, company size, r"
+        },
+        {
+          "seat": "product",
+          "label": "建站与产品",
+          "action": "review_in_standup",
+          "expert_ids": [
+            "expert_site",
+            "expert_eva"
+          ],
+          "agent_refs": [
+            "建站助手",
+            "找客专员"
+          ],
+          "note": "【独立域建站与 ICP onboarding】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Ideal Customer Profile (ICP) for B2B SaaS: Examples & Guide」— - Your ICP template should include the following sections: Company overview: Industry, company size, r"
+        },
+        {
+          "seat": "pm",
+          "label": "产品经理编排",
+          "action": "approve_or_reject_inbox",
+          "expert_ids": [],
+          "agent_refs": [
+            "PM-07",
+            "global-overseas-growth-task-register"
+          ],
+          "note": "【独立域建站与 ICP onboarding】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Ideal Customer Profile (ICP) for B2B SaaS: Examples & Guide」— - Your ICP template should include the following sections: Company overview: Industry, company size, r"
+        }
+      ]
+    }
+  ],
+  "executive_summary": "## Hermes × AnySearch 十轮研究摘要\n\n**R1 GEO 排名与 AEO 可见性** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【GEO 排名与 AEO 可见性】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO优化,AI搜索排名优化,抢占AI流量选迈富时GEO智能助手 - 珍岛集团」— - 迈富时GEO智能助手,正规专业的AI搜索推广服务商,提供诊断到效果报告的一对一GEO推广解决方案,覆盖国内外主流AI平台,构建AI搜索信任的内容与引用体系,打通“AI推荐”到 ... 对标：迈富时偏闭源 SaaS 全链路；本仓偏 Agent+人审+可部署源码。…\n\n**R2 AI 引文与站点事实一致** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【AI 引文与站点事实一致】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently」— - GEO for SaaS: How B2B Software Companies Win AI Citations in 2026 - Contently Skip to main content B2B software companies win AI ci…\n\n**R3 矩阵发帖与平台绑定** (GW-S) — hits=5 ecc=skip → marketing, pm\n- 【矩阵发帖与平台绑定】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2026年TikTok、Facebook、Linkedln平台SNS社媒推广代运营...」— - 2026年全球社交媒体营销市场规模预计突破3200亿美元，其中外贸企业贡献率从2024年的28%提升至39%。中国出海企业在这波浪潮中表现尤为亮眼，贡献了全球外贸社媒营销支出的35%，成为不可忽视的力量。 · 根据艾瑞咨询发布的《2026中国跨境电商社媒营销发展报告》，社媒代运营服务市场规模达到420亿美元，年复合增长率保持在31.…\n\n**R4 1→N 内容变体** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【1→N 内容变体】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「How to Repurpose Content for B2B Demand Generation Success」— - Discover how to repurpose content to boost demand generation. Learn proven workflows, AI tools, and strategies to maximize your B2B ...…\n\n**R5 UTM 归因与付费漏斗** (GW-P) — hits=5 ecc=skip → marketing, pm\n- 【UTM 归因与付费漏斗】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「B2B Marketing Attribution Guide 2026: Models, Tools & ROI」— - Complete 2026 guide to B2B attribution: multi-touch models, MMM, incrementality testing, platform comparison, and implementation roadmap for ...…\n\n**R6 迈富时外贸战略与第二曲线** (GW-R) — hits=5 ecc=skip → research, pm\n- 【迈富时外贸战略与第二曲线】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「海外收入增长134.4% 迈富时全球化＂走进去＂战略...」— - 2025年，迈富时（02556.HK）外贸相关收入同比增长134.4%，成为增速最快的业务板块。这一数字的背后，是迈富时全球化战略从\"帮助中国企业出海\"升级为\"直接深入本地市场\"的战略转型，是以T云外贸版为核心的出海产品矩阵在全球多语言市场的规模渗透，也是迈富时从港股上市公司到真正意义上全球化企业的关键一步。 对标：迈富时偏闭源 SaaS 全链路；本仓偏 …\n\n**R7 外贸营销 SaaS 竞品对照** (GW-PM) — hits=5 ecc=skip → product, ecc, pm\n- 【外贸营销 SaaS 竞品对照】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「2025外贸企业独立站SEO和GEO策略」— - 本文旨在为外贸企业的独立站运营提供全面的SEO和GEO策略，以提升网站在搜索引擎和新兴AI搜索平台上的可见性。报告强调了针对传统搜索引擎（如Google、Bing等 ...…\n\n**R8 广告创意与真投放差距** (GW-P) — hits=5 ecc=skip → marketing, pm\n- 【广告创意与真投放差距】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「AI Meta Ads for B2B Lead Generation Guide (2026 Strategy)」— - Complete guide to AI-powered Meta Ads for B2B lead generation. Setup, targeting, optimization, and advanced automation tactics for higher quality leads.…\n\n**R9 LinkedIn B2B 出海内容** (GW-S) — hits=5 ecc=skip → marketing, pm\n- 【LinkedIn B2B 出海内容】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「LinkedIn Marketing Strategy 2026: Complete B2B Guide」— - Complete LinkedIn marketing guide 2026: Profile optimization, content strategy, engagement tactics, paid ads, analytics. Everything B2B teams need to g…\n\n**R10 独立域建站与 ICP onboarding** (GW-G) — hits=5 ecc=skip → marketing, product, pm\n- 【独立域建站与 ICP onboarding】本小时无 P0 积压信号；维持只读研究节奏，输出供营销/销售专家人工采纳。 外网（AnySearch）：「Ideal Customer Profile (ICP) for B2B SaaS: Examples & Guide」— - Your ICP template should include the following sections: Company overview: Industry, company size, revenue range, location, and growth stage…\n"
+}

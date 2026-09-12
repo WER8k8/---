@@ -1,0 +1,11 @@
+{
+  "task": "MOD-07",
+  "status": "pending_pm_signoff",
+  "matrix_spec": "20 categories × 50 countries",
+  "ui_route": "/admin/ai-engine/trade-intel",
+  "checklist": "docs/compliance/MOD-07-trade-intel-matrix-checklist.md",
+  "signatory_role": "产品经理",
+  "signed_by": null,
+  "signed_at": null,
+  "notes": "PM 确认品类×国家矩阵范围与免责声明后签字；M2 API Key 可选"
+}

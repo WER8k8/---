@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能运营中心 — 统一监控与运营门户</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <style id="theme-vars">
+:root {
+  --uj-motion-duration: 0.3s;
+  --uj-motion-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --seed-color: #4a9b8c;
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+    </style>
+    <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 80% 40% at 20% 10%, rgba(74,155,140,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.page-wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 56px; }
+
+/* ===== Page Header ===== */
+.page-header { text-align: center; margin-bottom: 32px; }
+.page-header h1 {
+  font-size: 28px; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--color-foreground);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.page-header h1 .header-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(74,155,140,0.12); color: var(--color-primary);
+}
+.page-header .subtitle {
+  font-size: 14px; color: var(--color-muted-foreground); margin-top: 8px;
+}
+.stat-badges {
+  display: flex; justify-content: center; gap: 12px; margin-top: 16px; flex-wrap: wrap;
+}
+.stat-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--color-muted); border: 1px solid var(--color-border);
+  font-size: 12px; color: var(--color-muted-foreground);
+  transition: border-color 0.3s ease, transform 0.3s var(--uj-motion-ease);
+}
+.stat-badge:hover { border-color: var(--color-primary); transform: translateY(-2px); }
+.stat-badge b { color: var(--color-primary); font-size: 14px; font-weight: 700; }
+
+/* ===== Hero Score Banner ===== */
+.hero-banner {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  display: flex; align-items: center; gap: 40px;
+  margin-bottom: 28px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+.hero-banner:hover { border-color: rgba(255,255,255,0.1); }
+.hero-banner::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), #3b82f6, #8b5cf6);
+  opacity: 0.6;
+}
+.hero-left { flex-shrink: 0; text-align: center; position: relative; }
+.score-ring {
+  width: 120px; height: 120px; position: relative; margin: 0 auto 12px;
+}
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: var(--color-muted); stroke-width: 8; }
+.score-ring-fill {
+  fill: none; stroke: var(--color-primary); stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 314; stroke-dashoffset: 16;
+  transition: stroke-dashoffset 1s ease-out;
+}
+.score-number {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.score-number .num {
+  font-size: 36px; font-weight: 800; letter-spacing: -0.04em;
+  background: linear-gradient(135deg, var(--color-primary), #10b981);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.score-number .label { font-size: 11px; color: var(--color-muted-foreground); margin-top: 2px; }
+.hero-model-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--color-muted-foreground);
+  padding: 4px 10px; border-radius: 6px;
+  background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15);
+  margin-top: 4px;
+}
+.hero-model-badge svg { width: 12px; height: 12px; color: #8b5cf6; }
+
+.hero-right { flex: 1; min-width: 0; }
+.hero-right h3 {
+  font-size: 13px; font-weight: 600; color: var(--color-muted-foreground);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px;
+}
+.dim-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.dim-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: var(--radius-md);
+  background: var(--color-muted); border: 1px solid var(--color-border);
+  transition: border-color 0.3s ease;
+}
+.dim-item:hover { border-color: rgba(255,255,255,0.1); }
+.dim-label { font-size: 12px; color: var(--color-muted-foreground); min-width: 60px; }
+.dim-bar-wrap { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.dim-bar { height: 100%; border-radius: 3px; transition: width 0.8s ease-out; }
+.dim-bar.green { background: var(--color-success); }
+.dim-bar.yellow { background: var(--color-warning); }
+.dim-bar.red { background: var(--color-danger); }
+.dim-score { font-size: 13px; font-weight: 700; min-width: 28px; text-align: right; }
+.dim-score.green { color: var(--color-success); }
+.dim-score.yellow { color: var(--color-warning); }
+.dim-score.red { color: var(--color-danger); }
+
+/* ===== Module Grid ===== */
+.section-title {
+  font-size: 16px; font-weight: 700; color: var(--color-foreground);
+  margin-bottom: 18px; letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title svg { color: var(--color-primary); }
+
+.module-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 28px;
+}
+.panel {
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative; overflow: hidden;
+}
+.panel::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--mod-color, var(--color-primary)); opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.panel:hover {
+  transform: translateY(-4px);
+  border-color: var(--mod-color, var(--color-primary));
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px var(--mod-color, var(--color-primary));
+}
+.panel:hover::before { opacity: 1; }
+
+.panel-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.panel-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.panel-icon svg { width: 20px; height: 20px; color: #fff; }
+.panel-icon.blue { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+.panel-icon.purple { background: rgba(139,92,246,0.15); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.25); }
+.panel-icon.gold { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.panel-icon.cyan { background: rgba(6,182,212,0.15); color: #06b6d4; border: 1px solid rgba(6,182,212,0.25); }
+.panel-icon.emerald { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.panel-icon.rose { background: rgba(244,63,94,0.15); color: #f43f5e; border: 1px solid rgba(244,63,94,0.25); }
+
+.panel-info { flex: 1; min-width: 0; }
+.panel-name { font-size: 15px; font-weight: 600; color: var(--color-foreground); margin-bottom: 4px; }
+.panel-desc { font-size: 12px; color: var(--color-muted-foreground); line-height: 1.5; }
+.panel-status {
+  position: absolute; top: 16px; right: 16px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+}
+.panel-status.green { background: rgba(16,185,129,0.12); color: var(--color-success); border: 1px solid rgba(16,185,129,0.2); }
+.panel-status.yellow { background: rgba(245,158,11,0.12); color: var(--color-warning); border: 1px solid rgba(245,158,11,0.2); }
+
+.panel-stats {
+  font-size: 12px; color: var(--color-muted-foreground);
+  margin-bottom: 14px; line-height: 1.8;
+}
+
+/* Channel grid inside Module 4 */
+.channel-grid {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.channel-item {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 6px;
+  background: var(--color-muted); border: 1px solid var(--color-border);
+}
+.channel-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.channel-dot.green { background: var(--color-success); box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+.channel-dot.yellow { background: var(--color-warning); box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+
+.panel-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(74,155,140,0.1); color: var(--color-primary);
+  border: 1px solid rgba(74,155,140,0.2);
+  transition: background 0.3s ease, transform 0.3s var(--uj-motion-ease);
+}
+.panel-btn:hover {
+  background: rgba(74,155,140,0.2);
+  transform: translateY(-1px);
+}
+.panel-btn svg { width: 14px; height: 14px; }
+
+/* ===== Quick Actions Bar ===== */
+.quick-actions {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.quick-actions .qa-label {
+  font-size: 12px; font-weight: 600; color: var(--color-muted-foreground);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-right: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.quick-actions .qa-label svg { width: 14px; height: 14px; color: var(--color-primary); }
+.qa-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; padding: 9px 16px;
+  border-radius: var(--radius-md); cursor: pointer;
+  background: var(--color-muted); color: var(--color-foreground);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.qa-btn:hover {
+  background: rgba(74,155,140,0.12); border-color: var(--color-primary);
+  transform: translateY(-2px); color: var(--color-primary);
+}
+.qa-btn svg { width: 15px; height: 15px; }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.25s ease-out;
+}
+.modal-overlay.open { display: flex; opacity: 1; }
+.modal-box {
+  background: var(--color-card); border: 1px solid var(--color-border);
+  border-radius: 16px; padding: 28px 32px;
+  max-width: 640px; width: 92%; max-height: 82vh; overflow-y: auto;
+  transform: scale(0.95) translateY(12px); position: relative;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+.modal-close {
+  position: absolute; top: 14px; right: 14px; width: 30px; height: 30px;
+  border-radius: 8px; border: none; cursor: pointer;
+  background: var(--color-muted); color: var(--color-muted-foreground);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s ease;
+}
+.modal-close:hover { background: var(--color-border); }
+.modal-accent-bar { width: 48px; height: 3px; border-radius: 2px; margin-bottom: 14px; }
+.modal-title { font-size: 18px; font-weight: 700; color: var(--color-foreground); letter-spacing: -0.02em; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--color-muted-foreground); margin-bottom: 18px; }
+
+/* Modal content helpers */
+.modal-section-label {
+  font-size: 11px; font-weight: 600; color: var(--color-muted-foreground);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;
+  margin-top: 18px;
+}
+.modal-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.modal-row:last-child { border-bottom: none; }
+.modal-row__k { font-size: 13px; color: var(--color-muted-foreground); }
+.modal-row__v { font-size: 13px; font-weight: 600; color: var(--color-foreground); text-align: right; max-width: 60%; }
+
+.modal-tag {
+  display: inline-flex; font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px;
+}
+.modal-tag.p0 { background: rgba(239,68,68,0.12); color: var(--color-danger); }
+.modal-tag.p1 { background: rgba(245,158,11,0.12); color: var(--color-warning); }
+.modal-tag.p2 { background: rgba(74,155,140,0.1); color: var(--color-primary); }
+.modal-tag.green { background: rgba(16,185,129,0.12); color: var(--color-success); }
+.modal-tag.yellow { background: rgba(245,158,11,0.12); color: var(--color-warning); }
+
+/* Score grid for AI modal */
+.ai-model-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.ai-model-cell {
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  background: var(--color-muted); border: 1px solid var(--color-border);
+  text-align: center;
+}
+.ai-model-cell .name { font-size: 11px; color: var(--color-muted-foreground); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-model-cell .score { font-size: 16px; font-weight: 700; }
+.ai-model-cell .score.high { color: var(--color-success); }
+.ai-model-cell .score.mid { color: var(--color-warning); }
+.ai-model-cell .score.low { color: var(--color-danger); }
+
+/* Pipeline flow for email verification */
+.pipeline-flow {
+  display: flex; align-items: center; gap: 0; margin: 16px 0;
+}
+.pipeline-step {
+  flex: 1; padding: 14px 12px; border-radius: var(--radius-md);
+  background: var(--color-muted); border: 1px solid var(--color-border);
+  text-align: center; position: relative;
+}
+.pipeline-step .step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--color-primary); color: #fff;
+  font-size: 12px; font-weight: 700; margin-bottom: 6px;
+}
+.pipeline-step .step-name { font-size: 12px; font-weight: 600; color: var(--color-foreground); margin-bottom: 2px; }
+.pipeline-step .step-desc { font-size: 10px; color: var(--color-muted-foreground); line-height: 1.4; }
+.pipeline-arrow {
+  flex-shrink: 0; width: 28px; display: flex; align-items: center; justify-content: center;
+  color: var(--color-muted-foreground);
+}
+.pipeline-arrow svg { width: 16px; height: 16px; }
+
+/* Hook list for code quality */
+.hook-list { display: flex; flex-direction: column; gap: 8px; }
+.hook-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  background: var(--color-muted); border: 1px solid var(--color-border);
+}
+.hook-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.hook-dot.on { background: var(--color-success); box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+.hook-info { flex: 1; }
+.hook-name { font-size: 13px; font-weight: 600; color: var(--color-foreground); }
+.hook-desc { font-size: 11px; color: var(--color-muted-foreground); }
+.hook-status { font-size: 11px; font-weight: 600; color: var(--color-success); }
+
+/* Channel detail list */
+.channel-detail {
+  padding: 12px 14px; border-radius: var(--radius-sm);
+  background: var(--color-muted); border: 1px solid var(--color-border);
+  margin-bottom: 8px;
+}
+.channel-detail:last-child { margin-bottom: 0; }
+.channel-detail-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.channel-detail-name { font-size: 13px; font-weight: 600; color: var(--color-foreground); display: flex; align-items: center; gap: 8px; }
+.channel-detail-reason { font-size: 11px; color: var(--color-muted-foreground); line-height: 1.5; }
+.channel-detail-checklist { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.channel-detail-check {
+  font-size: 11px; color: var(--color-muted-foreground);
+  display: flex; align-items: center; gap: 6px;
+}
+.channel-detail-check svg { width: 12px; height: 12px; flex-shrink: 0; }
+.channel-detail-check.done { color: var(--color-success); }
+.channel-detail-check.pending { color: var(--color-warning); }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .page-wrap { padding: 16px 12px 32px; }
+  .page-header h1 { font-size: 20px; }
+  .hero-banner { flex-direction: column; gap: 20px; padding: 20px 18px; }
+  .dim-grid { grid-template-columns: 1fr; }
+  .module-grid { grid-template-columns: 1fr; }
+  .ai-model-grid { grid-template-columns: repeat(2, 1fr); }
+  .pipeline-flow { flex-direction: column; }
+  .pipeline-arrow { transform: rotate(90deg); width: auto; height: 24px; }
+  .quick-actions { flex-direction: column; }
+  .quick-actions .qa-label { margin-right: 0; margin-bottom: 4px; }
+  .stat-badges { gap: 8px; }
+  .modal-box { padding: 20px 18px; }
+}
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- ===== 1. Page Header ===== -->
+<div class="page-header">
+  <h1>
+    <span class="header-icon"><i data-lucide="command" style="width:18px;height:18px"></i></span>
+    智能运营中心
+  </h1>
+  <p class="subtitle">统一监控 &middot; AI 评审 &middot; 渠道管理 &middot; 代码质量</p>
+  <div class="stat-badges">
+    <span class="stat-badge"><b>120+</b> API</span>
+    <span class="stat-badge"><b>200+</b> 服务</span>
+    <span class="stat-badge"><b>10</b> AI 评审</span>
+    <span class="stat-badge"><b>6</b> 获客渠道</span>
+  </div>
+</div>
+
+<!-- ===== 2. Hero Score Banner ===== -->
+<div class="hero-banner">
+  <div class="hero-left">
+    <div class="score-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="score-ring-bg" cx="60" cy="60" r="50"></circle>
+        <circle class="score-ring-fill" cx="60" cy="60" r="50"></circle>
+      </svg>
+      <div class="score-number">
+        <span class="num">9.5</span>
+        <span class="label">综合健康分</span>
+      </div>
+    </div>
+    <div class="hero-model-badge">
+      <i data-lucide="sparkles" style="width:12px;height:12px"></i>
+      基于 10 AI 模型综合评估
+    </div>
+  </div>
+  <div class="hero-right">
+    <h3>六大维度评分</h3>
+    <div class="dim-grid">
+      <div class="dim-item">
+        <span class="dim-label">架构设计</span>
+        <div class="dim-bar-wrap"><div class="dim-bar green" style="width:85%"></div></div>
+        <span class="dim-score green">8.5</span>
+      </div>
+      <div class="dim-item">
+        <span class="dim-label">安全合规</span>
+        <div class="dim-bar-wrap"><div class="dim-bar green" style="width:90%"></div></div>
+        <span class="dim-score green">9.0</span>
+      </div>
+      <div class="dim-item">
+        <span class="dim-label">获客能力</span>
+        <div class="dim-bar-wrap"><div class="dim-bar red" style="width:35%"></div></div>
+        <span class="dim-score red">3.5</span>
+      </div>
+      <div class="dim-item">
+        <span class="dim-label">性能扩展</span>
+        <div class="dim-bar-wrap"><div class="dim-bar yellow" style="width:75%"></div></div>
+        <span class="dim-score yellow">7.5</span>
+      </div>
+      <div class="dim-item">
+        <span class="dim-label">代码质量</span>
+        <div class="dim-bar-wrap"><div class="dim-bar green" style="width:80%"></div></div>
+        <span class="dim-score green">8.0</span>
+      </div>
+      <div class="dim-item">
+        <span class="dim-label">产品商业</span>
+        <div class="dim-bar-wrap"><div class="dim-bar yellow" style="width:70%"></div></div>
+        <span class="dim-score yellow">7.0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. Module Grid ===== -->
+<div class="section-title">
+  <i data-lucide="grid-3x3" style="width:18px;height:18px"></i>
+  运营模块
+</div>
+<div class="module-grid">
+
+  <!-- Module 1: 代码库审计 -->
+  <div class="panel" style="--mod-color: #3b82f6" onclick="openModal('audit')">
+    <span class="panel-status green">已完成</span>
+    <div class="panel-header">
+      <div class="panel-icon blue"><i data-lucide="scan-search" style="width:20px;height:20px;color:#3b82f6"></i></div>
+      <div class="panel-info">
+        <div class="panel-name">代码库审计</div>
+        <div class="panel-desc">全栈代码模块功能扫描与关联分析</div>
+      </div>
+    </div>
+    <div class="panel-stats">86 路由 &middot; 170+ 服务 &middot; 71 模型 &middot; 48 核心</div>
+    <span class="panel-btn"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> 查看详情</span>
+  </div>
+
+  <!-- Module 2: AI 多模型评审 -->
+  <div class="panel" style="--mod-color: #8b5cf6" onclick="openModal('ai-review')">
+    <span class="panel-status green">已完成</span>
+    <div class="panel-header">
+      <div class="panel-icon purple"><i data-lucide="brain" style="width:20px;height:20px;color:#8b5cf6"></i></div>
+      <div class="panel-info">
+        <div class="panel-name">AI 多模型评审</div>
+        <div class="panel-desc">10 个大模型 &times; 6 维度架构评审</div>
+      </div>
+    </div>
+    <div class="panel-stats">10 模型 &middot; 6 维度 &middot; 60 评分</div>
+    <span class="panel-btn"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> 查看详情</span>
+  </div>
+
+  <!-- Module 3: 满分改造计划 -->
+  <div class="panel" style="--mod-color: #f59e0b" onclick="openModal('improve')">
+    <span class="panel-status yellow">进行中</span>
+    <div class="panel-header">
+      <div class="panel-icon gold"><i data-lucide="rocket" style="width:20px;height:20px;color:#f59e0b"></i></div>
+      <div class="panel-info">
+        <div class="panel-name">满分改造计划</div>
+        <div class="panel-desc">10 大模型 &times; 6 维度全维度 9.5+ 提升方案</div>
+      </div>
+    </div>
+    <div class="panel-stats">P0: 8 项 &middot; P1: 12 项 &middot; P2: 15 项</div>
+    <span class="panel-btn"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> 查看详情</span>
+  </div>
+
+  <!-- Module 4: 获客渠道状态 -->
+  <div class="panel" style="--mod-color: #06b6d4" onclick="openModal('channels')">
+    <span class="panel-status yellow">2/6 已配置</span>
+    <div class="panel-header">
+      <div class="panel-icon cyan"><i data-lucide="radio" style="width:20px;height:20px;color:#06b6d4"></i></div>
+      <div class="panel-info">
+        <div class="panel-name">获客渠道状态</div>
+        <div class="panel-desc">6 大获客渠道可用性监控</div>
+      </div>
+    </div>
+    <div class="channel-grid">
+      <span class="channel-item"><span class="channel-dot green"></span>Google</span>
+      <span class="channel-item"><span class="channel-dot yellow"></span>LinkedIn</span>
+      <span class="channel-item"><span class="channel-dot yellow"></span>TikTok</span>
+      <span class="channel-item"><span class="channel-dot yellow"></span>Quora</span>
+      <span class="channel-item"><span class="channel-dot yellow"></span>Reddit</span>
+      <span class="channel-item"><span class="channel-dot green"></span>WhatsApp</span>
+    </div>
+    <div style="margin-top: 14px;">
+      <span class="panel-btn"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> 查看详情</span>
+    </div>
+  </div>
+
+  <!-- Module 5: 邮箱验证引擎 -->
+  <div class="panel" style="--mod-color: #10b981" onclick="openModal('email')">
+    <span class="panel-status green">运行中</span>
+    <div class="panel-header">
+      <div class="panel-icon emerald"><i data-lucide="mail-check" style="width:20px;height:20px;color:#10b981"></i></div>
+      <div class="panel-info">
+        <div class="panel-name">邮箱验证引擎</div>
+        <div class="panel-desc">零成本三级邮箱验证：格式 &middot; MX &middot; SMTP</div>
+      </div>
+    </div>
+    <div class="panel-stats">3 策略 &middot; 0 成本 &middot; 90%+ 准确率</div>
+    <span class="panel-btn"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> 查看详情</span>
+  </div>
+
+  <!-- Module 6: 代码质量护栏 -->
+  <div class="panel" style="--mod-color: #f43f5e" onclick="openModal('quality')">
+    <span class="panel-status green">已配置</span>
+    <div class="panel-header">
+      <div class="panel-icon rose"><i data-lucide="shield-check" style="width:20px;height:20px;color:#f43f5e"></i></div>
+      <div class="panel-info">
+        <div class="panel-name">代码质量护栏</div>
+        <div class="panel-desc">Pre-commit Hooks &middot; Ruff &middot; ESLint &middot; Prettier</div>
+      </div>
+    </div>
+    <div class="panel-stats">Python Ruff &middot; Vue ESLint &middot; Prettier &middot; YAML</div>
+    <span class="panel-btn"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> 查看详情</span>
+  </div>
+
+</div>
+
+<!-- ===== 4. Quick Actions Bar ===== -->
+<div class="quick-actions">
+  <span class="qa-label"><i data-lucide="zap" style="width:14px;height:14px"></i> 快速操作</span>
+  <button class="qa-btn" onclick="openModal('audit')"><i data-lucide="refresh-cw" style="width:15px;height:15px"></i> 运行代码审计</button>
+  <button class="qa-btn" onclick="openModal('ai-review')"><i data-lucide="bar-chart-3" style="width:15px;height:15px"></i> 查看评分报告</button>
+  <button class="qa-btn" onclick="openModal('channels')"><i data-lucide="radio" style="width:15px;height:15px"></i> 检查渠道配置</button>
+  <button class="qa-btn" onclick="openModal('quality')"><i data-lucide="shield-check" style="width:15px;height:15px"></i> 代码质量检查</button>
+</div>
+
+</div><!-- /.page-wrap -->
+
+<!-- ===== 5. Detail Modal ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModal()"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+    <div class="modal-accent-bar" id="modalAccentBar" style="background: var(--color-primary)"></div>
+    <div class="modal-title" id="modalTitle">标题</div>
+    <div class="modal-sub" id="modalSub">描述</div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ===== Modal Logic =====
+const modalData = {
+  audit: {
+    accent: '#3b82f6',
+    title: '代码库审计',
+    sub: '全栈代码模块功能扫描与关联分析',
+    body: `
+      <div class="modal-section-label">审计概览</div>
+      <div class="modal-row"><span class="modal-row__k">API 路由总数</span><span class="modal-row__v">86</span></div>
+      <div class="modal-row"><span class="modal-row__k">业务服务数</span><span class="modal-row__v">170+</span></div>
+      <div class="modal-row"><span class="modal-row__k">数据模型数</span><span class="modal-row__v">71</span></div>
+      <div class="modal-row"><span class="modal-row__k">核心模块</span><span class="modal-row__v">48</span></div>
+      <div class="modal-row"><span class="modal-row__k">前端页面</span><span class="modal-row__v">18</span></div>
+      <div class="modal-row"><span class="modal-row__k">审计状态</span><span class="modal-row__v"><span class="modal-tag green">已完成</span></span></div>
+      <div class="modal-row"><span class="modal-row__k">最后更新</span><span class="modal-row__v">2026-07-21</span></div>
+      <div class="modal-section-label">技术栈覆盖</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="modal-tag" style="background:rgba(59,130,246,0.1);color:#3b82f6;border:1px solid rgba(59,130,246,0.2)">Python FastAPI</span>
+        <span class="modal-tag" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">Vue 3 + Nuxt</span>
+        <span class="modal-tag" style="background:rgba(139,92,246,0.1);color:#8b5cf6;border:1px solid rgba(139,92,246,0.2)">PostgreSQL</span>
+        <span class="modal-tag" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.2)">Redis</span>
+        <span class="modal-tag" style="background:rgba(6,182,212,0.1);color:#06b6d4;border:1px solid rgba(6,182,212,0.2)">Celery</span>
+      </div>
+    `
+  },
+  'ai-review': {
+    accent: '#8b5cf6',
+    title: 'AI 多模型评审',
+    sub: '10 个大模型 x 6 维度架构评审 — 综合评分矩阵',
+    body: `
+      <div class="modal-section-label">模型评分矩阵 (截取)</div>
+      <div class="ai-model-grid">
+        <div class="ai-model-cell"><div class="name">GPT-4o</div><div class="score high">9.2</div></div>
+        <div class="ai-model-cell"><div class="name">Claude 3.5</div><div class="score high">9.4</div></div>
+        <div class="ai-model-cell"><div class="name">Gemini Pro</div><div class="score high">8.8</div></div>
+        <div class="ai-model-cell"><div class="name">Qwen-Max</div><div class="score high">8.5</div></div>
+        <div class="ai-model-cell"><div class="name">DeepSeek V2</div><div class="score high">8.6</div></div>
+        <div class="ai-model-cell"><div class="name">Llama 3.1</div><div class="score mid">7.8</div></div>
+        <div class="ai-model-cell"><div class="name">Mistral Large</div><div class="score high">8.3</div></div>
+        <div class="ai-model-cell"><div class="name">Yi-Large</div><div class="score mid">7.9</div></div>
+        <div class="ai-model-cell"><div class="name">Command R+</div><div class="score mid">7.5</div></div>
+      </div>
+      <div class="modal-section-label">评审维度</div>
+      <div class="modal-row"><span class="modal-row__k">架构设计</span><span class="modal-row__v" style="color:var(--color-success)">8.5</span></div>
+      <div class="modal-row"><span class="modal-row__k">安全合规</span><span class="modal-row__v" style="color:var(--color-success)">9.0</span></div>
+      <div class="modal-row"><span class="modal-row__k">获客能力</span><span class="modal-row__v" style="color:var(--color-danger)">3.5</span></div>
+      <div class="modal-row"><span class="modal-row__k">性能扩展</span><span class="modal-row__v" style="color:var(--color-warning)">7.5</span></div>
+      <div class="modal-row"><span class="modal-row__k">代码质量</span><span class="modal-row__v" style="color:var(--color-success)">8.0</span></div>
+      <div class="modal-row"><span class="modal-row__k">产品商业</span><span class="modal-row__v" style="color:var(--color-warning)">7.0</span></div>
+    `
+  },
+  improve: {
+    accent: '#f59e0b',
+    title: '满分改造计划',
+    sub: '10 大模型 x 6 维度全维度 9.5+ 提升方案 — Top 5 行动项',
+    body: `
+      <div class="modal-section-label">Top 5 行动项</div>
+      <div class="modal-row" style="align-items:flex-start;gap:10px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--color-foreground);margin-bottom:2px;">构建全渠道获客体系</div>
+          <div style="font-size:11px;color:var(--color-muted-foreground);">接入 Google Ads、LinkedIn、TikTok 等渠道，实现自动化获客</div>
+        </div>
+        <span class="modal-tag p0">P0</span>
+      </div>
+      <div class="modal-row" style="align-items:flex-start;gap:10px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--color-foreground);margin-bottom:2px;">添加 WebSocket 实时推送</div>
+          <div style="font-size:11px;color:var(--color-muted-foreground);">替代轮询，降低延迟，提升用户体验</div>
+        </div>
+        <span class="modal-tag p0">P0</span>
+      </div>
+      <div class="modal-row" style="align-items:flex-start;gap:10px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--color-foreground);margin-bottom:2px;">实现租户数据隔离审计</div>
+          <div style="font-size:11px;color:var(--color-muted-foreground);">加强多租户安全边界，确保数据零交叉</div>
+        </div>
+        <span class="modal-tag p0">P0</span>
+      </div>
+      <div class="modal-row" style="align-items:flex-start;gap:10px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--color-foreground);margin-bottom:2px;">引入 ElasticSearch 全文搜索</div>
+          <div style="font-size:11px;color:var(--color-muted-foreground);">替换 PostgreSQL LIKE 查询，提升搜索性能</div>
+        </div>
+        <span class="modal-tag p1">P1</span>
+      </div>
+      <div class="modal-row" style="align-items:flex-start;gap:10px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--color-foreground);margin-bottom:2px;">完善 API 速率限制与熔断</div>
+          <div style="font-size:11px;color:var(--color-muted-foreground);">增加 API Gateway 层限流和熔断机制</div>
+        </div>
+        <span class="modal-tag p1">P1</span>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;">
+        <span style="font-size:11px;color:var(--color-muted-foreground);">总计：</span>
+        <span class="modal-tag p0">P0: 8 项</span>
+        <span class="modal-tag p1">P1: 12 项</span>
+        <span class="modal-tag p2">P2: 15 项</span>
+      </div>
+    `
+  },
+  channels: {
+    accent: '#06b6d4',
+    title: '获客渠道状态',
+    sub: '6 大获客渠道可用性监控与配置详情',
+    body: `
+      <div class="channel-detail">
+        <div class="channel-detail-header">
+          <span class="channel-detail-name"><span class="channel-dot green" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></span> Google Ads</span>
+          <span class="modal-tag green">real</span>
+        </div>
+        <div class="channel-detail-reason">已配置 Google Ads API，可正常投放和追踪</div>
+        <div class="channel-detail-checklist">
+          <span class="channel-detail-check done"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:var(--color-success)"></i> API 凭证已配置</span>
+          <span class="channel-detail-check done"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:var(--color-success)"></i> 转化追踪已启用</span>
+          <span class="channel-detail-check done"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:var(--color-success)"></i> 预算同步已激活</span>
+        </div>
+      </div>
+      <div class="channel-detail">
+        <div class="channel-detail-header">
+          <span class="channel-detail-name"><span class="channel-dot yellow" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></span> LinkedIn</span>
+          <span class="modal-tag yellow">mock</span>
+        </div>
+        <div class="channel-detail-reason">模拟数据阶段，需配置 LinkedIn Marketing API</div>
+        <div class="channel-detail-checklist">
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待申请 Marketing API 权限</span>
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待配置 OAuth 回调</span>
+        </div>
+      </div>
+      <div class="channel-detail">
+        <div class="channel-detail-header">
+          <span class="channel-detail-name"><span class="channel-dot yellow" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></span> TikTok Ads</span>
+          <span class="modal-tag yellow">mock</span>
+        </div>
+        <div class="channel-detail-reason">模拟数据阶段，需接入 TikTok For Business API</div>
+        <div class="channel-detail-checklist">
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待申请 Business API 权限</span>
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待配置 Pixel 像素</span>
+        </div>
+      </div>
+      <div class="channel-detail">
+        <div class="channel-detail-header">
+          <span class="channel-detail-name"><span class="channel-dot yellow" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></span> Quora Ads</span>
+          <span class="modal-tag yellow">mock</span>
+        </div>
+        <div class="channel-detail-reason">模拟数据阶段，需接入 Quora Ads API</div>
+        <div class="channel-detail-checklist">
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待申请 Ads API 权限</span>
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待配置转化追踪</span>
+        </div>
+      </div>
+      <div class="channel-detail">
+        <div class="channel-detail-header">
+          <span class="channel-detail-name"><span class="channel-dot yellow" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></span> Reddit Ads</span>
+          <span class="modal-tag yellow">mock</span>
+        </div>
+        <div class="channel-detail-reason">模拟数据阶段，需接入 Reddit Ads API</div>
+        <div class="channel-detail-checklist">
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待申请 Ads API 权限</span>
+          <span class="channel-detail-check pending"><i data-lucide="circle" style="width:12px;height:12px;color:var(--color-warning)"></i> 待配置受众定向</span>
+        </div>
+      </div>
+      <div class="channel-detail">
+        <div class="channel-detail-header">
+          <span class="channel-detail-name"><span class="channel-dot green" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></span> WhatsApp Business</span>
+          <span class="modal-tag green">real</span>
+        </div>
+        <div class="channel-detail-reason">已配置 WhatsApp Business API，可正常收发消息</div>
+        <div class="channel-detail-checklist">
+          <span class="channel-detail-check done"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:var(--color-success)"></i> Business API 已接入</span>
+          <span class="channel-detail-check done"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:var(--color-success)"></i> 消息模板已配置</span>
+        </div>
+      </div>
+    `
+  },
+  email: {
+    accent: '#10b981',
+    title: '邮箱验证引擎',
+    sub: '零成本三级邮箱验证：格式检查、MX 记录查询、SMTP RCPT TO 验证',
+    body: `
+      <div class="modal-section-label">验证流水线</div>
+      <div class="pipeline-flow">
+        <div class="pipeline-step">
+          <div class="step-num">1</div>
+          <div class="step-name">格式检查</div>
+          <div class="step-desc">正则验证邮箱格式<br>语法 + 域名合法性</div>
+        </div>
+        <div class="pipeline-arrow"><i data-lucide="chevron-right" style="width:16px;height:16px"></i></div>
+        <div class="pipeline-step">
+          <div class="step-num">2</div>
+          <div class="step-name">MX 记录</div>
+          <div class="step-desc">DNS MX 记录查询<br>验证域名可接收邮件</div>
+        </div>
+        <div class="pipeline-arrow"><i data-lucide="chevron-right" style="width:16px;height:16px"></i></div>
+        <div class="pipeline-step">
+          <div class="step-num">3</div>
+          <div class="step-name">SMTP 验证</div>
+          <div class="step-desc">RCPT TO 命令探测<br>确认邮箱真实存在</div>
+        </div>
+      </div>
+      <div class="modal-section-label">性能指标</div>
+      <div class="modal-row"><span class="modal-row__k">准确率</span><span class="modal-row__v" style="color:var(--color-success)">90%+</span></div>
+      <div class="modal-row"><span class="modal-row__k">平均延迟</span><span class="modal-row__v">~2s / 邮箱</span></div>
+      <div class="modal-row"><span class="modal-row__k">成本</span><span class="modal-row__v" style="color:var(--color-success)">零成本</span></div>
+      <div class="modal-row"><span class="modal-row__k">运行状态</span><span class="modal-row__v"><span class="modal-tag green">运行中</span></span></div>
+    `
+  },
+  quality: {
+    accent: '#f43f5e',
+    title: '代码质量护栏',
+    sub: 'Pre-commit Hooks + Ruff + ESLint + Prettier 全链路代码质量保障',
+    body: `
+      <div class="modal-section-label">Pre-commit Hook 列表</div>
+      <div class="hook-list">
+        <div class="hook-item">
+          <span class="hook-dot on"></span>
+          <div class="hook-info">
+            <div class="hook-name">Ruff (Python Linter)</div>
+            <div class="hook-desc">Python 代码风格检查、自动修复、import 排序</div>
+          </div>
+          <span class="hook-status">已启用</span>
+        </div>
+        <div class="hook-item">
+          <span class="hook-dot on"></span>
+          <div class="hook-info">
+            <div class="hook-name">ESLint (Vue)</div>
+            <div class="hook-desc">Vue 3 + TypeScript ESLint 规则检查</div>
+          </div>
+          <span class="hook-status">已启用</span>
+        </div>
+        <div class="hook-item">
+          <span class="hook-dot on"></span>
+          <div class="hook-info">
+            <div class="hook-name">Prettier</div>
+            <div class="hook-desc">统一代码格式化：缩进、换行、引号</div>
+          </div>
+          <span class="hook-status">已启用</span>
+        </div>
+        <div class="hook-item">
+          <span class="hook-dot on"></span>
+          <div class="hook-info">
+            <div class="hook-name">YAML Lint</div>
+            <div class="hook-desc">YAML 配置文件语法检查与校验</div>
+          </div>
+          <span class="hook-status">已启用</span>
+        </div>
+        <div class="hook-item">
+          <span class="hook-dot on"></span>
+          <div class="hook-info">
+            <div class="hook-name">TypeScript Check</div>
+            <div class="hook-desc">tsc --noEmit 类型检查</div>
+          </div>
+          <span class="hook-status">已启用</span>
+        </div>
+        <div class="hook-item">
+          <span class="hook-dot on"></span>
+          <div class="hook-info">
+            <div class="hook-name">Unit Tests (pytest)</div>
+            <div class="hook-desc">关键模块单元测试执行</div>
+          </div>
+          <span class="hook-status">已启用</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="modal-row"><span class="modal-row__k">配置状态</span><span class="modal-row__v"><span class="modal-tag green">已配置</span></span></div>
+        <div class="modal-row"><span class="modal-row__k">覆盖范围</span><span class="modal-row__v">Python + Vue + YAML + TS</span></div>
+      </div>
+    `
+  }
+};
+
+function openModal(key) {
+  const data = modalData[key];
+  if (!data) return;
+  document.getElementById('modalAccentBar').style.background = data.accent;
+  document.getElementById('modalTitle').textContent = data.title;
+  document.getElementById('modalSub').textContent = data.sub;
+  document.getElementById('modalBody').innerHTML = data.body;
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.add('open');
+  lucide.createIcons({ attrs: { strokeWidth: 1.5 } });
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Init Lucide icons
+document.addEventListener('DOMContentLoaded', function() {
+  lucide.createIcons({ attrs: { strokeWidth: 1.5 } });
+});
+</script>
+</body>
+</html>

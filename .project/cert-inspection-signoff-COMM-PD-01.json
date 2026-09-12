@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "task_id": "COMM-PD-01",
+  "sprint": "COMM-1",
+  "status": "pending_product_sign",
+  "issued_at": "2026-06-14",
+  "due": "2026-06-17",
+  "source_doc": "docs/送检功能清单-v1.md",
+  "trace_matrix": "docs/送检用例追溯矩阵.md",
+  "demo_script": "docs/送检演示脚本-v2-鉴定面.md",
+  "cert_gate": "docs/certification-gate-admin-latest.json",
+  "screenshot_plan": ".project/cert-screenshot-assignments-COMM-QA-03.json",
+  "modules_count": 12,
+  "engineering_gate": {
+    "cert_gate_ready": true,
+    "note": "2026-06-14 cert:gate P0=0 P1=0 P2=0"
+  },
+  "signoff": {
+    "product_manager": { "name": "", "date": "", "signed": false },
+    "pm_07": { "name": "", "date": "", "signed": false },
+    "qa_lead": { "name": "", "date": "", "signed": false }
+  },
+  "out_of_scope": "签字不扩送检面；Kill 路由须 COMM-PM-03 评审后执行"
+}

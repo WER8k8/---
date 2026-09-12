@@ -1,0 +1,11 @@
+{
+  "version": "1",
+  "artifact": "IP-02-forbidden-list",
+  "signed_at": null,
+  "document": "docs/compliance/ip-02-forbidden-list.md",
+  "items": [
+    { "id": "IP2-vben", "title": "不含 Vben 整库", "pass": null, "signer": "IP compliance" },
+    { "id": "IP2-ref", "title": "不含 _ref 克隆", "pass": null, "signer": "IP compliance" },
+    { "id": "IP2-stub", "title": "不含 Stub 实验室", "pass": null, "signer": "IP compliance" }
+  ]
+}

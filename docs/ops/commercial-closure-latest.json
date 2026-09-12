@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-06-14T12:24:30.353112+00:00",
+  "task": "commercial-closure-gates",
+  "dev_gates_ok": true,
+  "commercial_ready": false,
+  "honest_note": "commercial_ready=false: Owner O-1~O-3 pending or blocked screenshots remain",
+  "owner_blockers": [
+    {
+      "id": "O-1",
+      "title": "HTTPS demo domain DNS",
+      "status": "owner_pending"
+    },
+    {
+      "id": "O-2",
+      "title": "Inquiry IM / WeCom production secrets",
+      "status": "owner_pending"
+    },
+    {
+      "id": "O-3",
+      "title": "5+5 platform table + pricing signoff",
+      "status": "owner_pending"
+    }
+  ],
+  "screenshot_summary": {
+    "total": 12,
+    "pending": 0,
+    "blocked": 4,
+    "captured": 8,
+    "failed": 0
+  },
+  "cert_gate_admin": "C:\\Users\\97907\\Desktop\\上线网站\\docs\\certification-gate-admin-latest.json",
+  "results": [
+    {
+      "name": "stub-matrix-sync",
+      "ok": true,
+      "detail": "{\n  \"ok\": true,\n  \"task\": \"T-PM-02\",\n  \"platform_count_ts\": 19,\n  \"platform_count_matrix\": 19,\n  \"killed_count_ts\": 3,\n  \"killed_count_matrix\": 3,\n  \"client_count_ts\": 6,\n  \"client_count_matrix\": 6,\n  \"missing_in_matrix\": [],\n  \"extra_in_matrix\": [],\n  \"killed_missing_in_matrix\": [],\n  \"killed_extra_in_matrix\": [],\n  \"client_missing_in_matrix\": [],\n  \"client_extra_in_matrix\": [],\n  \"lab_kill_overlap\": [],\n  \"matrix_path\": \".project\\\\stub-matrix-T-PM-02-v1.json\"\n}"
+    },
+    {
+      "name": "no-fake-delivery",
+      "ok": true,
+      "detail": "{\n  \"ok\": true,\n  \"task\": \"NO-FAKE-DELIVERY-DEEP\",\n  \"scanned\": {\n    \"backend_py\": 741,\n    \"frontend_vue\": 366,\n    \"frontend_ts\": 134\n  },\n  \"p0_count\": 0,\n  \"p1_count\": 0,\n  \"p2_count\": 0,\n  \"findings\": [],\n  \"p0_findings\": [],\n  \"p1_findings\": []\n}"
+    },
+    {
+      "name": "cert-screenshot-assignments",
+      "ok": true,
+      "detail": "{\n  \"ok\": true,\n  \"task\": \"COMM-QA-03\",\n  \"total\": 12,\n  \"pending\": 0,\n  \"blocked\": 4,\n  \"issues\": [],\n  \"matrix_path\": \".project\\\\cert-screenshot-assignments-COMM-QA-03.json\"\n}"
+    }
+  ]
+}

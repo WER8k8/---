@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "seed_ok": true,
+  "p0": 0,
+  "issues": [],
+  "gate_ready": false,
+  "site_content_gate": {
+    "ok": true,
+    "publish_ready": true,
+    "p0": 0,
+    "p1": 0,
+    "issues": [],
+    "template_id": "premium-b2b-v1",
+    "tier": "L-Pro"
+  },
+  "seed_log_tail": "OK: patches=[], inquiries=[], images=[], accounts=['updated admin', 'updated tenant', 'updated agent'], tenant_id=9dede836-1496-48f5-989d-3f06956e8b2a\n"
+}

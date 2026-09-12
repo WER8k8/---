@@ -1,0 +1,45 @@
+# 可选 Sidecar 栈 — 与主站 backend 分离部署
+# 用法：docker compose -f deploy/examples/sidecars-compose.yml up -d
+# 主站 .env 指向：
+#   ECOMMERCE_CRAWLERS_URL=http://127.0.0.1:8092
+#   USER_ACTION_ANALYTICS_URL=http://127.0.0.1:8093
+
+services:
+  ecommerce-crawlers-sidecar:
+    build:
+      context: ./ecommerce-crawlers-sidecar
+      dockerfile: Dockerfile
+    container_name: youding-ecommerce-crawlers-sidecar
+    restart: unless-stopped
+    ports:
+      - "8092:8092"
+    environment:
+      ECOMMERCE_CRAWLERS_TOKEN: ${ECOMMERCE_CRAWLERS_TOKEN:-dev-sidecar-token}
+      ECOMMERCE_CRAWLERS_REPO: /opt/ECommerceCrawlers
+    volumes:
+      - ${ECOMMERCE_CRAWLERS_REPO_HOST:-./data/ECommerceCrawlers}:/opt/ECommerceCrawlers:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8092/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  user-action-analytics-sidecar:
+    build:
+      context: ./user-action-analytics-sidecar
+      dockerfile: Dockerfile
+    container_name: youding-user-action-analytics-sidecar
+    restart: unless-stopped
+    ports:
+      - "8093:8093"
+    environment:
+      USER_ACTION_ANALYTICS_TOKEN: ${USER_ACTION_ANALYTICS_TOKEN:-dev-sidecar-token}
+      USER_ACTION_ANALYTICS_ALLOW_STUB: ${USER_ACTION_ANALYTICS_ALLOW_STUB:-0}
+      USER_ACTION_ANALYTICS_REPO: /opt/UserActionAnalyzePlatform
+    volumes:
+      - ${USER_ACTION_ANALYTICS_REPO_HOST:-./data/UserActionAnalyzePlatform}:/opt/UserActionAnalyzePlatform:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8093/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

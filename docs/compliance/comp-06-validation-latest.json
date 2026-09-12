@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "task": "COMP-06",
+  "checks": {
+    "soft_copyright_catalog": true,
+    "rz_60_pages": true,
+    "forbidden_list": true,
+    "open_source_notices": true,
+    "rz_60_page_count": true,
+    "rz_meta_exported_60": true,
+    "lawyer_draft": true,
+    "lawyer_signoff_record": true
+  },
+  "bundle": "docs\\compliance\\comp-evidence-bundle.json"
+}

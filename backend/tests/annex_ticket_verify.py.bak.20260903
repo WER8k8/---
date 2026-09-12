@@ -1,0 +1,238 @@
+"""附属统一登录票据协议验证（垫片模式）：UJ 签发 → 附属回调校验全链。
+
+用法：python -m tests.annex_ticket_verify
+依赖：仅标准库（ticket_service 为 stdlib-only 实现）。
+
+覆盖（设计文档 uj-annex-integration-design §9.3）：
+1. 签发/兑换往返：trade-ai 与 goodjob 票据身份映射正确（email/角色/租户）
+2. 一次性防重放：同一票据第二次兑换被拒
+3. TTL 过期：过期票据被拒
+4. 算法锁死：alg=none / alg=HS512 伪造票据被拒
+5. 受众隔离：goodjob 票据不能在 trade-ai 兑换（反之亦然）
+6. 用途隔离：无 purpose 声明的主 JWT 冒充票据被拒
+7. 验签：篡改载荷（改 email 提权）后签名不符被拒
+8. 桥令牌：bridge_token_matches 常量时间比较 + 空令牌拒绝
+9. 白名单：未知附属签发/兑换均被拒
+10. 附属侧契约字段：redeem 输出结构与 GoodJob TS / TradeAI PY 两侧引用一致
+"""
+
+from __future__ import annotations
+
+import base64
+import hashlib
+import hmac
+import importlib.util
+import json
+import os
+import sys
+import time
+import types
+
+_BACKEND = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _BACKEND)
+
+
+def _load_from_file(mod_name: str, path: str):
+    spec = importlib.util.spec_from_file_location(mod_name, path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+for _pkg in ("app", "app.services", "app.services.annex"):
+    if _pkg not in sys.modules:
+        _mod = types.ModuleType(_pkg)
+        _mod.__path__ = []
+        sys.modules[_pkg] = _mod
+
+_TICKET = os.path.join(_BACKEND, "app", "services", "annex", "ticket_service.py")
+ts = _load_from_file("app.services.annex.ticket_service", _TICKET)
+
+PASS = 0
+FAIL = 0
+
+
+def check(name: str, cond: bool, detail: str = ""):
+    global PASS, FAIL
+    if cond:
+        PASS += 1
+        print(f"  [PASS] {name}")
+    else:
+        FAIL += 1
+        print(f"  [FAIL] {name} {detail}")
+
+
+def _b64url(raw: bytes) -> str:
+    return base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
+
+
+def _sign(payload: dict, header: dict | None = None, secret: str | None = None) -> str:
+    header = header or {"alg": "HS256", "typ": "JWT"}
+    signing_input = (
+        _b64url(json.dumps(header, separators=(",", ":")).encode())
+        + "."
+        + _b64url(json.dumps(payload, separators=(",", ":")).encode())
+    )
+    key = (secret or os.environ["ANNEX_TICKET_SECRET"]).encode()
+    return f"{signing_input}.{_b64url(hmac.new(key, signing_input.encode(), hashlib.sha256).digest())}"
+
+
+def issue(annex: str, **overrides):
+    kwargs = dict(
+        user_id="u-1001",
+        user_name="张三",
+        user_email="zhangsan@example.com",
+        uj_role="super_admin",
+        annex=annex,
+        tenant_id="t-77",
+    )
+    kwargs.update(overrides)
+    return ts.issue_annex_ticket(**kwargs)["annex_ticket"]
+
+
+print("== 1. 签发/兑换往返（trade-ai / goodjob 身份映射） ==")
+t1 = issue("trade-ai")
+r1 = ts.redeem_annex_ticket(t1, annex="trade-ai")
+check("trade-ai 兑换成功", r1["ok"] is True)
+check("email 回传", r1["user"]["email"] == "zhangsan@example.com")
+check("租户回传", r1["user"]["tenant_id"] == "t-77")
+check("UJ super_admin → trade-ai admin", r1["annex_role"] == "admin")
+check("附属声明", r1["annex"] == "trade-ai")
+check("uj_user_id 回传", r1["user"]["uj_user_id"] == "u-1001")
+
+t2 = issue("goodjob")
+r2 = ts.redeem_annex_ticket(t2, annex="goodjob")
+check("goodjob 兑换成功", r2["ok"] is True)
+check("UJ super_admin → goodjob admin", r2["annex_role"] == "admin")
+
+t3 = issue("goodjob", uj_role="sales")
+r3 = ts.redeem_annex_ticket(t3, annex="goodjob")
+check("UJ sales → goodjob sales", r3["annex_role"] == "sales")
+
+t4 = issue("trade-ai", uj_role="viewer")
+r4 = ts.redeem_annex_ticket(t4, annex="trade-ai")
+check("未知角色回退通配（trade-ai → agent）", r4["annex_role"] == "agent")
+
+print("== 2. 一次性防重放 ==")
+t5 = issue("trade-ai")
+check("首次兑换成功", ts.redeem_annex_ticket(t5, annex="trade-ai")["ok"] is True)
+try:
+    ts.redeem_annex_ticket(t5, annex="trade-ai")
+    check("重放被拒", False, "第二次兑换竟然成功")
+except ts.TicketRejected:
+    check("重放被拒", True)
+
+print("== 3. TTL 过期 ==")
+payload = json.loads(base64.urlsafe_b64decode(t1.split(".")[1] + "=="))
+payload["exp"] = int(time.time()) - 10
+payload.pop("jti", None)
+payload["jti"] = "expired-jti-1"
+expired = _sign(payload)
+try:
+    ts.redeem_annex_ticket(expired, annex="trade-ai")
+    check("过期票据被拒", False, "过期票据兑换成功")
+except ts.TicketRejected:
+    check("过期票据被拒", True)
+
+print("== 4. 算法锁死 ==")
+payload2 = json.loads(base64.urlsafe_b64decode(issue("trade-ai").split(".")[1] + "=="))
+payload2["jti"] = "alg-none-jti"
+alg_none = _sign(payload2, header={"alg": "none", "typ": "JWT"})
+try:
+    ts.redeem_annex_ticket(alg_none, annex="trade-ai")
+    check("alg=none 被拒", False, "无算法票据兑换成功")
+except ts.TicketRejected:
+    check("alg=none 被拒", True)
+alg_hs512 = _sign(payload2, header={"alg": "HS512", "typ": "JWT"})
+try:
+    ts.redeem_annex_ticket(alg_hs512, annex="trade-ai")
+    check("alg=HS512 被拒", False, "非 HS256 票据兑换成功")
+except ts.TicketRejected:
+    check("alg=HS512 被拒", True)
+
+print("== 5. 受众隔离 ==")
+t6 = issue("goodjob")
+try:
+    ts.redeem_annex_ticket(t6, annex="trade-ai")
+    check("跨附属兑换被拒", False, "goodjob 票据在 trade-ai 兑换成功")
+except ts.TicketRejected:
+    check("跨附属兑换被拒", True)
+
+print("== 6. 主 JWT 冒充票据被拒 ==")
+jwt_like = {
+    "iss": ts.TICKET_ISSUER,
+    "sub": "u-1001",
+    "email": "zhangsan@example.com",
+    "jti": "jwt-impersonation",
+    "exp": int(time.time()) + 300,
+}
+impersonation = _sign(jwt_like)
+try:
+    ts.redeem_annex_ticket(impersonation, annex="trade-ai")
+    check("无 purpose 声明被拒", False, "主 JWT 冒充成功")
+except ts.TicketRejected:
+    check("无 purpose 声明被拒", True)
+
+print("== 7. 验签（篡改提权） ==")
+t7 = issue("trade-ai", uj_role="sales")
+header_b64, payload_b64, sig_b64 = t7.split(".")
+tampered = json.loads(base64.urlsafe_b64decode(payload_b64 + "=="))
+tampered["annex_role"] = "admin"
+# 真实攻击场景：替换载荷但保留原签名（攻击者无密钥无法重新签名）
+forged = (
+    _b64url(json.dumps({"alg": "HS256", "typ": "JWT"}, separators=(",", ":")).encode())
+    + "."
+    + _b64url(json.dumps(tampered, separators=(",", ":")).encode())
+    + "."
+    + sig_b64
+)
+try:
+    result = ts.redeem_annex_ticket(forged, annex="trade-ai")
+    check("篡改载荷被拒", result["annex_role"] != "admin", "篡改后 annex_role 变为 admin")
+except ts.TicketRejected:
+    check("篡改载荷被拒", True)
+
+wrong_key = _sign(json.loads(base64.urlsafe_b64decode(payload_b64 + "==")), secret="attacker-secret")
+try:
+    ts.redeem_annex_ticket(wrong_key, annex="trade-ai")
+    check("错误密钥签名被拒", False)
+except ts.TicketRejected:
+    check("错误密钥签名被拒", True)
+
+print("== 8. 桥令牌校验 ==")
+os.environ["GOODJOB_BRIDGE_TOKEN"] = "bridge-secret-1"
+check("正确桥令牌通过", ts.bridge_token_matches("bridge-secret-1") is True)
+check("错误桥令牌拒绝", ts.bridge_token_matches("bridge-secret-2") is False)
+check("空令牌拒绝", ts.bridge_token_matches("") is False)
+del os.environ["GOODJOB_BRIDGE_TOKEN"]
+check("未配置桥令牌一律拒绝", ts.bridge_token_matches("bridge-secret-1") is False)
+
+print("== 9. 附属白名单 ==")
+try:
+    issue("unknown-annex")
+    check("未知附属签发被拒", False)
+except ValueError:
+    check("未知附属签发被拒", True)
+try:
+    ts.redeem_annex_ticket(issue("trade-ai"), annex="unknown-annex")
+    check("未知附属兑换被拒", False)
+except ts.TicketRejected:
+    check("未知附属兑换被拒", True)
+
+print("== 10. 附属侧契约字段一致性 ==")
+expected_fields = {"ok", "user", "annex", "annex_role"}
+check("redeem 输出顶层字段", set(r1.keys()) == expected_fields, f"实际 {set(r1.keys())}")
+user_fields = {"uj_user_id", "name", "email", "uj_role", "tenant_id"}
+check("redeem 输出 user 字段", set(r1["user"].keys()) == user_fields, f"实际 {set(r1['user'].keys())}")
+check(
+    "TTL 默认 300 秒",
+    ts.TICKET_TTL_SECONDS == 300
+    and ts.issue_annex_ticket(
+        user_id="u", user_name="n", user_email="e@x.com", uj_role="r", annex="trade-ai"
+    )["expires_in"] == 300,
+)
+
+print()
+print(f"结果：{PASS} 通过 / {FAIL} 失败")
+sys.exit(1 if FAIL else 0)

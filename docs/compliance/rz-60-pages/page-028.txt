@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+
+    # 数据库配置
+    DATABASE_URL: str = "sqlite:///./youding_dev.db"
+    DB_TYPE: str = "sqlite"
+
+    # SEO 矩阵 admin_users：与 Node 双模式对齐。优先 MySQL（生产），否则 SQLite 文件。
+    SEO_MATRIX_SQLITE_PATH: Optional[str] = None
+    SEO_MATRIX_DATABASE_URL: Optional[str] = None
+    SEO_MATRIX_DB_HOST: Optional[str] = None
+    SEO_MATRIX_DB_PORT: int = 3306
+    SEO_MATRIX_DB_USER: Optional[str] = None
+    SEO_MATRIX_DB_PASSWORD: Optional[str] = None
+    SEO_MATRIX_DB_NAME: Optional[str] = None
+
+    # Redis配置
+    REDIS_ENABLED: bool = True
+    # 登录防暴（与 refresh 黑名单共用 REDIS_URL；失败时 login_bruteforce 降级内存）
+    LOGIN_BF_USE_REDIS: bool = True
+    LOGIN_BF_REDIS_PREFIX: str = "login_bf"
+    LOGIN_BF_REDIS_STATE_TTL: int = 1200  # 秒，须大于最长锁定时长并留余量以便键过期回收
+    # 额外登录路由（相对 auth 路由前缀），默认 login 即 /api/v1/auth/login；与
+    # VITE_AUTH_LOGIN_PATH 末段一致
+    AUTH_LOGIN_ROUTE: str = "login"
+
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_DB_ARQ: int = 1
+    REDIS_PASSWORD: str = ""
+    REDIS_URL: str = "redis://localhost:6379/0"
+
+    # 物流（Sprint H）
+    LOGISTICS_PROVIDER: str = "demo"  # demo | kuaidi100
+    KUAIDI100_API_KEY: Optional[str] = None
+    KUAIDI100_CUSTOMER: Optional[str] = None
+    LOGISTICS_FALLBACK_DEMO: bool = True
+
+    # SSL（Sprint H / P0-01）
+    SSL_PROVIDER: str = "mock"  # mock | http | acme | certbot
+    ACME_WEBHOOK_URL: Optional[str] = None
+    DEMO_HTTPS_DOMAIN: Optional[str] = None  # P0-02 保温厂演示独立域
+    PAYMENT_WEBHOOK_SECRET: Optional[str] = None  # P0-07 回调 HMAC
+    PAYMENT_STRICT_VERIFY: bool = False  # P0-07 生产验签 + egress 金额校验
+    OPS_CRON_TOKEN: Optional[str] = None  # 外部 cron 调用 /ops/* 可选令牌
+    CRAWL_WEBHOOK_SECRET: str = ""  # 国际询盘爬虫 Webhook HMAC（/api/v1/international/webhook）
+    RANK_SCHEDULER_ENABLED: bool = False  # 生产可开：每日关键词排名后台线程
+
+    # MinIO配置
+    MINIO_ENDPOINT: str = "localhost:9000"
+    MINIO_ACCESS_KEY: str = ""

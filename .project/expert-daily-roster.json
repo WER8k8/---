@@ -1,0 +1,104 @@
+{
+  "charter": "expert-daily-roster",
+  "version": 1,
+  "schedule": "daily 08:00 local",
+  "history": "docs/ops/expert-daily-history.jsonl",
+  "archive_dir": "docs/ops/daily-runs",
+  "lanes": [
+    {
+      "id": "sre",
+      "expert": "SRE",
+      "focus": "服务存活、端口、Admin 代理、自动拉起",
+      "kind": "powershell",
+      "script": "scripts/ops-daily-health.ps1",
+      "args": ["-AutoStart"],
+      "report": "docs/ops/daily-health-latest.json",
+      "timeout_sec": 180
+    },
+    {
+      "id": "security_no_fake",
+      "expert": "Security Engineer",
+      "focus": "假交付 / mock 外露扫描",
+      "kind": "python",
+      "script": "scripts/validate-no-fake-delivery.py",
+      "report": "docs/no-fake-delivery-scan-latest.json",
+      "timeout_sec": 300
+    },
+    {
+      "id": "security_routes",
+      "expert": "Security Engineer",
+      "focus": "关键 API 路由挂载",
+      "kind": "python",
+      "script": "scripts/check_mounted_routes.py",
+      "timeout_sec": 120
+    },
+    {
+      "id": "qa_cert",
+      "expert": "QA / Evidence Collector",
+      "focus": "Admin cert:gate 门禁",
+      "kind": "npm",
+      "cwd": "frontend/admin",
+      "script": "cert:gate",
+      "report": "docs/certification-gate-admin-latest.json",
+      "timeout_sec": 300
+    },
+    {
+      "id": "backend_preflight",
+      "expert": "DevOps Automator",
+      "focus": "生产预检探针",
+      "kind": "python",
+      "script": "scripts/run_production_preflight.py",
+      "report": "docs/production-preflight-latest.json",
+      "timeout_sec": 180
+    },
+    {
+      "id": "greedy_readiness",
+      "expert": "SRE / Hermes Ops",
+      "focus": "摸金校尉就绪单测",
+      "kind": "pytest",
+      "script": "tests/unit/test_greedy_readiness.py",
+      "timeout_sec": 120
+    },
+    {
+      "id": "webhook_security",
+      "expert": "Security Engineer",
+      "focus": "国际爬虫 Webhook 验签",
+      "kind": "pytest",
+      "script": "tests/unit/test_international_crawl_webhook.py",
+      "timeout_sec": 120
+    },
+    {
+      "id": "tenant_seo_audit",
+      "expert": "SEO Specialist",
+      "focus": "租户 L-Pro SEO 审计（预览站 title/hreflang/visitor-context）",
+      "kind": "powershell",
+      "script": "scripts/run-tenant-seo-audit.ps1",
+      "report": "docs/tenant-seo-audit-latest.json",
+      "timeout_sec": 120,
+      "skip_if_stack_down": true
+    },
+    {
+      "id": "tenant_geo_audit",
+      "expert": "Agentic Search Optimizer",
+      "focus": "租户 GEO 审计（llms.txt · JSON-LD · unified-geo-v1）",
+      "kind": "powershell",
+      "script": "scripts/run-tenant-geo-audit.ps1",
+      "report": "docs/tenant-geo-audit-latest.json",
+      "timeout_sec": 180,
+      "skip_if_stack_down": true
+    }
+  ],
+  "weekly_extra": {
+    "day": "Friday",
+    "hour": 18,
+    "script": "scripts/ops-weekly-hardening.ps1",
+    "report": "docs/ops/weekly-hardening-latest.json"
+  },
+  "evolution_note": "每日：扫描→自动修补→站会→通知Owner。大事见 docs/ops/expert-standup-latest.md",
+  "autonomy": {
+    "charter": ".project/expert-autonomy-charter.json",
+    "remediate": "scripts/ops-expert-auto-remediate.ps1",
+    "standup": "scripts/ops-expert-daily-standup.ps1",
+    "standup_report": "docs/ops/expert-standup-latest.md"
+  }
+}

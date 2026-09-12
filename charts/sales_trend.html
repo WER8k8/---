@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>销售趋势图</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; }
+        .chart-container { width: 80%; margin: 0 auto; }
+        canvas { max-width: 100%; }
+        h1 { color: #333; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>销售趋势图</h1>
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+    "type": "line",
+    "data": {
+        "labels": [
+            "1\u6708",
+            "2\u6708",
+            "3\u6708",
+            "4\u6708",
+            "5\u6708",
+            "6\u6708",
+            "7\u6708",
+            "8\u6708",
+            "9\u6708",
+            "10\u6708",
+            "11\u6708",
+            "12\u6708"
+        ],
+        "datasets": [
+            {
+                "label": "\u4ea7\u54c1\u9500\u91cf",
+                "data": [
+                    1200,
+                    1900,
+                    3000,
+                    5000,
+                    8000,
+                    12000,
+                    15000,
+                    18000,
+                    22000,
+                    25000,
+                    28000,
+                    32000
+                ],
+                "borderColor": "rgb(99, 102, 241)",
+                "backgroundColor": "rgba(99, 102, 241, 0.1)",
+                "tension": 0.4
+            }
+        ]
+    },
+    "options": {
+        "responsive": true,
+        "plugins": {
+            "legend": {
+                "position": "top"
+            }
+        },
+        "scales": {
+            "y": {
+                "beginAtZero": true
+            }
+        }
+    }
+});
+    </script>
+</body>
+</html>

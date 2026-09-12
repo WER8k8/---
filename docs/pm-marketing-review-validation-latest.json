@@ -1,0 +1,10 @@
+{
+  "task": "PM-MKT-01",
+  "docs_ok": true,
+  "matrix_ok": true,
+  "signoff_status": "scheduled",
+  "segments_recorded": 0,
+  "route_inventory_count": 198,
+  "missing": [],
+  "hint": "会议完成后更新 signoff.json status=completed 并填写 segments/blockers"
+}

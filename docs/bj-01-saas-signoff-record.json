@@ -1,0 +1,11 @@
+{
+  "task": "BJ-01",
+  "status": "pending_human_signoff",
+  "code_validation": "docs/bj-01-formily-validation-latest.json",
+  "checklist": "docs/bj-01-formily-saas-five-questions.md",
+  "five_questions_pass": 5,
+  "signatory_role": "SaaS 产品策略专家",
+  "signed_by": null,
+  "signed_at": null,
+  "notes": "代码验收 5/5 通过后填写 signed_by / signed_at"
+}

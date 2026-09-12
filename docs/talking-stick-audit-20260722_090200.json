@@ -1,0 +1,143 @@
+{
+  "task_id": "scan_20260722_090158_1337095762384",
+  "timestamp": "2026-07-22T09:02:00.440441",
+  "summary": {
+    "total_files": 546,
+    "risk_files": 544,
+    "total_vulnerabilities": 2,
+    "critical_count": 2,
+    "high_count": 0,
+    "medium_count": 0,
+    "low_count": 0,
+    "verified_vulnerabilities": 2,
+    "false_positives": 0,
+    "confirmed_vulnerabilities": 2,
+    "scan_timestamp": "2026-07-22T09:02:00.439435"
+  },
+  "scan_result": {
+    "target_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services",
+    "summary": {
+      "total_files": 546,
+      "total_size": 4706868,
+      "risk_files": 544,
+      "total_dependencies": 0,
+      "file_types": {
+        "python": 544,
+        "documentation": 1,
+        "config": 1
+      },
+      "dependency_types": {}
+    },
+    "risk_files_count": 544,
+    "recommendations": [
+      "发现 15 个高风险文件，建议优先审计",
+      "发现 15 个敏感文件，需要特别关注"
+    ]
+  },
+  "audit_result": {
+    "summary": {
+      "total_vulnerabilities": 2,
+      "severity_counts": {
+        "critical": 2,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "info": 0
+      },
+      "vulnerability_types": {
+        "OWASP-A03-002_1": 1,
+        "OWASP-A03-002_2": 1
+      },
+      "owasp_summary": {
+        "A03:2021": {
+          "count": 2,
+          "critical": 2,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        }
+      }
+    },
+    "vulnerabilities": [
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ubrain\\skill_audit_service.py",
+        "line_number": 109,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞 - 仅检测直接使用字符串的调用",
+        "cwe_id": "CWE-78",
+        "matched_content": " (\"subprocess.\", \"警告：子进程调用\", \"medium\"),\n        (\"exec(\", \"危险：动态代码执行\", \"high\"),\n        (\"eval(\", \"警告：动态表达",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ubrain\\skill_audit_service.py",
+        "line_number": 110,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞 - 仅检测直接使用字符串的调用",
+        "cwe_id": "CWE-78",
+        "matched_content": "        (\"exec(\", \"危险：动态代码执行\", \"high\"),\n        (\"eval(\", \"警告：动态表达式求值\", \"medium\"),\n        (\"__import__\", ",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      }
+    ],
+    "recommendations": [
+      "发现 2 个严重漏洞，需要立即修复"
+    ]
+  },
+  "verification_result": {
+    "summary": {
+      "confirmed": 2,
+      "false_positives": 0,
+      "errors": 0,
+      "critical_fixes_needed": 2,
+      "high_fixes_needed": 0,
+      "medium_fixes_needed": 0,
+      "low_fixes_needed": 0
+    },
+    "fixes": {
+      "critical": [
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_2",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        }
+      ],
+      "high": [],
+      "medium": [],
+      "low": []
+    },
+    "recommendations": [
+      "确认 2 个真实漏洞，需要修复",
+      "发现 2 个严重漏洞，需要立即修复"
+    ]
+  }
+}

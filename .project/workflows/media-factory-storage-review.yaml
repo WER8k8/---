@@ -1,0 +1,81 @@
+# 多媒体工厂 · 视频云存储 — Agency+ECC 评审会（轻量，非全 7 阶段开发流）
+# 用法见 docs/meetings/MEDIA-FACTORY-STORAGE-ECC-RUNBOOK.md
+
+name: "视频云存储方案 · PM+技术评审会"
+description: "产品部 + 工程技术部对齐酷播/R2 双轨，不跑实现阶段"
+agents_dir: "C:/Users/97907/.claude/agents"
+ecc_agents_dir: ".cursor/agents"
+
+inputs:
+  - name: decision_doc
+    required: true
+    default: "docs/MEDIA-FACTORY-STORAGE-DECISION.md"
+  - name: tech_doc
+    required: true
+    default: "docs/MEDIA-FACTORY-CLOUD-STORAGE.md"
+
+steps:
+  - id: orchestrate
+    phase: 0
+    role: agents-orchestrator
+    task: |
+      主持评审会。阅读 {{decision_doc}}，列出参会角色、议程、四项拍板问题、风险。
+      输出：会议议程（中文，15 行内）+ 成功标准。
+    output: agenda
+
+  - id: pm_review
+    phase: 0
+    role: product-manager
+    depends_on: [orchestrate]
+    task: |
+      以产品经理身份评审 {{decision_doc}}。
+      输出：1) 是否同意选型 2) 四项拍板建议勾选 3) 产品待办与优先级 4) 对用户承诺/合规注意点。
+      参考技术细节：{{tech_doc}}
+    output: pm_minutes
+
+  - id: architect_review
+    phase: 0
+    role: engineering-software-architect
+    depends_on: [orchestrate]
+    task: |
+      审查双轨架构（酷播 L1 + R2 L2 + 异步上云）是否合理。
+      阅读 {{decision_doc}} 与代码路径说明。
+      输出：架构结论（通过/有条件通过）、MUST-FIX、与 MinIO/豆包方案的边界。
+    output: arch_minutes
+
+  - id: backend_review
+    phase: 0
+    role: engineering-backend-architect
+    depends_on: [architect_review]
+    task: |
+      从后端落地角度评审：media_cloud_upload_service、密钥配置、租户路径、失败降级。
+      输出：P0/P1 任务估时、接口/表字段是否够用、测试建议。
+    output: backend_minutes
+
+  - id: devops_review
+    phase: 0
+    role: engineering-devops-automator
+    depends_on: [orchestrate]
+    task: |
+      评审运维：.env 分工、R2/酷播开通、监控项、生产密钥隔离。
+      输出：部署检查清单（10 条内）。
+    output: devops_minutes
+
+  - id: ecc_security
+    phase: 0
+    kind: ecc
+    ecc_role: security-reviewer
+    depends_on: [backend_review]
+    task: |
+      [ECC security-reviewer] 审查视频 URL 泄露、预签名时效、租户隔离、密钥不入库。
+      输出：安全 MUST-FIX（若有）或「可上线」结论。
+    output: security_minutes
+
+  - id: pm_synthesis
+    phase: 0
+    role: product-manager
+    depends_on: [pm_review, arch_minutes, backend_minutes, devops_minutes, security_minutes]
+    task: |
+      汇总评审会：{{pm_minutes}} {{arch_minutes}} {{backend_minutes}} {{devops_minutes}} {{security_minutes}}
+      输出最终会议纪要（中文）：结论、四项拍板结果、分工表、下次验收标准。
+    output: final_minutes

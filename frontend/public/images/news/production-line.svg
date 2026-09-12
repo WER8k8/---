@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dbeafe"/>
+      <stop offset="100%" style="stop-color:#93c5fd"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <text x="400" y="200" font-family="Arial, sans-serif" font-size="48" fill="#1e40af" text-anchor="middle">优丁建材新生产线正式投产</text>
+  <text x="400" y="260" font-family="Arial, sans-serif" font-size="24" fill="#2563eb" text-anchor="middle">公司新闻</text>
+  <text x="400" y="310" font-family="Arial, sans-serif" font-size="18" fill="#3b82f6" text-anchor="middle">优丁建材新闻中心</text>
+  <text x="400" y="350" font-family="Arial, sans-serif" font-size="16" fill="#60a5fa" text-anchor="middle">2024-02-20</text>
+</svg>

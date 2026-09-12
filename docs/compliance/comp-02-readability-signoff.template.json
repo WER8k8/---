@@ -1,0 +1,11 @@
+{
+  "version": "1",
+  "artifact": "COMP-02-RZ-60",
+  "signed_at": null,
+  "validator": "scripts/validate-rz-60-pages.py",
+  "items": [
+    { "id": "RZ-60-count", "title": "60 页完整", "pass": null, "signer": null },
+    { "id": "RZ-forbidden", "title": "无禁止清单内容", "pass": null, "signer": null },
+    { "id": "RZ-readability", "title": "研发 readability 可读", "pass": null, "signer": "BE lead" }
+  ]
+}

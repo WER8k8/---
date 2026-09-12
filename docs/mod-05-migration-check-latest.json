@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "task": "MOD-05",
+  "revisions": {
+    "025_ubrain_accio_sales": "backend\\alembic\\versions\\025_ubrain_accio_sales.py",
+    "026_ubrain_commercial_os": "backend\\alembic\\versions\\026_ubrain_commercial_os.py"
+  },
+  "versions_dir": "backend\\alembic\\versions"
+}

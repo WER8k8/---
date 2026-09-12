@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-06-04",
+  "task": "MKT-PLATFORM-01",
+  "auditor": "架构师门禁",
+  "verdict": "CONDITIONAL_GO",
+  "scope": {
+    "in": ["frontend/pages/platform/index.vue", "frontend/assets/css/saas-marketing.css", "frontend/config/platform-marketing-content.ts"],
+    "out": ["frontend/pages/index.vue", "frontend/components/tenant/TenantSite.vue", "frontend/admin/src/views/landing/index.vue"]
+  },
+  "checks": [
+    { "id": "boundary-three-sites", "pass": true, "note": "marketing layout 隔离；不改 corporate / tenant" },
+    { "id": "copy-deck", "pass": true, "note": "文案以 plan-copy-deck.md 为唯一源；创意链模板未签字，架构师豁免" },
+    { "id": "locked-no-purple-hero", "pass": true, "note": "Hero 浅蓝渐变 #eff6ff→#fff，非紫渐变" },
+    { "id": "locked-font", "pass": true, "note": "Noto Sans SC，非 Inter" },
+    { "id": "cta-admin-url", "pass": true, "note": "useAdminAppUrl 注册/登录/定价" },
+    { "id": "建材语境", "pass": true, "note": "场景网格与能力卡为外贸建材，无 API/代理池主文案" },
+    { "id": "creative-signoff", "pass": false, "waived": true, "note": "用户指令「开始干活」+ 产品后续补签 platform-pm-signoff.md" },
+    { "id": "admin-landing-align", "pass": true, "note": "MKT-PLATFORM-02 · @marketing 同源 · 2026-06-04" }
+  ],
+  "engineering_hold_override": "用户 + 架构师 CONDITIONAL_GO",
+  "phases_complete": ["MKT-PLATFORM-01 /platform", "MKT-PLATFORM-02 admin/landing"]
+}

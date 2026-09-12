@@ -1,0 +1,16 @@
+{
+  "total_files": 248,
+  "violations": [],
+  "warnings": [
+    {
+      "file": "backend/app/services/ai_invocation_service.py",
+      "note": "专利核心模块也在软著清单: ai_invocation_service"
+    },
+    {
+      "file": "backend/app/services/ai_traffic_provider_service.py",
+      "note": "专利核心模块也在软著清单: ai_traffic_provider_service"
+    }
+  ],
+  "pass": true,
+  "recommendation": "PASS"
+}

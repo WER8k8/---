@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.1",
+  "updated_at": "2026-06-04",
+  "status": "engineering-delivered",
+  "summary": "SaaS 营销站 /platform + Admin /landing 已由工程按 plan-copy-deck 落地；创意链文档待营销/美工补稿时可新建。",
+  "canonical_copy_source": "frontend/config/platform-marketing-content.ts",
+  "canonical_copy_deck": "docs/marketing/plan-copy-deck.md",
+  "applies_to": [
+    "frontend/pages/platform/index.vue",
+    "frontend/admin/src/views/landing/index.vue"
+  ],
+  "not_in_scope": [
+    "frontend/pages/index.vue",
+    "frontend/components/tenant/TenantSite.vue"
+  ],
+  "retired_paths": [
+    "frontend/marketing/index.html — MKT-05 静态骨架，已迁入 /platform，2026-06-04 删除",
+    "docs/marketing/platform-*.md 空模板 — 工程已交付，空占位已删除"
+  ],
+  "phases": [
+    {
+      "order": 1,
+      "phase": "engineering",
+      "status": "done",
+      "outputs": ["/platform", "Admin /landing", "@marketing 文案模块"],
+      "gate": ".project/architect-platform-gate-20260604.json"
+    },
+    {
+      "order": 2,
+      "phase": "creative-refresh",
+      "status": "optional",
+      "owner": "营销 → 文案 → 美工 → 产品",
+      "note": "若需改版，在 docs/marketing/ 新建稿件后同步 platform-marketing-content.ts"
+    }
+  ],
+  "engineering_hold": {
+    "active": false,
+    "lifted_at": "2026-06-04"
+  },
+  "next_recommended": [
+    "MKT-PLATFORM-04：/tenant blank layout 验收与双层壳回归测试",
+    "MKT-PLATFORM-05：Header 全局套餐/用量条与 Plan Gate 文案对齐"
+  ],
+  "completed": [
+    "MKT-PLATFORM-03：YdTodayWorkbench + client/dashboard 首屏（2026-06-04）"
+  ]
+}

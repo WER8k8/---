@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "task": "MOD-02-smoke",
+  "channels": {
+    "douyin": true,
+    "wecom": true
+  },
+  "source": "docs\\mod-02-webhook-smoke-latest.json"
+}

@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "task": "COMM-QA-03",
+  "total": 12,
+  "pending": 0,
+  "blocked": 4,
+  "issues": [],
+  "matrix_path": ".project\\cert-screenshot-assignments-COMM-QA-03.json"
+}

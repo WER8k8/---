@@ -1,0 +1,78 @@
+{
+  "domain": "dev.local",
+  "issues": [],
+  "languages": {
+    "en": {
+      "language": "en",
+      "nav_home": "Home",
+      "hero_title": "Export Products Manufacturer, Supplier & Factory",
+      "product_first": "Export Products Standard Grade"
+    },
+    "zh": {
+      "language": "zh",
+      "nav_home": "首页",
+      "hero_title": "Export Products 生产厂家 · 供应商",
+      "product_first": "Export Products标准款"
+    },
+    "ar": {
+      "language": "ar",
+      "nav_home": "الرئيسية",
+      "hero_title": "مصنع ومورد Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "es": {
+      "language": "es",
+      "nav_home": "Inicio",
+      "hero_title": "Fabricante y proveedor de Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "pt": {
+      "language": "pt",
+      "nav_home": "Início",
+      "hero_title": "Fabricante e fornecedor de Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "ru": {
+      "language": "ru",
+      "nav_home": "Главная",
+      "hero_title": "Производитель и поставщик Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "th": {
+      "language": "th",
+      "nav_home": "หน้าแรก",
+      "hero_title": "ผู้ผลิตและซัพพลายเออร์ Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "vi": {
+      "language": "vi",
+      "nav_home": "Trang chủ",
+      "hero_title": "Nhà sản xuất & nhà cung cấp Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "id": {
+      "language": "id",
+      "nav_home": "Beranda",
+      "hero_title": "Produsen & pemasok Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "ms": {
+      "language": "ms",
+      "nav_home": "Laman Utama",
+      "hero_title": "Pengeluar & pembekal Export Products",
+      "product_first": "Export Products Standard Grade"
+    },
+    "ja": {
+      "language": "ja",
+      "nav_home": "ホーム",
+      "hero_title": "Export Products メーカー・サプライヤー",
+      "product_first": "Export Products Standard Grade"
+    },
+    "ko": {
+      "language": "ko",
+      "nav_home": "홈",
+      "hero_title": "Export Products 제조사 및 공급업체",
+      "product_first": "Export Products Standard Grade"
+    }
+  }
+}

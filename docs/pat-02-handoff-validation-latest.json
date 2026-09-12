@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "task": "PAT-02",
+  "files": {
+    "docs\\专利\\PAT-02-novelty-search-memo.md": true,
+    "docs\\专利\\PAT-02-agency-handoff-checklist.md": true,
+    "docs\\专利\\PAT-02-report-number.json": true,
+    "docs\\专利\\PAT-01-claims-code-mapping.md": true
+  },
+  "search_report_number_filled": false,
+  "human_pending": true
+}

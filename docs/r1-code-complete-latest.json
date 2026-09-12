@@ -1,0 +1,17 @@
+{
+  "task": "R1-CODE-COMPLETE",
+  "updated_at": "2026-06-02",
+  "dev_gate_round": 15,
+  "note": "gate 32 步；S2 签字脚手架 + Owner readiness",
+  "gate_command": "powershell -File scripts/run-r1-dev-gate.ps1",
+  "owner_handoff": "docs/r1-owner-handoff-pack.md",
+  "remaining_human": [
+    "HTTPS 演示域 + Certbot",
+    "QA-04 正式 72h",
+    "SaaS BJ-01 签字",
+    "PAT-02 检索号",
+    "COMP-06 律师签字",
+    "MOD-02 生产 IM 密钥联调",
+    "MOD-06 AAB 提审"
+  ]
+}

@@ -1,0 +1,51 @@
+// FILE: backend\app\core\cache.py
+            # 执行函数
+            result = func(*args, **kwargs)
+
+            # 设置缓存
+            set_cache(cache_key, result, expire)
+
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+# 缓存key前缀常量
+CACHE_KEYS = {
+    "USER": "user:{}",
+    "PRODUCT": "product:{}",
+    "PRODUCT_SLUG": "product:slug:{}",
+    "CATEGORY": "category:{}",
+    "CATEGORY_TREE": "category:tree",
+    "PAGE": "page:{}",
+    "PAGE_SLUG": "page:slug:{}",
+    "SEO": "seo:{}:{}",  # (resource_type, resource_id)
+    "POPULAR_PRODUCTS": "product:popular",
+    "STATS": "stats:{}",
+}
+
+
+def invalidate_user_cache(user_id: str) -> None:
+    """使用户缓存失效"""
+    delete_cache(CACHE_KEYS["USER"].format(user_id))
+
+
+def invalidate_product_cache(product_id: str, slug: str = None) -> None:
+    """使产品缓存失效"""
+    delete_cache(CACHE_KEYS["PRODUCT"].format(product_id))
+    if slug:
+        delete_cache(CACHE_KEYS["PRODUCT_SLUG"].format(slug))
+    delete_cache(CACHE_KEYS["POPULAR_PRODUCTS"])
+
+
+def invalidate_category_cache(category_id: str = None) -> None:
+    """使分类缓存失效"""
+    if category_id:
+        delete_cache(CACHE_KEYS["CATEGORY"].format(category_id))
+    delete_cache(CACHE_KEYS["CATEGORY_TREE"])
+
+
+def invalidate_page_cache(page_id: str, slug: str = None) -> None:
+    """使页面缓存失效"""

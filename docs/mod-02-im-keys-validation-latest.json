@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "task": "MOD-02",
+  "env_template_keys": {
+    "INQUIRY_WEBHOOK_SECRET": true,
+    "WECOM_CORP_ID": true,
+    "WECOM_AGENT_SECRET": true,
+    "DOUYIN_APP_ID": true,
+    "DOUYIN_APP_SECRET": true
+  },
+  "openapi_routes": {
+    "wecom_webhook": true,
+    "douyin_webhook": true
+  },
+  "files": {
+    "backend\\app\\api\\v1\\routes\\inquiry_channels.py": true,
+    "backend\\app\\services\\im_channel_webhook_service.py": true,
+    "docs\\compliance\\MOD-02-im-prod-handoff-checklist.md": true
+  },
+  "webhook_tests_ok": true,
+  "human_pending": "生产密钥回填 + 企微/抖音实机联调",
+  "pytest_tail": "or class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class SSLCertificateResponse(SSLCertificateBase):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================== 5 passed, 2 warnings in 4.88s ========================\n"
+}

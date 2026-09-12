@@ -1,0 +1,52 @@
+[
+  {
+    "date": "2026-07-19",
+    "version": "2026-07-v3",
+    "source": "arxiv",
+    "title": "GEO at Scale: Measuring Brand Visibility Across AI Search Engines",
+    "url": "https://arxiv.org/abs/2606.20065v1",
+    "relevance_score": 0.95,
+    "tactics_added": ["brand_mention_anchoring", "multi_surface_optimization"],
+    "impact": "品牌+品类+地域三要素锚定可提升AI搜索提及率40%+"
+  },
+  {
+    "date": "2026-07-19",
+    "version": "2026-07-v3",
+    "source": "arxiv",
+    "title": "Optimizing Visibility in Generative Engines: A Critical Survey of GEO 2023-2026",
+    "url": "https://arxiv.org/abs/2607.14035v1",
+    "relevance_score": 0.80,
+    "tactics_added": ["entity_schema_markup", "llms_txt_declaration"],
+    "impact": "全面综述所有已知GEO优化策略"
+  },
+  {
+    "date": "2026-07-19",
+    "version": "2026-07-v3",
+    "source": "arxiv",
+    "title": "From Citation Selection to Citation Absorption",
+    "url": "https://arxiv.org/abs/2604.25707v2",
+    "relevance_score": 0.80,
+    "tactics_added": ["faq_absorption_format", "citation_chain_building"],
+    "impact": "FAQ格式的LLM引用吸收率是普通段落的3倍"
+  },
+  {
+    "date": "2026-07-19",
+    "version": "2026-07-v3",
+    "source": "arxiv",
+    "title": "Exploring LLM Biases to Manipulate AI Search Overview",
+    "url": "https://arxiv.org/abs/2605.00012v1",
+    "relevance_score": 0.65,
+    "tactics_added": ["ai_overview_targeting"],
+    "impact": "AI Overview偏好结构化内容"
+  },
+  {
+    "date": "2026-07-19",
+    "version": "2026-07-v3",
+    "source": "arxiv",
+    "title": "GEO-Bench: Benchmarking Ranking Manipulation in GEO",
+    "url": "https://arxiv.org/abs/2605.29107v2",
+    "relevance_score": 0.80,
+    "tactics_added": ["anti_manipulation_guard"],
+    "impact": "了解哪些策略会被检测为GEO操控"
+  }
+]

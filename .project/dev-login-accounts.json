@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.1",
+  "updated_at": "2026-06-30",
+  "environment": "development_only",
+  "warning": "仅本地 SQLite 开发种子，禁止用于生产。换电脑/TRAE/Cursor 打开本仓库后勿新建 login 假页。",
+  "role_note": "统一登录 /login；JWT 角色自动分流。本地只记账号密码即可。",
+  "migration": {
+    "code_package_git_mb": 105,
+    "start_command": "powershell -File scripts/start-dev-admin.ps1",
+    "do_not_copy": ["node_modules", "backend/.venv", "*.db", "uploads", "backups", ".codegraph", "_build_check"],
+    "after_clone": [
+      "cd frontend/admin && npm ci",
+      "cd backend && python -m venv .venv && .venv/Scripts/pip install -r requirements.txt",
+      "powershell -File scripts/start-dev-admin.ps1"
+    ],
+    "locks": [
+      ".project/login-entry-lock.json",
+      ".project/role-shell-lock.json"
+    ]
+  },
+  "accounts": [
+    {
+      "id": "platform",
+      "label": "平台超管",
+      "username": "admin",
+      "password": "admin123",
+      "role": "super_admin",
+      "home_path": "/admin"
+    },
+    {
+      "id": "tenant",
+      "label": "租户",
+      "username": "tenant",
+      "password": "tenant123",
+      "email": "tenant@dev.local",
+      "role": "tenant_admin",
+      "tenant_name": "开发租户",
+      "tenant_domain": "dev.local",
+      "home_path": "/client/today",
+      "routes": [
+        {
+          "path": "/login",
+          "component": "frontend/admin/src/views/login/index.vue",
+          "note": "唯一登录入口（LOGIN-LOCK-01）"
+        },
+        {
+          "path": "/client/today",
+          "component": "frontend/admin/src/views/client/today-three.vue",
+          "note": "租户登录后首页（ROLE-SHELL-LOCK-01）"
+        },
+        {
+          "path": "/client/dashboard",
+          "component": "frontend/admin/src/views/client/dashboard.vue",
+          "note": "租户工作台，真实 API"
+        },
+        {
+          "path": "/client/seo-publish",
+          "component": "frontend/admin/src/views/seo-matrix/publish.vue",
+          "note": "SEO 平台绑定与发布"
+        },
+        {
+          "path": "/client/article-to-video",
+          "component": "frontend/admin/src/views/admin/ai-center/article-to-video.vue",
+          "note": "文章转视频"
+        },
+        {
+          "path": "/client/video-overseas",
+          "component": "frontend/admin/src/views/client/video-overseas.vue",
+          "note": "中文片出海"
+        },
+        {
+          "path": "/client/site-editor-lab",
+          "component": "frontend/admin/src/views/client/site-editor-lab.vue",
+          "note": "建站 Formily Lab"
+        }
+      ],
+      "public_site_preview": "http://localhost:3000/tenant?__tenant=dev.local&lpro=1&language=zh"
+    },
+    {
+      "id": "agent",
+      "label": "区域代理",
+      "username": "agent",
+      "password": "agent123",
+      "role": "l3",
+      "home_path": "/agent/performance"
+    }
+  ],
+  "forbidden_on_new_machine": [
+    "frontend/admin/src/views/client/login.vue",
+    "新建第二套 login 页面",
+    "用占位页替换已有 views/client/*.vue / views/seo-matrix/*.vue"
+  ]
+}

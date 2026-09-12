@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全链路归因</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style id="theme-vars">
+/* Brand CSS — 租户工作台 Dark Dashboard */
+:root {
+  /* Seed */
+  --seed-color: #4a9b8c;
+
+  /* Core palette */
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+
+  /* Semantic state colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Semantic radius aliases */
+  --brand-radius-sm: 6px;
+  --brand-radius-md: 10px;
+  --brand-radius-lg: 14px;
+  --brand-radius-large: 14px;
+  --brand-radius-small: 6px;
+  --brand-radius-medium: 10px;
+}
+
+/* Semantic alias resolution */
+.brand-background { background-color: var(--color-background); }
+.brand-foreground { color: var(--color-foreground); }
+.brand-card { background-color: var(--color-card); }
+.brand-card-foreground { color: var(--color-card-foreground); }
+.brand-popover { background-color: var(--color-popover); }
+.brand-popover-foreground { color: var(--color-popover-foreground); }
+.brand-primary { background-color: var(--color-primary); }
+.brand-primary-foreground { color: var(--color-primary-foreground); }
+.brand-muted { background-color: var(--color-muted); }
+.brand-muted-foreground { color: var(--color-muted-foreground); }
+.brand-border { border-color: var(--color-border); }
+.brand-input { background-color: var(--color-input); }
+.brand-ring { box-shadow: 0 0 0 2px var(--color-ring); }
+
+/* Typography scale */
+.brand-h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-foreground); }
+.brand-h2 { font-size: 1.3125rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-foreground); }
+.brand-h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--color-foreground); }
+.brand-h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--color-card-foreground); }
+.brand-body { font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--color-muted-foreground); }
+.brand-body-sm { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; color: var(--color-muted-foreground); }
+.brand-caption { font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--color-muted-foreground); }
+.brand-mono { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8125rem; }
+
+/* Font stack */
+.font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-card-foreground: var(--color-card-foreground);
+    --color-popover: var(--color-popover);
+    --color-popover-foreground: var(--color-popover-foreground);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-input: var(--color-input);
+    --color-ring: var(--color-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-card-foreground { background-color: var(--color-card-foreground); }
+      .text-card-foreground { color: var(--color-card-foreground); }
+      .border-card-foreground { border-color: var(--color-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--color-card-foreground); }
+      .bg-popover { background-color: var(--color-popover); }
+      .text-popover { color: var(--color-popover); }
+      .border-popover { border-color: var(--color-popover); }
+      .ring-popover { --tw-ring-color: var(--color-popover); }
+      .bg-popover-foreground { background-color: var(--color-popover-foreground); }
+      .text-popover-foreground { color: var(--color-popover-foreground); }
+      .border-popover-foreground { border-color: var(--color-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--color-popover-foreground); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-primary-foreground { background-color: var(--color-primary-foreground); }
+      .text-primary-foreground { color: var(--color-primary-foreground); }
+      .border-primary-foreground { border-color: var(--color-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--color-primary-foreground); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-muted-foreground { background-color: var(--color-muted-foreground); }
+      .text-muted-foreground { color: var(--color-muted-foreground); }
+      .border-muted-foreground { border-color: var(--color-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--color-muted-foreground); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+      .bg-input { background-color: var(--color-input); }
+      .text-input { color: var(--color-input); }
+      .border-input { border-color: var(--color-input); }
+      .ring-input { --tw-ring-color: var(--color-input); }
+      .bg-ring { background-color: var(--color-ring); }
+      .text-ring { color: var(--color-ring); }
+      .border-ring { border-color: var(--color-ring); }
+      .ring-ring { --tw-ring-color: var(--color-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo__icon">优</div>
+    <div class="sidebar-logo__text"><span>优</span><span>丁</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Group 1: 工作台 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">工作台</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        今日概览
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        数据看板
+      </a>
+    </div>
+
+    <!-- Group 2: 获客 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">获客</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        询盘管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        智能副驾
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+        出海机 App
+      </a>
+    </div>
+
+    <!-- Group 3: 发品 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">发品</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        产品管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+        内容管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        发布枢纽
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect width="15" height="20" x="1" y="2" rx="2" ry="2"/></svg>
+        视频出海
+      </a>
+    </div>
+
+    <!-- Group 4: 履约 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">履约</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        订单管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+        物流追踪
+      </a>
+    </div>
+
+    <!-- Group 5: 账户 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">账户</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="M16 16l4 4"/><path d="M19 13c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+        套餐与用量
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        域名管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        团队管理
+      </a>
+    </div>
+
+    <!-- Group 6: 超级管理工具 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">超级管理工具</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        数据看板
+      </a>
+      <a class="sidebar-item sidebar-item--active" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        全链路归因
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+        站点编辑
+      </a>
+    </div>
+  </nav>
+
+  <!-- User section at bottom -->
+  <div class="sidebar-user">
+    <div class="sidebar-user__avatar">张</div>
+    <div class="sidebar-user__info">
+      <span class="sidebar-user__name">张建材</span>
+      <span class="sidebar-user__plan">专业版</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+  <!-- Topbar -->
+  <section class="topbar panel">
+    <div>
+      <p class="kicker">超级管理工具 · 营销归因</p>
+      <h1>全链路归因</h1>
+      <p class="desc">追踪每一条询盘从来源到成交的完整链路，量化渠道贡献</p>
+    </div>
+    <div class="topbar-tools">
+      <div class="period-selector">
+        <button class="period-btn" data-days="7">近7天</button>
+        <button class="period-btn period-btn--active" data-days="30">近30天</button>
+        <button class="period-btn" data-days="90">近90天</button>
+      </div>
+      <button class="btn btn--default">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        导出报告
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Row (4 cards) -->
+  <section class="kpi-grid">
+    <div class="panel">
+      <div class="yd-stats-card">
+        <div class="__label">总询盘数</div>
+        <div class="__value tone-info"><span class="count-up" data-target="156" data-duration="900">0</span></div>
+        <div class="__hint">选定周期内全部渠道</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="yd-stats-card">
+        <div class="__label">已报价</div>
+        <div class="__value tone-success"><span class="count-up" data-target="89" data-duration="900">0</span></div>
+        <div class="__hint">已回复报价的询盘</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="yd-stats-card">
+        <div class="__label">成交</div>
+        <div class="__value tone-warning"><span class="count-up" data-target="34" data-duration="900">0</span></div>
+        <div class="__hint">已签约或确认订单</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="yd-stats-card">
+        <div class="__label">总营收 USD</div>
+        <div class="__value tone-primary"><span class="count-up" data-target="128500" data-duration="1200" data-prefix="$" data-separator="true">0</span></div>
+        <div class="__hint">成交订单累计金额</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conversion Gauges (2 large doughnuts) -->
+  <section class="gauge-row">
+    <div class="panel gauge-card">
+      <div class="gauge-wrap">
+        <canvas id="gaugeQuote" width="180" height="180"></canvas>
+        <div class="gauge-center">
+          <span class="gauge-value" id="gaugeQuoteVal">0%</span>
+          <span class="gauge-label">报价率</span>
+        </div>
+      </div>
+      <p class="gauge-desc">89 / 156 条询盘已报价</p>
+    </div>
+    <div class="panel gauge-card">
+      <div class="gauge-wrap">
+        <canvas id="gaugeDeal" width="180" height="180"></canvas>
+        <div class="gauge-center">
+          <span class="gauge-value" id="gaugeDealVal">0%</span>
+          <span class="gauge-label">成交率</span>
+        </div>
+      </div>
+      <p class="gauge-desc">34 / 156 条询盘已成交</p>
+    </div>
+  </section>
+
+  <!-- Charts Row: Bar (60%) + Pie (40%) -->
+  <div class="grid-2col">
+    <section class="chart-panel panel">
+      <div class="chart-head">
+        <h3>渠道询盘分布</h3>
+        <span class="chart-head-sub">各渠道带来询盘数量</span>
+      </div>
+      <div class="chart-wrap chart-wrap--bar">
+        <canvas id="channelBarChart"></canvas>
+      </div>
+    </section>
+    <section class="panel" style="padding: 14px 16px;">
+      <div class="chart-head">
+        <h3>渠道占比</h3>
+      </div>
+      <div class="chart-wrap chart-wrap--doughnut">
+        <canvas id="channelPieChart"></canvas>
+      </div>
+      <div class="doughnut-legend" id="channelLegend"></div>
+    </section>
+  </div>
+
+  <!-- Channel Conversion Funnel Table -->
+  <section class="panel funnel-table-panel">
+    <div class="chart-head">
+      <h3>渠道转化漏斗</h3>
+      <span class="chart-head-sub">从询盘到成交的全链路转化数据</span>
+    </div>
+    <div class="table-scroll">
+      <table class="attr-table">
+        <thead>
+          <tr>
+            <th>渠道</th>
+            <th>询盘数</th>
+            <th>报价数</th>
+            <th>成交数</th>
+            <th>报价率</th>
+            <th>成交率</th>
+            <th>营收(USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ch-dot" style="background:#4a9b8c"></span>Google Ads</td>
+            <td>42</td><td>28</td><td>12</td>
+            <td><span class="rate rate-green">67%</span></td>
+            <td><span class="rate rate-green">29%</span></td>
+            <td class="revenue-col">$48,200</td>
+          </tr>
+          <tr>
+            <td><span class="ch-dot" style="background:#3b82f6"></span>LinkedIn</td>
+            <td>28</td><td>18</td><td>8</td>
+            <td><span class="rate rate-green">64%</span></td>
+            <td><span class="rate rate-green">29%</span></td>
+            <td class="revenue-col">$32,100</td>
+          </tr>
+          <tr>
+            <td><span class="ch-dot" style="background:#f59e0b"></span>直接访问</td>
+            <td>32</td><td>20</td><td>7</td>
+            <td><span class="rate rate-green">63%</span></td>
+            <td><span class="rate rate-green">22%</span></td>
+            <td class="revenue-col">$24,800</td>
+          </tr>
+          <tr>
+            <td><span class="ch-dot" style="background:#8b5cf6"></span>展会</td>
+            <td>18</td><td>10</td><td>4</td>
+            <td><span class="rate rate-green">56%</span></td>
+            <td><span class="rate rate-green">22%</span></td>
+            <td class="revenue-col">$12,600</td>
+          </tr>
+          <tr>
+            <td><span class="ch-dot" style="background:#ec4899"></span>阿里巴巴</td>
+            <td>20</td><td>8</td><td>2</td>
+            <td><span class="rate rate-green">40%</span></td>
+            <td><span class="rate rate-amber">10%</span></td>
+            <td class="revenue-col">$6,400</td>
+          </tr>
+          <tr>
+            <td><span class="ch-dot" style="background:#06b6d4"></span>海关数据</td>
+            <td>10</td><td>3</td><td>1</td>
+            <td><span class="rate rate-green">30%</span></td>
+            <td><span class="rate rate-amber">10%</span></td>
+            <td class="revenue-col">$2,800</td>
+          </tr>
+          <tr>
+            <td><span class="ch-dot" style="background:#64748b"></span>社交媒体</td>
+            <td>6</td><td>2</td><td>0</td>
+            <td><span class="rate rate-green">33%</span></td>
+            <td><span class="rate rate-red">0%</span></td>
+            <td class="revenue-col">$1,600</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Bottom Row: Top Keywords (50%) + AI Engine (50%) -->
+  <div class="grid-2col-equal">
+    <!-- Top Keywords -->
+    <section class="panel" style="padding: 16px;">
+      <div class="chart-head">
+        <h3>Top 关键词</h3>
+        <span class="chart-head-sub">带来询盘的搜索关键词</span>
+      </div>
+      <div class="table-scroll">
+        <table class="attr-table attr-table--compact">
+          <thead>
+            <tr>
+              <th>关键词</th>
+              <th>搜索量</th>
+              <th>询盘数</th>
+              <th>转化率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="kw-cell">LED工矿灯厂家中国</td>
+              <td>2,340</td><td>18</td>
+              <td><span class="rate rate-green">0.77%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">building ceramic tiles supplier</td>
+              <td>1,860</td><td>14</td>
+              <td><span class="rate rate-green">0.75%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">钢化玻璃批发 FOB 价格</td>
+              <td>1,520</td><td>11</td>
+              <td><span class="rate rate-green">0.72%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">marble slab suppliers</td>
+              <td>1,280</td><td>9</td>
+              <td><span class="rate rate-green">0.70%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">建筑陶瓷出口商</td>
+              <td>980</td><td>7</td>
+              <td><span class="rate rate-amber">0.71%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">solar street light OEM</td>
+              <td>870</td><td>5</td>
+              <td><span class="rate rate-amber">0.57%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">地板砖定制工厂</td>
+              <td>740</td><td>4</td>
+              <td><span class="rate rate-amber">0.54%</span></td>
+            </tr>
+            <tr>
+              <td class="kw-cell">tempered glass 6mm price</td>
+              <td>620</td><td>3</td>
+              <td><span class="rate rate-red">0.48%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AI Engine Contribution -->
+    <section class="panel" style="padding: 16px;">
+      <div class="chart-head">
+        <h3>AI 引擎贡献</h3>
+        <span class="chart-head-sub">AI 辅助成交归因分析</span>
+      </div>
+      <div class="table-scroll">
+        <table class="attr-table attr-table--compact">
+          <thead>
+            <tr>
+              <th>AI 引擎</th>
+              <th>辅助询盘数</th>
+              <th>辅助成交数</th>
+              <th>贡献营收</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="ai-badge">GPT-4o</span>
+              </td>
+              <td>52</td><td>14</td>
+              <td class="revenue-col">$56,400</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ai-badge">Claude</span>
+              </td>
+              <td>38</td><td>10</td>
+              <td class="revenue-col">$38,200</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ai-badge">Gemini</span>
+              </td>
+              <td>28</td><td>6</td>
+              <td class="revenue-col">$21,500</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ai-badge">DeepSeek</span>
+              </td>
+              <td>22</td><td>3</td>
+              <td class="revenue-col">$8,200</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ai-badge">通义千问</span>
+              </td>
+              <td>10</td><td>1</td>
+              <td class="revenue-col">$4,200</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ai-total">
+        <span>AI 引擎合计贡献</span>
+        <span class="ai-total-value">$128,500</span>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<style>
+/* ============================================================
+   PAGE BACKGROUND
+   ============================================================ */
+body {
+  background: #0c0d10;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(74,155,140,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   SIDEBAR — fixed 232px
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 232px;
+  height: 100vh;
+  background: rgba(17,18,21,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 16px 0;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 16px 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  margin-bottom: 8px;
+}
+.sidebar-logo__icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4a9b8c, #3d8f7a);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.sidebar-logo__text {
+  display: flex; align-items: baseline; gap: 1px;
+  color: #fff; font-size: 14px; font-weight: 600;
+}
+.sidebar-logo__text span:first-child { font-weight: 700; }
+
+.sidebar-nav {
+  flex: 1; padding: 4px 8px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.sidebar-group { margin-bottom: 12px; }
+.sidebar-group__label {
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 10px 4px 10px;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  text-decoration: none;
+  border: 1px solid transparent;
+  position: relative;
+}
+.sidebar-item:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.sidebar-item--active {
+  background: rgba(74,155,140,0.1);
+  color: #fff;
+  border-left: 3px solid #4a9b8c;
+  padding-left: 7px;
+  font-weight: 600;
+}
+.sidebar-item--active svg { color: #4a9b8c; filter: drop-shadow(0 0 4px rgba(74,155,140,0.5)); }
+.sidebar-item svg { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.7; }
+.sidebar-item--active svg { opacity: 1; }
+
+.sidebar-user {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 14px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-user__avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #4a9b8c, #3d8f7a);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.sidebar-user__info { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user__name { font-size: 13px; font-weight: 600; color: #fff; }
+.sidebar-user__plan {
+  font-size: 10px; font-weight: 600; padding: 1px 6px;
+  border-radius: 4px; background: rgba(59,130,246,0.15);
+  color: #60a5fa; width: fit-content;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+  margin-left: 232px;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+.panel {
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+  transition: transform var(--uj-motion-duration) var(--uj-motion-ease),
+              box-shadow var(--uj-motion-duration) var(--uj-motion-ease);
+}
+.panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 44px rgba(74,155,140,0.12);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes ujCardEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+}
+.main-content > section:nth-child(2) { animation-delay: 40ms; }
+.main-content > section:nth-child(3) { animation-delay: 80ms; }
+.main-content > section:nth-child(4) { animation-delay: 120ms; }
+.main-content > section:nth-child(5) { animation-delay: 160ms; }
+.main-content > section:nth-child(6) { animation-delay: 200ms; }
+
+@keyframes ujMetricGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(245,158,11,0); }
+}
+@keyframes ujShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  border: none; outline: none; white-space: nowrap; font-family: inherit;
+}
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+}
+.btn--primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn--default {
+  background: rgba(255,255,255,0.06);
+  color: var(--color-card-foreground);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn--default:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.12); }
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; flex-wrap: wrap; padding: 14px 18px; margin-bottom: 16px;
+  animation-delay: 40ms;
+}
+.topbar .kicker {
+  font-size: 12px; color: var(--color-muted-foreground); margin: 0 0 4px 0;
+}
+.topbar h1 {
+  font-size: 24px; font-weight: 700; color: var(--color-foreground);
+  margin: 0 0 4px 0; letter-spacing: -0.02em;
+}
+.topbar .desc {
+  font-size: 15px; color: var(--color-muted-foreground);
+  line-height: 1.45; margin: 0;
+}
+.topbar-tools {
+  display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px;
+}
+
+/* Period selector */
+.period-selector {
+  display: inline-flex; border-radius: 8px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.period-btn {
+  padding: 6px 14px; font-size: 13px; font-weight: 500;
+  background: rgba(255,255,255,0.04);
+  color: var(--color-muted-foreground);
+  border: none; cursor: pointer; transition: all 0.2s ease;
+  font-family: inherit;
+}
+.period-btn:hover { color: var(--color-card-foreground); background: rgba(255,255,255,0.08); }
+.period-btn--active {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* ============================================================
+   KPI GRID
+   ============================================================ */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 16px;
+}
+.kpi-grid .panel { padding: 12px 14px; border-radius: 14px; cursor: default; }
+.kpi-grid .panel:nth-child(1) { animation-delay: 0ms; background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(59,130,246,0.03)); }
+.kpi-grid .panel:nth-child(2) { animation-delay: 50ms; background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.03)); }
+.kpi-grid .panel:nth-child(3) { animation-delay: 100ms; background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); }
+.kpi-grid .panel:nth-child(4) { animation-delay: 150ms; background: linear-gradient(135deg, rgba(74,155,140,0.08), rgba(74,155,140,0.03)); }
+
+.yd-stats-card .__label {
+  font-size: 13px; font-weight: 600; color: var(--color-muted-foreground);
+}
+.yd-stats-card .__value {
+  margin-top: 8px; font-size: 28px; font-weight: 700;
+  font-variant-numeric: tabular-nums; line-height: 1.15;
+  letter-spacing: -0.02em; white-space: nowrap;
+}
+.yd-stats-card .__hint {
+  margin-top: 4px; font-size: 12px; color: var(--color-muted-foreground);
+}
+
+.tone-info    { color: #3b82f6; }
+.tone-success { color: #10b981; }
+.tone-warning { color: #f59e0b; }
+.tone-primary { color: #4a9b8c; }
+
+.kpi-grid .panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74,155,140,0.18);
+}
+
+/* ============================================================
+   CONVERSION GAUGES
+   ============================================================ */
+.gauge-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 16px;
+}
+.gauge-card {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px; text-align: center; cursor: default;
+}
+.gauge-wrap {
+  position: relative; width: 180px; height: 180px;
+}
+.gauge-center {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+}
+.gauge-value {
+  font-size: 32px; font-weight: 800;
+  color: var(--color-foreground);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.gauge-label {
+  font-size: 12px; color: var(--color-muted-foreground);
+}
+.gauge-desc {
+  margin-top: 10px; font-size: 12px;
+  color: var(--color-muted-foreground);
+}
+
+/* ============================================================
+   CHART PANELS
+   ============================================================ */
+.chart-panel {
+  padding: 14px 16px; margin-bottom: 16px;
+  animation-delay: 100ms;
+}
+.chart-panel .chart-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.chart-panel .chart-head h3 {
+  font-size: 14px; font-weight: 600; color: var(--color-foreground); margin: 0;
+}
+.chart-head-sub {
+  font-size: 12px; color: var(--color-muted-foreground);
+}
+.chart-wrap { position: relative; width: 100%; }
+.chart-wrap--bar { height: 280px; }
+.chart-wrap--doughnut {
+  height: 220px; display: flex; align-items: center; justify-content: center;
+}
+.chart-wrap--doughnut canvas { max-height: 200px; }
+
+.doughnut-legend {
+  display: flex; flex-wrap: wrap; gap: 8px 16px;
+  margin-top: 12px; justify-content: center;
+}
+.doughnut-legend__item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--color-muted-foreground);
+}
+.doughnut-legend__dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* ============================================================
+   TWO-COLUMN GRIDS
+   ============================================================ */
+.grid-2col {
+  display: grid; grid-template-columns: 3fr 2fr;
+  gap: 16px; margin-bottom: 16px;
+}
+.grid-2col-equal {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 16px;
+}
+
+/* ============================================================
+   ATTRIBUTION TABLES
+   ============================================================ */
+.funnel-table-panel { padding: 16px; margin-bottom: 16px; animation-delay: 160ms; }
+.table-scroll { overflow-x: auto; }
+
+.attr-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.attr-table th {
+  text-align: left; padding: 8px 10px;
+  font-size: 12px; font-weight: 600;
+  color: var(--color-muted-foreground);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  white-space: nowrap;
+}
+.attr-table td {
+  padding: 10px 10px;
+  color: var(--color-card-foreground);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.attr-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+.attr-table--compact td { padding: 8px 10px; }
+
+.ch-dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 6px; flex-shrink: 0;
+}
+
+.rate {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 4px; font-size: 12px; font-weight: 600;
+}
+.rate-green  { background: rgba(16,185,129,0.15); color: #10b981; }
+.rate-amber  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.rate-red    { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+.revenue-col {
+  color: var(--color-foreground); font-weight: 600;
+}
+
+.kw-cell {
+  max-width: 200px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   AI BADGE & TOTAL
+   ============================================================ */
+.ai-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 12px; font-weight: 600;
+  background: rgba(74,155,140,0.15); color: #4a9b8c;
+}
+.ai-total {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px; color: var(--color-muted-foreground);
+}
+.ai-total-value {
+  font-size: 18px; font-weight: 700; color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2col, .grid-2col-equal { grid-template-columns: 1fr; }
+  .gauge-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .gauge-row { grid-template-columns: 1fr; }
+}
+
+/* ===== Spring Physics Patch (DESIGN.md §7) ===== */
+@keyframes ujCardEnterSpring {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease-out,
+              border-color 0.3s ease-out;
+}
+.panel:hover {
+  transform: translateY(-3px);
+}
+@keyframes ujPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,155,140,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(74,155,140,0); }
+}
+.uj-pulse { animation: ujPulse 2s ease-in-out infinite; }
+@keyframes ujFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.uj-float { animation: ujFloat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .uj-pulse, .uj-float { animation: none !important; }
+}
+/* ===== End Spring Physics Patch ===== */
+
+
+/* Detail Modal */
+@keyframes detailModalIn {
+  0% { opacity:0; transform:translateY(16px) scale(0.96); }
+  60% { transform:translateY(-2px) scale(1.01); }
+  100% { opacity:1; transform:translateY(0) scale(1); }
+}
+#detailModalOverlay { transition: opacity 0.2s; }
+
+</style>
+
+<script>
+// ============================================================
+// COUNT-UP ANIMATION
+// ============================================================
+function easeOutExpo(t) {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
+
+function animateCountUp(el, target, duration, prefix, useSeparator) {
+  const start = performance.now();
+  prefix = prefix || '';
+  useSeparator = useSeparator || false;
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const easedProgress = easeOutExpo(progress);
+    const current = Math.round(easedProgress * target);
+    if (useSeparator) {
+      el.textContent = prefix + current.toLocaleString('en-US');
+    } else {
+      el.textContent = prefix + current;
+    }
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ============================================================
+// PERIOD SELECTOR
+// ============================================================
+document.querySelectorAll('.period-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.period-btn').forEach(function(b) {
+      b.classList.remove('period-btn--active');
+    });
+    btn.classList.add('period-btn--active');
+  });
+});
+
+// ============================================================
+// INIT ON LOAD
+// ============================================================
+window.addEventListener('load', function() {
+  // Count-up for KPI values
+  document.querySelectorAll('.count-up').forEach(function(el) {
+    const target = parseInt(el.getAttribute('data-target'), 10);
+    const duration = parseInt(el.getAttribute('data-duration') || '900', 10);
+    const prefix = el.getAttribute('data-prefix') || '';
+    const useSeparator = el.getAttribute('data-separator') === 'true';
+    animateCountUp(el, target, duration, prefix, useSeparator);
+  });
+
+  // Chart.js global defaults
+  Chart.defaults.color = '#8b8fa0';
+  Chart.defaults.font.family = "'Inter', 'Noto Sans SC', sans-serif";
+
+  const tooltipStyle = {
+    backgroundColor: 'rgba(21,22,26,0.95)',
+    titleColor: '#f0f2f5',
+    bodyColor: '#e4e6eb',
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderWidth: 1,
+    cornerRadius: 8,
+    padding: 10,
+    displayColors: true
+  };
+  const gridStyle = { color: 'rgba(255,255,255,0.04)', drawBorder: false };
+
+  // ============================================================
+  // GAUGE 1: Quote Rate 57%
+  // ============================================================
+  var gqCtx = document.getElementById('gaugeQuote');
+  if (gqCtx) {
+    new Chart(gqCtx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [57, 43],
+          backgroundColor: ['#10b981', 'rgba(255,255,255,0.06)'],
+          borderWidth: 0,
+          hoverOffset: 0
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true,
+        cutout: '75%',
+        animation: { duration: 1000, easing: 'easeOutQuart' },
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        rotation: -90,
+        circumference: 180
+      }
+    });
+    // Animate gauge text
+    var gqVal = document.getElementById('gaugeQuoteVal');
+    if (gqVal) {
+      var gqStart = performance.now();
+      function gqTick(now) {
+        var p = Math.min((now - gqStart) / 1000, 1);
+        gqVal.textContent = Math.round(easeOutExpo(p) * 57) + '%';
+        if (p < 1) requestAnimationFrame(gqTick);
+      }
+      requestAnimationFrame(gqTick);
+    }
+  }
+
+  // ============================================================
+  // GAUGE 2: Deal Rate 22%
+  // ============================================================
+  var gdCtx = document.getElementById('gaugeDeal');
+  if (gdCtx) {
+    new Chart(gdCtx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [22, 78],
+          backgroundColor: ['#3b82f6', 'rgba(255,255,255,0.06)'],
+          borderWidth: 0,
+          hoverOffset: 0
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true,
+        cutout: '75%',
+        animation: { duration: 1000, easing: 'easeOutQuart' },
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        rotation: -90,
+        circumference: 180
+      }
+    });
+    var gdVal = document.getElementById('gaugeDealVal');
+    if (gdVal) {
+      var gdStart = performance.now();
+      function gdTick(now) {
+        var p = Math.min((now - gdStart) / 1000, 1);
+        gdVal.textContent = Math.round(easeOutExpo(p) * 22) + '%';
+        if (p < 1) requestAnimationFrame(gdTick);
+      }
+      requestAnimationFrame(gdTick);
+    }
+  }
+
+  // ============================================================
+  // BAR CHART: Channel Inquiry Distribution
+  // ============================================================
+  var barCtx = document.getElementById('channelBarChart');
+  if (barCtx) {
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Google Ads', 'LinkedIn', '直接访问', '展会', '阿里巴巴', '海关数据', '社交媒体'],
+        datasets: [{
+          label: '询盘数',
+          data: [42, 28, 32, 18, 20, 10, 6],
+          backgroundColor: [
+            '#4a9b8c', '#3b82f6', '#f59e0b', '#8b5cf6',
+            '#ec4899', '#06b6d4', '#64748b'
+          ],
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 48
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 800, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: Object.assign({}, tooltipStyle, {
+            callbacks: { label: function(ctx) { return ctx.parsed.y + ' 询盘'; } }
+          })
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#8b8fa0', font: { size: 11 } }
+          },
+          y: {
+            beginAtZero: true,
+            grid: gridStyle,
+            ticks: { color: '#8b8fa0', font: { size: 11 }, stepSize: 10 }
+          }
+        }
+      }
+    });
+  }
+
+  // ============================================================
+  // PIE CHART: Channel Distribution
+  // ============================================================
+  var pieCtx = document.getElementById('channelPieChart');
+  if (pieCtx) {
+    var channelColors = ['#4a9b8c','#3b82f6','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#64748b'];
+    var channelLabels = ['Google Ads', 'LinkedIn', '直接访问', '展会', '阿里巴巴', '海关数据', '社交媒体'];
+    var channelData = [42, 28, 32, 18, 20, 10, 6];
+    var total = channelData.reduce(function(a, b) { return a + b; }, 0);
+
+    new Chart(pieCtx, {
+      type: 'doughnut',
+      data: {
+        labels: channelLabels,
+        datasets: [{
+          data: channelData,
+          backgroundColor: channelColors,
+          borderColor: 'transparent',
+          borderWidth: 0,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        animation: { duration: 800, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: Object.assign({}, tooltipStyle, {
+            callbacks: {
+              label: function(ctx) {
+                var pct = ((ctx.parsed / total) * 100).toFixed(1);
+                return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+              }
+            }
+          })
+        }
+      }
+    });
+
+    // Build legend
+    var legendEl = document.getElementById('channelLegend');
+    if (legendEl) {
+      for (var i = 0; i < channelLabels.length; i++) {
+        var pct = ((channelData[i] / total) * 100).toFixed(0);
+        var item = document.createElement('div');
+        item.className = 'doughnut-legend__item';
+        item.innerHTML = '<div class="doughnut-legend__dot" style="background:' + channelColors[i] + '"></div>' + channelLabels[i] + ' ' + pct + '%';
+        legendEl.appendChild(item);
+      }
+    }
+  }
+});
+</script>
+<script>lucide.createIcons();</script>
+
+<!-- Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;">
+  <div id="detailModalOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);"></div>
+  <div id="detailModalContent" style="position:relative;width:min(640px,90vw);max-height:80vh;overflow-y:auto;background:rgba(21,22,26,0.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);padding:0;animation:detailModalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <h3 id="detailModalTitle" style="margin:0;font-size:17px;font-weight:600;color:var(--color-foreground);">详情</h3>
+      <button id="detailModalClose" style="background:none;border:none;color:var(--color-muted-foreground);cursor:pointer;padding:4px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='none'">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+    <div id="detailModalBody" style="padding:20px 24px 24px;font-size:14px;color:var(--color-card-foreground);line-height:1.7;"></div>
+  </div>
+</div>
+
+<script>
+/* Detail Modal Logic */
+(function() {
+  var modal = document.getElementById('detailModal');
+  var overlay = document.getElementById('detailModalOverlay');
+  var closeBtn = document.getElementById('detailModalClose');
+  var titleEl = document.getElementById('detailModalTitle');
+  var bodyEl = document.getElementById('detailModalBody');
+  if (!modal) return;
+
+  function openDetail(title, html) {
+    titleEl.textContent = title;
+    bodyEl.innerHTML = html;
+    modal.style.display = 'flex';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  function closeDetail() { modal.style.display = 'none'; }
+
+  if (overlay) overlay.addEventListener('click', closeDetail);
+  if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDetail(); });
+
+  window.openDetail = openDetail;
+  window.closeDetail = closeDetail;
+
+  /* Auto-bind: KPI cards */
+  document.querySelectorAll('.kpi-card, .stats-card, .yd-stats-card').forEach(function(card) {
+    if (card.dataset.detailBound) return;
+    card.dataset.detailBound = '1';
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      var label = card.querySelector('.kpi-card__label, .stats-card__label, [class*="label"]');
+      var value = card.querySelector('.kpi-card__value, .stats-card__value, [class*="value"]');
+      var l = label ? label.textContent : '指标详情';
+      var v = value ? value.textContent : '';
+      openDetail(l, '<div style="text-align:center;padding:24px 0;">' +
+        '<div style="font-size:48px;font-weight:700;color:var(--color-primary);margin-bottom:8px;">' + v + '</div>' +
+        '<div style="font-size:14px;color:var(--color-muted-foreground);margin-bottom:20px;">' + l + '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">环比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+12.5%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">同比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+8.3%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">目标</div><div style="font-size:16px;font-weight:600;">85%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">趋势</div><div style="font-size:16px;font-weight:600;color:var(--color-info);">上升</div></div>' +
+        '</div></div>');
+    });
+  });
+
+  /* Auto-bind: Table rows */
+  document.querySelectorAll('table tbody tr').forEach(function(row) {
+    if (row.dataset.detailBound) return;
+    row.dataset.detailBound = '1';
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+      var cells = row.querySelectorAll('td');
+      var html = '<div style="display:grid;gap:12px;">';
+      var headers = row.closest('table').querySelectorAll('th');
+      headers.forEach(function(th, i) {
+        if (cells[i]) {
+          html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="color:var(--color-muted-foreground);font-size:13px;">' + th.textContent.trim() + '</span><span style="font-size:13px;font-weight:500;">' + cells[i].textContent.trim() + '</span></div>';
+        }
+      });
+      html += '</div>';
+      var firstCell = cells[0] ? cells[0].textContent.trim() : '记录详情';
+      openDetail(firstCell, html);
+    });
+  });
+
+  /* Auto-bind: Clickable cards with data-detail attribute */
+  document.querySelectorAll('[data-detail]').forEach(function(el) {
+    if (el.dataset.detailBound) return;
+    el.dataset.detailBound = '1';
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function() {
+      openDetail(el.dataset.detailTitle || '详情', el.dataset.detail || '');
+    });
+  });
+})();
+</script>
+
+<script>
+/* Attribution: click channel table rows */
+document.querySelectorAll('table tbody tr').forEach(function(row) {
+  if (row.dataset.detailBound2) return;
+  row.dataset.detailBound2 = '1';
+  row.addEventListener('click', function(e) {
+    if (e.target.closest('button')) return;
+    var cells = row.querySelectorAll('td');
+    var channel = cells[0] ? cells[0].textContent.trim() : '渠道';
+    openDetail(channel + ' 渠道详情', '<div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">' +
+        '<div style="text-align:center;padding:12px;background:rgba(59,130,246,0.08);border-radius:8px;"><div style="font-size:20px;font-weight:700;color:var(--color-info);">' + (cells[1] ? cells[1].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">询盘数</div></div>' +
+        '<div style="text-align:center;padding:12px;background:rgba(16,185,129,0.08);border-radius:8px;"><div style="font-size:20px;font-weight:700;color:var(--color-success);">' + (cells[2] ? cells[2].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">报价数</div></div>' +
+        '<div style="text-align:center;padding:12px;background:rgba(245,158,11,0.08);border-radius:8px;"><div style="font-size:20px;font-weight:700;color:var(--color-warning);">' + (cells[3] ? cells[3].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">成交数</div></div>' +
+      '</div>' +
+      '<h4 style="margin:0 0 8px;">转化漏斗</h4>' +
+      '<div style="display:grid;gap:6px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;"><div style="width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="width:85%;height:100%;background:var(--color-info);border-radius:3px;"></div></div><span style="font-size:12px;white-space:nowrap;">询盘 100%</span></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;"><div style="width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="width:55%;height:100%;background:var(--color-primary);border-radius:3px;"></div></div><span style="font-size:12px;white-space:nowrap;">报价 55%</span></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;"><div style="width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="width:22%;height:100%;background:var(--color-success);border-radius:3px;"></div></div><span style="font-size:12px;white-space:nowrap;">成交 22%</span></div>' +
+      '</div></div>');
+  });
+});
+</script>
+
+</body>
+</html>

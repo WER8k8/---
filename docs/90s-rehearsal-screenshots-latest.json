@@ -1,0 +1,63 @@
+{
+  "capturedAt": "2026-06-01T13:44:59.992Z",
+  "base": "http://127.0.0.1:4173",
+  "ok": true,
+  "output_dir": "docs/compliance/90s-rehearsal",
+  "shots": [
+    {
+      "file": "90s-01-login-brand-hero.png",
+      "path": "/login?portal=platform",
+      "auth": false,
+      "note": "0–15s",
+      "ok": true
+    },
+    {
+      "file": "90s-02-dashboard-kpi.png",
+      "path": "/admin/dashboard",
+      "auth": true,
+      "note": "15–30s",
+      "ok": true
+    },
+    {
+      "file": "90s-03-tenants-table.png",
+      "path": "/admin/tenants",
+      "auth": true,
+      "note": "30–50s",
+      "ok": true
+    },
+    {
+      "file": "90s-04-inquiries-table.png",
+      "path": "/inquiries",
+      "auth": true,
+      "note": "30–50s",
+      "ok": true
+    },
+    {
+      "file": "90s-05-theme-dark.png",
+      "path": "/admin/dashboard",
+      "auth": true,
+      "themeDark": true,
+      "note": "50–70s",
+      "ok": true
+    },
+    {
+      "file": "90s-06-client-shell.png",
+      "path": "/client/dashboard",
+      "auth": true,
+      "user": "editor",
+      "pass": "editor123",
+      "note": "70–90s",
+      "ok": true
+    },
+    {
+      "file": "90s-07-agent-shell.png",
+      "path": "/agent/performance",
+      "auth": true,
+      "user": "sales",
+      "pass": "sales123",
+      "note": "70–90s",
+      "ok": true
+    }
+  ],
+  "human_pending": "正式送检可替换为 mp4 录屏；需 HTTPS 域与真实账号"
+}

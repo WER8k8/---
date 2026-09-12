@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "task": "TENANT-SEO-AUDIT",
+  "tenant": "dev.local",
+  "pages": {
+    "zh_default": {
+      "url": "http://127.0.0.1:3000/tenant?__tenant=dev.local&lpro=1",
+      "status": 200,
+      "issue_count": 0
+    },
+    "en": {
+      "url": "http://127.0.0.1:3000/tenant?__tenant=dev.local&lpro=1&language=en",
+      "status": 200,
+      "issue_count": 0
+    }
+  },
+  "summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "issues": [],
+  "out_of_scope": [
+    "公网 URL 完整 site-audit（用 Admin /seo/site-audit）",
+    "百度/Google 真实排名与收录"
+  ]
+}

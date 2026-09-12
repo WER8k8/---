@@ -1,0 +1,51 @@
+// FILE: backend\app\core\admin_auth.py
+            import json
+            return json.loads(cached)
+
+    codes = _load_permission_codes(user, db)
+
+    if redis_client:
+        set_cache(cache_key, codes)
+
+    return codes
+
+
+def _load_permission_codes(user: User, db: Session) -> List[str]:
+    """从数据库加载用户权限码"""
+    if user.role == "super_admin":
+        return ["*:*"]
+
+    codes = []
+    if user.role_id:
+        role = db.query(AdminRole).filter(AdminRole.id == user.role_id).first()
+        if role:
+            permissions = (
+                db.query(RolePermission)
+                .filter(RolePermission.role_id == role.id)
+                .all()
+            )
+            from app.models.admin import AdminPermission
+            perm_ids = [p.permission_id for p in permissions]
+            perms = (
+                db.query(AdminPermission)
+                .filter(AdminPermission.id.in_(perm_ids))
+                .all()
+            )
+            codes = [p.code for p in perms]
+
+    return codes
+
+
+def require_super_admin():
+    """FastAPI 依赖: 仅超级管理员"""
+    return Depends(get_current_super_admin)
+
+
+def require_permission_code(required_code: str):
+    """FastAPI 依赖工厂: 校验特定权限码"""
+
+    async def checker(
+        request: Request,
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db),
+    ) -> User:

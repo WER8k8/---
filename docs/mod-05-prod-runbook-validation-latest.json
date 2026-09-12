@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "task": "MOD-05-prod-runbook",
+  "files": {
+    "docs\\compliance\\MOD-05-prod-migrate-runbook.md": true,
+    "docs\\mod-05-staging-migrate-latest.json": true,
+    "scripts\\run-mod-05-staging-migrate.ps1": true,
+    "scripts\\validate-mod-05-staging-tables.py": true
+  },
+  "staging_migrate_pass": true,
+  "human_pending": "生产库维护窗口执行 runbook"
+}

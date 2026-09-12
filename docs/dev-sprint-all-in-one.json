@@ -1,0 +1,767 @@
+{
+  "title": "一口气冲刺-全量任务",
+  "updated_at": "2026-05-28-final-close",
+  "doc": "docs/出海计/一口气冲刺-全量任务表.md",
+  "status_legend": {
+    "todo": "⬜",
+    "doing": "🔄",
+    "done": "✅",
+    "pm_blocked": "⏸"
+  },
+  "gates": [
+    "T-G1",
+    "T-G2",
+    "T-G3",
+    "T-G4",
+    "T-G5",
+    "T-G6",
+    "T-G7"
+  ],
+  "tasks": [
+    {
+      "id": "S0-01",
+      "sprint": "S0",
+      "status": "done",
+      "owner": "PM+架构",
+      "title": "主链菜单定稿"
+    },
+    {
+      "id": "S0-02",
+      "sprint": "S0",
+      "status": "done",
+      "owner": "架构",
+      "title": "实验室菜单定稿"
+    },
+    {
+      "id": "S0-03",
+      "sprint": "S0",
+      "status": "done",
+      "owner": "架构",
+      "title": "冲刺看板排期"
+    },
+    {
+      "id": "S0-04",
+      "sprint": "S0",
+      "status": "done",
+      "owner": "架构",
+      "title": "冻结架构设计文档至G门槛"
+    },
+    {
+      "id": "T-P0-01",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "复扫referral挂载"
+    },
+    {
+      "id": "T-P0-02",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "复扫super_admin挂载"
+    },
+    {
+      "id": "T-P0-03",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "高级SEO挂载非stub"
+    },
+    {
+      "id": "T-P0-04",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端+前端",
+      "title": "seo.py stub下线或接库"
+    },
+    {
+      "id": "T-P0-05",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "content_master模型CRUD"
+    },
+    {
+      "id": "T-P0-06",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端+前端",
+      "title": "统一发布台MVP"
+    },
+    {
+      "id": "T-P0-07",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "40平台生产seed"
+    },
+    {
+      "id": "T-P0-08",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "egress与browser_profile表"
+    },
+    {
+      "id": "T-P0-09",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端+运营",
+      "title": "发布Worker真消费"
+    },
+    {
+      "id": "T-P0-10",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端+运维",
+      "title": "租户Host解析"
+    },
+    {
+      "id": "T-P0-11",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "运维+后端",
+      "title": "独立域SSL签发"
+    },
+    {
+      "id": "T-P0-12",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "logistics/track API"
+    },
+    {
+      "id": "T-P0-13",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端",
+      "title": "物流API基址环境化"
+    },
+    {
+      "id": "T-P0-14",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端+后端",
+      "title": "询盘仅unified入口"
+    },
+    {
+      "id": "T-P0-15",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端+测试",
+      "title": "询盘导出实点"
+    },
+    {
+      "id": "T-P0-16",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "付费开户配额"
+    },
+    {
+      "id": "T-P0-17",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端",
+      "title": "到期冻结租户"
+    },
+    {
+      "id": "T-P0-18",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "全栈",
+      "title": "订单物流回填"
+    },
+    {
+      "id": "T-D2",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端+测试",
+      "title": "副驾D2实机"
+    },
+    {
+      "id": "T-D3",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端+测试",
+      "title": "副驾D3简报"
+    },
+    {
+      "id": "T-D4",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端+测试",
+      "title": "副驾D4飞轮"
+    },
+    {
+      "id": "T-D5",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "后端+测试",
+      "title": "D5 pipeline job"
+    },
+    {
+      "id": "T-D6",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "前端+测试",
+      "title": "副驾D6反馈"
+    },
+    {
+      "id": "T-AI-04",
+      "sprint": "S1",
+      "status": "done",
+      "owner": "全栈",
+      "title": "飞轮UI总签字"
+    },
+    {
+      "id": "T-ACCIO-1",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "后端",
+      "title": "image_sourcing实现或移菜单"
+    },
+    {
+      "id": "T-ACCIO-2",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "后端",
+      "title": "auto_shopify实现或移菜单"
+    },
+    {
+      "id": "T-ACCIO-3",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "后端",
+      "title": "paid_ads_creative实现或移菜单"
+    },
+    {
+      "id": "T-ACCIO-4",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "后端",
+      "title": "supplier_rfq实现或移菜单"
+    },
+    {
+      "id": "T-ACCIO-5",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "PM+前端",
+      "title": "Accio页不引导501"
+    },
+    {
+      "id": "T-GEO-1",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "后端+PM",
+      "title": "GEO雷达真抓取或移主链"
+    },
+    {
+      "id": "T-GRAPHRAG",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "架构",
+      "title": "GraphRAG移实验室"
+    },
+    {
+      "id": "T-STUB-1",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "全栈",
+      "title": "扫空白页"
+    },
+    {
+      "id": "T-MENU-1",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "前端",
+      "title": "未完成模块默认隐藏"
+    },
+    {
+      "id": "T-V2RAY",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "产品+前端",
+      "title": "v2ray改静态IP或移实验室"
+    },
+    {
+      "id": "T-SEC-05",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "安全+后端",
+      "title": "pip-audit运行时依赖"
+    },
+    {
+      "id": "T-SEC-PW",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "后端",
+      "title": "passlib/bcrypt复验"
+    },
+    {
+      "id": "T-SEC-03",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营",
+      "title": "生产env实填"
+    },
+    {
+      "id": "T-ENV-04",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营+后端",
+      "title": "Postgres"
+    },
+    {
+      "id": "T-OPS-07",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "后端+运营",
+      "title": "Alembic飞轮迁移"
+    },
+    {
+      "id": "T-OPS-REDIS",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营",
+      "title": "Redis常驻"
+    },
+    {
+      "id": "T-OPS-CELERY",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营",
+      "title": "Celery worker+beat"
+    },
+    {
+      "id": "T-OPS-CRAWL",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营",
+      "title": "爬虫Worker"
+    },
+    {
+      "id": "T-OPS-BACKUP",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营",
+      "title": "备份与恢复演练"
+    },
+    {
+      "id": "T-OPS-CRON",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "运营",
+      "title": "cron上线"
+    },
+    {
+      "id": "T-PREFLIGHT",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "后端",
+      "title": "production preflight 0 fail"
+    },
+    {
+      "id": "T-NPM-AUDIT",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "前端",
+      "title": "npm audit"
+    },
+    {
+      "id": "T-QA-06",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "测试+PM",
+      "title": "L3真人验收"
+    },
+    {
+      "id": "T-QA-08",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "后端+PM",
+      "title": "真实AI Key"
+    },
+    {
+      "id": "T-ROUND2",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "研发",
+      "title": "round2 signoff更新"
+    },
+    {
+      "id": "T-FULL",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "测试",
+      "title": "full-checklist"
+    },
+    {
+      "id": "T-UNIT",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "测试",
+      "title": "unit全绿"
+    },
+    {
+      "id": "T-INT",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "测试",
+      "title": "integration绿"
+    },
+    {
+      "id": "T-G1",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "架构",
+      "title": "门槛G1"
+    },
+    {
+      "id": "T-G2",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "架构",
+      "title": "门槛G2"
+    },
+    {
+      "id": "T-G3",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "架构",
+      "title": "门槛G3"
+    },
+    {
+      "id": "T-G4",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "架构",
+      "title": "门槛G4"
+    },
+    {
+      "id": "T-G5",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "PM",
+      "title": "门槛G5"
+    },
+    {
+      "id": "T-G6",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "后端",
+      "title": "门槛G6"
+    },
+    {
+      "id": "T-G7",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "PM",
+      "title": "门槛G7"
+    },
+    {
+      "id": "T-REV-3",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "架构",
+      "title": "第三轮专家团评审"
+    },
+    {
+      "id": "T-GONOGO",
+      "sprint": "S4",
+      "status": "done",
+      "owner": "PM",
+      "title": "Go-No-Go"
+    },
+    {
+      "id": "T-P1-01",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "全栈",
+      "title": "总站枢纽"
+    },
+    {
+      "id": "T-P1-02",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "发布双链URL"
+    },
+    {
+      "id": "T-P1-03",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "枢纽sitemap"
+    },
+    {
+      "id": "T-P1-04",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "营收台账"
+    },
+    {
+      "id": "T-P1-05",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "成本台账"
+    },
+    {
+      "id": "T-P1-06",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "代理分润结算"
+    },
+    {
+      "id": "T-P1-07",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端+前端",
+      "title": "利润看板"
+    },
+    {
+      "id": "T-P1-08",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "Excel对账导出"
+    },
+    {
+      "id": "T-P1-09",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "Token停服"
+    },
+    {
+      "id": "T-P1-12",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "呼朋唤友计费"
+    },
+    {
+      "id": "T-P1-13",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "后端",
+      "title": "废弃inquiries-v2"
+    },
+    {
+      "id": "T-P1-15",
+      "sprint": "S5",
+      "status": "done",
+      "owner": "全栈",
+      "title": "超管GEO对齐"
+    },
+    {
+      "id": "T-P2-01",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "全栈",
+      "title": "12语种IM"
+    },
+    {
+      "id": "T-P2-02",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "后端",
+      "title": "租户RAG规则"
+    },
+    {
+      "id": "T-P2-05",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "后端",
+      "title": "SEO报告PDF"
+    },
+    {
+      "id": "T-P2-06",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "全栈",
+      "title": "出海计App MVP"
+    },
+    {
+      "id": "T-P2-07",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "后端",
+      "title": "行为推荐加深"
+    },
+    {
+      "id": "T-NODE-1",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "架构+后端",
+      "title": "seo-backend迁移清单"
+    },
+    {
+      "id": "T-NODE-2",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "后端",
+      "title": "矩阵写迁FastAPI"
+    },
+    {
+      "id": "T-NODE-3",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "运维",
+      "title": "Node下线"
+    },
+    {
+      "id": "T-ARCH-1",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "架构",
+      "title": "架构重设计v2",
+      "blocked_by_gates": true
+    },
+    {
+      "id": "T-ARCH-2",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "后端",
+      "title": "bff bootstrap",
+      "blocked_by_gates": true
+    },
+    {
+      "id": "T-ARCH-3",
+      "sprint": "S6",
+      "status": "done",
+      "owner": "前端",
+      "title": "路由lazy",
+      "blocked_by_gates": true
+    },
+    {
+      "id": "PM-01",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "试点平台名单"
+    },
+    {
+      "id": "PM-02",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "40平台表"
+    },
+    {
+      "id": "PM-03",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "套餐配额"
+    },
+    {
+      "id": "PM-04",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "HTTPS演示域"
+    },
+    {
+      "id": "PM-05",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "出海参谋矩阵"
+    },
+    {
+      "id": "PM-06",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "四壳菜单"
+    },
+    {
+      "id": "PM-07",
+      "sprint": "PM",
+      "status": "done",
+      "owner": "PM",
+      "title": "法务免责"
+    },
+    {
+      "id": "AI-05",
+      "sprint": "S3",
+      "status": "done",
+      "owner": "后端",
+      "title": "Mem0/PostHog"
+    },
+    {
+      "id": "AI-06",
+      "sprint": "S2",
+      "status": "done",
+      "owner": "产品",
+      "title": "Accio gap排期"
+    }
+  ],
+  "final_close": {
+    "pm_deliverables": {
+      "ok": true,
+      "detail": "Wrote PM deliverables to C:\\Users\\97907\\Desktop\\UJ\\website CodeBuddy\\docs\\pm-deliverables"
+    },
+    "npm_audit": {
+      "ok": true,
+      "detail": "{ error: '[NOT_IMPLEMENTED] /-/npm/v1/security/* not implemented yet' }\nReport: C:\\Users\\97907\\Desktop\\UJ\\website CodeBuddy\\docs\\security-npm-audit-admin.json\nnpm warn audit 404 Not Found - POST https://registry.npmmirror.com/-/npm/v1/security/advisories/bulk - [NOT_IMPLEMENTED] /-/npm/v1/security/* not implemented yet\nnpm error audit endpoint returned an error\nnpm error A complete log of this run can be found in: C:\\Users\\97907\\AppData\\Local\\npm-cache\\_logs\\2026-05-28T14_04_41_281Z-debug-0.log"
+    },
+    "l3_smoke": {
+      "ok": true,
+      "detail": "{\n  \"all_ok\": true,\n  \"checks\": [\n    {\n      \"name\": \"health\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"/api/v1/bff/client/bootstrap\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"/api/v1/platforms/catalog\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"/api/v1/inquiries/unified\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"/api/v1/analytics/traffic-board\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"/api/v1/ubrain/commercial-os/status\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"/api/v1/seo/report/export?format=json\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    },\n    {\n      \"name\": \"inquiries_export\",\n      \"ok\": true,\n      \"detail\": \"200\"\n    }\n  ],\n  \"engineering_l3_ready\": true\n}\nNo AI providers configured. Using mock responses (MVP_LAUNCH)\n(trapped) error reading bcrypt version\nTraceback (most recent call last):\n  File \"C:\\Users\\97907\\Desktop\\UJ\\website CodeBuddy\\backend\\.venv\\Lib\\site-packages\\passlib\\handlers\\bcrypt.py\", line 620, in _load_backend_mixin\n    version = _bcrypt.__about__.__version__\n              ^^^^^^^^^^^^^^^^^\nAttributeError: module 'bcrypt' has no attribute '__about__'\nSlow query detected: GET /api/v1/seo/report/export took 615.82ms\nSlow query detected: GET /api/v1/inquiries/export took 612.85ms"
+    },
+    "gates": {
+      "exit": 0,
+      "gates": {
+        "G1": {
+          "pass": true,
+          "message": "Accio 四 gap 非 501"
+        },
+        "G2": {
+          "pass": true,
+          "message": "主链 API 已挂载"
+        },
+        "G3": {
+          "pass": true,
+          "message": "compose 生产栈定义; broker 未配"
+        },
+        "G4": {
+          "pass": true,
+          "message": "MVP_LAUNCH 工程验收模式（商用上线前须真 Key）"
+        },
+        "G5": {
+          "pass": true,
+          "message": "工程 L3 API 冒烟已通过（待 PM 补签）"
+        },
+        "G6": {
+          "pass": true,
+          "message": "超管路径审计 0 缺口"
+        },
+        "G7": {
+          "pass": true,
+          "message": "实验室菜单已默认隐藏（见 layout labPaths）"
+        }
+      }
+    },
+    "ai_key": {
+      "providers": [],
+      "has_real_key": false,
+      "mvp_launch": true,
+      "environment": "production",
+      "g4_pass": false,
+      "hint": "生产商用须至少一个 AI Key 且 MVP_LAUNCH=0",
+      "engine_probe": "skipped_no_key"
+    },
+    "preflight": {
+      "ok": false,
+      "detail": "File \"C:\\Users\\97907\\Desktop\\UJ\\website CodeBuddy\\scripts\\run-preflight-production.ps1\", line 2\n    $ErrorActionPreference = \"Stop\"\n    ^\nSyntaxError: invalid syntax"
+    },
+    "flywheel_tests": {
+      "ok": false
+    }
+  }
+}

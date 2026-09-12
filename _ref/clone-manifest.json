@@ -1,0 +1,138 @@
+{
+  "updated_at": "2026-05-31T22:06:57.913337+00:00",
+  "ref_root": "C:\\Users\\97907\\Desktop\\上线网站\\_ref",
+  "repos": [
+    {
+      "id": "vue-vben-admin",
+      "dir": "vue-vben-admin",
+      "url": "https://github.com/vbenjs/vue-vben-admin.git",
+      "note": "唯一 Admin 底座 · web-antd (use -full dir)",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\vue-vben-admin-full",
+      "status": "exists",
+      "commit": "04fbb7a5566e8c5c65e4387780e204c299787a42",
+      "files": 1806,
+      "error": null
+    },
+    {
+      "id": "art-design-pro-edge",
+      "dir": "art-design-pro-edge",
+      "url": "https://github.com/ChnMig/art-design-pro-edge.git",
+      "note": "多租户 + useTable + 动态菜单",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\art-design-pro-edge",
+      "status": "exists",
+      "commit": "7df1d049b7945e9ee36f3b79a8dc695a19a60d16",
+      "files": 358,
+      "error": null
+    },
+    {
+      "id": "art-design-pro",
+      "dir": "art-design-pro",
+      "url": "https://github.com/Daymychen/art-design-pro.git",
+      "note": "Art 上游视觉",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\art-design-pro",
+      "status": "exists",
+      "commit": "6b6d781a63eb51782841ac9c29c2bb42a23911f2",
+      "files": 395,
+      "error": null
+    },
+    {
+      "id": "soybean-admin",
+      "dir": "soybean-admin",
+      "url": "https://github.com/soybeanjs/soybean-admin.git",
+      "note": "工程规范 API 分层",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\soybean-admin",
+      "status": "exists",
+      "commit": "c45c437e54200753c30dc3f6d4750f4d9f7264af",
+      "files": 313,
+      "error": null
+    },
+    {
+      "id": "vue-element-admin",
+      "dir": "vue-element-admin",
+      "url": "https://github.com/PanJiaChen/vue-element-admin.git",
+      "note": "守卫 + meta 经典",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\vue-element-admin",
+      "status": "exists",
+      "commit": "6858a9ad67483025f6a9432a926beb9327037be3",
+      "files": 307,
+      "error": null
+    },
+    {
+      "id": "vue-admin-better",
+      "dir": "vue-admin-better",
+      "url": "https://github.com/zxwk1998/vue-admin-better.git",
+      "note": "CRUD 生成器",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\vue-admin-better",
+      "status": "exists",
+      "commit": "bac02164ac100ccfc590849d1bb6e52d7dbe882d",
+      "files": 194,
+      "error": null
+    },
+    {
+      "id": "naive-ui-admin",
+      "dir": "naive-ui-admin",
+      "url": "https://github.com/jekip/naive-ui-admin.git",
+      "note": "租户 SaaS 视觉",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\naive-ui-admin",
+      "status": "exists",
+      "commit": "3a469f1aca0b1b9d47d7c9e771c26dce058ea345",
+      "files": 283,
+      "error": null
+    },
+    {
+      "id": "ruoyi-plus-soybean",
+      "dir": "ruoyi-plus-soybean",
+      "url": "https://github.com/m-xlsea/ruoyi-plus-soybean.git",
+      "note": "后端能力清单",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\ruoyi-plus-soybean",
+      "status": "exists",
+      "commit": "a0ab2dc4246e010f38aaf6e1f4a00a079e7d568d",
+      "files": 642,
+      "error": null
+    },
+    {
+      "id": "formily",
+      "dir": "formily",
+      "url": "https://github.com/alibaba/formily.git",
+      "note": "Schema 表单核心",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\formily",
+      "status": "exists",
+      "commit": "d9a46442a575aa5f0fc1bd945e34d9a85d191d0e",
+      "files": 1332,
+      "error": null
+    },
+    {
+      "id": "formily-antdv-x3",
+      "dir": "formily-antdv-x3",
+      "url": "https://github.com/formilyjs/antdv-x3.git",
+      "note": "Formily + Ant Design Vue 3",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\formily-antdv-x3",
+      "status": "exists",
+      "commit": "59172a415381196214b324115b9a974c08eb071f",
+      "files": 324,
+      "error": null
+    },
+    {
+      "id": "daisyui",
+      "dir": "daisyui",
+      "url": "https://github.com/saadeghi/daisyui.git",
+      "note": "Tailwind 营销组件",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\daisyui",
+      "status": "exists",
+      "commit": "7a1998dfcbfb8bff3023682af80899de54faca73",
+      "files": 621,
+      "error": null
+    },
+    {
+      "id": "vue-pure-admin",
+      "dir": "vue-pure-admin",
+      "url": "https://gitee.com/yiming_chang/vue-pure-admin.git",
+      "note": "Pure Mock + 主题",
+      "path": "C:\\Users\\97907\\Desktop\\上线网站\\_ref\\vue-pure-admin",
+      "status": "exists",
+      "commit": "503fe04e86571a1111da6154ad3f040860dfd9e2",
+      "files": 636,
+      "error": null
+    }
+  ]
+}

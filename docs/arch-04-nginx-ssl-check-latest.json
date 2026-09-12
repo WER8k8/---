@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "task": "ARCH-04",
+  "nginx_conf": "docker\\nginx\\default.conf",
+  "checks": {
+    "nginx_conf_exists": true,
+    "listen_443": true,
+    "http_to_https_redirect": true,
+    "ssl_cert_path": true,
+    "ssl_key_path": true,
+    "hsts_header": true,
+    "fullchain_pem": true,
+    "privkey_pem": true
+  },
+  "staging_domain": "demo.youding.local",
+  "production_note": "Replace self-signed with Certbot when Owner provides domain"
+}

@@ -1,0 +1,51 @@
+// FILE: backend\app\core\gm_crypto.py
+
+
+def sm4_encrypt(plaintext: str, key_material: str) -> str:
+    """SM4-ECB + PKCS7，返回 base64。"""
+    if not _GMSSL_AVAILABLE:
+        raise GMCryptoError("未安装 gmssl，请执行: pip install gmssl")
+    raw = plaintext.encode("utf-8")
+    pad = 16 - (len(raw) % 16)
+    raw += bytes([pad]) * pad
+    crypt = CryptSM4()
+    crypt.set_key(_sm4_key_16(key_material), SM4_ENCRYPT)
+    enc = crypt.crypt_ecb(raw)
+    return base64.b64encode(enc).decode("ascii")
+
+
+def sm4_decrypt(ciphertext_b64: str, key_material: str) -> str:
+    if not _GMSSL_AVAILABLE:
+        raise GMCryptoError("未安装 gmssl，请执行: pip install gmssl")
+    enc = base64.b64decode(ciphertext_b64.encode("ascii"))
+    crypt = CryptSM4()
+    crypt.set_key(_sm4_key_16(key_material), SM4_DECRYPT)
+    raw = crypt.crypt_ecb(enc)
+    pad = raw[-1]
+    if pad < 1 or pad > 16:
+        raise GMCryptoError("SM4 解密失败：填充无效")
+    return raw[:-pad].decode("utf-8")
+
+
+def sm2_sign(message: str, private_key_hex: str, public_key_hex: str) -> str:
+    if not _GMSSL_AVAILABLE:
+        raise GMCryptoError("未安装 gmssl")
+    sm2 = CryptSM2(public_key=public_key_hex, private_key=private_key_hex)
+    sig = sm2.sign(message.encode("utf-8"), secrets.token_hex(16))
+    return base64.b64encode(sig).decode("ascii")
+
+
+def sm2_verify(message: str, signature_b64: str, public_key_hex: str) -> bool:
+    if not _GMSSL_AVAILABLE:
+        raise GMCryptoError("未安装 gmssl")
+    sm2 = CryptSM2(public_key=public_key_hex, private_key="")
+    sig = base64.b64decode(signature_b64.encode("ascii"))
+    return bool(sm2.verify(sig, message.encode("utf-8")))
+
+
+def resolve_sm4_key(explicit: Optional[str] = None, fallback_secret: str = "") -> str:
+    key = (explicit or os.getenv("GM_SM4_KEY") or "").strip()
+    if key:
+        return key
+    if fallback_secret:
+        return fallback_secret

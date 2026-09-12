@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-06-02",
+  "source_of_truth": "frontend/config/public-sites.ts",
+  "description": "公网三套站点边界 — 建材企业官网 / SaaS 营销 / 租户独立站，禁止混用布局与文案",
+  "dev_urls": {
+    "corporate_b2b": "http://127.0.0.1:3000/",
+    "saas_marketing_nuxt": "http://127.0.0.1:3000/platform",
+    "saas_marketing_admin": "http://127.0.0.1:5173/landing",
+    "tenant_preview": "http://127.0.0.1:3000/tenant?__tenant=dev.local"
+  },
+  "sites": [
+    {
+      "id": "corporate-b2b",
+      "label": "优丁建材企业官网",
+      "nuxt_path": "/",
+      "layout": "default",
+      "entry": "frontend/pages/index.vue",
+      "css_tokens": "frontend/assets/css/b2b-industrial.css",
+      "forbidden": ["saas hero", "四级渠道定价", "TenantSite 长页"]
+    },
+    {
+      "id": "saas-marketing",
+      "label": "优丁 SaaS 营销官网",
+      "nuxt_path": "/platform",
+      "admin_path": "/landing",
+      "layout": "marketing",
+      "entry": "frontend/pages/platform/index.vue",
+      "admin_mirror": "frontend/admin/src/views/landing/index.vue",
+      "copy_module": "frontend/config/platform-marketing-content.ts",
+      "copy_deck": "docs/marketing/plan-copy-deck.md",
+      "retired": "frontend/marketing/index.html（已删，见 saas-marketing-creative-pipeline.json）",
+      "forbidden": ["建材 Hero", "default Header/Footer"]
+    },
+    {
+      "id": "tenant-site",
+      "label": "租户独立站",
+      "nuxt_path": "/tenant",
+      "layout": "tenant-blank",
+      "entry": "frontend/pages/tenant/index.vue",
+      "component": "frontend/components/tenant/TenantSite.vue",
+      "forbidden": ["优丁建材 Header", "SaaS 定价区块"]
+    }
+  ]
+}

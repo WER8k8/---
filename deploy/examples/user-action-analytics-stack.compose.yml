@@ -1,0 +1,55 @@
+# UserActionAnalyzePlatform 完整栈：MySQL + 上游 vendor + 网关
+# 1. scripts/install-user-action-analytics-vendor.ps1
+# 2. docker compose -f deploy/examples/user-action-analytics-stack.compose.yml up -d --build
+# 3. 主站 .env:
+#    USER_ACTION_ANALYTICS_URL=http://127.0.0.1:8093
+#    USER_ACTION_ANALYTICS_TOKEN=dev-sidecar-token
+#    USER_ACTION_ANALYTICS_MYSQL_DSN=mysql://uaa:uaa_dev@127.0.0.1:3307/user_action_analytics
+
+services:
+  user-action-mysql:
+    image: mysql:8.0
+    container_name: youding-uaa-mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_dev
+      MYSQL_DATABASE: user_action_analytics
+      MYSQL_USER: uaa
+      MYSQL_PASSWORD: uaa_dev
+    volumes:
+      - uaa_mysql_data:/var/lib/mysql
+      - ../../sql/user_action_analytics_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuaa", "-puaa_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  user-action-analytics-gateway:
+    build:
+      context: ./user-action-analytics-sidecar
+      dockerfile: Dockerfile
+    container_name: youding-uaa-gateway
+    restart: unless-stopped
+    ports:
+      - "8093:8093"
+    environment:
+      USER_ACTION_ANALYTICS_TOKEN: ${USER_ACTION_ANALYTICS_TOKEN:-dev-sidecar-token}
+      USER_ACTION_ANALYTICS_ALLOW_STUB: ${USER_ACTION_ANALYTICS_ALLOW_STUB:-0}
+      USER_ACTION_ANALYTICS_REPO: /opt/UserActionAnalyzePlatform
+      USER_ACTION_MYSQL_HOST: user-action-mysql
+      USER_ACTION_MYSQL_PORT: 3306
+      USER_ACTION_MYSQL_USER: uaa
+      USER_ACTION_MYSQL_PASSWORD: uaa_dev
+      USER_ACTION_MYSQL_DB: user_action_analytics
+      USER_ACTION_SPARK_TIMEOUT_SEC: 900
+    volumes:
+      - ../../vendor/UserActionAnalyzePlatform:/opt/UserActionAnalyzePlatform
+    depends_on:
+      user-action-mysql:
+        condition: service_healthy
+
+volumes:
+  uaa_mysql_data:

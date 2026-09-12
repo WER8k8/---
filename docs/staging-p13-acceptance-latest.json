@@ -1,0 +1,170 @@
+﻿{
+    "generated_at":  "2026-05-31T06:40:45Z",
+    "base_url":  "http://127.0.0.1:8001",
+    "steps":  [
+                  {
+                      "detail":  {
+                                     "status":  200
+                                 },
+                      "ok":  true,
+                      "name":  "backend_health"
+                  },
+                  {
+                      "detail":  {
+                                     "exit_code":  0
+                                 },
+                      "ok":  true,
+                      "name":  "pytest_p13"
+                  },
+                  {
+                      "detail":  {
+                                     "ok":  true,
+                                     "checks":  [
+                                                    {
+                                                        "name":  "wechat_v3_configured",
+                                                        "ok":  false,
+                                                        "detail":  "http://localhost:8080/api/v1/payment/notify/wechat"
+                                                    },
+                                                    {
+                                                        "name":  "alipay_configured",
+                                                        "ok":  false,
+                                                        "detail":  "https://openapi.alipay.com/gateway.do"
+                                                    },
+                                                    {
+                                                        "name":  "wechat_cert_refresh",
+                                                        "ok":  true,
+                                                        "detail":  "wechat_v3_not_live"
+                                                    },
+                                                    {
+                                                        "name":  "alipay_notify_in_process",
+                                                        "ok":  true,
+                                                        "detail":  "order_no=STG-ALIPAY-953E291F status=paid"
+                                                    },
+                                                    {
+                                                        "name":  "wechat_notify_in_process",
+                                                        "ok":  true,
+                                                        "detail":  "order_no=STG-WECHAT-1D878900 status=paid"
+                                                    }
+                                                ],
+                                     "strict_verify":  false,
+                                     "mock_allowed":  true,
+                                     "public_notify_hint":  {
+                                                                "wechat":  "http://localhost:8080/api/v1/payment/notify/wechat",
+                                                                "alipay":  "设置 ALIPAY_NOTIFY_URL 并暴露 HTTPS"
+                                                            }
+                                 },
+                      "ok":  true,
+                      "name":  "staging_self_check"
+                  },
+                  {
+                      "detail":  {
+                                     "ok":  true,
+                                     "base_url":  "http://127.0.0.1:8001",
+                                     "public_url":  null,
+                                     "via_public":  false,
+                                     "public_reachability":  null,
+                                     "checks":  [
+                                                    {
+                                                        "channel":  "alipay",
+                                                        "notify_url":  "http://127.0.0.1:8001/api/v1/payment/notify/alipay",
+                                                        "status_code":  200,
+                                                        "body_ok":  true,
+                                                        "order_status":  "paid",
+                                                        "ok":  true
+                                                    },
+                                                    {
+                                                        "channel":  "wechat",
+                                                        "notify_url":  "http://127.0.0.1:8001/api/v1/payment/notify/wechat",
+                                                        "status_code":  200,
+                                                        "body_ok":  true,
+                                                        "order_status":  "paid",
+                                                        "ok":  true
+                                                    }
+                                                ],
+                                     "public_notify_hint":  {
+                                                                "ngrok_example":  "ngrok http 8001",
+                                                                "then_set_env":  [
+                                                                                     "ALIPAY_NOTIFY_URL=https://\u003chost\u003e/api/v1/payment/notify/alipay",
+                                                                                     "WECHAT_PAY_NOTIFY_URL=https://\u003chost\u003e/api/v1/payment/notify/wechat"
+                                                                                 ]
+                                                            }
+                                 },
+                      "ok":  true,
+                      "name":  "local_notify_relaxed"
+                  },
+                  {
+                      "detail":  {
+                                     "ok":  true,
+                                     "status":  200,
+                                     "content_type":  "text/csv; charset=utf-8-sig",
+                                     "head":  "id,created_at,action,action_label,actor_user_name,actor_user_id,ok,summary\r\n9af48c90-c1af-4c4e-a3ac-59d0ea1d4086,2026-05"
+                                 },
+                      "ok":  true,
+                      "name":  "audit_csv_export"
+                  },
+                  {
+                      "detail":  {
+                                     "ok":  true,
+                                     "strict_verify":  false,
+                                     "verify_mode":  "relaxed_accept_unsigned",
+                                     "public_url":  "https://batboy-unnerve-static.ngrok-free.dev",
+                                     "discovered_from_ngrok":  false,
+                                     "health":  {
+                                                    "ok":  true,
+                                                    "status_code":  200,
+                                                    "url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/health"
+                                                },
+                                     "notify_urls":  {
+                                                         "alipay":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                                                         "wechat":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat"
+                                                     },
+                                     "checks":  [
+                                                    {
+                                                        "channel":  "alipay",
+                                                        "notify_url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                                                        "mode":  "relaxed_accept_unsigned",
+                                                        "status_code":  200,
+                                                        "body_ok":  true,
+                                                        "order_status":  "paid",
+                                                        "ok":  true
+                                                    },
+                                                    {
+                                                        "channel":  "wechat",
+                                                        "notify_url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat",
+                                                        "mode":  "relaxed_accept_unsigned",
+                                                        "status_code":  200,
+                                                        "body_ok":  true,
+                                                        "order_status":  "paid",
+                                                        "ok":  true
+                                                    }
+                                                ],
+                                     "signed_checks":  [
+
+                                                       ],
+                                     "base_url":  "http://127.0.0.1:8001",
+                                     "via_public":  true,
+                                     "public_reachability":  {
+                                                                 "ok":  true,
+                                                                 "public_url":  "https://batboy-unnerve-static.ngrok-free.dev",
+                                                                 "discovered_from_ngrok":  false,
+                                                                 "health":  {
+                                                                                "ok":  true,
+                                                                                "status_code":  200,
+                                                                                "url":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/health"
+                                                                            },
+                                                                 "notify_urls":  {
+                                                                                     "alipay":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                                                                                     "wechat":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat"
+                                                                                 }
+                                                             },
+                                     "public_notify_hint":  {
+                                                                "alipay":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/alipay",
+                                                                "wechat":  "https://batboy-unnerve-static.ngrok-free.dev/api/v1/payment/notify/wechat"
+                                                            }
+                                 },
+                      "ok":  true,
+                      "name":  "public_notify_ngrok"
+                  }
+              ],
+    "ok":  true
+}

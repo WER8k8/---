@@ -1,0 +1,361 @@
+{
+  "register_version": "2026-06-02",
+  "title": "出海增长智能体任务登记册",
+  "parent_doc": "docs/global-overseas-growth-agent-backlog.md",
+  "premise": "出海 B2B 推广比国内网站推广更难、细节更多；每条须 In-Scope/验收/Out-of-Scope",
+  "lanes": {
+    "GW-S": "社媒与视频",
+    "GW-G": "增长 SEO AEO 内容",
+    "GW-P": "付费媒体",
+    "GW-L": "销售 outbound",
+    "GW-R": "研究员",
+    "GW-PM": "产品编排"
+  },
+  "priority_summary": {
+    "P0": 8,
+    "P0_done": 7,
+    "P0_partial": 1,
+    "P1": 42,
+    "P2": 12,
+    "done_partial": 3
+  },
+  "tasks": [
+    {
+      "id": "GW-P-TR-01",
+      "priority": "P0",
+      "lane": "GW-P",
+      "agent": "追踪与归因专家",
+      "title": "UTM 全链路：矩阵→独立域→询盘→CRM",
+      "status": "done",
+      "acceptance": "inquiry.source_utm 可追溯到 publish_task；报表可筛 campaign",
+      "code": "backend/app/services/foreign_trade/utm_attribution_service.py"
+    },
+    {
+      "id": "GW-L-OB-01",
+      "priority": "P0",
+      "lane": "GW-L",
+      "agent": "Outbound 策略师",
+      "title": "买家时区发送窗口",
+      "status": "done",
+      "acceptance": "outreach_deliverability_service.suggest_send_window",
+      "code": "backend/app/services/ubrain/outreach_deliverability_service.py"
+    },
+    {
+      "id": "GW-L-OB-02",
+      "priority": "P0",
+      "lane": "GW-L",
+      "agent": "Outbound 策略师",
+      "title": "开发信质量分与垃圾箱扫描",
+      "status": "done",
+      "acceptance": "outreach_letter_pack 返回 deliverability_summary"
+    },
+    {
+      "id": "GW-L-OB-06",
+      "priority": "P0",
+      "lane": "GW-L",
+      "agent": "Outbound 策略师",
+      "title": "SPF/DKIM/DMARC/预热清单",
+      "status": "done",
+      "acceptance": "deliverability_checklist 在 pack 响应中"
+    },
+    {
+      "id": "GW-L-OB-07",
+      "priority": "P0",
+      "lane": "GW-L",
+      "agent": "Outbound 策略师",
+      "title": "D+3/D+7 跟进节奏建议",
+      "status": "done",
+      "acceptance": "follow_up_schedule 每封信 deliverability 块"
+    },
+    {
+      "id": "GW-G-CC-02",
+      "priority": "P0",
+      "lane": "GW-G",
+      "agent": "内容创作者",
+      "title": "1 长文→多平台变体→邮件→开发信",
+      "status": "done",
+      "acceptance": "content_master 一键生成 outreach + social 变体",
+      "code": "backend/app/services/foreign_trade/content_one_to_many_service.py"
+    },
+    {
+      "id": "GW-G-CC-04",
+      "priority": "P0",
+      "lane": "GW-G",
+      "agent": "内容创作者",
+      "title": "发布前人审清单（数字/认证/MOQ）",
+      "status": "partial",
+      "acceptance": "matrix_publish / content publish 阻断未 checklist",
+      "code": "backend/app/services/foreign_trade/publish_preflight_checklist_service.py",
+      "note": "API+matrix 阻断已接；Admin 勾选 UI P1"
+    },
+    {
+      "id": "GW-L-DC-01",
+      "priority": "P0",
+      "lane": "GW-L",
+      "agent": "Discovery 教练",
+      "title": "询盘 MEDDPICC 核心字段",
+      "status": "done",
+      "acceptance": "inquiry 表或 JSON 扩展 economic_buyer/decision_process/metrics",
+      "code": "backend/app/services/foreign_trade/inquiry_meddpicc_service.py"
+    },
+    {
+      "id": "GW-G-AEO-01",
+      "priority": "P0",
+      "lane": "GW-G",
+      "agent": "AI 引文策略师",
+      "title": "旺财/UBrain 与官网事实一致审计",
+      "status": "done",
+      "acceptance": "脚本或 job 输出 diff 报告",
+      "code": "backend/app/services/foreign_trade/aeo_fact_audit_service.py"
+    },
+    {
+      "id": "GW-G-SM-04",
+      "priority": "P0",
+      "lane": "GW-G",
+      "agent": "社交媒体策略师",
+      "title": "平台账号健康告警",
+      "status": "done",
+      "acceptance": "login_status=logged_out 超 24h 告警",
+      "code": "backend/app/services/foreign_trade/platform_health_alert_service.py"
+    },
+    {
+      "id": "GW-PM-01",
+      "priority": "P0",
+      "lane": "GW-PM",
+      "agent": "产品经理",
+      "title": "B2B 外贸 AI 专家角色库 JSON",
+      "status": "done",
+      "acceptance": "backend/app/data/b2b_trade_experts.json + 文档映射",
+      "code": "backend/app/data/b2b_trade_experts.json"
+    },
+    {
+      "id": "GW-S-TT-01",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "TikTok 策略师",
+      "title": "B2B 视频钩子模板库",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-TT-02",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "TikTok 策略师",
+      "title": "Bio 独立域 UTM 强制",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-TT-03",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "TikTok 策略师",
+      "title": "TikTok 评论 RFQ 进询盘",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-X-01",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "Twitter 互动官",
+      "title": "行业日历营销发帖",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-IG-01",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "Instagram 策展师",
+      "title": "Carousel 四页结构模板",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-RD-01",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "Reddit 社区运营",
+      "title": "subreddit 规则预检 checklist",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-YT-01",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "视频优化专家",
+      "title": "YouTube 前 30 秒 B2B 脚本门禁",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-YT-03",
+      "priority": "P1",
+      "lane": "GW-S",
+      "agent": "视频优化专家",
+      "title": "母片多比例切片导出",
+      "status": "pending"
+    },
+    {
+      "id": "GW-G-GH-02",
+      "priority": "P1",
+      "lane": "GW-G",
+      "agent": "增长黑客",
+      "title": "独立域→开发信→询盘 A/B 事件",
+      "status": "pending"
+    },
+    {
+      "id": "GW-G-SEO-01",
+      "priority": "P1",
+      "lane": "GW-G",
+      "agent": "SEO 专家",
+      "title": "hreflang + CWV 体检",
+      "status": "pending"
+    },
+    {
+      "id": "GW-G-LI-03",
+      "priority": "P1",
+      "lane": "GW-G",
+      "agent": "LinkedIn 内容创作专家",
+      "title": "InMail 与开发信模板分轨",
+      "status": "pending"
+    },
+    {
+      "id": "GW-P-CR-01",
+      "priority": "P1",
+      "lane": "GW-P",
+      "agent": "广告创意策略师",
+      "title": "B2B 认证+场景+spec sheet CTA 创意",
+      "status": "partial",
+      "note": "paid_ads_creative_service 已有基础"
+    },
+    {
+      "id": "GW-P-SO-01",
+      "priority": "P1",
+      "lane": "GW-P",
+      "agent": "社交广告策略师",
+      "title": "Lead Form 行业字段 schema",
+      "status": "pending"
+    },
+    {
+      "id": "GW-P-PC-02",
+      "priority": "P1",
+      "lane": "GW-P",
+      "agent": "PPC 竞价策略师",
+      "title": "否定词 jobs/DIY/retail 共享表",
+      "status": "pending"
+    },
+    {
+      "id": "GW-P-SQ-01",
+      "priority": "P1",
+      "lane": "GW-P",
+      "agent": "搜索词分析师",
+      "title": "搜索词→开发信→SEO 三角周报",
+      "status": "pending"
+    },
+    {
+      "id": "GW-L-OB-03",
+      "priority": "P1",
+      "lane": "GW-L",
+      "agent": "Outbound 策略师",
+      "title": "同公司多联系人错开发送",
+      "status": "pending"
+    },
+    {
+      "id": "GW-L-OB-04",
+      "priority": "P1",
+      "lane": "GW-L",
+      "agent": "Outbound 策略师",
+      "title": "首封无附件二封 PDF 序列",
+      "status": "pending"
+    },
+    {
+      "id": "GW-L-DC-04",
+      "priority": "P1",
+      "lane": "GW-L",
+      "agent": "赢单策略师",
+      "title": "丢单原因编码",
+      "status": "pending"
+    },
+    {
+      "id": "GW-L-PL-01",
+      "priority": "P1",
+      "lane": "GW-L",
+      "agent": "Pipeline 分析师",
+      "title": "MQL→SQL→报价→PI→定金 阶段",
+      "status": "pending"
+    },
+    {
+      "id": "GW-P-TR-05",
+      "priority": "P2",
+      "lane": "GW-P",
+      "agent": "追踪与归因专家",
+      "title": "邮件打开/回复 webhook",
+      "status": "pending",
+      "linked": "OUTREACH-D4"
+    },
+    {
+      "id": "GW-P-SO-04",
+      "priority": "P2",
+      "lane": "GW-P",
+      "agent": "社交广告策略师",
+      "title": "Google/Meta Ads API OAuth 真投放",
+      "status": "pending"
+    },
+    {
+      "id": "GW-S-ASO-02",
+      "priority": "P2",
+      "lane": "GW-S",
+      "agent": "应用商店优化师",
+      "title": "出海计 App ASO 词表",
+      "status": "pending"
+    },
+    {
+      "id": "GW-P-DSP-01",
+      "priority": "P2",
+      "lane": "GW-P",
+      "agent": "程序化广告采买专家",
+      "title": "DSP 程序化（默认不做）",
+      "status": "deferred"
+    },
+    {
+      "id": "GW-L-SE-03",
+      "priority": "P2",
+      "lane": "GW-L",
+      "agent": "售前工程师",
+      "title": "RFQ 附件 OCR 进询盘",
+      "status": "pending"
+    },
+    {
+      "id": "GW-R-AGENT-01",
+      "priority": "P0",
+      "lane": "GW-R",
+      "agent": "外贸研究员",
+      "title": "ResearchBrief 小时 worker + PM Inbox",
+      "status": "done",
+      "acceptance": "research_brief_service + hermes_continuous_iteration_service + Redis inbox",
+      "code": "backend/app/services/hermes/research_brief_service.py"
+    },
+    {
+      "id": "GW-R-AGENT-02",
+      "priority": "P0",
+      "lane": "GW-R",
+      "agent": "外贸研究员",
+      "title": "Brief 经 ECC 门控 + 部门路由",
+      "status": "done",
+      "acceptance": "brief_to_ecc_candidate + route_departments; fail 不自动入登记册",
+      "code": "backend/app/services/hermes/hermes_continuous_iteration_service.py"
+    }
+  ],
+  "research_notes": {
+    "weekly_template": "1 国 × 1 平台：礼仪、发送时间、禁忌词、竞品截图",
+    "spam_lexicon": "backend/app/services/ubrain/outreach_deliverability_service.py _SPAM_TRIGGERS",
+    "disclaimer": "不承诺送达率；候选线索非实名企业库"
+  },
+  "b2b_expert_roles_planned": [
+    "expert_eva",
+    "expert_letter",
+    "expert_negotiate",
+    "expert_site",
+    "expert_matrix",
+    "expert_ads",
+    "expert_research",
+    "expert_crm"
+  ]
+}

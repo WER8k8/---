@@ -1,0 +1,20 @@
+# Admin smoke route check — 2026-05-24T06:39:39.468736+00:00
+total_routes=651
+
+PASS	/api/v1/referral
+PASS	/api/v1/super-admin/dashboard
+PASS	/api/v1/super-admin/auth
+PASS	/api/v1/super-admin/users
+PASS	/api/v1/super-admin/menus
+PASS	/api/v1/super-admin/monitor
+PASS	/api/v1/seo/site-audit
+PASS	/api/v1/seo/content-optimizer
+PASS	/api/v1/seo/llms-txt
+PASS	/api/v1/seo/schema-markup
+PASS	/api/v1/seo/authors
+PASS	/api/v1/seo/compliance
+PASS	/api/v1/seo/keywords
+PASS	/api/v1/seo/dashboard
+PASS	/api/v1/seo-matrix/dashboard
+
+summary: 15/15 prefixes mounted

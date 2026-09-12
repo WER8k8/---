@@ -1,0 +1,33 @@
+{
+  "round": "round2",
+  "role": "ops",
+  "executor": "Cursor 自动化验收",
+  "executed_at": "2026-05-28",
+  "signed": true,
+  "redis_celery": {
+    "ok": null,
+    "note": "已输出 start-celery-local.ps1 命令；本机未常驻 Redis/Celery，预发需运营起进程"
+  },
+  "crawl_worker": {
+    "ok": null,
+    "doc": "docs/international-crawl-worker.md",
+    "note": "第二轮未打 Webhook；预发按文档配置 CRAWL_WEBHOOK_SECRET"
+  },
+  "backup": {
+    "env_backed_up": true,
+    "sqlite_backed_up": false,
+    "location": "docs/round2-backup/.env.20260528-142501",
+    "note": "youding_dev.db 不在 backend/ 根目录时跳过；请人工确认库文件路径后备份"
+  },
+  "production_preflight": {
+    "ran": true,
+    "ready": false,
+    "path": "docs/production-preflight-latest.json",
+    "note": "SQLite + platforms 表预期 fail；上 Postgres + migrate/seed 后复跑"
+  },
+  "cron_documented": true,
+  "blockers": [
+    "Redis + Celery worker/beat 真跑",
+    "生产库与演示 HTTPS 域"
+  ]
+}

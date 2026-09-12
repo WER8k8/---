@@ -1,0 +1,35 @@
+﻿{
+    "generated_at":  "2026-07-04T13:16:01.0345625Z",
+    "weekday":  "Saturday",
+    "steps":  [
+                  {
+                      "ok":  true,
+                      "step":  "tenant-seo-audit",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "tenant-geo-audit",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  false,
+                      "step":  "gap-closure-smoke",
+                      "exit":  1
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "cert-gate",
+                      "exit":  0
+                  }
+              ],
+    "ok":  false,
+    "reports":  [
+                    "docs/tenant-seo-audit-latest.json",
+                    "docs/tenant-geo-audit-latest.json",
+                    "docs/gap-closure-smoke-latest.json",
+                    "docs/certification-gate-admin-latest.json"
+                ],
+    "fail_count":  1,
+    "task":  "weekly-seo-geo-loop"
+}

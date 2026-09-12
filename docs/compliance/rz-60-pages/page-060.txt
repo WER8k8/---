@@ -1,0 +1,51 @@
+// FILE: backend\app\core\login_bruteforce.py
+"""登录暴力破解防护：优先 Redis（多实例共享），失败降级进程内内存；接口与阈值行为保持不变。"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import logging
+import threading
+import time
+from dataclasses import dataclass
+from typing import Any, Optional, Tuple
+
+from app.core.config import settings
+
+log = logging.getLogger(__name__)
+
+MAX_FAIL_PER_IDENTITY = 5
+LOCK_SECONDS = 15 * 60
+IP_FAIL_THRESHOLD = 40
+IP_LOCK_SECONDS = 15 * 60
+
+# Redis 键 TTL：覆盖最长锁定期并留余量，便于空闲键自动回收
+_STATE_TTL_SECONDS = max(LOCK_SECONDS, IP_LOCK_SECONDS) + 300
+
+_LUA_RECORD = """
+local raw = redis.call('GET', KEYS[1])
+local fails = 0
+local lock_until = 0
+if raw then
+  local o = cjson.decode(raw)
+  fails = tonumber(o.fails) or 0
+  lock_until = tonumber(o.lock_until) or 0
+end
+local now = tonumber(ARGV[1])
+local maxf = tonumber(ARGV[2])
+local locksec = tonumber(ARGV[3])
+local ttl = tonumber(ARGV[4])
+if lock_until > now then
+  fails = fails + 1
+else
+  if lock_until > 0 then
+    fails = 0
+  end
+  fails = fails + 1
+end
+if fails >= maxf then
+  lock_until = now + locksec
+end
+redis.call('SET', KEYS[1], cjson.encode({fails = fails, lock_until = lock_until}), 'EX', ttl)
+return fails

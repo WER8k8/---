@@ -1,0 +1,58 @@
+/**
+ * 优丁管理端 — 2026 设计令牌（全站基线）
+ */
+
+:root {
+  --uj-brand: #4a9b8c;
+  --uj-brand-hover: #3d8578;
+  --uj-brand-deep: #2a6b60;
+  --uj-brand-muted: rgb(74 155 140 / 0.12);
+  --uj-brand-light: #e8faf4;
+  --uj-enterprise: #4a9b8c;
+
+  --uj-bg-page: #edf2f5;
+  --uj-bg-card: #ffffff;
+  --uj-border: #e2eaee;
+
+  --uj-radius-sm: 8px;
+  --uj-radius-md: 12px;
+  --uj-radius-lg: 16px;
+  --uj-radius-xl: 20px;
+
+  --uj-space-page: 24px;
+  --uj-space-card: 20px;
+
+  --uj-font-sans: 'DM Sans', 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', sans-serif;
+  --uj-text-title: 16px;
+  --uj-text-body: 15px;
+  --uj-font-size-xs: 12px;
+  --uj-font-size-sm: 13px;
+  --uj-font-size-lg: 17px;
+  --uj-font-size-h1: 24px;
+  --uj-font-size-h2: 20px;
+  --uj-text-muted: #728696;
+  --uj-text: #0f172a;
+  --uj-text-secondary: #475569;
+  --uj-text: #0f172a;
+
+  --uj-success: #16a34a;
+  --uj-warning: #d97706;
+  --uj-danger: #dc2626;
+
+  --uj-shadow-sm: 0 1px 2px rgb(88 109 124 / 0.08);
+  --uj-shadow-card: 0 6px 20px rgb(98 120 136 / 0.1);
+  --uj-shadow-login: 0 24px 48px rgb(15 23 42 / 0.12);
+  --uj-shadow-login: 0 24px 48px rgb(15 23 42 / 0.12);
+
+  --uj-sidebar-width: 248px;
+  --uj-sidebar-bg: #ffffff;
+  --uj-sidebar-active: #e8faf4;
+
+  --uj-login-mesh: radial-gradient(ellipse 80% 60% at 20% 10%, rgb(74 155 140 / 0.35), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, rgb(42 107 96 / 0.25), transparent 50%),
+    linear-gradient(145deg, #13332e 0%, #1d4d46 48%, #2a6b60 100%);
+}
+
+$uj-ant-primary: #4a9b8c;
+$uj-ant-border-radius: 10px;
+$uj-ant-font-size: 15px;

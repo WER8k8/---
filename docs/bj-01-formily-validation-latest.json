@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "task": "BJ-01",
+  "files": {
+    "frontend\\admin\\src\\components\\youding\\YdFormilyForm.vue": true,
+    "frontend\\admin\\src\\components\\youding\\formily\\antdv-bridge.ts": true,
+    "frontend\\admin\\src\\components\\youding\\formily\\siteEditorSchema.ts": true,
+    "frontend\\admin\\src\\constants\\lProTier1Locales.ts": true,
+    "frontend\\admin\\src\\views\\client\\site-editor-lab.vue": true,
+    "docs\\bj-01-formily-saas-five-questions.md": true,
+    "docs\\bj-01-saas-signoff-record.json": true
+  },
+  "bff_test_ok": true,
+  "pytest_tail": "backend\\app\\schemas\\ssl_certificate.py:31\n  C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\schemas\\ssl_certificate.py:31: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class SSLCertificateResponse(SSLCertificateBase):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n1 passed, 1 warning in 6.58s\n",
+  "saas_checklist": "docs/bj-01-formily-saas-five-questions.md",
+  "signoff_record": "docs/bj-01-saas-signoff-record.json",
+  "human_signoff_pending": true
+}

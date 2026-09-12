@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "task": "MOD-04-https-step",
+  "skipped": true,
+  "reason": "MOD04_HTTPS_DOMAIN unset; dev-ready",
+  "human_pending": "Owner 提供 HTTPS 域后: $env:MOD04_HTTPS_DOMAIN='demo.example.com'; python scripts/validate-mod-04-https-step.py"
+}

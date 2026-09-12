@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【一键拉满】动态数据图表</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        h1 { text-align: center; color: #fff; margin-bottom: 30px; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .charts-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; max-width: 1400px; margin: 0 auto; }
+        .chart-card { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); transition: transform 0.3s ease; }
+        .chart-card:hover { transform: translateY(-5px); }
+        .chart-card h2 { color: #333; font-size: 1.2rem; margin-bottom: 15px; text-align: center; }
+        .chart-wrapper { position: relative; height: 300px; }
+        .status { text-align: center; color: #fff; margin-top: 30px; font-size: 1.1rem; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .status span { animation: pulse 2s infinite; }
+    </style>
+</head>
+<body>
+    <h1>【一键拉满】动态数据图表渲染</h1>
+    <div class="charts-container">
+
+        <div class="chart-card">
+            <h2>SEO流量趋势</h2>
+            <div class="chart-wrapper">
+                <canvas id="seo_traffic"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>关键词排名分布</h2>
+            <div class="chart-wrapper">
+                <canvas id="keyword_ranking"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>A/B测试转化率对比</h2>
+            <div class="chart-wrapper">
+                <canvas id="ab_conversion"></canvas>
+            </div>
+        </div>
+
+    </div>
+    <div class="status">🔥 GPU加速渲染中 | <span id="fps">0</span> FPS</div>
+    <script>
+        const chartConfigs = [{"id": "seo_traffic", "title": "SEO流量趋势", "type": "line", "data": {"labels": ["2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03"], "datasets": [{"label": "日均UV", "data": [1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440, 1455, 1470, 1485, 1500, 1515, 1530, 1545, 1560, 1575, 1590, 1605, 1620, 1635], "borderColor": "rgb(75, 192, 192)", "backgroundColor": "rgba(75, 192, 192, 0.1)"}, {"label": "日均PV", "data": [3500, 3542, 3584, 3626, 3668, 3710, 3752, 3794, 3836, 3878, 3920, 3962, 4004, 4046, 4088, 4130, 4172, 4214, 4256, 4298, 4340, 4382, 4424, 4466, 4508, 4550, 4592, 4634, 4676, 4718], "borderColor": "rgb(255, 99, 132)", "backgroundColor": "rgba(255, 99, 132, 0.1)"}]}, "options": {"responsive": true, "maintainAspectRatio": false, "scales": {"y": {"beginAtZero": false}}}}, {"id": "keyword_ranking", "title": "关键词排名分布", "type": "bar", "data": {"labels": ["Top3", "Top10", "Top20", "Top50", "50+"], "datasets": [{"label": "关键词数量", "data": [45, 82, 156, 234, 89], "backgroundColor": ["rgba(54, 162, 235, 0.8)", "rgba(75, 192, 192, 0.8)", "rgba(255, 206, 86, 0.8)", "rgba(255, 159, 64, 0.8)", "rgba(153, 102, 255, 0.8)"]}]}, "options": {"responsive": true, "maintainAspectRatio": false}}, {"id": "ab_conversion", "title": "A/B测试转化率对比", "type": "doughnut", "data": {"labels": ["版本A(控制组)", "版本B(实验组)", "版本C(实验组)"], "datasets": [{"data": [3.2, 4.8, 3.9], "backgroundColor": ["rgba(255, 99, 132, 0.8)", "rgba(54, 162, 235, 0.8)", "rgba(75, 192, 192, 0.8)"]}]}, "options": {"responsive": true, "maintainAspectRatio": false}}];
+        const fpsElement = document.getElementById('fps');
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        function updateFPS() {
+            frameCount++;
+            const now = performance.now();
+            if (now - lastTime >= 1000) {
+                fpsElement.textContent = frameCount;
+                frameCount = 0;
+                lastTime = now;
+            }
+            requestAnimationFrame(updateFPS);
+        }
+
+        chartConfigs.forEach(config => {
+            new Chart(document.getElementById(config.id), config);
+        });
+
+        updateFPS();
+    </script>
+</body>
+</html>

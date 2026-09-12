@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "task": "MOD-07",
+  "checks": {
+    "record_json": true,
+    "checklist_md": true,
+    "trade_intel_vue": true,
+    "router_trade_intel": true,
+    "matrix_spec_documented": true
+  },
+  "signed": false,
+  "human_pending": true,
+  "record": "docs\\compliance\\mod-07-trade-intel-matrix-signoff-record.json"
+}

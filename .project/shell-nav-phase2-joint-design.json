@@ -1,0 +1,237 @@
+{
+  "schema_version": "1.0",
+  "program_id": "SHELL-NAV-PHASE2-JOINT",
+  "parent_program": "SHELL-NAV-2026",
+  "updated_at": "2026-06-07",
+  "title": "壳层 Phase2 · PM + 视觉 + 多部门联合设计",
+  "convener": "PM-NAV-01",
+  "authority_docs": [
+    "docs/youding-omni-pro-design-LOCKED.md",
+    ".project/shell-nav-program.json",
+    "docs/pm-swarm-parallel-charter.md"
+  ],
+  "design_read": "B2B 出海运营 cockpit · 薄荷玻璃 + Stripe 数据感 · Taste 5/3/7 · 一壳三 accent",
+  "completed_prerequisite": [
+    "WP-NAV-01 Nav Kernel + Menu SSOT",
+    "WP-NAV-02 YdProSidebar / YdProTopbar / YdProWorktabs"
+  ],
+  "joint_deliverables": [
+    {
+      "id": "JD-01",
+      "name": "壳层 Master UI 签认包",
+      "owner": "VIS-NAV-01",
+      "reviewers": ["UX-NAV-01", "PM-NAV-01", "ARCH-NAV-01"],
+      "due": "2026-06-09",
+      "artifacts": [
+        "docs/design/shell-master-ui-signoff-202606.md",
+        "screenshots/shell-platform-client-agent-3accent.png"
+      ],
+      "acceptance": [
+        "侧栏/顶栏/标签区/token 与 LOCKED §4–§6 一致",
+        "Platform / Client / Agent 三色板各 1 张静态稿",
+        "动效不超过 MOTION=3（无 scroll 炫技）"
+      ]
+    },
+    {
+      "id": "JD-02",
+      "name": "90 秒送检分镜 + Owner 点验脚本",
+      "owner": "PM-NAV-01",
+      "contributors": ["UX-NAV-01", "QA-NAV-01", "VIS-NAV-01"],
+      "due": "2026-06-09",
+      "artifacts": [
+        "docs/design/demo-90s-storyboard-202606.md"
+      ],
+      "acceptance": [
+        "与 LOCKED §10 时间轴 0–90s 逐秒对齐",
+        "每段画面标注路由 + 必点菜单 + 失败即停项",
+        "Owner 签字栏（不写代码）"
+      ]
+    },
+    {
+      "id": "JD-03",
+      "name": "P0 标杆页视觉审计表",
+      "owner": "VIS-NAV-01",
+      "contributors": ["BJ-PAGE-01", "UX-NAV-01"],
+      "due": "2026-06-10",
+      "artifacts": [
+        "docs/design/p0-page-visual-audit-202606.md"
+      ],
+      "scope_pages": [
+        "views/admin/dashboard.vue",
+        "views/admin/tenants.vue",
+        "views/inquiries/index.vue"
+      ],
+      "acceptance": [
+        "每页：Typography / Color / Density / YdPage 四栏打分",
+        "Must-fix 清单 ≤15 条，带任务 ID",
+        "禁止「全站换肤」式大改，只列可并行 Lane"
+      ]
+    },
+    {
+      "id": "JD-04",
+      "name": "Admin BFF 菜单接口冻结说明",
+      "owner": "ARCH-NAV-01",
+      "contributors": ["BE-BFF-MENU-01", "PM-NAV-01"],
+      "due": "2026-06-10",
+      "artifacts": [
+        "docs/api/admin-bff-menu-routes-freeze.md",
+        "backend/openapi 片段或 schema 草案"
+      ],
+      "gate": "JD-04 签认前 WP-NAV-03 不得写生产路由",
+      "acceptance": [
+        "GET /api/v1/admin-bff/menu/routes?shell= 请求/响应 JSON",
+        "与 platformShellMenu.ts 字段 1:1 映射表",
+        "失败路径：403 / 503 + error_code"
+      ],
+      "status": "draft_ready",
+      "artifact_path": "docs/api/admin-bff-menu-routes-freeze.md"
+    }
+  ],
+  "parallel_work_packages": [
+    {
+      "id": "WP-NAV-04",
+      "name": "一壳三 accent 统一",
+      "lane": "BJ-NAV-04",
+      "status": "ready_after_jd01",
+      "depends_on": ["JD-01"],
+      "in_scope": [
+        "Client/Partner/Agent 路由仍走 layout/index.vue",
+        "accent 仅 token + 菜单源切换",
+        "§10 70–90s Client 壳同布局叙事"
+      ],
+      "out_of_scope": [
+        "270+ 业务页 YdPage 批量改",
+        "BFF 动态菜单实装"
+      ]
+    },
+    {
+      "id": "WP-THEME-01",
+      "name": "主题抽屉 + 暗色同树",
+      "lane": "BJ-THEME-01",
+      "status": "ready_after_jd01",
+      "depends_on": ["JD-01"],
+      "in_scope": [
+        "ThemeSettingsDrawer 与 --uj-theme dark 同组件树",
+        "§10 50–70s 换色不闪崩"
+      ],
+      "out_of_scope": [
+        "维护两套页面"
+      ]
+    },
+    {
+      "id": "WP-P0-UI-01",
+      "name": "Dashboard 标杆抛光",
+      "lane": "BJ-PAGE-01",
+      "status": "ready_after_jd03",
+      "depends_on": ["JD-03"],
+      "in_scope": ["admin/dashboard.vue YdPage + brand-hero surface"]
+    },
+    {
+      "id": "WP-P0-UI-02",
+      "name": "租户管理标杆抛光",
+      "lane": "BJ-PAGE-02",
+      "status": "ready_after_jd03",
+      "depends_on": ["JD-03"]
+    },
+    {
+      "id": "WP-P0-UI-03",
+      "name": "询盘管理标杆抛光",
+      "lane": "BJ-PAGE-03",
+      "status": "ready_after_jd03",
+      "depends_on": ["JD-03"]
+    },
+    {
+      "id": "WP-NAV-03",
+      "name": "Admin BFF 动态菜单",
+      "lane": "BE-BFF-MENU-01",
+      "status": "blocked",
+      "depends_on": ["JD-04"],
+      "gate": "接口冻结"
+    },
+    {
+      "id": "WP-QA-DEMO-01",
+      "name": "§10 彩排录屏 + 门禁",
+      "lane": "QA-NAV-01",
+      "status": "ready_after_jd02",
+      "depends_on": ["JD-02", "WP-NAV-04"],
+      "verify": [
+        "scripts/verify-shell-nav-program.ps1",
+        "frontend/admin/scripts/run-certification-gate.mjs"
+      ]
+    }
+  ],
+  "raci_extended": {
+    "PM-NAV-01": {
+      "role": "产品经理",
+      "duty": "联合设计召集、排期、JD-02 分镜、Lane 仲裁、Owner 验收组织",
+      "A": true
+    },
+    "VIS-NAV-01": {
+      "role": "视觉 / 美工",
+      "duty": "JD-01 Master UI、JD-03 P0 审计、token/组件对照 LOCKED",
+      "R": true
+    },
+    "UX-NAV-01": {
+      "role": "UX / 交互",
+      "duty": "送检路径信息架构、Worktab/侧栏交互、无障碍焦点序",
+      "R": true
+    },
+    "ARCH-NAV-01": {
+      "role": "软件架构师",
+      "duty": "JD-04 接口冻结、SSOT 审 PR、禁止跨 Lane 破坏 Nav Kernel",
+      "A": true
+    },
+    "BJ-NAV-04": {
+      "role": "前端壳层",
+      "duty": "WP-NAV-04 一壳三 accent 实现",
+      "R": true
+    },
+    "BJ-THEME-01": {
+      "role": "前端主题",
+      "duty": "WP-THEME-01 亮暗 + 主色抽屉",
+      "R": true
+    },
+    "BJ-PAGE-01/02/03": {
+      "role": "前端页面 Lane",
+      "duty": "P0 三标杆页按 JD-03 Must-fix 实施",
+      "R": true
+    },
+    "BE-BFF-MENU-01": {
+      "role": "后端 BFF",
+      "duty": "JD-04 草案 + WP-NAV-03（冻结后）",
+      "R": true
+    },
+    "QA-NAV-01": {
+      "role": "QA",
+      "duty": "JD-02 点验脚本、WP-QA-DEMO-01 录屏、cert:gate 守门",
+      "A_gate": true
+    },
+    "SAAS-EXP-01": {
+      "role": "SaaS 产品专家",
+      "duty": "否决 Stub 外露、JD-01/JD-03 产品签字",
+      "V": true
+    },
+    "COMP-06": {
+      "role": "合规 / IP",
+      "duty": "送检文案与演示数据合规扫一眼（只读）",
+      "C": true
+    },
+    "OWNER": {
+      "role": "业务 Owner",
+      "duty": "JD-02 彩排点菜单、Must-fix 优先级拍板",
+      "A_acceptance": true
+    }
+  },
+  "standup_order": [
+    "PM-NAV-01 报 JD 截止与阻塞",
+    "VIS-NAV-01 + UX-NAV-01 报 Master UI / 分镜",
+    "ARCH-NAV-01 报 JD-04 冻结进度",
+    "BJ-* 报 WP 仅 In-Scope diff",
+    "QA-NAV-01 报门禁红绿"
+  ],
+  "owner_actions_this_week": [
+    "Ctrl+F5 后按 JD-02 草案点 10 个菜单，确认无爆闪",
+    "拍板 P0 三页哪一页最先送检（默认 Dashboard）",
+    "JD-04 冻结前不要催「菜单从后端下发」"
+  ]
+}

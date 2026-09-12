@@ -1,0 +1,51 @@
+{
+  "name": "UJ content_publish_dispatch (outbound)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "content-publish-dispatch",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "c2b8d1e2-0001-4b02-8b02-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "c2b8d1e2-0002-4b02-8b02-000000000002"
+    },
+    {
+      "parameters": {},
+      "id": "c2b8d1e2-0003-4b02-8b02-000000000003",
+      "name": "Ack",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Ack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "id": "ujContentPublishWf01"
+}

@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-07-05T00:59:03.913554+00:00",
+  "steps": [
+    {
+      "name": "check_mounted_routes",
+      "ok": true,
+      "detail": "OK: all required route prefixes are mounted.\nTotal /api routes: 1295"
+    },
+    {
+      "name": "b7_pilot_acceptance",
+      "ok": true,
+      "detail": "raceback (most recent call last):\n  File \"C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\workers\\publish_worker.py\", line 254, in process_pending_tasks\n    post_url = svc._dispatch_to_platform(plat, account, gc)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\services\\publish_dispatch_service.py\", line 158, in _dispatch_to_platform\n    result = asyncio.run(self._async_svc.publish(pub_key, _content_payload(content)))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\runners.py\", line 186, in run\n    raise RuntimeError(\nRuntimeError: asyncio.run() cannot be called from a running event loop"
+    }
+  ],
+  "ok": true,
+  "b7": {
+    "task_ids": [
+      "98b4f222-5048-4851-8098-63f5637cc32d",
+      "fcef6ebc-0627-4e65-9714-497ff8f1ee5d",
+      "41f007dd-d784-4f8b-8a80-3c9db125a0b2",
+      "0afd7608-aa27-4e13-8b81-800277f90e66",
+      "b928ea7c-9a55-4909-b207-2670db6576f5",
+      "d65573ab-4b15-4713-9299-ec66e1d19155",
+      "2ddf7972-d638-4816-b7ea-494afd5b3502",
+      "98e12cd2-77ae-47c2-a694-7a0b964a6e75",
+      "0a72b027-349b-4bc7-969e-e54219ce8c03",
+      "41b5f75a-fb66-4f03-8621-9f25f69f3601"
+    ],
+    "platforms": 10,
+    "ok": true,
+    "db": "sqlite:///C:/Users/97907/Desktop/上线网站/backend/data/demo_acceptance.db",
+    "worker": {
+      "processed": 10,
+      "success": 0,
+      "failed": 10,
+      "recovered_stale": 0,
+      "recovered_errors": 0
+    }
+  }
+}

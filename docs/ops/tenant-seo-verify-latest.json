@@ -1,0 +1,35 @@
+{
+  "verified_at": "2026-06-20",
+  "steps": {
+    "ensure_dev_sqlite": "OK",
+    "backend_api": "OK",
+    "nuxt_ssr_head": "NOT_APPLICABLE_CLIENT_HEAD"
+  },
+  "api_visitor_context": [
+    {
+      "language": "en",
+      "title": "Export Products Manufacturer, Supplier & Factory",
+      "seoDescription": "Development Tenant — Export Products manufacturer and exporter from China",
+      "seoKeywords": "Export Products,Export Products,manufacturer,supplier,factory,export"
+    },
+    {
+      "language": "zh",
+      "title": "Export Products 生产厂家 · 供应商",
+      "seoDescription": "开发租户专注Export Products研发制造与出口，OEM/ODM 定制，欢迎询盘合作。",
+      "seoKeywords": "Export Products,建材出口,制造商,供应商,OEM"
+    },
+    {
+      "language": "ru",
+      "title": "Производитель и поставщик Export Products",
+      "seoDescription": "Development Tenant — производитель Export Products из Китая. OEM/ODM, экспорт.",
+      "seoKeywords": "Export Products, теплоизоляция, минеральная вата, производитель, завод"
+    }
+  ],
+  "preview_urls": {
+    "en": "http://localhost:3000/tenant?__tenant=dev.local&lpro=1&language=en",
+    "zh": "http://localhost:3000/tenant?__tenant=dev.local&lpro=1&language=zh",
+    "ru": "http://localhost:3000/tenant?__tenant=dev.local&lpro=1&language=ru"
+  },
+  "yandex_submit": "https://webmaster.yandex.ru/",
+  "note": "租户 SEO meta 在浏览器加载租户数据后由 useTenantLProSeoHead 注入；curl 首屏 HTML 仍为 nuxt 全局默认，请在浏览器 Elements 查看 title/hreflang。"
+}

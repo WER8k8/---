@@ -1,0 +1,13 @@
+# 租户论坛子域反代示例（Caddy）
+# 用法：合并进生产 Caddyfile — forum.{tenant}.example.com → Answer Sidecar
+
+forum.demo.youding-saas.com {
+    reverse_proxy 127.0.0.1:9080
+    encode gzip
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}
+
+# 独立站 iframe 需允许嵌入：Answer 侧配置或移除此 header（仅同源子域）

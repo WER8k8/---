@@ -1,0 +1,17 @@
+from app.services.platforms.wechat import WeChatPublisher, WeChatPublisherAdapter
+from app.services.platforms.zhihu import ZhihuPublisher, ZhihuPublisherAdapter
+from app.services.platforms.toutiao import ToutiaoPublisher, ToutiaoPublisherAdapter
+from app.services.platforms.baijiahao import BaijiahaoPublisher, BaijiahaoPublisherAdapter
+from app.services.platforms.csdn import CSDNPublisher, CSDNPublisherAdapter
+from app.services.platforms.weibo import WeiboPublisher, WeiboPublisherAdapter
+from app.services.platforms.xiaohongshu import XiaohongshuPublisher, XiaohongshuPublisherAdapter
+
+__all__ = [
+    "WeChatPublisher", "WeChatPublisherAdapter",
+    "ZhihuPublisher", "ZhihuPublisherAdapter",
+    "ToutiaoPublisher", "ToutiaoPublisherAdapter",
+    "BaijiahaoPublisher", "BaijiahaoPublisherAdapter",
+    "CSDNPublisher", "CSDNPublisherAdapter",
+    "WeiboPublisher", "WeiboPublisherAdapter",
+    "XiaohongshuPublisher", "XiaohongshuPublisherAdapter",
+]

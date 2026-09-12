@@ -1,0 +1,28 @@
+{
+  "name": "international-crawler",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers 国际站爬虫引擎 — 智能爬取、信息提取、加密传输",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "publish": "wrangler publish",
+    "tail": "wrangler tail",
+    "logs": "wrangler tail",
+    "test": "node --experimental-strip-types test/test.js",
+    "test:url": "node --experimental-strip-types test/test.js",
+    "test:debug": "DEBUG=1 node --experimental-strip-types test/test.js"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "crawler",
+    "web-scraper",
+    "building-materials"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

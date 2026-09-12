@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "title": "管理后台六步路线图（Owner 只看这一份顺序）",
+  "updated_at": "2026-06-07",
+  "human_doc": "docs/architecture/ADMIN-ARCHITECTURE-从零说明.md",
+  "principle": "设计优先、演进不重写",
+  "current_step": 6,
+  "current_step_note": "Client 已接入 Pro Shell；Owner 按 JD-02 录 90 秒送检视频并签字",
+  "steps": [
+    {
+      "step": 1,
+      "name": "定规矩",
+      "status": "done",
+      "lead": "产品+架构",
+      "owner_action": "无，知道薄荷运营台风格即可"
+    },
+    {
+      "step": 2,
+      "name": "定外壳效果图",
+      "status": "in_progress",
+      "lead": "视觉美工",
+      "owner_action": "看三张角色效果图，签字「就按这个」"
+    },
+    {
+      "step": 3,
+      "name": "定90秒演示脚本",
+      "status": "done",
+      "lead": "产品",
+      "owner_action": "按 docs/design/demo-90s-storyboard-202606.md 点一遍菜单",
+      "notes": "QA 走查记录 docs/qa/demo-rehearsal-walkthrough-20260607.md"
+    },
+    {
+      "step": 4,
+      "name": "壳层补全",
+      "status": "done",
+      "lead": "前端",
+      "owner_action": "顶栏齿轮试浅色/深色切换，确认不闪屏",
+      "notes": "三 accent + shell-theme-dark"
+    },
+    {
+      "step": 5,
+      "name": "标杆三页抛光",
+      "status": "done",
+      "lead": "视觉+前端",
+      "owner_action": "只看板/租户/询盘是否像成品",
+      "notes": "WP-P0-UI Must-fix 已落地；深色 Slate Pro Owner 已确认"
+    },
+    {
+      "step": 6,
+      "name": "接口与送检",
+      "status": "in_progress",
+      "lead": "架构+后端+QA",
+      "owner_action": "按 JD-02 录 90 秒 + 勾选签字",
+      "notes": "cert:gate 绿 · Client 壳已统一 Pro Shell · 待 Owner 录屏签字"
+    }
+  ]
+}

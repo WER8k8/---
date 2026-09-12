@@ -1,0 +1,872 @@
+{
+  "task_id": "scan_20260722_083938_1406450559088",
+  "timestamp": "2026-07-22T08:39:41.147472",
+  "summary": {
+    "total_files": 546,
+    "risk_files": 544,
+    "total_vulnerabilities": 30,
+    "critical_count": 30,
+    "high_count": 0,
+    "medium_count": 0,
+    "low_count": 0,
+    "verified_vulnerabilities": 30,
+    "false_positives": 6,
+    "confirmed_vulnerabilities": 24,
+    "scan_timestamp": "2026-07-22T08:39:41.146255"
+  },
+  "scan_result": {
+    "target_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services",
+    "summary": {
+      "total_files": 546,
+      "total_size": 4703304,
+      "risk_files": 544,
+      "total_dependencies": 0,
+      "file_types": {
+        "python": 544,
+        "documentation": 1,
+        "config": 1
+      },
+      "dependency_types": {}
+    },
+    "risk_files_count": 544,
+    "recommendations": [
+      "发现 15 个高风险文件，建议优先审计",
+      "发现 15 个敏感文件，需要特别关注"
+    ]
+  },
+  "audit_result": {
+    "summary": {
+      "total_vulnerabilities": 30,
+      "severity_counts": {
+        "critical": 30,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "info": 0
+      },
+      "vulnerability_types": {
+        "CUSTOM-001_1": 1,
+        "OWASP-A03-002_1": 18,
+        "OWASP-A03-002_2": 7,
+        "OWASP-A07-002_1": 1,
+        "OWASP-A03-002_3": 3
+      },
+      "owasp_summary": {
+        "hardcoded_secrets": {
+          "count": 1,
+          "critical": 1,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "A03:2021": {
+          "count": 28,
+          "critical": 28,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "A07:2021": {
+          "count": 1,
+          "critical": 1,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        }
+      }
+    },
+    "vulnerabilities": [
+      {
+        "rule_id": "CUSTOM-001_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\matrix_admin_bridge.py",
+        "line_number": 27,
+        "severity": "critical",
+        "owasp_category": "hardcoded_secrets",
+        "title": "数据库连接字符串",
+        "message": "检测硬编码的数据库连接字符串",
+        "cwe_id": "CWE-798",
+        "matched_content": "uote_plus(str(user).strip())\n    return f\"mysql+pymysql://{uq}:{pw}@{host}:{port}/{name}?charset=utf8mb4\"\n\n\ndef matrix_credentials_",
+        "recommendation": "使用环境变量或密钥管理服务",
+        "risk_file_info": {
+          "risk_score": 90,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型",
+            "敏感文件名: admin"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cosmos_infer_service.py",
+        "line_number": 184,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "\n        str(output_path),\n    ]\n    try:\n        subprocess.run(cmd, check=True, capture_output=True, timeout=60)\n",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\media_video_edit_service.py",
+        "line_number": 47,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": ",\n        str(path),\n    ]\n    try:\n        out = subprocess.run(cmd, check=True, capture_output=True, text=True, t",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\media_video_edit_service.py",
+        "line_number": 209,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "art\",\n        str(output),\n    ]\n    try:\n        subprocess.run(cmd, check=True, capture_output=True, timeout=120)",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ops_expert_autonomy_service.py",
+        "line_number": 86,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "pt),\n        *args,\n    ]\n    try:\n        proc = subprocess.run(\n            cmd,\n            cwd=str(root),\n     ",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ops_expert_autonomy_service.py",
+        "line_number": 184,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "gs\": [], \"skipped\": True}\n    try:\n        proc = subprocess.run(\n            [sys.executable, str(script)],\n      ",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A07-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\platform_storage_provision_service.py",
+        "line_number": 405,
+        "severity": "critical",
+        "owasp_category": "A07:2021",
+        "title": "硬编码API密钥",
+        "message": "检测硬编码API密钥",
+        "cwe_id": "CWE-798",
+        "matched_content": ".access_key if q else \"\"),\n                \"QINIU_SECRET_KEY=\" + (q.secret_key if q else \"\"),\n                \"QINIU_BUCKET=\" + (q.bucket if",
+        "recommendation": "使用环境变量或密钥管理服务",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ssl_certificate_service.py",
+        "line_number": 77,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "  cmd.append(\"--dry-run\")\n    try:\n        proc = subprocess.run(\n            cmd,\n            capture_output=True,",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\audio_asr_service.py",
+        "line_number": 119,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "av\",\n\n        str(out),\n\n    ]\n\n    try:\n\n        subprocess.run(cmd, check=True, capture_output=True, timeout=180)",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\audio_chunk_service.py",
+        "line_number": 40,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": ",\n        str(path),\n    ]\n    try:\n        out = subprocess.run(cmd, check=True, capture_output=True, text=True, t",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\audio_chunk_service.py",
+        "line_number": 73,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "  \"copy\",\n        pattern,\n    ]\n    try:\n        subprocess.run(cmd, check=True, capture_output=True, timeout=max(",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\krillinai_sidecar_adapter.py",
+        "line_number": 27,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "s_file() else cli\n        try:\n            proc = subprocess.run(\n                [exe, \"--help\"],\n                ",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\opensource_localization_service.py",
+        "line_number": 342,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "      str(out_dir),\n    ]\n    try:\n        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600,",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\tts_service.py",
+        "line_number": 180,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "       str(output),\n    ]\n    try:\n        proc = subprocess.run(cmd, capture_output=True, timeout=max(120, int(tar",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\tts_service.py",
+        "line_number": 256,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "            str(merged),\n        ]\n        proc = subprocess.run(cmd, capture_output=True, timeout=300)\n        if ",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_3",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\tts_service.py",
+        "line_number": 324,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "  cmd.append(str(output))\n    try:\n        proc = subprocess.run(cmd, capture_output=True, timeout=max(300, int((vi",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\video_dub_service.py",
+        "line_number": 231,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "opy\",\n        str(output),\n    ]\n    try:\n        subprocess.run(cmd, check=True, capture_output=True, timeout=300)",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\cross_border\\voice_gender_infer.py",
+        "line_number": 49,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": ",\n        \"pipe:1\",\n    ]\n    try:\n        proc = subprocess.run(cmd, capture_output=True, timeout=max(30, int(dura",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\hermes\\anysearch_probe_service.py",
+        "line_number": 80,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "  str(max_results),\n    ]\n    try:\n        proc = subprocess.run(\n            cmd,\n            capture_output=True,",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\hermes\\agency\\llm_router.py",
+        "line_number": 237,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "nd\n        proc = await asyncio.create_subprocess_exec(\n            exe,\n            *args,\n            s",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\hermes\\agency\\provider_setup.py",
+        "line_number": 174,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": " \"agency-llm-compose.yml\")\n                proc = subprocess.run(\n                    [\"docker\", \"compose\", \"-f\", c",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\hermes\\agency\\provider_setup.py",
+        "line_number": 198,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "lama3.1\")\n            try:\n                proc = subprocess.run(\n                    [\"ollama\", \"pull\", model],\n  ",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_3",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\hermes\\agency\\provider_setup.py",
+        "line_number": 221,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "       ):\n            try:\n                proc = subprocess.run(\n                    cmd,\n                    shel",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\publish_workers\\biliup_worker.py",
+        "line_number": 65,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "    ]\n\n    proc = await asyncio.create_subprocess_exec(\n        *cmd,\n        stdout=asyncio.subprocess.P",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\publish_workers\\sau_worker.py",
+        "line_number": 107,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": " home\n\n    proc = await asyncio.create_subprocess_exec(\n        *cmd,\n        stdout=asyncio.subprocess.P",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\talking_stick\\agents\\verify_agent.py",
+        "line_number": 265,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": ".system，改用subprocess\\nimport subprocess\\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, te",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\talking_stick\\agents\\verify_agent.py",
+        "line_number": 272,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "hell=False，使用列表形式的命令\\nimport subprocess\\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, te",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_3",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\talking_stick\\agents\\verify_agent.py",
+        "line_number": 279,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "ss.run并设置shell=False\\nimport subprocess\\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, te",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_1",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ubrain\\skill_audit_service.py",
+        "line_number": 109,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": " (\"subprocess.\", \"警告：子进程调用\", \"medium\"),\n        (\"exec(\", \"危险：动态代码执行\", \"high\"),\n        (\"eval(\", \"警告：动态表",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      },
+      {
+        "rule_id": "OWASP-A03-002_2",
+        "file_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services\\ubrain\\skill_audit_service.py",
+        "line_number": 110,
+        "severity": "critical",
+        "owasp_category": "A03:2021",
+        "title": "命令注入",
+        "message": "检测命令注入漏洞",
+        "cwe_id": "CWE-78",
+        "matched_content": "        (\"exec(\", \"危险：动态代码执行\", \"high\"),\n        (\"eval(\", \"警告：动态表达式求值\", \"medium\"),\n        (\"__import__\",",
+        "recommendation": "使用安全的API，避免直接执行用户输入",
+        "risk_file_info": {
+          "risk_score": 50,
+          "risk_reasons": [
+            "源代码文件",
+            "高风险文件类型"
+          ]
+        }
+      }
+    ],
+    "recommendations": [
+      "发现 30 个严重漏洞，需要立即修复"
+    ]
+  },
+  "verification_result": {
+    "summary": {
+      "confirmed": 24,
+      "false_positives": 6,
+      "errors": 0,
+      "critical_fixes_needed": 22,
+      "high_fixes_needed": 2,
+      "medium_fixes_needed": 0,
+      "low_fixes_needed": 0
+    },
+    "fixes": {
+      "critical": [
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_2",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_2",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_2",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_3",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_3",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_1",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        },
+        {
+          "vulnerability_id": "OWASP-A03-002_2",
+          "risk_level": "critical",
+          "approach": "safe_api_usage",
+          "code_example": "# 确保使用subprocess.run并设置shell=False\nimport subprocess\nresult = subprocess.run(['ls', '-l'], shell=False, capture_output=True, text=True)",
+          "estimated_effort": "low",
+          "priority": "medium"
+        }
+      ],
+      "high": [
+        {
+          "vulnerability_id": "CUSTOM-001_1",
+          "risk_level": "high",
+          "approach": "environment_variables",
+          "code_example": "# 使用环境变量\nimport os\npassword = os.getenv('DB_PASSWORD')\n\n# 或使用密钥管理服务\nimport boto3\nclient = boto3.client('secretsmanager')\nsecret = client.get_secret_value(SecretId='my-secret')",
+          "estimated_effort": "low",
+          "priority": "high"
+        },
+        {
+          "vulnerability_id": "OWASP-A07-002_1",
+          "risk_level": "high",
+          "approach": "environment_variables",
+          "code_example": "# 使用环境变量\nimport os\npassword = os.getenv('DB_PASSWORD')\n\n# 或使用密钥管理服务\nimport boto3\nclient = boto3.client('secretsmanager')\nsecret = client.get_secret_value(SecretId='my-secret')",
+          "estimated_effort": "low",
+          "priority": "high"
+        }
+      ],
+      "medium": [],
+      "low": []
+    },
+    "recommendations": [
+      "确认 24 个真实漏洞，需要修复",
+      "识别 6 个误报，可忽略",
+      "发现 22 个严重漏洞，需要立即修复",
+      "发现 2 个高危漏洞，建议优先处理"
+    ]
+  }
+}

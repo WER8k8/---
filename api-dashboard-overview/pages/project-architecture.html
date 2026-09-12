@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目架构图 — 出海营销 SaaS 全景架构</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <style id="theme-vars">
+:root {
+  --uj-motion-duration: 0.3s;
+  --uj-motion-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --seed-color: #4a9b8c;
+  --color-background: #0a0b0e;
+  --color-foreground: #f0f2f5;
+  --color-card: #13141a;
+  --color-card-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  /* Layer accent colors */
+  --layer-1: #3b82f6; --layer-1-bg: rgba(59,130,246,0.08); --layer-1-border: rgba(59,130,246,0.25);
+  --layer-2: #10b981; --layer-2-bg: rgba(16,185,129,0.08); --layer-2-border: rgba(16,185,129,0.25);
+  --layer-3: #8b5cf6; --layer-3-bg: rgba(139,92,246,0.08); --layer-3-border: rgba(139,92,246,0.25);
+  --layer-4: #f59e0b; --layer-4-bg: rgba(245,158,11,0.08); --layer-4-border: rgba(245,158,11,0.25);
+  --layer-5: #06b6d4; --layer-5-bg: rgba(6,182,212,0.08); --layer-5-border: rgba(6,182,212,0.25);
+  --layer-6: #f43f5e; --layer-6-bg: rgba(244,63,94,0.08); --layer-6-border: rgba(244,63,94,0.25);
+  --layer-7: #64748b; --layer-7-bg: rgba(100,116,139,0.08); --layer-7-border: rgba(100,116,139,0.25);
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+}
+    </style>
+    <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 80% 40% at 20% 10%, rgba(74,155,140,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.page-wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 56px; }
+
+/* Header */
+.arch-header { text-align: center; margin-bottom: 32px; }
+.arch-header h1 {
+  font-size: 28px; font-weight: 700; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--color-primary), #3b82f6, #8b5cf6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+}
+.arch-header p { font-size: 14px; color: var(--color-muted-foreground); }
+.arch-header .stats {
+  display: flex; justify-content: center; gap: 24px; margin-top: 14px;
+}
+.arch-header .stat {
+  font-size: 12px; color: var(--color-muted-foreground);
+  display: flex; align-items: center; gap: 5px;
+}
+.arch-header .stat b { color: var(--color-foreground); font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+
+/* Layer */
+.layer {
+  margin-bottom: 6px; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--color-border); background: var(--color-card);
+  transition: border-color 0.3s ease;
+}
+.layer:hover { border-color: rgba(255,255,255,0.1); }
+.layer-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; border-bottom: 1px solid var(--color-border);
+}
+.layer-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 10px; border-radius: 6px;
+  color: #fff; min-width: 32px;
+}
+.layer-head h2 { font-size: 14px; font-weight: 600; color: var(--color-foreground); flex: 1; }
+.layer-head .layer-count { font-size: 11px; color: var(--color-muted-foreground); }
+.layer-body { padding: 14px 14px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Module Card */
+.mod {
+  flex: 1 1 calc(25% - 8px); min-width: 140px;
+  padding: 12px 14px; border-radius: 10px;
+  border: 1px solid var(--color-border); background: var(--color-muted);
+  cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative; overflow: hidden;
+}
+.mod::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--mod-accent, var(--color-primary)); opacity: 0; transition: opacity 0.3s ease;
+}
+.mod:hover {
+  transform: translateY(-3px);
+  border-color: var(--mod-accent, var(--color-primary));
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px var(--mod-accent, var(--color-primary));
+}
+.mod:hover::before { opacity: 1; }
+.mod-icon {
+  width: 32px; height: 32px; border-radius: 8px; display: flex;
+  align-items: center; justify-content: center; margin-bottom: 8px;
+  font-size: 14px; font-weight: 700; color: #fff;
+}
+.mod-name { font-size: 13px; font-weight: 600; color: var(--color-foreground); margin-bottom: 2px; }
+.mod-desc { font-size: 11px; color: var(--color-muted-foreground); line-height: 1.4; }
+.mod-core {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 4px;
+  background: rgba(74,155,140,0.15); color: var(--color-primary);
+}
+/* Layer-specific accent */
+.layer-1 .mod { --mod-accent: var(--layer-1); }
+.layer-1 .mod-icon { background: var(--layer-1-bg); color: var(--layer-1); border: 1px solid var(--layer-1-border); }
+.layer-1 .layer-badge { background: var(--layer-1); }
+.layer-2 .mod { --mod-accent: var(--layer-2); }
+.layer-2 .mod-icon { background: var(--layer-2-bg); color: var(--layer-2); border: 1px solid var(--layer-2-border); }
+.layer-2 .layer-badge { background: var(--layer-2); }
+.layer-3 .mod { --mod-accent: var(--layer-3); }
+.layer-3 .mod-icon { background: var(--layer-3-bg); color: var(--layer-3); border: 1px solid var(--layer-3-border); }
+.layer-3 .layer-badge { background: var(--layer-3); }
+.layer-4 .mod { --mod-accent: var(--layer-4); }
+.layer-4 .mod-icon { background: var(--layer-4-bg); color: var(--layer-4); border: 1px solid var(--layer-4-border); }
+.layer-4 .layer-badge { background: var(--layer-4); }
+.layer-5 .mod { --mod-accent: var(--layer-5); }
+.layer-5 .mod-icon { background: var(--layer-5-bg); color: var(--layer-5); border: 1px solid var(--layer-5-border); }
+.layer-5 .layer-badge { background: var(--layer-5); }
+.layer-6 .mod { --mod-accent: var(--layer-6); }
+.layer-6 .mod-icon { background: var(--layer-6-bg); color: var(--layer-6); border: 1px solid var(--layer-6-border); }
+.layer-6 .layer-badge { background: var(--layer-6); }
+.layer-7 .mod { --mod-accent: var(--layer-7); }
+.layer-7 .mod-icon { background: var(--layer-7-bg); color: var(--layer-7); border: 1px solid var(--layer-7-border); }
+.layer-7 .layer-badge { background: var(--layer-7); }
+
+/* Data flow indicator */
+.flow-divider {
+  display: flex; align-items: center; justify-content: center;
+  padding: 4px 0; position: relative;
+}
+.flow-divider .flow-line {
+  width: 1px; height: 16px; background: var(--color-border); position: relative;
+}
+.flow-divider .flow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--color-primary); position: absolute;
+  left: -2.5px; animation: flowDown 2s ease-in-out infinite;
+}
+@keyframes flowDown {
+  0% { top: 0; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 10px; opacity: 0; }
+}
+.flow-label {
+  font-size: 10px; color: var(--color-muted-foreground);
+  padding: 0 8px; white-space: nowrap;
+}
+
+/* Tooltip */
+.arch-tip {
+  position: fixed; z-index: 9998;
+  background: rgba(19,20,26,0.95); backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border); border-radius: 10px;
+  padding: 12px 16px; max-width: 280px; pointer-events: none;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.arch-tip.show { opacity: 1; transform: translateY(0); }
+.arch-tip__name { font-size: 13px; font-weight: 600; color: var(--color-foreground); margin-bottom: 4px; }
+.arch-tip__desc { font-size: 11px; color: var(--color-muted-foreground); line-height: 1.5; }
+.arch-tip__layer { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-top: 6px; }
+
+/* Detail Modal */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.25s ease-out;
+}
+.modal-overlay.open { display: flex; opacity: 1; }
+.modal-box {
+  background: var(--color-card); border: 1px solid var(--color-border);
+  border-radius: 16px; padding: 28px 32px;
+  max-width: 600px; width: 92%; max-height: 82vh; overflow-y: auto;
+  transform: scale(0.95) translateY(12px); position: relative;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+.modal-close {
+  position: absolute; top: 14px; right: 14px; width: 30px; height: 30px;
+  border-radius: 8px; border: none; cursor: pointer;
+  background: var(--color-muted); color: var(--color-muted-foreground);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; transition: background 0.2s ease;
+}
+.modal-close:hover { background: var(--color-border); }
+.modal-accent-bar { width: 48px; height: 3px; border-radius: 2px; margin-bottom: 14px; }
+.modal-title { font-size: 18px; font-weight: 700; color: var(--color-foreground); letter-spacing: -0.02em; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--color-muted-foreground); margin-bottom: 18px; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.modal-stat {
+  padding: 10px 14px; border-radius: 10px; background: var(--color-muted);
+  border: 1px solid var(--color-border);
+}
+.modal-stat__label { font-size: 11px; color: var(--color-muted-foreground); margin-bottom: 2px; }
+.modal-stat__value { font-size: 15px; font-weight: 700; color: var(--color-foreground); }
+.modal-section-title { font-size: 12px; font-weight: 600; color: var(--color-muted-foreground); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.modal-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.modal-row:last-child { border-bottom: none; }
+.modal-row__k { font-size: 13px; color: var(--color-muted-foreground); }
+.modal-row__v { font-size: 13px; font-weight: 600; color: var(--color-foreground); text-align: right; max-width: 60%; }
+.modal-techs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.modal-tech {
+  font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 6px;
+  background: rgba(74,155,140,0.08); color: var(--color-primary);
+  border: 1px solid rgba(74,155,140,0.12);
+}
+
+@media (max-width: 768px) {
+  .page-wrap { padding: 16px 10px 32px; }
+  .arch-header h1 { font-size: 20px; }
+  .mod { flex: 1 1 calc(50% - 6px); min-width: 120px; }
+  .modal-grid { grid-template-columns: 1fr; }
+  .arch-header .stats { flex-wrap: wrap; gap: 12px; }
+}
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+
+<div class="arch-header">
+  <h1><i data-lucide="layers" style="display:inline;vertical-align:middle;width:22px;height:22px;margin-right:6px;opacity:0.7"></i>优丁 SaaS 全景架构</h1>
+  <p>七层分层架构 · 31 核心模块 · 覆盖外贸出海全链路 · 点击任意模块查看详情</p>
+  <div class="stats">
+    <div class="stat"><b>120+</b> API 路由</div>
+    <div class="stat"><b>200+</b> 业务服务</div>
+    <div class="stat"><b>80+</b> 数据模型</div>
+    <div class="stat"><b>50+</b> AI 技能</div>
+    <div class="stat"><b>14</b> 定时调度器</div>
+  </div>
+</div>
+
+<!-- L1 用户接入层 -->
+<div class="layer layer-1">
+  <div class="layer-head">
+    <span class="layer-badge">L1</span>
+    <h2>用户接入层</h2>
+    <span class="layer-count">4 模块</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="web-frontend" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="globe" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Web 前端</div>
+      <div class="mod-desc">Nuxt SSR + Vue Admin + 租户后台</div>
+    </div>
+    <div class="mod" data-m="mobile-bff" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="smartphone" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Mobile BFF</div>
+      <div class="mod-desc">React Native + H5 + 企微/飞书机器人</div>
+    </div>
+    <div class="mod" data-m="pwa" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="wifi-off" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">PWA 离线</div>
+      <div class="mod-desc">Service Worker + IndexedDB 离线优先</div>
+    </div>
+    <div class="mod" data-m="site-builder" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="layout" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">可视化建站</div>
+      <div class="mod-desc">拖拽建站 · 行业模板 · 自定义域名</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><div class="flow-line"><div class="flow-dot"></div></div><span class="flow-label">API 调用 / SSR</span></div>
+
+<!-- L2 AI Agent 层 -->
+<div class="layer layer-2">
+  <div class="layer-head">
+    <span class="layer-badge">L2</span>
+    <h2>AI Agent 层</h2>
+    <span class="layer-count">4 模块 · 核心</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="ubrain" onclick="showDetail(this)">
+      <span class="mod-core">核心</span>
+      <div class="mod-icon"><i data-lucide="brain" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">UBrain 大脑</div>
+      <div class="mod-desc">多模型路由 · Agent 树 · 技能编排</div>
+    </div>
+    <div class="mod" data-m="hermes" onclick="showDetail(this)">
+      <span class="mod-core">核心</span>
+      <div class="mod-icon"><i data-lucide="bot" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Hermes 智能体</div>
+      <div class="mod-desc">自主运营 · 站点巡检 · Greedy 引擎</div>
+    </div>
+    <div class="mod" data-m="workflow" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="git-branch" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">工作流引擎</div>
+      <div class="mod-desc">DeerFlow 研究 + AccioWork 执行</div>
+    </div>
+    <div class="mod" data-m="knowledge" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="database" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">知识引擎</div>
+      <div class="mod-desc">向量搜索 + 知识图谱 + RAG</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><div class="flow-line"><div class="flow-dot"></div></div><span class="flow-label">技能触发 / Agent 协作</span></div>
+
+<!-- L3 业务域层 -->
+<div class="layer layer-3">
+  <div class="layer-head">
+    <span class="layer-badge">L3</span>
+    <h2>业务域层</h2>
+    <span class="layer-count">4 模块 · 11 领域</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="product" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="package" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">产品商务</div>
+      <div class="mod-desc">产品管理 · 报价 · 订单 · 支付</div>
+    </div>
+    <div class="mod" data-m="acquisition" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="users" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">获客销售</div>
+      <div class="mod-desc">线索挖掘 · 询盘 · LinkedIn · WhatsApp</div>
+    </div>
+    <div class="mod" data-m="seo-content" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="search" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">内容 SEO</div>
+      <div class="mod-desc">SEO 审计 · GEO/AEO · 内容矩阵</div>
+    </div>
+    <div class="mod" data-m="cross-border" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="ship" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">跨境出海</div>
+      <div class="mod-desc">视频出海 · 海关数据 · 贸易情报</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><div class="flow-line"><div class="flow-dot"></div></div><span class="flow-label">数据读写 / 任务分发</span></div>
+
+<!-- L4 平台服务层 -->
+<div class="layer layer-4">
+  <div class="layer-head">
+    <span class="layer-badge">L4</span>
+    <h2>平台服务层</h2>
+    <span class="layer-count">4 模块</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="publish" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="send" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">统一发布</div>
+      <div class="mod-desc">40+ 平台 · 矩阵发布 · 定时排期</div>
+    </div>
+    <div class="mod" data-m="media" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="video" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">媒体工厂</div>
+      <div class="mod-desc">视频渲染 · TTS · AI 配音 · 剪辑</div>
+    </div>
+    <div class="mod" data-m="growth" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="trending-up" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">增长营销</div>
+      <div class="mod-desc">归因分析 · A/B 测试 · 裂变推荐</div>
+    </div>
+    <div class="mod" data-m="commercial" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="credit-card" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">商业化</div>
+      <div class="mod-desc">套餐计费 · 代理商佣金 · 白标</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><div class="flow-line"><div class="flow-dot"></div></div><span class="flow-label">连接管理 / 缓存</span></div>
+
+<!-- L5 数据层 -->
+<div class="layer layer-5">
+  <div class="layer-head">
+    <span class="layer-badge">L5</span>
+    <h2>数据层</h2>
+    <span class="layer-count">4 模块 · 80+ 表</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="postgres" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="hard-drive" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">PostgreSQL</div>
+      <div class="mod-desc">50+ 表 · UUID 主键 · pgvector</div>
+    </div>
+    <div class="mod" data-m="redis" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="zap" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Redis</div>
+      <div class="mod-desc">缓存 · 队列 · 限流 · 会话</div>
+    </div>
+    <div class="mod" data-m="qdrant" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="box" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Qdrant</div>
+      <div class="mod-desc">向量搜索 · HNSW · 1536 维</div>
+    </div>
+    <div class="mod" data-m="neo4j" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="network" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Neo4j</div>
+      <div class="mod-desc">知识图谱 · 客户关系图</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><div class="flow-line"><div class="flow-dot"></div></div><span class="flow-label">异步任务 / 安全</span></div>
+
+<!-- L6 基础设施层 -->
+<div class="layer layer-6">
+  <div class="layer-head">
+    <span class="layer-badge">L6</span>
+    <h2>基础设施层</h2>
+    <span class="layer-count">4 模块</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="fastapi" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="server" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">FastAPI</div>
+      <div class="mod-desc">150+ 路由 · 自动文档 · WebSocket</div>
+    </div>
+    <div class="mod" data-m="celery" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="clock" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Celery</div>
+      <div class="mod-desc">7 队列 · 14 调度器 · 定时任务</div>
+    </div>
+    <div class="mod" data-m="security" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="shield" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">安全网关</div>
+      <div class="mod-desc">WAF · 国密 · 零信任 · RBAC</div>
+    </div>
+    <div class="mod" data-m="cdn" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="globe-2" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">CDN / 代理</div>
+      <div class="mod-desc">全球边缘加速 · IP 槽位 · SSL</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><div class="flow-line"><div class="flow-dot"></div></div><span class="flow-label">指标采集 / 日志</span></div>
+
+<!-- L7 监控运维层 -->
+<div class="layer layer-7">
+  <div class="layer-head">
+    <span class="layer-badge">L7</span>
+    <h2>监控运维层</h2>
+    <span class="layer-count">3 模块 · 7x24</span>
+  </div>
+  <div class="layer-body">
+    <div class="mod" data-m="monitoring" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="activity" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">Prometheus + Grafana</div>
+      <div class="mod-desc">指标采集 · 可视化面板 · 告警</div>
+    </div>
+    <div class="mod" data-m="elk" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="file-text" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">ELK 日志</div>
+      <div class="mod-desc">ES + Logstash + Kibana · 结构化日志</div>
+    </div>
+    <div class="mod" data-m="backup" onclick="showDetail(this)">
+      <div class="mod-icon"><i data-lucide="hard-drive-download" style="width:16px;height:16px"></i></div>
+      <div class="mod-name">备份灾容</div>
+      <div class="mod-desc">每日增量 · 30 天保留 · 异地备份</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /page-wrap -->
+
+<!-- Tooltip -->
+<div class="arch-tip" id="tip">
+  <div class="arch-tip__name" id="tipName"></div>
+  <div class="arch-tip__desc" id="tipDesc"></div>
+  <div class="arch-tip__layer" id="tipLayer"></div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    <div class="modal-accent-bar" id="mAccent"></div>
+    <div class="modal-title" id="mTitle"></div>
+    <div class="modal-sub" id="mSub"></div>
+    <div class="modal-grid" id="mGrid"></div>
+    <div class="modal-section-title">技术详情</div>
+    <div id="mRows"></div>
+    <div class="modal-techs" id="mTechs"></div>
+  </div>
+</div>
+
+<script>
+// ── Module Data ──
+var M = {
+  'web-frontend': {
+    name:'Web 前端', layer:'L1 用户接入层', accent:'var(--layer-1)',
+    stats:[{l:'框架',v:'Nuxt 3 + Vue 3'},{l:'UI 库',v:'Ant Design Vue'},{l:'组件数',v:'200+'},{l:'角色壳',v:'4 种'}],
+    rows:[['营销站','Nuxt 3 SSR + Tailwind CSS'],['管理后台','Vue 3 + Pinia + Vite'],['租户后台','独立 Vue SPA'],['主题','薄荷绿 #4a9b8c 设计令牌'],['路由','1930+ 行 · 四壳分流'],['移动端','Capacitor Android']],
+    techs:['Nuxt 3','Vue 3','TypeScript','Tailwind CSS','Pinia','Vite','Ant Design Vue']
+  },
+  'mobile-bff': {
+    name:'Mobile BFF', layer:'L1 用户接入层', accent:'var(--layer-1)',
+    stats:[{l:'架构',v:'BFF 模式'},{l:'App',v:'React Native'},{l:'推送',v:'APNs + FCM'},{l:'离线',v:'本地缓存'}],
+    rows:[['App 端','React Native + Expo'],['H5 端','响应式 Web'],['机器人','企微/飞书/WhatsApp'],['推送通道','APNs + FCM + 厂商'],['离线策略','本地缓存 + 增量同步'],['消息协议','WebSocket + REST']],
+    techs:['React Native','Expo','BFF','APNs','FCM','WebSocket']
+  },
+  'pwa': {
+    name:'PWA 离线', layer:'L1 用户接入层', accent:'var(--layer-1)',
+    stats:[{l:'策略',v:'Cache First'},{l:'存储',v:'IndexedDB'},{l:'首屏',v:'< 2MB'},{l:'推送',v:'Web Push'}],
+    rows:[['缓存策略','Cache First + Network Fallback'],['本地存储','IndexedDB (Dexie.js)'],['后台同步','Background Sync API'],['安装体验','A2HS 原生安装'],['推送通知','Web Push Notification'],['构建工具','Workbox']],
+    techs:['Service Worker','IndexedDB','Dexie.js','Web Push','Workbox']
+  },
+  'site-builder': {
+    name:'可视化建站', layer:'L1 用户接入层', accent:'var(--layer-1)',
+    stats:[{l:'模板',v:'行业级'},{l:'域名',v:'自定义'},{l:'SEO',v:'内置优化'},{l:'编辑器',v:'拖拽式'}],
+    rows:[['建站方式','拖拽 + 模板混合'],['行业模板','建材/电子/服装/机械'],['自定义域名','绑定 + SSL 自动签发'],['SEO 优化','Meta/Schema/Sitemap 自动生成'],['多语言','i18n 自动翻译'],['发布','一键部署到 CDN']],
+    techs:['拖拽编辑器','模板引擎','SSL 自动签发','CDN 部署','i18n']
+  },
+  'ubrain': {
+    name:'UBrain 大脑', layer:'L2 AI Agent 层', accent:'var(--layer-2)',
+    stats:[{l:'模型',v:'GPT/Claude/Gemini'},{l:'技能',v:'50+'},{l:'Agent',v:'树状编排'},{l:'安全',v:'注入防护'}],
+    rows:[['模型路由','GPT-4o / Claude 3.5 / Gemini Pro 智能切换'],['Agent 树','父子 Agent 协作 · 任务分解'],['技能商店','50+ 外贸专用 Skill'],['记忆系统','短期上下文 + 长期 Mem0'],['安全','Prompt 注入防护 · 输出过滤'],['成本','Token 用量追踪 · 降级策略']],
+    techs:['OpenAI','Claude','Gemini','LangChain','Mem0','Agent Tree','Prompt Guard']
+  },
+  'hermes': {
+    name:'Hermes 智能体', layer:'L2 AI Agent 层', accent:'var(--layer-2)',
+    stats:[{l:'模式',v:'7x24 自主'},{l:'巡检',v:'站点巡检'},{l:'Greedy',v:'营收循环'},{l:'品牌',v:'守卫审计'}],
+    rows:[['运行时','Command Center + Registry'],['站点巡检','定时检查 · CTA 审计 · 设计守卫'],['内容飞轮','每日自主运营闭环'],['Greedy 引擎','营收循环 · 耐力循环 · 生存摘要'],['品牌守卫','品牌审计 · 维护宪法'],['A2A 技能','跨 Agent 技能市场']],
+    techs:['Command Center','Site Patrol','Greedy Engine','Brand Guard','A2A Skills','DeerFlow']
+  },
+  'workflow': {
+    name:'工作流引擎', layer:'L2 AI Agent 层', accent:'var(--layer-2)',
+    stats:[{l:'引擎',v:'双引擎'},{l:'编排',v:'DAG'},{l:'触发',v:'事件驱动'},{l:'模板',v:'询盘/SEO/发布'}],
+    rows:[['研究引擎','DeerFlow (深度研究)'],['执行引擎','AccioWork (任务执行)'],['编排方式','DAG 有向无环图'],['触发模式','事件驱动 · 定时 · 手动'],['工作流模板','询盘跟进 · 内容发布 · SEO 审计'],['监控','实时执行状态 · 异常告警']],
+    techs:['DeerFlow','AccioWork','DAG','Event-Driven','Scheduler']
+  },
+  'knowledge': {
+    name:'知识引擎', layer:'L2 AI Agent 层', accent:'var(--layer-2)',
+    stats:[{l:'向量',v:'Qdrant'},{l:'图谱',v:'Neo4j'},{l:'记忆',v:'Mem0'},{l:'搜索',v:'混合检索'}],
+    rows:[['向量引擎','Qdrant 1536维 HNSW 索引'],['知识图谱','Neo4j 客户关系图'],['长期记忆','Mem0 用户偏好 · 上下文'],['混合检索','语义 + 关键词 混合搜索'],['知识摄入','自动文档解析 · 增量向量化'],['RAG 问答','基于知识库的智能问答']],
+    techs:['Qdrant','Neo4j','Mem0','pgvector','RAG','HNSW','Embedding']
+  },
+  'product': {
+    name:'产品商务', layer:'L3 业务域层', accent:'var(--layer-3)',
+    stats:[{l:'产品',v:'CRUD'},{l:'支付',v:'支付宝+微信'},{l:'订单',v:'全流程'},{l:'报价',v:'AI 辅助'}],
+    rows:[['产品管理','产品 CRUD · 分类 · 图片 · FAQ'],['报价系统','AI 辅助报价 · 多币种'],['订单管理','全流程订单追踪'],['支付集成','支付宝 · 微信支付 · Stripe'],['财务中台','代币账本 · 发票 · 对账'],['评价系统','产品评价 · 案例展示']],
+    techs:['Stripe','支付宝 SDK','微信支付 v3','PDF 生成','多币种']
+  },
+  'acquisition': {
+    name:'获客销售', layer:'L3 业务域层', accent:'var(--layer-3)',
+    stats:[{l:'线索',v:'AI 挖掘'},{l:'渠道',v:'6+'},{l:'邮件',v:'批量发送'},{l:'评分',v:'AI 打分'}],
+    rows:[['线索挖掘','AI 多平台获客 (Google/LinkedIn/WhatsApp/TikTok)'],['线索评分','AI Lead Scoring · 去重引擎'],['询盘管理','多渠道接入 · MEDDPICC 流水线'],['邮件营销','开发信批量 · 个性化模板 · Drip 序列'],['社媒运营','养号循环 · 评论互动'],['外贸 OSINT','WHOIS · 制裁名单 · 技术栈分析']],
+    techs:['Google API','LinkedIn API','WhatsApp Business','Mailgun','OSINT','MEDDPICC']
+  },
+  'seo-content': {
+    name:'内容 SEO', layer:'L3 业务域层', accent:'var(--layer-3)',
+    stats:[{l:'SEO',v:'全链路'},{l:'GEO',v:'AI 搜索'},{l:'内容',v:'AI 生成'},{l:'矩阵',v:'多站点'}],
+    rows:[['SEO 审计','站点审计 · Schema · EEAT 评分'],['GEO/AEO','AI 搜索引擎优化 · LLMs.txt'],['内容生成','AI 产品描述 · 文章 · 视频脚本'],['关键词','排名检查 · 竞品分析 · 批量 SEO'],['知识百科','建筑知识百科 · Wiki 系统'],['SEO 矩阵','多站点矩阵管理']],
+    techs:['SEO Crawler','Schema Generator','EEAT Scorer','LLMs.txt','百度站长','Google Search Console']
+  },
+  'cross-border': {
+    name:'跨境出海', layer:'L3 业务域层', accent:'var(--layer-3)',
+    stats:[{l:'视频',v:'AI 配音'},{l:'海关',v:'数据爬虫'},{l:'翻译',v:'LibreTranslate'},{l:'物流',v:'全流程'}],
+    rows:[['视频出海','中文视频 → 多语种配音 + 字幕'],['海关数据','海关数据爬虫 · 买家画像'],['贸易情报','TechRadar · 行业趋势'],['多语种','LibreTranslate · 机器翻译 + 人工校对'],['物流管理','运费计算 · LBS 路由 · 订单追踪'],['全球化','文化适配 · 术语表 · 本地化']],
+    techs:['Whisper','TTS','LibreTranslate','海关 API','LBS','多语种引擎']
+  },
+  'publish': {
+    name:'统一发布', layer:'L4 平台服务层', accent:'var(--layer-4)',
+    stats:[{l:'平台',v:'40+'},{l:'模式',v:'矩阵发布'},{l:'排期',v:'定时'},{l:'成功率',v:'98%+'}],
+    rows:[['发布平台','40+ 平台 (社媒/博客/视频/问答)'],['矩阵发布','一次编辑 · 多平台同步'],['定时排期','智能排期 · 时区适配'],['AiToEarn','内容分发中心 · 流量变现'],['视频发布','YouTube/TikTok/Instagram Reels'],['发布队列','优先级队列 · 失败重试']],
+    techs:['AiToEarn','YouTube API','TikTok API','发布队列','定时调度']
+  },
+  'media': {
+    name:'媒体工厂', layer:'L4 平台服务层', accent:'var(--layer-4)',
+    stats:[{l:'视频',v:'渲染队列'},{l:'TTS',v:'多语种'},{l:'配音',v:'AI 配音'},{l:'存储',v:'R2 + 七牛'}],
+    rows:[['视频渲染','Fly-Cut + OpenCut 剪辑器'],['TTS 合成','多语种语音合成'],['AI 配音','Whisper 转写 + AI 配音 + 唇形同步'],['媒体存储','Cloudflare R2 + 七牛云'],['文章转视频','AI 文章 → 视频自动转换'],['全媒体台','视频空间 · 产品图片空间']],
+    techs:['Whisper','TTS','R2','七牛云','Fly-Cut','OpenCut']
+  },
+  'growth': {
+    name:'增长营销', layer:'L4 平台服务层', accent:'var(--layer-4)',
+    stats:[{l:'归因',v:'全链路'},{l:'A/B',v:'页面级'},{l:'裂变',v:'邀请返利'},{l:'日报',v:'自动'}],
+    rows:[['归因分析','全链路多触点归因'],['A/B 测试','页面级实验框架'],['裂变推荐','邀请返利 · 多级佣金'],['日报系统','自动生成经营日报'],['流失预警','AI 流失预测 · 保存方案'],['NPS 调研','定期满意度调研']],
+    techs:['归因引擎','A/B Framework','裂变系统','AI 预测','NPS']
+  },
+  'commercial': {
+    name:'商业化', layer:'L4 平台服务层', accent:'var(--layer-4)',
+    stats:[{l:'套餐',v:'4 级'},{l:'支付',v:'3 渠道'},{l:'代理',v:'多级分佣'},{l:'白标',v:'品牌定制'}],
+    rows:[['套餐体系','免费/基础/专业/企业 4 级'],['计费方式','按 API 调用量 · 按功能'],['代理商','多级分佣 · 省代/市代'],['白标方案','域名绑定 · 品牌定制 · Logo 替换'],['开票系统','增值税发票 · 自动开具'],['代币系统','AI 流量充值 · 用量追踪']],
+    techs:['Stripe','支付宝','微信支付','代币引擎','发票系统','分佣引擎']
+  },
+  'postgres': {
+    name:'PostgreSQL', layer:'L5 数据层', accent:'var(--layer-5)',
+    stats:[{l:'版本',v:'PG 15+'},{l:'表数',v:'50+'},{l:'迁移',v:'58 版本'},{l:'扩展',v:'pgvector'}],
+    rows:[['数据库','PostgreSQL 15+ (pgvector 镜像)'],['数据模型','50+ ORM 表 · 80+ 模型文件'],['主键策略','UUID v7 (时序有序)'],['多租户','Schema 隔离 + RLS 行级安全'],['全文搜索','tsvector + pgvector 混合检索'],['备份','每日增量 + 周全量 + 30 天保留']],
+    techs:['PostgreSQL 15','pgvector','UUIDv7','RLS','Alembic','SQLAlchemy 2.0']
+  },
+  'redis': {
+    name:'Redis', layer:'L5 数据层', accent:'var(--layer-5)',
+    stats:[{l:'版本',v:'Redis 7'},{l:'集群',v:'3主3从'},{l:'用途',v:'缓存/队列/限流'},{l:'会话',v:'JWT+Redis'}],
+    rows:[['缓存','TTL + 主动失效 · 缓存装饰器'],['消息队列','Celery Broker · Pub/Sub 事件广播'],['限流','滑动窗口 · 令牌桶 · API 级别限流'],['会话管理','JWT + Redis 双模式'],['集群','Redis Cluster (3主3从)'],['Lua 脚本','原子操作 · 复杂限流逻辑']],
+    techs:['Redis 7','Redis Cluster','Pub/Sub','Lua Script','Celery Broker']
+  },
+  'qdrant': {
+    name:'Qdrant', layer:'L5 数据层', accent:'var(--layer-5)',
+    stats:[{l:'维度',v:'1536'},{l:'算法',v:'HNSW'},{l:'相似度',v:'Cosine'},{l:'文档',v:'10万+'}],
+    rows:[['向量引擎','Qdrant (OpenAI 1536 维)'],['索引算法','HNSW 层次可导航小世界'],['相似度','Cosine Similarity'],['应用场景','产品语义搜索 · 客户画像 · RAG'],['索引规模','10万+ 文档向量'],['同步策略','增量向量化 · 实时更新']],
+    techs:['Qdrant','HNSW','OpenAI Embedding','Cosine','1536维']
+  },
+  'neo4j': {
+    name:'Neo4j', layer:'L5 数据层', accent:'var(--layer-5)',
+    stats:[{l:'版本',v:'Neo4j 5.x'},{l:'用途',v:'知识图谱'},{l:'关系',v:'客户网络'},{l:'查询',v:'Cypher'}],
+    rows:[['图数据库','Neo4j 5.x'],['知识图谱','产品-客户-行业 关系网络'],['客户关系图','买家画像 · 采购链 · 决策人'],['查询语言','Cypher 图查询'],['应用场景','智能推荐 · 关联发现 · 风险传导'],['数据同步','事件驱动增量更新']],
+    techs:['Neo4j 5','Cypher','Knowledge Graph','事件同步']
+  },
+  'fastapi': {
+    name:'FastAPI', layer:'L6 基础设施层', accent:'var(--layer-6)',
+    stats:[{l:'路由',v:'120+ 文件'},{l:'中间件',v:'15+'},{l:'文档',v:'自动生成'},{l:'WebSocket',v:'支持'}],
+    rows:[['框架','FastAPI 0.109+ (Python 3.11)'],['路由','120+ 路由文件 · 自动发现'],['中间件','WAF · CSRF · 限流 · 租户隔离 · 品牌守卫'],['认证','JWT + OAuth2 + 密钥轮换'],['ORM','SQLAlchemy 2.0 + Alembic 迁移'],['事件总线','Event Bus 发布/订阅']],
+    techs:['FastAPI','Python 3.11','Uvicorn','Pydantic v2','SQLAlchemy','Alembic']
+  },
+  'celery': {
+    name:'Celery', layer:'L6 基础设施层', accent:'var(--layer-6)',
+    stats:[{l:'队列',v:'7 个'},{l:'调度器',v:'14 个'},{l:'Broker',v:'Redis'},{l:'监控',v:'Flower'}],
+    rows:[['引擎','Celery 5.3+'],['队列','email / lead_verify / scoring / enrichment / cleanup / reporting / default'],['调度器','14 个内置 (排名/巡检/营收/运维/DeerFlow 等)'],['定时任务','celery-beat 周期任务'],['重试策略','指数退避 · 最多 3 次'],['监控','Flower Dashboard']],
+    techs:['Celery 5.3','Redis Broker','celery-beat','Flower','指数退避']
+  },
+  'security': {
+    name:'安全网关', layer:'L6 基础设施层', accent:'var(--layer-6)',
+    stats:[{l:'WAF',v:'4 类攻击'},{l:'加密',v:'国密+TLS'},{l:'权限',v:'RBAC'},{l:'审计',v:'全操作'}],
+    rows:[['WAF','SQL注入/XSS/路径遍历/命令注入 防护'],['加密','国密 SM2/SM4 + TLS 1.3 + 字段加密'],['零信任','请求签名 + 防重放 + 暴力破解防护'],['RBAC','角色权限 · 数据权限 · 功能权限'],['审计日志','全操作审计 · 安全事件追踪'],['数据分级','敏感数据脱敏 · 导出守卫']],
+    techs:['WAF','国密 SM2/SM4','TLS 1.3','RBAC','CSRF','JWT Key Rotation']
+  },
+  'cdn': {
+    name:'CDN / 代理', layer:'L6 基础设施层', accent:'var(--layer-6)',
+    stats:[{l:'CDN',v:'全球边缘'},{l:'IP',v:'槽位管理'},{l:'SSL',v:'自动签发'},{l:'代理',v:'Nginx'}],
+    rows:[['CDN','全球边缘节点加速 · Cloudflare'],['反向代理','Nginx · HTTPS 终止 · 负载均衡'],['IP 槽位','代理 IP 管理 · 地区分配'],['SSL','Let\'s Encrypt 自动签发 · 续期'],['域名','自定义域名注册 · DNS 管理'],['Edge Pages','BytePlus 边缘部署']],
+    techs:['Cloudflare','Nginx','Let\'s Encrypt','BytePlus Edge','DNS']
+  },
+  'monitoring': {
+    name:'Prometheus + Grafana', layer:'L7 监控运维层', accent:'var(--layer-7)',
+    stats:[{l:'指标',v:'全量采集'},{l:'面板',v:'可视化'},{l:'告警',v:'实时'},{l:'追踪',v:'OpenTelemetry'}],
+    rows:[['指标采集','Prometheus v3.1 · 全量指标'],['可视化','Grafana 11.5 · 自定义面板'],['告警','实时告警 · 多通道推送'],['分布式追踪','Jaeger + OpenTelemetry'],['性能监控','性能中间件 · 慢查询检测'],['健康检查','/health + /ready 探针']],
+    techs:['Prometheus','Grafana','Jaeger','OpenTelemetry','AlertManager']
+  },
+  'elk': {
+    name:'ELK 日志', layer:'L7 监控运维层', accent:'var(--layer-7)',
+    stats:[{l:'ES',v:'8.12'},{l:'日志',v:'结构化 JSON'},{l:'查询',v:'Kibana'},{l:'管道',v:'Logstash'}],
+    rows:[['存储','Elasticsearch 8.12.0'],['处理','Logstash 8.12.0 · 管道过滤'],['可视化','Kibana 8.12.0 · 仪表盘'],['日志格式','结构化 JSON · 请求ID 链路'],['保留策略','热温冷架构 · 30 天轮转'],['安全','X-Pack 认证 · TLS 传输']],
+    techs:['Elasticsearch','Logstash','Kibana','X-Pack','结构化日志']
+  },
+  'backup': {
+    name:'备份灾容', layer:'L7 监控运维层', accent:'var(--layer-7)',
+    stats:[{l:'频率',v:'每日增量'},{l:'保留',v:'30 天'},{l:'灾容',v:'异地备份'},{l:'自动化',v:'全自动'}],
+    rows:[['增量备份','每日自动 PostgreSQL 备份'],['全量备份','每周全量备份'],['保留策略','30 天滚动保留'],['异地备份','阿里云 OSS 异地存储'],['数据库备份','db-backup 容器 (postgres:15-alpine)'],['恢复测试','定期恢复验证']],
+    techs:['pg_dump','阿里云 OSS','Docker','Cron','自动恢复验证']
+  }
+};
+
+// Tooltip
+var tip = document.getElementById('tip');
+var tipName = document.getElementById('tipName');
+var tipDesc = document.getElementById('tipDesc');
+var tipLayer = document.getElementById('tipLayer');
+
+document.querySelectorAll('.mod').forEach(function(el) {
+  var key = el.getAttribute('data-m');
+  var data = M[key];
+  if (!data) return;
+
+  el.addEventListener('mouseenter', function(e) {
+    tipName.textContent = data.name;
+    tipDesc.textContent = data.rows[0][1];
+    tipLayer.textContent = data.layer;
+    tipLayer.style.background = data.accent.replace(')', ',0.15)').replace('var(', 'rgba(');
+    tipLayer.style.color = data.accent;
+    tip.classList.add('show');
+    moveTip(e);
+  });
+  el.addEventListener('mousemove', moveTip);
+  el.addEventListener('mouseleave', function() { tip.classList.remove('show'); });
+});
+
+function moveTip(e) {
+  var x = e.clientX + 14, y = e.clientY + 14;
+  if (x + 280 > window.innerWidth) x = e.clientX - 294;
+  if (y + 80 > window.innerHeight) y = e.clientY - 94;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+
+// Detail Modal
+function showDetail(el) {
+  var key = el.getAttribute('data-m');
+  var d = M[key]; if (!d) return;
+  tip.classList.remove('show');
+
+  document.getElementById('mAccent').style.background = d.accent;
+  document.getElementById('mTitle').textContent = d.name;
+  document.getElementById('mSub').textContent = d.layer;
+
+  var grid = document.getElementById('mGrid'); grid.innerHTML = '';
+  d.stats.forEach(function(s) {
+    var div = document.createElement('div');
+    div.className = 'modal-stat';
+    div.innerHTML = '<div class="modal-stat__label">' + s.l + '</div><div class="modal-stat__value">' + s.v + '</div>';
+    grid.appendChild(div);
+  });
+
+  var rows = document.getElementById('mRows'); rows.innerHTML = '';
+  d.rows.forEach(function(r) {
+    var row = document.createElement('div');
+    row.className = 'modal-row';
+    row.innerHTML = '<span class="modal-row__k">' + r[0] + '</span><span class="modal-row__v">' + r[1] + '</span>';
+    rows.appendChild(row);
+  });
+
+  var techs = document.getElementById('mTechs'); techs.innerHTML = '';
+  d.techs.forEach(function(t) {
+    var tag = document.createElement('span');
+    tag.className = 'modal-tech'; tag.textContent = t;
+    techs.appendChild(tag);
+  });
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+lucide.createIcons();
+</script>
+</body>
+</html>

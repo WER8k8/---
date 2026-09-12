@@ -1,0 +1,22 @@
+// FILE: backend\app\core\admin_auth.py
+            "meta": {},
+        }
+        if menu.meta_json:
+            import json
+            try:
+                node["meta"] = json.loads(menu.meta_json)
+            except Exception:
+                pass
+
+        # 递归子菜单
+        children = build_menu_tree(user, db, menu.id)
+        if children:
+            node["children"] = children
+
+        tree.append(node)
+
+    if redis_client:
+        import json
+        set_cache(cache_key, json.dumps(tree))
+
+    return tree

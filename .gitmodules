@@ -1,0 +1,4 @@
+[submodule "deploy/vendor/UserActionAnalyzePlatform"]
+	path = deploy/vendor/UserActionAnalyzePlatform
+	url = https://github.com/oeljeklaus-you/UserActionAnalyzePlatform.git
+	branch = master

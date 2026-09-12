@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "task": "site-content-i18n-ai",
+  "pytest_ok": true,
+  "targets": [
+    "backend/tests/unit/test_site_content_i18n_service.py",
+    "backend/tests/unit/test_site_content_i18n_ai_service.py",
+    "backend/tests/unit/test_site_content_locale_service.py",
+    "backend/tests/unit/test_public_visitor_context_api.py"
+  ],
+  "pytest_tail": "..            [ 66%]\nbackend\\tests\\unit\\test_site_content_locale_service.py ...               [ 86%]\nbackend\\tests\\unit\\test_public_visitor_context_api.py ..                 [100%]\n\n============================== warnings summary ===============================\nbackend\\app\\schemas\\publish_task.py:36\n  C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\schemas\\publish_task.py:36: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class PublishTaskResponse(PublishTaskBase):\n\nbackend\\app\\schemas\\ssl_certificate.py:31\n  C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\schemas\\ssl_certificate.py:31: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class SSLCertificateResponse(SSLCertificateBase):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 15 passed, 2 warnings in 1.28s ========================\n",
+  "export_langs": [
+    "zh",
+    "ar",
+    "es",
+    "pt",
+    "ru",
+    "th",
+    "vi",
+    "id",
+    "ms",
+    "ja",
+    "ko"
+  ],
+  "backfill_script": "scripts/backfill-site-content-i18n.py",
+  "backfill_ai_flag": "--ai",
+  "hermes_task_type": "hermes_site_i18n"
+}

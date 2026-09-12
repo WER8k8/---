@@ -1,0 +1,17 @@
+{
+  "charter": "ops-autopilot",
+  "version": 2,
+  "owner_action_required": false,
+  "daily_roster": ".project/expert-daily-roster.json",
+  "daily_runner": "scripts/ops-expert-daily-run.ps1",
+  "daily_schedule": "08:00 local + logon fallback",
+  "history": "docs/ops/expert-daily-history.jsonl",
+  "latest": "docs/ops/expert-daily-latest.json",
+  "lanes": {
+    "sre": { "duty": "存活探针、AutoStart", "report": "docs/ops/daily-health-latest.json" },
+    "security": { "duty": "假交付、路由、Webhook 单测", "reports": ["docs/no-fake-delivery-scan-latest.json"] },
+    "qa": { "duty": "cert:gate", "report": "docs/certification-gate-admin-latest.json" },
+    "devops": { "duty": "production preflight", "report": "docs/production-preflight-latest.json" }
+  },
+  "agent_directive": "每条实质性会话：读 expert-daily-latest.json；若 day!=today 或 fail_count>0，先跑 ops-expert-daily-run.ps1 并修 fail Lane。急诊先查 docs/ops/daily-runs/ 与 expert-daily-history.jsonl。"
+}

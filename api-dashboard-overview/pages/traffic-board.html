@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流量看板</title>
+    <style id="theme-vars">
+/* Brand CSS — 租户工作台 Dark Dashboard */
+:root {
+  /* Seed */
+  --seed-color: #4a9b8c;
+
+  /* Core palette */
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+
+  /* Semantic state colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Semantic radius aliases */
+  --brand-radius-sm: 6px;
+  --brand-radius-md: 10px;
+  --brand-radius-lg: 14px;
+  --brand-radius-large: 14px;
+  --brand-radius-small: 6px;
+  --brand-radius-medium: 10px;
+}
+
+/* Semantic alias resolution */
+.brand-background { background-color: var(--color-background); }
+.brand-foreground { color: var(--color-foreground); }
+.brand-card { background-color: var(--color-card); }
+.brand-card-foreground { color: var(--color-card-foreground); }
+.brand-popover { background-color: var(--color-popover); }
+.brand-popover-foreground { color: var(--color-popover-foreground); }
+.brand-primary { background-color: var(--color-primary); }
+.brand-primary-foreground { color: var(--color-primary-foreground); }
+.brand-muted { background-color: var(--color-muted); }
+.brand-muted-foreground { color: var(--color-muted-foreground); }
+.brand-border { border-color: var(--color-border); }
+.brand-input { background-color: var(--color-input); }
+.brand-ring { box-shadow: 0 0 0 2px var(--color-ring); }
+
+/* Typography scale */
+.brand-h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-foreground); }
+.brand-h2 { font-size: 1.3125rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-foreground); }
+.brand-h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--color-foreground); }
+.brand-h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--color-card-foreground); }
+.brand-body { font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--color-muted-foreground); }
+.brand-body-sm { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; color: var(--color-muted-foreground); }
+.brand-caption { font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--color-muted-foreground); }
+.brand-mono { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8125rem; }
+
+/* Font stack */
+.font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-card-foreground: var(--color-card-foreground);
+    --color-popover: var(--color-popover);
+    --color-popover-foreground: var(--color-popover-foreground);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-input: var(--color-input);
+    --color-ring: var(--color-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-card-foreground { background-color: var(--color-card-foreground); }
+      .text-card-foreground { color: var(--color-card-foreground); }
+      .border-card-foreground { border-color: var(--color-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--color-card-foreground); }
+      .bg-popover { background-color: var(--color-popover); }
+      .text-popover { color: var(--color-popover); }
+      .border-popover { border-color: var(--color-popover); }
+      .ring-popover { --tw-ring-color: var(--color-popover); }
+      .bg-popover-foreground { background-color: var(--color-popover-foreground); }
+      .text-popover-foreground { color: var(--color-popover-foreground); }
+      .border-popover-foreground { border-color: var(--color-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--color-popover-foreground); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-primary-foreground { background-color: var(--color-primary-foreground); }
+      .text-primary-foreground { color: var(--color-primary-foreground); }
+      .border-primary-foreground { border-color: var(--color-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--color-primary-foreground); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-muted-foreground { background-color: var(--color-muted-foreground); }
+      .text-muted-foreground { color: var(--color-muted-foreground); }
+      .border-muted-foreground { border-color: var(--color-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--color-muted-foreground); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+      .bg-input { background-color: var(--color-input); }
+      .text-input { color: var(--color-input); }
+      .border-input { border-color: var(--color-input); }
+      .ring-input { --tw-ring-color: var(--color-input); }
+      .bg-ring { background-color: var(--color-ring); }
+      .text-ring { color: var(--color-ring); }
+      .border-ring { border-color: var(--color-ring); }
+      .ring-ring { --tw-ring-color: var(--color-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased h-screen overflow-hidden">
+
+<!-- ============================================================
+     SIDEBAR — fixed 232px (matches dashboard-overview exactly)
+     ============================================================ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo__icon">优</div>
+    <div class="sidebar-logo__text"><span>优</span><span>丁</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Group 1: 工作台 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">工作台</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        今日概览
+      </a>
+      <a class="sidebar-item sidebar-item--active" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        流量看板
+      </a>
+    </div>
+
+    <!-- Group 2: 获客 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">获客</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        询盘管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        智能副驾
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+        出海机 App
+      </a>
+    </div>
+
+    <!-- Group 3: 发品 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">发品</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        产品管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+        内容管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        发布枢纽
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect width="15" height="20" x="1" y="2" rx="2" ry="2"/></svg>
+        视频出海
+      </a>
+    </div>
+
+    <!-- Group 4: 履约 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">履约</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        订单管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+        物流追踪
+      </a>
+    </div>
+
+    <!-- Group 5: 账户 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">账户</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="M16 16l4 4"/><path d="M19 13c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+        套餐与用量
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        域名管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        团队管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+        站点编辑
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        设置
+      </a>
+    </div>
+  </nav>
+
+  <!-- User section at bottom -->
+  <div class="sidebar-user">
+    <div class="sidebar-user__avatar">张</div>
+    <div class="sidebar-user__info">
+      <span class="sidebar-user__name">张建材</span>
+      <span class="sidebar-user__plan">专业版</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ============================================================
+     MAIN CONTENT — app-shell scroll region
+     ============================================================ -->
+<main class="main-content" data-viewport-mode="app-shell" style="margin-left:232px;padding:24px;height:100vh;overflow-y:auto;min-height:0;">
+
+  <!-- ====== TITLE BAR with period selector ====== -->
+  <section class="topbar" style="animation-delay:0ms;">
+    <div>
+      <p class="kicker">流量分析</p>
+      <h1 style="text-wrap:balance;word-break:keep-all;overflow-wrap:break-word;">流量看板</h1>
+    </div>
+    <div class="topbar-tools">
+      <div style="display:flex;gap:2px;padding:3px;border-radius:var(--brand-radius-md);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+        <button class="btn btn--period" data-period="today" style="padding:5px 14px;border-radius:8px;font-size:12px;font-weight:500;background:rgba(74,155,140,0.15);color:var(--color-primary);border:none;cursor:pointer;font-family:inherit;transition:all var(--uj-motion-duration) var(--uj-motion-ease);">今日</button>
+        <button class="btn btn--period" data-period="7d" style="padding:5px 14px;border-radius:8px;font-size:12px;font-weight:500;background:transparent;color:var(--color-muted-foreground);border:none;cursor:pointer;font-family:inherit;transition:all var(--uj-motion-duration) var(--uj-motion-ease);">7日</button>
+        <button class="btn btn--period" data-period="30d" style="padding:5px 14px;border-radius:8px;font-size:12px;font-weight:500;background:transparent;color:var(--color-muted-foreground);border:none;cursor:pointer;font-family:inherit;transition:all var(--uj-motion-duration) var(--uj-motion-ease);">30日</button>
+        <button class="btn btn--period" data-period="month" style="padding:5px 14px;border-radius:8px;font-size:12px;font-weight:500;background:transparent;color:var(--color-muted-foreground);border:none;cursor:pointer;font-family:inherit;transition:all var(--uj-motion-duration) var(--uj-motion-ease);">本月</button>
+      </div>
+      <button class="btn btn--default">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        导出报告
+      </button>
+    </div>
+  </section>
+
+  <!-- ====== KPI CARDS ROW ====== -->
+  <section style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;animation-delay:40ms;">
+    <!-- UV -->
+    <div class="panel" style="padding:18px 20px;border-radius:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:12px;font-weight:500;color:var(--color-muted-foreground);">UV访客数</span>
+        <span style="width:28px;height:28px;border-radius:8px;background:rgba(74,155,140,0.12);display:inline-flex;align-items:center;justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+      </div>
+      <div style="font-size:28px;font-weight:700;color:var(--color-foreground);letter-spacing:-0.02em;line-height:1.1;white-space:nowrap;" class="brand-h1">3,847</div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;">
+        <span style="color:var(--color-success);font-weight:600;display:inline-flex;align-items:center;gap:2px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          12.5%
+        </span>
+        <span style="color:var(--color-muted-foreground);">较昨日</span>
+      </div>
+    </div>
+
+    <!-- Clicks -->
+    <div class="panel" style="padding:18px 20px;border-radius:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:12px;font-weight:500;color:var(--color-muted-foreground);">页面点击</span>
+        <span style="width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,0.12);display:inline-flex;align-items:center;justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 15l-2 5L9 9l11 4-5 2z"/><path d="m22 22-5-5"/></svg>
+        </span>
+      </div>
+      <div style="font-size:28px;font-weight:700;color:var(--color-foreground);letter-spacing:-0.02em;line-height:1.1;white-space:nowrap;" class="brand-h1">12,563</div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;">
+        <span style="color:var(--color-success);font-weight:600;display:inline-flex;align-items:center;gap:2px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          8.3%
+        </span>
+        <span style="color:var(--color-muted-foreground);">较昨日</span>
+      </div>
+    </div>
+
+    <!-- Conversions -->
+    <div class="panel" style="padding:18px 20px;border-radius:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:12px;font-weight:500;color:var(--color-muted-foreground);">转化次数</span>
+        <span style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,0.12);display:inline-flex;align-items:center;justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </span>
+      </div>
+      <div style="font-size:28px;font-weight:700;color:var(--color-foreground);letter-spacing:-0.02em;line-height:1.1;white-space:nowrap;" class="brand-h1">186</div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;">
+        <span style="color:var(--color-danger);font-weight:600;display:inline-flex;align-items:center;gap:2px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          3.1%
+        </span>
+        <span style="color:var(--color-muted-foreground);">较昨日</span>
+      </div>
+    </div>
+
+    <!-- Conversion Rate -->
+    <div class="panel" style="padding:18px 20px;border-radius:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:12px;font-weight:500;color:var(--color-muted-foreground);">转化率</span>
+        <span style="width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,0.12);display:inline-flex;align-items:center;justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </span>
+      </div>
+      <div style="font-size:28px;font-weight:700;color:var(--color-foreground);letter-spacing:-0.02em;line-height:1.1;white-space:nowrap;" class="brand-h1">4.83%</div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;">
+        <span style="color:var(--color-success);font-weight:600;display:inline-flex;align-items:center;gap:2px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          0.7%
+        </span>
+        <span style="color:var(--color-muted-foreground);">较昨日</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== MAIN GRID: Chart (16) + Funnel (8) ====== -->
+  <section style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:16px;animation-delay:80ms;">
+    <!-- LEFT: Daily visit trend chart -->
+    <div class="panel" style="padding:18px 20px;border-radius:14px;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h3 style="font-size:14px;font-weight:600;color:var(--color-foreground);margin:0 0 2px 0;">每日访问趋势</h3>
+          <span style="font-size:11px;color:var(--color-muted-foreground);">近14天 UV / 点击 / 转化</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;font-size:11px;color:var(--color-muted-foreground);">
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-primary);"></span>UV</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-info);"></span>点击</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-warning);"></span>转化</span>
+        </div>
+      </div>
+      <div style="position:relative;height:280px;">
+        <canvas id="dailyTrendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- RIGHT: Conversion Funnel -->
+    <div class="panel" style="padding:18px 20px;border-radius:14px;">
+      <div style="margin-bottom:16px;">
+        <h3 style="font-size:14px;font-weight:600;color:var(--color-foreground);margin:0 0 2px 0;">转化漏斗</h3>
+        <span style="font-size:11px;color:var(--color-muted-foreground);">访客到成交各阶段转化</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;" class="funnel-bars">
+        <!-- 访客 -->
+        <div class="funnel-step">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">访客</span>
+            <span style="font-size:13px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">3,847</span>
+          </div>
+          <div style="height:28px;border-radius:var(--brand-radius-sm);background:rgba(255,255,255,0.06);overflow:hidden;position:relative;">
+            <div class="funnel-bar" data-width="100" style="height:100%;width:100%;border-radius:var(--brand-radius-sm);background:linear-gradient(90deg,var(--color-primary),rgba(74,155,140,0.7));position:relative;">
+              <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;border-radius:var(--brand-radius-sm);"></div>
+            </div>
+          </div>
+          <span style="font-size:11px;color:var(--color-muted-foreground);margin-top:3px;display:block;">100%</span>
+        </div>
+
+        <!-- 浏览 -->
+        <div class="funnel-step">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">浏览</span>
+            <span style="font-size:13px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">2,916</span>
+          </div>
+          <div style="height:28px;border-radius:var(--brand-radius-sm);background:rgba(255,255,255,0.06);overflow:hidden;position:relative;">
+            <div class="funnel-bar" data-width="75.8" style="height:100%;width:75.8%;border-radius:var(--brand-radius-sm);background:linear-gradient(90deg,var(--color-info),rgba(59,130,246,0.7));position:relative;">
+              <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;animation-delay:0.3s;border-radius:var(--brand-radius-sm);"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:3px;">
+            <span style="font-size:11px;color:var(--color-muted-foreground);">75.8%</span>
+            <span style="font-size:11px;color:var(--color-danger);">流失 24.2%</span>
+          </div>
+        </div>
+
+        <!-- 询盘 -->
+        <div class="funnel-step">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">询盘</span>
+            <span style="font-size:13px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">423</span>
+          </div>
+          <div style="height:28px;border-radius:var(--brand-radius-sm);background:rgba(255,255,255,0.06);overflow:hidden;position:relative;">
+            <div class="funnel-bar" data-width="26.7" style="height:100%;width:26.7%;border-radius:var(--brand-radius-sm);background:linear-gradient(90deg,var(--color-warning),rgba(245,158,11,0.7));position:relative;">
+              <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;animation-delay:0.6s;border-radius:var(--brand-radius-sm);"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:3px;">
+            <span style="font-size:11px;color:var(--color-muted-foreground);">11.0%</span>
+            <span style="font-size:11px;color:var(--color-danger);">流失 85.5%</span>
+          </div>
+        </div>
+
+        <!-- 成交 -->
+        <div class="funnel-step">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">成交</span>
+            <span style="font-size:13px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">186</span>
+          </div>
+          <div style="height:28px;border-radius:var(--brand-radius-sm);background:rgba(255,255,255,0.06);overflow:hidden;position:relative;">
+            <div class="funnel-bar" data-width="11.7" style="height:100%;width:11.7%;border-radius:var(--brand-radius-sm);background:linear-gradient(90deg,var(--color-success),rgba(16,185,129,0.7));position:relative;">
+              <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;animation-delay:0.9s;border-radius:var(--brand-radius-sm);"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:3px;">
+            <span style="font-size:11px;color:var(--color-muted-foreground);">4.83%</span>
+            <span style="font-size:11px;color:var(--color-danger);">流失 56.0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SOURCE CHANNEL BREAKDOWN ====== -->
+  <section class="panel" style="padding:18px 20px;border-radius:14px;margin-bottom:16px;animation-delay:120ms;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <h3 style="font-size:14px;font-weight:600;color:var(--color-foreground);margin:0 0 2px 0;">来源渠道分布</h3>
+        <span style="font-size:11px;color:var(--color-muted-foreground);">按流量来源分类统计</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;">
+      <!-- Direct -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--color-primary);flex-shrink:0;"></span>
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">直接访问</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <span style="font-size:14px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">1,245</span>
+            <span style="font-size:11px;color:var(--color-muted-foreground);">32.4%</span>
+          </div>
+        </div>
+        <div style="height:8px;border-radius:99px;background:rgba(255,255,255,0.06);overflow:hidden;">
+          <div style="width:32.4%;height:100%;border-radius:99px;background:var(--color-primary);position:relative;">
+            <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;border-radius:99px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organic -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--color-info);flex-shrink:0;"></span>
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">自然搜索</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <span style="font-size:14px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">1,432</span>
+            <span style="font-size:11px;color:var(--color-muted-foreground);">37.2%</span>
+          </div>
+        </div>
+        <div style="height:8px;border-radius:99px;background:rgba(255,255,255,0.06);overflow:hidden;">
+          <div style="width:37.2%;height:100%;border-radius:99px;background:var(--color-info);position:relative;">
+            <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;animation-delay:0.25s;border-radius:99px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--color-warning);flex-shrink:0;"></span>
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">社交媒体</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <span style="font-size:14px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">678</span>
+            <span style="font-size:11px;color:var(--color-muted-foreground);">17.6%</span>
+          </div>
+        </div>
+        <div style="height:8px;border-radius:99px;background:rgba(255,255,255,0.06);overflow:hidden;">
+          <div style="width:17.6%;height:100%;border-radius:99px;background:var(--color-warning);position:relative;">
+            <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;animation-delay:0.5s;border-radius:99px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Referral -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--color-success);flex-shrink:0;"></span>
+            <span style="font-size:12px;font-weight:500;color:var(--color-card-foreground);">外部引荐</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <span style="font-size:14px;font-weight:700;color:var(--color-foreground);white-space:nowrap;">492</span>
+            <span style="font-size:11px;color:var(--color-muted-foreground);">12.8%</span>
+          </div>
+        </div>
+        <div style="height:8px;border-radius:99px;background:rgba(255,255,255,0.06);overflow:hidden;">
+          <div style="width:12.8%;height:100%;border-radius:99px;background:var(--color-success);position:relative;">
+            <div class="shimmer-layer" style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%);background-size:200% 100%;animation:ujShimmer 2s ease-in-out infinite;animation-delay:0.75s;border-radius:99px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== TOP LANDING PAGES TABLE ====== -->
+  <section class="panel" style="padding:18px 20px;border-radius:14px;animation-delay:160ms;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <h3 style="font-size:14px;font-weight:600;color:var(--color-foreground);margin:0 0 2px 0;">热门落地页</h3>
+        <span style="font-size:11px;color:var(--color-muted-foreground);">按UV降序排列的前8个页面</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+            <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--color-muted-foreground);white-space:nowrap;min-width:60px;">#</th>
+            <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--color-muted-foreground);white-space:nowrap;min-width:220px;">页面路径</th>
+            <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:600;color:var(--color-muted-foreground);white-space:nowrap;min-width:80px;">UV</th>
+            <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:600;color:var(--color-muted-foreground);white-space:nowrap;min-width:90px;">平均停留</th>
+            <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:600;color:var(--color-muted-foreground);white-space:nowrap;min-width:90px;">跳出率</th>
+          </tr>
+        </thead>
+        <tbody id="landingPagesBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     STYLES — before </body> per hard rules
+     ============================================================ -->
+<style>
+/* ============================================================
+   PAGE BACKGROUND — dark mesh gradient
+   ============================================================ */
+body {
+  background: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(74,155,140,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   SIDEBAR — fixed 232px (matches dashboard-overview)
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 232px;
+  height: 100vh;
+  background: rgba(17,18,21,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 16px 0;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 16px 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  margin-bottom: 8px;
+}
+.sidebar-logo__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #3d8f7a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-logo__text {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.sidebar-logo__text span:first-child { font-weight: 700; }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar-group { margin-bottom: 12px; }
+.sidebar-group__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 10px 4px 10px;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  text-decoration: none;
+  border: 1px solid transparent;
+  position: relative;
+}
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+.sidebar-item--active {
+  background: rgba(74,155,140,0.1);
+  color: #fff;
+  border-left: 3px solid var(--color-primary);
+  padding-left: 7px;
+  font-weight: 600;
+}
+.sidebar-item--active svg {
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 4px rgba(74,155,140,0.5));
+}
+.sidebar-item svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.sidebar-item--active svg { opacity: 1; }
+
+.sidebar-user {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 14px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-user__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #3d8f7a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-user__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar-user__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.sidebar-user__plan {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+  width: fit-content;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+  min-height: 100vh;
+}
+
+/* ============================================================
+   GLASS PANEL
+   ============================================================ */
+.panel {
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+  transition: transform var(--uj-motion-duration) var(--uj-motion-ease),
+              box-shadow var(--uj-motion-duration) var(--uj-motion-ease);
+}
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(74,155,140,0.08);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes ujCardEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+}
+
+@keyframes ujShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.topbar .kicker {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  margin: 0 0 4px 0;
+}
+.topbar h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.02em;
+}
+.topbar-tools {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  border: none;
+  outline: none;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.btn--default {
+  background: rgba(255,255,255,0.06);
+  color: var(--color-card-foreground);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn--default:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+#landingPagesBody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background var(--uj-motion-duration) var(--uj-motion-ease);
+}
+#landingPagesBody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+#landingPagesBody tr:last-child {
+  border-bottom: none;
+}
+#landingPagesBody td {
+  padding: 10px 12px;
+  color: var(--color-card-foreground);
+  font-size: 13px;
+}
+
+/* ============================================================
+   FUNNEL ANIMATION — bars grow from 0 on load
+   ============================================================ */
+.funnel-bar {
+  width: 0 !important;
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.funnel-bars.animated .funnel-bar {
+  width: attr(data-width 1%) !important;
+}
+
+/* ===== Spring Physics Patch (DESIGN.md §7) ===== */
+@keyframes ujCardEnterSpring {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease-out,
+              border-color 0.3s ease-out;
+}
+.panel:hover {
+  transform: translateY(-3px);
+}
+@keyframes ujPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,155,140,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(74,155,140,0); }
+}
+.uj-pulse { animation: ujPulse 2s ease-in-out infinite; }
+@keyframes ujFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.uj-float { animation: ujFloat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .uj-pulse, .uj-float { animation: none !important; }
+}
+/* ===== End Spring Physics Patch ===== */
+
+
+/* Detail Modal */
+@keyframes detailModalIn {
+  0% { opacity:0; transform:translateY(16px) scale(0.96); }
+  60% { transform:translateY(-2px) scale(1.01); }
+  100% { opacity:1; transform:translateY(0) scale(1); }
+}
+#detailModalOverlay { transition: opacity 0.2s; }
+
+
+@media (max-width: 768px) {
+  .page-grid, .grid, [class*="grid-"], [class*="kpis"], [class*="cards"] {
+    grid-template-columns: 1fr !important;
+  }
+  .sidebar, [class*="sidebar"], [class*="side-"] {
+    display: none;
+  }
+  .panel, [class*="card"] {
+    padding: 12px;
+  }
+  table { font-size: 12px; }
+  th, td { padding: 8px 6px; }
+}
+
+</style>
+
+<!-- ============================================================
+     CHART.JS — Daily trend line chart
+     ============================================================ -->
+<script>
+(function() {
+  /* ---- 14-day mock data ---- */
+  const labels = ['07-08','07-09','07-10','07-11','07-12','07-13','07-14','07-15','07-16','07-17','07-18','07-19','07-20','07-21'];
+  const uvData     = [2841, 3102, 2956, 3245, 3412, 2789, 2567, 3012, 3356, 3589, 3621, 3398, 3712, 3847];
+  const clickData  = [8934, 9456, 9123, 10234, 10789, 8654, 8234, 9456, 10432, 11234, 11456, 10876, 11987, 12563];
+  const convData   = [98, 112, 105, 128, 142, 95, 87, 118, 138, 152, 158, 145, 168, 186];
+
+  const ctx = document.getElementById('dailyTrendChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'UV',
+          data: uvData,
+          borderColor: '#4a9b8c',
+          backgroundColor: 'rgba(74,155,140,0.08)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#4a9b8c',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          yAxisID: 'y'
+        },
+        {
+          label: '点击',
+          data: clickData,
+          borderColor: '#3b82f6',
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#3b82f6',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          yAxisID: 'y'
+        },
+        {
+          label: '转化',
+          data: convData,
+          borderColor: '#f59e0b',
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.4,
+          borderWidth: 2,
+          borderDash: [4, 3],
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#f59e0b',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(21,22,26,0.95)',
+          titleColor: '#f0f2f5',
+          bodyColor: '#e4e6eb',
+          borderColor: 'rgba(255,255,255,0.08)',
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 10,
+          titleFont: { size: 12, weight: '600' },
+          bodyFont: { size: 12 },
+          boxPadding: 4,
+          usePointStyle: true
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: 'rgba(255,255,255,0.04)',
+            drawBorder: false
+          },
+          ticks: {
+            color: '#8b8fa0',
+            font: { size: 11 },
+            maxRotation: 0
+          }
+        },
+        y: {
+          position: 'left',
+          grid: {
+            color: 'rgba(255,255,255,0.04)',
+            drawBorder: false
+          },
+          ticks: {
+            color: '#8b8fa0',
+            font: { size: 11 },
+            callback: function(v) { return v >= 1000 ? (v/1000).toFixed(1) + 'k' : v; }
+          }
+        },
+        y1: {
+          position: 'right',
+          grid: { drawOnChartArea: false, drawBorder: false },
+          ticks: {
+            color: '#8b8fa0',
+            font: { size: 11 }
+          }
+        }
+      }
+    }
+  });
+
+  /* ---- Landing pages table data ---- */
+  const pages = [
+    { path: '/',                     uv: 892,  avgTime: '2m 34s', bounce: '32.1%' },
+    { path: '/products/ceramic-tile', uv: 654,  avgTime: '3m 12s', bounce: '28.5%' },
+    { path: '/products/led-lighting', uv: 521,  avgTime: '2m 48s', bounce: '35.7%' },
+    { path: '/about-us',              uv: 438,  avgTime: '1m 56s', bounce: '42.3%' },
+    { path: '/products/auto-parts',   uv: 387,  avgTime: '3m 45s', bounce: '26.8%' },
+    { path: '/contact',               uv: 312,  avgTime: '1m 22s', bounce: '18.4%' },
+    { path: '/blog/trade-tips-2026',  uv: 268,  avgTime: '4m 01s', bounce: '22.9%' },
+    { path: '/products/textile',      uv: 245,  avgTime: '2m 17s', bounce: '38.6%' }
+  ];
+
+  const tbody = document.getElementById('landingPagesBody');
+  pages.forEach(function(p, i) {
+    const tr = document.createElement('tr');
+    const bounceNum = parseFloat(p.bounce);
+    const bounceColor = bounceNum > 40 ? 'var(--color-danger)' : bounceNum > 30 ? 'var(--color-warning)' : 'var(--color-success)';
+    tr.innerHTML =
+      '<td style="color:var(--color-muted-foreground);font-size:12px;font-weight:500;">' + (i + 1) + '</td>' +
+      '<td style="font-family:\'JetBrains Mono\',\'Fira Code\',ui-monospace,monospace;font-size:12px;color:var(--color-primary);white-space:nowrap;overflow:hidden;text-ellipsis;max-width:300px;display:block;">' + p.path + '</td>' +
+      '<td style="text-align:right;font-weight:600;color:var(--color-foreground);white-space:nowrap;">' + p.uv.toLocaleString() + '</td>' +
+      '<td style="text-align:right;color:var(--color-card-foreground);white-space:nowrap;">' + p.avgTime + '</td>' +
+      '<td style="text-align:right;white-space:nowrap;"><span style="color:' + bounceColor + ';font-weight:500;">' + p.bounce + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  /* ---- Funnel bar animation ---- */
+  setTimeout(function() {
+    document.querySelectorAll('.funnel-bar').forEach(function(bar) {
+      bar.style.width = bar.getAttribute('data-width') + '%';
+    });
+  }, 300);
+
+  /* ---- Period selector ---- */
+  document.querySelectorAll('.btn--period').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.btn--period').forEach(function(b) {
+        b.style.background = 'transparent';
+        b.style.color = 'var(--color-muted-foreground)';
+      });
+      this.style.background = 'rgba(74,155,140,0.15)';
+      this.style.color = 'var(--color-primary)';
+    });
+  });
+})();
+</script>
+<script>lucide.createIcons();</script>
+
+<!-- Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;">
+  <div id="detailModalOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);"></div>
+  <div id="detailModalContent" style="position:relative;width:min(640px,90vw);max-height:80vh;overflow-y:auto;background:rgba(21,22,26,0.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);padding:0;animation:detailModalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <h3 id="detailModalTitle" style="margin:0;font-size:17px;font-weight:600;color:var(--color-foreground);">详情</h3>
+      <button id="detailModalClose" style="background:none;border:none;color:var(--color-muted-foreground);cursor:pointer;padding:4px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='none'">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+    <div id="detailModalBody" style="padding:20px 24px 24px;font-size:14px;color:var(--color-card-foreground);line-height:1.7;"></div>
+  </div>
+</div>
+
+<script>
+/* Detail Modal Logic */
+(function() {
+  var modal = document.getElementById('detailModal');
+  var overlay = document.getElementById('detailModalOverlay');
+  var closeBtn = document.getElementById('detailModalClose');
+  var titleEl = document.getElementById('detailModalTitle');
+  var bodyEl = document.getElementById('detailModalBody');
+  if (!modal) return;
+
+  function openDetail(title, html) {
+    titleEl.textContent = title;
+    bodyEl.innerHTML = html;
+    modal.style.display = 'flex';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  function closeDetail() { modal.style.display = 'none'; }
+
+  if (overlay) overlay.addEventListener('click', closeDetail);
+  if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDetail(); });
+
+  window.openDetail = openDetail;
+  window.closeDetail = closeDetail;
+
+  /* Auto-bind: KPI cards */
+  document.querySelectorAll('.kpi-card, .stats-card, .yd-stats-card').forEach(function(card) {
+    if (card.dataset.detailBound) return;
+    card.dataset.detailBound = '1';
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      var label = card.querySelector('.kpi-card__label, .stats-card__label, [class*="label"]');
+      var value = card.querySelector('.kpi-card__value, .stats-card__value, [class*="value"]');
+      var l = label ? label.textContent : '指标详情';
+      var v = value ? value.textContent : '';
+      openDetail(l, '<div style="text-align:center;padding:24px 0;">' +
+        '<div style="font-size:48px;font-weight:700;color:var(--color-primary);margin-bottom:8px;">' + v + '</div>' +
+        '<div style="font-size:14px;color:var(--color-muted-foreground);margin-bottom:20px;">' + l + '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">环比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+12.5%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">同比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+8.3%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">目标</div><div style="font-size:16px;font-weight:600;">85%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">趋势</div><div style="font-size:16px;font-weight:600;color:var(--color-info);">上升</div></div>' +
+        '</div></div>');
+    });
+  });
+
+  /* Auto-bind: Table rows */
+  document.querySelectorAll('table tbody tr').forEach(function(row) {
+    if (row.dataset.detailBound) return;
+    row.dataset.detailBound = '1';
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+      var cells = row.querySelectorAll('td');
+      var html = '<div style="display:grid;gap:12px;">';
+      var headers = row.closest('table').querySelectorAll('th');
+      headers.forEach(function(th, i) {
+        if (cells[i]) {
+          html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="color:var(--color-muted-foreground);font-size:13px;">' + th.textContent.trim() + '</span><span style="font-size:13px;font-weight:500;">' + cells[i].textContent.trim() + '</span></div>';
+        }
+      });
+      html += '</div>';
+      var firstCell = cells[0] ? cells[0].textContent.trim() : '记录详情';
+      openDetail(firstCell, html);
+    });
+  });
+
+  /* Auto-bind: Clickable cards with data-detail attribute */
+  document.querySelectorAll('[data-detail]').forEach(function(el) {
+    if (el.dataset.detailBound) return;
+    el.dataset.detailBound = '1';
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function() {
+      openDetail(el.dataset.detailTitle || '详情', el.dataset.detail || '');
+    });
+  });
+})();
+</script>
+
+<script>
+/* Traffic: click landing page rows */
+document.querySelectorAll('#landingPagesBody tr').forEach(function(row) {
+  if (row.dataset.detailBound) return;
+  row.dataset.detailBound = '1';
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', function(e) {
+    if (e.target.closest('button')) return;
+    var cells = row.querySelectorAll('td');
+    var url = cells[0] ? cells[0].textContent.trim() : '';
+    openDetail('页面流量详情', '<div>' +
+      '<div style="font-family:monospace;font-size:12px;color:var(--color-muted-foreground);margin-bottom:16px;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:6px;">' + url + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+        '<div style="padding:14px;background:rgba(59,130,246,0.08);border-radius:8px;text-align:center;"><div style="font-size:24px;font-weight:700;color:var(--color-info);">' + (cells[1] ? cells[1].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">UV访客</div></div>' +
+        '<div style="padding:14px;background:rgba(74,155,140,0.08);border-radius:8px;text-align:center;"><div style="font-size:24px;font-weight:700;color:var(--color-primary);">' + (cells[2] ? cells[2].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">页面点击</div></div>' +
+        '<div style="padding:14px;background:rgba(16,185,129,0.08);border-radius:8px;text-align:center;"><div style="font-size:24px;font-weight:700;color:var(--color-success);">' + (cells[3] ? cells[3].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">转化</div></div>' +
+        '<div style="padding:14px;background:rgba(245,158,11,0.08);border-radius:8px;text-align:center;"><div style="font-size:24px;font-weight:700;color:var(--color-warning);">' + (cells[4] ? cells[4].textContent.trim() : '-') + '</div><div style="font-size:11px;color:var(--color-muted-foreground);">转化率</div></div>' +
+      '</div></div>');
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.07.06.8",
+    "version_source": "skill-version.json",
+    "runtime_skill_dir": "c:\\Users\\Administrator.WIN-36O2UQRI3U1\\.trae-cn\\builtin\\design\\default\\skills\\solo-design",
+    "recorded_at": "2026-07-20T14:22:00Z"
+  },
+  "project": {
+    "name": "API 管理平台概览",
+    "path": "c:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\api-dashboard-overview",
+    "operation": "create",
+    "deviceType": "desktop",
+    "language": "zh-CN",
+    "dashboardMode": true,
+    "intentProfile": {
+      "caseFamily": "free_exploration",
+      "graphicStrategy": null,
+      "sourceType": null,
+      "routingReason": "User referenced hcnsec.cn dashboard style for layout/color/animation inspiration"
+    },
+    "replicationMode": null,
+    "sourceUrl": "https://api.hcnsec.cn/dashboard/overview",
+    "cssPreflightEvidence": {
+      "applies": true,
+      "status": "passed",
+      "command": "node {SKILL_DIR}/script/fill-html-head.mjs colors_and_type.css .preflight/preflight.html --title=Preflight --lang=zh-CN --prefix=brand",
+      "brandPrefix": "brand",
+      "checks": {
+        "themeVars": "present",
+        "semanticTokenFallback": "present",
+        "themeInline": "present",
+        "tailwindCdn": "present",
+        "htmlClass": "present",
+        "semanticMappings": "resolved"
+      },
+      "retryCount": 1,
+      "blockingReason": null
+    },
+    "designRead": "dashboard / SaaS admin / dark tech / balanced / generic-card-wall",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 4,
+      "visualDensity": 3
+    },
+    "styleDefinitionBrief": "Dark tech API dashboard with smooth animations, clean card surfaces, blue primary accent, generous spacing, sidebar nav layout"
+  }
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talking-Stick 安全审计报告 - scan_20260722_085658_1541114114512</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #4a9b8c 0%, #2d7a6e 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0 0 10px 0; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .summary-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #666; font-size: 14px; }
+        .summary-card .value { font-size: 32px; font-weight: bold; }
+        .critical .value { color: #dc3545; }
+        .high .value { color: #fd7e14; }
+        .medium .value { color: #ffc107; }
+        .low .value { color: #28a745; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge.critical { background: #dc3545; color: white; }
+        .badge.high { background: #fd7e14; color: white; }
+        .badge.medium { background: #ffc107; color: #333; }
+        .badge.low { background: #28a745; color: white; }
+        .badge.info { background: #17a2b8; color: white; }
+        tr.critical { border-left: 4px solid #dc3545; }
+        tr.high { border-left: 4px solid #fd7e14; }
+        tr.medium { border-left: 4px solid #ffc107; }
+        tr.low { border-left: 4px solid #28a745; }
+        .section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .section h2 { margin-top: 0; color: #333; }
+        .recommendation { padding: 10px 15px; background: #e8f5e9; border-left: 4px solid #4caf50; margin: 10px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Talking-Stick 安全审计报告</h1>
+            <p>任务ID: scan_20260722_085658_1541114114512 | 生成时间: 2026-07-22 08:56:59</p>
+            <p>扫描目标: C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services</p>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-card"><h3>总文件数</h3><div class="value">546</div></div>
+            <div class="summary-card"><h3>风险文件</h3><div class="value">544</div></div>
+            <div class="summary-card critical"><h3>严重漏洞</h3><div class="value">25</div></div>
+            <div class="summary-card high"><h3>高危漏洞</h3><div class="value">0</div></div>
+            <div class="summary-card medium"><h3>中危漏洞</h3><div class="value">0</div></div>
+            <div class="summary-card low"><h3>低危漏洞</h3><div class="value">0</div></div>
+            <div class="summary-card"><h3>确认漏洞</h3><div class="value">23</div></div>
+            <div class="summary-card"><h3>误报</h3><div class="value">2</div></div>
+        </div>
+        
+        <div class="section">
+            <h2>漏洞详情</h2>
+            <table>
+                <thead>
+                    <tr><th>规则</th><th>严重程度</th><th>文件</th><th>行号</th><th>OWASP类别</th><th>描述</th></tr>
+                </thead>
+                <tbody>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cosmos_infer_service.py</td>
+                <td>184</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\media_video_edit_service.py</td>
+                <td>47</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_2</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\media_video_edit_service.py</td>
+                <td>209</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\ops_expert_autonomy_service.py</td>
+                <td>86</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_2</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\ops_expert_autonomy_service.py</td>
+                <td>184</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A07-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\platform_storage_provision_service.py</td>
+                <td>418</td>
+                <td>A07:2021</td>
+                <td>检测硬编码API密钥</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\ssl_certificate_service.py</td>
+                <td>77</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\audio_asr_service.py</td>
+                <td>119</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\audio_chunk_service.py</td>
+                <td>40</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_2</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\audio_chunk_service.py</td>
+                <td>73</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\krillinai_sidecar_adapter.py</td>
+                <td>27</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\opensource_localization_service.py</td>
+                <td>342</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\tts_service.py</td>
+                <td>180</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_2</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\tts_service.py</td>
+                <td>256</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_3</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\tts_service.py</td>
+                <td>324</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\video_dub_service.py</td>
+                <td>231</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\cross_border\voice_gender_infer.py</td>
+                <td>49</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\hermes\anysearch_probe_service.py</td>
+                <td>80</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\talking_stick\agents\verify_agent.py</td>
+                <td>215</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_2</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\talking_stick\agents\verify_agent.py</td>
+                <td>215</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_3</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\talking_stick\agents\verify_agent.py</td>
+                <td>234</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_4</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\talking_stick\agents\verify_agent.py</td>
+                <td>234</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_1</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\ubrain\skill_audit_service.py</td>
+                <td>107</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_2</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\ubrain\skill_audit_service.py</td>
+                <td>109</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr>
+            <tr class="critical">
+                <td>OWASP-A03-002_3</td>
+                <td><span class="badge critical">CRITICAL</span></td>
+                <td>C:\Users\Administrator.WIN-36O2UQRI3U1\Desktop\上线网站开发完成\上线网站\backend\app\services\ubrain\skill_audit_service.py</td>
+                <td>110</td>
+                <td>A03:2021</td>
+                <td>检测命令注入漏洞</td>
+            </tr></tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>修复建议</h2>
+            <div class="recommendation">确认 23 个真实漏洞，需要修复</div><div class="recommendation">识别 2 个误报，可忽略</div><div class="recommendation">发现 22 个严重漏洞，需要立即修复</div><div class="recommendation">发现 1 个高危漏洞，建议优先处理</div>
+        </div>
+    </div>
+</body>
+</html>

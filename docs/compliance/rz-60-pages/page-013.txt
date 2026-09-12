@@ -1,0 +1,51 @@
+// FILE: backend\app\core\admin_auth.py
+        codes = await get_user_permission_codes(user, db)
+        if "*:*" in codes:
+            return user
+        if required_code not in codes:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"缺少权限: {required_code}",
+            )
+        return user
+
+    return Depends(checker)
+
+
+def require_any_permission(required_codes: List[str]):
+    """FastAPI 依赖工厂: 满足任意一个权限码即可"""
+
+    async def checker(
+        request: Request,
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db),
+    ) -> User:
+        codes = await get_user_permission_codes(user, db)
+        if "*:*" in codes:
+            return user
+        if not any(c in codes for c in required_codes):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"缺少以下任一权限: {', '.join(required_codes)}",
+            )
+        return user
+
+    return Depends(checker)
+
+
+def invalidate_user_permission_cache(user_id: str) -> None:
+    """清除用户权限缓存"""
+    delete_pattern(f"perm:{user_id}")
+    delete_pattern(f"menu:{user_id}:*")
+
+
+def _extract_token(request: Request) -> Optional[str]:
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        return auth[7:]
+    return None
+
+
+def _get_token_jti(token: str) -> Optional[str]:
+    try:
+        from jose import jwt

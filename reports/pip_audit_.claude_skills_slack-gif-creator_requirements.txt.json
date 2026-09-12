@@ -1,0 +1,1 @@
+{"dependencies": [{"name": "pillow", "version": "12.3.0", "vulns": []}, {"name": "imageio", "version": "2.37.4", "vulns": []}, {"name": "imageio-ffmpeg", "version": "0.6.0", "vulns": []}, {"name": "numpy", "version": "2.5.1", "vulns": []}], "fixes": []}

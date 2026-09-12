@@ -1,0 +1,251 @@
+﻿"""轮 25-A RLS 试点 真实 PostgreSQL 隔离验证。
+
+用法：python tests/rls_real_pg_verify.py
+前提：已连接真实 PG（如 docker uj-pg-verify:5432/uj_test），迁移 088_rls_pilot 已应用。
+
+测试项覆盖（双租户穿透 0 泄漏）：
+1) 5 张试点表 RLS 启用状态核验 (rowsecurity=true)
+2) 5 张试点表策略绑定核验 (pg_policies)
+3) 角色权限就位 (app_user, service_role)
+4) prospect_leads 双租户穿透与隔离 (SELECT/UPDATE/DELETE 0 泄漏)
+5) email_outreachs 双租户穿透与隔离
+6) content_masters 双租户穿透与隔离
+7) ubrain_tenant_memory 双租户穿透与隔离
+8) token_ledger_entries service_role 旁路全查 + app_user 仅允许 INSERT 约束
+9) app_user 未设置 tenant_id 时被安全拦截
+10) 租户穿透恶意 INSERT 拦截 (WITH CHECK (tenant_id = current_tenant_id))
+"""
+
+from __future__ import annotations
+
+import datetime
+import os
+import sys
+import uuid
+import psycopg2
+from psycopg2 import sql
+
+PG_HOST = os.getenv("POSTGRES_HOST", "127.0.0.1")
+PG_PORT = int(os.getenv("POSTGRES_PORT", "5432"))
+PG_USER = os.getenv("POSTGRES_USER", "postgres")
+PG_PASSWORD = os.getenv("POSTGRES_PASSWORD", "test")
+PG_DB = os.getenv("POSTGRES_DB", "uj_test")
+
+PILOT_TABLES = [
+    "prospect_leads",
+    "email_outreachs",
+    "content_masters",
+    "ubrain_tenant_memory",
+    "token_ledger_entries",
+]
+
+PASS = 0
+FAIL = 0
+TOTAL = 0
+
+
+def check(name: str, cond: bool, detail: str = ""):
+    global PASS, FAIL, TOTAL
+    TOTAL += 1
+    if cond:
+        PASS += 1
+        print(f"  [PASS] {name}")
+    else:
+        FAIL += 1
+        extra = f" -- {detail}" if detail else ""
+        print(f"  [FAIL] {name}{extra}")
+
+
+def get_connection():
+    return psycopg2.connect(
+        host=PG_HOST,
+        port=PG_PORT,
+        user=PG_USER,
+        password=PG_PASSWORD,
+        dbname=PG_DB,
+    )
+
+
+def main():
+    print("=" * 60)
+    print("轮 25-A: RLS 真实 PostgreSQL 双租户穿透验证 (rls_real_pg_verify)")
+    print("=" * 60)
+
+    conn = get_connection()
+    conn.autocommit = True
+    cur = conn.cursor()
+
+    cur.execute("GRANT USAGE ON SCHEMA public TO app_user, service_role;")
+    # 与生产角色映射对齐：app_user DML+TRIGGER（无 TRUNCATE/REFERENCES），
+    # service_role DML+TRUNCATE。避免与 role_grants_verify 的精度断言冲突。
+    cur.execute("REVOKE ALL ON ALL TABLES IN SCHEMA public FROM app_user, service_role;")
+    cur.execute(
+        "GRANT SELECT, INSERT, UPDATE, DELETE, TRIGGER "
+        "ON ALL TABLES IN SCHEMA public TO app_user;"
+    )
+    cur.execute(
+        "GRANT SELECT, INSERT, UPDATE, DELETE, TRIGGER, TRUNCATE "
+        "ON ALL TABLES IN SCHEMA public TO service_role;"
+    )
+
+    print("\n[阶段 1: 5 张试点表 RLS 启用状态检查]")
+    for tbl in PILOT_TABLES:
+        cur.execute(
+            "SELECT rowsecurity FROM pg_tables WHERE schemaname = 'public' AND tablename = %s;",
+            (tbl,),
+        )
+        row = cur.fetchone()
+        check(f"{tbl} 已启用 rowsecurity", row is not None and row[0] is True)
+
+    print("\n[阶段 2: 5 张试点表安全策略定义检查]")
+    for tbl in PILOT_TABLES:
+        cur.execute(
+            "SELECT count(*) FROM pg_policies WHERE schemaname = 'public' AND tablename = %s;",
+            (tbl,),
+        )
+        cnt = cur.fetchone()[0]
+        check(f"{tbl} 已绑定 RLS 策略 (策略数 >= 1)", cnt >= 1, f"当前策略数: {cnt}")
+
+    tenant_a = str(uuid.uuid4())
+    tenant_b = str(uuid.uuid4())
+    now = datetime.datetime.now(datetime.timezone.utc)
+
+    print("\n[阶段 3: 双租户写入与隔离穿透测试 (0 泄漏)]")
+
+    def make_vals(tbl_name, t_id):
+        if tbl_name == "prospect_leads":
+            return [
+                str(uuid.uuid4()), t_id, "test_source", "new",
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0, 0, 0, 0, 1, now, now
+            ]
+        elif tbl_name == "email_outreachs":
+            return [
+                str(uuid.uuid4()), t_id, str(uuid.uuid4()),
+                "sender@example.com", "Sender", "dest@example.com",
+                "Subject", "<p>Hello</p>", "pending", 0, 0, now, now
+            ]
+        elif tbl_name == "content_masters":
+            return [
+                str(uuid.uuid4()), t_id, "Test Title"
+            ]
+        elif tbl_name == "ubrain_tenant_memory":
+            return [
+                t_id, "{}", 0
+            ]
+        raise ValueError(tbl_name)
+
+    standard_tables = [
+        ("prospect_leads",
+         "id, tenant_id, source, status, fit_score, engagement_score, overall_score, score_match, score_email, score_evidence, score_contact, open_count, click_count, reply_count, contact_count, version, created_at, updated_at",
+         "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s",
+         1),
+        ("email_outreachs",
+         "id, tenant_id, idempotency_key, from_email, from_name, to_email, subject, html_body, status, open_count, click_count, created_at, updated_at",
+         "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s",
+         1),
+        ("content_masters",
+         "id, tenant_id, title",
+         "%s, %s, %s",
+         1),
+        ("ubrain_tenant_memory",
+         "tenant_id, memory_json, tool_use_count",
+         "%s, %s, %s",
+         0),
+    ]
+
+    for tbl, cols, placeholders, tenant_idx in standard_tables:
+        cur.execute(sql.SQL("DELETE FROM {} WHERE tenant_id IN (%s, %s);").format(sql.Identifier(tbl)), (tenant_a, tenant_b))
+
+        cur.execute("SET ROLE app_user;")
+        cur.execute(f"SET app.current_tenant_id = '{tenant_a}';")
+
+        vals_a = make_vals(tbl, tenant_a)
+        cur.execute(
+            sql.SQL("INSERT INTO {} ({}) VALUES ({});").format(
+                sql.Identifier(tbl),
+                sql.SQL(cols),
+                sql.SQL(placeholders),
+            ),
+            vals_a,
+        )
+
+        cur.execute(sql.SQL("SELECT count(*) FROM {};").format(sql.Identifier(tbl)))
+        cnt_a = cur.fetchone()[0]
+        check(f"{tbl}: 租户 A 可读取自身写入数据", cnt_a == 1, f"got {cnt_a}")
+
+        cur.execute(f"SET app.current_tenant_id = '{tenant_b}';")
+        cur.execute(sql.SQL("SELECT count(*) FROM {};").format(sql.Identifier(tbl)))
+        cnt_b_reads_a = cur.fetchone()[0]
+        check(f"{tbl}: 租户 B 无法查询租户 A 数据 (0 泄漏)", cnt_b_reads_a == 0, f"got {cnt_b_reads_a}")
+
+        cur.execute(sql.SQL("DELETE FROM {} WHERE tenant_id = %s;").format(sql.Identifier(tbl)), (tenant_a,))
+        del_cnt = cur.rowcount
+        check(f"{tbl}: 租户 B 越权删除租户 A 数据受 RLS 拦截 (影响行数 0)", del_cnt == 0, f"got {del_cnt}")
+
+        vals_fake = make_vals(tbl, tenant_a)
+        violation = False
+        try:
+            cur.execute(
+                sql.SQL("INSERT INTO {} ({}) VALUES ({});").format(
+                    sql.Identifier(tbl),
+                    sql.SQL(cols),
+                    sql.SQL(placeholders),
+                ),
+                vals_fake,
+            )
+        except Exception:
+            violation = True
+        check(f"{tbl}: 租户 B 伪造写入租户 A 数据触发 WITH CHECK 拒绝", violation)
+
+        cur.execute("RESET ROLE;")
+        cur.execute(sql.SQL("DELETE FROM {} WHERE tenant_id IN (%s, %s);").format(sql.Identifier(tbl)), (tenant_a, tenant_b))
+
+    print("\n[阶段 4: token_ledger_entries service_role 旁路与 app_user 限制]")
+    cur.execute("DELETE FROM token_ledger_entries WHERE tenant_id IN (%s, %s);", (tenant_a, tenant_b))
+
+    cur.execute("SET ROLE app_user;")
+    cur.execute(f"SET app.current_tenant_id = '{tenant_a}';")
+    entry_id = str(uuid.uuid4())
+    cur.execute(
+        "INSERT INTO token_ledger_entries (id, tenant_id, delta, balance_after, reason) "
+        "VALUES (%s, %s, 100, 100, 'test_charge');",
+        (entry_id, tenant_a),
+    )
+    check("token_ledger_entries: app_user 允许写入本租户流水", True)
+
+    cur.execute("SELECT count(*) FROM token_ledger_entries WHERE id = %s;", (entry_id,))
+    user_see = cur.fetchone()[0]
+    check("token_ledger_entries: app_user 被禁止直接读取账本 (USING false 生效)", user_see == 0, f"got {user_see}")
+
+    cur.execute("SET ROLE service_role;")
+    cur.execute("SELECT count(*) FROM token_ledger_entries WHERE id = %s;", (entry_id,))
+    service_see = cur.fetchone()[0]
+    check("token_ledger_entries: service_role 旁路可正常读取全局账本流水", service_see == 1, f"got {service_see}")
+
+    print("\n[阶段 5: app_user 未绑定 tenant_id 时的安全性检查]")
+    cur.execute("SET ROLE app_user;")
+    cur.execute("RESET app.current_tenant_id;")
+    blocked = False
+    try:
+        cur.execute("SELECT count(*) FROM prospect_leads;")
+    except Exception:
+        blocked = True
+    check("app_user 未设置 app.current_tenant_id 时禁止空门进入", blocked)
+
+    cur.execute("RESET ROLE;")
+    cur.execute("DELETE FROM token_ledger_entries WHERE tenant_id IN (%s, %s);", (tenant_a, tenant_b))
+    cur.close()
+    conn.close()
+
+    print("\n" + "=" * 60)
+    print(f"验证完成: {PASS} PASS / {FAIL} FAIL (共 {TOTAL} 项测试)")
+    print("=" * 60)
+
+    if FAIL > 0:
+        sys.exit(1)
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

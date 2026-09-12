@@ -1,0 +1,69 @@
+/**
+ * 租户壳 · 2026 客户体验层（Taste V5 M3 D5 · LOCKED client accent）
+ * 仅作用于 .client-shell，不污染平台超管壳
+ */
+.client-shell {
+  --client-hero-from: #1f2937;
+  --client-hero-to: #374151;
+  --client-surface: #ffffff;
+  --client-muted: #64748b;
+  --client-accent: #5c7284;
+  --client-ring: rgb(92 114 132 / 0.35);
+  --client-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* 租户壳：中性浅灰底，避免薄荷 mesh 与卡片/侧栏撞色 */
+  --uj-bg-page: #f3f4f6;
+  --uj-bg-page-mesh: #f3f4f6;
+  --uj-brand-muted: rgb(92 114 132 / 0.12);
+}
+
+.client-shell .client-header {
+  backdrop-filter: blur(12px);
+  background: rgb(255 255 255 / 0.92);
+}
+
+.client-shell .client-nav__item {
+  transition:
+    background 0.18s var(--client-ease),
+    color 0.18s var(--client-ease),
+    transform 0.18s var(--client-ease);
+}
+
+.client-shell .client-nav__item:focus-visible {
+  outline: 2px solid var(--uj-brand);
+  outline-offset: 2px;
+}
+
+.client-shell .client-nav__item--active {
+  background: #e8edf2 !important;
+  color: #1f2937 !important;
+  box-shadow: inset 3px 0 0 var(--client-accent, #5c7284);
+}
+
+.client-shell .client-header__logo {
+  background: var(--client-accent, #5c7284) !important;
+  box-shadow: none !important;
+}
+
+.client-shell .client-content {
+  background: var(--uj-bg-page) !important;
+  background-color: var(--uj-bg-page) !important;
+}
+
+.client-shell .client-nav__item--primary {
+  font-weight: 600;
+}
+
+.client-shell .client-nav__more {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--uj-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-shell .client-nav__item,
+  .today-three-page .step-card,
+  .today-three-page .hero-band {
+    transition: none !important;
+    animation: none !important;
+  }
+}

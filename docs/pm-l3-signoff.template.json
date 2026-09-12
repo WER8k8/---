@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "gate": "S2-L3",
+  "signed_at": null,
+  "items": [
+    { "id": "L3-1", "title": "Agent 无超管链", "pass": null, "signer": null },
+    { "id": "L3-2", "title": "送检菜单仅鉴定面", "pass": null, "signer": null },
+    { "id": "L3-3", "title": "Stub 实验室不可见", "pass": null, "signer": null },
+    { "id": "L3-4", "title": "12 截图与脚本一致", "pass": null, "signer": null },
+    { "id": "L3-5", "title": "手册 PDF 可读", "pass": null, "signer": null },
+    { "id": "L3-6", "title": "30min 彩排完成", "pass": null, "signer": null }
+  ]
+}

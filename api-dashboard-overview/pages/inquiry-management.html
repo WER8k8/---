@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>询盘管理</title>
+    <style id="theme-vars">
+/* Brand CSS — 租户工作台 Dark Dashboard */
+:root {
+  --uj-motion-duration: 0.3s;
+  --uj-motion-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Seed */
+  --seed-color: #4a9b8c;
+
+  /* Core palette */
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+
+  /* Semantic state colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Semantic radius aliases */
+  --brand-radius-sm: 6px;
+  --brand-radius-md: 10px;
+  --brand-radius-lg: 14px;
+  --brand-radius-large: 14px;
+  --brand-radius-small: 6px;
+  --brand-radius-medium: 10px;
+}
+
+/* Semantic alias resolution */
+.brand-background { background-color: var(--color-background); }
+.brand-foreground { color: var(--color-foreground); }
+.brand-card { background-color: var(--color-card); }
+.brand-card-foreground { color: var(--color-card-foreground); }
+.brand-popover { background-color: var(--color-popover); }
+.brand-popover-foreground { color: var(--color-popover-foreground); }
+.brand-primary { background-color: var(--color-primary); }
+.brand-primary-foreground { color: var(--color-primary-foreground); }
+.brand-muted { background-color: var(--color-muted); }
+.brand-muted-foreground { color: var(--color-muted-foreground); }
+.brand-border { border-color: var(--color-border); }
+.brand-input { background-color: var(--color-input); }
+.brand-ring { box-shadow: 0 0 0 2px var(--color-ring); }
+
+/* Typography scale */
+.brand-h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-foreground); }
+.brand-h2 { font-size: 1.3125rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-foreground); }
+.brand-h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--color-foreground); }
+.brand-h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--color-card-foreground); }
+.brand-body { font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--color-muted-foreground); }
+.brand-body-sm { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; color: var(--color-muted-foreground); }
+.brand-caption { font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--color-muted-foreground); }
+.brand-mono { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8125rem; }
+
+/* Font stack */
+.font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-card-foreground: var(--color-card-foreground);
+    --color-popover: var(--color-popover);
+    --color-popover-foreground: var(--color-popover-foreground);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-input: var(--color-input);
+    --color-ring: var(--color-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-card-foreground { background-color: var(--color-card-foreground); }
+      .text-card-foreground { color: var(--color-card-foreground); }
+      .border-card-foreground { border-color: var(--color-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--color-card-foreground); }
+      .bg-popover { background-color: var(--color-popover); }
+      .text-popover { color: var(--color-popover); }
+      .border-popover { border-color: var(--color-popover); }
+      .ring-popover { --tw-ring-color: var(--color-popover); }
+      .bg-popover-foreground { background-color: var(--color-popover-foreground); }
+      .text-popover-foreground { color: var(--color-popover-foreground); }
+      .border-popover-foreground { border-color: var(--color-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--color-popover-foreground); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-primary-foreground { background-color: var(--color-primary-foreground); }
+      .text-primary-foreground { color: var(--color-primary-foreground); }
+      .border-primary-foreground { border-color: var(--color-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--color-primary-foreground); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-muted-foreground { background-color: var(--color-muted-foreground); }
+      .text-muted-foreground { color: var(--color-muted-foreground); }
+      .border-muted-foreground { border-color: var(--color-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--color-muted-foreground); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+      .bg-input { background-color: var(--color-input); }
+      .text-input { color: var(--color-input); }
+      .border-input { border-color: var(--color-input); }
+      .ring-input { --tw-ring-color: var(--color-input); }
+      .bg-ring { background-color: var(--color-ring); }
+      .text-ring { color: var(--color-ring); }
+      .border-ring { border-color: var(--color-ring); }
+      .ring-ring { --tw-ring-color: var(--color-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="h-screen overflow-hidden font-sans antialiased">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo__icon">优</div>
+    <div class="sidebar-logo__text"><span>优</span><span>丁</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">工作台</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        今日概览
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        数据看板
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">获客</div>
+      <a class="sidebar-item sidebar-item--active" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        询盘管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        智能副驾
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+        出海机 App
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">发品</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        产品管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+        内容管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        发布枢纽
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect width="15" height="20" x="1" y="2" rx="2" ry="2"/></svg>
+        视频出海
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">履约</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        订单管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+        物流追踪
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">账户</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="M16 16l4 4"/><path d="M19 13c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+        套餐与用量
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        域名管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        团队管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+        站点编辑
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        设置
+      </a>
+    </div>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-user__avatar">张</div>
+    <div class="sidebar-user__info">
+      <span class="sidebar-user__name">张建材</span>
+      <span class="sidebar-user__plan">专业版</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" data-viewport-mode="app-shell" style="height:100vh;overflow:hidden;">
+  <div data-scroll-region="primary" style="min-height:0;overflow-y:auto;padding:24px;">
+
+    <!-- 1. PAGE HEADER -->
+    <section style="margin-bottom:16px;animation-delay:0ms;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div style="min-width:0;">
+          <p style="font-size:12px;color:var(--color-muted-foreground);margin:0 0 4px 0;">获客 · 询盘管理</p>
+          <h1 style="font-size:24px;font-weight:700;color:var(--color-foreground);margin:0 0 4px 0;letter-spacing:-0.02em;">询盘管理</h1>
+          <p style="font-size:13px;color:var(--color-muted-foreground);margin:0;">管理所有客户询盘，追踪意向等级，提升转化效率</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <button class="btn btn--primary"><i data-lucide="plus" style="width:15px;height:15px;"></i> 新建询盘</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. KPI STATS ROW -->
+    <section class="kpi-grid" style="animation-delay:40ms;">
+      <div class="panel" style="cursor:default;">
+        <div class="yd-stats-card">
+          <div class="__label" style="display:flex;align-items:center;gap:6px;"><i data-lucide="message-square-plus" style="width:14px;height:14px;color:var(--color-info);"></i> 今日新询盘</div>
+          <div class="__value tone-blue" style="color:var(--color-info);"><span class="count-up" data-target="12" data-duration="900">0</span></div>
+          <div class="__hint">较昨日 <span style="color:var(--color-success);">+3</span></div>
+        </div>
+      </div>
+      <div class="panel" style="cursor:default;">
+        <div class="yd-stats-card">
+          <div class="__label" style="display:flex;align-items:center;gap:6px;"><i data-lucide="clock" style="width:14px;height:14px;color:var(--color-warning);"></i> 待处理</div>
+          <div class="__value tone-amber" style="color:var(--color-warning);"><span class="count-up" data-target="7" data-duration="900">0</span></div>
+          <div class="__hint">建议优先电话跟进</div>
+        </div>
+      </div>
+      <div class="panel" style="cursor:default;">
+        <div class="yd-stats-card">
+          <div class="__label" style="display:flex;align-items:center;gap:6px;"><i data-lucide="bar-chart-3" style="width:14px;height:14px;color:var(--color-primary);"></i> 本月累计</div>
+          <div class="__value tone-green" style="color:var(--color-primary);"><span class="count-up" data-target="156" data-duration="900">0</span></div>
+          <div class="__hint">截至 7 月 21 日</div>
+        </div>
+      </div>
+      <div class="panel" style="cursor:default;">
+        <div class="yd-stats-card">
+          <div class="__label" style="display:flex;align-items:center;gap:6px;"><i data-lucide="trending-up" style="width:14px;height:14px;color:var(--color-success);"></i> 转化率</div>
+          <div class="__value tone-purple" style="color:var(--color-success);">23.5%</div>
+          <div class="__hint">本月环比 <span style="color:var(--color-success);">+2.1%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. FILTER BAR -->
+    <section class="panel" style="padding:12px 16px;margin-bottom:16px;cursor:default;animation-delay:80ms;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <!-- Status tabs -->
+        <div style="display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.04);border-radius:8px;padding:3px;">
+          <button class="status-tab active" data-status="all" onclick="filterStatus(this)">全部</button>
+          <button class="status-tab" data-status="pending" onclick="filterStatus(this)">待处理 <span style="opacity:0.7;">(7)</span></button>
+          <button class="status-tab" data-status="quoted" onclick="filterStatus(this)">处理中 <span style="opacity:0.7;">(5)</span></button>
+          <button class="status-tab" data-status="accepted" onclick="filterStatus(this)">已完成 <span style="opacity:0.7;">(4)</span></button>
+        </div>
+        <!-- Source dropdown -->
+        <div style="position:relative;">
+          <select style="appearance:none;background:var(--color-input);color:var(--color-card-foreground);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:6px 32px 6px 10px;font-size:13px;font-family:inherit;cursor:pointer;outline:none;height:34px;min-width:140px;">
+            <option>全部来源</option>
+            <option>平台落地页</option>
+            <option>Alibaba</option>
+            <option>Google Ads</option>
+            <option>社媒引流</option>
+            <option>直接访问</option>
+          </select>
+          <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--color-muted-foreground);pointer-events:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <!-- Search -->
+        <div style="position:relative;flex:1;min-width:180px;max-width:320px;">
+          <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--color-muted-foreground);pointer-events:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" placeholder="搜索客户名、公司、产品..." style="width:100%;background:var(--color-input);color:var(--color-card-foreground);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:6px 10px 6px 32px;font-size:13px;font-family:inherit;outline:none;height:34px;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--color-primary)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'">
+        </div>
+        <!-- Spacer -->
+        <div style="flex:1;"></div>
+        <!-- Column settings -->
+        <button class="btn btn--default" style="height:34px;"><i data-lucide="columns" style="width:14px;height:14px;"></i> 列设置</button>
+        <!-- More actions -->
+        <div style="position:relative;">
+          <button class="btn btn--default" style="height:34px;"><i data-lucide="more-horizontal" style="width:14px;height:14px;"></i> 更多</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. DATA TABLE -->
+    <section class="panel" style="padding:0;cursor:default;animation-delay:120ms;overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;min-width:1100px;">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <th style="width:60px;padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">ID</th>
+              <th style="width:80px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">来源</th>
+              <th style="width:100px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">客户名</th>
+              <th style="width:120px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">公司</th>
+              <th style="width:110px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">联系方式</th>
+              <th style="width:80px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">国家/地区</th>
+              <th style="width:100px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">产品兴趣</th>
+              <th style="width:140px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">留言摘要</th>
+              <th style="width:70px;padding:10px 8px;text-align:center;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">意向等级</th>
+              <th style="width:70px;padding:10px 8px;text-align:center;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">状态</th>
+              <th style="width:70px;padding:10px 8px;text-align:left;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">负责人</th>
+              <th style="width:140px;padding:10px 12px;text-align:right;font-size:12px;font-weight:600;color:var(--color-muted-foreground);">操作</th>
+            </tr>
+          </thead>
+          <tbody id="inquiryTableBody">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<style>
+/* ============================================================
+   BODY BACKGROUND — dark mesh gradient
+   ============================================================ */
+body {
+  background: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(74,155,140,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   SIDEBAR — reused from dashboard-overview
+   ============================================================ */
+.sidebar {
+  position: fixed; top: 0; left: 0; width: 232px; height: 100vh;
+  background: rgba(17,18,21,0.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column; z-index: 100;
+  overflow-y: auto; overflow-x: hidden; padding: 0 0 16px 0;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+.sidebar-logo { display:flex; align-items:center; gap:8px; padding:18px 16px 14px 16px; border-bottom:1px solid rgba(255,255,255,0.04); margin-bottom:8px; }
+.sidebar-logo__icon { width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg,#4a9b8c,#3d8f7a); display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700; flex-shrink:0; }
+.sidebar-logo__text { display:flex; align-items:baseline; gap:1px; color:#fff; font-size:14px; font-weight:600; }
+.sidebar-logo__text span:first-child { font-weight:700; }
+.sidebar-nav { flex:1; padding:4px 8px; display:flex; flex-direction:column; gap:2px; }
+.sidebar-group { margin-bottom:12px; }
+.sidebar-group__label { font-size:10px; font-weight:600; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:0.06em; padding:8px 10px 4px 10px; }
+.sidebar-item { display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:8px; font-size:13px; font-weight:500; color:rgba(255,255,255,0.55); cursor:pointer; transition:all 300ms ease-out; text-decoration:none; border:1px solid transparent; }
+.sidebar-item:hover { background:rgba(255,255,255,0.04); color:#fff; }
+.sidebar-item--active { background:rgba(74,155,140,0.1); color:#fff; border-left:3px solid #4a9b8c; padding-left:7px; font-weight:600; }
+.sidebar-item--active svg { color:#4a9b8c; filter:drop-shadow(0 0 4px rgba(74,155,140,0.5)); }
+.sidebar-item svg { width:17px; height:17px; flex-shrink:0; opacity:0.7; }
+.sidebar-item--active svg { opacity:1; }
+.sidebar-user { border-top:1px solid rgba(255,255,255,0.06); padding:14px 14px 0 14px; display:flex; align-items:center; gap:10px; }
+.sidebar-user__avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#4a9b8c,#3d8f7a); display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; font-weight:700; flex-shrink:0; }
+.sidebar-user__info { display:flex; flex-direction:column; gap:2px; }
+.sidebar-user__name { font-size:13px; font-weight:600; color:#fff; }
+.sidebar-user__plan { font-size:10px; font-weight:600; padding:1px 6px; border-radius:4px; background:rgba(59,130,246,0.15); color:#60a5fa; width:fit-content; }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content { margin-left:232px; }
+
+/* ============================================================
+   GLASS PANEL
+   ============================================================ */
+.panel {
+  background:rgba(21,22,26,0.85);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:var(--brand-radius-lg);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  animation:ujCardEnter 300ms ease-out both;
+  transition:transform 300ms ease-out, box-shadow 300ms ease-out;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:var(--brand-radius-sm); font-size:13px; font-weight:500; cursor:pointer; transition:all 300ms ease-out; border:none; outline:none; white-space:nowrap; font-family:inherit; }
+.btn--primary { background:var(--color-primary); color:var(--color-primary-foreground); font-weight:600; }
+.btn--primary:hover { filter:brightness(1.1); transform:translateY(-1px); }
+.btn--default { background:rgba(255,255,255,0.06); color:var(--color-card-foreground); border:1px solid rgba(255,255,255,0.08); }
+.btn--default:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.12); }
+.btn--link { background:none; color:var(--color-primary); padding:4px 8px; font-size:12px; font-weight:500; }
+.btn--link:hover { color:#5eb8a8; text-decoration:underline; }
+.btn--sm { padding:4px 10px; font-size:12px; border-radius:var(--brand-radius-sm); }
+.btn--danger-outline { background:none; color:var(--color-danger); border:1px solid rgba(239,68,68,0.3); }
+.btn--danger-outline:hover { background:rgba(239,68,68,0.1); }
+.btn:disabled { opacity:0.35; cursor:not-allowed; pointer-events:none; }
+
+/* ============================================================
+   KPI GRID
+   ============================================================ */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi-grid .panel { padding:12px 14px; border-radius:var(--brand-radius-lg); }
+.kpi-grid .panel:nth-child(1) { background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(59,130,246,0.03)); animation-delay:0ms; }
+.kpi-grid .panel:nth-child(2) { background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.03)); animation-delay:50ms; }
+.kpi-grid .panel:nth-child(3) { background:linear-gradient(135deg,rgba(74,155,140,0.08),rgba(74,155,140,0.03)); animation-delay:100ms; }
+.kpi-grid .panel:nth-child(4) { background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.03)); animation-delay:150ms; }
+.yd-stats-card .__label { font-size:13px; font-weight:600; color:var(--color-muted-foreground); }
+.yd-stats-card .__value { margin-top:8px; font-size:28px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.15; letter-spacing:-0.02em; }
+.yd-stats-card .__hint { margin-top:4px; font-size:12px; color:var(--color-muted-foreground); }
+
+/* ============================================================
+   STATUS TABS
+   ============================================================ */
+.status-tab {
+  background:transparent; border:none; color:var(--color-muted-foreground); font-size:13px; font-weight:500; padding:5px 14px; border-radius:6px; cursor:pointer; transition:all 200ms ease-out; font-family:inherit; white-space:nowrap;
+}
+.status-tab:hover { color:var(--color-card-foreground); }
+.status-tab.active { background:var(--color-primary); color:var(--color-primary-foreground); font-weight:600; }
+
+/* ============================================================
+   TABLE STYLES
+   ============================================================ */
+#inquiryTableBody tr.inq-row { border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background 200ms ease-out; }
+#inquiryTableBody tr.inq-row:hover { background:rgba(255,255,255,0.02); }
+#inquiryTableBody tr.inq-row.expanded { background:rgba(74,155,140,0.04); }
+#inquiryTableBody td { padding:10px 8px; font-size:13px; color:var(--color-card-foreground); vertical-align:middle; }
+#inquiryTableBody td:first-child { padding-left:12px; }
+#inquiryTableBody td:last-child { padding-right:12px; }
+
+/* Status badge */
+.status-badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; white-space:nowrap; }
+.status-badge--pending { background:rgba(245,158,11,0.15); color:#f59e0b; }
+.status-badge--quoted { background:rgba(59,130,246,0.15); color:#60a5fa; }
+.status-badge--accepted { background:rgba(16,185,129,0.15); color:#10b981; }
+
+/* Intent badge */
+.intent-badge { display:inline-flex; align-items:center; justify-content:center; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; white-space:nowrap; width:fit-content; }
+.intent-badge--A { background:rgba(16,185,129,0.15); color:#10b981; }
+.intent-badge--B { background:rgba(74,155,140,0.15); color:#4a9b8c; }
+.intent-badge--C { background:rgba(245,158,11,0.15); color:#f59e0b; }
+.intent-badge--D { background:rgba(239,68,68,0.15); color:#ef4444; }
+
+/* Source tag */
+.source-tag { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:var(--color-muted-foreground); white-space:nowrap; }
+.source-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* Contact info */
+.contact-item { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--color-muted-foreground); white-space:nowrap; }
+
+/* ============================================================
+   EXPANDED ROW
+   ============================================================ */
+.expanded-detail { background:rgba(26,27,32,0.5); border-bottom:1px solid rgba(255,255,255,0.04); }
+.expanded-detail td { padding:0 !important; }
+.expanded-inner { padding:16px 20px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.expanded-panel { background:rgba(21,22,26,0.6); border:1px solid rgba(255,255,255,0.06); border-radius:var(--brand-radius-md); padding:14px 16px; }
+.expanded-panel__title { font-size:13px; font-weight:600; color:var(--color-foreground); margin:0 0 10px 0; display:flex; align-items:center; gap:6px; }
+.expanded-panel__title i { width:14px; height:14px; }
+.expanded-full { grid-column:1/-1; }
+
+/* Suggestion box */
+.suggestion-box { background:rgba(74,155,140,0.06); border:1px solid rgba(74,155,140,0.15); border-radius:var(--brand-radius-sm); padding:10px 12px; margin-bottom:10px; font-size:13px; color:var(--color-card-foreground); line-height:1.5; }
+.reason-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:4px; }
+.reason-list li { font-size:12px; color:var(--color-muted-foreground); padding-left:14px; position:relative; line-height:1.4; }
+.reason-list li::before { content:''; position:absolute; left:0; top:7px; width:6px; height:6px; border-radius:50%; background:var(--color-primary); }
+
+/* Questions list */
+.question-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }
+.question-item { display:flex; align-items:flex-start; gap:8px; padding:6px 8px; border-radius:var(--brand-radius-sm); background:rgba(255,255,255,0.02); font-size:12px; color:var(--color-card-foreground); line-height:1.4; }
+.question-num { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:rgba(59,130,246,0.15); color:#60a5fa; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
+.question-actions { margin-left:auto; flex-shrink:0; }
+
+/* Language bridge */
+.lang-summary { background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.15); border-radius:var(--brand-radius-sm); padding:10px 12px; font-size:12px; color:var(--color-card-foreground); line-height:1.6; margin-bottom:8px; }
+.lang-textarea { width:100%; background:var(--color-input); color:var(--color-card-foreground); border:1px solid rgba(255,255,255,0.08); border-radius:var(--brand-radius-sm); padding:8px 10px; font-size:12px; font-family:inherit; outline:none; resize:vertical; min-height:60px; margin-bottom:8px; }
+.lang-draft { background:rgba(21,22,26,0.6); border:1px solid rgba(255,255,255,0.06); border-radius:var(--brand-radius-sm); padding:10px 12px; font-size:12px; color:var(--color-card-foreground); line-height:1.6; }
+
+/* Full message */
+.full-msg { font-size:13px; color:var(--color-card-foreground); line-height:1.7; }
+
+/* Audit trail */
+.audit-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }
+.audit-item { display:flex; align-items:flex-start; gap:8px; font-size:12px; }
+.audit-dot { width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+.audit-dot--create { background:var(--color-info); }
+.audit-dot--assign { background:var(--color-primary); }
+.audit-dot--status { background:var(--color-warning); }
+.audit-dot--complete { background:var(--color-success); }
+.audit-text { color:var(--color-muted-foreground); line-height:1.4; }
+.audit-text strong { color:var(--color-card-foreground); font-weight:600; }
+.audit-time { color:rgba(255,255,255,0.3); margin-left:auto; flex-shrink:0; white-space:nowrap; }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes ujCardEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+}
+@keyframes ujShimmer {
+  0% { background-position:-200% center; }
+  100% { background-position:200% center; }
+}
+@keyframes ujMetricGlow {
+  0%, 100% { box-shadow:0 0 0 0 rgba(245,158,11,0.4); }
+  50% { box-shadow:0 0 0 6px rgba(245,158,11,0); }
+}
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+}
+
+/* Select styling */
+select option { background:var(--color-popover); color:var(--color-card-foreground); }
+
+/* ===== Spring Physics Patch (DESIGN.md §7) ===== */
+@keyframes ujCardEnterSpring {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease-out,
+              border-color 0.3s ease-out;
+}
+.panel:hover {
+  transform: translateY(-3px);
+}
+@keyframes ujPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,155,140,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(74,155,140,0); }
+}
+.uj-pulse { animation: ujPulse 2s ease-in-out infinite; }
+@keyframes ujFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.uj-float { animation: ujFloat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .uj-pulse, .uj-float { animation: none !important; }
+}
+/* ===== End Spring Physics Patch ===== */
+
+
+@media (max-width: 768px) {
+  .page-grid, .grid, [class*="grid-"], [class*="kpis"], [class*="cards"] {
+    grid-template-columns: 1fr !important;
+  }
+  .sidebar, [class*="sidebar"], [class*="side-"] {
+    display: none;
+  }
+  .panel, [class*="card"] {
+    padding: 12px;
+  }
+  table { font-size: 12px; }
+  th, td { padding: 8px 6px; }
+}
+
+</style>
+
+<script>
+// ============================================================
+// MOCK DATA
+// ============================================================
+var inquiries = [
+  { id:'INQ-1042', source:'平台落地页', sourceColor:'#4a9b8c', name:'Lars Eriksson', company:'Nordic Tools AB', phone:'+46 70 123 4567', wechat:'', country:'瑞典', countryFlag:'🇸🇪', product:'LED 工矿灯', message:'请问 200W LED 工矿灯最小起订量是多少？能否提供 CE 认证文件和 FOB 报价？我们需要 500pcs 先做测试。', messageShort:'请问 LED 工矿灯最小起订量...', intent:'A', status:'pending', assignee:'张建材', createdAt:'07-21 10:32', suggestions:'客户需求明确，数量和认证要求清晰，建议 24 小时内电话跟进确认详细规格。', reasons:['明确提到 500pcs 测试数量','需要 CE 认证文件说明采购正规','主动提及 FOB 报价代表有进口经验'], questions:['请问您对色温有具体要求吗？3000K/4000K/5000K 可选','您的目标交货期是多久？我们通常 15-20 个工作日','是否需要定制包装或贴牌服务？'], fullMessage:'你好，我们对贵公司的 200W LED 工矿灯非常感兴趣。请问最小起订量是多少？能否提供 CE 认证文件和 FOB 报价？我们首先需要 500pcs 做质量测试，如果满意会持续下单。另外请问是否支持 OEM 定制？期待您的回复。', audit:[{type:'create',text:'询盘创建',time:'07-21 10:32'},{type:'assign',text:'分配给 张建材',time:'07-21 10:33'}] },
+  { id:'INQ-1041', source:'Alibaba', sourceColor:'#3b82f6', name:'Hans Mueller', company:'BauTech GmbH', phone:'+49 172 987 6543', wechat:'hans_mueller_bau', country:'德国', countryFlag:'🇩🇪', product:'建筑陶瓷', message:'需要 500pcs 建筑陶瓷样品，规格 600x600mm，请提供详细报价和交期。', messageShort:'需要 500pcs 建筑陶瓷样品...', intent:'B', status:'pending', assignee:'张建材', createdAt:'07-21 09:18', suggestions:'客户已指定规格和数量，意向较好，建议发送产品目录并安排寄样。', reasons:['指定了 600x600mm 具体规格','数量 500pcs 属于中等批量','通过 Alibaba 主动联系说明有采购意向'], questions:['您偏好的表面处理是抛光还是哑光？','是否需要防滑等级认证？','目标港口是汉堡还是不来梅？'], fullMessage:'你好，我们是德国 BauTech GmbH，专业从事建筑材料分销。我们需要 500pcs 600x600mm 建筑陶瓷样品，请提供详细报价、交货期和 MOQ 信息。如果有色卡样本也可以一起寄来。我们的仓库在慕尼黑附近。', audit:[{type:'create',text:'询盘创建',time:'07-21 09:18'},{type:'assign',text:'分配给 张建材',time:'07-21 09:20'}] },
+  { id:'INQ-1040', source:'Google Ads', sourceColor:'#f59e0b', name:'Ahmed Al-Rashid', company:'Dubai Trading LLC', phone:'+971 50 888 9999', wechat:'ahmed_dubai', country:'阿联酋', countryFlag:'🇦🇪', product:'大理石板材', message:'请问意大利进口大理石板材的 FOB 价格，需要 1000sqm 白色卡拉拉。', messageShort:'请问大理石板材的 FOB 价格...', intent:'A', status:'quoted', assignee:'李外贸', createdAt:'07-20 16:45', suggestions:'大单客户，已进入报价阶段，建议准备详细报价单并安排视频会议。', reasons:['1000sqm 大面积需求','指定意大利进口大理石','已有视频会议沟通记录'], questions:['您对大理石厚度有具体要求吗？通常 20mm 或 30mm','是否需要按项目分批交货？','能否提供项目现场照片以便我们推荐最适合的纹理？'], fullMessage:'你好，我们正在迪拜做一个高端住宅项目，需要约 1000 平方米意大利白色卡拉拉大理石。请提供 FOB 报价，我们希望 20mm 厚度。交货期越快越好，最好能在 30 天内完成首批 200sqm。', audit:[{type:'create',text:'询盘创建',time:'07-20 16:45'},{type:'assign',text:'分配给 李外贸',time:'07-20 16:50'},{type:'status',text:'状态变更为 处理中',time:'07-20 17:00'},{type:'assign',text:'负责人变更为 李外贸',time:'07-20 17:00'}] },
+  { id:'INQ-1039', source:'平台落地页', sourceColor:'#4a9b8c', name:'Yuki Tanaka', company:'Tokyo Interior Co.', phone:'+81 90 1234 5678', wechat:'', country:'日本', countryFlag:'🇯🇵', product:'地板砖', message:'能否提供地板砖定制服务？我们需要仿木纹系列，规格 800x800。', messageShort:'能否提供地板砖定制服务...', intent:'B', status:'pending', assignee:'张建材', createdAt:'07-20 14:22', suggestions:'日本客户重视品质和交期，建议准备样品册并强调质检流程。', reasons:['需求明确（仿木纹 800x800）','日本市场对品质要求高','主动询问定制服务说明有长期合作可能'], questions:['您能提供参考图片或颜色样板吗？','对防滑系数有具体标准要求吗？','目标港口是东京还是横滨？'], fullMessage:'你好，我们是东京的室内设计公司，正在为一个商业空间项目寻找地板砖供应商。需要仿木纹系列，规格 800x800mm，大约 300sqm。能否提供定制服务？希望能看到样品册。', audit:[{type:'create',text:'询盘创建',time:'07-20 14:22'},{type:'assign',text:'分配给 张建材',time:'07-20 14:25'}] },
+  { id:'INQ-1038', source:'社媒引流', sourceColor:'#8b5cf6', name:'James Okafor', company:'BuildMax South Africa', phone:'+27 82 555 6789', wechat:'james_buildmax', country:'南非', countryFlag:'🇿🇦', product:'钢化玻璃', message:'询价钢化玻璃 6mm 规格 2000x1000mm，需要 800 块，CIF Durban。', messageShort:'询价钢化玻璃 6mm 规格...', intent:'A', status:'quoted', assignee:'李外贸', createdAt:'07-19 11:30', suggestions:'大单询价，已安排报价，跟进物流方案和付款条件。', reasons:['800 块大批量需求','指定 CIF Durban 港口','规格参数完整'], questions:['是否需要钢化认证证书（如 EN 12150）？','对玻璃边缘处理有要求吗？磨边/倒角','能否接受分两批交货？每批 400 块'], fullMessage:'你好 BuildMax，我们询价 6mm 钢化玻璃，规格 2000x1000mm，数量 800 块。请报 CIF Durban 价格。交货期希望 45 天内。如质量满意，后续还有其他项目需要大量玻璃。', audit:[{type:'create',text:'询盘创建',time:'07-19 11:30'},{type:'assign',text:'分配给 李外贸',time:'07-19 11:35'},{type:'status',text:'状态变更为 处理中',time:'07-19 14:00'}] },
+  { id:'INQ-1037', source:'Alibaba', sourceColor:'#3b82f6', name:'Maria Santos', company:'Comercial Brazil Ltda', phone:'+55 11 97654 3210', wechat:'', country:'巴西', countryFlag:'🇧🇷', product:'卫浴陶瓷', message:'你好，我们对你们的卫浴产品有兴趣，能发一份完整的产品目录吗？', messageShort:'对卫浴产品有兴趣...', intent:'C', status:'pending', assignee:'张建材', createdAt:'07-19 09:15', suggestions:'初步意向，需要进一步了解具体需求。建议发送产品目录后电话跟进。', reasons:['仅表达了兴趣但未指定产品','未提供数量或规格信息','来自 Alibaba 平台主动询价'], questions:['您主要关注哪类卫浴产品？马桶、洗手台、淋浴房？','您的目标客户群体是？工程渠道还是零售？','有明确的项目预算范围吗？'], fullMessage:'你好，我们是巴西的一家建材分销商，在圣保罗和里约有展厅。我们对你们的卫浴陶瓷产品很有兴趣，能发一份完整的产品目录吗？包括价格区间和 MOQ 信息。', audit:[{type:'create',text:'询盘创建',time:'07-19 09:15'},{type:'assign',text:'分配给 张建材',time:'07-19 09:20'}] },
+  { id:'INQ-1036', source:'直接访问', sourceColor:'#64748b', name:'John Smith', company:'Smith & Partners UK', phone:'+44 20 7946 0958', wechat:'johnsmith_uk', country:'英国', countryFlag:'🇬🇧', product:'外墙砖', message:'已收到样品，质量满意。希望讨论 2000sqm 的首批订单合作。', messageShort:'已收到样品，希望讨论首批订单...', intent:'A', status:'accepted', assignee:'张建材', createdAt:'07-18 15:00', suggestions:'已转为客户，建议持续跟进后续大单合作机会。', reasons:['样品已通过验证','2000sqm 大批量订单','客户主动推动合作'], questions:[], fullMessage:'张先生你好，我们已经收到了你们寄来的外墙砖样品，质量非常满意。我们希望尽快讨论 2000sqm 首批订单的合作细节，包括价格、交货期和付款条件。方便安排视频会议吗？', audit:[{type:'create',text:'询盘创建',time:'07-18 15:00'},{type:'assign',text:'分配给 张建材',time:'07-18 15:05'},{type:'status',text:'状态变更为 处理中',time:'07-18 16:00'},{type:'status',text:'状态变更为 已完成',time:'07-20 10:00'},{type:'complete',text:'标记完成',time:'07-20 10:00'}] },
+  { id:'INQ-1035', source:'Google Ads', sourceColor:'#f59e0b', name:'Kim Soo-jin', company:'Seoul Housing Corp', phone:'+82 10 8888 7777', wechat:'kim_sj_seoul', country:'韩国', countryFlag:'🇰🇷', product:'室内瓷砖', message:'需要 300x600mm 墙砖，500sqm，请提供 KS 认证信息和报价。', messageShort:'需要墙砖 500sqm，请报价...', intent:'B', status:'accepted', assignee:'李外贸', createdAt:'07-18 10:20', suggestions:'已完成合作，可列为回头客潜在客户，定期维护关系。', reasons:['指定 KS 认证说明专业','500sqm 中等规模','已成功签单'], questions:[], fullMessage:'你好，我们需要 300x600mm 室内墙砖 500sqm，要求有 KS 认证。请提供 CIF 釜山报价，交期 25 天内。', audit:[{type:'create',text:'询盘创建',time:'07-18 10:20'},{type:'assign',text:'分配给 李外贸',time:'07-18 10:25'},{type:'status',text:'状态变更为 处理中',time:'07-18 11:00'},{type:'status',text:'状态变更为 已完成',time:'07-19 16:00'}] },
+  { id:'INQ-1034', source:'平台落地页', sourceColor:'#4a9b8c', name:'Raj Patel', company:'Patel Enterprises', phone:'+91 98765 43210', wechat:'', country:'印度', countryFlag:'🇮🇳', product:'太阳能板', message:'请问单晶硅太阳能板 400W 的价格，需要 200 块用于工业园区项目。', messageShort:'请问太阳能板 400W 价格...', intent:'C', status:'pending', assignee:'张建材', createdAt:'07-17 08:45', suggestions:'需求明确但价格敏感市场，建议提供有竞争力的报价。', reasons:['指定了 400W 单晶硅规格','200 块属于中小规模','印度市场通常价格敏感'], questions:['您对转换效率有最低要求吗？','项目是并网还是离网系统？','能否接受 tier-1 品牌面板？'], fullMessage:'你好，我们在古吉拉特邦有一个工业园区项目，需要 200 块 400W 单晶硅太阳能板。请提供最优报价和产品规格书。如果价格合适，后续还有 500 块的需求。', audit:[{type:'create',text:'询盘创建',time:'07-17 08:45'},{type:'assign',text:'分配给 张建材',time:'07-17 08:50'}] },
+  { id:'INQ-1033', source:'Alibaba', sourceColor:'#3b82f6', name:'Carlos Rivera', company:'Rivera Construcciones', phone:'+52 55 1234 5678', wechat:'', country:'墨西哥', countryFlag:'🇲🇽', product:'PVC 管材', message:'长期采购 PVC 管材，月需求量约 5 吨，请提供经销商合作方案。', messageShort:'长期采购 PVC 管材，月需 5 吨...', intent:'B', status:'quoted', assignee:'李外贸', createdAt:'07-16 13:00', suggestions:'长期合作意向明确，建议提供阶梯报价和样品。', reasons:['月需求 5 吨属于稳定采购','主动询问经销商合作方案','墨西哥基建市场增长快'], questions:['您主要需要什么口径的管材？','当前使用的品牌和价格区间？','是否需要我们协助清关和物流？'], fullMessage:'你好，我们是墨西哥蒙特雷的建筑公司，长期需要 PVC 管材。月需求约 5 吨，希望能建立长期稳定的供应关系。请提供经销商合作方案和样品。', audit:[{type:'create',text:'询盘创建',time:'07-16 13:00'},{type:'assign',text:'分配给 李外贸',time:'07-16 13:05'},{type:'status',text:'状态变更为 处理中',time:'07-16 15:00'},{type:'assign',text:'负责人变更为 李外贸',time:'07-16 15:00'}] }
+];
+
+var statusLabels = { pending:'待处理', quoted:'处理中', accepted:'已完成' };
+var intentLabels = { A:'高意向', B:'中等', C:'初步', D:'低意向' };
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+var expandedId = null;
+
+function renderTable(data) {
+  var tbody = document.getElementById('inquiryTableBody');
+  if (!tbody) return;
+  var html = '';
+  for (var i = 0; i < data.length; i++) {
+    var inq = data[i];
+    var isExpanded = expandedId === inq.id;
+    html += '<tr class="inq-row' + (isExpanded ? ' expanded' : '') + '" data-id="' + inq.id + '" onclick="toggleRow(\'' + inq.id + '\')">';
+    html += '<td style="font-size:12px;color:var(--color-muted-foreground);font-variant-numeric:tabular-nums;">' + inq.id + '</td>';
+    html += '<td><span class="source-tag"><span class="source-dot" style="background:' + inq.sourceColor + ';"></span>' + inq.source + '</span></td>';
+    html += '<td style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + inq.name + '</td>';
+    html += '<td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--color-muted-foreground);">' + inq.company + '</td>';
+    html += '<td>';
+    html += '<div class="contact-item"><svg style="width:12px;height:12px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + inq.phone + '</span></div>';
+    if (inq.wechat) {
+      html += '<div class="contact-item" style="margin-top:2px;"><svg style="width:12px;height:12px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + inq.wechat + '</span></div>';
+    }
+    html += '</td>';
+    html += '<td style="white-space:nowrap;"><span style="margin-right:4px;">' + inq.countryFlag + '</span>' + inq.country + '</td>';
+    html += '<td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + inq.product + '</td>';
+    html += '<td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--color-muted-foreground);font-size:12px;max-width:140px;">' + inq.messageShort + '</td>';
+    html += '<td style="text-align:center;"><span class="intent-badge intent-badge--' + inq.intent + '">' + inq.intent + '</span></td>';
+    html += '<td style="text-align:center;"><span class="status-badge status-badge--' + inq.status + '">' + statusLabels[inq.status] + '</span></td>';
+    html += '<td style="white-space:nowrap;">' + inq.assignee + '</td>';
+    html += '<td style="text-align:right;">';
+    html += '<div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;">';
+    if (inq.status === 'pending') {
+      html += '<button class="btn btn--primary btn--sm" onclick="event.stopPropagation();markProcessing(\'' + inq.id + '\')" style="font-size:11px;padding:3px 8px;">标记处理中</button>';
+    }
+    if (inq.status !== 'accepted') {
+      html += '<button class="btn btn--sm" style="background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.2);' + (inq.status === 'pending' ? '' : '') + '" onclick="event.stopPropagation();markComplete(\'' + inq.id + '\')" ' + (inq.status === 'pending' ? 'disabled' : '') + '>完成</button>';
+    }
+    html += '<button class="btn btn--default btn--sm" onclick="event.stopPropagation();" style="padding:3px 6px;" title="更多操作"><svg style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>';
+    html += '</div></td>';
+    html += '</tr>';
+
+    if (isExpanded) {
+      html += '<tr class="expanded-detail"><td colspan="12"><div class="expanded-inner">';
+      // Panel 1: Intent Analysis
+      html += '<div class="expanded-panel">';
+      html += '<h4 class="expanded-panel__title"><i data-lucide="brain" style="color:var(--color-primary);"></i> 意向分析</h4>';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">';
+      html += '<span class="intent-badge intent-badge--' + inq.intent + '" style="width:auto;padding:4px 12px;font-size:12px;">' + intentLabels[inq.intent] + '</span>';
+      html += '</div>';
+      html += '<div class="suggestion-box">' + inq.suggestions + '</div>';
+      html += '<ul class="reason-list">';
+      for (var r = 0; r < inq.reasons.length; r++) {
+        html += '<li>' + inq.reasons[r] + '</li>';
+      }
+      html += '</ul></div>';
+
+      // Panel 2: Discovery Questions
+      if (inq.questions.length > 0) {
+        html += '<div class="expanded-panel">';
+        html += '<h4 class="expanded-panel__title"><i data-lucide="help-circle" style="color:var(--color-info);"></i> 追问话术</h4>';
+        html += '<ul class="question-list">';
+        for (var q = 0; q < inq.questions.length; q++) {
+          html += '<li class="question-item">';
+          html += '<span class="question-num">' + (q+1) + '</span>';
+          html += '<span style="flex:1;min-width:0;">' + inq.questions[q] + '</span>';
+          html += '<span class="question-actions"><button class="btn btn--link" onclick="event.stopPropagation();" style="font-size:11px;">复制</button></span>';
+          html += '</li>';
+        }
+        html += '</ul></div>';
+      } else {
+        html += '<div class="expanded-panel" style="display:flex;align-items:center;justify-content:center;color:var(--color-muted-foreground);font-size:13px;">';
+        html += '<svg style="width:16px;height:16px;margin-right:6px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        html += '该询盘已完成，无需追问';
+        html += '</div>';
+      }
+
+      // Panel 3: Language Bridge
+      html += '<div class="expanded-panel">';
+      html += '<h4 class="expanded-panel__title"><i data-lucide="languages" style="color:var(--color-info);"></i> 语言桥</h4>';
+      html += '<button class="btn btn--default btn--sm" onclick="event.stopPropagation();" style="margin-bottom:8px;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> 中文摘要</button>';
+      html += '<div class="lang-summary">' + inq.message + '</div>';
+      html += '<textarea class="lang-textarea" placeholder="输入中文回复内容..." onclick="event.stopPropagation();"></textarea>';
+      html += '<button class="btn btn--primary btn--sm" onclick="event.stopPropagation();" style="margin-bottom:8px;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i> 生成英文草稿</button>';
+      html += '<div class="lang-draft" style="color:var(--color-muted-foreground);font-style:italic;">点击上方按钮生成 AI 英文回复草稿</div>';
+      html += '</div>';
+
+      // Panel 4: Full Message + Audit Trail
+      html += '<div class="expanded-panel">';
+      html += '<h4 class="expanded-panel__title"><i data-lucide="scroll-text" style="color:var(--color-primary);"></i> 完整留言</h4>';
+      html += '<p class="full-msg">' + inq.fullMessage + '</p>';
+      html += '<div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">';
+      html += '<h4 class="expanded-panel__title" style="margin-bottom:8px;"><i data-lucide="history" style="color:var(--color-warning);"></i> 变更记录</h4>';
+      html += '<ul class="audit-list">';
+      for (var a = 0; a < inq.audit.length; a++) {
+        var au = inq.audit[a];
+        html += '<li class="audit-item">';
+        html += '<span class="audit-dot audit-dot--' + au.type + '"></span>';
+        html += '<span class="audit-text"><strong>' + au.text + '</strong></span>';
+        html += '<span class="audit-time">' + au.time + '</span>';
+        html += '</li>';
+      }
+      html += '</ul></div></div>';
+
+      html += '</div></td></tr>';
+    }
+  }
+  tbody.innerHTML = html;
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function toggleRow(id) {
+  expandedId = expandedId === id ? null : id;
+  renderTable(inquiries);
+}
+
+function filterStatus(btn) {
+  var tabs = btn.parentElement.querySelectorAll('.status-tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  btn.classList.add('active');
+  var status = btn.getAttribute('data-status');
+  if (status === 'all') {
+    renderTable(inquiries);
+  } else {
+    var filtered = [];
+    for (var i = 0; i < inquiries.length; i++) {
+      if (inquiries[i].status === status) filtered.push(inquiries[i]);
+    }
+    renderTable(filtered);
+  }
+  expandedId = null;
+}
+
+function markProcessing(id) {
+  for (var i = 0; i < inquiries.length; i++) {
+    if (inquiries[i].id === id) {
+      inquiries[i].status = 'quoted';
+      inquiries[i].audit.push({type:'status', text:'状态变更为 处理中', time:'刚刚'});
+      break;
+    }
+  }
+  renderTable(inquiries);
+}
+
+function markComplete(id) {
+  for (var i = 0; i < inquiries.length; i++) {
+    if (inquiries[i].id === id) {
+      inquiries[i].status = 'accepted';
+      inquiries[i].audit.push({type:'complete', text:'标记完成', time:'刚刚'});
+      break;
+    }
+  }
+  renderTable(inquiries);
+}
+
+// ============================================================
+// COUNT-UP
+// ============================================================
+function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+function animateCountUp(el, target, duration, useSeparator) {
+  var start = performance.now();
+  function tick(now) {
+    var elapsed = now - start;
+    var progress = Math.min(elapsed / duration, 1);
+    var current = Math.round(easeOutExpo(progress) * target);
+    el.textContent = useSeparator ? current.toLocaleString('en-US') : current;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', function() {
+  renderTable(inquiries);
+  document.querySelectorAll('.count-up').forEach(function(el) {
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    var duration = parseInt(el.getAttribute('data-duration') || '900', 10);
+    animateCountUp(el, target, duration, false);
+  });
+});
+</script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

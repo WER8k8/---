@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "task": "MOD-02-staging-handoff",
+  "checks": {
+    "deploy\\staging\\mod02-webhook.env.example": true,
+    "scripts\\smoke-mod-02-inquiry-webhooks.ps1": true,
+    "docs\\compliance\\MOD-02-im-prod-handoff-checklist.md": true,
+    "example_has_webhook_secret": true
+  },
+  "human_pending": "生产 env.template 回填 + 企微/抖音平台联调"
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-06-04",
+  "design_brief": ".project/saas-marketing-design-brief.json",
+  "audience_note": "客户群体均为建材外贸 — SaaS 页学软件站结构，视觉与文案必须建材语境；详见 design_brief",
+  "applies_to": ["saas-marketing", "admin-workbench"],
+  "source_registry": "frontend/config/public-sites.ts",
+  "references": [
+    {
+      "id": "iproyal-cn",
+      "url": "https://iproyal.cn/",
+      "role": "SaaS 营销落地页（公网 /platform、Admin /landing）",
+      "tier": "structure_only",
+      "note": "仅借鉴区块节奏与卡片公式；文案/配图/信任条必须建材外贸化，见 saas-marketing-design-brief.json",
+      "patterns": [
+        "顶栏：产品下拉 + 定价 + 案例 + 地区 + 资源；右侧 预约演示 / 创建账户 / 登录 三级 CTA",
+        "Hero：基础设施级大标题 + 成本/性能副文案 + 「无需信用卡」降低门槛 + 媒体/G2 信任条",
+        "产品矩阵卡：每张卡 = 起价 + 规模数字（IP 池/地区数）+ 一句话场景 + 独立 CTA",
+        "价值主张 Tab：性价比 / 可扩展 / 安全 — 左文右图或单栏切换，避免一屏堆满",
+        "集成区：650+ 工具 logo 墙 + API 多语言代码 Tab（Python/cURL…）+ 复制 + 文档链接",
+        "企业能力：工作区权限、2FA、计费、文档、通知 — 图标+短标题+一句说明",
+        "使用场景网格：SEO 抓取、价格监控、广告验证、品牌保护等 — 可点击深链",
+        "合规信任：KYC、认证进展、热门地区 — 建立 B2B 采购信心"
+      ],
+      "map_to_youding": {
+        "hero_h1": "为规模与速度而打造的外贸出海工作台",
+        "product_cards": ["获客 inbox", "多平台发品", "账户/套餐", "SEO 矩阵", "IM 配置"],
+        "value_tabs": ["省时间（30 秒知今日任务）", "可扩展（四级渠道）", "安全（审计/白标）"],
+        "integration_block": "OpenAPI + 650 平台发布 / 第三方 IM",
+        "trust": "plan-copy-deck 四档套餐 + G2/客户 logo 位（待素材）"
+      },
+      "anti_patterns": [
+        "禁止紫渐变 Hero（LOCKED §5）",
+        "禁止 Inter 作为主字体",
+        "动效克制：无粒子/无滚动视差轰炸"
+      ]
+    },
+    {
+      "id": "asocks-dashboard",
+      "url": "https://my.asocks.com/",
+      "marketing_mirror": "https://asocks.com/en/",
+      "role": "登录后工作台（Admin 租户/卖家端 UX）",
+      "tier": "workbench_ia_only",
+      "note": "控制台信息架构参考；营销页 asocks.com 只借定价 Toggle，不借 devtools 视觉",
+      "patterns": [
+        "营销站 asocks.com：极简顶栏 Sign up/in + 定价 Toggle（按量/包月）+ _tariff 卡片 + Buy CTA",
+        "控制台：左侧固定导航；首屏顶部 = 当前套餐/剩余额度（一眼可见）",
+        "核心 Widget：地理/类型/轮换 配置器 — 选完即生成可用结果（对应优丁：选母版→发品进度）",
+        "列表管理：端口/任务列表可排序、搜索、收藏；行内展示用量",
+        "余额/钱包透明：充值、套餐开关、用量表按日期/项目筛选",
+        "QoL：Dark mode、多语言、API 代码生成器、导出 TXT",
+        "支持区：G2 评分 + 响应时间 + 24/7 — _footer 或帮助入口"
+      ],
+      "map_to_youding": {
+        "dashboard_top": "Header 套餐徽章 + 本月发布/询盘用量条（plan-copy-deck §五）",
+        "primary_widget": "今日该干什么 — 待办询盘 + 待发品队列 + 域名/套餐状态",
+        "list_views": "询盘 inbox、发布任务、SEO 矩阵任务 — 可搜可筛",
+        "onboarding": "体验版三步：绑域 → 发首条 → 收首询盘（与 copy-deck 一致）"
+      },
+      "anti_patterns": [
+        "不要把代理行业文案原样抄到建材 SaaS",
+        "控制台信息密度高但留白充足 — 避免 Admin 卡片堆叠无层级"
+      ]
+    }
+  ],
+  "implementation_priority": [
+    {
+      "target": "frontend/pages/platform/index.vue",
+      "refs": ["iproyal-cn"],
+      "sections": ["hero+trust", "product-matrix", "value-tabs", "integration-teaser", "pricing-grid", "use-cases", "footer-cta"]
+    },
+    {
+      "target": "frontend/admin/src/views/landing/index.vue",
+      "refs": ["iproyal-cn"],
+      "note": "与 /platform 结构对齐，Admin 版可保留表单与 Ant Design 组件"
+    },
+    {
+      "target": "frontend/admin 租户工作台",
+      "refs": ["asocks-dashboard"],
+      "sections": ["top-usage-bar", "today-widget", "task-lists", "dark-mode-ready"]
+    }
+  ]
+}

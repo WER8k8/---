@@ -1,0 +1,235 @@
+"""API路由汇总 - 模块化架构
+
+支持两种路由注册方式：
+1. 自动发现：扫描 routes/ 目录下所有模块，自动导入 router 对象
+2. 手动注册：对于需要特殊前缀或标签的路由，保留手动注册
+
+自动发现规则：
+- 模块文件名作为路由前缀（下划线转连字符）
+- 默认标签为模块名（中文转换）
+- 若模块定义了 ROUTE_PREFIX 或 ROUTE_TAGS 变量，则使用自定义值
+"""
+
+import importlib
+import logging
+import os
+from pathlib import Path
+
+from fastapi import APIRouter
+
+from app.api.v1.routes.invoice_applications import (
+    client_router as invoice_client_router,
+    finance_router as invoice_finance_router,
+)
+from app.core.response import success_response
+
+# FIX-61: 线索搜索引擎
+# FIX-62~65: 邮件队列 + 数据飞轮 + 加密审计 + AI 安全
+# FIX-13~14: 国密算法 + 零信任架构
+# FIX-66~69: 性能优化（异步+CDN+Nginx+可观测性）
+# FIX-70~73: 代码质量（ESLint+Prettier+审查+SonarQube）
+# FIX-74~81: 产品商业化（代理+模板+行业方案+代运营+白标+客户成功+增长+游戏化）
+# 剩余 P2 项综合路由（获客/性能/代码/架构/产品 P2）
+
+# 新增路由（建材B2B外贸平台）
+
+router = APIRouter(prefix="/v1")
+
+
+@router.get("/health", tags=["系统"])
+def v1_health():
+    """API v1 根级健康检查（便于网关探测 `/api/v1/health`）"""
+    return success_response(data={"status": "ok"})
+
+
+    case_studies_router,
+    prefix="/case-studies",
+    tags=["案例管理"])
+    media_factory_router,
+    prefix="/media-factory",
+    tags=["多媒体工厂"])
+    globalization_router,
+    prefix="/globalization",
+    tags=["全球化多语言"])
+    social_nurture_router,
+    prefix="/social-nurture",
+    tags=["海外养号"],
+)
+    system_health_router,
+    prefix="/system-health",
+    tags=["系统健康压测"])
+    ai_learning_router,
+    prefix="/ai-learning",
+    tags=["AI深度学习"])
+
+# 同时挂载 /ai/knowledge 别名（AI中心统一路径）
+
+# 知识库自动沉淀（外贸调研结果 → knowledge_base/）
+
+# AI一键生成/优化路由
+# AI内容生成模板路由
+
+# 关键词排名查询（真实爬虫）
+
+# 百度站长工具
+
+# IM路由配置（商家即时通讯渠道动态配置）
+
+# 建材参数管理（结构化技术参数）
+
+# 新增路由（建材B2B外贸平台）
+# inquiries-v2 保留向后兼容，同时将 v1 的完整功能路由也挂载到 inquiries-v2 别名
+# 注意: inquiries v1 (完整版) 已在第106行挂载于 /inquiries
+# inquiries-v2 保留旧路径兼容
+
+# AI聊天托管（时差托管、邮件通知）
+
+# 移动端合并接口（产品+IM+物流）
+
+# FIX-61: 线索搜索引擎
+# FIX-62~65: 邮件队列 + 数据飞轮 + 加密审计 + AI 安全
+# FIX-13~14: 国密算法 + 零信任架构
+# FIX-66~69: 性能优化
+# FIX-70~73: 代码质量
+# FIX-74~81: 产品商业化
+# 向量检索与知识图谱路由
+# Talking-Stick安全扫描路由
+
+# 剩余 P2 项综合路由
+
+router = APIRouter(prefix="/v1")
+
+
+@router.get("/health", tags=["系统"])
+def v1_health():
+    """API v1 根级健康检查（便于网关探测 `/api/v1/health`）"""
+    return success_response(data={"status": "ok"})
+
+
+    case_studies_router,
+    prefix="/case-studies",
+    tags=["案例管理"])
+    media_factory_router,
+    prefix="/media-factory",
+    tags=["多媒体工厂"])
+    globalization_router,
+    prefix="/globalization",
+    tags=["全球化多语言"])
+    social_nurture_router,
+    prefix="/social-nurture",
+    tags=["海外养号"],
+)
+    system_health_router,
+    prefix="/system-health",
+    tags=["系统健康压测"])
+    ai_learning_router,
+    prefix="/ai-learning",
+    tags=["AI深度学习"])
+
+# 同时挂载 /ai/knowledge 别名（AI中心统一路径）
+
+# 知识库自动沉淀（外贸调研结果 → knowledge_base/）
+
+# AI一键生成/优化路由
+# AI内容生成模板路由
+
+# 关键词排名查询（真实爬虫）
+
+# 百度站长工具
+
+# IM路由配置（商家即时通讯渠道动态配置）
+
+# 建材参数管理（结构化技术参数）
+
+# 新增路由（建材B2B外贸平台）
+# inquiries-v2 保留向后兼容，同时将 v1 的完整功能路由也挂载到 inquiries-v2 别名
+# 注意: inquiries v1 (完整版) 已在第106行挂载于 /inquiries
+# inquiries-v2 保留旧路径兼容
+
+# AI聊天托管（时差托管、邮件通知）
+
+# 移动端合并接口（产品+IM+物流）
+
+# FIX-61: 线索搜索引擎
+# FIX-62~65: 邮件队列 + 数据飞轮 + 加密审计 + AI 安全
+# FIX-13~14: 国密算法 + 零信任架构
+# FIX-66~69: 性能优化
+# FIX-70~73: 代码质量
+# FIX-74~81: 产品商业化
+# 向量检索与知识图谱路由
+# Talking-Stick安全扫描路由
+
+# 剩余 P2 项综合路由
+
+# 附属统一登录（annex_ticket 签发 + 附属回调校验，§9.3）
+
+# Campaign / ABM 活动管理（管理端）
+# GEO / AI Visibility 可见性（管理端）
+# Sales Task 销售任务（管理端）
+# 技术问答（公开端点，基于批准知识库）
+# 任务控制面管理与人审干预 (Human-in-the-Loop)
+
+# ============================================
+# AI Global Growth OS 新模块路由注册
+# ============================================
+
+# 一键建站
+# AI进化引擎
+# DeerFlow执行引擎
+# n8n工作流集成
+
+# 商业闭环编排器
+
+# ============================================================
+# FIX-30: API 路由自动发现 — 新增路由模块无需手动导入
+# 排除已手动注册的模块，避免重复注册
+# ============================================================
+from app.api.v1.routes.auto_discovery import auto_register_routes as _auto_register
+
+_ALREADY_REGISTERED = {
+    "health", "agent_tree", "rank_check", "baidu_webmaster", "agent_hub",
+    "super_agent", "lead_generation", "ai_config", "ai_learning", "analytics",
+    "attribution", "auth", "case_studies", "client", "cognitive", "compliance",
+    "content", "developer", "domain", "files", "international", "globalization",
+    "edge_cdn", "platform", "feishu", "inquiries", "recycle_bin", "tech_radar",
+    "product_faqs", "onboarding", "inquiry_channels", "logistics", "social_nurture",
+    "social_interactions", "cross_platform_dashboard", "media_factory",
+    "public_tenant_media", "public_wangcai", "public_visitor_context",
+    "public_tenant_geo", "news", "payment", "products", "referral", "content_master",
+    "egress", "growth_tools", "unified_publish", "video_publish", "integrations",
+    "finance", "invoice_applications", "token_ledger", "ops_jobs", "founder_ops",
+    "global_search", "ubrain", "ubrain_analytics", "hermes", "paperclip", "wangcai_marketplace",
+    "ubrain_commercial_os", "app_bff", "aitoearn_hub", "client_bff", "platform_bff",
+    "agent_bff", "trade_intel", "agent_portal", "hub", "seo_diagnosis", "seo_matrix",
+    "settings", "system", "system_health", "ai_usage", "building_wiki", "foreign_trade",
+    "gdpr", "cross_border", "forum", "public_forum", "knowledge", "churn", "tenants",
+    "users", "ai_generate", "ai_templates", "publish_tasks", "ssl_certificates",
+    "daily_report", "skill_store", "license", "reviews", "notifications",
+    "mobile_public", "lead_search", "email_queue", "security_advanced",
+    "performance", "code_quality", "product_commercial", "p2_enhancement",
+    "vector_search", "knowledge_graph",
+    "matching",
+    "rfq",
+    "calculator",
+    "opportunity",
+        "company",
+        "project",
+        "campaign",
+        "ai_visibility",
+        "sales_task",
+        "technical_qna",
+        "talking_stick",
+        "email_tracking",
+        # AI Global Growth OS 新模块（已在上面手动注册）
+        "site_builder",
+        "evolution",
+        "deerflow",
+        "n8n",
+        "commercial_loop",
+        "task_control_admin",
+    }
+_auto_registered = _auto_register(router, exclude_modules=_ALREADY_REGISTERED)
+if _auto_registered > 0:
+    import logging
+    _log = logging.getLogger(__name__)
+    _log.info("FIX-30: 自动发现并注册 %d 个新路由模块", _auto_registered)

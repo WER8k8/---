@@ -1,0 +1,49 @@
+{
+  "round": "round2",
+  "role": "dev",
+  "executor": "Cursor 自动化验收",
+  "executed_at": "2026-05-28",
+  "signed": true,
+  "venv": "backend/.venv",
+  "pytest_unit": {
+    "passed": 316,
+    "total": 316,
+    "note": "backend/.venv: pytest tests/unit -q (2026-05-28 续开发)"
+  },
+  "integration_smoke": {
+    "passed": 4,
+    "path": "backend/tests/integration/test_sprint_smoke.py"
+  },
+  "full_checklist": {
+    "ok": true,
+    "path": "docs/full-checklist-latest.json",
+    "generated_at": "2026-05-28T06:24:31Z",
+    "fail_count": 0
+  },
+  "pip_audit": {
+    "vulnerabilities": 14,
+    "packages": 5,
+    "path": "docs/security-audit-latest.md",
+    "note": "venv 内 pip-audit；较 P0 全局 74 条已显著下降"
+  },
+  "demo_acceptance": {
+    "ok": true,
+    "path": "docs/demo-acceptance-latest.json",
+    "generated_at": "2026-05-28T06:23:32Z"
+  },
+  "l3_browser": {
+    "login": true,
+    "inquiries_unified": true,
+    "publish_pilot": true,
+    "copilot_flywheel": true,
+    "founder_ops": true,
+    "inquiry_export": true,
+    "screenshots_dir": "docs/出海计/screenshots/round2/",
+    "manifest": "docs/出海计/screenshots/round2/manifest.json",
+    "script": "scripts/round2-l3-screenshots.mjs"
+  },
+  "blockers": [
+    "真实 AI Key（副驾仍为 Mock 时需在 .env 配置后复测）",
+    "生产 Postgres + preflight --production 全绿（运营/预发）"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "task": "BE-06-s2-readiness",
+  "checks": {
+    "rz_validate": true,
+    "meta_exported_60": true,
+    "signoff_template": true,
+    "validate_be06_export_script": true
+  },
+  "exported": 60,
+  "human_pending": "S2：BE lead 填写 comp-02-readability-signoff"
+}

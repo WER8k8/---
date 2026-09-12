@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: var(--uj-font-sans, 'Noto Sans SC', system-ui, sans-serif);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--uj-bg-page, #f4f6f9);
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ======== A11y: Global keyboard focus ring (WCAG 2.4.7) ======== */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--uj-brand, #4a9b8c);
+  outline-offset: 2px;
+  border-radius: 4px;
+  transition: outline-offset 0.15s ease;
+}
+button:focus-visible,
+a:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--uj-brand, #4a9b8c);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgb(74 155 140 / 0.18);
+}
+
+/* ======== A11y: Skip link (WCAG 2.4.1 Bypass Blocks) ======== */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 8px;
+  z-index: 9999;
+  padding: 10px 16px;
+  background: var(--uj-brand, #4a9b8c);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+  transition: top 0.2s ease;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 8px;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ======== A11y: prefers-reduced-motion (WCAG 2.3.3) ======== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .skeleton {
+    animation: none !important;
+    background: #f1f5f9;
+  }
+}
+
+/* ======== A11y: screen-reader-only utility (sr-only) ======== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ======== Global scrollbar - clean ======== */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ======== Clean component classes ======== */
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply px-4 py-2.5 bg-[#4a9b8c] text-white font-medium rounded-xl
+           transition-all duration-200
+           hover:bg-[#2a6b60];
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2.5 bg-white text-gray-700 font-medium rounded-xl
+           border border-gray-200
+           transition-all duration-200
+           hover:bg-gray-50 hover:border-gray-300;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2.5 bg-red-500 text-white font-medium rounded-xl
+           transition-all duration-200
+           hover:bg-red-600;
+  }
+
+  /* Input fields */
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl
+           focus:outline-none focus:ring-2 focus:ring-[#4a9b8c]/20 focus:border-[#4a9b8c]
+           transition-all duration-200;
+  }
+
+  /* Stat card - clean white */
+  .stat-card {
+    @apply bg-white rounded-xl p-6 border border-[#f1f5f9]
+           transition-shadow duration-200
+           hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)];
+  }
+
+  /* Card hover: subtle lift */
+  .card-hover {
+    @apply transition-shadow duration-200
+           hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)];
+  }
+
+  /* Backward-compatible gradient utilities (cleaner versions) */
+  .gradient-primary {
+    @apply bg-[#4a9b8c] text-white;
+  }
+  .gradient-success {
+    @apply bg-[#16a34a] text-white;
+  }
+  .glass-card {
+    @apply bg-white border border-[#f1f5f9] rounded-xl;
+  }
+}
+
+/* Skeleton loader */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

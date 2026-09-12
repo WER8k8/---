@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-06-12",
+  "decision_id": "CONSOLE-REGRESSION-LOCK-01",
+  "title": "Trae 控制台三类红错硬锁（防复发）",
+  "summary": "禁止 ant-design-vue Modal/Drawer 使用弃用 visible；Formily effect 须在 createForm.effects 内注册；超管计费页不得无 tenant_id 请求 /tenants/invoices。",
+  "verify_scripts": [
+    "frontend/admin/scripts/check-console-regression-lock.mjs",
+    "scripts/verify-console-regression-lock.ps1"
+  ],
+  "rules": {
+    "antd_modal_open": {
+      "description": "a-modal / a-drawer 必须使用 v-model:open，禁止 v-model:visible",
+      "scan_glob": "frontend/admin/src/**/*.vue",
+      "forbidden_regex": "<a-(modal|drawer)[\\s\\S]{0,240}?v-model:visible"
+    },
+    "formily_effects_in_createForm": {
+      "description": "YdFormilyForm 须在 createForm({ effects() { onFormValuesChange(...) } }) 内注册 effect",
+      "file": "frontend/admin/src/components/youding/YdFormilyForm.vue",
+      "required_snippets": [
+        "effects()",
+        "onFormValuesChange"
+      ],
+      "forbidden_outside_effects": "onFormValuesChange(() =>"
+    },
+    "tenant_billing_guard": {
+      "description": "超管 tenants/billing 无 tenant_id 时不得请求 invoices",
+      "file": "frontend/admin/src/views/tenants/billing.vue",
+      "required_snippets": [
+        "if (!selectedTenantId.value)",
+        "tenant_id: selectedTenantId.value"
+      ]
+    }
+  },
+  "page_smoke_paths": [
+    "/tenants/billing"
+  ],
+  "static_only_paths": [
+    "/client/site-editor-lab"
+  ],
+  "console_block_patterns": [
+    "请指定 tenant_id",
+    "Effect hooks cannot be used in asynchronous function body"
+  ]
+}

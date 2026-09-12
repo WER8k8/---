@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "task": "PAT-02-bundle",
+  "files": [
+    {
+      "path": "docs/专利/PAT-02-novelty-search-memo.md",
+      "exists": true,
+      "bytes": 2160
+    },
+    {
+      "path": "docs/专利/PAT-02-agency-handoff-checklist.md",
+      "exists": true,
+      "bytes": 858
+    },
+    {
+      "path": "docs/专利/PAT-01-claims-code-mapping.md",
+      "exists": true,
+      "bytes": 1018
+    },
+    {
+      "path": "docs/专利/PAT-02-report-number.json",
+      "exists": true,
+      "bytes": 350
+    },
+    {
+      "path": "docs/pat-02-handoff-validation-latest.json",
+      "exists": true,
+      "bytes": 358
+    }
+  ],
+  "human_pending": "PM 发送代理 + 回收检索号"
+}

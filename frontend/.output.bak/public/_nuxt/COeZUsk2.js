@@ -1,0 +1,1 @@
+import{k as t}from"./Bqpd76b4.js";import{x as a,a3 as e,a2 as n}from"./Dw5cRyJq.js";import"./cicrfwpc.js";import"./CP305iJ0.js";import"./DiYaDy8a.js";import"./BKQVsGck.js";import"./BYlmoOb2.js";import"./D_vXau2e.js";const k=a({__name:"downloads",setup(r){return(p,m)=>{const o=t;return n(),e(o,{page:"downloads"})}}});export{k as default};

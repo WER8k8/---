@@ -1,0 +1,51 @@
+// FILE: backend\app\core\founder_debug_gate.py
+"""创始人专属调试门禁：超管 + 微信唯一（优先）或开发令牌 + 可选 IP。"""
+
+from __future__ import annotations
+
+import ipaddress
+import secrets
+
+from fastapi import HTTPException, Request, status
+from sqlalchemy.orm import Session
+
+from app.core.config import settings
+from app.models.user import User
+from app.services.founder_wechat_service import (
+    founder_wechat_configured,
+    user_is_founder,
+)
+
+# 延迟导入避免循环依赖
+def _log_founder_event(db, user, request, action: str, detail: dict | None = None):
+    from app.services.security_event_service import log_security_event
+
+    log_security_event(
+        db,
+        action=action,
+        user=user,
+        detail=detail or {},
+        request=request,
+    )
+
+
+def _parse_allowed_ips(raw: str) -> list:
+    out = []
+    for part in (raw or "").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        try:
+            if "/" in part:
+                out.append(ipaddress.ip_network(part, strict=False))
+            else:
+                out.append(ipaddress.ip_address(part))
+        except ValueError:
+            continue
+    return out
+
+
+def _client_ip(request: Request) -> str:
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()

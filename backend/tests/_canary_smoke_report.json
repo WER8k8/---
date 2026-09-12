@@ -1,0 +1,58 @@
+{
+  "phases": [
+    {
+      "phase": "5",
+      "allowed_tenants": 1,
+      "requests": 40,
+      "2xx": 40,
+      "4xx": 0,
+      "5xx": 0,
+      "other": 0,
+      "error_rate": 0.0,
+      "p95_latency_ms": 34.83,
+      "max_latency_ms": 36.14,
+      "tenants_used": 1
+    },
+    {
+      "phase": "25",
+      "allowed_tenants": 5,
+      "requests": 100,
+      "2xx": 100,
+      "4xx": 0,
+      "5xx": 0,
+      "other": 0,
+      "error_rate": 0.0,
+      "p95_latency_ms": 27.36,
+      "max_latency_ms": 30.89,
+      "tenants_used": 5
+    },
+    {
+      "phase": "50",
+      "allowed_tenants": 10,
+      "requests": 200,
+      "2xx": 200,
+      "4xx": 0,
+      "5xx": 0,
+      "other": 0,
+      "error_rate": 0.0,
+      "p95_latency_ms": 30.59,
+      "max_latency_ms": 36.17,
+      "tenants_used": 10
+    },
+    {
+      "phase": "100",
+      "allowed_tenants": 20,
+      "requests": 400,
+      "2xx": 400,
+      "4xx": 0,
+      "5xx": 0,
+      "other": 0,
+      "error_rate": 0.0,
+      "p95_latency_ms": 27.15,
+      "max_latency_ms": 42.55,
+      "tenants_used": 20
+    }
+  ],
+  "all_pass": true,
+  "timestamp": "2026-09-04T02:43:30.701234Z"
+}

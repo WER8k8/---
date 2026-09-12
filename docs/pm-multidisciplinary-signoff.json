@@ -1,0 +1,27 @@
+{
+  "task_id": "PM-MKT-02",
+  "title": "八角色联合旅程审查 · 盲区补齐",
+  "charter": "docs/pm-multidisciplinary-journey-review.md",
+  "matrix": "docs/pm-marketing-journey-review-matrix.md",
+  "status": "code_ready",
+  "code_delivered": [
+    "GET /api/v1/client/journey-health",
+    "GET /api/v1/client/onboarding-guides → journey_health",
+    "GET /api/v1/client/dashboard → journey_health",
+    "GET /api/v1/ai-learning/conversion-funnel → traffic_analytics_service",
+    "frontend/admin/src/views/client/dashboard.vue → journey-health-panel",
+    "frontend/admin/src/views/landing/index.vue → 示意图标注"
+  ],
+  "signoffs": {
+    "pm": { "name": "", "date": "", "result": "pending" },
+    "marketing": { "name": "", "date": "", "result": "pending" },
+    "strategy": { "name": "", "date": "", "result": "pending" },
+    "market_research": { "name": "", "date": "", "result": "pending" },
+    "user_research": { "name": "", "date": "", "result": "pending" },
+    "data_analytics": { "name": "", "date": "", "result": "pending" },
+    "ux_research": { "name": "", "date": "", "result": "pending" },
+    "ui_design": { "name": "", "date": "", "result": "pending" }
+  },
+  "meeting_notes": "代码侧已补齐八角色盲区矩阵对应交付；会议签字后改 status 为 signed_off。",
+  "validation": "python scripts/validate-pm-multidisciplinary-review.py"
+}

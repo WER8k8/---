@@ -1,0 +1,20 @@
+[
+  {
+    "file_rel": "app/services/talking_stick/utils/rule_engine.py",
+    "func_name": "_init_default_rules",
+    "func_lineno": 43,
+    "start": 46,
+    "end": 124,
+    "helper_name": "_init_owasp_rules",
+    "preview": false
+  },
+  {
+    "file_rel": "app/services/talking_stick/utils/rule_engine.py",
+    "func_name": "_init_default_rules",
+    "func_lineno": 43,
+    "start": 127,
+    "end": 168,
+    "helper_name": "_init_secret_rules",
+    "preview": false
+  }
+]

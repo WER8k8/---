@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "task": "COMP-06-lawyer-signoff",
+  "checks": {
+    "signoff_record": true,
+    "lawyer_draft": true,
+    "bundle_validation_green": true
+  },
+  "signed": false,
+  "human_pending": true,
+  "apply_command": "python scripts/apply-comp-06-lawyer-signoff.py --name 律师姓名 --firm 律所名"
+}

@@ -1,0 +1,174 @@
+/**
+ * Youding Omni Pro — design-tokens v3 (LOCKED)
+ * @see docs/youding-omni-pro-design-LOCKED.md
+ */
+@use './design-tokens-v2.scss';
+
+:root {
+  --uj-theme: light;
+  --uj-accent-role: platform;
+  --uj-mode-surface: default;
+  --uj-worktab-height: 40px;
+  --uj-page-max-width: 1440px;
+  --uj-text-body: 15px;
+  --uj-text-title: 16px;
+  --uj-brand-deep: #2a6b60;
+  --uj-font-display: 'DM Sans', 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --uj-font-sans: 'Noto Sans SC', 'DM Sans', 'PingFang SC', sans-serif;
+  --uj-table-density: default;
+  --uj-radius-scale: md;
+  --uj-surface-hover: rgb(255 255 255 / 0.55);
+  --uj-surface-active: rgb(74 155 140 / 0.14);
+  --uj-surface-inset: rgb(255 255 255 / 0.6);
+  --uj-popover-bg: #ffffff;
+  --uj-popover-border: #e2e8f0;
+}
+
+:root[data-uj-theme='dark'] {
+  --uj-theme: dark;
+  /* Slate Pro — 中性蓝灰深色（偏浅一档，图标/卡片更易辨认） */
+  --uj-bg-page: #2a3038;
+  --uj-bg-card: #383f49;
+  --uj-border: rgb(255 255 255 / 0.16);
+  --uj-border-soft: rgb(255 255 255 / 0.12);
+  --uj-glass-bg: rgb(48 54 62 / 0.96);
+  --uj-glass-bg-strong: #333a44;
+  --uj-text-muted: #a8b0bb;
+  --uj-text-secondary: #eef2f6;
+  --uj-kpi-bg: #3d4550;
+  --uj-kpi-border: rgb(255 255 255 / 0.13);
+  --uj-sidebar-bg: #2f3640;
+  --uj-kpi-shadow: 0 4px 16px rgb(0 0 0 / 0.14);
+  --uj-shadow-card: 0 4px 20px rgb(0 0 0 / 0.14);
+  --uj-surface-hover: rgb(255 255 255 / 0.09);
+  --uj-surface-active: rgb(88 196 174 / 0.2);
+  --uj-surface-inset: rgb(255 255 255 / 0.08);
+  --uj-popover-bg: #3d4550;
+  --uj-popover-border: rgb(255 255 255 / 0.14);
+  --uj-icon-tile-bg: linear-gradient(155deg, #4a5362 0%, #3f4854 100%);
+  --uj-icon-tile-color: #eaf2f4;
+  --uj-icon-tile-shadow: 0 1px 0 rgb(255 255 255 / 0.12) inset, 0 2px 8px rgb(0 0 0 / 0.16);
+  color-scheme: dark;
+}
+
+:root[data-uj-accent='client'] {
+  --uj-accent-role: client;
+  --uj-brand: var(--uj-shell-client-accent);
+  --uj-brand-hover: #3d8578;
+  --uj-brand-muted: rgb(74 155 140 / 0.12);
+  --uj-kpi-accent-bar: 3px solid var(--uj-shell-client-accent);
+}
+
+:root[data-uj-theme='dark'][data-uj-accent='client'] {
+  --uj-brand-muted: rgb(88 196 174 / 0.16);
+}
+
+:root[data-uj-accent='agent'] {
+  --uj-accent-role: agent;
+  --uj-brand: var(--uj-shell-agent-accent);
+  --uj-brand-hover: #0f766e;
+  --uj-brand-muted: rgb(13 148 136 / 0.12);
+  --uj-kpi-accent-bar: 3px solid var(--uj-shell-agent-accent);
+}
+
+:root[data-uj-theme='dark'][data-uj-accent='agent'] {
+  --uj-brand-muted: rgb(77 182 160 / 0.16);
+}
+
+:root[data-uj-accent='platform'] {
+  --uj-accent-role: platform;
+  --uj-brand: var(--uj-shell-platform-accent);
+  --uj-brand-hover: #3d8578;
+  --uj-brand-muted: rgb(94 200 176 / 0.18);
+  --uj-brand-deep: #2a6b60;
+  --uj-kpi-accent-bar: 3px solid var(--uj-shell-platform-accent);
+}
+
+:root[data-uj-radius='sm'] {
+  --uj-radius-sm: 6px;
+  --uj-radius-md: 8px;
+  --uj-radius-lg: 12px;
+}
+
+:root[data-uj-radius='lg'] {
+  --uj-radius-sm: 10px;
+  --uj-radius-md: 14px;
+  --uj-radius-lg: 20px;
+}
+
+.yd-page {
+  max-width: var(--uj-page-max-width);
+  margin: 0 auto;
+  padding: var(--uj-space-page);
+}
+
+.yd-page--surface-brand-hero .yd-page-hero {
+  background: linear-gradient(135deg, rgb(168 230 207 / 0.35), rgb(255 255 255 / 0.5));
+  border: 1px solid rgb(94 181 162 / 0.2);
+  border-radius: var(--uj-radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.yd-page--surface-elevated .yd-page-body > .ant-card,
+.yd-page--surface-elevated .yd-page-body > .yd-panel {
+  box-shadow: var(--uj-shadow-card, 0 4px 24px rgb(15 23 42 / 0.06));
+}
+
+.yd-panel {
+  background: var(--uj-glass-bg-strong, rgb(255 255 255 / 0.96));
+  border: 1px solid var(--uj-border);
+  border-radius: var(--uj-radius-md);
+  box-shadow: var(--uj-glass-shadow);
+  padding: 16px;
+}
+
+.yd-worktab-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: var(--uj-worktab-height);
+  padding: 0 12px;
+  background: var(--uj-bg-card);
+  border-bottom: 1px solid var(--uj-border);
+  overflow-x: auto;
+}
+
+.yd-worktab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: var(--uj-font-size-sm, 13px);
+  color: var(--uj-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.yd-worktab-item:hover {
+  background: rgb(37 99 235 / 0.06);
+  color: var(--uj-brand);
+}
+
+.yd-worktab-item.active {
+  color: var(--uj-brand);
+  background: var(--uj-brand-muted);
+  border-color: rgb(37 99 235 / 0.15);
+  font-weight: 600;
+}
+
+.yd-context-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: var(--uj-font-size-sm, 13px);
+  color: var(--uj-text-muted);
+  background: var(--uj-bg-page);
+  border-bottom: 1px solid var(--uj-border);
+}

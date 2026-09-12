@@ -1,0 +1,170 @@
+﻿{
+    "generated_at":  "2026-06-01T14:02:38.7660687+08:00",
+    "pass":  true,
+    "round":  15,
+    "steps":  [
+                  {
+                      "ok":  true,
+                      "step":  "ARCH-01 preflight",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "QA-02 cert gate",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "Owner blockers sync",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "ARCH-04 compose",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "ARCH-04 certbot preflight",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "ARCH-04 staging https",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "BJ-01 Formily",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "BE-06 export",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "BE-06 s2 readiness",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "QA-04 locust bundle",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-02 IM keys",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-02 webhook smoke",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-02 staging handoff",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-04 recording prep",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-04 recording routes",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-04 recording rehearsal",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-04 https step",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-04 rehearsal screenshots",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-03 platform signoff",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-07 trade matrix",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-05 migrations",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-05 staging",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-05 prod runbook",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-06 cap prep",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-06 chuhaiji",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-06 android aab prep",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-08 blockers",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "MOD-08 owner readiness",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "PAT-02 handoff",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "PAT-02 bundle",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "COMP-06 bundle",
+                      "exit":  0
+                  },
+                  {
+                      "ok":  true,
+                      "step":  "COMP-06 lawyer signoff",
+                      "exit":  0
+                  }
+              ],
+    "fail_count":  0,
+    "step_count":  32,
+    "task":  "R1-dev-gate"
+}

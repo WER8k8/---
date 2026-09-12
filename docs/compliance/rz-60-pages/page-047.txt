@@ -1,0 +1,51 @@
+// FILE: backend\app\core\founder_debug_gate.py
+    *,
+    token_header: str = "X-Founder-Debug-Token",
+) -> None:
+    """校验：超管 +（创始人微信 或 仅开发令牌）+ 可选 IP。"""
+    require_super_admin(user)
+    _check_ip(request)
+
+    if founder_wechat_configured():
+        if not user_is_founder(db, user):
+            key = (
+                getattr(settings, "FOUNDER_WECHAT_BIND_KEY", "")
+                or getattr(settings, "FOUNDER_WECHAT_OPENID", "")
+                or ""
+            ).strip()
+            hint = f"请使用创始人账号（微信已绑定 {key or '见配置'}）登录"
+            from app.services.security_event_service import ACTION_FOUNDER_DENIED
+
+            _log_founder_event(
+                db,
+                user,
+                request,
+                ACTION_FOUNDER_DENIED,
+                {"reason": "not_founder", "username": user.username},
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=hint,
+            )
+        from app.services.security_event_service import ACTION_FOUNDER_ACCESS
+
+        _log_founder_event(
+            db,
+            user,
+            request,
+            ACTION_FOUNDER_ACCESS,
+            {"path": str(request.url.path), "gate": "wechat"},
+        )
+        return
+
+    expected = (getattr(settings, "FOUNDER_DEBUG_TOKEN", None) or "").strip()
+    if not expected:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="未配置 FOUNDER_WECHAT_OPENID 或 FOUNDER_DEBUG_TOKEN，创始人入口已关闭",
+        )
+    provided = (request.headers.get(token_header) or "").strip()
+    if not secrets.compare_digest(provided, expected):
+        from app.services.security_event_service import ACTION_FOUNDER_DENIED
+
+        _log_founder_event(

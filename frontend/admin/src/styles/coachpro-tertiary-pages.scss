@@ -1,0 +1,258 @@
+/**
+ * CoachPro · 三级业务页统一（代理 / 省代 / 租户 / 超管子页）
+ * 薄荷马卡龙玻璃拟态 · 与 mint-glass-shell / coachpro-mint-motion 配套
+ */
+
+.coachpro-tertiary,
+.agent-dashboard,
+.agent-commission,
+.agent-account-opening,
+.agent-traffic-page,
+.daily-report,
+.churn-warning,
+.client-dashboard,
+.client-billing,
+.client-tokens,
+.yd-page-body,
+.coachpro-page-body {
+  --coachpro-panel-radius: 20px;
+}
+
+/* 所有 YdPage 三级子页默认透明底，卡片走玻璃 */
+.coachpro-page-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.shell--client .coachpro-page-body,
+.shell--agent .coachpro-page-body,
+.shell--partner .coachpro-page-body,
+.shell--platform .coachpro-page-body {
+  background: transparent;
+}
+
+/* 页面根：不盖壳层渐变，仅留间距 */
+.coachpro-tertiary,
+.agent-dashboard,
+.agent-commission,
+.agent-account-opening,
+.agent-traffic-page,
+.daily-report,
+.churn-warning,
+.client-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 2px 12px;
+  background: transparent;
+}
+
+/* 玻璃面板（禁止实白） */
+.coachpro-panel,
+.panel.coachpro-panel,
+.uj-glass-panel.panel,
+.agent-dashboard .panel,
+.partner-theme.agent-dashboard .panel,
+.client-dashboard .panel,
+.daily-report .summary-card,
+.churn-warning .cw-section,
+.churn-warning .cw-risk-card,
+.agent-traffic-page .agent-client-inbox,
+.client-dashboard__cell,
+.client-dashboard .panel {
+  background: var(--uj-glass-bg-strong, rgb(255 255 255 / 0.82)) !important;
+  border: 1px solid var(--uj-border, rgb(255 255 255 / 0.88)) !important;
+  border-radius: var(--coachpro-panel-radius, 20px) !important;
+  box-shadow: var(--uj-glass-shadow) !important;
+}
+
+/* Tailwind 实白块覆写 */
+.shell .yd-page .bg-white,
+.shell .yd-page-body .bg-white,
+.client-shell .bg-white.rounded-2xl,
+.client-shell .bg-white.rounded-xl,
+.client-shell .border-slate-100.bg-white {
+  background: var(--uj-glass-bg-strong) !important;
+  border-color: var(--uj-border-soft, rgb(94 181 162 / 0.22)) !important;
+  box-shadow: var(--uj-glass-shadow) !important;
+}
+
+/* 页面顶栏（section / coachpro-topbar）— 与壳层 header.topbar 隔离，禁止 52px 固定高 */
+.coachpro-topbar,
+.agent-dashboard .topbar.panel,
+.client-dashboard .topbar.panel,
+.admin-dashboard .topbar.panel {
+  height: auto !important;
+  min-height: unset;
+  max-height: none;
+  position: relative;
+  top: auto;
+  flex-shrink: 0;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-bottom: none;
+  background: rgb(255 255 255 / 0.96) !important;
+}
+
+.coachpro-kicker,
+.agent-dashboard .kicker,
+.client-dashboard .kicker {
+  margin: 0;
+  font-size: var(--uj-font-size-sm, 13px);
+  color: var(--uj-text-muted, #5f7d75);
+}
+
+.coachpro-title,
+.agent-dashboard h1,
+.client-dashboard h1 {
+  margin: 4px 0 0;
+  font-size: var(--uj-font-size-h1, 24px);
+  font-weight: 700;
+  color: #1a2e28;
+}
+
+.coachpro-desc,
+.agent-dashboard .desc,
+.client-dashboard .desc {
+  margin: 4px 0 0;
+  font-size: var(--uj-text-body, 15px);
+  color: #64748b;
+  line-height: 1.45;
+}
+
+/* KPI 栅格与顶栏间距由 flex gap 保证，无需 z-index 叠层补丁 */
+.agent-dashboard .kpi-grid,
+.client-dashboard .kpi-grid,
+.admin-dashboard .kpi-grid,
+.coachpro-kpi-grid {
+  position: relative;
+}
+
+.agent-dashboard .kpi-grid :deep(.yd-stats-card),
+.client-dashboard .kpi-grid :deep(.yd-stats-card),
+.admin-dashboard .kpi-grid :deep(.yd-stats-card),
+.coachpro-kpi-grid :deep(.yd-stats-card) {
+  background: rgb(255 255 255 / 0.98) !important;
+  border: 1px solid rgb(226 232 240 / 0.95) !important;
+}
+
+/* KPI 栅格 */
+.coachpro-kpi-grid,
+.agent-dashboard .kpi-grid,
+.client-dashboard .kpi-grid,
+.admin-dashboard .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .coachpro-kpi-grid,
+  .agent-dashboard .kpi-grid,
+  .client-dashboard .kpi-grid,
+  .admin-dashboard .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 统计卡（代理佣金 / 日报 / 流失） */
+.coachpro-stat-card,
+.agent-commission .stat-card,
+.daily-report .stat-card,
+.churn-warning .cw-stat-card {
+  position: relative;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--uj-glass-bg-strong) !important;
+  border: 1px solid var(--uj-border) !important;
+  box-shadow: var(--uj-glass-shadow) !important;
+  transition:
+    transform 300ms ease-out,
+    box-shadow 300ms ease-out;
+}
+
+.coachpro-stat-card:hover,
+.agent-commission .stat-card:hover,
+.daily-report .stat-card:hover,
+.churn-warning .cw-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--uj-glass-shadow-hover);
+}
+
+.agent-commission .stat-card--blue,
+.daily-report .stat-card.bg-blue { border-left: 3px solid #5a9fd4 !important; }
+.agent-commission .stat-card--emerald,
+.daily-report .stat-card.bg-green { border-left: 3px solid #4db6a0 !important; }
+.agent-commission .stat-card--amber,
+.daily-report .stat-card.bg-amber { border-left: 3px solid #c9a86a !important; }
+.agent-commission .stat-card--violet,
+.daily-report .stat-card.bg-purple { border-left: 3px solid #5eb8a8 !important; }
+
+.churn-warning .cw-stat-card.high { border-left: 3px solid #e57373; }
+.churn-warning .cw-stat-card.medium { border-left: 3px solid #f0b429; }
+.churn-warning .cw-stat-card.low { border-left: 3px solid #5eb8a8; }
+.churn-warning .cw-stat-card.total { border-left: 3px solid #5a9fd4; }
+
+/* 代理壳 accent */
+.shell--agent .agent-dashboard .line-dot--blue { background: #4a9b8c; }
+.shell--agent .agent-dashboard .panel {
+  border-color: rgb(77 182 160 / 0.2) !important;
+}
+
+.shell--partner .partner-theme.agent-dashboard .line-dot--blue { background: #5f88a0; }
+
+/* 租户 bento */
+.client-dashboard__bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+}
+
+.client-dashboard__cell {
+  padding: 16px;
+  min-height: 120px;
+}
+
+.client-dashboard .cell-title {
+  margin: 0 0 8px;
+  font-size: var(--uj-text-title, 16px);
+  font-weight: 600;
+  color: #2d4a42;
+}
+
+.client-dashboard .cell-kpi {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a2e28;
+}
+
+/* 主从双栏 */
+.coachpro-split,
+.agent-dashboard .main-grid,
+.agent-dashboard .table-grid,
+.client-dashboard .grid {
+  gap: 12px;
+}
+
+.agent-dashboard .main-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+}
+
+.agent-dashboard .table-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.85fr;
+}
+
+@media (max-width: 1000px) {
+  .agent-dashboard .main-grid,
+  .agent-dashboard .table-grid {
+    grid-template-columns: 1fr;
+  }
+}

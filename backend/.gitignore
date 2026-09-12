@@ -1,0 +1,86 @@
+# ================ 环境配置文件 ================
+# 根目录配置文件（敏感信息）
+.env
+.env.local
+.env.production
+.env.staging
+
+# config/ 目录下的敏感配置
+config/.env.prod
+config/.env.local
+
+# 分环境子目录下的真实 .env（含密钥，禁止入库）
+config/prod/.env
+config/test/.env
+config/dev/.env
+
+# 保留示例配置文件（不排除）
+!config/.env.dev
+!config/.env.test
+!config/.env.prod.example
+!config/prod/.env.example
+!config/test/.env.example
+!config/dev/.env.example
+
+# ================ 数据库文件 ================
+*.db
+*.sqlite3
+data/
+
+# ================ Python ================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ================ IDE ================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ================ OS ================
+.DS_Store
+Thumbs.db
+
+# ================ 日志文件 ================
+*.log
+logs/
+debug_output.txt
+test_output.txt
+test_out.txt
+test_err.txt
+normal_user_err2.txt
+nromal_user_err.txt
+
+# ================ 上传文件 ================
+uploads/
+
+# ================ 测试相关 ================
+.pytest_cache/
+.coverage
+htmlcov/
+test_*.py
+pytest-*.txt
+
+# ================ 临时文件 ================
+*.tmp
+*.temp
+trae-task-result-*.json

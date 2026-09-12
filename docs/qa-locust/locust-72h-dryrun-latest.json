@@ -1,0 +1,9 @@
+﻿{
+    "note":  "Production 72h uses docs/qa-locust/QA-04-72h-schedule.md on HTTPS domain",
+    "generated_at":  "2026-06-01T11:36:37.9653046+08:00",
+    "smoke_pass":  true,
+    "duration":  "2m",
+    "locust_exit":  0,
+    "users":  10,
+    "task":  "QA-04-72h-dryrun"
+}

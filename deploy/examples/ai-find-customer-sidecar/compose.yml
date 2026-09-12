@@ -1,0 +1,25 @@
+# AI_Find_Customer Sidecar 适配层（开发/预发）
+# 文档：deploy/docs/AI-FIND-CUSTOMER-SIDECAR-DEPLOY.md
+#
+# 用法（需另起终端部署上游 AI Hunter backend）：
+#   set AI_HUNTER_UPSTREAM_URL=http://host.docker.internal:8080
+#   docker compose -f deploy/examples/ai-find-customer-sidecar/compose.yml up -d
+#
+# 主站 backend：
+#   AI_FIND_CUSTOMER_URL=http://127.0.0.1:8092
+#   AI_FIND_CUSTOMER_TOKEN=dev-sidecar-token
+
+services:
+  ai-find-customer-adapter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: youding-ai-find-customer-adapter
+    restart: unless-stopped
+    ports:
+      - "8092:8092"
+    environment:
+      AI_FIND_CUSTOMER_TOKEN: ${AI_FIND_CUSTOMER_TOKEN:-dev-sidecar-token}
+      AI_HUNTER_UPSTREAM_URL: ${AI_HUNTER_UPSTREAM_URL:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

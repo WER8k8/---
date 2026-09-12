@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>租户工作台导航 — 全站页面总览</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <style id="theme-vars">
+:root {
+  --uj-motion-duration: 0.3s;
+  --uj-motion-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --seed-color: #4a9b8c;
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 14px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}
+    </style>
+    <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 80% 40% at 20% 10%, rgba(74,155,140,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(59,130,246,0.03) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted-foreground); }
+
+/* === HEADER === */
+.page-header {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px 0;
+}
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(74,155,140,0.1);
+  border: 1px solid rgba(74,155,140,0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--color-foreground);
+  margin-bottom: 8px;
+}
+.page-header .subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
+}
+.page-header .subtitle span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;
+}
+
+/* === MAIN LAYOUT === */
+.main-layout {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  gap: 32px;
+  position: relative;
+}
+
+/* === WORKFLOW TIMELINE (Desktop only) === */
+.workflow-timeline {
+  width: 200px;
+  flex-shrink: 0;
+  position: relative;
+}
+.timeline-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+.timeline-track {
+  position: relative;
+  padding-left: 20px;
+}
+.timeline-track::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-border) 0px,
+    var(--color-border) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+.timeline-item {
+  position: relative;
+  padding: 10px 0 10px 16px;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+.timeline-item:hover .timeline-label { color: var(--color-foreground); }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -17px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-background);
+  transition: all var(--duration-normal) var(--ease-spring);
+  z-index: 1;
+}
+.timeline-item:hover::before,
+.timeline-item.active::before {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  box-shadow: 0 0 8px rgba(74,155,140,0.4);
+}
+.timeline-step {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  opacity: 0.5;
+  margin-bottom: 2px;
+}
+.timeline-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+  transition: color var(--duration-fast) var(--ease-out);
+  line-height: 1.3;
+}
+.timeline-dot-color {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* === CONTENT AREA === */
+.content-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* === QUICK START BANNER === */
+.quick-start-banner {
+  background: linear-gradient(135deg, rgba(74,155,140,0.12) 0%, rgba(59,130,246,0.08) 100%);
+  border: 1px solid rgba(74,155,140,0.2);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: ujCardEnter 0.5s var(--ease-out) both;
+}
+.quick-start-banner::before {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(74,155,140,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.quick-start-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: rgba(74,155,140,0.15);
+  border: 1px solid rgba(74,155,140,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+.quick-start-text h2 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: 4px;
+}
+.quick-start-text p {
+  font-size: 0.8125rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
+}
+.quick-start-arrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-spring);
+  flex-shrink: 0;
+}
+.quick-start-arrow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(74,155,140,0.3);
+}
+
+/* === GROUP CARD === */
+.group-card {
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-out);
+  animation: ujCardEnter 0.5s var(--ease-out) both;
+}
+.group-card:hover {
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,0.25));
+}
+.group-card:nth-child(1) { animation-delay: 0.05s; }
+.group-card:nth-child(2) { animation-delay: 0.1s; }
+.group-card:nth-child(3) { animation-delay: 0.15s; }
+.group-card:nth-child(4) { animation-delay: 0.2s; }
+.group-card:nth-child(5) { animation-delay: 0.25s; }
+.group-card:nth-child(6) { animation-delay: 0.3s; }
+.group-card:nth-child(7) { animation-delay: 0.35s; }
+
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.group-accent-bar {
+  width: 4px;
+  height: 36px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.group-info {
+  flex: 1;
+  min-width: 0;
+}
+.group-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  line-height: 1.3;
+}
+.group-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
+}
+.group-route {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  opacity: 0.7;
+}
+.group-count {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--color-muted-foreground);
+  background: var(--color-muted);
+}
+
+/* === PAGE CARDS GRID === */
+.page-cards {
+  display: flex;
+  gap: 12px;
+  padding: 16px 22px 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.page-cards::-webkit-scrollbar { height: 4px; }
+.page-cards::-webkit-scrollbar-track { background: transparent; }
+.page-cards::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+.page-card {
+  flex: 1;
+  min-width: 220px;
+  max-width: 300px;
+  background: rgba(26,27,32,0.6);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-spring);
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+}
+.page-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-out);
+  pointer-events: none;
+}
+.page-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+.page-card:hover::after { opacity: 1; }
+
+.page-card-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.page-card-name i {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.page-card-desc {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.page-card-enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.page-card-enter i { width: 14px; height: 14px; }
+.page-card:hover .page-card-enter { gap: 8px; }
+
+/* === CROSS-CUTTING / ADMIN SECTION === */
+.admin-section {
+  margin-top: 8px;
+}
+.admin-section-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.admin-section-title::before,
+.admin-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+.admin-grid {
+  display: flex;
+  gap: 12px;
+}
+.admin-card {
+  flex: 1;
+  background: rgba(21,22,26,0.5);
+  border: 1px dashed rgba(255,255,255,0.06);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  opacity: 0.7;
+}
+.admin-card:hover {
+  opacity: 1;
+  border-color: rgba(244,63,94,0.3);
+  background: rgba(21,22,26,0.7);
+  transform: translateY(-2px);
+}
+.admin-card-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-card-foreground);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-card-desc {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
+}
+.admin-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(244,63,94,0.1);
+  color: #f43f5e;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+/* === MODAL === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal-content {
+  background: rgba(21,22,26,0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(20px) scale(0.95);
+  transition: transform var(--duration-normal) var(--ease-spring);
+  animation: none;
+}
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+  animation: springBounce 0.5s var(--ease-spring);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+  gap: 16px;
+}
+.modal-header-info { flex: 1; }
+.modal-accent-bar {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.modal-route {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.8125rem;
+  color: var(--color-primary);
+  background: rgba(74,155,140,0.1);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+.modal-close:hover {
+  background: var(--color-border);
+  color: var(--color-foreground);
+}
+.modal-body {
+  padding: 20px 24px 24px;
+}
+.modal-desc {
+  font-size: 0.875rem;
+  color: var(--color-card-foreground);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+  border-left: 3px solid;
+}
+.modal-section-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.modal-section-title i { width: 15px; height: 15px; color: var(--color-primary); }
+.modal-bullets {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+.modal-bullets li {
+  font-size: 0.8125rem;
+  color: var(--color-card-foreground);
+  line-height: 1.6;
+  padding: 5px 0 5px 20px;
+  position: relative;
+}
+.modal-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.modal-timing {
+  font-size: 0.8125rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.6;
+  padding: 12px 16px;
+  background: rgba(74,155,140,0.06);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(74,155,140,0.1);
+}
+.modal-timing i {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 4px;
+  color: var(--color-primary);
+}
+
+/* === ANIMATIONS === */
+@keyframes ujCardEnter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes springBounce {
+  0% { transform: scale(0.9); opacity: 0; }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .page-header { padding: 32px 16px 0; }
+  .page-header h1 { font-size: 1.5rem; }
+  .main-layout { padding: 20px 16px 48px; flex-direction: column; gap: 20px; }
+  .workflow-timeline { display: none; }
+  .content-area { gap: 16px; }
+  .quick-start-banner { flex-direction: column; align-items: flex-start; padding: 18px 20px; gap: 12px; }
+  .quick-start-arrow { align-self: flex-start; }
+  .group-header { padding: 14px 16px; gap: 10px; }
+  .page-cards { padding: 12px 16px 16px; flex-direction: column; }
+  .page-card { min-width: unset; max-width: unset; }
+  .admin-grid { flex-direction: column; }
+  .modal-overlay { padding: 16px; }
+  .modal-header { padding: 20px 20px 0; }
+  .modal-body { padding: 16px 20px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="page-header">
+    <div class="header-badge">
+        <i data-lucide="layout-dashboard" style="width:14px;height:14px;"></i>
+        租户导航总览
+    </div>
+    <h1>租户工作台导航</h1>
+    <p class="subtitle">
+        <span><i data-lucide="file-text" style="width:14px;height:14px;vertical-align:-2px;"></i> 19 个页面</span>
+        <span><i data-lucide="layers" style="width:14px;height:14px;vertical-align:-2px;"></i> 7 个功能域</span>
+        <span><i data-lucide="arrow-down-up" style="width:14px;height:14px;vertical-align:-2px;"></i> 按工作流排列</span>
+    </p>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+    <!-- WORKFLOW TIMELINE (Desktop) -->
+    <aside class="workflow-timeline" id="timeline">
+        <div class="timeline-title">工作流顺序</div>
+        <div class="timeline-track">
+            <div class="timeline-item" data-target="group-1">
+                <div class="timeline-step">Step 1</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#3b82f6;"></span>今日工作台</div>
+            </div>
+            <div class="timeline-item" data-target="group-2">
+                <div class="timeline-step">Step 2</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#8b5cf6;"></span>数据总览</div>
+            </div>
+            <div class="timeline-item" data-target="group-3">
+                <div class="timeline-step">Step 3</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#10b981;"></span>AI 卖货飞轮</div>
+            </div>
+            <div class="timeline-item" data-target="group-4">
+                <div class="timeline-step">Step 4</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#f59e0b;"></span>内容与发布</div>
+            </div>
+            <div class="timeline-item" data-target="group-5">
+                <div class="timeline-step">Step 5</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#06b6d4;"></span>网站优化</div>
+            </div>
+            <div class="timeline-item" data-target="group-6">
+                <div class="timeline-step">Step 6</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#ec4899;"></span>旺财助手</div>
+            </div>
+            <div class="timeline-item" data-target="group-7">
+                <div class="timeline-step">Step 7</div>
+                <div class="timeline-label"><span class="timeline-dot-color" style="background:#64748b;"></span>账户与设置</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <main class="content-area" id="content-area">
+
+        <!-- QUICK START BANNER -->
+        <div class="quick-start-banner">
+            <div class="quick-start-icon">
+                <i data-lucide="sparkles" style="width:22px;height:22px;"></i>
+            </div>
+            <div class="quick-start-text">
+                <h2>首次登录？从「今日工作台」开始</h2>
+                <p>每天打开系统的第一件事 — 查看今日待办、关键指标和 AI 建议，三步进入工作状态。</p>
+            </div>
+            <div class="quick-start-arrow" onclick="document.getElementById('group-1').scrollIntoView({behavior:'smooth',block:'center'})">
+                进入 Group 1 <i data-lucide="arrow-down" style="width:14px;height:14px;"></i>
+            </div>
+        </div>
+
+        <!-- GROUP 1: 今日工作台 -->
+        <div class="group-card" id="group-1">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#3b82f6;"></div>
+                <div class="group-info">
+                    <h3>今日工作台</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/today</span>
+                        <span class="group-count">1 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(0)" style="--glow:rgba(59,130,246,0.08);">
+                    <div class="page-card-name"><i data-lucide="sun" style="color:#3b82f6;"></i> 今日三步</div>
+                    <div class="page-card-desc">每天打开系统的第一个页面。三步引导查看待办、指标和建议。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUP 2: 数据总览 -->
+        <div class="group-card" id="group-2">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#8b5cf6;"></div>
+                <div class="group-info">
+                    <h3>数据总览</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/dashboard · /client/traffic · /client/attribution</span>
+                        <span class="group-count">3 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(1)">
+                    <div class="page-card-name"><i data-lucide="bar-chart-3" style="color:#8b5cf6;"></i> 数据看板</div>
+                    <div class="page-card-desc">核心 KPI 总览：订单量、GMV、转化率、流量等关键指标一览。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(2)">
+                    <div class="page-card-name"><i data-lucide="activity" style="color:#8b5cf6;"></i> 流量看板</div>
+                    <div class="page-card-desc">实时流量分析：访客来源、页面浏览、跳出率等流量数据。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(3)">
+                    <div class="page-card-name"><i data-lucide="git-branch" style="color:#8b5cf6;"></i> 全链路归因</div>
+                    <div class="page-card-desc">追踪从广告点击到订单成交的完整转化路径与归因分析。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUP 3: AI 卖货飞轮 -->
+        <div class="group-card" id="group-3">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#10b981;"></div>
+                <div class="group-info">
+                    <h3>AI 卖货飞轮</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/copilot · /client/customer-finder · /client/inquiries · ...</span>
+                        <span class="group-count">5 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(4)">
+                    <div class="page-card-name"><i data-lucide="bot" style="color:#10b981;"></i> 卖货飞轮</div>
+                    <div class="page-card-desc">AI 驱动的核心销售仪表盘，飞轮引擎总控。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(5)">
+                    <div class="page-card-name"><i data-lucide="search" style="color:#10b981;"></i> 客户开发</div>
+                    <div class="page-card-desc">AI 智能挖掘潜在客户，自动推荐高意向买家线索。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(6)">
+                    <div class="page-card-name"><i data-lucide="message-square" style="color:#10b981;"></i> 询盘管理</div>
+                    <div class="page-card-desc">集中管理所有客户询盘，AI 辅助回复和跟进。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(7)">
+                    <div class="page-card-name"><i data-lucide="list-ordered" style="color:#10b981;"></i> 询盘队列</div>
+                    <div class="page-card-desc">询盘排队处理，按优先级和时效自动排序。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(8)">
+                    <div class="page-card-name"><i data-lucide="trending-up" style="color:#10b981;"></i> 销售工作台</div>
+                    <div class="page-card-desc">销售漏斗、转化数据和业绩指标追踪。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUP 4: 内容与发布 -->
+        <div class="group-card" id="group-4">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#f59e0b;"></div>
+                <div class="group-info">
+                    <h3>内容与发布</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/distribute · /client/publish · ...</span>
+                        <span class="group-count">3 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(9)">
+                    <div class="page-card-name"><i data-lucide="share-2" style="color:#f59e0b;"></i> 内容分发</div>
+                    <div class="page-card-desc">一键将产品内容分发到多个渠道和平台。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(10)">
+                    <div class="page-card-name"><i data-lucide="clock" style="color:#f59e0b;"></i> 发布队列</div>
+                    <div class="page-card-desc">内容发布排期管理，支持定时和批量发布。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(11)">
+                    <div class="page-card-name"><i data-lucide="package-check" style="color:#f59e0b;"></i> 履约队列</div>
+                    <div class="page-card-desc">订单履约跟踪，确保内容交付和承诺履行。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUP 5: 网站优化 -->
+        <div class="group-card" id="group-5">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#06b6d4;"></div>
+                <div class="group-info">
+                    <h3>网站优化</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/seo · /client/geo-visibility</span>
+                        <span class="group-count">2 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(12)">
+                    <div class="page-card-name"><i data-lucide="search-code" style="color:#06b6d4;"></i> SEO 总览</div>
+                    <div class="page-card-desc">搜索引擎优化仪表盘：排名、关键词、技术 SEO 状况。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(13)">
+                    <div class="page-card-name"><i data-lucide="eye" style="color:#06b6d4;"></i> GEO 可见性</div>
+                    <div class="page-card-desc">AI 搜索引擎（ChatGPT、Perplexity 等）中的可见度追踪。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUP 6: 旺财助手 -->
+        <div class="group-card" id="group-6">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#ec4899;"></div>
+                <div class="group-info">
+                    <h3>旺财助手</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/wangcai</span>
+                        <span class="group-count">1 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(14)">
+                    <div class="page-card-name"><i data-lucide="message-circle" style="color:#ec4899;"></i> 旺财对话挂件</div>
+                    <div class="page-card-desc">AI 智能助手旺财，随时对话获取运营建议和数据查询。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUP 7: 账户与设置 -->
+        <div class="group-card" id="group-7">
+            <div class="group-header">
+                <div class="group-accent-bar" style="background:#64748b;"></div>
+                <div class="group-info">
+                    <h3>账户与设置</h3>
+                    <div class="group-meta">
+                        <span class="group-route">/client/billing · /client/onboarding</span>
+                        <span class="group-count">2 个页面</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-cards">
+                <div class="page-card" onclick="openModal(15)">
+                    <div class="page-card-name"><i data-lucide="credit-card" style="color:#64748b;"></i> 套餐续费</div>
+                    <div class="page-card-desc">管理订阅套餐、查看账单和续费操作。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+                <div class="page-card" onclick="openModal(16)">
+                    <div class="page-card-name"><i data-lucide="rocket" style="color:#64748b;"></i> 入驻引导</div>
+                    <div class="page-card-desc">新租户入驻分步引导，快速完成基础配置。</div>
+                    <div class="page-card-enter">进入 <i data-lucide="arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CROSS-CUTTING: Admin Tools -->
+        <div class="admin-section">
+            <div class="admin-section-title">管理员工具</div>
+            <div class="admin-grid">
+                <div class="admin-card" onclick="openModal(17)">
+                    <div class="admin-card-name">
+                        <i data-lucide="network" style="width:16px;height:16px;color:#f43f5e;"></i>
+                        项目架构图
+                    </div>
+                    <div class="admin-card-desc">系统架构总览，前后端组件关系和部署拓扑。</div>
+                    <span class="admin-badge">开发/运维</span>
+                </div>
+                <div class="admin-card" onclick="openModal(18)">
+                    <div class="admin-card-name">
+                        <i data-lucide="settings" style="width:16px;height:16px;color:#f43f5e;"></i>
+                        智能运营中心
+                    </div>
+                    <div class="admin-card-desc">统一监控与运营门户，面向平台管理员的高级工具。</div>
+                    <span class="admin-badge">开发/运维</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-header-info">
+                <div class="modal-accent-bar" id="modal-accent"></div>
+                <div class="modal-title" id="modal-title"></div>
+                <span class="modal-route" id="modal-route"></span>
+            </div>
+            <button class="modal-close" onclick="closeModal()" aria-label="关闭">
+                <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-desc" id="modal-desc"></div>
+            <div class="modal-section-title"><i data-lucide="zap"></i> 核心功能</div>
+            <ul class="modal-bullets" id="modal-features"></ul>
+            <div class="modal-section-title"><i data-lucide="clock"></i> 建议使用时机</div>
+            <div class="modal-timing" id="modal-timing"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Page data
+const pages = [
+    {
+        name: '今日三步',
+        file: 'today-workbench.html',
+        route: '/client/today',
+        group: '今日工作台',
+        color: '#3b82f6',
+        desc: '每天登录系统后看到的第一个页面。通过三步引导，帮助租户快速了解今日待办事项、关键业务指标变化和 AI 生成的运营建议。',
+        features: [
+            '查看今日待办事项和紧急任务',
+            '浏览核心 KPI 指标变化（订单、流量、转化）',
+            '获取 AI 生成的每日运营建议',
+            '快速跳转到相关功能页面处理事务'
+        ],
+        timing: '每天开始工作时打开，作为系统的着陆页。建议作为每天第一件事来使用。'
+    },
+    {
+        name: '数据看板',
+        file: 'dashboard-overview.html',
+        route: '/client/dashboard',
+        group: '数据总览',
+        color: '#8b5cf6',
+        desc: '核心业务数据仪表盘，集中展示订单量、GMV、转化率、新增客户等关键 KPI 指标，支持趋势图和对比分析。',
+        features: [
+            '实时查看订单量、GMV、客单价等核心指标',
+            '趋势图展示日/周/月数据变化',
+            '同比环比对比分析',
+            '数据导出和报表生成'
+        ],
+        timing: '每周一查看上周数据总结，或需要快速了解业务整体表现时使用。'
+    },
+    {
+        name: '流量看板',
+        file: 'traffic-board.html',
+        route: '/client/traffic',
+        group: '数据总览',
+        color: '#8b5cf6',
+        desc: '详细的网站流量分析工具，追踪访客来源、页面浏览量、跳出率、平均访问时长等关键流量指标。',
+        features: [
+            '实时流量监控和访客来源分析',
+            '热门页面排行和用户行为路径',
+            '跳出率和转化漏斗可视化',
+            '按渠道（直接/搜索/社交/广告）细分流量'
+        ],
+        timing: '需要分析流量来源变化、优化渠道投放策略或排查流量异常时使用。'
+    },
+    {
+        name: '全链路归因',
+        file: 'attribution.html',
+        route: '/client/attribution',
+        group: '数据总览',
+        color: '#8b5cf6',
+        desc: '从广告展示、点击、浏览到最终下单的完整转化路径归因分析，帮助理解哪些触点真正驱动了成交。',
+        features: [
+            '多触点归因模型（首次点击/末次点击/线性）',
+            '广告渠道 ROI 精准计算',
+            '转化路径热力图和关键节点分析',
+            '跨设备跨渠道的用户旅程还原'
+        ],
+        timing: '评估广告投放效果、优化营销预算分配、分析特定活动的转化贡献时使用。'
+    },
+    {
+        name: '卖货飞轮',
+        file: 'copilot-dashboard.html',
+        route: '/client/copilot',
+        group: 'AI 卖货飞轮',
+        color: '#10b981',
+        desc: 'AI 驱动的销售飞轮核心控制台，整合客户开发、询盘处理、内容分发等环节，形成自动化的销售闭环。',
+        features: [
+            '飞轮引擎运行状态总览',
+            'AI 自动化任务执行进度监控',
+            '各环节转化率漏斗实时展示',
+            '一键启动/暂停 AI 自动化流程'
+        ],
+        timing: '日常监控 AI 销售飞轮运行状态，调整自动化策略时使用。'
+    },
+    {
+        name: '客户开发',
+        file: 'customer-finder.html',
+        route: '/client/customer-finder',
+        group: 'AI 卖货飞轮',
+        color: '#10b981',
+        desc: 'AI 智能客户挖掘工具，根据产品特征和目标市场自动推荐高意向买家线索，大幅降低获客成本。',
+        features: [
+            'AI 智能匹配潜在买家画像',
+            '多维度筛选（地区/行业/规模/采购频率）',
+            '客户意向度评分和优先级排序',
+            '一键导出线索到 CRM 或询盘系统'
+        ],
+        timing: '需要拓展新客户时，或 AI 飞轮推荐了新的潜在客户线索时查看。'
+    },
+    {
+        name: '询盘管理',
+        file: 'inquiry-management.html',
+        route: '/client/inquiries',
+        group: 'AI 卖货飞轮',
+        color: '#10b981',
+        desc: '集中管理来自所有渠道的客户询盘，支持 AI 辅助回复建议和自动跟进提醒。',
+        features: [
+            '统一收件箱整合所有渠道询盘',
+            'AI 生成回复草稿和报价建议',
+            '询盘状态跟踪（待回复/已回复/成交/流失）',
+            '跟进提醒和 SLA 超时预警'
+        ],
+        timing: '每天多次查看，确保及时回复客户询盘。有新询盘时优先处理。'
+    },
+    {
+        name: '询盘队列',
+        file: 'inquiry-queue.html',
+        route: '/client/inquiries/queue',
+        group: 'AI 卖货飞轮',
+        color: '#10b981',
+        desc: '询盘的排队和处理队列，按优先级、时效性和客户价值自动排序，帮助销售团队高效分配处理。',
+        features: [
+            '按紧急程度和客户价值智能排序',
+            '批量分配给团队成员处理',
+            '处理时效 SLA 可视化',
+            '积压预警和自动升级机制'
+        ],
+        timing: '询盘量较大时使用，帮助合理分配处理优先级，避免重要客户被遗漏。'
+    },
+    {
+        name: '销售工作台',
+        file: 'sales-dashboard.html',
+        route: '/client/sales',
+        group: 'AI 卖货飞轮',
+        color: '#10b981',
+        desc: '销售漏斗和业绩指标追踪工具，可视化从线索到成交的完整销售过程。',
+        features: [
+            '销售漏斗各阶段转化率可视化',
+            '团队成员业绩排行榜',
+            '目标完成进度追踪',
+            '历史趋势和预测分析'
+        ],
+        timing: '每周复盘销售数据时使用，或需要分析团队业绩、调整销售策略时查看。'
+    },
+    {
+        name: '内容分发',
+        file: 'content-distribute.html',
+        route: '/client/distribute',
+        group: '内容与发布',
+        color: '#f59e0b',
+        desc: '多渠道内容分发管理工具，一键将产品图文、营销素材同步到多个平台和渠道。',
+        features: [
+            '支持多平台一键分发（社媒/B2B平台/官网）',
+            '内容模板库和批量发布',
+            '分发状态追踪和效果反馈',
+            '定时发布和发布排期管理'
+        ],
+        timing: '有新产品上架或营销活动时，批量分发内容到各渠道。'
+    },
+    {
+        name: '发布队列',
+        file: 'publish-queue.html',
+        route: '/client/publish',
+        group: '内容与发布',
+        color: '#f59e0b',
+        desc: '内容发布排期管理，支持定时发布、批量操作和发布状态监控。',
+        features: [
+            '可视化发布日历和时间线',
+            '定时发布和队列管理',
+            '发布前预览和审批流程',
+            '发布失败自动重试机制'
+        ],
+        timing: '规划周/月内容发布计划时使用，管理待发布内容的排期。'
+    },
+    {
+        name: '履约队列',
+        file: 'fulfillment-queue.html',
+        route: '/client/fulfillment',
+        group: '内容与发布',
+        color: '#f59e0b',
+        desc: '订单履约和服务交付跟踪，确保内容交付和服务承诺得到及时履行。',
+        features: [
+            '履约任务状态跟踪和 SLA 管理',
+            '延迟预警和自动提醒',
+            '批量处理和快速操作',
+            '客户满意度反馈收集'
+        ],
+        timing: '需要跟踪交付进度、处理延迟订单或查看履约指标时使用。'
+    },
+    {
+        name: 'SEO 总览',
+        file: 'seo-overview.html',
+        route: '/client/seo',
+        group: '网站优化',
+        color: '#06b6d4',
+        desc: '搜索引擎优化综合仪表盘，追踪关键词排名、技术 SEO 健康状况和有机流量增长。',
+        features: [
+            '关键词排名追踪和变化趋势',
+            '技术 SEO 审计（页面速度/索引/结构化数据）',
+            '竞争对手 SEO 对比分析',
+            'SEO 改进建议优先级排序'
+        ],
+        timing: '每周检查 SEO 状况，或发布新页面后监控索引和排名变化。'
+    },
+    {
+        name: 'GEO 可见性',
+        file: 'geo-visibility.html',
+        route: '/client/geo-visibility',
+        group: '网站优化',
+        color: '#06b6d4',
+        desc: 'AI 搜索引擎（ChatGPT、Perplexity、Gemini 等）中的品牌可见度追踪和优化。',
+        features: [
+            'AI 搜索引擎引用追踪和曝光统计',
+            'GEO 评分和改进建议',
+            '竞争对手 AI 可见度对比',
+            'LLMs.txt 和结构化数据优化检查'
+        ],
+        timing: '关注 AI 搜索趋势时查看，或希望提升在 AI 搜索引擎中被引用的概率时使用。'
+    },
+    {
+        name: '旺财对话挂件',
+        file: 'wangcai-chat-widget.html',
+        route: '/client/wangcai',
+        group: '旺财助手',
+        color: '#ec4899',
+        desc: 'AI 智能助手旺财的对话界面，可以随时提问获取运营建议、查询数据或执行快捷操作。',
+        features: [
+            '自然语言查询业务数据',
+            '获取 AI 运营建议和策略推荐',
+            '快捷指令执行常见操作',
+            '多轮对话上下文理解'
+        ],
+        timing: '随时可用。遇到不确定的操作、需要快速查询数据或获取建议时，直接对话旺财。'
+    },
+    {
+        name: '套餐续费',
+        file: 'billing.html',
+        route: '/client/billing',
+        group: '账户与设置',
+        color: '#64748b',
+        desc: '订阅套餐和账单管理页面，查看当前套餐详情、使用量和费用明细，支持续费和升级操作。',
+        features: [
+            '当前套餐详情和使用量统计',
+            '账单历史和费用明细',
+            '套餐续费和升级操作',
+            '发票下载和财务报表'
+        ],
+        timing: '套餐即将到期时查看，或需要调整套餐、下载发票时使用。'
+    },
+    {
+        name: '入驻引导',
+        file: 'onboarding.html',
+        route: '/client/onboarding',
+        group: '账户与设置',
+        color: '#64748b',
+        desc: '新租户入驻分步引导流程，帮助新用户快速完成店铺基础配置、产品上传和系统设置。',
+        features: [
+            '分步引导完成基础信息填写',
+            '产品上传和店铺设置向导',
+            '对接物流和支付方式配置',
+            '入门教程和最佳实践推荐'
+        ],
+        timing: '仅新入驻租户首次使用。完成所有步骤后可在此查看进度或重新配置。'
+    },
+    {
+        name: '项目架构图',
+        file: 'project-architecture.html',
+        route: '/client/architecture',
+        group: '管理员工具',
+        color: '#f43f5e',
+        desc: '系统架构总览页面，展示前后端组件关系、微服务拓扑和部署架构。主要面向开发者和运维人员。',
+        features: [
+            '前后端组件关系可视化',
+            '微服务拓扑和依赖关系图',
+            '部署架构和环境配置信息',
+            'API 端点和数据流文档'
+        ],
+        timing: '开发调试、架构评审或排查系统问题时使用。非日常业务操作页面。'
+    },
+    {
+        name: '智能运营中心',
+        file: 'ops-center.html',
+        route: '/client/ops',
+        group: '管理员工具',
+        color: '#f43f5e',
+        desc: '统一监控与运营门户，集成系统健康监控、告警管理和运营数据分析。面向平台管理员和高级运维。',
+        features: [
+            '系统健康度实时监控',
+            '告警和异常事件管理',
+            '运营指标大盘和趋势分析',
+            '自动化运维任务执行面板'
+        ],
+        timing: '系统运维和监控使用。非日常租户业务操作页面。'
+    }
+];
+
+// Modal
+function openModal(index) {
+    const page = pages[index];
+    const overlay = document.getElementById('modal-overlay');
+    document.getElementById('modal-accent').style.background = page.color;
+    document.getElementById('modal-title').textContent = page.name;
+    document.getElementById('modal-route').textContent = page.route;
+    document.getElementById('modal-desc').textContent = page.desc;
+    document.getElementById('modal-desc').style.borderLeftColor = page.color;
+    
+    const featuresList = document.getElementById('modal-features');
+    featuresList.innerHTML = '';
+    page.features.forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = f;
+        li.style.setProperty('--bullet-color', page.color);
+        featuresList.appendChild(li);
+    });
+    // Update bullet colors
+    featuresList.querySelectorAll('li').forEach(li => {
+        li.querySelector('::before') // can't style pseudo-element directly; use inline style on li
+    });
+    // Set CSS variable for bullet color
+    document.getElementById('modal-body').style.setProperty('--modal-accent', page.color);
+    
+    document.getElementById('modal-timing').innerHTML = 
+        '<i data-lucide="info" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;color:' + page.color + ';"></i>' + page.timing;
+    
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    lucide.createIcons();
+}
+
+function closeModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    const overlay = document.getElementById('modal-overlay');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+// Timeline click scroll
+document.querySelectorAll('.timeline-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const target = document.getElementById(this.dataset.target);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // highlight
+            document.querySelectorAll('.timeline-item').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        }
+    });
+});
+
+// Active group tracking on scroll (IntersectionObserver)
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.id;
+            document.querySelectorAll('.timeline-item').forEach(t => {
+                t.classList.toggle('active', t.dataset.target === id);
+            });
+        }
+    });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+document.querySelectorAll('.group-card').forEach(card => observer.observe(card));
+
+// Init Lucide icons
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+});
+</script>
+
+<!-- Override bullet color with modal accent -->
+<style>
+#modal-body {
+    --modal-accent: var(--color-primary);
+}
+.modal-bullets li::before {
+    background: var(--modal-accent) !important;
+}
+.modal-desc {
+    border-left-color: var(--modal-accent) !important;
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+﻿{
+    "failCount":  0,
+    "docs":  [
+                 "docs/鐪佺骇杞欢璇勬祴-杈炬爣鎬绘竻鍗?md",
+                 "docs/閫佹鍔熻兘娓呭崟-v1.md",
+                 "docs/certification-gate-admin-latest.json",
+                 "docs/鐢虫姤鏉愭枡/GB25000.51-鍚堣瀹℃煡鎶ュ憡-2026-05-31.md"
+             ],
+    "generatedAt":  "2026-05-31T09:44:56.9791056+08:00",
+    "ready":  true,
+    "steps":  [
+                  {
+                      "detail":  "ready=true",
+                      "ok":  true,
+                      "name":  "admin-cert-gate"
+                  },
+                  {
+                      "detail":  "vue-tsc + vite build OK",
+                      "ok":  true,
+                      "name":  "admin-build"
+                  },
+                  {
+                      "detail":  "python : C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\core\\config.py:349: UserWarning: [DEV] 未配置 SECRET_KEY，自动生成临时密钥（进程重启后失效\r\n）\r\n所在位置 C:\\Users\\97907\\Desktop\\上线网站\\scripts\\run-provincial-cert-gate.ps1:45 字符: 11\r\n+     $mr = python scripts/check_mounted_routes.py 2\u003e\u00261 | Out-String\r\n+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (C:\\Users\\97907\\...生成临时密钥（进程重启后失效）:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n  setti",
+                      "ok":  true,
+                      "name":  "mounted-routes"
+                  },
+                  {
+                      "detail":  "337 passed",
+                      "ok":  true,
+                      "name":  "backend-unit"
+                  }
+              ],
+    "target":  "Provincial software evaluation",
+    "repoRoot":  "C:\\Users\\97907\\Desktop\\上线网站"
+}

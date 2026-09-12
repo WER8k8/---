@@ -1,0 +1,6 @@
+// FILE: backend\app\api\v1\admin_bff\auth_adapter.py
+
+
+@router.get("/tenant/search")
+def bff_tenant_search(code: str = "", db: Session = Depends(get_db)):
+    return success_response(data=search_tenants_for_login(db, code))

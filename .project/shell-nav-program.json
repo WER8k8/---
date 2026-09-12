@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "program_id": "SHELL-NAV-2026",
+  "updated_at": "2026-06-07",
+  "title": "YoudingProLayout 导航壳层项目（Google Launch + 阿里项目制）",
+  "authority_docs": [
+    "docs/youding-omni-pro-design-LOCKED.md",
+    "docs/youding-admin-composite-blueprint.md",
+    ".project/login-entry-lock.json"
+  ],
+  "objective": "菜单一处登记、导航一处计算、壳层只拼 UI；侧栏不爆闪、Worktab 中文名正确、送检路径可走通",
+  "launch_criteria": {
+    "owner_acceptance": [
+      "任意菜单切换仅 1 项高亮",
+      "Worktab 显示侧栏真实中文名",
+      "docs/youding-omni-pro-design-LOCKED.md §10 彩排无闪崩"
+    ],
+    "automated_gates": [
+      "frontend/admin/scripts/check-nav-routes.mjs",
+      "frontend/admin/tests/unit/shellNavKernel.test.ts",
+      "frontend/admin/scripts/run-certification-gate.mjs"
+    ]
+  },
+  "phases": [
+    {
+      "id": "WP-NAV-01",
+      "name": "Nav Kernel + Menu SSOT",
+      "status": "done",
+      "pct": 100,
+      "lane_owner": "BJ-NAV-01",
+      "deliverables": [
+        "src/utils/shellNavKernel.ts",
+        "src/composables/useShellNavigation.ts",
+        "src/constants/platformShellMenu.ts",
+        "tests/unit/shellNavKernel.test.ts"
+      ]
+    },
+    {
+      "id": "WP-NAV-02",
+      "name": "Layout 薄壳拆分",
+      "status": "done",
+      "pct": 100,
+      "lane_owner": "BJ-NAV-02",
+      "deliverables": [
+        "components/layout/YdProSidebar.vue",
+        "components/layout/YdProTopbar.vue",
+        "components/layout/YdProWorktabs.vue"
+      ],
+      "notes": "三件套完成；壳层视觉按 LOCKED Taste 5/3/7 收口"
+    },
+    {
+      "id": "WP-NAV-03",
+      "name": "Admin BFF 动态菜单",
+      "status": "planned",
+      "pct": 0,
+      "lane_owner": "BE-BFF-MENU-01",
+      "gate": "接口冻结后开工",
+      "deliverables": [
+        "GET /api/v1/admin-bff/menu/routes?shell="
+      ]
+    },
+    {
+      "id": "WP-NAV-04",
+      "name": "一壳三 accent 统一",
+      "status": "done",
+      "pct": 100,
+      "lane_owner": "BJ-NAV-04",
+      "deliverables": [
+        "ClientShellLayout 并入 Pro Shell"
+      ],
+      "notes": "mint-glass 三角色 page mesh + token 联动"
+    },
+    {
+      "id": "WP-THEME-01",
+      "name": "主题抽屉 + 暗色同树",
+      "status": "done",
+      "pct": 100,
+      "lane_owner": "BJ-THEME-01",
+      "deliverables": [
+        "styles/shell-theme-dark.scss"
+      ]
+    }
+  ],
+  "raci": {
+    "ARCH-NAV-01": { "role": "软件架构师", "duty": "SSOT 契约、接口冻结、审 PR", "A": true, "R": false },
+    "BJ-NAV-01": { "role": "前端 Lane B", "duty": "Nav Kernel + platformShellMenu", "R": true },
+    "BJ-NAV-02": { "role": "前端 Lane B", "duty": "薄壳三组件", "R": true },
+    "BE-BFF-MENU-01": { "role": "后端 Lane E", "duty": "BFF 动态菜单", "R": true },
+    "QA-NAV-01": { "role": "QA Lane F", "duty": "check-nav + 送检回归", "R": true, "A_gate": true },
+    "PM-NAV-01": { "role": "PM-07", "duty": "排期、RACI、合并仲裁", "A": true },
+    "OWNER": { "role": "业务 Owner", "duty": "点菜单验收，不写代码", "A_acceptance": true }
+  },
+  "verify_scripts": [
+    "scripts/verify-shell-nav-program.ps1",
+    "frontend/admin/scripts/check-nav-routes.mjs"
+  ],
+  "out_of_scope": [
+    "本阶段不接 Admin BFF 全量",
+    "不改 270+ 业务页 YdPage",
+    "Hermes 研究员不改 layout"
+  ],
+  "phase2_joint_design": ".project/shell-nav-phase2-joint-design.json"
+}

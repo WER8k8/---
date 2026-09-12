@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "task_id": "COMM-PM-02",
+  "updated_at": "2026-06-20",
+  "status": "awaiting_owner_reply",
+  "gap_closure_batch": "2026-06-20",
+  "dev_completed": [
+    "scripts/verify-b2b-sidecars-all.py",
+    "scripts/start-p6-sidecars-dev.ps1",
+    "scripts/clone-b2b-upstreams.ps1",
+    "GW-L-PL-01 / GW-G-GEO-DASH / GW-S-MAT-01 代码已落地",
+    "scripts/validate-site-l-pro-publish-e2e.py"
+  ],
+  "items": [
+    {
+      "id": "O-1",
+      "title": "HTTPS 演示独立域",
+      "owner_action": "提供 FQDN（如 demo.yourdomain.com）并将 DNS A/AAAA 指向 staging/生产入口",
+      "dev_ready": [
+        "scripts/pilot-acme-ssl-issue.ps1",
+        "backend/config/prod/.env.example DEMO_HTTPS_DOMAIN",
+        "docs/ops/owner-review-latest.md"
+      ],
+      "unblocks": ["COMM-QA-02", "MOD-04", "M12 截图"]
+    },
+    {
+      "id": "O-2",
+      "title": "询盘 IM / 企微生产密钥",
+      "owner_action": "在 /inquiries/im-routing 填入生产 CorpID/Secret 或提供客户侧配置窗口",
+      "dev_ready": [
+        "frontend/admin/src/views/inquiries/im-routing.vue",
+        "scripts/validate-qa-step5-staging.py"
+      ],
+      "unblocks": ["M05", "M06", "M07 截图", "七步⑤ 实拍"]
+    },
+    {
+      "id": "O-3",
+      "title": "5+5 平台表 + 套餐价签字",
+      "owner_action": "在 docs/pm-owner-blockers-20260604.md 对应表签字或回传 PDF",
+      "dev_ready": [
+        ".project/cert-inspection-signoff-COMM-PD-01.json",
+        "docs/pm-owner-blockers-20260604.md"
+      ],
+      "unblocks": ["MOD-03", "MOD-08", "对外报价"]
+    },
+    {
+      "id": "O-4",
+      "title": "B2B 旁路真实上游部署",
+      "owner_action": "在目标 VPS 运行 clone-b2b-upstreams.ps1 后按 deploy/examples 接线；替换 dev stub 为生产 .env",
+      "dev_ready": [
+        "scripts/clone-b2b-upstreams.ps1",
+        "scripts/run-o4-b2b-upstream-wire.ps1",
+        "scripts/validate-o4-b2b-upstream-wire.py",
+        "scripts/start-p6-sidecars-dev.ps1",
+        "deploy/examples/*-sidecar/",
+        "backend/app/data/openclaw_b2b_playbook.json"
+      ],
+      "unblocks": ["AI_Find_Customer 实盘", "海关/LinkedIn enrichment 实盘"]
+    }
+  ],
+  "out_of_scope": "研发不得伪造 DNS、密钥或签字 JSON"
+}

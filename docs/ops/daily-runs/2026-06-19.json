@@ -1,0 +1,510 @@
+﻿{
+    "lanes":  [
+                  {
+                      "id":  "sre",
+                      "expert":  "SRE",
+                      "focus":  "服务存活、端口、Admin 代理、自动拉起",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  662,
+                      "report_path":  "docs/ops/daily-health-latest.json",
+                      "report_snapshot":  {
+                                              "run_kind":  "health_only",
+                                              "generated_at":  "2026-06-19T06:52:52.1826291Z",
+                                              "checks":  [
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "backend_health",
+                                                                 "status":  200,
+                                                                 "ms":  134
+                                                             },
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "backend_ready",
+                                                                 "status":  200,
+                                                                 "ms":  115
+                                                             },
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "admin_login",
+                                                                 "status":  200,
+                                                                 "ms":  122
+                                                             },
+                                                             {
+                                                                 "ok":  true,
+                                                                 "name":  "ops_readiness_public",
+                                                                 "status":  200,
+                                                                 "ms":  87
+                                                             }
+                                                         ],
+                                              "ok":  true,
+                                              "hint":  "鍏ㄩ儴姝ｅ父",
+                                              "fail_count":  0,
+                                              "task":  "ops-daily-health"
+                                          },
+                      "detail_tail":  ""
+                  },
+                  {
+                      "id":  "security_no_fake",
+                      "expert":  "Security Engineer",
+                      "focus":  "假交付 / mock 外露扫描",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  1389,
+                      "report_path":  "docs/no-fake-delivery-scan-latest.json",
+                      "report_snapshot":  {
+                                              "ok":  true,
+                                              "task":  "NO-FAKE-DELIVERY-DEEP",
+                                              "scanned":  {
+                                                              "backend_py":  760,
+                                                              "frontend_vue":  370,
+                                                              "frontend_ts":  135
+                                                          },
+                                              "p0_count":  0,
+                                              "p1_count":  0,
+                                              "p2_count":  0,
+                                              "findings":  [
+
+                                                           ],
+                                              "p0_findings":  [
+
+                                                              ],
+                                              "p1_findings":  [
+
+                                                              ]
+                                          },
+                      "detail_tail":  "{\r\n  \"ok\": true,\r\n  \"task\": \"NO-FAKE-DELIVERY-DEEP\",\r\n  \"scanned\": {\r\n    \"backend_py\": 760,\r\n    \"frontend_vue\": 370,\r\n    \"frontend_ts\": 135\r\n  },\r\n  \"p0_count\": 0,\r\n  \"p1_count\": 0,\r\n  \"p2_count\": 0,\r\n  \"findings\": [],\r\n  \"p0_findings\": [],\r\n  \"p1_findings\": []\r\n}\r\n"
+                  },
+                  {
+                      "id":  "security_routes",
+                      "expert":  "Security Engineer",
+                      "focus":  "关键 API 路由挂载",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  17205,
+                      "report_path":  null,
+                      "report_snapshot":  null,
+                      "detail_tail":  "t 复用:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n  settings = Settings()\r\nC:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\core\\config.py:825: UserWarning: [配置建议] DB_TYPE=postgresql 时建议在 URL 中显式声明驱动 +as\r\nyncpg,当前 URL: postgresql://youding_admin:@localhost:5432/youding_prod\r\n  settings = Settings()\r\nOK: all required route prefixes are mounted.\r\nTotal /api routes: 1274\r\n"
+                  },
+                  {
+                      "id":  "qa_cert",
+                      "expert":  "QA / Evidence Collector",
+                      "focus":  "Admin cert:gate 门禁",
+                      "ok":  false,
+                      "exit":  1,
+                      "duration_ms":  3823,
+                      "report_path":  "docs/certification-gate-admin-latest.json",
+                      "report_snapshot":  {
+                                              "generatedAt":  "2026-06-19T06:53:14.566Z",
+                                              "target":  "省级软件评测 — 管理端功能门禁",
+                                              "ready":  false,
+                                              "blocked":  true,
+                                              "gates":  [
+                                                            {
+                                                                "script":  "check-login-entry-lock",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "ok",
+                                                                "raw":  {
+                                                                            "ok":  true,
+                                                                            "decision_id":  "LOGIN-LOCK-01",
+                                                                            "login_route":  "/login",
+                                                                            "checked_files":  4,
+                                                                            "legacy_redirects":  5
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-role-shell-lock",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "ok",
+                                                                "raw":  {
+                                                                            "ok":  true,
+                                                                            "decision_id":  "ROLE-SHELL-LOCK-01",
+                                                                            "personas":  [
+                                                                                             "platform",
+                                                                                             "tenant",
+                                                                                             "partner",
+                                                                                             "agent"
+                                                                                         ],
+                                                                            "shell_entries":  [
+                                                                                                  "login",
+                                                                                                  "tenant_client",
+                                                                                                  "platform_saas_tenants",
+                                                                                                  "platform_admin"
+                                                                                              ],
+                                                                            "worktab_keys":  [
+                                                                                                 "uj-worktabs-platform-v1",
+                                                                                                 "uj-worktabs-client-v1",
+                                                                                                 "uj-worktabs-partner-v1",
+                                                                                                 "uj-worktabs-agent-v1",
+                                                                                                 "uj-worktabs-v1"
+                                                                                             ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-console-regression-lock",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "ok",
+                                                                "raw":  {
+                                                                            "ok":  true,
+                                                                            "decision_id":  "CONSOLE-REGRESSION-LOCK-01",
+                                                                            "checked":  {
+                                                                                            "vue_files":  370,
+                                                                                            "formily":  "frontend/admin/src/components/youding/YdFormilyForm.vue",
+                                                                                            "billing":  "frontend/admin/src/views/tenants/billing.vue"
+                                                                                        }
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "audit-page-stubs",
+                                                                "ok":  false,
+                                                                "blocking":  true,
+                                                                "exitCode":  0,
+                                                                "summary":  "P0=0 P1=0 P2=1",
+                                                                "raw":  {
+                                                                            "totalVue":  286,
+                                                                            "flagged":  1,
+                                                                            "P0":  0,
+                                                                            "P1":  0,
+                                                                            "P2":  1,
+                                                                            "items":  [
+                                                                                          {
+                                                                                              "path":  "integrations/AiConfig.vue",
+                                                                                              "tier":  "P2",
+                                                                                              "issues":  "无API调用",
+                                                                                              "hasApi":  false
+                                                                                          }
+                                                                                      ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-nav-routes",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "missing=0/90",
+                                                                "raw":  {
+                                                                            "total":  90,
+                                                                            "missing":  [
+
+                                                                                        ],
+                                                                            "source":  "platformShellMenu.ts"
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-nested-routes",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "issues=0",
+                                                                "raw":  {
+                                                                            "nestedParents":  0,
+                                                                            "issues":  [
+
+                                                                                       ],
+                                                                            "menuMissing":  [
+
+                                                                                            ],
+                                                                            "ok":  true
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "find-corrupt-vue",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "corrupt=0",
+                                                                "raw":  {
+                                                                            "corrupt":  0,
+                                                                            "files":  [
+
+                                                                                      ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-interactive-stubs",
+                                                                "ok":  true,
+                                                                "blocking":  false,
+                                                                "exitCode":  0,
+                                                                "summary":  "menuLinked=0 flagged=0",
+                                                                "raw":  {
+                                                                            "menuLinked":  0,
+                                                                            "total":  21,
+                                                                            "items":  [
+
+                                                                                      ]
+                                                                        }
+                                                            },
+                                                            {
+                                                                "script":  "check-demo-rehearsal-path",
+                                                                "ok":  false,
+                                                                "blocking":  true,
+                                                                "exitCode":  1,
+                                                                "summary":  "issues=1",
+                                                                "raw":  {
+                                                                            "ok":  false,
+                                                                            "spec":  "youding-omni-pro-design-LOCKED.md §10",
+                                                                            "steps":  6,
+                                                                            "issues":  [
+                                                                                           {
+                                                                                               "step":  1,
+                                                                                               "path":  "/login",
+                                                                                               "hit":  "登录页缺少 brand-hero 结构"
+                                                                                           }
+                                                                                       ]
+                                                                        }
+                                                            }
+                                                        ],
+                                              "recommendation":  "存在阻断项：须清零 P0/P1、路由缺失、Vue 损坏后再提交评测"
+                                          },
+                      "detail_tail":  "upt=0\"\r\n    },\r\n    {\r\n      \"script\": \"check-interactive-stubs\",\r\n      \"ok\": true,\r\n      \"blocking\": false,\r\n      \"summary\": \"menuLinked=0 flagged=0\"\r\n    },\r\n    {\r\n      \"script\": \"check-demo-rehearsal-path\",\r\n      \"ok\": false,\r\n      \"blocking\": true,\r\n      \"summary\": \"issues=1\"\r\n    }\r\n  ],\r\n  \"outPath\": \"C:\\\\Users\\\\97907\\\\Desktop\\\\涓婄嚎缃戠珯\\\\docs\\\\certification-gate-admin-latest.json\"\r\n}\r\n"
+                  },
+                  {
+                      "id":  "backend_preflight",
+                      "expert":  "DevOps Automator",
+                      "focus":  "生产预检探针",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  69739,
+                      "report_path":  "docs/production-preflight-latest.json",
+                      "report_snapshot":  {
+                                              "generated_at":  "2026-06-19T06:53:14.889422+00:00",
+                                              "steps":  [
+                                                            {
+                                                                "name":  "check_mounted_routes",
+                                                                "ok":  true,
+                                                                "detail":  "OK: all required route prefixes are mounted.\nTotal /api routes: 1274\nC:\\Users\\97907\\Desktop\\������վ\\backend\\app\\core\\config.py:825: UserWarning: [DEV] SECRET_KEY Ϊռλ��,�Ѵ� logs/auto-secret-dev.txt ����\n  settings = Settings()\n"
+                                                            },
+                                                            {
+                                                                "name":  "seed_platforms_full",
+                                                                "ok":  true,
+                                                                "detail":  "OK: platforms seed {\u0027created\u0027: 0, \u0027updated\u0027: 50, \u0027total\u0027: 50}, summary={\u0027cn\u0027: 20, \u0027global\u0027: 30, \u0027total\u0027: 50, \u0027pilot\u0027: 15, \u0027target_cn\u0027: 20, \u0027target_global\u0027: 30, \u0027target_b2b\u0027: 5, \u0027target_b2c\u0027: 4, \u0027ready\u0027: True}\nC:\\Users\\97907\\Desktop\\������վ\\backend\\app\\core\\config.py:825: UserWarning: [DEV] SECRET_KEY Ϊռλ��,�Ѵ� logs/auto-secret-dev.txt ����\n  settings = Settings()"
+                                                            }
+                                                        ],
+                                              "readiness":  {
+                                                                "ready":  true,
+                                                                "environment":  "development",
+                                                                "score":  {
+                                                                              "pass":  13,
+                                                                              "warn":  4,
+                                                                              "fail":  0
+                                                                          },
+                                                                "checks":  [
+                                                                               {
+                                                                                   "id":  "jwt_secret",
+                                                                                   "category":  "security",
+                                                                                   "title":  "JWT 密钥强度",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已配置",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "oauth_dev_bypass",
+                                                                                   "category":  "security",
+                                                                                   "title":  "OAuth 开发绕过",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已关闭",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "database_url",
+                                                                                   "category":  "database",
+                                                                                   "title":  "数据库类型",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "当前为 SQLite（仅开发）",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "database_ping",
+                                                                                   "category":  "database",
+                                                                                   "title":  "数据库连通",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "SELECT 1 成功",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "logistics",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "物流",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "当前为 demo（生产建议 kuaidi100）",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "platforms_40",
+                                                                                   "category":  "data",
+                                                                                   "title":  "40 平台主数据",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "cn=20/20, global=30/21",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "backup_dir",
+                                                                                   "category":  "ops",
+                                                                                   "title":  "备份目录可写",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "C:\\Users\\97907\\Desktop\\上线网站\\backend\\backups",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "frontend_url",
+                                                                                   "category":  "config",
+                                                                                   "title":  "FRONTEND_URL",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "http://127.0.0.1:5173",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "redis",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "Redis",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "PING 成功",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "celery_broker",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "Celery Broker",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "redis://localhost:6379/0",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "crawl_webhook_secret",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "国际爬虫 Webhook",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "开发环境可暂不配置",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "payment_strict",
+                                                                                   "category":  "security",
+                                                                                   "title":  "支付回调验签",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "开发环境未强制验签",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "smtp_email",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "SMTP 发信",
+                                                                                   "status":  "warn",
+                                                                                   "message":  "开发环境可 mock；生产须配置",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ssl_provider",
+                                                                                   "category":  "security",
+                                                                                   "title":  "SSL 签发",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "当前 SSL_PROVIDER=mock",
+                                                                                   "required":  false
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ai_provider",
+                                                                                   "category":  "integrations",
+                                                                                   "title":  "AI 提供商",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已配置至少一个 API Key",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ubrain_api",
+                                                                                   "category":  "product",
+                                                                                   "title":  "UBrain / 出海参谋 API",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "已挂载",
+                                                                                   "required":  true
+                                                                               },
+                                                                               {
+                                                                                   "id":  "routes_mounted",
+                                                                                   "category":  "ops",
+                                                                                   "title":  "关键 API 挂载",
+                                                                                   "status":  "pass",
+                                                                                   "message":  "关键前缀已挂载",
+                                                                                   "required":  true
+                                                                               }
+                                                                           ]
+                                                            },
+                                              "backup":  {
+                                                             "running":  false,
+                                                             "last_run":  null,
+                                                             "backup_count":  0,
+                                                             "backup_dir":  "C:\\Users\\97907\\Desktop\\上线网站\\backend\\backups",
+                                                             "recent_backups":  [
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260616_030000",
+                                                                                        "time":  "2026-06-16T10:00:00.010473",
+                                                                                        "size":  "4.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260613_110523",
+                                                                                        "time":  "2026-06-13T11:05:23.972461",
+                                                                                        "size":  "4.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260613_105346",
+                                                                                        "time":  "2026-06-13T10:53:46.695379",
+                                                                                        "size":  "4.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260613_095820",
+                                                                                        "time":  "2026-06-13T09:58:20.785557",
+                                                                                        "size":  "4.8MB"
+                                                                                    },
+                                                                                    {
+                                                                                        "name":  "auto_backup_20260611_030000",
+                                                                                        "time":  "2026-06-11T03:00:00.084446",
+                                                                                        "size":  "4.3MB"
+                                                                                    }
+                                                                                ],
+                                                             "errors_recent":  [
+
+                                                                               ],
+                                                             "postgres_hint":  "PostgreSQL 生产环境请配置定时 pg_dump"
+                                                         },
+                                              "preflight_environment":  "development",
+                                              "ok":  true
+                                          },
+                      "detail_tail":  "kup_20260613_095820\",\r\n        \"time\": \"2026-06-13T09:58:20.785557\",\r\n        \"size\": \"4.8MB\"\r\n      },\r\n      {\r\n        \"name\": \"auto_backup_20260611_030000\",\r\n        \"time\": \"2026-06-11T03:00:00.084446\",\r\n        \"size\": \"4.3MB\"\r\n      }\r\n    ],\r\n    \"errors_recent\": [],\r\n    \"postgres_hint\": \"PostgreSQL 鐢熶骇鐜璇烽厤缃畾鏃?pg_dump\"\r\n  },\r\n  \"preflight_environment\": \"development\",\r\n  \"ok\": true\r\n}\r\n"
+                  },
+                  {
+                      "id":  "greedy_readiness",
+                      "expert":  "SRE / Hermes Ops",
+                      "focus":  "摸金校尉就绪单测",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  16844,
+                      "report_path":  null,
+                      "report_snapshot":  null,
+                      "detail_tail":  "te.py:31: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\r\n    class SSLCertificateResponse(SSLCertificateBase):\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n3 passed, 1 warning in 0.13s\r\n"
+                  },
+                  {
+                      "id":  "webhook_security",
+                      "expert":  "Security Engineer",
+                      "focus":  "国际爬虫 Webhook 验签",
+                      "ok":  true,
+                      "exit":  0,
+                      "duration_ms":  14415,
+                      "report_path":  null,
+                      "report_snapshot":  null,
+                      "detail_tail":  "te.py:31: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\r\n    class SSLCertificateResponse(SSLCertificateBase):\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n3 passed, 1 warning in 0.98s\r\n"
+                  }
+              ],
+    "run_kind":  "full_roster",
+    "started_at":  "2026-06-19T06:52:51.4484527Z",
+    "pass_count":  6,
+    "day":  "2026-06-19",
+    "ok":  false,
+    "finished_at":  "2026-06-19T06:54:55.6668612Z",
+    "lane_count":  7,
+    "fail_count":  1,
+    "evolution_hint":  "鎬ヨ瘖澶嶇洏: docs/ops/daily-runs/2026-06-19.json + expert-daily-history.jsonl"
+}

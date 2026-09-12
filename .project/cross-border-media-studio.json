@@ -1,0 +1,69 @@
+{
+  "id": "CROSS-BORDER-MEDIA-STUDIO-01",
+  "title": "中文片出海 · 全媒体工作室",
+  "version": "2026-06-12",
+  "product_flow": ["upload", "one_click_overseas", "studio_edit", "distribute"],
+  "asr_chain": [
+    {"id": "xfyun_ifasr_llm", "priority": 1, "env": ["XFYUN_LFASR_APP_ID", "XFYUN_LFASR_API_KEY", "XFYUN_LFASR_SECRET_KEY"]},
+    {"id": "xfyun_lfasr", "priority": 2, "env": ["XFYUN_LFASR_APP_ID", "XFYUN_LFASR_SECRET_KEY"], "note": "raasr 旧版，BASE_URL=raasr.xfyun.cn 且无 API_KEY"},
+    {"id": "faster_whisper", "priority": 3, "env": [], "note": "本机 faster-whisper + ffmpeg"},
+    {"id": "openai_whisper", "priority": 4, "env": ["AI_OPENAI_API_KEY"]},
+    {"id": "gemini_audio", "priority": 5, "env": ["AI_GEMINI_API_KEY"]},
+    {"id": "browser_whisper", "priority": 6, "status": "planned", "note": "OpenCut/Fly-Cut 端侧 Whisper Web Worker"}
+  ],
+  "localization_providers": [
+    {"id": "self_hosted", "status": "integrated", "track": "standard", "note": "讯飞/Whisper + LLM + edge-tts + ffmpeg"},
+    {"id": "youding_self_hosted", "status": "integrated", "track": "real_standard_dub", "note": "内置真实链，无 mock；听写失败则报错不造假稿"},
+    {"id": "linly_dubbing", "status": "eval", "track": "open_premium_lip", "recommended": true, "github": "https://github.com/Kedreamix/Linly-Dubbing", "env": ["LINLY_DUBBING_BASE_URL"], "note": "智能优选#1 口型精品"},
+    {"id": "youdub_webui", "status": "eval", "track": "open_premium_dub", "recommended": true, "github": "https://github.com/liuzhao1225/YouDub-webui", "env": ["YOUDUB_WEBUI_BASE_URL"], "note": "智能优选#2 中→英 FastAPI"},
+    {"id": "v2vt", "status": "eval", "track": "open_premium_lip", "github": "https://github.com/halfzm/v2vt", "env": ["V2VT_SERVICE_URL"]},
+    {"id": "krillinai", "status": "planned", "track": "open_premium_cli", "github": "https://github.com/krillinai/KrillinAI", "env": ["KRILLINAI_CLI_PATH", "KRILLINAI_SERVICE_URL"]},
+    {"id": "videolingo", "status": "eval", "track": "open_subtitle_premium", "github": "https://github.com/Huanshere/VideoLingo", "env": ["VIDEOLINGO_BASE_URL"]},
+    {"id": "narrator_ai", "status": "eval", "track": "open_short_drama", "github": "https://github.com/Narrator-AI/NarratorAI", "env": ["NARRATOR_AI_BASE_URL"]},
+    {"id": "musetalk", "status": "eval", "track": "open_lipsync_component", "github": "https://github.com/TMElyralab/MuseTalk", "env": ["MUSETALK_SERVICE_URL"]},
+    {"id": "pyvideotrans", "status": "eval", "track": "open_standard_alt", "github": "https://github.com/jianchang512/pyvideotrans", "env": ["PYVIDEOTRANS_CLI_PATH", "PYVIDEOTRANS_BASE_URL"]},
+    {"id": "vozo_ai", "status": "eval", "track": "saas_premium", "note": "商业顶配；见 docs/product/CROSS-BORDER-MEDIA-STUDIO-INTEGRATION.md §八"}
+  ],
+  "recommended_stack": {
+    "standard": "self_hosted",
+    "open_premium_lip": "linly_dubbing",
+    "open_premium_dub": "youdub_webui",
+    "open_subtitle_premium": "videolingo",
+    "open_short_drama": "narrator_ai",
+    "saas_premium": "vozo_ai",
+    "auto_pick_order": ["linly_dubbing", "youdub_webui", "v2vt", "krillinai", "videolingo", "narrator_ai", "pyvideotrans", "musetalk"]
+  },
+  "editor_adapters": [
+    {"id": "native_preview", "status": "integrated", "route": "/client/video-overseas"},
+    {"id": "fly_cut", "status": "planned", "stack": "vue3", "ref": "_ref/fly-cut", "github": "https://github.com/x007xyz/fly-cut"},
+    {"id": "opencut", "status": "planned", "stack": "react", "ref": "_ref/opencut", "github": "https://github.com/OpenCut-app/OpenCut"},
+    {"id": "twick_sdk", "status": "planned", "stack": "react", "github": "https://github.com/ncounterspecialist/twick"},
+    {"id": "openreel", "status": "eval", "stack": "react", "github": "https://github.com/Augani/openreel-video"}
+  ],
+  "lanes": {
+    "MS-A": {"owner": "架构", "tasks": ["MS-ARCH-01"], "scope": "asr_capability_registry + media-studio API + 契约 JSON"},
+    "MS-B": {"owner": "前端", "tasks": ["MS-FE-01", "MS-FE-02"], "scope": "video-studio 枢纽页 + 出海页跳转；不 fork 编辑器本体进 admin/src"},
+    "MS-C": {"owner": "前端", "tasks": ["MS-FE-03"], "scope": "Fly-Cut iframe PoC", "status": "poc", "route": "/client/video-editor/fly-cut"},
+    "MS-D": {"owner": "前端", "tasks": ["MS-FE-04"], "scope": "OpenCut iframe PoC", "status": "poc", "route": "/client/video-editor/opencut"},
+    "MS-E": {"owner": "后端", "tasks": ["MS-BE-01"], "scope": "studio project + segments", "status": "integrated"},
+    "MS-F": {"owner": "QA", "tasks": ["MS-QA-01"], "scope": "e2e_cross_border_overseas_flow.py + distribute handoff", "status": "partial"},
+    "MS-G": {"owner": "后端", "tasks": ["MS-BE-02"], "scope": "Vozo Enterprise API + webhook；无 Key 不暴露精品按钮"},
+    "MS-H": {"owner": "后端/运维", "tasks": ["MS-BE-03"], "scope": "KrillinAI CLI / sidecar HTTP / Vozo 骨架 · 精品 job · 已完成注册+执行+API", "status": "integrated"},
+    "MS-BE-01": {"owner": "后端", "tasks": ["MS-BE-01"], "scope": "studio project GET/POST", "status": "integrated"}
+  },
+    "interface_contract": {
+    "studio_open": "GET /cross-border/media-studio/capabilities",
+    "studio_project_get": "GET /cross-border/media-studio/projects/{media_task_id}",
+    "studio_project_post": "POST /cross-border/media-studio/projects/{media_task_id}",
+    "premium_job": "POST /cross-border/video-dub/premium-jobs",
+    "sidecar_contract": ".project/opensource-sidecar-contract.json",
+    "editor_handoff": {
+      "video_url": "string",
+      "srt_url": "string|null",
+      "transcript_zh": "string",
+      "script_en": "string",
+      "segments": "array",
+      "asr_backend": "string"
+    }
+  }
+}

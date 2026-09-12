@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+        "chinese": "meta/llama-3.1-70b-instruct",
+        "vision": "meta/llama-3.2-11b-vision-instruct",
+        "text_to_video": "nvidia/cosmos-predict1-5b",
+        "image_to_video": "nvidia/cosmos-predict1-7b-video2world",
+        "video_transfer": "nvidia/cosmos-transfer2.5-2b",
+        "article_to_video_script": "meta/llama-3.1-8b-instruct",
+        "article_to_video_render": "nvidia/cosmos-predict1-5b",
+        "video_understanding": "nvidia/cosmos-reason2-8b",
+        "embedding": "nvidia/nv-embed-v1",
+    }
+
+    # 多媒体工厂 / Cosmos 渲染
+    MEDIA_FACTORY_AUTO_RENDER: bool = True
+    MEDIA_FACTORY_MOCK_RENDER: bool = False
+    MEDIA_FACTORY_AI_WRITE_TIMEOUT: int = 8
+    MEDIA_FACTORY_INFER_TIMEOUT: int = 600
+    MEDIA_FACTORY_DEFAULT_FRAMES: int = 33
+    MEDIA_OUTPUT_DIR: str = "uploads/media_factory"
+    MEDIA_RETENTION_HOURS: int = 72
+    MEDIA_HANDOFF_DELETE_HOURS: int = 1
+    MEDIA_CLEANUP_SCHEDULER_ENABLED: bool = False
+    MEDIA_CLEANUP_INTERVAL_MINUTES: int = 15
+    MEDIA_FACTORY_MONTHLY_LIMIT_PER_TENANT: int = 0  # 0=不限制
+
+    # 视频云存储分层（见 docs/MEDIA-FACTORY-CLOUD-STORAGE.md）
+    MEDIA_CLOUD_PLAY_PRIMARY: str = "cuplayer"  # cuplayer | r2
+    MEDIA_CLOUD_ARCHIVE: str = "r2"
+    MEDIA_CLOUD_BACKUP: str = "lenslink"  # lenslink | none
+    MEDIA_CUPLAYER_WRITETOKEN: Optional[str] = None
+    MEDIA_CUPLAYER_SECRETKEY: Optional[str] = None
+    MEDIA_CUPLAYER_USERID: Optional[str] = None
+    MEDIA_CUPLAYER_READTOKEN: Optional[str] = None
+    MEDIA_CUPLAYER_CATAID: int = 1
+    MEDIA_CUPLAYER_UPLOAD_URL: str = (
+        "http://v.polyv.net/uc/services/rest?method=uploadfile"
+    )
+    MEDIA_R2_ACCOUNT_ID: Optional[str] = None
+    MEDIA_R2_ACCESS_KEY_ID: Optional[str] = None
+    MEDIA_R2_SECRET_ACCESS_KEY: Optional[str] = None
+    MEDIA_R2_BUCKET: Optional[str] = None
+    MEDIA_R2_PUBLIC_BASE_URL: Optional[str] = None
+    MEDIA_R2_CDN_BASE_URL: Optional[str] = None
+    MEDIA_LENSLINK_ENDPOINT: Optional[str] = None
+    MEDIA_LENSLINK_ACCESS_KEY: Optional[str] = None
+    MEDIA_LENSLINK_SECRET_KEY: Optional[str] = None
+    MEDIA_LENSLINK_BUCKET: Optional[str] = None
+    MEDIA_LENSLINK_PUBLIC_BASE_URL: Optional[str] = None
+    MEDIA_LENSLINK_SECURE: bool = True
+    MEDIA_LENSLINK_REGION: str = "us-east-1"
+    MEDIA_LENSLINK_PRESIGN_SECONDS: int = 604800

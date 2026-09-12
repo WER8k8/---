@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>旺财智能助手</title>
+    <style id="theme-vars">
+/* Brand CSS — 租户工作台 Dark Dashboard */
+:root {
+  --uj-motion-duration: 0.3s;
+  --uj-motion-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Seed */
+  --seed-color: #4a9b8c;
+
+  /* Core palette */
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+
+  /* Semantic state colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Semantic radius aliases */
+  --brand-radius-sm: 6px;
+  --brand-radius-md: 10px;
+  --brand-radius-lg: 14px;
+  --brand-radius-large: 14px;
+  --brand-radius-small: 6px;
+  --brand-radius-medium: 10px;
+}
+
+/* Semantic alias resolution */
+.brand-background { background-color: var(--color-background); }
+.brand-foreground { color: var(--color-foreground); }
+.brand-card { background-color: var(--color-card); }
+.brand-card-foreground { color: var(--color-card-foreground); }
+.brand-popover { background-color: var(--color-popover); }
+.brand-popover-foreground { color: var(--color-popover-foreground); }
+.brand-primary { background-color: var(--color-primary); }
+.brand-primary-foreground { color: var(--color-primary-foreground); }
+.brand-muted { background-color: var(--color-muted); }
+.brand-muted-foreground { color: var(--color-muted-foreground); }
+.brand-border { border-color: var(--color-border); }
+.brand-input { background-color: var(--color-input); }
+.brand-ring { box-shadow: 0 0 0 2px var(--color-ring); }
+
+/* Typography scale */
+.brand-h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-foreground); }
+.brand-h2 { font-size: 1.3125rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-foreground); }
+.brand-h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--color-foreground); }
+.brand-h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--color-card-foreground); }
+.brand-body { font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--color-muted-foreground); }
+.brand-body-sm { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; color: var(--color-muted-foreground); }
+.brand-caption { font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--color-muted-foreground); }
+.brand-mono { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8125rem; }
+
+/* Font stack */
+.font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-card-foreground: var(--color-card-foreground);
+    --color-popover: var(--color-popover);
+    --color-popover-foreground: var(--color-popover-foreground);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-input: var(--color-input);
+    --color-ring: var(--color-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-card-foreground { background-color: var(--color-card-foreground); }
+      .text-card-foreground { color: var(--color-card-foreground); }
+      .border-card-foreground { border-color: var(--color-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--color-card-foreground); }
+      .bg-popover { background-color: var(--color-popover); }
+      .text-popover { color: var(--color-popover); }
+      .border-popover { border-color: var(--color-popover); }
+      .ring-popover { --tw-ring-color: var(--color-popover); }
+      .bg-popover-foreground { background-color: var(--color-popover-foreground); }
+      .text-popover-foreground { color: var(--color-popover-foreground); }
+      .border-popover-foreground { border-color: var(--color-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--color-popover-foreground); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-primary-foreground { background-color: var(--color-primary-foreground); }
+      .text-primary-foreground { color: var(--color-primary-foreground); }
+      .border-primary-foreground { border-color: var(--color-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--color-primary-foreground); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-muted-foreground { background-color: var(--color-muted-foreground); }
+      .text-muted-foreground { color: var(--color-muted-foreground); }
+      .border-muted-foreground { border-color: var(--color-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--color-muted-foreground); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+      .bg-input { background-color: var(--color-input); }
+      .text-input { color: var(--color-input); }
+      .border-input { border-color: var(--color-input); }
+      .ring-input { --tw-ring-color: var(--color-input); }
+      .bg-ring { background-color: var(--color-ring); }
+      .text-ring { color: var(--color-ring); }
+      .border-ring { border-color: var(--color-ring); }
+      .ring-ring { --tw-ring-color: var(--color-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+
+      <!-- ============================================================
+           SHOWCASE PAGE: Simulated tenant website background
+           ============================================================ -->
+      <div class="wc-showcase-bg" style="position:relative;min-height:100vh;overflow:hidden;">
+
+        <!-- Dot grid overlay -->
+        <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:24px 24px;z-index:1;pointer-events:none;"></div>
+
+        <!-- Simulated blurred website content -->
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:0;filter:blur(6px);opacity:0.12;">
+          <div style="width:200px;height:40px;background:var(--color-primary);border-radius:6px;margin-bottom:16px;"></div>
+          <div style="width:420px;height:16px;background:var(--color-foreground);border-radius:4px;margin-bottom:8px;"></div>
+          <div style="width:360px;height:16px;background:var(--color-foreground);border-radius:4px;margin-bottom:32px;"></div>
+          <div style="display:flex;gap:16px;">
+            <div style="width:120px;height:80px;background:var(--color-muted);border-radius:10px;"></div>
+            <div style="width:120px;height:80px;background:var(--color-muted);border-radius:10px;"></div>
+            <div style="width:120px;height:80px;background:var(--color-muted);border-radius:10px;"></div>
+          </div>
+        </div>
+
+        <!-- Showcase title -->
+        <div style="position:relative;z-index:2;text-align:center;padding-top:48px;padding-bottom:24px;">
+          <h1 class="brand-h1" style="font-size:clamp(1.5rem,3vw,2rem);color:var(--color-foreground);margin-bottom:8px;">旺财智能助手</h1>
+          <p class="brand-body" style="color:var(--color-muted-foreground);max-width:480px;margin:0 auto;">优丁外贸 AI 聊天组件 · 悬浮在租户网站上的智能外贸助手</p>
+        </div>
+
+        <!-- ============================================================
+             CHAT WINDOW — Open state (center of page)
+             ============================================================ -->
+        <div class="wc-chat-window" style="position:relative;z-index:10;width:380px;height:520px;margin:0 auto;">
+
+          <!-- Header -->
+          <div class="wc-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <!-- Animated cat face SVG (small) -->
+              <svg class="wc-header-cat" width="32" height="32" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g class="wc-cat-head-g">
+                  <!-- Left ear -->
+                  <polygon points="12,30 18,8 28,26" fill="var(--color-primary)" stroke="var(--color-primary)" stroke-width="1"/>
+                  <polygon points="16,28 20,14 26,26" fill="rgba(255,255,255,0.2)"/>
+                  <!-- Right ear -->
+                  <polygon points="68,30 62,8 52,26" fill="var(--color-primary)" stroke="var(--color-primary)" stroke-width="1"/>
+                  <polygon points="64,28 60,14 54,26" fill="rgba(255,255,255,0.2)"/>
+                  <!-- Head -->
+                  <circle cx="40" cy="42" r="24" fill="var(--color-primary)"/>
+                  <!-- Belly (lighter) -->
+                  <ellipse cx="40" cy="50" rx="14" ry="12" fill="rgba(255,255,255,0.15)"/>
+                  <!-- Left eye -->
+                  <g class="wc-eye-l">
+                    <ellipse cx="32" cy="40" rx="5" ry="5.5" fill="white"/>
+                    <ellipse cx="33" cy="40" rx="3" ry="3.5" fill="#1a1b20"/>
+                    <circle cx="34.5" cy="38.5" r="1.2" fill="white"/>
+                  </g>
+                  <!-- Right eye -->
+                  <g class="wc-eye-r">
+                    <ellipse cx="48" cy="40" rx="5" ry="5.5" fill="white"/>
+                    <ellipse cx="49" cy="40" rx="3" ry="3.5" fill="#1a1b20"/>
+                    <circle cx="50.5" cy="38.5" r="1.2" fill="white"/>
+                  </g>
+                  <!-- Nose -->
+                  <polygon points="40,46 38,48.5 42,48.5" fill="#f9a8c9"/>
+                  <!-- Mouth -->
+                  <path d="M37,50 Q40,53 43,50" stroke="#1a1b20" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                  <!-- Whiskers left -->
+                  <line x1="14" y1="42" x2="28" y2="44" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                  <line x1="14" y1="47" x2="28" y2="47" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                  <line x1="14" y1="52" x2="28" y2="50" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                  <!-- Whiskers right -->
+                  <line x1="66" y1="42" x2="52" y2="44" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                  <line x1="66" y1="47" x2="52" y2="47" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                  <line x1="66" y1="52" x2="52" y2="50" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                </g>
+              </svg>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:white;display:flex;align-items:center;gap:6px;">
+                  旺财 · 外贸助手
+                  <span class="wc-online-dot"></span>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.7);">在线 · 平均响应 &lt;2s</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:4px;">
+              <button class="wc-header-btn" aria-label="最小化" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.15);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="minus" style="width:14px;height:14px;color:white;"></i>
+              </button>
+              <button class="wc-header-btn" aria-label="关闭" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.15);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" style="width:14px;height:14px;color:white;"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Action Bar -->
+          <div class="wc-quick-bar">
+            <button class="wc-chip"><i data-lucide="calculator" style="width:14px;height:14px;"></i> 获取报价</button>
+            <button class="wc-chip"><i data-lucide="search" style="width:14px;height:14px;"></i> HS编码查询</button>
+            <button class="wc-chip"><i data-lucide="globe-2" style="width:14px;height:14px;"></i> 出口市场分析</button>
+            <button class="wc-chip"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> 证书要求</button>
+            <button class="wc-chip"><i data-lucide="gift" style="width:14px;height:14px;"></i> 免费样品</button>
+          </div>
+
+          <!-- Chat Messages -->
+          <div class="wc-messages">
+
+            <!-- Bot message with suggestion cards -->
+            <div class="wc-msg-row wc-msg-bot">
+              <svg class="wc-msg-avatar" width="28" height="28" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="42" r="24" fill="var(--color-primary)"/>
+                <ellipse cx="40" cy="50" rx="14" ry="12" fill="rgba(255,255,255,0.15)"/>
+                <ellipse cx="32" cy="40" rx="4" ry="4.5" fill="white"/>
+                <ellipse cx="33" cy="40" rx="2.5" ry="3" fill="#1a1b20"/>
+                <circle cx="34" cy="38.5" r="1" fill="white"/>
+                <ellipse cx="48" cy="40" rx="4" ry="4.5" fill="white"/>
+                <ellipse cx="49" cy="40" rx="2.5" ry="3" fill="#1a1b20"/>
+                <circle cx="50" cy="38.5" r="1" fill="white"/>
+                <polygon points="40,46 38,48.5 42,48.5" fill="#f9a8c9"/>
+                <path d="M37,50 Q40,53 43,50" stroke="#1a1b20" stroke-width="1.2" fill="none"/>
+              </svg>
+              <div class="wc-msg-content">
+                <div class="wc-bubble wc-bubble-bot">你好！我是旺财，优丁外贸AI助手</div>
+                <div class="wc-suggest-cards">
+                  <button class="wc-suggest-card">
+                    <i data-lucide="tag" style="width:18px;height:18px;color:var(--color-primary);"></i>
+                    <span>产品报价</span>
+                  </button>
+                  <button class="wc-suggest-card">
+                    <i data-lucide="bar-chart-3" style="width:18px;height:18px;color:var(--color-primary);"></i>
+                    <span>市场分析</span>
+                  </button>
+                  <button class="wc-suggest-card">
+                    <i data-lucide="truck" style="width:18px;height:18px;color:var(--color-primary);"></i>
+                    <span>物流查询</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- User message -->
+            <div class="wc-msg-row wc-msg-user">
+              <div class="wc-bubble wc-bubble-user">What's the best market for rock wool in Middle East?</div>
+            </div>
+
+            <!-- Bot typing indicator -->
+            <div class="wc-msg-row wc-msg-bot">
+              <svg class="wc-msg-avatar wc-typing-avatar" width="28" height="28" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="42" r="24" fill="var(--color-primary)"/>
+                <ellipse cx="40" cy="50" rx="14" ry="12" fill="rgba(255,255,255,0.15)"/>
+                <ellipse cx="32" cy="40" rx="4" ry="4.5" fill="white"/>
+                <ellipse cx="33" cy="40" rx="2.5" ry="3" fill="#1a1b20"/>
+                <circle cx="34" cy="38.5" r="1" fill="white"/>
+                <ellipse cx="48" cy="40" rx="4" ry="4.5" fill="white"/>
+                <ellipse cx="49" cy="40" rx="2.5" ry="3" fill="#1a1b20"/>
+                <circle cx="50" cy="38.5" r="1" fill="white"/>
+                <polygon points="40,46 38,48.5 42,48.5" fill="#f9a8c9"/>
+                <path d="M37,50 Q40,53 43,50" stroke="#1a1b20" stroke-width="1.2" fill="none"/>
+                <!-- Thinking dots above head -->
+                <circle class="wc-think-dot" cx="34" cy="14" r="2.5" fill="var(--color-primary)"/>
+                <circle class="wc-think-dot" cx="40" cy="10" r="2.5" fill="var(--color-primary)"/>
+                <circle class="wc-think-dot" cx="46" cy="14" r="2.5" fill="var(--color-primary)"/>
+              </svg>
+              <div class="wc-msg-content">
+                <div class="wc-bubble wc-bubble-bot">
+                  <div class="wc-typing-dots">
+                    <span class="wc-dot"></span>
+                    <span class="wc-dot"></span>
+                    <span class="wc-dot"></span>
+                  </div>
+                </div>
+                <div class="wc-typing-text">旺财正在思考...</div>
+              </div>
+            </div>
+
+            <!-- Bot reply with data card -->
+            <div class="wc-msg-row wc-msg-bot">
+              <svg class="wc-msg-avatar" width="28" height="28" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="42" r="24" fill="var(--color-primary)"/>
+                <ellipse cx="40" cy="50" rx="14" ry="12" fill="rgba(255,255,255,0.15)"/>
+                <ellipse cx="32" cy="40" rx="4" ry="4.5" fill="white"/>
+                <ellipse cx="33" cy="40" rx="2.5" ry="3" fill="#1a1b20"/>
+                <circle cx="34" cy="38.5" r="1" fill="white"/>
+                <ellipse cx="48" cy="40" rx="4" ry="4.5" fill="white"/>
+                <ellipse cx="49" cy="40" rx="2.5" ry="3" fill="#1a1b20"/>
+                <circle cx="50" cy="38.5" r="1" fill="white"/>
+                <polygon points="40,46 38,48.5 42,48.5" fill="#f9a8c9"/>
+                <path d="M37,50 Q40,53 43,50" stroke="#1a1b20" stroke-width="1.2" fill="none"/>
+              </svg>
+              <div class="wc-msg-content">
+                <div class="wc-bubble wc-bubble-bot">根据海关数据，中东地区岩棉需求持续增长</div>
+                <div class="wc-data-card">
+                  <div class="wc-data-item">
+                    <div style="font-size:13px;font-weight:700;color:var(--color-foreground);">UAE</div>
+                    <div style="font-size:11px;font-weight:600;color:var(--color-success);">+23% YoY</div>
+                  </div>
+                  <div style="width:1px;height:28px;background:var(--color-border);"></div>
+                  <div class="wc-data-item">
+                    <div style="font-size:13px;font-weight:700;color:var(--color-foreground);">Saudi</div>
+                    <div style="font-size:11px;font-weight:600;color:var(--color-success);">+18% YoY</div>
+                  </div>
+                  <div style="width:1px;height:28px;background:var(--color-border);"></div>
+                  <div class="wc-data-item">
+                    <div style="font-size:13px;font-weight:700;color:var(--color-foreground);">Qatar</div>
+                    <div style="font-size:11px;font-weight:600;color:var(--color-success);">+15% YoY</div>
+                  </div>
+                </div>
+                <div class="wc-source-badge">
+                  <i data-lucide="database" style="width:10px;height:10px;"></i>
+                  海关数据 · 2024
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Input Area -->
+          <div class="wc-input-area">
+            <div class="wc-input-row">
+              <button class="wc-attach-btn" aria-label="附件">
+                <i data-lucide="paperclip" style="width:16px;height:16px;"></i>
+              </button>
+              <input type="text" class="wc-input" placeholder="输入产品名、HS编码或出口问题..." readonly>
+              <button class="wc-send-btn" aria-label="发送">
+                <i data-lucide="send" style="width:16px;height:16px;"></i>
+              </button>
+            </div>
+            <div class="wc-disclaimer">由 AI 驱动 · 数据可能不准确</div>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             FLOATING TRIGGER BUTTON (bottom-right)
+             ============================================================ -->
+        <div class="wc-trigger-wrap" style="position:fixed;bottom:32px;right:32px;z-index:20;">
+
+          <!-- Pre-open chat bubble -->
+          <div class="wc-pre-bubble">
+            <span id="wc-bubble-text">需要获取保温材料的最新报价吗？</span>
+            <div class="wc-bubble-tail"></div>
+          </div>
+
+          <!-- Trigger button with mascot -->
+          <button class="wc-trigger-btn" aria-label="打开旺财助手">
+            <span class="wc-trigger-glow"></span>
+            <span class="wc-trigger-badge">1</span>
+            <svg class="wc-mascot-idle" width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Ears -->
+              <g class="wc-ear-l">
+                <polygon points="14,38 22,6 34,32" fill="var(--color-primary)"/>
+                <polygon points="19,34 24,14 32,32" fill="rgba(255,255,255,0.2)"/>
+              </g>
+              <g class="wc-ear-r">
+                <polygon points="86,38 78,6 66,32" fill="var(--color-primary)"/>
+                <polygon points="81,34 76,14 68,32" fill="rgba(255,255,255,0.2)"/>
+              </g>
+              <!-- Head -->
+              <circle cx="50" cy="52" r="30" fill="var(--color-primary)"/>
+              <!-- Belly -->
+              <ellipse cx="50" cy="62" rx="17" ry="15" fill="rgba(255,255,255,0.15)"/>
+              <!-- Eyes (large anime-style) -->
+              <g class="wc-idle-eye-l">
+                <ellipse cx="40" cy="48" rx="7" ry="8" fill="white"/>
+                <ellipse cx="42" cy="48" rx="4.5" ry="5" fill="#1a1b20"/>
+                <circle cx="44" cy="45" r="2" fill="white"/>
+                <circle cx="41" cy="49" r="1" fill="white"/>
+              </g>
+              <g class="wc-idle-eye-r">
+                <ellipse cx="60" cy="48" rx="7" ry="8" fill="white"/>
+                <ellipse cx="62" cy="48" rx="4.5" ry="5" fill="#1a1b20"/>
+                <circle cx="64" cy="45" r="2" fill="white"/>
+                <circle cx="61" cy="49" r="1" fill="white"/>
+              </g>
+              <!-- Nose -->
+              <polygon points="50,56 47,59 53,59" fill="#f9a8c9"/>
+              <!-- Mouth -->
+              <path d="M45,62 Q50,66 55,62" stroke="#1a1b20" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <!-- Whiskers -->
+              <line x1="16" y1="50" x2="36" y2="54" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+              <line x1="16" y1="56" x2="36" y2="56" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+              <line x1="16" y1="62" x2="36" y2="58" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+              <line x1="84" y1="50" x2="64" y2="54" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+              <line x1="84" y1="56" x2="64" y2="56" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+              <line x1="84" y1="62" x2="64" y2="58" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+              <!-- Paws -->
+              <ellipse cx="38" cy="80" rx="8" ry="5" fill="var(--color-primary)"/>
+              <ellipse cx="62" cy="80" rx="8" ry="5" fill="var(--color-primary)"/>
+              <!-- Tail -->
+              <g class="wc-tail">
+                <path d="M78,72 Q90,60 85,48" stroke="var(--color-primary)" stroke-width="4" fill="none" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+
+        <!-- ============================================================
+             CLOSED STATE WIDGET (bottom-left, for comparison)
+             ============================================================ -->
+        <div style="position:fixed;bottom:32px;left:32px;z-index:20;">
+          <p class="brand-caption" style="color:var(--color-muted-foreground);margin-bottom:8px;text-align:center;">关闭状态</p>
+          <div class="wc-trigger-wrap wc-closed-preview">
+            <button class="wc-trigger-btn wc-trigger-small" aria-label="打开旺财助手" style="width:48px;height:48px;">
+              <span class="wc-trigger-glow"></span>
+              <span class="wc-trigger-badge">1</span>
+              <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="52" r="30" fill="var(--color-primary)"/>
+                <ellipse cx="50" cy="62" rx="17" ry="15" fill="rgba(255,255,255,0.15)"/>
+                <ellipse cx="40" cy="48" rx="7" ry="8" fill="white"/>
+                <ellipse cx="42" cy="48" rx="4.5" ry="5" fill="#1a1b20"/>
+                <circle cx="44" cy="45" r="2" fill="white"/>
+                <ellipse cx="60" cy="48" rx="7" ry="8" fill="white"/>
+                <ellipse cx="62" cy="48" rx="4.5" ry="5" fill="#1a1b20"/>
+                <circle cx="64" cy="45" r="2" fill="white"/>
+                <polygon points="50,56 47,59 53,59" fill="#f9a8c9"/>
+                <path d="M45,62 Q50,66 55,62" stroke="#1a1b20" stroke-width="1.5" fill="none"/>
+                <ellipse cx="38" cy="80" rx="8" ry="5" fill="var(--color-primary)"/>
+                <ellipse cx="62" cy="80" rx="8" ry="5" fill="var(--color-primary)"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- ============================================================
+         ALL CUSTOM STYLES — placed before </body> as required
+         ============================================================ -->
+    <style>
+      /* ============================================================
+         PAGE BACKGROUND
+         ============================================================ */
+      .wc-showcase-bg {
+        background: var(--color-background);
+        background-image:
+          radial-gradient(ellipse 80% 60% at 15% 20%, rgba(74,155,140,0.06) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 50% at 85% 70%, rgba(59,130,246,0.04) 0%, transparent 60%);
+      }
+
+      /* ============================================================
+         CHAT WINDOW — Glass morphism container
+         ============================================================ */
+      .wc-chat-window {
+        background: rgba(21,22,26,0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow:
+          0 24px 80px rgba(0,0,0,0.5),
+          0 0 0 1px rgba(255,255,255,0.03) inset,
+          0 1px 0 rgba(255,255,255,0.05) inset;
+        animation: wc-window-enter 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+      }
+
+      @keyframes wc-window-enter {
+        from { opacity:0; transform:translateY(30px) scale(0.95); }
+        to   { opacity:1; transform:translateY(0) scale(1); }
+      }
+
+      /* ============================================================
+         HEADER — Gradient bar
+         ============================================================ */
+      .wc-header {
+        background: linear-gradient(135deg, var(--color-primary), #2d8a7a);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 14px 14px 0 0;
+        flex-shrink: 0;
+      }
+
+      .wc-header-btn {
+        transition: background 0.2s ease;
+      }
+      .wc-header-btn:hover {
+        background: rgba(255,255,255,0.25);
+      }
+
+      .wc-online-dot {
+        width:6px;height:6px;border-radius:50%;background:var(--color-success);display:inline-block;
+        animation: wc-pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes wc-pulse {
+        0%,100% { opacity:1; }
+        50%     { opacity:0.4; }
+      }
+
+      /* ============================================================
+         QUICK ACTION BAR
+         ============================================================ */
+      .wc-quick-bar {
+        display: flex;
+        gap: 6px;
+        padding: 10px 14px;
+        overflow-x: auto;
+        flex-shrink: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .wc-quick-bar::-webkit-scrollbar { display:none; }
+      .wc-quick-bar { -ms-overflow-style:none; scrollbar-width:none; }
+
+      .wc-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: none;
+        background: rgba(255,255,255,0.07);
+        color: var(--color-foreground);
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease;
+      }
+      .wc-chip:hover {
+        transform: scale(1.05);
+        background: rgba(255,255,255,0.13);
+      }
+
+      /* ============================================================
+         CHAT MESSAGES AREA
+         ============================================================ */
+      .wc-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .wc-messages::-webkit-scrollbar { width:4px; }
+      .wc-messages::-webkit-scrollbar-track { background:transparent; }
+      .wc-messages::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:4px; }
+
+      .wc-msg-row {
+        display: flex;
+        gap: 8px;
+        animation: wc-msg-enter 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+      }
+      .wc-msg-row:nth-child(1) { animation-delay:0.1s; }
+      .wc-msg-row:nth-child(2) { animation-delay:0.25s; }
+      .wc-msg-row:nth-child(3) { animation-delay:0.5s; }
+      .wc-msg-row:nth-child(4) { animation-delay:0.8s; }
+
+      .wc-msg-user {
+        justify-content: flex-end;
+      }
+
+      @keyframes wc-msg-enter {
+        from { opacity:0; transform:translateY(16px); }
+      }
+
+      .wc-msg-avatar {
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .wc-msg-content {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-width: 280px;
+      }
+
+      .wc-msg-user .wc-msg-content {
+        align-items: flex-end;
+      }
+
+      /* ============================================================
+         BUBBLES
+         ============================================================ */
+      .wc-bubble {
+        padding: 10px 14px;
+        font-size: 13px;
+        line-height: 1.5;
+        word-break: break-word;
+      }
+
+      .wc-bubble-bot {
+        background: var(--color-muted);
+        color: var(--color-foreground);
+        border-radius: 4px 14px 14px 14px;
+      }
+
+      .wc-bubble-user {
+        background: rgba(74,155,140,0.2);
+        color: var(--color-foreground);
+        border-radius: 14px 4px 14px 14px;
+      }
+
+      /* ============================================================
+         SUGGESTION CARDS
+         ============================================================ */
+      .wc-suggest-cards {
+        display: flex;
+        gap: 8px;
+      }
+
+      .wc-suggest-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-card);
+        cursor: pointer;
+        flex: 1;
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s ease;
+        min-width: 0;
+      }
+      .wc-suggest-card:hover {
+        transform: scale(1.05);
+        border-color: var(--color-primary);
+      }
+      .wc-suggest-card span {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--color-card-foreground);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* ============================================================
+         DATA CARD
+         ============================================================ */
+      .wc-data-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 10px 12px;
+        background: var(--color-card);
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+      }
+
+      .wc-data-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+
+      .wc-source-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        color: var(--color-muted-foreground);
+        margin-top: 2px;
+      }
+
+      /* ============================================================
+         TYPING INDICATOR
+         ============================================================ */
+      .wc-typing-dots {
+        display: flex;
+        gap: 4px;
+        padding: 2px 0;
+      }
+
+      .wc-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--color-muted-foreground);
+        animation: wc-dot-bounce 1.2s cubic-bezier(0.34,1.56,0.64,1) infinite;
+      }
+      .wc-dot:nth-child(2) { animation-delay: 0.15s; }
+      .wc-dot:nth-child(3) { animation-delay: 0.3s; }
+
+      @keyframes wc-dot-bounce {
+        0%,60%,100% { transform:translateY(0); opacity:0.4; }
+        30%         { transform:translateY(-8px); opacity:1; }
+      }
+
+      .wc-typing-text {
+        font-size: 11px;
+        color: var(--color-muted-foreground);
+      }
+
+      .wc-typing-avatar {
+        animation: wc-thinking-bob 1s ease-in-out infinite;
+      }
+
+      @keyframes wc-thinking-bob {
+        0%,100% { transform:translateY(0); }
+        50%     { transform:translateY(-3px); }
+      }
+
+      /* Thinking dots above head */
+      .wc-think-dot {
+        animation: wc-think-float 1.4s ease-in-out infinite;
+      }
+      .wc-think-dot:nth-child(1) { animation-delay:0s; }
+      .wc-think-dot:nth-child(2) { animation-delay:0.2s; }
+      .wc-think-dot:nth-child(3) { animation-delay:0.4s; }
+
+      @keyframes wc-think-float {
+        0%,100% { opacity:0; transform:translateY(0); }
+        30%     { opacity:1; }
+        70%     { opacity:1; transform:translateY(-4px); }
+      }
+
+      /* ============================================================
+         INPUT AREA
+         ============================================================ */
+      .wc-input-area {
+        padding: 10px 14px 8px;
+        border-top: 1px solid rgba(255,255,255,0.04);
+        flex-shrink: 0;
+      }
+
+      .wc-input-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--color-muted);
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        padding: 4px 4px 4px 12px;
+      }
+      .wc-input-row:focus-within {
+        border-color: var(--color-primary);
+      }
+
+      .wc-attach-btn {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--color-muted-foreground);
+        flex-shrink: 0;
+        padding: 4px;
+        border-radius: 6px;
+        transition: color 0.2s ease;
+      }
+      .wc-attach-btn:hover { color: var(--color-foreground); }
+
+      .wc-input {
+        flex: 1;
+        border: none;
+        background: none;
+        color: var(--color-foreground);
+        font-size: 13px;
+        outline: none;
+        min-width: 0;
+      }
+      .wc-input::placeholder {
+        color: var(--color-muted-foreground);
+      }
+
+      .wc-send-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: var(--color-primary);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+      }
+      .wc-send-btn:hover {
+        transform: scale(1.08);
+      }
+
+      .wc-disclaimer {
+        font-size: 10px;
+        color: var(--color-muted-foreground);
+        text-align: center;
+        margin-top: 6px;
+        opacity: 0.6;
+      }
+
+      /* ============================================================
+         FLOATING TRIGGER BUTTON
+         ============================================================ */
+      .wc-trigger-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .wc-trigger-btn {
+        position: relative;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, var(--color-primary), #2d8a7a);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 32px rgba(74,155,140,0.35);
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+      }
+      .wc-trigger-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 40px rgba(74,155,140,0.5);
+      }
+
+      .wc-trigger-small {
+        width: 48px;
+        height: 48px;
+      }
+
+      /* Glow ring */
+      .wc-trigger-glow {
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        border: 2px solid rgba(74,155,140,0.4);
+        animation: wc-glow-pulse 2.5s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      @keyframes wc-glow-pulse {
+        0%,100% { transform:scale(1); opacity:1; }
+        50%     { transform:scale(1.15); opacity:0; }
+      }
+
+      /* Notification badge */
+      .wc-trigger-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--color-danger);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--color-background);
+        animation: wc-badge-bounce 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        animation-delay: 0.8s;
+      }
+
+      @keyframes wc-badge-bounce {
+        from { transform:scale(0); }
+        to   { transform:scale(1); }
+      }
+
+      /* ============================================================
+         PRE-OPEN CHAT BUBBLE
+         ============================================================ */
+      .wc-pre-bubble {
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: var(--color-foreground);
+        max-width: 220px;
+        position: relative;
+        animation: wc-bubble-enter 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        animation-delay: 0.5s;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        line-height: 1.4;
+      }
+
+      .wc-bubble-tail {
+        position: absolute;
+        bottom: -6px;
+        right: 20px;
+        width: 12px;
+        height: 12px;
+        background: var(--color-card);
+        border-right: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
+        transform: rotate(45deg);
+      }
+
+      @keyframes wc-bubble-enter {
+        from { opacity:0; transform:translateY(10px) scale(0.85); }
+        to   { opacity:1; transform:translateY(0) scale(1); }
+      }
+
+      /* ============================================================
+         MASCOT ANIMATIONS — Idle state
+         ============================================================ */
+
+      /* Whole mascot gentle bob */
+      .wc-mascot-idle {
+        animation: wc-mascot-bob 3s ease-in-out infinite;
+      }
+
+      @keyframes wc-mascot-bob {
+        0%,100% { transform:translateY(0) rotate(0deg); }
+        25%     { transform:translateY(-3px) rotate(1deg); }
+        75%     { transform:translateY(-1px) rotate(-1deg); }
+      }
+
+      /* Eye blink — header cat */
+      .wc-eye-l, .wc-eye-r {
+        animation: wc-blink 4s ease-in-out infinite;
+      }
+
+      @keyframes wc-blink {
+        0%,42%,46%,100% { transform:scaleY(1); }
+        44%             { transform:scaleY(0.1); }
+      }
+
+      /* Eye blink — trigger mascot (larger, offset timing) */
+      .wc-idle-eye-l, .wc-idle-eye-r {
+        animation: wc-blink 4s ease-in-out infinite;
+      }
+      .wc-idle-eye-r {
+        animation-delay: 0.1s;
+      }
+
+      /* Ear twitch */
+      .wc-ear-l {
+        animation: wc-ear-twitch 5s ease-in-out infinite;
+        transform-origin: 22px 32px;
+      }
+      .wc-ear-r {
+        animation: wc-ear-twitch 5s ease-in-out infinite;
+        transform-origin: 78px 32px;
+        animation-delay: 2.5s;
+      }
+
+      @keyframes wc-ear-twitch {
+        0%,92%,96%,100% { transform:rotate(0deg); }
+        94%             { transform:rotate(-8deg); }
+      }
+
+      /* Tail wag — slow sway */
+      .wc-tail {
+        animation: wc-wag 2s ease-in-out infinite;
+        transform-origin: 78px 72px;
+      }
+
+      @keyframes wc-wag {
+        0%,100% { transform:rotate(0deg); }
+        25%     { transform:rotate(8deg); }
+        75%     { transform:rotate(-8deg); }
+      }
+
+      /* Trigger button hover — ears perk, tail fast */
+      .wc-trigger-btn:hover .wc-ear-l {
+        animation: wc-ear-perk 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      }
+      .wc-trigger-btn:hover .wc-ear-r {
+        animation: wc-ear-perk 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      }
+      .wc-trigger-btn:hover .wc-tail {
+        animation: wc-wag-fast 0.4s ease-in-out infinite;
+      }
+      .wc-trigger-btn:hover .wc-mascot-idle {
+        animation: none;
+      }
+      .wc-trigger-btn:hover .wc-idle-eye-l,
+      .wc-trigger-btn:hover .wc-idle-eye-r {
+        animation: none;
+        transform: scaleY(1.15);
+      }
+
+      @keyframes wc-ear-perk {
+        from { transform:rotate(0deg); }
+        to   { transform:rotate(-12deg); }
+      }
+
+      @keyframes wc-wag-fast {
+        0%,100% { transform:rotate(0deg); }
+        25%     { transform:rotate(12deg); }
+        75%     { transform:rotate(-12deg); }
+      }
+
+      /* ============================================================
+         CLOSED PREVIEW — subtle float
+         ============================================================ */
+      .wc-closed-preview .wc-trigger-btn {
+        animation: wc-closed-float 4s ease-in-out infinite;
+      }
+
+      @keyframes wc-closed-float {
+        0%,100% { transform:translateY(0); }
+        50%     { transform:translateY(-4px); }
+      }
+
+      /* ============================================================
+         RESPONSIVE
+         ============================================================ */
+      @media (max-width: 480px) {
+        .wc-chat-window {
+          width: calc(100vw - 32px);
+          height: 480px;
+          margin: 0 16px;
+        }
+        .wc-suggest-cards {
+          flex-wrap: wrap;
+        }
+        .wc-suggest-card {
+          min-width: calc(50% - 4px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    
+/* ===== Spring Physics Patch (DESIGN.md §7) ===== */
+@keyframes ujCardEnterSpring {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease-out,
+              border-color 0.3s ease-out;
+}
+.panel:hover {
+  transform: translateY(-3px);
+}
+@keyframes ujPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,155,140,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(74,155,140,0); }
+}
+.uj-pulse { animation: ujPulse 2s ease-in-out infinite; }
+@keyframes ujFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.uj-float { animation: ujFloat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .uj-pulse, .uj-float { animation: none !important; }
+}
+/* ===== End Spring Physics Patch ===== */
+
+
+/* Detail Modal */
+@keyframes detailModalIn {
+  0% { opacity:0; transform:translateY(16px) scale(0.96); }
+  60% { transform:translateY(-2px) scale(1.01); }
+  100% { opacity:1; transform:translateY(0) scale(1); }
+}
+#detailModalOverlay { transition: opacity 0.2s; }
+
+</style>
+
+    <script>
+      // Auto-rotate pre-bubble messages (lightweight DOM text swap, no structural change)
+      (function() {
+        var messages = [
+          '需要获取保温材料的最新报价吗？',
+          '想了解中东市场出口数据分析？',
+          '查询出口认证和合规要求？'
+        ];
+        var idx = 0;
+        var el = document.getElementById('wc-bubble-text');
+        setInterval(function() {
+          idx = (idx + 1) % messages.length;
+          if (el) el.textContent = messages[idx];
+        }, 5000);
+      })();
+    </script>
+    <script>lucide.createIcons();</script>
+
+<!-- Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;">
+  <div id="detailModalOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);"></div>
+  <div id="detailModalContent" style="position:relative;width:min(640px,90vw);max-height:80vh;overflow-y:auto;background:rgba(21,22,26,0.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);padding:0;animation:detailModalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <h3 id="detailModalTitle" style="margin:0;font-size:17px;font-weight:600;color:var(--color-foreground);">详情</h3>
+      <button id="detailModalClose" style="background:none;border:none;color:var(--color-muted-foreground);cursor:pointer;padding:4px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='none'">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+    <div id="detailModalBody" style="padding:20px 24px 24px;font-size:14px;color:var(--color-card-foreground);line-height:1.7;"></div>
+  </div>
+</div>
+
+<script>
+/* Detail Modal Logic */
+(function() {
+  var modal = document.getElementById('detailModal');
+  var overlay = document.getElementById('detailModalOverlay');
+  var closeBtn = document.getElementById('detailModalClose');
+  var titleEl = document.getElementById('detailModalTitle');
+  var bodyEl = document.getElementById('detailModalBody');
+  if (!modal) return;
+
+  function openDetail(title, html) {
+    titleEl.textContent = title;
+    bodyEl.innerHTML = html;
+    modal.style.display = 'flex';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  function closeDetail() { modal.style.display = 'none'; }
+
+  if (overlay) overlay.addEventListener('click', closeDetail);
+  if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDetail(); });
+
+  window.openDetail = openDetail;
+  window.closeDetail = closeDetail;
+
+  /* Auto-bind: KPI cards */
+  document.querySelectorAll('.kpi-card, .stats-card, .yd-stats-card').forEach(function(card) {
+    if (card.dataset.detailBound) return;
+    card.dataset.detailBound = '1';
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      var label = card.querySelector('.kpi-card__label, .stats-card__label, [class*="label"]');
+      var value = card.querySelector('.kpi-card__value, .stats-card__value, [class*="value"]');
+      var l = label ? label.textContent : '指标详情';
+      var v = value ? value.textContent : '';
+      openDetail(l, '<div style="text-align:center;padding:24px 0;">' +
+        '<div style="font-size:48px;font-weight:700;color:var(--color-primary);margin-bottom:8px;">' + v + '</div>' +
+        '<div style="font-size:14px;color:var(--color-muted-foreground);margin-bottom:20px;">' + l + '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">环比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+12.5%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">同比</div><div style="font-size:16px;font-weight:600;color:var(--color-success);">+8.3%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">目标</div><div style="font-size:16px;font-weight:600;">85%</div></div>' +
+          '<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;"><div style="font-size:11px;color:var(--color-muted-foreground);margin-bottom:4px;">趋势</div><div style="font-size:16px;font-weight:600;color:var(--color-info);">上升</div></div>' +
+        '</div></div>');
+    });
+  });
+
+  /* Auto-bind: Table rows */
+  document.querySelectorAll('table tbody tr').forEach(function(row) {
+    if (row.dataset.detailBound) return;
+    row.dataset.detailBound = '1';
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+      var cells = row.querySelectorAll('td');
+      var html = '<div style="display:grid;gap:12px;">';
+      var headers = row.closest('table').querySelectorAll('th');
+      headers.forEach(function(th, i) {
+        if (cells[i]) {
+          html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="color:var(--color-muted-foreground);font-size:13px;">' + th.textContent.trim() + '</span><span style="font-size:13px;font-weight:500;">' + cells[i].textContent.trim() + '</span></div>';
+        }
+      });
+      html += '</div>';
+      var firstCell = cells[0] ? cells[0].textContent.trim() : '记录详情';
+      openDetail(firstCell, html);
+    });
+  });
+
+  /* Auto-bind: Clickable cards with data-detail attribute */
+  document.querySelectorAll('[data-detail]').forEach(function(el) {
+    if (el.dataset.detailBound) return;
+    el.dataset.detailBound = '1';
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function() {
+      openDetail(el.dataset.detailTitle || '详情', el.dataset.detail || '');
+    });
+  });
+})();
+</script>
+
+<script>
+/* Wangcai: click suggestion cards for expanded info */
+document.querySelectorAll('.wc-suggestion-card, [class*="suggestion"]').forEach(function(card) {
+  if (card.dataset.detailBound) return;
+  card.dataset.detailBound = '1';
+  card.addEventListener('click', function() {
+    var title = card.querySelector('[class*="title"], span');
+    var t = title ? title.textContent : '功能';
+    openDetail(t, '<div>' +
+      '<div style="text-align:center;padding:16px 0;">' +
+        '<div style="font-size:14px;color:var(--color-foreground);line-height:1.8;">旺财可以帮你处理<strong>' + t + '</strong>相关的外贸业务。点击下方按钮开始对话。</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">' +
+        '<button onclick="closeDetail()" style="padding:8px 20px;background:var(--color-primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;">开始对话</button>' +
+        '<button onclick="closeDetail()" style="padding:8px 20px;background:rgba(255,255,255,0.06);color:var(--color-foreground);border:none;border-radius:8px;font-size:13px;cursor:pointer;">稍后</button>' +
+      '</div></div>');
+  });
+});
+</script>
+
+</body>
+</html>

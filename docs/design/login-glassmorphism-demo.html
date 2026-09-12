@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>优丁 · Glassmorphism 登录页参考</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ========== 设计令牌 ========== */
+    :root {
+      --glass-page-bg: linear-gradient(145deg, #e8eef8 0%, #f5f3ef 38%, #eef3fc 72%, #e6edf9 100%);
+      --glass-font: 'DM Sans', 'Noto Sans SC', system-ui, sans-serif;
+      --glass-text-title: #3d4f66;
+      --glass-text-body: #64748b;
+      --glass-text-muted: #94a3b8;
+      --glass-primary-from: #8bb8f5;
+      --glass-primary-to: #6a9ee8;
+      --glass-primary-shadow: rgb(106 158 232 / 0.28);
+      --glass-surface: rgb(255 255 255 / 0.52);
+      --glass-surface-strong: rgb(255 255 255 / 0.68);
+      --glass-border: rgb(255 255 255 / 0.72);
+      --glass-blur: 24px;
+      --glass-radius-lg: 16px;
+      --glass-radius-md: 12px;
+      --glass-shadow-1: 0 2px 8px rgb(100 120 150 / 0.05);
+      --glass-shadow-2: 0 8px 32px rgb(100 120 150 / 0.08);
+      --glass-shadow-inset: inset 0 1px 0 rgb(255 255 255 / 0.85);
+      --glass-grid: rgb(148 163 184 / 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--glass-font);
+      min-height: 100vh;
+      color: var(--glass-text-body);
+    }
+
+    /* ========== ① 全页渐变背景（取消纯黑/大白割裂） ========== */
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      overflow: hidden;
+    }
+    .page__bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: var(--glass-page-bg);
+    }
+    /* 弱化网格：低透明度 + 径向遮罩淡出边缘 */
+    .page__grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--glass-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--glass-grid) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 75%);
+    }
+
+    /* ========== ② 左右对称双栏布局 ========== */
+    .layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 960px;
+    }
+    @media (min-width: 960px) {
+      .layout { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+
+    /* ========== ③ 毛玻璃核心：glass-panel ==========
+       三要素：
+       1. 半透明背景 rgba
+       2. backdrop-filter: blur() 模糊背后内容
+       3. 内高光 inset shadow + 外软阴影 营造浮层感
+       边框用半透明白替代硬描边 */
+    .glass-panel {
+      background: var(--glass-surface);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border-radius: var(--glass-radius-lg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow-1), var(--glass-shadow-2), var(--glass-shadow-inset);
+    }
+    .glass-panel--tint {
+      background: linear-gradient(145deg, rgb(255 255 255 / 0.58) 0%, rgb(232 240 252 / 0.45) 100%);
+    }
+    .glass-panel--form {
+      background: var(--glass-surface-strong);
+    }
+
+    .col { display: flex; align-items: center; justify-content: center; }
+
+    /* ========== 左侧品牌区 ========== */
+    .brand { width: 100%; max-width: 420px; padding: 36px 32px; }
+    .brand__logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+    .brand__mark {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--glass-primary-from), var(--glass-primary-to));
+      color: #fff; font-weight: 700; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px var(--glass-primary-shadow);
+    }
+    .brand__name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--glass-text-body); }
+    .brand__title {
+      font-size: 32px; font-weight: 700; line-height: 1.25;
+      letter-spacing: -0.02em; color: var(--glass-text-title); margin-bottom: 12px;
+    }
+    .brand__lead { font-size: 15px; font-weight: 400; line-height: 1.65; margin-bottom: 28px; }
+    .feat-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .glass-chip {
+      display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px;
+      background: rgb(255 255 255 / 0.4);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--glass-radius-md);
+      border: 1px solid rgb(255 255 255 / 0.55);
+      box-shadow: var(--glass-shadow-1);
+    }
+    .feat__icon {
+      flex-shrink: 0; width: 32px; height: 32px; border-radius: 10px;
+      background: linear-gradient(135deg, rgb(139 184 245 / 0.35), rgb(106 158 232 / 0.25));
+      color: #5b8fd4; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .feat__title { font-size: 14px; font-weight: 600; color: var(--glass-text-title); margin-bottom: 2px; }
+    .feat__desc { font-size: 12px; font-weight: 400; color: var(--glass-text-muted); line-height: 1.5; }
+    .brand__foot { font-size: 12px; color: var(--glass-text-muted); }
+
+    /* ========== 右侧登录卡片 ========== */
+    .form-card { width: 100%; max-width: 400px; padding: 36px 32px 32px; }
+    .form-card h2 {
+      font-size: 26px; font-weight: 700; color: var(--glass-text-title);
+      letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .form-card .sub { font-size: 13px; margin-bottom: 28px; }
+    .tabs {
+      display: flex; gap: 4px; padding: 4px; margin-bottom: 24px;
+      background: rgb(255 255 255 / 0.35);
+      backdrop-filter: blur(8px); border-radius: var(--glass-radius-md);
+      box-shadow: var(--glass-shadow-1);
+    }
+    .tabs button {
+      flex: 1; border: none; background: transparent; padding: 10px 12px;
+      border-radius: 10px; font-family: inherit; font-size: 13px;
+      font-weight: 500; color: var(--glass-text-muted); cursor: pointer;
+    }
+    .tabs button.active {
+      background: rgb(255 255 255 / 0.75); color: var(--glass-text-title);
+      font-weight: 600; box-shadow: var(--glass-shadow-1);
+    }
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 13px; font-weight: 500;
+      color: var(--glass-text-body); margin-bottom: 6px;
+    }
+    /* 输入框：无硬边框，内凹阴影 */
+    .field input {
+      width: 100%; height: 44px; padding: 0 14px;
+      border: none; border-radius: var(--glass-radius-md);
+      background: rgb(255 255 255 / 0.6);
+      box-shadow: inset 0 1px 2px rgb(100 120 150 / 0.06);
+      font-family: inherit; font-size: 14px; color: var(--glass-text-title);
+      outline: none;
+    }
+    .field input:focus {
+      box-shadow: inset 0 1px 2px rgb(100 120 150 / 0.06), 0 0 0 3px rgb(106 158 232 / 0.18);
+    }
+    /* 主按钮：低饱和蓝渐变 + 悬浮阴影 */
+    .btn-primary {
+      width: 100%; height: 46px; margin-top: 8px;
+      border: none; border-radius: var(--glass-radius-md);
+      background: linear-gradient(135deg, var(--glass-primary-from), var(--glass-primary-to));
+      color: #fff; font-family: inherit; font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--glass-primary-shadow);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px var(--glass-primary-shadow);
+    }
+    .hint { margin-top: 20px; text-align: center; font-size: 11px; color: var(--glass-text-muted); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="page__bg" aria-hidden="true">
+      <div class="page__grid"></div>
+    </div>
+
+    <div class="layout">
+      <!-- 左：品牌毛玻璃卡片 -->
+      <div class="col">
+        <aside class="glass-panel glass-panel--tint brand">
+          <div class="brand__logo">
+            <span class="brand__mark">优</span>
+            <span class="brand__name">优丁 YOU DING</span>
+          </div>
+          <h1 class="brand__title">外贸卖家<br />出海工作台</h1>
+          <p class="brand__lead">今天该干什么，登录 30 秒就知道。</p>
+          <div class="feat-list">
+            <div class="glass-chip">
+              <span class="feat__icon">获</span>
+              <div>
+                <div class="feat__title">获客</div>
+                <div class="feat__desc">询盘、IM、国际线索进一个 inbox</div>
+              </div>
+            </div>
+            <div class="glass-chip">
+              <span class="feat__icon">发</span>
+              <div>
+                <div class="feat__title">发品</div>
+                <div class="feat__desc">母版 → 多平台发布，进度看得见</div>
+              </div>
+            </div>
+            <div class="glass-chip">
+              <span class="feat__icon">账</span>
+              <div>
+                <div class="feat__title">账户</div>
+                <div class="feat__desc">套餐、域名、用量一目了然</div>
+              </div>
+            </div>
+          </div>
+          <p class="brand__foot">建材外贸 · AI 卖货操作系统</p>
+        </aside>
+      </div>
+
+      <!-- 右：登录毛玻璃卡片 -->
+      <div class="col">
+        <div class="glass-panel glass-panel--form form-card">
+          <h2>欢迎回来</h2>
+          <p class="sub">登录后进入租户工作台 · 演示账号 tenant_demo</p>
+          <div class="tabs">
+            <button type="button" class="active">账号登录</button>
+            <button type="button">邮箱验证码</button>
+          </div>
+          <form onsubmit="return false">
+            <div class="field">
+              <label for="user">用户名或邮箱</label>
+              <input id="user" type="text" placeholder="用户名或邮箱" value="tenant_demo" />
+            </div>
+            <div class="field">
+              <label for="pwd">密码</label>
+              <input id="pwd" type="password" placeholder="密码" value="••••••••••••" />
+            </div>
+            <button type="submit" class="btn-primary">进入工作台</button>
+          </form>
+          <p class="hint">🔒 SSL 加密 · 操作审计</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

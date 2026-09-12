@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "task": "MOD-06-android-aab",
+  "checks": {
+    "android_dir": true,
+    "gradlew_bat": true,
+    "main_activity": true,
+    "application_id": true,
+    "version_code": true,
+    "synced_web_assets": true
+  },
+  "aab_command": "cd frontend/admin/android && .\\gradlew.bat bundleRelease",
+  "human_pending": "JDK+Android SDK 环境下执行 bundleRelease 产出 AAB"
+}

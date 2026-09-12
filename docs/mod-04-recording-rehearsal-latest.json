@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "task": "MOD-04-rehearsal",
+  "base_url": "http://127.0.0.1:5173",
+  "routes": {
+    "/login": {
+      "ok": true,
+      "status": 200,
+      "error": null
+    },
+    "/client/dashboard": {
+      "ok": true,
+      "status": 200,
+      "error": null
+    },
+    "/client/queues/inquiries": {
+      "ok": true,
+      "status": 200,
+      "error": null
+    },
+    "/client/plan-gate": {
+      "ok": true,
+      "status": 200,
+      "error": null
+    },
+    "/admin/tenants": {
+      "ok": true,
+      "status": 200,
+      "error": null
+    },
+    "/agent/performance": {
+      "ok": true,
+      "status": 200,
+      "error": null
+    }
+  },
+  "https_step_pending": "Step 7 需 Owner HTTPS 域 + curl -I",
+  "human_pending": "HTTPS 域就绪后按清单录屏归档 mod-04-recordings/"
+}

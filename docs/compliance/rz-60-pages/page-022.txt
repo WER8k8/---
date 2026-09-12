@@ -1,0 +1,51 @@
+// FILE: backend\app\core\cache.py
+    delete_cache(CACHE_KEYS["PAGE"].format(page_id))
+    if slug:
+        delete_cache(CACHE_KEYS["PAGE_SLUG"].format(slug))
+
+
+def invalidate_seo_cache(resource_type: str, resource_id: str) -> None:
+    """使SEO缓存失效"""
+    delete_cache(CACHE_KEYS["SEO"].format(resource_type, resource_id))
+
+
+# ============================================
+# 超级管理员缓存扩展
+# ============================================
+
+ADMIN_CACHE_KEYS = {
+    "ADMIN_SESSION": "admin:session:{}",          # {user_id}:{jti}
+    "ADMIN_PERMISSIONS": "perm:{}",               # {user_id}
+    "ADMIN_MENU_TREE": "menu:{}:{}",              # {user_id}:{parent_id}
+    "ADMIN_DASHBOARD": "admin:dashboard:{}",       # {user_id}
+    "AI_MODEL_CONFIG": "ai:model:{}",              # {model_id}
+    "AI_ALL_MODELS": "ai:models:all",
+    "CC_SWITCH_CONFIG": "cc:switch:{}",            # {config_id}
+    "CC_ALL_CONFIGS": "cc:switch:all",
+    "RATE_LIMIT": "rate:{}:{}",                    # {user_id}:{endpoint}
+    "SYSTEM_MONITOR": "monitor:{}",                # {metric_name}
+}
+
+ADMIN_CACHE_TTL = {
+    "session": 3600,       # 1 小时
+    "permissions": 1800,   # 30 分钟
+    "menu_tree": 600,      # 10 分钟
+    "dashboard": 60,       # 1 分钟
+    "ai_model": 300,       # 5 分钟
+    "cc_switch": 300,      # 5 分钟
+    "monitor": 15,         # 15 秒
+}
+
+
+def invalidate_admin_session(user_id: str, jti: str = None) -> None:
+    """失效管理员会话"""
+    if jti:
+        set_cache(
+            ADMIN_CACHE_KEYS["ADMIN_SESSION"].format(f"{user_id}:{jti}"),
+            True,
+        )
+    else:
+        delete_pattern(f"admin:session:{user_id}:*")
+
+
+def invalidate_admin_user_cache(user_id: str) -> None:

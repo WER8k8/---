@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-05-31",
+  "description": "开发环境工具与产品源码隔离配置（本文件可入库；工具本体不入库）",
+  "repo_root_env": "SHANGXIAN_REPO_ROOT",
+  "dev_stack_root": "C:/Users/97907/.devstack/shangxian-website",
+  "paths": {
+    "cursor": "C:/Users/97907/.devstack/shangxian-website/.cursor",
+    "workflows": "C:/Users/97907/.devstack/shangxian-website/workflows",
+    "ecc_install_manifest": "C:/Users/97907/.devstack/shangxian-website/ecc-install.json",
+    "agency_launch": "C:/Users/97907/.devstack/shangxian-website/scripts/agency-launch-cache.json",
+    "codegraph_index": ".codegraph"
+  },
+  "repo_junctions": {
+    ".cursor": "C:/Users/97907/.devstack/shangxian-website/.cursor"
+  },
+  "never_commit": [
+    ".cursor/",
+    ".codegraph/",
+    "ecc-install.json",
+    "workflows/",
+    ".devstack-local/"
+  ],
+  "product_paths": [
+    "backend/",
+    "frontend/",
+    "deploy/",
+    "docs/",
+    "scripts/",
+    ".project/"
+  ],
+  "ecc_source": "C:/Users/97907/Desktop/UJ/website CodeBuddy/v1.10.0/ECC-1.10.0"
+}

@@ -1,0 +1,51 @@
+// FILE: backend\app\core\config.py
+        "docx",
+        "xls",
+        "xlsx",
+        "dwg",
+        "dxf",
+    ]
+
+    # 邮件服务配置
+    SMTP_SERVER: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    FROM_EMAIL: str = ""
+    FRONTEND_URL: str = "http://localhost:3000"
+
+    # 第三方 OAuth（管理端登录）
+    OAUTH_REDIRECT_URI: str = "http://localhost:5173/login/oauth-callback"
+    OAUTH_DEV_BYPASS: bool = False  # 开发：未配置 AppId 时走 dev code 回调
+    QQ_APP_ID: str = ""
+    QQ_APP_KEY: str = ""
+    WECHAT_OPEN_APP_ID: str = ""
+    WECHAT_OPEN_APP_SECRET: str = ""
+    DINGTALK_APP_ID: str = ""
+    DINGTALK_APP_SECRET: str = ""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # 根据环境设置DEBUG
+        if self.ENVIRONMENT == "development":
+            self.DEBUG = True
+
+        # SECRET_KEY 强制校验（与 JWT_SECRET_KEY 同等重要）
+        if not self.SECRET_KEY or len(str(self.SECRET_KEY).strip()) < 32:
+            if self.ENVIRONMENT == "production":
+                raise ValueError(
+                    "[安全错误] 生产环境必须配置 SECRET_KEY，长度 >= 32。"
+                    "请通过环境变量设置：export SECRET_KEY=$(python -c \"import secrets; print(secrets.token_hex(32))\")"
+                )
+            if not self.SECRET_KEY:
+                warnings.warn("[DEV] 未配置 SECRET_KEY，自动生成临时密钥（进程重启后失效）", stacklevel=2)
+                self.SECRET_KEY = secrets.token_hex(32)
+            elif len(str(self.SECRET_KEY).strip()) < 32:
+                warnings.warn(
+                    f"[DEV] SECRET_KEY 长度不足（{len(str(self.SECRET_KEY).strip())}<32），"
+                    "已自动替换为强随机密钥", stacklevel=2
+                )
+                self.SECRET_KEY = secrets.token_hex(32)
+
+        # JWT 密钥强制校验

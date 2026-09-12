@@ -1,0 +1,89 @@
+﻿{
+    "generated_at":  "2026-07-05T01:05:49.2053432Z",
+    "ok":  true,
+    "api_base":  "http://127.0.0.1:8001",
+    "admin_base":  "http://127.0.0.1:5173",
+    "fail_count":  0,
+    "steps":  [
+                  {
+                      "detail":  "already up",
+                      "ok":  true,
+                      "name":  "start_backend"
+                  },
+                  {
+                      "detail":  "already up",
+                      "ok":  true,
+                      "name":  "start_admin"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "seed_platforms"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "ensure_dev_sqlite"
+                  },
+                  {
+                      "detail":  "reloaded after ensure_dev_sqlite",
+                      "ok":  true,
+                      "name":  "restart_backend"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "check_mounted_routes"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "demo_acceptance"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "production_preflight"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "security_audit"
+                  },
+                  {
+                      "detail":  "skipped",
+                      "ok":  true,
+                      "name":  "pytest_unit"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "flywheel_migration"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "get_smoke_token"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "e2e_flywheel"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "l3_api"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "l3_api_smoke"
+                  },
+                  {
+                      "detail":  "OK",
+                      "ok":  true,
+                      "name":  "gates_g1_g7"
+                  }
+              ]
+}

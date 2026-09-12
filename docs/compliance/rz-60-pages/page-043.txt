@@ -1,0 +1,51 @@
+// FILE: backend\app\core\exceptions.py
+    for error in exc.errors():
+        errors.append(
+            {
+                "field": ".".join(str(loc) for loc in error["loc"]),
+                "message": error["msg"],
+                "type": error["type"],
+            }
+        )
+    logger.warning("Validation error: %s, path=%s", errors, request.url.path)
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=error_response(
+            code=ErrorCode.VALIDATION_ERROR,
+            message=ERROR_MESSAGES[ErrorCode.VALIDATION_ERROR],
+            data={"errors": errors},
+        ),
+    )
+
+
+async def pydantic_validation_exception_handler(
+        request: Request, exc: ValidationError) -> JSONResponse:
+    errors = []
+    for error in exc.errors():
+        errors.append(
+            {
+                "field": ".".join(str(loc) for loc in error["loc"]),
+                "message": error["msg"],
+                "type": error["type"],
+            }
+        )
+    logger.warning("Pydantic validation error: %s", errors)
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=error_response(
+            code=ErrorCode.VALIDATION_ERROR,
+            message=ERROR_MESSAGES[ErrorCode.VALIDATION_ERROR],
+            data={"errors": errors},
+        ),
+    )
+
+
+async def sqlalchemy_exception_handler(
+        request: Request,
+        exc: SQLAlchemyError) -> JSONResponse:
+    logger.error(
+        "Database error: %s, path=%s",
+        str(exc),
+        request.url.path,
+        exc_info=True)
+    return JSONResponse(

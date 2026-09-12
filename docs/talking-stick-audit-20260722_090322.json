@@ -1,0 +1,75 @@
+{
+  "task_id": "scan_20260722_090320_2619552641488",
+  "timestamp": "2026-07-22T09:03:22.525258",
+  "summary": {
+    "total_files": 546,
+    "risk_files": 544,
+    "total_vulnerabilities": 0,
+    "critical_count": 0,
+    "high_count": 0,
+    "medium_count": 0,
+    "low_count": 0,
+    "verified_vulnerabilities": 0,
+    "false_positives": 0,
+    "confirmed_vulnerabilities": 0,
+    "scan_timestamp": "2026-07-22T09:03:22.524252"
+  },
+  "scan_result": {
+    "target_path": "C:\\Users\\Administrator.WIN-36O2UQRI3U1\\Desktop\\上线网站开发完成\\上线网站\\backend\\app\\services",
+    "summary": {
+      "total_files": 546,
+      "total_size": 4706798,
+      "risk_files": 544,
+      "total_dependencies": 0,
+      "file_types": {
+        "python": 544,
+        "documentation": 1,
+        "config": 1
+      },
+      "dependency_types": {}
+    },
+    "risk_files_count": 544,
+    "recommendations": [
+      "发现 15 个高风险文件，建议优先审计",
+      "发现 15 个敏感文件，需要特别关注"
+    ]
+  },
+  "audit_result": {
+    "summary": {
+      "total_vulnerabilities": 0,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "info": 0
+      },
+      "vulnerability_types": {},
+      "owasp_summary": {}
+    },
+    "vulnerabilities": [],
+    "recommendations": [
+      "建议进行深度代码审查和安全测试"
+    ]
+  },
+  "verification_result": {
+    "summary": {
+      "confirmed": 0,
+      "false_positives": 0,
+      "errors": 0,
+      "critical_fixes_needed": 0,
+      "high_fixes_needed": 0,
+      "medium_fixes_needed": 0,
+      "low_fixes_needed": 0
+    },
+    "fixes": {
+      "critical": [],
+      "high": [],
+      "medium": [],
+      "low": []
+    },
+    "recommendations": [
+      "所有漏洞已验证，可按优先级修复"
+    ]
+  }
+}

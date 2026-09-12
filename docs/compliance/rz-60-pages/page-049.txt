@@ -1,0 +1,51 @@
+// FILE: backend\app\core\gm_crypto.py
+"""国密 SM2/SM3/SM4 工具（敏感字段加密、完整性校验、接口签名）。
+
+依赖 gmssl；未安装时 encrypt/decrypt 会抛出明确错误，应用仍可启动。
+"""
+
+from __future__ import annotations
+
+import base64
+import hashlib
+import os
+import secrets
+from typing import Optional, Tuple
+
+_GMSSL_AVAILABLE = False
+try:
+    from gmssl import sm3 as _sm3_mod
+    from gmssl.sm2 import CryptSM2
+    from gmssl.sm4 import CryptSM4, SM4_DECRYPT, SM4_ENCRYPT
+
+    _GMSSL_AVAILABLE = True
+except ImportError:
+    CryptSM2 = None  # type: ignore
+    CryptSM4 = None  # type: ignore
+    SM4_DECRYPT = SM4_ENCRYPT = None  # type: ignore
+    _sm3_mod = None
+
+
+class GMCryptoError(RuntimeError):
+    pass
+
+
+def gmssl_available() -> bool:
+    return _GMSSL_AVAILABLE
+
+
+def sm3_hex(data: bytes | str) -> str:
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+    if _GMSSL_AVAILABLE and _sm3_mod is not None:
+        return _sm3_mod.sm3_hash(list(data))
+    # 开发兜底（非国密合规场景）；生产应安装 gmssl
+    return hashlib.sha256(data).hexdigest()
+
+
+def _sm4_key_16(raw: str) -> bytes:
+    """规范为 16 字节 SM4 密钥。"""
+    if len(raw) >= 32 and all(c in "0123456789abcdefABCDEF" for c in raw[:32]):
+        return bytes.fromhex(raw[:32])[:16].ljust(16, b"\0")
+    digest = hashlib.sha256(raw.encode("utf-8")).digest()
+    return digest[:16]

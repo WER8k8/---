@@ -1,0 +1,346 @@
+{
+  "data": [
+    {
+      "id": "page-dashboard-overview",
+      "title": "Dashboard 概览",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753041600000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/dashboard-overview.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-today-workbench",
+      "title": "今日工作台",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140000000,
+      "canvasData": {
+        "x": 1100,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/today-workbench.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-copilot-dashboard",
+      "title": "卖货副驾",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140100000,
+      "canvasData": {
+        "x": 2200,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/copilot-dashboard.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-traffic-board",
+      "title": "流量看板",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140200000,
+      "canvasData": {
+        "x": 0,
+        "y": 1000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/traffic-board.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-inquiry-management",
+      "title": "询盘管理",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140300000,
+      "canvasData": {
+        "x": 1100,
+        "y": 1000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/inquiry-management.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-inquiry-queue",
+      "title": "询盘队列",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140400000,
+      "canvasData": {
+        "x": 2200,
+        "y": 1000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/inquiry-queue.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-sales-dashboard",
+      "title": "销售工作台",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140500000,
+      "canvasData": {
+        "x": 0,
+        "y": 2000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/sales-dashboard.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-customer-finder",
+      "title": "客户开发",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140600000,
+      "canvasData": {
+        "x": 1100,
+        "y": 2000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/customer-finder.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-attribution",
+      "title": "全链路归因",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140700000,
+      "canvasData": {
+        "x": 2200,
+        "y": 2000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/attribution.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-content-distribute",
+      "title": "内容分发中心",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140800000,
+      "canvasData": {
+        "x": 0,
+        "y": 3000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/content-distribute.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-publish-queue",
+      "title": "发布队列",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753140900000,
+      "canvasData": {
+        "x": 1100,
+        "y": 3000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/publish-queue.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-fulfillment-queue",
+      "title": "履约队列",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141000000,
+      "canvasData": {
+        "x": 2200,
+        "y": 3000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/fulfillment-queue.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-billing",
+      "title": "套餐续费",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141100000,
+      "canvasData": {
+        "x": 0,
+        "y": 4000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/billing.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-onboarding",
+      "title": "开通向导",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141200000,
+      "canvasData": {
+        "x": 1100,
+        "y": 4000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/onboarding.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-wangcai-chat-widget",
+      "title": "旺财智能助手",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141300000,
+      "canvasData": {
+        "x": 2200,
+        "y": 4000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/wangcai-chat-widget.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-seo-overview",
+      "title": "SEO优化总览",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141400000,
+      "canvasData": {
+        "x": 0,
+        "y": 5000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/seo-overview.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-geo-visibility",
+      "title": "GEO可见性",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141500000,
+      "canvasData": {
+        "x": 1100,
+        "y": 5000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/geo-visibility.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-project-architecture",
+      "title": "项目架构图",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753141600000,
+      "canvasData": {
+        "x": 2200,
+        "y": 5000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/project-architecture.html",
+        "interactions": [
+          "click-modules",
+          "tooltip",
+          "detail-modal"
+        ]
+      }
+    },
+    {
+      "id": "page-ops-center",
+      "title": "智能运营中心",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753142600000,
+      "canvasData": {
+        "x": 3300,
+        "y": 5000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/ops-center.html",
+        "interactions": [
+          "click-modules",
+          "detail-modal",
+          "score-banner",
+          "channel-status-grid",
+          "quick-actions"
+        ]
+      }
+    },
+    {
+      "id": "page-tenant-nav-portal",
+      "title": "租户导航总览",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753143200000,
+      "canvasData": {
+        "x": 4400,
+        "y": 5000,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/tenant-nav-portal.html",
+        "interactions": [
+          "workflow-timeline",
+          "group-cards",
+          "detail-modal",
+          "scroll-spy",
+          "quick-start-banner"
+        ]
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": false,
+    "deviceType": "desktop",
+    "projectName": "优丁租户工作台",
+    "visualEditorEnabled": true
+  }
+}

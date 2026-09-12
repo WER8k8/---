@@ -1,0 +1,12 @@
+﻿{
+    "locust_exit":  0,
+    "note":  "72h run scheduled at CERT stage; this script is weekly smoke only",
+    "stats_csv":  true,
+    "users":  5,
+    "host":  "http://127.0.0.1:8001",
+    "task":  "QA-04-smoke",
+    "generated_at":  "2026-06-01T09:11:11.8011080+08:00",
+    "backend_health":  true,
+    "smoke_pass":  true,
+    "duration":  "20s"
+}

@@ -1,0 +1,56 @@
+﻿{
+    "generated_at":  "2026-07-05T01:04:13.1366214Z",
+    "ok":  true,
+    "fail_count":  0,
+    "api_base":  "http://127.0.0.1:8001",
+    "checks":  [
+                   {
+                       "ok":  true,
+                       "title":  "auth login",
+                       "message":  "token len=287",
+                       "id":  "L3-01"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "inquiries portal",
+                       "message":  "/api/v1/inquiries/unified",
+                       "id":  "L3-03"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "platforms pilot",
+                       "message":  "pilot ok",
+                       "id":  "L3-05"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "ubrain status",
+                       "message":  "flywheel status",
+                       "id":  "L3-06"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "ai learning",
+                       "message":  "cycles=130",
+                       "id":  "L3-09"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "founder ops",
+                       "message":  "founder ops ok",
+                       "id":  "L3-19"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "public inquiry",
+                       "message":  "public inquiry",
+                       "id":  "L3-13"
+                   },
+                   {
+                       "ok":  true,
+                       "title":  "logistics track",
+                       "message":  "logistics endpoint reachable",
+                       "id":  "L3-17"
+                   }
+               ]
+}

@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "task": "ARCH-04-certbot-preflight",
+  "checks": {
+    "env_certbot_email": true,
+    "env_certbot_webroot": true,
+    "env_ssl_provider": true,
+    "compose_prod_exists": true,
+    "compose_mentions_certbot_or_ssl": true,
+    "ssl_readme": true,
+    "staging_fullchain": true,
+    "staging_privkey": true,
+    "owner_blocker_doc": true
+  },
+  "human_pending": "Owner 提供 HTTPS 演示域 + DNS + 实跑 certbot",
+  "rehearsal_script": "scripts/pilot-acme-ssl-issue.ps1"
+}

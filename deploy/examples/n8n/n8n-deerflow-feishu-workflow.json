@@ -1,0 +1,53 @@
+{
+  "name": "DeerFlow Done → UBrain Webhook → Feishu",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "deerflow-done",
+        "responseMode": "onReceived"
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.UBRAIN_BASE_URL}}/api/v1/ubrain/commercial-os/webhook",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "headers": {
+            "X-N8N-Webhook-Secret": "={{$env.N8N_WEBHOOK_SECRET}}"
+          }
+        },
+        "bodyParametersJson": "={{ JSON.stringify({ event: 'deerflow_done', tenant_id: $json.tenant_id, job_id: $json.job_id, result: $json.result, auto_enqueue: true }) }}"
+      },
+      "name": "POST UBrain Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.FEISHU_WEBHOOK_URL}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={{ JSON.stringify({ msg_type: 'text', content: { text: 'DeerFlow 完成: ' + ($json.job_id || '') } }) }}"
+      },
+      "name": "Feishu Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "POST UBrain Webhook", "type": "main", "index": 0 }]]
+    },
+    "POST UBrain Webhook": {
+      "main": [[{ "node": "Feishu Notify", "type": "main", "index": 0 }]]
+    }
+  }
+}

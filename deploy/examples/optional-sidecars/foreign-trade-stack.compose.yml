@@ -1,0 +1,30 @@
+# 外贸生态可选 Sidecar（参考 compose）
+# 主应用仍用 deploy/production 主栈；下列服务按需启用
+# 文档：deploy/docs/FOREIGN-TRADE-ECOSYSTEM-DEPLOY.md
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-changeme}
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://127.0.0.1:5678/}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    # 导入 workflow：deploy/examples/n8n/*.json
+
+  # 本地 LLM（Hermes Agency）— 完整见 deploy/production/agency-llm-compose.yml
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+
+volumes:
+  n8n_data:
+  # ollama_data:

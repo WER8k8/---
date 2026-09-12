@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YouDing | Product Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#bec9c5",
+                    "on-surface-variant": "#3e4946",
+                    "background": "#f7f9fb",
+                    "on-primary-fixed": "#00201b",
+                    "primary-fixed": "#a1f2e0",
+                    "on-background": "#191c1e",
+                    "surface-dim": "#d8dadc",
+                    "secondary-container": "#d6e0f6",
+                    "outline": "#6e7976",
+                    "on-tertiary-container": "#fcfcff",
+                    "on-tertiary-fixed": "#161c22",
+                    "on-tertiary-fixed-variant": "#41474e",
+                    "tertiary-fixed": "#dde3eb",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#85d5c5",
+                    "surface-variant": "#e0e3e5",
+                    "inverse-surface": "#2d3133",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#6f757c",
+                    "on-secondary-fixed-variant": "#3d4759",
+                    "primary-container": "#2d8173",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#01685b",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-primary-fixed-variant": "#005046",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "surface": "#f7f9fb",
+                    "surface-container-low": "#f2f4f6",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#d9e3f9",
+                    "surface-container": "#eceef0",
+                    "secondary-fixed-dim": "#bdc7dc",
+                    "tertiary-fixed-dim": "#c1c7cf",
+                    "inverse-primary": "#85d5c5",
+                    "on-secondary-container": "#596376",
+                    "tertiary": "#565d63",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#f4fffb",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary": "#555f71",
+                    "surface-tint": "#076b5d",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary-fixed": "#121c2c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "lg": "40px",
+                    "gutter": "20px",
+                    "xs": "8px",
+                    "xl": "64px",
+                    "margin-desktop": "32px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "sm": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "data-tabular": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "450"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec9c5;
+            border-radius: 10px;
+        }
+        .industrial-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .badge-active {
+            background: rgba(1, 104, 91, 0.1);
+            color: #01685b;
+        }
+        .badge-low {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+        .badge-out {
+            background: rgba(100, 116, 139, 0.1);
+            color: #475569;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-md px-sm z-50">
+<div class="mb-xl px-xs">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">BuildExport</h1>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Global Logistics</p>
+</div>
+<nav class="flex-1 space-y-base overflow-y-auto custom-scrollbar">
+<!-- Workspace active because Product Management is a workspace task -->
+<a class="flex items-center gap-sm p-sm rounded-lg cursor-pointer transition-all active:scale-95 text-primary bg-primary-fixed-dim/10 font-bold border-r-2 border-primary" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Workspace</span>
+</a>
+<a class="flex items-center gap-sm p-sm rounded-lg cursor-pointer transition-all active:scale-95 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">business_center</span>
+<span class="font-label-md text-label-md">Business</span>
+</a>
+<a class="flex items-center gap-sm p-sm rounded-lg cursor-pointer transition-all active:scale-95 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">search_insights</span>
+<span class="font-label-md text-label-md">SEO</span>
+</a>
+<a class="flex items-center gap-sm p-sm rounded-lg cursor-pointer transition-all active:scale-95 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-md text-label-md">AI</span>
+</a>
+</nav>
+<div class="mt-auto pt-md space-y-base border-t border-outline-variant/30">
+<button class="w-full bg-primary text-on-primary py-sm px-md rounded-lg font-bold mb-md hover:opacity-90 active:scale-95 transition-all">
+                New Export
+            </button>
+<a class="flex items-center gap-sm p-sm rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-sm p-sm rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface flex justify-between items-center px-lg ml-64 z-40 border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-md py-xs focus:ring-1 focus:ring-primary focus:border-primary transition-all text-body-md outline-none" placeholder="Search product catalogue..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full hover:bg-surface-container transition-all relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+</button>
+</div>
+<div class="flex items-center gap-sm pl-md border-l border-outline-variant/30">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface font-bold">Admin Panel</p>
+<p class="text-[10px] text-on-surface-variant">YouDing Logistics</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim border border-primary/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate logistics manager in a modern office, soft high-key lighting, industrial aesthetic background with glass and steel elements, wearing a dark navy blazer, sharp focus, photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAY7REiXZZrw5t3Ec5DrW5xgkeA3OIT71EwLz1NdTr3gwhUJrJG7BTI-SMtbdICAOYLpAHqpR-Jiwwqd6BOtu60-zdyEDoz9zW-Z3Hc78J3wj6pLDb0ewXjkW2-Bl62huIwwSGUyq-btnN1uqDRFJmlhS6M5hV4X1ZH1WFD38Et2PWigyO6rSud-AeYoyorclVfQMK3R4uE3Pg87d9JjY5sG0p0pX0VoTLj7AYMLgEI3DFZk0M9qgirPwA0xHDxnk6MWJBFjEDakA"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-lg pb-xl min-h-screen">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Product Management</h2>
+<nav class="flex text-label-md font-label-md text-on-surface-variant/60 mt-1">
+<a class="hover:text-primary" href="#">Inventory</a>
+<span class="mx-2">/</span>
+<span class="text-on-surface-variant">Products</span>
+</nav>
+</div>
+<button class="bg-primary hover:bg-primary-container text-on-primary flex items-center gap-xs px-md py-sm rounded-lg font-bold transition-all shadow-sm active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                Add Product
+            </button>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 flex flex-wrap items-center justify-between gap-md mb-md">
+<div class="flex-1 min-w-[300px]">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary">search</span>
+<input class="w-full bg-white border border-outline-variant rounded-lg pl-10 pr-md py-sm text-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filter by Name, SKU, or Category..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="relative min-w-[160px]">
+<select class="w-full appearance-none bg-white border border-outline-variant rounded-lg px-md py-sm text-body-md focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer pr-10">
+<option value="">All Categories</option>
+<option value="flooring">Flooring</option>
+<option value="windows">Windows</option>
+<option value="structural">Structural</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant/60">expand_more</span>
+</div>
+<div class="relative min-w-[160px]">
+<select class="w-full appearance-none bg-white border border-outline-variant rounded-lg px-md py-sm text-body-md focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer pr-10">
+<option value="">Status</option>
+<option value="active">Active</option>
+<option value="low">Low Stock</option>
+<option value="out">Out of Stock</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant/60">expand_more</span>
+</div>
+<button class="p-sm border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="bg-surface-container-low border-b-2 border-primary-fixed-dim">
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Image</th>
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Product Name</th>
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">SKU</th>
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Category</th>
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Stock Level</th>
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-md py-sm text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-background transition-colors group">
+<td class="px-md py-md">
+<div class="w-16 h-16 rounded bg-surface border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="High-resolution close-up of premium ceramic floor tiles with a marble texture, industrial showroom lighting, cool tones, architectural building material, sharp focus, 8k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJQVT9G0gi-100TdAEkpOkMobDMkpIx1uU1qBQdtdlhPPJHFP_jJiadI6wej3nq1B8j1r2fsoSgdGncSrphKkw0pQGUzpVg9iobCsGnaJHX0yjMwk8SSH3CoByWFqOSfHi0iPsgkP6nkWULdxb0v75ZJAViC529prev0Tdje9O-hmzIg3V0J_KYahifc3MoiR3Y-SS7p3pAwBzpYiYgqfmuJmjSbeTICK4yko5ml7DYBrt0pgL3fdOufv4_9FhSvT7xMIMrHthIyc"/>
+</div>
+</td>
+<td class="px-md py-md">
+<div class="font-bold text-on-surface">Premium Ceramic Floor Tile</div>
+<div class="text-label-md text-on-surface-variant">Carrara White Gloss</div>
+</td>
+<td class="px-md py-md font-data-tabular text-data-tabular">YD-FL-0882</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container text-on-secondary-container px-xs py-1 rounded text-[10px] font-bold uppercase">Flooring</span>
+</td>
+<td class="px-md py-md w-48">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-bold">
+<span>842 Units</span>
+<span class="text-primary">84%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 84%"></div>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="badge-active px-sm py-1 rounded text-[10px] font-bold uppercase">Active</span>
+</td>
+<td class="px-md py-md">
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-primary/10 text-primary rounded transition-all"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-xs hover:bg-error/10 text-error rounded transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-surface/30 hover:bg-background transition-colors group">
+<td class="px-md py-md">
+<div class="w-16 h-16 rounded bg-surface border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Clear tempered glass panels stacked in a manufacturing facility, industrial aesthetic, blue and green color palette, high transparency, architectural structural glass, sleek modern look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVZD7ThcFhDRRvO1mY9mQ6v6HoK0s-11QkRHRi1uGgjF9sKC2Nw712ryetRz4XoY_SK0XM-MVHctZwF7wilHnpP7-yM-vQ0Soo5QVpIidpBaRGnhUq3VbQ5Y6kkYmYNKaL-Pe6Djc-LViYnP1I-ttn9bDUxPF_qj0HqZNLYbs03q5v4fTm5M2PrJoztwjUgH3VHf8JlhL6MTDIoaSC-bXUBSpkSeka0nwC_xyLIGnDJ3bgn3YvkKnXhbpP9EcmlootPgwLi-mjRDM"/>
+</div>
+</td>
+<td class="px-md py-md">
+<div class="font-bold text-on-surface">Tempered Glass Panels</div>
+<div class="text-label-md text-on-surface-variant">12mm Structural Safety</div>
+</td>
+<td class="px-md py-md font-data-tabular text-data-tabular">YD-WD-1140</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container text-on-secondary-container px-xs py-1 rounded text-[10px] font-bold uppercase">Windows</span>
+</td>
+<td class="px-md py-md w-48">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-bold">
+<span>120 Units</span>
+<span class="text-amber-600">12%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-amber-500" style="width: 12%"></div>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="badge-low px-sm py-1 rounded text-[10px] font-bold uppercase">Low Stock</span>
+</td>
+<td class="px-md py-md">
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-primary/10 text-primary rounded transition-all"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-xs hover:bg-error/10 text-error rounded transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-background transition-colors group">
+<td class="px-md py-md">
+<div class="w-16 h-16 rounded bg-surface border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Bundles of reinforced steel rebar in an industrial warehouse, dramatic lighting with heavy shadows, rust-resistant coating, gritty industrial texture, heavy machinery context, construction materials." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMJzOidTPBuE4v141eZqbPHi1CmEEhZHmtBcK6hC3FJkOtaGxMGSwP1H8aPHHBvTZbMtMHX1EsYgsw5Ey6GmpxYWuPgR1VfiDX5o4d_WthgL0hgl5XoS9EGzhNv7azxEOO01HIBtMOPMCQHUH2hIq3W8Mi272pbwyxDnuIeLIEhiu3ZK2LFrLucJ1n3QwyAZj0aai1DkYONuXmoW6vjHeF45T5LY13P6xJtNuEW7AHr29TlfbbQvUpmaRAzNl-s4KAsgB2cdX0F6Q"/>
+</div>
+</td>
+<td class="px-md py-md">
+<div class="font-bold text-on-surface">Reinforced Steel Rebar</div>
+<div class="text-label-md text-on-surface-variant">Grade 60 Carbon Steel</div>
+</td>
+<td class="px-md py-md font-data-tabular text-data-tabular">YD-ST-4402</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container text-on-secondary-container px-xs py-1 rounded text-[10px] font-bold uppercase">Structural</span>
+</td>
+<td class="px-md py-md w-48">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-bold">
+<span>5,200 kg</span>
+<span class="text-primary">62%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 62%"></div>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="badge-active px-sm py-1 rounded text-[10px] font-bold uppercase">Active</span>
+</td>
+<td class="px-md py-md">
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-primary/10 text-primary rounded transition-all"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-xs hover:bg-error/10 text-error rounded transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="bg-surface/30 hover:bg-background transition-colors group">
+<td class="px-md py-md">
+<div class="w-16 h-16 rounded bg-surface border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Large polished dark grey granite slabs leaning against each other, professional lighting showing reflections on the surface, luxurious building material, high-end interior finish, sharp details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnw52109eXnnAUiDbuWw1LItnI4iAmJP9yYXy1l_KPJtn2_DOk-JhJR6pYPBjNWl2mO2EuGerlqDssuShPTa6rmp-kCD06OfbYz3x4ezCtiaMC1ob-FGUJfuSOClGmGeSv_g4l1UCaICiG0IGje2YOBWkwyj85zn3hEUnm3BQlXB98Tscqi4nbAv-MMak7vmzdd2o7-U6IMKUF2geaPhIlr56dKR5neFrQ1cAsv8Ic-WUas6Ux0E3e9kPTZhXfIG0tPi8jX5kzA64"/>
+</div>
+</td>
+<td class="px-md py-md">
+<div class="font-bold text-on-surface">Polished Granite Slabs</div>
+<div class="text-label-md text-on-surface-variant">Midnight Galaxy Finish</div>
+</td>
+<td class="px-md py-md font-data-tabular text-data-tabular">YD-FL-2291</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container text-on-secondary-container px-xs py-1 rounded text-[10px] font-bold uppercase">Flooring</span>
+</td>
+<td class="px-md py-md w-48">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-bold">
+<span>0 Units</span>
+<span class="text-on-surface-variant">0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-outline-variant" style="width: 0%"></div>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="badge-out px-sm py-1 rounded text-[10px] font-bold uppercase">Out of Stock</span>
+</td>
+<td class="px-md py-md">
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-primary/10 text-primary rounded transition-all"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-xs hover:bg-error/10 text-error rounded transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-surface-container-low px-md py-sm border-t border-outline-variant flex items-center justify-between">
+<div class="text-label-md font-label-md text-on-surface-variant">
+                    Showing <span class="text-on-surface font-bold">1 - 4</span> of <span class="text-on-surface font-bold">152</span> products
+                </div>
+<div class="flex items-center gap-base">
+<button class="p-xs rounded border border-outline-variant bg-white hover:bg-surface-container transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-bold text-label-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface font-bold text-label-md transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface font-bold text-label-md transition-all">3</button>
+<span class="px-1 text-on-surface-variant">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface font-bold text-label-md transition-all">38</button>
+<button class="p-xs rounded border border-outline-variant bg-white hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-label-md font-label-md text-on-surface-variant">Rows per page:</span>
+<select class="bg-transparent border-none focus:ring-0 text-label-md font-bold cursor-pointer">
+<option>10</option>
+<option>25</option>
+<option>50</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Dashboard Insights (Asymmetric Bento Style) -->
+<div class="grid grid-cols-12 gap-md mt-xl">
+<div class="col-span-8 bg-surface-container-low rounded-xl p-md border border-outline-variant relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Export Velocity</h3>
+<p class="text-body-md text-on-surface-variant mb-md max-w-md">Weekly stock movement analysis for top structural materials.</p>
+<div class="flex items-end gap-sm h-32">
+<div class="w-full bg-primary/20 rounded-t h-[40%]"></div>
+<div class="w-full bg-primary/20 rounded-t h-[65%]"></div>
+<div class="w-full bg-primary/20 rounded-t h-[45%]"></div>
+<div class="w-full bg-primary/20 rounded-t h-[90%]"></div>
+<div class="w-full bg-primary/20 rounded-t h-[55%]"></div>
+<div class="w-full bg-primary rounded-t h-[80%]"></div>
+<div class="w-full bg-primary/20 rounded-t h-[30%]"></div>
+</div>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10 p-md">
+<span class="material-symbols-outlined text-[120px]">analytics</span>
+</div>
+</div>
+<div class="col-span-4 bg-primary text-on-primary rounded-xl p-md border border-primary relative overflow-hidden flex flex-col justify-between">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-md">
+<div class="p-xs bg-white/20 rounded-lg">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<span class="text-label-md font-label-md bg-white/20 px-xs py-1 rounded">Update available</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-xs">Supply Alerts</h3>
+<p class="text-body-md text-white/80">3 structural categories approaching replenishment threshold.</p>
+</div>
+<button class="relative z-10 mt-md bg-white text-primary py-sm px-md rounded-lg font-bold text-label-md hover:bg-primary-fixed-dim transition-all">Review Pipeline</button>
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/5 rounded-full"></div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                console.log('Row clicked: ' + row.querySelector('.font-bold').innerText);
+                // Future expansion: open detail modal or side panel
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>

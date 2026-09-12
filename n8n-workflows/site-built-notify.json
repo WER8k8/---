@@ -1,0 +1,51 @@
+{
+  "name": "UJ site_built_notify (outbound)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "site-built-notify",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "b1a7c0d1-0001-4a01-9a01-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "b1a7c0d1-0002-4a01-9a01-000000000002"
+    },
+    {
+      "parameters": {},
+      "id": "b1a7c0d1-0003-4a01-9a01-000000000003",
+      "name": "Ack",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Ack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "id": "ujSiteBuiltNotifyWf01"
+}

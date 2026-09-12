@@ -1,0 +1,48 @@
+﻿{
+    "generated_at":  "2026-05-31T09:42:18.0861626Z",
+    "demo_skipped":  true,
+    "artifacts":  [
+                      "docs/g4-ai-key-verify-latest.json",
+                      "docs/ubrain-flywheel-live-smoke-latest.json",
+                      "docs/hierarchy-browser-acceptance-latest.json",
+                      "docs/鐢虫姤鏉愭枡/reliability-smoke-latest.json"
+                  ],
+    "fail_count":  0,
+    "steps":  [
+                  {
+                      "step":  "backend_up",
+                      "ok":  true,
+                      "detail":  ":8001"
+                  },
+                  {
+                      "step":  "g4_verify",
+                      "ok":  true,
+                      "detail":  "exit=0"
+                  },
+                  {
+                      "step":  "flywheel_unit",
+                      "ok":  true,
+                      "detail":  "======================= 11 passed, 2 warnings in 11.29s ======================="
+                  },
+                  {
+                      "step":  "ubrain_flywheel_live",
+                      "ok":  true,
+                      "detail":  "exit=0"
+                  },
+                  {
+                      "step":  "hierarchy_acceptance",
+                      "ok":  true,
+                      "detail":  "exit=0"
+                  },
+                  {
+                      "step":  "reliability_1min",
+                      "ok":  true,
+                      "detail":  "exit=0"
+                  },
+                  {
+                      "step":  "locust_light",
+                      "ok":  true,
+                      "detail":  "exit=0"
+                  }
+              ]
+}

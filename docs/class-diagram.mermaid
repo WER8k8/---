@@ -1,0 +1,216 @@
+classDiagram
+    %% 对话相关类
+    class Conversation {
+        +string id
+        +string title
+        +Date createdAt
+        +Date updatedAt
+        +number messageCount
+        +Message lastMessage
+        +addMessage(message: Message)
+        +updateTitle(title: string)
+        +delete()
+    }
+
+    class Message {
+        +string id
+        +string conversationId
+        +string role
+        +string content
+        +string type
+        +Date timestamp
+        +MessageMetadata metadata
+        +editContent(content: string)
+        +delete()
+    }
+
+    class MessageMetadata {
+        +string skillId
+        +string taskId
+        +number progress
+        +any result
+        +updateProgress(progress: number)
+        +setResult(result: any)
+    }
+
+    %% 技能包相关类
+    class Skill {
+        +string id
+        +string name
+        +string description
+        +string icon
+        +string category
+        +boolean isCore
+        +SkillParameter[] parameters
+        +execute(params: Record~string, any~)
+        +cancel()
+    }
+
+    class SkillParameter {
+        +string name
+        +string type
+        +boolean required
+        +string description
+        +any defaultValue
+        +validate(value: any): boolean
+    }
+
+    %% 任务相关类
+    class Task {
+        +string id
+        +string skillId
+        +string status
+        +number progress
+        +Date startTime
+        +Date endTime
+        +TaskResult result
+        +string error
+        +updateProgress(progress: number)
+        +complete(result: TaskResult)
+        +fail(error: string)
+        +cancel()
+    }
+
+    class TaskResult {
+        +string type
+        +any data
+        +string summary
+        +getData(): any
+        +getSummary(): string
+    }
+
+    %% WebSocket相关类
+    class WebSocketManager {
+        +Socket socket
+        +boolean isConnected
+        +connect(token: string)
+        +disconnect()
+        +send(message: WebSocketMessage)
+        +subscribe(event: string, callback: Function)
+        +unsubscribe(event: string)
+        +reconnect()
+    }
+
+    class WebSocketMessage {
+        +string type
+        +any payload
+        +Date timestamp
+        +string messageId
+        +validate(): boolean
+        +serialize(): string
+    }
+
+    %% API相关类
+    class ConversationAPI {
+        +getConversations(): Promise~Conversation[]~
+        +getConversation(id: string): Promise~Conversation~
+        +createConversation(title?: string): Promise~Conversation~
+        +deleteConversation(id: string): Promise~boolean~
+        +sendMessage(conversationId: string, content: string): Promise~Message~
+    }
+
+    class SkillAPI {
+        +getSkills(): Promise~Skill[]~
+        +getSkill(id: string): Promise~Skill~
+        +executeSkill(id: string, params: Record~string, any~): Promise~string~
+        +cancelTask(taskId: string): Promise~boolean~
+    }
+
+    class TaskAPI {
+        +getTask(id: string): Promise~Task~
+        +getTaskResult(id: string): Promise~TaskResult~
+        +cancelTask(id: string): Promise~boolean~
+    }
+
+    %% 状态管理类
+    class ConversationStore {
+        +Conversation[] conversations
+        +Conversation currentConversation
+        +Message[] messages
+        +boolean isLoading
+        +loadConversations()
+        +selectConversation(id: string)
+        +addMessage(message: Message)
+        +updateMessage(message: Message)
+    }
+
+    class SkillStore {
+        +Skill[] skills
+        +Skill currentSkill
+        +Task currentTask
+        +boolean isExecuting
+        +loadSkills()
+        +selectSkill(id: string)
+        +executeSkill(params: Record~string, any~)
+        +updateTask(task: Task)
+    }
+
+    class WebSocketStore {
+        +boolean isConnected
+        +string connectionStatus
+        +WebSocketMessage[] messageQueue
+        +connect()
+        +disconnect()
+        +queueMessage(message: WebSocketMessage)
+        +processQueue()
+    }
+
+    %% 组件类
+    class MainLayout {
+        +render()
+        +handleResize()
+    }
+
+    class ConversationList {
+        +Conversation[] conversations
+        +selectConversation(id: string)
+        +createNewConversation()
+        +deleteConversation(id: string)
+    }
+
+    class MessageList {
+        +Message[] messages
+        +scrollToBottom()
+        +loadMoreMessages()
+    }
+
+    class MessageInput {
+        +string content
+        +sendMessage()
+        +attachFile(file: File)
+        +insertSkill(skill: Skill)
+    }
+
+    class SkillCard {
+        +Skill skill
+        +execute()
+        +showDetails()
+    }
+
+    %% 关系定义
+    Conversation "1" --> "0..*" Message : contains
+    Message "1" --> "0..1" MessageMetadata : has
+    MessageMetadata "0..1" --> "0..1" Skill : references
+    MessageMetadata "0..1" --> "0..1" Task : references
+
+    Skill "1" --> "0..*" SkillParameter : has
+    Skill "1" --> "0..*" Task : generates
+    Task "1" --> "0..1" TaskResult : produces
+
+    WebSocketManager "1" --> "0..*" WebSocketMessage : handles
+    WebSocketManager "1" --> "1" WebSocketStore : updates
+
+    ConversationAPI ..> Conversation : uses
+    SkillAPI ..> Skill : uses
+    TaskAPI ..> Task : uses
+
+    ConversationStore ..> Conversation : manages
+    SkillStore ..> Skill : manages
+    SkillStore ..> Task : manages
+
+    MainLayout --> ConversationList : contains
+    MainLayout --> MessageList : contains
+    MainLayout --> MessageInput : contains
+    MessageList --> MessageItem : contains
+    MessageItem --> SkillCard : can contain
+    MessageItem --> TaskProgress : can contain

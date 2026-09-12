@@ -1,0 +1,40 @@
+{
+  "steps": [
+    {
+      "name": "login",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "overview",
+      "ok": true,
+      "detail": "mock_render=True"
+    },
+    {
+      "name": "create_task",
+      "ok": true,
+      "detail": "ab719eaf-2f66-44f6-861f-2dd4d4c80bff"
+    },
+    {
+      "name": "render_sync",
+      "ok": true,
+      "detail": "status=done url=/uploads/media_factory/ab719eaf-2f66-44f6-861f-2dd4d4c80bff.mp4 err="
+    },
+    {
+      "name": "download_mp4",
+      "ok": true,
+      "detail": "bytes=6292 type=video/mp4"
+    },
+    {
+      "name": "file_on_disk",
+      "ok": true,
+      "detail": "path=ab719eaf-2f66-44f6-861f-2dd4d4c80bff.mp4 size=6292"
+    }
+  ],
+  "verdict": "mock_only_pipeline_ok",
+  "mock_render": true,
+  "cosmos_url_set": false,
+  "task_id": "ab719eaf-2f66-44f6-861f-2dd4d4c80bff",
+  "result_url": "/uploads/media_factory/ab719eaf-2f66-44f6-861f-2dd4d4c80bff.mp4",
+  "note": "当前为 MOCK 占位视频（色块/短片），非 Cosmos 真实文生视频效果。要测真实生成：配置 AI_NVIDIA_COSMOS_BASE_URL 并设 MEDIA_FACTORY_MOCK_RENDER=false"
+}

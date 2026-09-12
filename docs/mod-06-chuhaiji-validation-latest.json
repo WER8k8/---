@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "task": "MOD-06",
+  "checks": {
+    "capacitor.config.ts": true,
+    "chuhaiji-app.vue": true,
+    "app-store-checklist": true,
+    "cap_sync_script": true,
+    "app_id_com_youding": true,
+    "app_name_chuhaiji": true
+  },
+  "human_pending": "npm i @capacitor/* + 商店提审实机包",
+  "build_command": "cd frontend/admin && npm run cap:sync"
+}

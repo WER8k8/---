@@ -1,0 +1,36 @@
+// FILE: backend\app\core\cache.py
+    """清除用户所有管理员缓存"""
+    delete_cache(ADMIN_CACHE_KEYS["ADMIN_PERMISSIONS"].format(user_id))
+    delete_pattern(ADMIN_CACHE_KEYS["ADMIN_MENU_TREE"].format(user_id, "*"))
+    delete_cache(ADMIN_CACHE_KEYS["ADMIN_DASHBOARD"].format(user_id))
+
+
+def invalidate_ai_model_cache(model_id: str = None) -> None:
+    """清除 AI 模型配置缓存"""
+    if model_id:
+        delete_cache(ADMIN_CACHE_KEYS["AI_MODEL_CONFIG"].format(model_id))
+    delete_cache(ADMIN_CACHE_KEYS["AI_ALL_MODELS"])
+
+
+def invalidate_cc_switch_cache(config_id: str = None) -> None:
+    """清除 CC Switch 配置缓存"""
+    if config_id:
+        delete_cache(ADMIN_CACHE_KEYS["CC_SWITCH_CONFIG"].format(config_id))
+    delete_cache(ADMIN_CACHE_KEYS["CC_ALL_CONFIGS"])
+
+
+def invalidate_system_monitor_cache() -> None:
+    """清除系统监控缓存"""
+    delete_pattern("monitor:*")
+
+
+def check_rate_limit(user_id: str, endpoint: str, max_requests: int = 60) -> bool:
+    """检查请求频率限制（滑动窗口）"""
+    key = ADMIN_CACHE_KEYS["RATE_LIMIT"].format(user_id, endpoint)
+    try:
+        current = redis_client.incr(key) if redis_client else 1
+        if current == 1 and redis_client:
+            redis_client.expire(key, 60)
+        return current <= max_requests
+    except Exception:
+        return True

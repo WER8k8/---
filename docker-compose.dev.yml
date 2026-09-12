@@ -1,0 +1,164 @@
+# 本地 / Staging 开发栈：Postgres(5433) + Redis(6379) + 可选 Celery(profile ops)
+# 用法:
+#   docker compose -f docker-compose.dev.yml up -d postgres redis
+#   docker compose -f docker-compose.dev.yml --profile ops up -d celery-worker celery-beat
+#   docker compose -f docker-compose.dev.yml --profile ops run --rm publish-worker-once
+
+version: "3.8"
+
+x-backend-env: &backend-env
+  DATABASE_URL: postgresql://youding:youding@postgres:5432/youding_dev
+  REDIS_URL: redis://redis:6379/0
+  REDIS_ENABLED: "true"
+  CELERY_BROKER_URL: redis://redis:6379/0
+  CELERY_RESULT_BACKEND: redis://redis:6379/0
+  JWT_SECRET_KEY: staging-dev-worker-key-not-for-production-use
+  SECRET_KEY: staging-dev-worker-key-not-for-production-use
+  ENVIRONMENT: development
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: youding-dev-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: youding_dev
+      POSTGRES_USER: youding
+      POSTGRES_PASSWORD: youding
+      POSTGRES_INITDB_ARGS: --encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    ports:
+      - "5433:5432"
+    volumes:
+      - dev_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U youding -d youding_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    container_name: youding-dev-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - dev_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: youding-dev-celery-worker
+    restart: unless-stopped
+    command: celery -A app.tasks.celery_app:celery_app worker -Q celery,deerflow,cross_border -l info
+    environment:
+      <<: *backend-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    profiles:
+      - ops
+
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: youding-dev-celery-beat
+    restart: unless-stopped
+    command: celery -A app.tasks.celery_app:celery_app beat -l info
+    environment:
+      <<: *backend-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    profiles:
+      - ops
+
+  publish-worker-once:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: youding-dev-publish-worker-once
+    command: python scripts/run_publish_worker.py --once --limit 5
+    environment:
+      <<: *backend-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - ops
+
+  # Sidecar：AI_Find_Customer 薄适配（profile sidecars）
+  # docker compose -f docker-compose.dev.yml --profile sidecars up -d ai-find-customer-adapter
+  ai-find-customer-adapter:
+    build:
+      context: ./deploy/examples/ai-find-customer-sidecar
+      dockerfile: Dockerfile
+    container_name: youding-dev-ai-find-customer-adapter
+    restart: unless-stopped
+    ports:
+      - "8092:8092"
+    environment:
+      AI_FIND_CUSTOMER_TOKEN: ${AI_FIND_CUSTOMER_TOKEN:-dev-sidecar-token}
+      AI_HUNTER_UPSTREAM_URL: ${AI_HUNTER_UPSTREAM_URL:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    profiles:
+      - sidecars
+
+  # 本地开发信 SMTP 捕获（profile dev-mail，不进生产）
+  # Web UI http://127.0.0.1:8025  SMTP 1025
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: youding-dev-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    profiles:
+      - dev-mail
+
+  domain-email-extractor-adapter:
+    build:
+      context: ./deploy/examples/domain-email-extractor-sidecar
+      dockerfile: Dockerfile
+    container_name: youding-dev-domain-email-extractor
+    restart: unless-stopped
+    ports:
+      - "8093:8093"
+    environment:
+      DOMAIN_EMAIL_EXTRACTOR_TOKEN: ${DOMAIN_EMAIL_EXTRACTOR_TOKEN:-dev-sidecar-token}
+      DOMAIN_EMAIL_EXTRACTOR_ALLOW_DEV_STUB: "1"
+    profiles:
+      - sidecars
+
+  media-crawler-adapter:
+    build:
+      context: ./deploy/examples/media-crawler-sidecar
+      dockerfile: Dockerfile
+    container_name: youding-dev-media-crawler
+    restart: unless-stopped
+    ports:
+      - "8094:8094"
+    environment:
+      MEDIA_CRAWLER_TOKEN: ${MEDIA_CRAWLER_TOKEN:-dev-sidecar-token}
+      MEDIA_CRAWLER_ALLOW_DEV_STUB: "1"
+    profiles:
+      - sidecars
+
+volumes:
+  dev_postgres_data:
+    driver: local
+  dev_redis_data:
+    driver: local

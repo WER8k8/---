@@ -1,0 +1,198 @@
+/**
+ * CoachPro 薄荷马卡龙 · 全站动效（300ms ease-out，纯 CSS transition）
+ */
+
+:root {
+  --uj-motion-duration: 300ms;
+  --uj-motion-ease: ease-out;
+}
+
+/* —— ① 导航图标：hover 上浮+放大，active 下压 —— */
+.shell .nav-item,
+.shell .submenu-item,
+.client-nav__item {
+  transition:
+    background var(--uj-motion-duration) var(--uj-motion-ease),
+    color var(--uj-motion-duration) var(--uj-motion-ease),
+    box-shadow var(--uj-motion-duration) var(--uj-motion-ease);
+}
+
+/* 路由切换时禁止图标缩放脉冲，避免「点不进去」时连点爆闪 */
+.shell .nav-item.active .nav-icon .yd-relief-icon,
+.shell .submenu-item.active .yd-relief-icon {
+  transform: none;
+  transition: box-shadow 0.12s ease, background 0.12s ease;
+}
+
+/* nav-icon 仅容器；渐变只在内层 yd-relief-icon，避免双层重影爆闪 */
+.shell .nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.shell .nav-icon .yd-relief-icon,
+.shell .submenu-item > .yd-relief-icon {
+  transition:
+    transform var(--uj-motion-duration) var(--uj-motion-ease),
+    box-shadow var(--uj-motion-duration) var(--uj-motion-ease);
+}
+
+.shell .nav-item:hover .nav-icon .yd-relief-icon,
+.shell .submenu-item:hover .yd-relief-icon {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.95) inset,
+    0 5px 12px rgb(74 155 140 / 0.22);
+}
+
+.shell .nav-item:active .nav-icon .yd-relief-icon,
+.shell .submenu-item:active .yd-relief-icon {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 120ms;
+}
+
+.shell .icon-btn .yd-relief-icon,
+.shell .icon-btn {
+  transition: transform var(--uj-motion-duration) var(--uj-motion-ease);
+}
+
+.shell .icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+.shell .icon-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* —— ③ 数据卡片 hover 抬升 —— */
+.uj-glass-panel,
+.shell .admin-dashboard .panel,
+.shell .agent-dashboard .panel,
+.shell .client-dashboard .panel,
+.shell .uj-kpi-card,
+.shell .yd-stats-card,
+.ant-card,
+.yd-panel {
+  transition:
+    transform var(--uj-motion-duration) var(--uj-motion-ease),
+    box-shadow var(--uj-motion-duration) var(--uj-motion-ease),
+    border-color var(--uj-motion-duration) var(--uj-motion-ease);
+}
+
+.uj-glass-panel:hover,
+.shell .admin-dashboard .panel:hover,
+.shell .agent-dashboard .panel:hover,
+.shell .client-dashboard .panel:hover,
+.shell .uj-kpi-card:hover,
+.shell .yd-stats-card:hover,
+.ant-card:hover,
+.yd-panel:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--uj-glass-shadow-hover, 0 14px 44px rgb(45 107 96 / 0.14));
+}
+
+/* —— ⑤ 下拉 / 弹窗：淡入 + 微位移 —— */
+.dropdown-enter-active,
+.dropdown-leave-active,
+.uj-overlay-enter-active,
+.uj-overlay-leave-active {
+  transition:
+    opacity var(--uj-motion-duration) var(--uj-motion-ease),
+    transform var(--uj-motion-duration) var(--uj-motion-ease);
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.ant-modal-wrap .ant-modal {
+  animation: ujModalIn var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+
+.ant-dropdown {
+  animation: ujDropdownIn var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+
+/* Select 下拉由组件自行定位；入场动画会导致反复打开时闪烁 */
+.ant-select-dropdown {
+  animation: none;
+}
+
+@keyframes ujModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ujDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 页面卡片入场 */
+@keyframes ujCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.shell .admin-dashboard .panel,
+.shell .agent-dashboard .panel,
+.shell .client-dashboard .panel,
+.yd-page-body > .ant-card,
+.yd-page-body > .yd-panel {
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+
+.shell .admin-dashboard .panel:nth-child(2) { animation-delay: 40ms; }
+.shell .admin-dashboard .panel:nth-child(3) { animation-delay: 80ms; }
+.shell .admin-dashboard .kpi-grid .yd-stats-card:nth-child(1) { animation-delay: 0ms; }
+.shell .admin-dashboard .kpi-grid .yd-stats-card:nth-child(2) { animation-delay: 50ms; }
+.shell .admin-dashboard .kpi-grid .yd-stats-card:nth-child(3) { animation-delay: 100ms; }
+.shell .admin-dashboard .kpi-grid .yd-stats-card:nth-child(4) { animation-delay: 150ms; }
+
+.client-shell .client-nav__icon {
+  background: #f3f4f6 !important;
+  box-shadow: none !important;
+  border: 1px solid #e5e7eb;
+}
+
+.client-nav__item:hover .client-nav__icon {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.client-nav__item:active .client-nav__icon {
+  transform: translateY(1px) scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

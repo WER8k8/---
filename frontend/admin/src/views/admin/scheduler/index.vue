@@ -1,0 +1,13 @@
+<template>
+  <div class="scheduler-layout">
+    <router-view />
+  </div>
+</template>
+
+<script setup lang="ts"></script>
+
+<style scoped lang="scss">
+.scheduler-layout {
+  min-height: 100vh;
+}
+</style>

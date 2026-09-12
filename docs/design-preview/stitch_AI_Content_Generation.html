@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YouDing AI - Material Export Article Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-container": "#d7e4f5",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-container": "#916e3e",
+                        "inverse-primary": "#85d5c5",
+                        "surface-container": "#edeeef",
+                        "on-error": "#ffffff",
+                        "primary-container": "#2d8173",
+                        "outline": "#6e7976",
+                        "inverse-on-surface": "#f0f1f2",
+                        "secondary-fixed": "#d7e4f5",
+                        "surface-dim": "#d9dadb",
+                        "tertiary": "#765629",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f4f5",
+                        "background": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#00201b",
+                        "inverse-surface": "#2e3132",
+                        "on-surface-variant": "#3e4946",
+                        "outline-variant": "#bec9c5",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191c1d",
+                        "tertiary-fixed-dim": "#eabf88",
+                        "surface-bright": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e3e4",
+                        "secondary": "#53606e",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#101d29",
+                        "on-secondary-fixed-variant": "#3c4855",
+                        "secondary-fixed-dim": "#bbc8d8",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-container": "#f4fffb",
+                        "surface-tint": "#076b5d",
+                        "on-background": "#191c1d",
+                        "on-tertiary-fixed-variant": "#5e4115",
+                        "primary-fixed": "#a1f2e0",
+                        "on-secondary-container": "#596674",
+                        "primary-fixed-dim": "#85d5c5",
+                        "primary": "#01685b",
+                        "tertiary-fixed": "#ffddb5",
+                        "on-tertiary-fixed": "#2a1800",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005046"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-display": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "mono-data": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec9c5;
+            border-radius: 10px;
+        }
+        .ai-highlight {
+            background-color: #eef7f6;
+            border-left: 3px solid #01685b;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="overflow-hidden flex flex-col h-screen">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full px-xl h-16 sticky top-0 z-50 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline shadow-sm">
+<div class="flex items-center gap-margin-desktop">
+<h1 class="font-headline-md text-headline-md font-extrabold text-primary">YouDing AI</h1>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer active:opacity-80 transition-all" href="#">Article Editor</a>
+<a class="font-body-md text-body-md text-on-secondary-container hover:text-primary-container transition-colors cursor-pointer" href="#">AI Assistant</a>
+<a class="font-body-md text-body-md text-on-secondary-container hover:text-primary-container transition-colors cursor-pointer" href="#">Market Trends</a>
+</nav>
+</div>
+<div class="flex items-center gap-unit">
+<button class="px-4 py-2 border border-secondary text-secondary rounded-lg font-label-md hover:bg-surface-container-low transition-all">Save Draft</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md hover:opacity-90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+                Publish
+            </button>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors">settings</button>
+<div class="w-8 h-8 rounded-full overflow-hidden ml-2 bg-secondary-container border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A clean professional headshot of a female logistics manager in a modern business office with soft natural lighting and a minimalist tech background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALZ8EmdI0dJNrdEWRrphnUxkPHwzhbFTRxCxW8-QJShOLeAx8zv334rx68K5H1NxUVTVjw93dx4vCuunM8hIaQBEi-l77sIidfFcQoA5DZpLVCa3xFZjK4X_dh4CZAbX09oBuZt0uKtNVXeVVBBCs_TKMM3ganirgrbDUS8cU-_f7vzCfX8aQSNwxgLOn2Yqgg9uxfDoVRb7HiawODxR9eUJ1pZicRYDWfXDExfDant5FzO93jozjQ0UUFiWLKn3FH90870Edx6eY"/>
+</div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Sidebar -->
+<aside class="hidden lg:flex flex-col h-full py-lg border-r border-outline-variant bg-surface-container-low w-64">
+<div class="px-lg mb-8">
+<div class="flex items-center gap-unit mb-4">
+<span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<div>
+<p class="font-label-md text-label-md text-primary font-bold">New Export Guide</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Editor Active</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md bg-primary-container text-on-primary-container border-l-4 border-primary px-lg py-sm transition-all duration-200" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="font-label-md">Article Editor</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-variant px-lg py-sm transition-colors transition-all duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-md">AI Assistant</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-variant px-lg py-sm transition-colors transition-all duration-200" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-md">Market Trends</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-variant px-lg py-sm transition-colors transition-all duration-200" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span class="font-label-md">Compliance</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-variant px-lg py-sm transition-colors transition-all duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md">Archive</span>
+</a>
+</nav>
+<div class="px-lg mt-auto space-y-1 pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-variant px-lg py-sm transition-colors transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-variant px-lg py-sm transition-colors transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md">Account</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Pane: Editor -->
+<section class="flex-1 flex flex-col bg-white overflow-hidden border-r border-outline-variant">
+<!-- Toolbar -->
+<div class="px-margin-desktop py-4 bg-surface-container-low border-b border-outline-variant flex items-center gap-4">
+<div class="flex items-center bg-white border border-outline-variant rounded-lg p-1">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">format_bold</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">format_italic</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">link</button>
+<div class="w-px h-4 bg-outline-variant mx-1"></div>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">format_list_bulleted</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">format_list_numbered</button>
+</div>
+<div class="flex items-center bg-white border border-outline-variant rounded-lg p-1">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">image</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded text-on-surface-variant">table_chart</button>
+</div>
+<div class="flex-1"></div>
+<span class="text-label-sm text-on-surface-variant font-mono-data">Last saved 2m ago</span>
+</div>
+<!-- Editable Content -->
+<div class="flex-1 overflow-y-auto p-margin-desktop custom-scrollbar max-w-4xl mx-auto w-full">
+<input class="w-full border-none focus:ring-0 font-headline-lg text-headline-lg placeholder-outline-variant text-on-surface mb-8" placeholder="Enter article title..." type="text" value="2024 Building Materials Export Trends: Southeast Asia"/>
+<div class="prose prose-slate max-w-none font-body-lg text-body-lg text-on-surface space-y-6 outline-none" contenteditable="true">
+<p>The landscape for building materials export to Southeast Asia is undergoing a significant transformation. Driven by rapid urbanization and infrastructure initiatives, demand for sustainable materials is at an all-time high.</p>
+<div class="ai-highlight">
+<p class="font-semibold text-primary mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+                                AI-Generated Insight:
+                            </p>
+<p>Data suggests a 24% year-over-year increase in demand for low-carbon cement across Vietnam and Indonesia. Exporters focusing on green certification are likely to capture 35% more market share in upcoming government-led projects.</p>
+</div>
+<p>Logistics managers must navigate complex regulatory environments while ensuring material integrity during long-haul sea freight. Efficiency in documentation remains the bottleneck for many expanding enterprises.</p>
+<p>Key considerations for Q3 2024 include:</p>
+<ul class="list-disc pl-8 space-y-2">
+<li>Implementing Real-time RFID tracking for high-value structural components.</li>
+<li>Adapting to new customs digitalization protocols in the APAC region.</li>
+<li>Leveraging AI for predictive inventory management to reduce warehousing costs.</li>
+</ul>
+<div class="bg-surface-container-low p-margin-mobile border border-outline-variant rounded-lg my-8">
+<div class="w-full h-48 bg-outline-variant rounded-lg flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A wide angle aerial shot of a modern sustainable shipping port in Southeast Asia with green infrastructure, giant cargo ships loading building materials, and a bright daytime industrial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMh9vJd40TcDAcByePNOHdR4DeZziFD_v2otu8hcCWvq64DkTNXrk879t9uyyAQm5PyD2em_jdbcJZjHrixDT2d2lCAQfJJqG_wfz48oirdeFujKrDWKF0FLNy2oYuQPLRtEeTKcusodI5wfI5M0aJNptVhSJvgnuPOPb8YokizyFtkX80npLAxRgxxdBq_HpHe3lg39VTciiAaexg_hNnYaEm8Ll3FU9jA5OtNzZZYSloiHv2hdaGQ8HA5Pv6lXyP35Ya4S63FQQ"/>
+</div>
+<p class="text-center text-label-sm text-on-surface-variant mt-2 italic">Figure 1: Digitalized Logistics Hub in Singapore</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Pane: AI Assistant & Publish Settings -->
+<section class="w-96 bg-surface-container-low flex flex-col border-l border-outline-variant overflow-y-auto custom-scrollbar">
+<!-- SEO Score & AI Summary -->
+<div class="p-margin-mobile">
+<div class="bg-white p-4 rounded-xl border border-outline-variant shadow-sm mb-6">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-label-md text-label-md text-on-surface">SEO Health Score</h3>
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-extrabold text-primary">85</span>
+<span class="text-on-surface-variant font-label-sm mb-1">/ 100</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full mt-3 overflow-hidden">
+<div class="h-full bg-primary" style="width: 85%;"></div>
+</div>
+<p class="text-label-sm text-on-surface-variant mt-3">Add 2 more keywords related to "Steel Logistics" to reach 90+.</p>
+</div>
+<!-- AI Assistant Section -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<h3 class="font-label-md text-label-md text-on-surface">AI Content Assistant</h3>
+</div>
+<div class="relative">
+<textarea class="w-full h-32 p-4 bg-white border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-body-sm resize-none" placeholder="Describe the content you want to generate..."></textarea>
+<button class="absolute bottom-3 right-3 bg-primary text-on-primary px-3 py-1.5 rounded-lg text-label-sm font-bold flex items-center gap-2 hover:opacity-90 transition-all">
+                                Generate
+                                <span class="material-symbols-outlined text-[16px]">bolt</span>
+</button>
+</div>
+<div class="space-y-2 mt-4">
+<p class="text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider">Suggestions</p>
+<button class="w-full text-left p-3 bg-white border border-outline-variant rounded-lg text-body-sm hover:border-primary transition-colors flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[18px]">add_circle</span>
+                                Expand on "Low-carbon Cement" market data
+                            </button>
+<button class="w-full text-left p-3 bg-white border border-outline-variant rounded-lg text-body-sm hover:border-primary transition-colors flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[18px]">add_circle</span>
+                                Generate 5 SEO-optimized meta titles
+                            </button>
+<button class="w-full text-left p-3 bg-white border border-outline-variant rounded-lg text-body-sm hover:border-primary transition-colors flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[18px]">add_circle</span>
+                                Create a summary for LinkedIn export managers
+                            </button>
+</div>
+</div>
+<!-- Publish Settings -->
+<div class="mt-8 pt-8 border-t border-outline-variant space-y-6">
+<h3 class="font-label-md text-label-md text-on-surface">Publish Settings</h3>
+<div class="space-y-4">
+<div>
+<label class="block text-label-sm font-semibold text-on-surface-variant mb-1.5">Category</label>
+<select class="w-full bg-white border-outline-variant rounded-lg text-body-sm focus:ring-primary">
+<option>Market Insights</option>
+<option>Logistics Strategy</option>
+<option>Compliance News</option>
+<option>Trade Reports</option>
+</select>
+</div>
+<div>
+<label class="block text-label-sm font-semibold text-on-surface-variant mb-1.5">Tags</label>
+<div class="flex flex-wrap gap-2 mb-2">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] rounded flex items-center gap-1 font-bold">
+                                        EXPORT <span class="material-symbols-outlined text-[12px] cursor-pointer">close</span>
+</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] rounded flex items-center gap-1 font-bold">
+                                        APAC <span class="material-symbols-outlined text-[12px] cursor-pointer">close</span>
+</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] rounded flex items-center gap-1 font-bold">
+                                        LOGISTICS <span class="material-symbols-outlined text-[12px] cursor-pointer">close</span>
+</span>
+</div>
+<input class="w-full bg-white border-outline-variant rounded-lg text-body-sm focus:ring-primary" placeholder="Add a tag..." type="text"/>
+</div>
+<div>
+<label class="block text-label-sm font-semibold text-on-surface-variant mb-1.5">Schedule Publish</label>
+<div class="flex items-center bg-white border border-outline-variant rounded-lg p-2 gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">calendar_today</span>
+<span class="text-body-sm flex-1">Immediately</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] cursor-pointer">expand_more</span>
+</div>
+</div>
+<div class="pt-2">
+<label class="block text-label-sm font-semibold text-on-surface-variant mb-2">Featured Image</label>
+<div class="w-full aspect-video bg-white border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-surface transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline-variant">add_photo_alternate</span>
+<p class="text-label-sm text-on-surface-variant">Click to upload image</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Interactive Layer: Notification for AI Generation -->
+<div class="fixed bottom-margin-desktop right-margin-desktop bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-xl shadow-2xl transform translate-y-32 transition-transform duration-500 flex items-center gap-4 z-[100]" id="ai-toast">
+<span class="material-symbols-outlined text-primary-fixed-dim">auto_awesome</span>
+<div>
+<p class="font-label-md text-label-md">AI Suggestion Ready</p>
+<p class="text-[12px] opacity-80">New insights generated based on recent APAC trade data.</p>
+</div>
+<button class="ml-4 material-symbols-outlined text-[18px] opacity-60 hover:opacity-100" onclick="hideToast()">close</button>
+</div>
+<script>
+        // Micro-interaction: Show a toast after a short delay to simulate "AI discovery"
+        setTimeout(() => {
+            const toast = document.getElementById('ai-toast');
+            toast.classList.remove('translate-y-32');
+            toast.classList.add('translate-y-0');
+        }, 3000);
+
+        function hideToast() {
+            const toast = document.getElementById('ai-toast');
+            toast.classList.add('translate-y-32');
+            toast.classList.remove('translate-y-0');
+        }
+
+        // Simulating the Generate button state
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', function() {
+                this.classList.add('scale-95');
+            });
+            btn.addEventListener('mouseup', function() {
+                this.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

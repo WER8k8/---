@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "task": "COMM-APP-01",
+  "checks": {
+    "chuhaiji_vue": true,
+    "four_tabs": true,
+    "route_client_app": true,
+    "manifest_start_url": true,
+    "service_worker": true,
+    "sw_cache_shell": true,
+    "bff_home": true,
+    "bff_today": true,
+    "bff_config": true,
+    "bff_offline_inquiries": true,
+    "brand_chuhaiji": true
+  },
+  "tab_hits": {
+    "assistant": true,
+    "today": true,
+    "publish": true,
+    "profile": true
+  },
+  "missing_api_refs": [],
+  "manual_e2e": [
+    "tenant/tenant123 登录 -> /client/app",
+    "切换四 Tab：助手 / 今日 / 发布 / 我的",
+    "助手发送一条消息，今日拉取待办，我的测试推送"
+  ],
+  "out_of_scope": "AAB 提审、FCM 生产密钥、商店五图"
+}

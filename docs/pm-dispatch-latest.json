@@ -1,0 +1,305 @@
+{
+  "schema_version": "1.0",
+  "sprint_id": "COMM-1",
+  "sprint_label": "鉴定面商用 · 阶段1 W1（2026-06-13 起）",
+  "issued_by": "ECC PM-07",
+  "issued_at": "2026-06-13T23:30:00+08:00",
+  "charter": "docs/pm-swarm-parallel-charter.md",
+  "master_plan": "docs/商用上线-跨部门作战图-2026-06-13.md",
+  "allocation_md": "docs/pm-task-allocation-20260613.md",
+  "gates": ["G1", "G2", "G3", "G4", "G5"],
+  "hard_rules": [
+    "无任务 ID 不开工",
+    "冻结 P3 新实验室页",
+    "health_only 不得代替 full_roster",
+    "假交付 P0=0 才宣称商用",
+    "实验室默认 admin_lab_enabled=0"
+  ],
+  "owner_blockers": [
+    { "id": "O-1", "title": "HTTPS 演示独立域 DNS + Owner", "blocks": ["MOD-01", "MOD-04", "ARCH-04"] },
+    { "id": "O-2", "title": "询盘 IM 生产密钥 / 企微", "blocks": ["MOD-02", "ITER-03c"] },
+    { "id": "O-3", "title": "5+5 平台表 + 套餐价签字", "blocks": ["MOD-03", "MOD-08"] }
+  ],
+  "lanes": [
+    {
+      "lane": "H",
+      "name": "PM / 文档编排",
+      "lead": "PM-07",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-PM-01",
+          "title": "签发 Sprint-COMM-1 分配表 + 站会",
+          "owner": "PM-07",
+          "pct": 100,
+          "due": "2026-06-13",
+          "deliverable": "docs/pm-task-allocation-20260613.md",
+          "out_of_scope": "不写业务代码"
+        },
+        {
+          "id": "COMM-PM-02",
+          "title": "Owner O-1~O-3 催办 + HTTPS 演示域排期",
+          "owner": "PM-07",
+          "pct": 40,
+          "due": "2026-06-16",
+          "deliverable": "docs/ops/owner-review-latest.md",
+          "out_of_scope": "不代 Owner 签字"
+        },
+        {
+          "id": "COMM-PM-03",
+          "title": "Stub Kill 评审会（产品主持）",
+          "owner": "PM-07 + 产品",
+          "pct": 85,
+          "due": "2026-06-18",
+          "deliverable": "stub-matrix-T-PM-02-v1.json + stub-kill-implementation-COMM-PM-03.json",
+          "out_of_scope": "O-1~O-3 仍待 Owner；Vue 路由文件未物理删除"
+        }
+      ]
+    },
+    {
+      "lane": "PD",
+      "name": "产品（文档签字）",
+      "lead": "产品经理",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-PD-01",
+          "title": "送检功能清单 V1.1 签字跟进",
+          "owner": "产品",
+          "pct": 60,
+          "due": "2026-06-17",
+          "deliverable": ".project/cert-inspection-signoff-COMM-PD-01.json + 送检功能清单-v1 §六",
+          "out_of_scope": "不扩送检面"
+        },
+        {
+          "id": "COMM-PD-02",
+          "title": "Stub 矩阵 T-PM-02 草案 v1",
+          "owner": "产品",
+          "pct": 90,
+          "due": "2026-06-18",
+          "deliverable": ".project/stub-matrix-T-PM-02-v1.json + validate-stub-matrix-sync 绿",
+          "out_of_scope": "Kill 须 Owner 拍板"
+        },
+        {
+          "id": "COMM-PD-03",
+          "title": "SEO/GEO 对外话术一页纸",
+          "owner": "产品 + 市场",
+          "pct": 80,
+          "due": "2026-06-20",
+          "deliverable": "docs/product/seo-geo-external-copy-onepage.md",
+          "out_of_scope": "不改爬虫逻辑"
+        }
+      ]
+    },
+    {
+      "lane": "A",
+      "name": "架构 / 运维",
+      "lead": "架构指挥官",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-ARCH-01",
+          "title": "MOD-01 HTTPS 演示域技术清单（待 Owner DNS）",
+          "owner": "架构",
+          "pct": 85,
+          "due": "2026-06-16",
+          "deliverable": "DEMO_HTTPS_DOMAIN 配置说明 + pilot-acme-ssl-issue.ps1",
+          "out_of_scope": "不改 Vue 业务页"
+        },
+        {
+          "id": "COMM-ARCH-02",
+          "title": "staging preflight 复跑 0 fail",
+          "owner": "架构 + DevOps",
+          "pct": 100,
+          "due": "2026-06-14",
+          "deliverable": "docs/staging-preflight-auto-latest.json ok",
+          "out_of_scope": "不动生产密钥入库"
+        }
+      ]
+    },
+    {
+      "lane": "F",
+      "name": "QA / 门禁",
+      "lead": "QA-02",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-QA-01",
+          "title": "修 Lane FAIL: qa_cert（cert:gate）",
+          "owner": "QA → 指派前端 Lane B",
+          "pct": 100,
+          "due": "2026-06-14",
+          "deliverable": "npm run cert:gate 绿（P0=0 P1=0 P2=0）",
+          "out_of_scope": "QA 不修功能逻辑"
+        },
+        {
+          "id": "COMM-QA-02",
+          "title": "ITER-03c 七步⑤ staging 三张截图",
+          "owner": "QA",
+          "pct": 45,
+          "due": "2026-06-17",
+          "deliverable": "validate-qa-step5-staging blocked+路由绿",
+          "blocked_by": ["O-1", "O-2"],
+          "out_of_scope": "无 HTTPS 域则标 blocked"
+        },
+        {
+          "id": "COMM-QA-03",
+          "title": "12 模块送检截图分工表",
+          "owner": "QA + PM",
+          "pct": 95,
+          "due": "2026-06-16",
+          "deliverable": ".project/cert-screenshot-assignments-COMM-QA-03.json + docs/mod-04-rehearsal/round2/*.png",
+          "out_of_scope": "M05~07/M12 blocked 不得伪造"
+        }
+      ]
+    },
+    {
+      "lane": "E",
+      "name": "后端",
+      "lead": "后端架构师",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-BE-01",
+          "title": "修 Lane FAIL: backend_preflight",
+          "owner": "后端",
+          "pct": 100,
+          "due": "2026-06-14",
+          "deliverable": "run_production_preflight 无 required fail",
+          "out_of_scope": "不改 Admin UI"
+        },
+        {
+          "id": "COMM-BE-02",
+          "title": "修 Lane FAIL: security_routes",
+          "owner": "后端",
+          "pct": 100,
+          "due": "2026-06-14",
+          "deliverable": "check_mounted_routes.py 绿",
+          "out_of_scope": "—"
+        },
+        {
+          "id": "COMM-BE-03",
+          "title": "修 Lane FAIL: webhook_security",
+          "owner": "后端 + 安全",
+          "pct": 100,
+          "due": "2026-06-15",
+          "deliverable": "国际爬虫 Webhook 验签单测",
+          "out_of_scope": "—"
+        }
+      ]
+    },
+    {
+      "lane": "B",
+      "name": "前端",
+      "lead": "前端架构师",
+      "parallel": true,
+      "blocked_by": ["COMM-QA-01 若 cert 红"],
+      "tasks": [
+        {
+          "id": "COMM-FE-01",
+          "title": "G3 复核：超管工作台无假 KPI",
+          "owner": "前端",
+          "pct": 100,
+          "due": "2026-06-13",
+          "deliverable": "admin/index.vue + partner/agent 看板探针化",
+          "out_of_scope": "不扩全局路由"
+        },
+        {
+          "id": "COMM-FE-02",
+          "title": "SEO 示意页空态标注（schema/eeat）",
+          "owner": "前端",
+          "pct": 100,
+          "due": "2026-06-19",
+          "deliverable": "schema/eeat/performance HonestBanner",
+          "out_of_scope": "待 COMM-PD-03 签字后合并"
+        }
+      ]
+    },
+    {
+      "lane": "SRE",
+      "name": "SRE / 开发栈",
+      "lead": "SRE",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-SRE-01",
+          "title": "修 Lane FAIL: sre（start-dev-admin 500）",
+          "owner": "SRE",
+          "pct": 100,
+          "due": "2026-06-14",
+          "deliverable": "Login proxy 双绿 + 7/7 full_roster",
+          "out_of_scope": "—"
+        }
+      ]
+    },
+    {
+      "lane": "GR",
+      "name": "搞钱大赛 / Hermes",
+      "lead": "后端 Lane E",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-GR-01",
+          "title": "修 Lane FAIL: greedy_readiness",
+          "owner": "后端",
+          "pct": 100,
+          "due": "2026-06-16",
+          "deliverable": "test_greedy_readiness.py 绿",
+          "out_of_scope": "不对外宣称全引擎监测"
+        }
+      ]
+    },
+    {
+      "lane": "VIS",
+      "name": "视觉 / UX",
+      "lead": "设计",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-VIS-01",
+          "title": "JD-01 三 accent 签认稿",
+          "owner": "视觉",
+          "pct": 15,
+          "due": "2026-06-18",
+          "deliverable": "截图 + 签字",
+          "out_of_scope": "BJ-NAV-04 待签后开工"
+        },
+        {
+          "id": "COMM-UX-01",
+          "title": "送检 90 秒路径走查",
+          "owner": "UX",
+          "pct": 20,
+          "due": "2026-06-18",
+          "deliverable": "JD-02 焦点序确认",
+          "out_of_scope": "—"
+        }
+      ]
+    },
+    {
+      "lane": "APP",
+      "name": "出海计",
+      "lead": "App",
+      "parallel": true,
+      "tasks": [
+        {
+          "id": "COMM-APP-01",
+          "title": "出海计 PWA 四 Tab 验收脚本",
+          "owner": "App + QA",
+          "pct": 100,
+          "due": "2026-06-17",
+          "deliverable": "validate-chuhaiji-pwa-acceptance.py 11 项绿",
+          "out_of_scope": "AAB 提审待 PD 商店五图"
+        }
+      ]
+    }
+  ],
+  "standup_priority": [
+    "COMM-PM-02",
+    "COMM-PM-03",
+    "COMM-QA-02",
+    "COMM-PD-01",
+    "COMM-VIS-01"
+  ],
+  "needs_owner": false,
+  "roster_note": "2026-06-14 COMM-PM-03 Kill 研发已落地；商用闭环待 Owner O-1~O-3 + 4 张 blocked 截图"
+}

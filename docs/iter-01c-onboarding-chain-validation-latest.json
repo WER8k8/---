@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "task": "ITER-01c",
+  "pytest_ok": true,
+  "targets": [
+    "backend/tests/unit/test_onboarding_chain.py",
+    "backend/tests/unit/test_onboarding_im_contacts.py",
+    "backend/tests/unit/test_onboarding_first_publish.py",
+    "backend/tests/unit/test_onboarding_autopilot.py",
+    "backend/tests/unit/test_wangcai_entry_parity.py",
+    "backend/tests/unit/test_public_visitor_context_api.py",
+    "backend/tests/unit/test_public_wangcai_cn.py",
+    "backend/tests/unit/test_site_content_locale_service.py",
+    "backend/tests/unit/test_wangcai_reply_locale.py"
+  ],
+  "pytest_tail": "              [ 73%]\nbackend\\tests\\unit\\test_site_content_locale_service.py ...               [ 86%]\nbackend\\tests\\unit\\test_wangcai_reply_locale.py ...                      [100%]\n\n============================== warnings summary ===============================\nbackend\\app\\schemas\\publish_task.py:36\n  C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\schemas\\publish_task.py:36: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class PublishTaskResponse(PublishTaskBase):\n\nbackend\\app\\schemas\\ssl_certificate.py:31\n  C:\\Users\\97907\\Desktop\\上线网站\\backend\\app\\schemas\\ssl_certificate.py:31: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class SSLCertificateResponse(SSLCertificateBase):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 23 passed, 2 warnings in 4.06s ========================\n",
+  "manual_e2e": [
+    "注册 → /client/onboarding?product=…",
+    "Hermes 建站保存 → site_built",
+    "IM 联系方式 → im_contacts_done",
+    "旺财预览与公开 /public/tenants/{domain}/wangcai/ask 同源",
+    "Nuxt /tenant?__tenant={domain} 大陆头无 WhatsApp"
+  ],
+  "human_recording_pending": true
+}

@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-07-10T12:24:51.419856+00:00",
+  "steps": [
+    {
+      "name": "check_mounted_routes",
+      "ok": true,
+      "detail": "OK: all required route prefixes are mounted.\nTotal /api routes: 1305\nC:\\Users\\97907\\Desktop\\������վ\\backend\\app\\core\\config.py:851: UserWarning: [DEV] SECRET_KEY Ϊռλ��,�Ѵ� logs/auto-secret-dev.txt ����\n  settings = Settings()\n"
+    },
+    {
+      "name": "seed_platforms_full",
+      "ok": true,
+      "detail": "OK: platforms seed {'created': 0, 'updated': 50, 'total': 50}, summary={'cn': 20, 'global': 30, 'total': 50, 'pilot': 15, 'target_cn': 20, 'target_global': 30, 'target_b2b': 5, 'target_b2c': 4, 'ready': True}\nC:\\Users\\97907\\Desktop\\������վ\\backend\\app\\core\\config.py:851: UserWarning: [DEV] SECRET_KEY Ϊռλ��,�Ѵ� logs/auto-secret-dev.txt ����\n  settings = Settings()"
+    }
+  ],
+  "readiness": {
+    "ready": true,
+    "environment": "development",
+    "score": {
+      "pass": 12,
+      "warn": 5,
+      "fail": 0
+    },
+    "checks": [
+      {
+        "id": "jwt_secret",
+        "category": "security",
+        "title": "JWT 密钥强度",
+        "status": "pass",
+        "message": "已配置",
+        "required": true
+      },
+      {
+        "id": "oauth_dev_bypass",
+        "category": "security",
+        "title": "OAuth 开发绕过",
+        "status": "pass",
+        "message": "已关闭",
+        "required": true
+      },
+      {
+        "id": "database_url",
+        "category": "database",
+        "title": "数据库类型",
+        "status": "warn",
+        "message": "当前为 SQLite（仅开发）",
+        "required": false
+      },
+      {
+        "id": "database_ping",
+        "category": "database",
+        "title": "数据库连通",
+        "status": "pass",
+        "message": "SELECT 1 成功",
+        "required": true
+      },
+      {
+        "id": "logistics",
+        "category": "integrations",
+        "title": "物流",
+        "status": "pass",
+        "message": "当前为 demo（生产建议 kuaidi100）",
+        "required": false
+      },
+      {
+        "id": "platforms_40",
+        "category": "data",
+        "title": "40 平台主数据",
+        "status": "pass",
+        "message": "cn=20/20, global=30/21",
+        "required": false
+      },
+      {
+        "id": "backup_dir",
+        "category": "ops",
+        "title": "备份目录可写",
+        "status": "pass",
+        "message": "C:\\Users\\97907\\Desktop\\上线网站\\backend\\backups",
+        "required": true
+      },
+      {
+        "id": "frontend_url",
+        "category": "config",
+        "title": "FRONTEND_URL",
+        "status": "pass",
+        "message": "http://127.0.0.1:5173",
+        "required": true
+      },
+      {
+        "id": "redis",
+        "category": "integrations",
+        "title": "Redis",
+        "status": "warn",
+        "message": "REDIS_ENABLED=false",
+        "required": false
+      },
+      {
+        "id": "celery_broker",
+        "category": "integrations",
+        "title": "Celery Broker",
+        "status": "pass",
+        "message": "redis://localhost:6379/0",
+        "required": false
+      },
+      {
+        "id": "crawl_webhook_secret",
+        "category": "integrations",
+        "title": "国际爬虫 Webhook",
+        "status": "warn",
+        "message": "开发环境可暂不配置",
+        "required": false
+      },
+      {
+        "id": "payment_strict",
+        "category": "security",
+        "title": "支付回调验签",
+        "status": "warn",
+        "message": "开发环境未强制验签",
+        "required": false
+      },
+      {
+        "id": "smtp_email",
+        "category": "integrations",
+        "title": "SMTP 发信",
+        "status": "warn",
+        "message": "开发环境可 mock；生产须配置",
+        "required": false
+      },
+      {
+        "id": "ssl_provider",
+        "category": "security",
+        "title": "SSL 签发",
+        "status": "pass",
+        "message": "当前 SSL_PROVIDER=mock",
+        "required": false
+      },
+      {
+        "id": "ai_provider",
+        "category": "integrations",
+        "title": "AI 提供商",
+        "status": "pass",
+        "message": "已配置至少一个 API Key",
+        "required": true
+      },
+      {
+        "id": "ubrain_api",
+        "category": "product",
+        "title": "UBrain / 出海参谋 API",
+        "status": "pass",
+        "message": "已挂载",
+        "required": true
+      },
+      {
+        "id": "routes_mounted",
+        "category": "ops",
+        "title": "关键 API 挂载",
+        "status": "pass",
+        "message": "关键前缀已挂载",
+        "required": true
+      }
+    ]
+  },
+  "backup": {
+    "running": false,
+    "last_run": null,
+    "backup_count": 0,
+    "backup_dir": "C:\\Users\\97907\\Desktop\\上线网站\\backend\\backups",
+    "recent_backups": [
+      {
+        "name": "auto_backup_20260709_030000",
+        "time": "2026-07-09T10:00:00.020622",
+        "size": "4.8MB"
+      }
+    ],
+    "errors_recent": [],
+    "postgres_hint": "PostgreSQL 生产环境请配置定时 pg_dump"
+  },
+  "preflight_environment": "development",
+  "ok": true
+}

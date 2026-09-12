@@ -1,0 +1,25 @@
+// FILE: backend\app\core\logging_config.py
+        # 构建完整消息
+        full_message = f"**告警级别**: {level}\n**消息内容**: {message}"
+        if metadata:
+            full_message += f"\n**详情**: {metadata}"
+
+        # 发送到飞书机器人
+        send_to_feishu_bot(full_message, level)
+
+    # 邮件告警处理器（作为备选）
+    def email_alert_handler(alert_data):
+        logger = logging.getLogger("alert.email")
+        logger.info(f"邮件告警: {alert_data['message']}")
+
+    # Webhook告警处理器（作为备选）
+    def webhook_alert_handler(alert_data):
+        logger = logging.getLogger("alert.webhook")
+        logger.info(f"Webhook告警: {alert_data['message']}")
+
+    # 默认启用飞书告警（优先级最高）
+    alert_manager.add_handler(feishu_alert_handler)
+    alert_manager.add_handler(email_alert_handler)
+    alert_manager.add_handler(webhook_alert_handler)
+
+    return alert_manager

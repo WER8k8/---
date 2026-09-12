@@ -1,0 +1,108 @@
+/**
+ * 2026 全站视觉覆写 — 登录、租户壳、超管 Layout、Ant 组件
+ */
+@use './design-tokens-v2.scss';
+
+body {
+  font-family: var(--uj-font-sans);
+  font-size: var(--uj-text-body, 15px);
+  background: var(--uj-bg-page-mesh, var(--uj-bg-page));
+  background-color: var(--uj-bg-page);
+  color: var(--uj-text);
+}
+
+.shell,
+.client-shell,
+.yd-page {
+  font-size: var(--uj-text-body, 15px);
+}
+
+/* —— 租户 Client 壳（薄荷玻璃双栏） —— */
+.client-shell {
+  min-height: 100vh;
+  background: var(--uj-bg-page-mesh, var(--uj-bg-page));
+  background-color: var(--uj-bg-page);
+}
+
+.client-header {
+  height: var(--uj-header-h, 52px);
+  background: var(--uj-glass-bg-strong, var(--uj-bg-card));
+  border-bottom: 1px solid var(--uj-border-soft, var(--uj-border));
+  box-shadow: 0 4px 20px rgb(45 107 96 / 0.06);
+}
+
+.client-sidebar {
+  width: var(--uj-client-sidebar-w, 232px);
+  background: var(--uj-glass-bg-strong, var(--uj-bg-card));
+  border-right: 1px solid var(--uj-border);
+}
+
+.client-body {
+  width: 100%;
+}
+
+.client-content {
+  padding: var(--uj-space-page) 16px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+  background: var(--uj-bg-page-mesh, var(--uj-bg-page));
+  background-color: var(--uj-bg-page);
+  min-height: calc(100vh - var(--uj-header-h, 52px));
+}
+
+/* 租户壳内 YdPage 铺满主内容区，避免 1440px 居中 + 双层 padding */
+.client-shell .client-body {
+  width: 100%;
+}
+
+.client-shell .coachpro-page-body,
+.client-shell .client-dashboard,
+.client-shell .site-editor-space {
+  width: 100%;
+  max-width: none;
+}
+
+.client-shell .yd-page {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.client-shell .yd-page-body {
+  width: 100%;
+}
+
+.client-shell .ant-card,
+.client-shell .coachpro-panel {
+  background: var(--uj-glass-bg-strong) !important;
+  border: 1px solid var(--uj-border) !important;
+  box-shadow: var(--uj-glass-shadow) !important;
+}
+
+/* —— 超管侧栏 / 顶栏：由 mint-glass-shell.scss 接管 —— */
+
+/* —— 卡片与表格（玻璃拟态，非实白） —— */
+.ant-card {
+  background: var(--uj-glass-bg-strong, rgb(255 255 255 / 0.82)) !important;
+  border-radius: var(--uj-radius-lg) !important;
+  border: 1px solid var(--uj-border) !important;
+  box-shadow: var(--uj-glass-shadow, var(--uj-shadow-sm));
+}
+
+.ant-table-wrapper .ant-table {
+  border-radius: var(--uj-radius-md);
+}
+
+.ant-btn-primary {
+  box-shadow: 0 2px 10px rgb(74 155 140 / 0.28);
+}
+
+/* 禁止紫渐变 hero（遗留 tailwind） */
+.login-page__mobile-logo {
+  background: linear-gradient(135deg, var(--uj-brand) 0%, var(--uj-brand-deep) 100%) !important;
+  box-shadow: 0 8px 20px rgb(37 99 235 / 0.35) !important;
+}

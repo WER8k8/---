@@ -1,0 +1,9 @@
+﻿{
+    "database_url":  "postgresql://youding:***@127.0.0.1:5433/youding_dev",
+    "generated_at":  "2026-06-01T14:24:50.0077329+08:00",
+    "pass":  true,
+    "validate_mod05_exit":  0,
+    "alembic_upgrade_exit":  0,
+    "staging_tables_exit":  0,
+    "task":  "MOD-05-staging-migrate"
+}

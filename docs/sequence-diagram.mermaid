@@ -1,0 +1,89 @@
+sequenceDiagram
+    participant User as 用户
+    participant UI as 前端界面
+    participant Store as Pinia Store
+    participant API as REST API
+    participant WS as WebSocket
+    participant Backend as 后端引擎
+
+    %% 用户打开对话页面
+    User->>UI: 打开对话页面
+    UI->>Store: 初始化状态
+    Store->>API: GET /api/conversations
+    API-->>Store: 返回对话列表
+    Store-->>UI: 更新UI显示
+
+    %% 用户创建新对话
+    User->>UI: 点击"新建对话"
+    UI->>Store: 创建新对话
+    Store->>API: POST /api/conversations
+    API-->>Store: 返回新对话
+    Store-->>UI: 切换到新对话
+
+    %% 用户发送消息
+    User->>UI: 输入消息并发送
+    UI->>Store: 添加用户消息
+    Store->>API: POST /api/conversations/:id/messages
+    API-->>Store: 返回消息ID
+    UI->>WS: 建立WebSocket连接
+    WS-->>Backend: 认证并订阅对话
+
+    %% 后端处理消息
+    Backend->>Backend: 处理用户消息
+    Backend->>Backend: 调用AI引擎
+
+    %% AI响应消息
+    Backend->>WS: 发送AI响应消息
+    WS->>Store: 接收消息
+    Store-->>UI: 更新消息列表
+
+    %% 用户调用技能包
+    User->>UI: 点击技能包"自动谈单"
+    UI->>Store: 调用技能包
+    Store->>API: POST /api/skills/auto_negotiate/execute
+    API-->>Store: 返回任务ID
+    UI->>WS: 订阅任务进度
+
+    %% 后端执行技能包
+    Backend->>Backend: 执行自动谈单任务
+    Backend->>Backend: 搜索潜在客户
+
+    %% 任务进度更新
+    Backend->>WS: 发送任务进度更新(30%)
+    WS->>Store: 更新任务状态
+    Store-->>UI: 显示进度条
+
+    Backend->>WS: 发送任务进度更新(70%)
+    WS->>Store: 更新任务状态
+    Store-->>UI: 更新进度条
+
+    %% 任务完成
+    Backend->>WS: 发送任务完成通知
+    WS->>Store: 更新任务结果
+    Store-->>UI: 展示客户列表
+
+    %% 用户查看结果
+    User->>UI: 选择客户查看详情
+    UI->>Store: 获取客户详情
+    Store->>API: GET /api/customers/:id
+    API-->>Store: 返回客户详情
+    Store-->>UI: 显示客户信息
+
+    %% 生成开发信
+    User->>UI: 点击"生成开发信"
+    UI->>Store: 调用技能包
+    Store->>API: POST /api/skills/write_email/execute
+    API-->>Store: 返回任务ID
+    UI->>WS: 订阅任务进度
+
+    Backend->>Backend: 生成个性化开发信
+    Backend->>WS: 发送任务完成通知
+    WS->>Store: 更新开发信内容
+    Store-->>UI: 展示开发信预览
+
+    %% 用户发送开发信
+    User->>UI: 确认并发送开发信
+    UI->>Store: 发送开发信
+    Store->>API: POST /api/emails/send
+    API-->>Store: 返回发送状态
+    Store-->>UI: 显示发送成功

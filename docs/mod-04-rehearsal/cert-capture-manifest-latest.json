@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-06-14T12:19:48.981Z",
+  "origin": "http://127.0.0.1:5173",
+  "results": [
+    {
+      "id": "M01",
+      "ok": true,
+      "file": "round2/login-admin.png"
+    },
+    {
+      "id": "M02",
+      "ok": true,
+      "file": "round2/admin-dashboard.png"
+    },
+    {
+      "id": "M03",
+      "ok": true,
+      "file": "round2/client-today.png"
+    },
+    {
+      "id": "M04",
+      "ok": true,
+      "file": "round2/client-onboarding.png"
+    },
+    {
+      "id": "M08",
+      "ok": true,
+      "file": "round2/publish-unified.png"
+    },
+    {
+      "id": "M09",
+      "ok": true,
+      "file": "round2/seo-matrix-publish.png"
+    },
+    {
+      "id": "M10",
+      "ok": true,
+      "file": "round2/logistics-dashboard.png"
+    },
+    {
+      "id": "M11",
+      "ok": true,
+      "file": "round2/chuhaiji-pwa.png"
+    }
+  ],
+  "summary": {
+    "total": 12,
+    "pending": 0,
+    "blocked": 4,
+    "captured": 8,
+    "failed": 0
+  }
+}

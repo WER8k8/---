@@ -1,0 +1,57 @@
+{
+  "task": "MOD-08",
+  "updated_at": "2026-06-03",
+  "note": "Owner 逐项回填 done=true 与 completed_at",
+  "items": [
+    {
+      "id": "https-demo-domain",
+      "label": "HTTPS 演示域（如 demo.youding.com）",
+      "blocks": [
+        "MOD-01",
+        "ARCH-04",
+        "QA-04",
+        "MOD-04"
+      ],
+      "done": false,
+      "completed_at": null
+    },
+    {
+      "id": "dns-a-record",
+      "label": "DNS A 记录指向 staging",
+      "blocks": [
+        "ARCH-04"
+      ],
+      "done": false,
+      "completed_at": null
+    },
+    {
+      "id": "certbot-email",
+      "label": "CERTBOT_EMAIL 运维配置",
+      "blocks": [
+        "ARCH-04"
+      ],
+      "done": false,
+      "completed_at": null
+    },
+    {
+      "id": "saas-bj01-signoff",
+      "label": "SaaS 专家 BJ-01 五问签字",
+      "blocks": [
+        "BJ-01",
+        "admin-overhaul"
+      ],
+      "done": false,
+      "completed_at": null,
+      "record": "docs/bj-01-saas-signoff-record.json"
+    },
+    {
+      "id": "pm06-blocked-written",
+      "label": "PM-06 Blocked 书面（若域延期）",
+      "blocks": [
+        "PM-06"
+      ],
+      "done": false,
+      "completed_at": null
+    }
+  ]
+}

@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>套餐续费</title>
+    <style id="theme-vars">
+/* Brand CSS — 租户工作台 Dark Dashboard */
+:root {
+  /* Seed */
+  --seed-color: #4a9b8c;
+
+  /* Core palette */
+  --color-background: #0c0d10;
+  --color-foreground: #f0f2f5;
+  --color-card: #15161a;
+  --color-card-foreground: #e4e6eb;
+  --color-popover: #1c1d22;
+  --color-popover-foreground: #e4e6eb;
+  --color-primary: #4a9b8c;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #1a1b20;
+  --color-muted-foreground: #8b8fa0;
+  --color-border: #26272e;
+  --color-input: #1a1b20;
+  --color-ring: #4a9b8c;
+
+  /* Semantic state colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Semantic radius aliases */
+  --brand-radius-sm: 6px;
+  --brand-radius-md: 10px;
+  --brand-radius-lg: 14px;
+  --brand-radius-large: 14px;
+  --brand-radius-small: 6px;
+  --brand-radius-medium: 10px;
+}
+
+/* Semantic alias resolution */
+.brand-background { background-color: var(--color-background); }
+.brand-foreground { color: var(--color-foreground); }
+.brand-card { background-color: var(--color-card); }
+.brand-card-foreground { color: var(--color-card-foreground); }
+.brand-popover { background-color: var(--color-popover); }
+.brand-popover-foreground { color: var(--color-popover-foreground); }
+.brand-primary { background-color: var(--color-primary); }
+.brand-primary-foreground { color: var(--color-primary-foreground); }
+.brand-muted { background-color: var(--color-muted); }
+.brand-muted-foreground { color: var(--color-muted-foreground); }
+.brand-border { border-color: var(--color-border); }
+.brand-input { background-color: var(--color-input); }
+.brand-ring { box-shadow: 0 0 0 2px var(--color-ring); }
+
+/* Typography scale */
+.brand-h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-foreground); }
+.brand-h2 { font-size: 1.3125rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-foreground); }
+.brand-h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--color-foreground); }
+.brand-h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--color-card-foreground); }
+.brand-body { font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: var(--color-muted-foreground); }
+.brand-body-sm { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; color: var(--color-muted-foreground); }
+.brand-caption { font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--color-muted-foreground); }
+.brand-mono { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8125rem; }
+
+/* Font stack */
+.font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-card-foreground: var(--color-card-foreground);
+    --color-popover: var(--color-popover);
+    --color-popover-foreground: var(--color-popover-foreground);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-input: var(--color-input);
+    --color-ring: var(--color-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-card-foreground { background-color: var(--color-card-foreground); }
+      .text-card-foreground { color: var(--color-card-foreground); }
+      .border-card-foreground { border-color: var(--color-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--color-card-foreground); }
+      .bg-popover { background-color: var(--color-popover); }
+      .text-popover { color: var(--color-popover); }
+      .border-popover { border-color: var(--color-popover); }
+      .ring-popover { --tw-ring-color: var(--color-popover); }
+      .bg-popover-foreground { background-color: var(--color-popover-foreground); }
+      .text-popover-foreground { color: var(--color-popover-foreground); }
+      .border-popover-foreground { border-color: var(--color-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--color-popover-foreground); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-primary-foreground { background-color: var(--color-primary-foreground); }
+      .text-primary-foreground { color: var(--color-primary-foreground); }
+      .border-primary-foreground { border-color: var(--color-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--color-primary-foreground); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-muted-foreground { background-color: var(--color-muted-foreground); }
+      .text-muted-foreground { color: var(--color-muted-foreground); }
+      .border-muted-foreground { border-color: var(--color-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--color-muted-foreground); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+      .bg-input { background-color: var(--color-input); }
+      .text-input { color: var(--color-input); }
+      .border-input { border-color: var(--color-input); }
+      .ring-input { --tw-ring-color: var(--color-input); }
+      .bg-ring { background-color: var(--color-ring); }
+      .text-ring { color: var(--color-ring); }
+      .border-ring { border-color: var(--color-ring); }
+      .ring-ring { --tw-ring-color: var(--color-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased" data-viewport-mode="app-shell">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     SIDEBAR — fixed 232px
+     ============================================================ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo__icon">优</div>
+    <div class="sidebar-logo__text"><span>优</span><span>丁</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Group 1: 工作台 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">工作台</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        今日概览
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        数据看板
+      </a>
+    </div>
+
+    <!-- Group 2: 获客 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">获客</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        询盘管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        智能副驾
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+        出海机 App
+      </a>
+    </div>
+
+    <!-- Group 3: 发品 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">发品</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        产品管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+        内容管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        发布枢纽
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect width="15" height="20" x="1" y="2" rx="2" ry="2"/></svg>
+        视频出海
+      </a>
+    </div>
+
+    <!-- Group 4: 履约 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">履约</div>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        订单管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+        物流追踪
+      </a>
+    </div>
+
+    <!-- Group 5: 账户 -->
+    <div class="sidebar-group">
+      <div class="sidebar-group__label">账户</div>
+      <a class="sidebar-item sidebar-item--active" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="M16 16l4 4"/><path d="M19 13c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+        套餐续费
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        域名管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        团队管理
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+        站点编辑
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        设置
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="sidebar-user__avatar">张</div>
+    <div class="sidebar-user__info">
+      <span class="sidebar-user__name">张建材</span>
+      <span class="sidebar-user__plan">专业版</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main class="main-content" data-scroll-region="primary">
+
+  <!-- Topbar -->
+  <section class="topbar">
+    <div>
+      <p class="kicker">账户中心</p>
+      <h1 style="text-wrap:balance;word-break:keep-all;overflow-wrap:break-word;">套餐续费</h1>
+      <p class="desc">选择套餐并完成支付</p>
+    </div>
+  </section>
+
+  <!-- Current plan info alert -->
+  <section class="billing-alert" style="animation-delay:20ms;">
+    <div class="billing-alert__icon">
+      <i data-lucide="info" style="width:16px;height:16px;"></i>
+    </div>
+    <div class="billing-alert__body">
+      <span class="billing-alert__title">当前套餐：专业版</span>
+      <span class="billing-alert__sep">|</span>
+      <span>有效期至 <strong>2026-08-01</strong></span>
+      <span class="billing-alert__sep">|</span>
+      <span>剩余 <strong>11 天</strong></span>
+    </div>
+    <span class="billing-alert__badge">即将到期</span>
+  </section>
+
+  <!-- Billing cycle toggle -->
+  <section class="billing-cycle" style="animation-delay:40ms;">
+    <span class="billing-cycle__label">计费周期</span>
+    <div class="billing-cycle__toggle">
+      <button class="billing-cycle__btn billing-cycle__btn--active" data-cycle="monthly" onclick="setCycle('monthly')">月付</button>
+      <button class="billing-cycle__btn" data-cycle="yearly" onclick="setCycle('yearly')">年付</button>
+    </div>
+    <span class="billing-cycle__save" id="yearly-save" style="opacity:0;">年付省 20%</span>
+  </section>
+
+  <!-- Pricing cards -->
+  <section class="pricing-grid" style="animation-delay:60ms;">
+    <!-- Basic -->
+    <div class="pricing-card" id="card-basic">
+      <div class="pricing-card__head">
+        <h3 class="pricing-card__name">基础版</h3>
+        <span class="pricing-card__sub">Basic</span>
+      </div>
+      <div class="pricing-card__price">
+        <span class="pricing-card__currency">¥</span>
+        <span class="pricing-card__amount" data-monthly="299" data-yearly="239">299</span>
+        <span class="pricing-card__period">/月</span>
+      </div>
+      <p class="pricing-card__note" data-monthly="" data-yearly="年付 ¥2,868">适合个人外贸起步</p>
+      <button class="pricing-card__cta pricing-card__cta--default" onclick="openPayModal(this,'基础版','299')">立即续费</button>
+      <ul class="pricing-card__features">
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>5 个产品</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>1,000 AI Token</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>基础 SEO</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>1 个站点</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Pro (recommended) -->
+    <div class="pricing-card pricing-card--recommended" id="card-pro">
+      <div class="pricing-card__badge">推荐</div>
+      <div class="pricing-card__head">
+        <h3 class="pricing-card__name">专业版</h3>
+        <span class="pricing-card__sub">Pro</span>
+      </div>
+      <div class="pricing-card__price">
+        <span class="pricing-card__currency">¥</span>
+        <span class="pricing-card__amount" data-monthly="599" data-yearly="479">599</span>
+        <span class="pricing-card__period">/月</span>
+      </div>
+      <p class="pricing-card__note" data-monthly="" data-yearly="年付 ¥5,748">适合中小外贸企业</p>
+      <button class="pricing-card__cta pricing-card__cta--primary" onclick="openPayModal(this,'专业版','599')">立即续费</button>
+      <ul class="pricing-card__features">
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>50 个产品</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>10,000 AI Token</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>高级 SEO</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>3 个站点</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>优先技术支持</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="pricing-card" id="card-enterprise">
+      <div class="pricing-card__head">
+        <h3 class="pricing-card__name">旗舰版</h3>
+        <span class="pricing-card__sub">Enterprise</span>
+      </div>
+      <div class="pricing-card__price">
+        <span class="pricing-card__currency">¥</span>
+        <span class="pricing-card__amount" data-monthly="1299" data-yearly="1039">1299</span>
+        <span class="pricing-card__period">/月</span>
+      </div>
+      <p class="pricing-card__note" data-monthly="" data-yearly="年付 ¥12,468">适合大型外贸集团</p>
+      <button class="pricing-card__cta pricing-card__cta--default" onclick="openPayModal(this,'旗舰版','1299')">立即续费</button>
+      <ul class="pricing-card__features">
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>200 个产品</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>50,000 AI Token</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>企业级 SEO</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>10 个站点</span>
+        </li>
+        <li>
+          <i data-lucide="check" style="width:14px;height:14px;flex-shrink:0;color:var(--color-primary);"></i>
+          <span>专属客户经理</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Payment history -->
+  <section class="panel payment-history" style="animation-delay:100ms;">
+    <div class="payment-history__head">
+      <h2 class="payment-history__title">支付记录</h2>
+    </div>
+    <div class="payment-history__table-wrap">
+      <table class="payment-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>套餐</th>
+            <th>金额</th>
+            <th>状态</th>
+            <th>发票</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="whitespace-nowrap">2026-07-01</td>
+            <td class="whitespace-nowrap">专业版 (月付)</td>
+            <td class="whitespace-nowrap">¥599.00</td>
+            <td><span class="status-tag status-tag--success">已支付</span></td>
+            <td><button class="btn--link" style="background:none;border:none;cursor:pointer;color:var(--color-primary);font-size:12px;font-weight:500;padding:4px 8px;font-family:inherit;">下载</button></td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap">2026-06-01</td>
+            <td class="whitespace-nowrap">专业版 (月付)</td>
+            <td class="whitespace-nowrap">¥599.00</td>
+            <td><span class="status-tag status-tag--success">已支付</span></td>
+            <td><button class="btn--link" style="background:none;border:none;cursor:pointer;color:var(--color-primary);font-size:12px;font-weight:500;padding:4px 8px;font-family:inherit;">下载</button></td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap">2026-05-01</td>
+            <td class="whitespace-nowrap">专业版 (月付)</td>
+            <td class="whitespace-nowrap">¥599.00</td>
+            <td><span class="status-tag status-tag--success">已支付</span></td>
+            <td><button class="btn--link" style="background:none;border:none;cursor:pointer;color:var(--color-primary);font-size:12px;font-weight:500;padding:4px 8px;font-family:inherit;">下载</button></td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap">2026-04-01</td>
+            <td class="whitespace-nowrap">基础版 (月付)</td>
+            <td class="whitespace-nowrap">¥299.00</td>
+            <td><span class="status-tag status-tag--danger">已退款</span></td>
+            <td><span style="color:var(--color-muted-foreground);font-size:12px;">-</span></td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap">2026-03-01</td>
+            <td class="whitespace-nowrap">基础版 (月付)</td>
+            <td class="whitespace-nowrap">¥299.00</td>
+            <td><span class="status-tag status-tag--success">已支付</span></td>
+            <td><button class="btn--link" style="background:none;border:none;cursor:pointer;color:var(--color-primary);font-size:12px;font-weight:500;padding:4px 8px;font-family:inherit;">下载</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- QR Code Payment Modal -->
+<div class="pay-modal-overlay" id="payModal" style="display:none;">
+  <div class="pay-modal">
+    <div class="pay-modal__close" onclick="closePayModal()">
+      <i data-lucide="x" style="width:18px;height:18px;"></i>
+    </div>
+    <div class="pay-modal__head">
+      <h3 class="pay-modal__title">扫码支付</h3>
+      <p class="pay-modal__desc">请使用微信或支付宝扫描下方二维码完成支付</p>
+    </div>
+    <div class="pay-modal__info">
+      <span class="pay-modal__plan" id="modalPlanName">专业版</span>
+      <span class="pay-modal__price" id="modalPlanPrice">¥599</span>
+      <span class="pay-modal__cycle" id="modalCycleLabel">/月</span>
+    </div>
+    <div class="pay-modal__qr">
+      <div class="pay-modal__qr-box">
+        <div class="pay-modal__qr-pattern">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;opacity:0.9;">
+            <rect x="5" y="5" width="30" height="30" rx="3" fill="none" stroke="var(--color-foreground)" stroke-width="4"/>
+            <rect x="12" y="12" width="16" height="16" rx="2" fill="var(--color-foreground)"/>
+            <rect x="65" y="5" width="30" height="30" rx="3" fill="none" stroke="var(--color-foreground)" stroke-width="4"/>
+            <rect x="72" y="12" width="16" height="16" rx="2" fill="var(--color-foreground)"/>
+            <rect x="5" y="65" width="30" height="30" rx="3" fill="none" stroke="var(--color-foreground)" stroke-width="4"/>
+            <rect x="12" y="72" width="16" height="16" rx="2" fill="var(--color-foreground)"/>
+            <rect x="42" y="5" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="52" y="5" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="42" y="15" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="42" y="42" width="16" height="16" rx="2" fill="var(--color-foreground)"/>
+            <rect x="65" y="42" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="75" y="42" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="85" y="42" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="42" y="65" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="52" y="65" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="65" y="75" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="75" y="85" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="85" y="75" width="6" height="6" fill="var(--color-foreground)"/>
+            <rect x="42" y="85" width="6" height="6" fill="var(--color-foreground)"/>
+          </svg>
+        </div>
+      </div>
+      <p class="pay-modal__qr-hint">打开手机扫一扫</p>
+    </div>
+    <div class="pay-modal__tabs">
+      <button class="pay-modal__tab pay-modal__tab--active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"/></svg>
+        支付宝
+      </button>
+      <button class="pay-modal__tab">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"/></svg>
+        微信支付
+      </button>
+    </div>
+    <p class="pay-modal__footer">支付完成后页面将自动刷新</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     STYLES (before </body> as required)
+     ============================================================ -->
+<style>
+body {
+  background: #0c0d10;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(74,155,140,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   SIDEBAR — fixed 232px
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 232px;
+  height: 100vh;
+  background: rgba(17,18,21,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 16px 0;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+.sidebar-logo {
+  display: flex; align-items: center; gap: 8px;
+  padding: 18px 16px 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  margin-bottom: 8px;
+}
+.sidebar-logo__icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #4a9b8c, #3d8f7a);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.sidebar-logo__text {
+  display: flex; align-items: baseline; gap: 1px;
+  color: #fff; font-size: 14px; font-weight: 600;
+}
+.sidebar-logo__text span:first-child { font-weight: 700; }
+
+.sidebar-nav {
+  flex: 1; padding: 4px 8px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.sidebar-group { margin-bottom: 12px; }
+.sidebar-group__label {
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 8px 10px 4px 10px;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  transition: all var(--uj-motion-duration) var(--uj-motion-ease);
+  text-decoration: none;
+  border: 1px solid transparent;
+  position: relative;
+}
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+.sidebar-item--active {
+  background: rgba(74,155,140,0.1);
+  color: #fff;
+  border-left: 3px solid #4a9b8c;
+  padding-left: 7px;
+  font-weight: 600;
+}
+.sidebar-item--active svg {
+  color: #4a9b8c;
+  filter: drop-shadow(0 0 4px rgba(74,155,140,0.5));
+}
+.sidebar-item svg {
+  width: 17px; height: 17px; flex-shrink: 0; opacity: 0.7;
+}
+.sidebar-item--active svg { opacity: 1; }
+
+.sidebar-user {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 14px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-user__avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #4a9b8c, #3d8f7a);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.sidebar-user__info {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.sidebar-user__name {
+  font-size: 13px; font-weight: 600; color: #fff;
+}
+.sidebar-user__plan {
+  font-size: 10px; font-weight: 600;
+  padding: 1px 6px; border-radius: 4px;
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa; width: fit-content;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+  margin-left: 232px;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   PANEL
+   ============================================================ */
+.panel {
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+  transition: transform var(--uj-motion-duration) var(--uj-motion-ease),
+              box-shadow var(--uj-motion-duration) var(--uj-motion-ease);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes ujCardEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+}
+.main-content > section:nth-child(2) { animation-delay: 40ms; }
+.main-content > section:nth-child(3) { animation-delay: 80ms; }
+.main-content > section:nth-child(4) { animation-delay: 120ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; flex-wrap: wrap;
+  padding: 14px 18px; margin-bottom: 16px;
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+.topbar .kicker {
+  font-size: 12px; color: var(--color-muted-foreground); margin: 0 0 4px 0;
+}
+.topbar h1 {
+  font-size: 24px; font-weight: 700; color: var(--color-foreground);
+  margin: 0 0 4px 0; letter-spacing: -0.02em;
+}
+.topbar .desc {
+  font-size: 15px; color: var(--color-muted-foreground);
+  line-height: 1.45; margin: 0;
+}
+
+/* ============================================================
+   BILLING ALERT
+   ============================================================ */
+.billing-alert {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; margin-bottom: 16px;
+  border-radius: 10px;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+.billing-alert__icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(245,158,11,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-warning); flex-shrink: 0;
+}
+.billing-alert__body {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--color-muted-foreground);
+  flex-wrap: wrap;
+}
+.billing-alert__title {
+  font-weight: 600; color: var(--color-foreground);
+}
+.billing-alert__body strong {
+  color: var(--color-foreground);
+}
+.billing-alert__sep {
+  color: rgba(255,255,255,0.15);
+}
+.billing-alert__badge {
+  padding: 3px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+  background: rgba(245,158,11,0.15);
+  color: var(--color-warning);
+}
+
+/* ============================================================
+   BILLING CYCLE TOGGLE
+   ============================================================ */
+.billing-cycle {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px; padding: 0 4px;
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+.billing-cycle__label {
+  font-size: 13px; font-weight: 500; color: var(--color-muted-foreground);
+}
+.billing-cycle__toggle {
+  display: inline-flex;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 3px;
+  position: relative;
+}
+.billing-cycle__btn {
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  color: var(--color-muted-foreground);
+  background: transparent;
+  border: none; cursor: pointer;
+  transition: all 200ms ease;
+  position: relative; z-index: 1;
+  font-family: inherit;
+}
+.billing-cycle__btn--active {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(74,155,140,0.3);
+}
+.billing-cycle__save {
+  font-size: 12px; font-weight: 600;
+  color: var(--color-success);
+  background: rgba(16,185,129,0.1);
+  padding: 3px 10px; border-radius: 6px;
+  transition: opacity 200ms ease;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   PRICING GRID
+   ============================================================ */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+
+/* ============================================================
+   PRICING CARD
+   ============================================================ */
+.pricing-card {
+  position: relative;
+  background: rgba(21,22,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 28px 24px 24px 24px;
+  display: flex; flex-direction: column;
+  transition: transform 300ms ease-out, box-shadow 300ms ease-out, border-color 300ms ease-out;
+  animation: ujCardEnter var(--uj-motion-duration) var(--uj-motion-ease) both;
+}
+.pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* Recommended card */
+.pricing-card--recommended {
+  border-color: rgba(74,155,140,0.35);
+  box-shadow: 0 0 0 1px rgba(74,155,140,0.15), 0 8px 32px rgba(74,155,140,0.1);
+}
+.pricing-card--recommended:hover {
+  border-color: rgba(74,155,140,0.6);
+  box-shadow: 0 0 0 1px rgba(74,155,140,0.3), 0 16px 48px rgba(74,155,140,0.18);
+}
+.pricing-card__badge {
+  position: absolute; top: -1px; right: 20px;
+  padding: 4px 14px;
+  border-radius: 0 0 6px 6px;
+  font-size: 11px; font-weight: 700;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  letter-spacing: 0.02em;
+}
+
+.pricing-card__head {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 16px;
+}
+.pricing-card__name {
+  font-size: 18px; font-weight: 700; color: var(--color-foreground);
+  margin: 0; letter-spacing: -0.01em;
+}
+.pricing-card__sub {
+  font-size: 12px; font-weight: 500; color: var(--color-muted-foreground);
+}
+.pricing-card__price {
+  display: flex; align-items: baseline; gap: 2px;
+  margin-bottom: 6px;
+}
+.pricing-card__currency {
+  font-size: 20px; font-weight: 600; color: var(--color-foreground);
+  align-self: flex-start; margin-top: 4px;
+}
+.pricing-card__amount {
+  font-size: 40px; font-weight: 800; color: var(--color-foreground);
+  line-height: 1; letter-spacing: -0.03em;
+  transition: opacity 150ms ease;
+}
+.pricing-card__period {
+  font-size: 14px; font-weight: 400; color: var(--color-muted-foreground);
+  margin-left: 2px;
+}
+.pricing-card__note {
+  font-size: 12px; color: var(--color-muted-foreground);
+  margin: 0 0 20px 0; min-height: 18px;
+}
+.pricing-card__cta {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 10px 0;
+  border-radius: 8px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; border: none;
+  transition: all 200ms ease;
+  font-family: inherit;
+  margin-bottom: 24px;
+}
+.pricing-card__cta--default {
+  background: rgba(255,255,255,0.06);
+  color: var(--color-card-foreground);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pricing-card__cta--default:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
+}
+.pricing-card__cta--primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  box-shadow: 0 4px 14px rgba(74,155,140,0.3);
+}
+.pricing-card__cta--primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(74,155,140,0.4);
+}
+
+.pricing-card__features {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 10px;
+  flex: 1;
+}
+.pricing-card__features li {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--color-card-foreground);
+}
+
+/* ============================================================
+   PAYMENT HISTORY TABLE
+   ============================================================ */
+.payment-history {
+  padding: 0; overflow: hidden;
+}
+.payment-history__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.payment-history__title {
+  font-size: 16px; font-weight: 600; color: var(--color-foreground);
+  margin: 0; letter-spacing: -0.01em;
+}
+.payment-history__table-wrap {
+  overflow-x: auto;
+}
+.payment-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.payment-table th {
+  text-align: left;
+  padding: 10px 22px;
+  font-size: 11px; font-weight: 600;
+  color: var(--color-muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  white-space: nowrap;
+}
+.payment-table td {
+  padding: 14px 22px;
+  color: var(--color-card-foreground);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.payment-table tbody tr {
+  transition: background 150ms ease;
+}
+.payment-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+.payment-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status tags */
+.status-tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 600;
+  white-space: nowrap;
+}
+.status-tag--success {
+  background: rgba(16,185,129,0.12);
+  color: var(--color-success);
+}
+.status-tag--danger {
+  background: rgba(239,68,68,0.12);
+  color: var(--color-danger);
+}
+
+/* ============================================================
+   PAYMENT MODAL
+   ============================================================ */
+.pay-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 200ms ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.pay-modal {
+  position: relative;
+  background: rgba(21,22,26,0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 32px;
+  width: 360px; max-width: 90vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  animation: modalEnter 250ms ease-out;
+  text-align: center;
+}
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.pay-modal__close {
+  position: absolute; top: 14px; right: 14px;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06);
+  color: var(--color-muted-foreground);
+  cursor: pointer; border: none;
+  transition: all 150ms ease;
+}
+.pay-modal__close:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--color-foreground);
+}
+.pay-modal__head {
+  margin-bottom: 20px;
+}
+.pay-modal__title {
+  font-size: 18px; font-weight: 700; color: var(--color-foreground);
+  margin: 0 0 6px 0; letter-spacing: -0.01em;
+}
+.pay-modal__desc {
+  font-size: 13px; color: var(--color-muted-foreground);
+  margin: 0; line-height: 1.5;
+}
+.pay-modal__info {
+  display: flex; align-items: baseline; justify-content: center;
+  gap: 4px; margin-bottom: 24px;
+}
+.pay-modal__plan {
+  font-size: 14px; font-weight: 500; color: var(--color-muted-foreground);
+}
+.pay-modal__price {
+  font-size: 28px; font-weight: 800; color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+.pay-modal__cycle {
+  font-size: 13px; color: var(--color-muted-foreground);
+}
+.pay-modal__qr {
+  margin-bottom: 20px;
+}
+.pay-modal__qr-box {
+  width: 180px; height: 180px; margin: 0 auto 10px;
+  border-radius: 10px;
+  background: var(--color-card);
+  padding: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pay-modal__qr-pattern {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.pay-modal__qr-hint {
+  font-size: 12px; color: var(--color-muted-foreground);
+  margin: 0;
+}
+.pay-modal__tabs {
+  display: inline-flex; gap: 4px; margin-bottom: 20px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px; padding: 3px;
+}
+.pay-modal__tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  color: var(--color-muted-foreground);
+  background: transparent; border: none;
+  cursor: pointer; transition: all 150ms ease;
+  font-family: inherit;
+}
+.pay-modal__tab--active {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+}
+.pay-modal__footer {
+  font-size: 12px; color: var(--color-muted-foreground);
+  margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1023px) {
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; }
+}
+@media (max-width: 767px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .billing-alert { flex-wrap: wrap; }
+  .billing-alert__body { gap: 4px; }
+  .billing-alert__sep { display: none; }
+  .pay-modal { padding: 24px; width: 340px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pricing-card:last-child {
+    grid-column: span 2;
+    max-width: 50%;
+    justify-self: center;
+  }
+}
+
+/* ===== Spring Physics Patch (DESIGN.md §7) ===== */
+@keyframes ujCardEnterSpring {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease-out,
+              border-color 0.3s ease-out;
+}
+.panel:hover {
+  transform: translateY(-3px);
+}
+@keyframes ujPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,155,140,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(74,155,140,0); }
+}
+.uj-pulse { animation: ujPulse 2s ease-in-out infinite; }
+@keyframes ujFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.uj-float { animation: ujFloat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .uj-pulse, .uj-float { animation: none !important; }
+}
+/* ===== End Spring Physics Patch ===== */
+
+</style>
+
+<script>
+/* Billing cycle toggle */
+let currentCycle = 'monthly';
+
+function setCycle(cycle) {
+  currentCycle = cycle;
+  var btns = document.querySelectorAll('.billing-cycle__btn');
+  btns.forEach(function(btn) {
+    if (btn.getAttribute('data-cycle') === cycle) {
+      btn.classList.add('billing-cycle__btn--active');
+    } else {
+      btn.classList.remove('billing-cycle__btn--active');
+    }
+  });
+
+  var saveHint = document.getElementById('yearly-save');
+  saveHint.style.opacity = cycle === 'yearly' ? '1' : '0';
+
+  var amounts = document.querySelectorAll('.pricing-card__amount');
+  amounts.forEach(function(el) {
+    var val = el.getAttribute('data-' + cycle);
+    el.textContent = val;
+  });
+
+  var notes = document.querySelectorAll('.pricing-card__note');
+  notes.forEach(function(el) {
+    var val = el.getAttribute('data-' + cycle);
+    el.textContent = val;
+  });
+}
+
+/* Payment modal */
+function openPayModal(btnEl, planName, monthlyPrice) {
+  var modal = document.getElementById('payModal');
+  var card = btnEl.closest('.pricing-card');
+  var amountEl = card.querySelector('.pricing-card__amount');
+  var displayPrice = amountEl.getAttribute('data-' + currentCycle);
+  document.getElementById('modalPlanName').textContent = planName;
+  document.getElementById('modalPlanPrice').textContent = '\u00A5' + displayPrice;
+  document.getElementById('modalCycleLabel').textContent = currentCycle === 'yearly' ? '/月 (年付)' : '/月';
+  modal.style.display = 'flex';
+  lucide.createIcons();
+}
+
+function closePayModal() {
+  document.getElementById('payModal').style.display = 'none';
+}
+
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closePayModal();
+});
+
+lucide.createIcons();
+</script>
+</body>
+</html>

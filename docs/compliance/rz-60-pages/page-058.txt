@@ -1,0 +1,50 @@
+// FILE: backend\app\core\logging_config.py
+        title: str,
+        content: str,
+        report_type: str = "工作汇报") -> bool:
+    """发送工作汇报到飞书机器人（专用方法）"""
+    try:
+        if not settings.FEISHU_NOTIFICATION_ENABLED:
+            return False
+
+        if not settings.FEISHU_APP_ID or not settings.FEISHU_APP_SECRET:
+            logger = logging.getLogger("alert.feishu")
+            logger.warning("飞书配置未设置")
+            return False
+
+        # 构建汇报卡片
+        card = {"config": {"wide_screen_mode": True},
+                "header": {"title": {"tag": "plain_text",
+                                     "content": f"📋 {title}"},
+                           "template": "green"},
+                "elements": [{"tag": "div",
+                              "text": {"tag": "lark_md",
+                                       "content": f"**类型**: {report_type}\n\n{content}"}},
+                             {"tag": "div",
+                              "text": {"tag": "plain_text",
+                                       "content": f"发送时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                                       },
+                              },
+                             ],
+                }
+
+        from app.services.feishu.client import FeishuClient
+
+        feishu_client = FeishuClient()
+        feishu_client.send_broadcast_message(content, card)
+
+        return True
+    except Exception as e:
+        logger = logging.getLogger("alert.feishu")
+        logger.error(f"发送工作汇报失败: {e}")
+        return False
+
+
+def setup_alert_handlers():
+    """配置告警处理器 - 默认所有告警发送到飞书机器人"""
+
+    # 飞书告警处理器（默认启用）
+    def feishu_alert_handler(alert_data):
+        level = alert_data.get("level", "INFO")
+        message = alert_data.get("message", "")
+        metadata = alert_data.get("metadata", {})

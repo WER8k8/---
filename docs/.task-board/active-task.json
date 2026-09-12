@@ -1,0 +1,11 @@
+{
+  "id": "content",
+  "title": "内容管理",
+  "route": "/content",
+  "api_sections": ["5"],
+  "api_prefixes": ["/content/pages"],
+  "sidebar_group": "内容管理",
+  "priority": 32,
+  "acceptance": ["页面列表"],
+  "owner_pool": "fullstack"
+}

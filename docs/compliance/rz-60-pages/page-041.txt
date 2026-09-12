@@ -1,0 +1,51 @@
+// FILE: backend\app\core\exceptions.py
+import logging
+from enum import IntEnum
+from typing import Any, Dict, Optional
+
+from fastapi import Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError
+from sqlalchemy.exc import SQLAlchemyError
+
+logger = logging.getLogger(__name__)
+
+
+class ErrorCode(IntEnum):
+    SUCCESS = 0
+    INTERNAL_ERROR = 10001
+    VALIDATION_ERROR = 10002
+    AUTH_REQUIRED = 10003
+    AUTH_INVALID = 10004
+    PERMISSION_DENIED = 10005
+    RESOURCE_NOT_FOUND = 10006
+    RESOURCE_CONFLICT = 10007
+    RATE_LIMIT_EXCEEDED = 10008
+    EXTERNAL_SERVICE_ERROR = 10009
+    DATABASE_ERROR = 10010
+
+
+ERROR_MESSAGES = {
+    ErrorCode.SUCCESS: "操作成功",
+    ErrorCode.INTERNAL_ERROR: "服务器内部错误",
+    ErrorCode.VALIDATION_ERROR: "请求参数验证失败",
+    ErrorCode.AUTH_REQUIRED: "请先登录",
+    ErrorCode.AUTH_INVALID: "认证令牌无效或已过期",
+    ErrorCode.PERMISSION_DENIED: "无权执行此操作",
+    ErrorCode.RESOURCE_NOT_FOUND: "请求的资源不存在",
+    ErrorCode.RESOURCE_CONFLICT: "资源状态冲突",
+    ErrorCode.RATE_LIMIT_EXCEEDED: "请求过于频繁，请稍后重试",
+    ErrorCode.EXTERNAL_SERVICE_ERROR: "外部服务调用失败",
+    ErrorCode.DATABASE_ERROR: "数据库操作异常",
+}
+
+
+class AppException(Exception):
+    def __init__(
+        self,
+        code: ErrorCode = ErrorCode.INTERNAL_ERROR,
+        message: Optional[str] = None,
+        status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
+        data: Optional[Dict[str, Any]] = None,
+    ):

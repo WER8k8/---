@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "task_id": "COMM-QA-03",
+  "sprint": "COMM-1",
+  "issued_at": "2026-06-14",
+  "due": "2026-06-16",
+  "archive_root": "docs/mod-04-rehearsal",
+  "modules": [
+    {
+      "id": "M01",
+      "name": "登录单入口",
+      "owner": "QA",
+      "route": "/login",
+      "role": "admin",
+      "file": "round2/login-admin.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:18:22.677Z"
+    },
+    {
+      "id": "M02",
+      "name": "超管工作台",
+      "owner": "QA",
+      "route": "/admin",
+      "role": "admin",
+      "file": "round2/admin-dashboard.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:18:33.909Z"
+    },
+    {
+      "id": "M03",
+      "name": "租户今日",
+      "owner": "QA",
+      "route": "/client/today",
+      "role": "tenant_admin",
+      "file": "round2/client-today.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:18:45.298Z"
+    },
+    {
+      "id": "M04",
+      "name": "开户向导",
+      "owner": "QA",
+      "route": "/client/onboarding",
+      "role": "tenant_admin",
+      "file": "round2/client-onboarding.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:18:56.859Z"
+    },
+    {
+      "id": "M05",
+      "name": "询盘 IM 5a",
+      "owner": "QA",
+      "route": "/inquiries/im-routing",
+      "role": "tenant_admin",
+      "file": "step5/5a-inbound-webhook.png",
+      "status": "blocked",
+      "blocked_by": "O-2"
+    },
+    {
+      "id": "M06",
+      "name": "企微推送 5b",
+      "owner": "QA",
+      "route": "/inquiries/im-routing#wecom-push",
+      "role": "tenant_admin",
+      "file": "step5/5b-wecom-push.png",
+      "status": "blocked",
+      "blocked_by": "O-2"
+    },
+    {
+      "id": "M07",
+      "name": "抖音谈单 5c",
+      "owner": "QA",
+      "route": "/sales/auto-negotiator",
+      "role": "tenant_admin",
+      "file": "step5/5c-douyin-reply.png",
+      "status": "blocked",
+      "blocked_by": "O-2"
+    },
+    {
+      "id": "M08",
+      "name": "统一发布",
+      "owner": "QA",
+      "route": "/publish/unified",
+      "role": "tenant_admin",
+      "file": "round2/publish-unified.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:19:05.693Z"
+    },
+    {
+      "id": "M09",
+      "name": "SEO 矩阵发布",
+      "owner": "QA",
+      "route": "/seo-matrix/publish",
+      "role": "tenant_admin",
+      "file": "round2/seo-matrix-publish.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:19:15.185Z"
+    },
+    {
+      "id": "M10",
+      "name": "物流看板",
+      "owner": "QA",
+      "route": "/logistics",
+      "role": "tenant_admin",
+      "file": "round2/logistics-dashboard.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:19:24.126Z"
+    },
+    {
+      "id": "M11",
+      "name": "出海计 PWA",
+      "owner": "App+QA",
+      "route": "/client/app",
+      "role": "tenant_admin",
+      "file": "round2/chuhaiji-pwa.png",
+      "status": "captured",
+      "captured_at": "2026-06-14T12:19:35.509Z"
+    },
+    {
+      "id": "M12",
+      "name": "HTTPS 演示域",
+      "owner": "QA+运维",
+      "route": "https://{DEMO_HTTPS_DOMAIN}/login",
+      "role": "admin",
+      "file": "round2/https-demo-login.png",
+      "status": "blocked",
+      "blocked_by": "O-1"
+    }
+  ],
+  "summary": {
+    "total": 12,
+    "pending": 0,
+    "blocked": 4,
+    "captured": 8,
+    "failed": 0
+  },
+  "out_of_scope": "QA 不修功能；blocked 项不得伪造截图",
+  "last_capture_run": "2026-06-14T12:19:48.980Z"
+}

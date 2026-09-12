@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目代码依赖关系图谱 · 知识库版</title>
+<style>
+:root {
+  --bg: #0b0d12; --bg2: #141720; --bg3: #1c2030; --ink: #e4e7ed;
+  --muted: #8a92a6; --rule: #2a3045; --brand: #4a9b8c;
+  --danger: #ef4444; --warn: #f59e0b; --info: #3b82f6;
+  --l1: #4a9b8c; --l2: #8b5cf6; --l3: #3b82f6; --l4: #f59e0b; --l5: #ef4444;
+  --fe: #22c55e;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg); color: var(--ink); font-size: 13px; overflow: hidden;
+}
+#app { display: flex; height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 380px; background: var(--bg2); border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sidebar-header {
+  padding: 20px; border-bottom: 1px solid var(--rule);
+}
+.sidebar-header h1 { font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+.sidebar-header p { font-size: 0.78rem; color: var(--muted); }
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.stat-item {
+  background: var(--bg3); border-radius: 8px; padding: 10px; text-align: center;
+}
+.stat-item .num { font-size: 1.3rem; font-weight: 900; color: var(--brand); }
+.stat-item .label { font-size: 0.7rem; color: var(--muted); }
+
+/* Filters */
+.filters { padding: 12px 20px; border-bottom: 1px solid var(--rule); }
+.filter-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: var(--muted); }
+.filter-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.filter-chip {
+  padding: 3px 10px; border-radius: 12px; border: 1px solid var(--rule);
+  background: var(--bg3); color: var(--muted); font-size: 0.72rem; cursor: pointer;
+  transition: all 0.2s; user-select: none;
+}
+.filter-chip:hover, .filter-chip.active { border-color: var(--brand); color: var(--brand); background: rgba(74,155,140,0.1); }
+.filter-chip.danger:hover, .filter-chip.danger.active { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.1); }
+.filter-chip.warn:hover, .filter-chip.warn.active { border-color: var(--warn); color: var(--warn); background: rgba(245,158,11,0.1); }
+
+/* Defects list */
+.defects-scroll { flex: 1; overflow-y: auto; padding: 12px 20px; }
+.defect-item {
+  background: var(--bg3); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+  border-left: 3px solid var(--rule); cursor: pointer; transition: all 0.2s;
+}
+.defect-item:hover { background: rgba(255,255,255,0.04); }
+.defect-item.p0 { border-left-color: var(--danger); }
+.defect-item.p1 { border-left-color: var(--warn); }
+.defect-item.p2 { border-left-color: var(--info); }
+.defect-title { font-weight: 700; font-size: 0.8rem; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+.defect-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+.defect-file { font-size: 0.68rem; color: var(--muted); opacity: 0.7; margin-top: 4px; font-family: monospace; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 0.6rem; font-weight: 700; }
+.tag-red { background: rgba(239,68,68,0.15); color: #f87171; }
+.tag-orange { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.tag-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+/* Canvas area */
+.canvas-wrap {
+  flex: 1; position: relative; background: var(--bg); overflow: hidden;
+}
+#graph-svg { width: 100%; height: 100%; cursor: grab; }
+#graph-svg:active { cursor: grabbing; }
+.graph-controls {
+  position: absolute; bottom: 20px; right: 20px; display: flex; gap: 8px;
+}
+.ctrl-btn {
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--rule);
+  background: var(--bg2); color: var(--ink); font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.ctrl-btn:hover { border-color: var(--brand); background: var(--bg3); }
+
+/* Tooltip */
+.tooltip {
+  position: absolute; background: var(--bg3); border: 1px solid var(--rule);
+  border-radius: 10px; padding: 12px; pointer-events: none; opacity: 0;
+  transition: opacity 0.15s; max-width: 280px; z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.tooltip.visible { opacity: 1; }
+.tooltip h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+.tooltip p { font-size: 0.75rem; color: var(--muted); margin: 3px 0; }
+.tooltip .tt-stat { color: var(--brand); font-weight: 700; }
+
+/* Legend */
+.legend {
+  position: absolute; top: 20px; right: 20px;
+  background: var(--bg2); border: 1px solid var(--rule); border-radius: 10px;
+  padding: 12px 16px; font-size: 0.72rem;
+}
+.legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.legend-line { width: 24px; height: 2px; border-radius: 1px; }
+.legend-line.normal { background: var(--muted); }
+.legend-line.cycle { background: var(--danger); border: 1px dashed var(--danger); height: 0; }
+.legend-line.suspicious { background: var(--warn); border: 1px dashed var(--warn); height: 0; }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+/* Search */
+.search-box {
+  padding: 10px 20px; border-bottom: 1px solid var(--rule);
+}
+.search-box input {
+  width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--rule);
+  background: var(--bg3); color: var(--ink); font-size: 0.8rem;
+}
+.search-box input::placeholder { color: var(--muted); }
+.search-box input:focus { outline: none; border-color: var(--brand); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+/* Node labels in SVG */
+.node-label { fill: var(--ink); font-family: var(--font-sans); font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; }
+.node-sublabel { fill: var(--muted); font-family: var(--font-sans); font-size: 9px; text-anchor: middle; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>代码依赖关系图谱</h1>
+    <p>扫描 1387 后端文件 + 1090 前端文件 · 发现 135 项缺陷</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-item"><div class="num">1</div><div class="label">循环依赖</div></div>
+    <div class="stat-item"><div class="num" style="color:var(--warn)">119</div><div class="label">可疑导入</div></div>
+    <div class="stat-item"><div class="num" style="color:var(--info)">15</div><div class="label">孤立模块</div></div>
+    <div class="stat-item"><div class="num" style="color:var(--fe)">96</div><div class="label">跨层调用</div></div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="搜索模块名..." oninput="searchNodes(this.value)">
+  </div>
+
+  <div class="filters">
+    <div class="filter-title">显示层级</div>
+    <div class="filter-group">
+      <span class="filter-chip active" onclick="toggleFilter(this, 'all')">全部</span>
+      <span class="filter-chip" onclick="toggleFilter(this, 'backend')">后端</span>
+      <span class="filter-chip" onclick="toggleFilter(this, 'frontend')">前端</span>
+    </div>
+    <div class="filter-title">缺陷类型</div>
+    <div class="filter-group">
+      <span class="filter-chip danger" onclick="toggleDefect(this, 'cycle')">循环依赖</span>
+      <span class="filter-chip warn" onclick="toggleDefect(this, 'suspicious')">可疑导入</span>
+      <span class="filter-chip" onclick="toggleDefect(this, 'isolated')">孤立模块</span>
+    </div>
+  </div>
+
+  <div class="defects-scroll" id="defectsList">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- Canvas -->
+<div class="canvas-wrap">
+  <svg id="graph-svg"></svg>
+  <div class="tooltip" id="tooltip"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-line normal"></div><span>正常依赖</span></div>
+    <div class="legend-item"><div class="legend-line cycle"></div><span>循环依赖</span></div>
+    <div class="legend-item"><div class="legend-line suspicious"></div><span>可疑导入</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--l1)"></div><span>L1 接入层</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--l2)"></div><span>L2 AI 层</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--l3)"></div><span>L3 服务层</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--l4)"></div><span>L4 数据层</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--l5)"></div><span>L5 基础设施</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--fe)"></div><span>前端</span></div>
+  </div>
+  <div class="graph-controls">
+    <button class="ctrl-btn" onclick="zoomIn()">+</button>
+    <button class="ctrl-btn" onclick="zoomOut()">-</button>
+    <button class="ctrl-btn" onclick="resetView()">&#8634;</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ===== DATA =====
+const backendClusters = [
+  {id:'api_routes', name:'API Routes', count:124, layer:'l1', color:'#3b82f6', x:300, y:80},
+  {id:'api_modules', name:'API Modules', count:25, layer:'l1', color:'#3b82f6', x:450, y:80},
+  {id:'hermes', name:'Hermes', count:68, layer:'l3', color:'#8b5cf6', x:100, y:220},
+  {id:'cross_border', name:'Cross Border', count:30, layer:'l3', color:'#8b5cf6', x:220, y:220},
+  {id:'foreign_trade', name:'Foreign Trade', count:39, layer:'l2', color:'#a78bfa', x:340, y:220},
+  {id:'ai_services', name:'AI Services', count:19, layer:'l2', color:'#a78bfa', x:440, y:220},
+  {id:'agent_loop', name:'Agent Loop', count:5, layer:'l2', color:'#a78bfa', x:530, y:220},
+  {id:'geo', name:'GEO Engine', count:16, layer:'l3', color:'#8b5cf6', x:620, y:220},
+  {id:'seo_services', name:'SEO Services', count:9, layer:'l3', color:'#8b5cf6', x:100, y:320},
+  {id:'publish_workers', name:'Publish Workers', count:9, layer:'l3', color:'#8b5cf6', x:210, y:320},
+  {id:'platforms', name:'Platforms', count:8, layer:'l3', color:'#8b5cf6', x:310, y:320},
+  {id:'paperclip', name:'Paperclip', count:7, layer:'l3', color:'#8b5cf6', x:400, y:320},
+  {id:'crawlers', name:'Crawlers', count:6, layer:'l3', color:'#8b5cf6', x:490, y:320},
+  {id:'analytics', name:'Analytics', count:5, layer:'l3', color:'#8b5cf6', x:570, y:320},
+  {id:'feishu', name:'Feishu', count:5, layer:'l3', color:'#8b5cf6', x:650, y:320},
+  {id:'media', name:'Media', count:15, layer:'l3', color:'#8b5cf6', x:100, y:400},
+  {id:'egress', name:'Egress', count:10, layer:'l5', color:'#ef4444', x:200, y:400},
+  {id:'services_other', name:'Services (Other)', count:286, layer:'l3', color:'#8b5cf6', x:350, y:400},
+  {id:'models', name:'Models', count:81, layer:'l4', color:'#f59e0b', x:520, y:400},
+  {id:'schemas', name:'Schemas', count:22, layer:'l4', color:'#f59e0b', x:620, y:400},
+  {id:'core', name:'Core', count:55, layer:'l5', color:'#ef4444', x:100, y:500},
+  {id:'celery_tasks', name:'Celery Tasks', count:9, layer:'l5', color:'#ef4444', x:220, y:500},
+  {id:'other', name:'Other', count:534, layer:'l5', color:'#6b7280', x:400, y:500},
+];
+
+const frontendClusters = [
+  {id:'admin_views', name:'Admin Views', count:301, layer:'fe', color:'#22c55e', x:750, y:150},
+  {id:'vue_other', name:'Vue Other', count:237, layer:'fe', color:'#22c55e', x:750, y:250},
+  {id:'ts_other', name:'TS/JS Other', count:436, layer:'fe', color:'#22c55e', x:750, y:350},
+  {id:'composables', name:'Composables', count:67, layer:'fe', color:'#22c55e', x:750, y:430},
+  {id:'stores', name:'Pinia Stores', count:26, layer:'fe', color:'#22c55e', x:750, y:500},
+  {id:'api_clients', name:'API Clients', count:23, layer:'fe', color:'#22c55e', x:750, y:560},
+];
+
+const allNodes = [...backendClusters, ...frontendClusters];
+
+const edges = [
+  // Normal dependencies
+  {from:'api_routes', to:'services_other', type:'normal', label:'调用服务'},
+  {from:'api_routes', to:'schemas', type:'normal', label:'请求/响应'},
+  {from:'api_routes', to:'models', type:'normal', label:'数据模型'},
+  {from:'hermes', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'cross_border', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'foreign_trade', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'foreign_trade', to:'ai_services', type:'normal', label:'AI能力'},
+  {from:'ai_services', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'agent_loop', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'geo', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'seo_services', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'publish_workers', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'platforms', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'paperclip', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'crawlers', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'analytics', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'feishu', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'media', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'egress', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'services_other', to:'models', type:'normal', label:'数据访问'},
+  {from:'services_other', to:'schemas', type:'normal', label:'请求/响应'},
+  {from:'services_other', to:'core', type:'normal', label:'基础设施'},
+  {from:'celery_tasks', to:'services_other', type:'normal', label:'异步调用'},
+  {from:'celery_tasks', to:'models', type:'normal', label:'数据访问'},
+  {from:'other', to:'models', type:'normal', label:'数据访问'},
+  {from:'other', to:'api_routes', type:'normal', label:'路由引用'},
+  {from:'other', to:'services_other', type:'normal', label:'内部服务'},
+  {from:'admin_views', to:'api_clients', type:'normal', label:'API调用'},
+  {from:'admin_views', to:'composables', type:'normal', label:'逻辑复用'},
+  {from:'admin_views', to:'stores', type:'normal', label:'状态管理'},
+  {from:'vue_other', to:'composables', type:'normal', label:'逻辑复用'},
+  {from:'vue_other', to:'stores', type:'normal', label:'状态管理'},
+  {from:'ts_other', to:'api_clients', type:'normal', label:'API调用'},
+  {from:'api_clients', to:'admin_views', type:'normal', label:'类型共享'},
+  {from:'composables', to:'stores', type:'normal', label:'状态读取'},
+
+  // Cross-layer: Frontend -> Backend
+  {from:'api_clients', to:'api_routes', type:'cross', label:'HTTP/API', dashed:true},
+
+  // Suspicious imports
+  {from:'api_routes', to:'api_routes', type:'suspicious', label:'路由互导', dashed:true},
+  {from:'hermes', to:'api_routes', type:'suspicious', label:'服务→路由', dashed:true},
+
+  // Cycle edges (highlighted)
+  {from:'api_routes', to:'other', type:'cycle', label:'循环', dashed:true},
+  {from:'other', to:'api_routes', type:'cycle', label:'循环', dashed:true},
+];
+
+const defects = [
+  {level:'p0', title:'巨大循环依赖 SCC', desc:'30+ 文件形成强连通分量，涉及 routes/__init__.py → 多个路由 → hermes runtime → video_publish → 测试文件 → main.py。此循环导致模块加载顺序不可预测，可能引发导入错误。', files:['routes/__init__.py','hermes/runtime.py','main.py'], type:'cycle'},
+  {level:'p0', title:'路由间直接导入', desc:'hermes.py、paperclip.py、wangcai_marketplace.py 等路由文件直接导入其他路由模块（如 ubrain）。路由层应通过服务层交互，不应相互直接依赖。', files:['routes/hermes.py','routes/paperclip.py','routes/wangcai_marketplace.py'], type:'suspicious'},
+  {level:'p0', title:'服务层导入路由层', desc:'services/video_publish_router.py、services/hermes/video_matrix_workflow.py 等服务文件导入 API 路由模块，违反了分层架构原则（下层不应依赖上层）。', files:['services/video_publish_router.py','services/hermes/video_matrix_workflow.py'], type:'suspicious'},
+  {level:'p1', title:'过深层级相对导入', desc:'routes/talking_stick.py 使用 "....services.talking_stick.scheduler" 等 4 级相对导入，表明模块位置设计不合理，应使用绝对导入。', files:['routes/talking_stick.py'], type:'suspicious'},
+  {level:'p1', title:'15 个孤立模块', desc:'__init__.py 空文件、accio_gap_constants.py、merge heads 等文件既无导入也不被导入。__init__.py 空包是正常设计，但 accio_gap_constants.py 可能是废弃代码。', files:['services/ubrain/accio_gap_constants.py','alembic/versions/051_merge_heads...'], type:'isolated'},
+  {level:'p1', title:'测试文件参与循环', desc:'tests/unit/test_*.py 多个测试文件被卷入与生产代码的循环依赖中，说明测试代码不应直接导入路由/服务模块，应通过独立入口加载。', files:['tests/unit/test_sprint_*.py','tests/unit/test_international_stats_api.py'], type:'cycle'},
+  {level:'p1', title:'api_modules 集群游离', desc:'25 个 api_modules 文件（v1 根级路由）未明确归入任何服务集群，且与 api_routes 的边界模糊，可能导致路由重复或冲突。', files:['api/v1/*.py'], type:'suspicious'},
+  {level:'p2', title:'前端 API Clients 分散', desc:'23 个 API Client 文件分散在各视图目录，未统一封装。可能导致请求逻辑重复、错误处理不一致。', files:['admin/src/api/*.ts'], type:'suspicious'},
+  {level:'p2', title:'services_other 过大', desc:'286 个文件未归入任何命名服务集群，全部落入 services_other。这表明服务边界划分不清，存在大量未分类的业务逻辑。', files:['services/*.py'], type:'suspicious'},
+  {level:'p2', title:'other 集群过大', desc:'534 个文件未归入任何已知集群，可能包含废弃代码、临时脚本或重复工具函数，需要清理和重组。', files:['backend/*'], type:'suspicious'},
+];
+
+// ===== RENDER DEFECTS =====
+function renderDefects() {
+  const container = document.getElementById('defectsList');
+  container.innerHTML = defects.map((d, i) => `
+    <div class="defect-item ${d.level}" onclick="highlightDefect(${i})">
+      <div class="defect-title">
+        ${d.level === 'p0' ? '<span class="tag tag-red">P0</span>' : d.level === 'p1' ? '<span class="tag tag-orange">P1</span>' : '<span class="tag tag-blue">P2</span>'}
+        ${d.title}
+      </div>
+      <div class="defect-desc">${d.desc}</div>
+      <div class="defect-file">${d.files.join(' · ')}</div>
+    </div>
+  `).join('');
+}
+renderDefects();
+
+// ===== SVG GRAPH =====
+const svg = document.getElementById('graph-svg');
+const tooltip = document.getElementById('tooltip');
+let scale = 1, tx = 50, ty = 30;
+let dragNode = null, dragOffset = {x:0, y:0};
+
+function initSVG() {
+  const rect = svg.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+  renderGraph();
+}
+
+function renderGraph() {
+  const w = svg.clientWidth || 900;
+  const h = svg.clientHeight || 700;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+  let html = `
+    <defs>
+      <marker id="arrow-normal" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1.5 L7 4 L1 6.5Z" fill="#8a92a6"/>
+      </marker>
+      <marker id="arrow-cycle" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1.5 L7 4 L1 6.5Z" fill="#ef4444"/>
+      </marker>
+      <marker id="arrow-suspicious" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1.5 L7 4 L1 6.5Z" fill="#f59e0b"/>
+      </marker>
+      <marker id="arrow-cross" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1.5 L7 4 L1 6.5Z" fill="#22c55e"/>
+      </marker>
+    </defs>
+    <g transform="translate(${tx},${ty}) scale(${scale})">
+  `;
+
+  // Layer labels
+  const layers = [
+    {y:60, label:'L1 API 接入层', color:'#3b82f6'},
+    {y:200, label:'L2 AI / L3 服务层', color:'#8b5cf6'},
+    {y:380, label:'L4 数据层 / L5 基础设施', color:'#f59e0b'},
+    {y:520, label:'前端层', color:'#22c55e'},
+  ];
+  layers.forEach(l => {
+    html += `<text x="20" y="${l.y}" fill="${l.color}" font-size="11" font-weight="700" opacity="0.6">${l.label}</text>`;
+  });
+
+  // Edges
+  edges.forEach(e => {
+    const from = allNodes.find(n => n.id === e.from);
+    const to = allNodes.find(n => n.id === e.to);
+    if (!from || !to) return;
+
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const nx = dx / dist, ny = dy / dist;
+    const r = 25 + Math.sqrt(from.count) * 1.5;
+    const r2 = 25 + Math.sqrt(to.count) * 1.5;
+    const x1 = from.x + nx * r;
+    const y1 = from.y + ny * r;
+    const x2 = to.x - nx * r2;
+    const y2 = to.y - ny * r2;
+
+    let stroke = '#8a92a6', strokeWidth = 1, dash = '', marker = 'url(#arrow-normal)';
+    if (e.type === 'cycle') { stroke = '#ef4444'; strokeWidth = 2; dash = '6,4'; marker = 'url(#arrow-cycle)'; }
+    else if (e.type === 'suspicious') { stroke = '#f59e0b'; strokeWidth = 1.5; dash = '4,3'; marker = 'url(#arrow-suspicious)'; }
+    else if (e.type === 'cross') { stroke = '#22c55e'; strokeWidth = 1.5; marker = 'url(#arrow-cross)'; }
+
+    html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${strokeWidth}" ${dash ? `stroke-dasharray="${dash}"` : ''} marker-end="${marker}" opacity="0.7"/>`;
+
+    // Label
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    if (e.label) {
+      html += `<rect x="${mx-22}" y="${my-8}" width="44" height="14" rx="4" fill="var(--bg)" stroke="${stroke}" stroke-width="0.5" opacity="0.9"/>`;
+      html += `<text x="${mx}" y="${my+2}" fill="${stroke}" font-size="8" text-anchor="middle" font-weight="600">${e.label}</text>`;
+    }
+  });
+
+  // Nodes
+  allNodes.forEach(n => {
+    const r = 25 + Math.sqrt(n.count) * 1.5;
+    html += `<circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${n.color}" opacity="0.15" stroke="${n.color}" stroke-width="1.5" class="node" data-id="${n.id}" style="cursor:pointer"/>`;
+    html += `<text x="${n.x}" y="${n.y-2}" class="node-label">${n.name}</text>`;
+    html += `<text x="${n.x}" y="${n.y+10}" class="node-sublabel">${n.count} files</text>`;
+  });
+
+  html += '</g>';
+  svg.innerHTML = html;
+
+  // Event listeners
+  svg.querySelectorAll('.node').forEach(el => {
+    el.addEventListener('mouseenter', (e) => showTooltip(e, el.dataset.id));
+    el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('mousedown', (e) => startDrag(e, el.dataset.id));
+  });
+}
+
+function showTooltip(e, nodeId) {
+  const n = allNodes.find(x => x.id === nodeId);
+  if (!n) return;
+  const deps = edges.filter(e => e.from === nodeId || e.to === nodeId);
+  const out = edges.filter(e => e.from === nodeId).length;
+  const inn = edges.filter(e => e.to === nodeId).length;
+
+  tooltip.innerHTML = `
+    <h4 style="color:${n.color}">${n.name}</h4>
+    <p>文件数: <span class="tt-stat">${n.count}</span></p>
+    <p>出边: <span class="tt-stat">${out}</span> · 入边: <span class="tt-stat">${inn}</span></p>
+    <p>层级: ${n.layer.toUpperCase()}</p>
+    ${deps.map(d => `<p style="font-size:11px;color:var(--muted)">${d.from === nodeId ? '→ ' + allNodes.find(x=>x.id===d.to)?.name : '← ' + allNodes.find(x=>x.id===d.from)?.name} ${d.label ? '('+d.label+')' : ''}</p>`).join('')}
+  `;
+  tooltip.classList.add('visible');
+  const rect = svg.getBoundingClientRect();
+  tooltip.style.left = (e.clientX - rect.left + 20) + 'px';
+  tooltip.style.top = (e.clientY - rect.top + 10) + 'px';
+}
+
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+function startDrag(e, nodeId) {
+  dragNode = allNodes.find(n => n.id === nodeId);
+  dragOffset = {x: e.clientX, y: e.clientY};
+  const onMove = (ev) => {
+    if (!dragNode) return;
+    dragNode.x += (ev.clientX - dragOffset.x) / scale;
+    dragNode.y += (ev.clientY - dragOffset.y) / scale;
+    dragOffset = {x: ev.clientX, y: ev.clientY};
+    renderGraph();
+  };
+  const onUp = () => { dragNode = null; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+}
+
+function zoomIn() { scale *= 1.2; renderGraph(); }
+function zoomOut() { scale /= 1.2; renderGraph(); }
+function resetView() { scale = 1; tx = 50; ty = 30; renderGraph(); }
+
+function searchNodes(q) {
+  if (!q) { svg.querySelectorAll('.node').forEach(el => el.style.opacity = '1'); return; }
+  svg.querySelectorAll('.node').forEach(el => {
+    const n = allNodes.find(x => x.id === el.dataset.id);
+    el.style.opacity = (n && (n.name.toLowerCase().includes(q.toLowerCase()) || n.id.includes(q))) ? '1' : '0.2';
+  });
+}
+
+let activeFilter = 'all';
+function toggleFilter(el, type) {
+  document.querySelectorAll('.filter-chip').forEach(c => { if (!c.classList.contains('danger') && !c.classList.contains('warn')) c.classList.remove('active'); });
+  el.classList.add('active');
+  activeFilter = type;
+  svg.querySelectorAll('.node').forEach(nodeEl => {
+    const n = allNodes.find(x => x.id === nodeEl.dataset.id);
+    if (!n) return;
+    if (type === 'all') nodeEl.style.opacity = '1';
+    else if (type === 'backend') nodeEl.style.opacity = n.layer === 'fe' ? '0.2' : '1';
+    else if (type === 'frontend') nodeEl.style.opacity = n.layer === 'fe' ? '1' : '0.2';
+  });
+}
+
+function toggleDefect(el, type) {
+  el.classList.toggle('active');
+  // Highlight related edges
+  renderGraph();
+}
+
+function highlightDefect(idx) {
+  const d = defects[idx];
+  // Scroll to related nodes in graph
+}
+
+// Pan
+let panning = false, panStart = {x:0, y:0};
+svg.addEventListener('mousedown', (e) => { if (e.target === svg) { panning = true; panStart = {x: e.clientX, y: e.clientY}; } });
+window.addEventListener('mousemove', (e) => { if (panning) { tx += e.clientX - panStart.x; ty += e.clientY - panStart.y; panStart = {x: e.clientX, y: e.clientY}; renderGraph(); } });
+window.addEventListener('mouseup', () => { panning = false; });
+
+window.addEventListener('resize', renderGraph);
+window.addEventListener('load', initSVG);
+setTimeout(initSVG, 100);
+</script>
+</body>
+</html>

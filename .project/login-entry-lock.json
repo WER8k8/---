@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-06-02",
+  "decision_id": "LOGIN-LOCK-01",
+  "title": "管理端唯一超管登录入口（硬锁）",
+  "summary": "frontend/admin 仅允许一个登录页 /login（平台超管）。禁止恢复四门户 ?portal= 或多套 login.vue。",
+  "authority_doc": "docs/product/LOGIN-SINGLE-ENTRY-CHARTER.md",
+  "agents_entrypoints": [
+    "AGENTS.md",
+    "frontend/admin/AGENTS.md"
+  ],
+  "verify_scripts": [
+    "frontend/admin/scripts/check-login-entry-lock.mjs",
+    "scripts/verify-login-entry-lock.ps1"
+  ],
+  "allowed": {
+    "login_route": "/login",
+    "login_component": "frontend/admin/src/views/login/index.vue",
+    "login_copy_module": "frontend/admin/src/constants/loginPortalCopy.ts",
+    "oauth_callback": "/login/oauth-callback",
+    "register_route": "/tenants/register",
+    "legacy_redirects_only": [
+      "/client/login",
+      "/login/agent",
+      "/login/partner",
+      "/login/platform",
+      "/login/admin"
+    ]
+  },
+  "forbidden": {
+    "patterns_in_product_code": [
+      "LoginPortal = 'tenant'",
+      "portal=tenant",
+      "portal=agent",
+      "portal=partner",
+      "DEV_PORTAL_CREDENTIALS",
+      "LOGIN_PORTAL_COPY",
+      "normalizeLoginPortal",
+      "portalForRole",
+      "views/client/login.vue"
+    ],
+    "forbidden_new_files": [
+      "frontend/admin/src/views/client/login.vue",
+      "frontend/admin/src/views/login/tenant.vue",
+      "frontend/admin/src/views/login/agent.vue",
+      "frontend/admin/src/views/login/partner.vue",
+      "frontend/admin/src/views/login/platform.vue",
+      "frontend/admin/src/views/admin/tenants.vue",
+      "frontend/admin/src/views/tenant"
+    ],
+    "forbidden_behaviors": [
+      "新建第二套登录 Vue 页面",
+      "按 ?portal= 切换登录 UI 文案/主题",
+      "在 router 新增 portal 查询参数分支",
+      "恢复四门户 DEV 预填账号表"
+    ]
+  },
+  "superseded_docs": [
+    "docs/meetings/ECC-LOGIN-GLASS-PORTAL-PM-DESIGN-MKT.md"
+  ],
+  "dev_credentials": {
+    "accounts_file": ".project/dev-login-accounts.json",
+    "platform": { "username": "admin", "password": "admin123", "home_after_login": "/admin" },
+    "tenant": { "username": "tenant", "password": "tenant123", "home_after_login": "/client/today" },
+    "agent": { "username": "agent", "password": "agent123", "home_after_login": "/agent/performance" },
+    "start_script": "scripts/start-dev-admin.ps1"
+  }
+}

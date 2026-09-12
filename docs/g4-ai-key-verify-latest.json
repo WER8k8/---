@@ -1,0 +1,21 @@
+{
+  "g4_pass": true,
+  "probe": {
+    "providers": [
+      "nvidia"
+    ],
+    "has_real_key": true,
+    "mvp_launch": false,
+    "environment": "development",
+    "g4_pass": true,
+    "hint": "生产商用须至少一个 AI Key 且 MVP_LAUNCH=0",
+    "engine_probe": "real",
+    "current_provider": "nvidia",
+    "live": {
+      "live_call": "ok",
+      "sample": "OK",
+      "provider": "nvidia"
+    }
+  },
+  "mvp_launch": "0"
+}

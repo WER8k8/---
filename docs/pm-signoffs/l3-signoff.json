@@ -1,0 +1,46 @@
+{
+  "engineering_automated_l3": true,
+  "automated_checks": [
+    {
+      "name": "health",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "/api/v1/bff/client/bootstrap",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "/api/v1/platforms/catalog",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "/api/v1/inquiries/unified",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "/api/v1/analytics/traffic-board",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "/api/v1/ubrain/commercial-os/status",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "/api/v1/seo/report/export?format=json",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "inquiries_export",
+      "ok": true,
+      "detail": "200"
+    }
+  ],
+  "pm_signed": false
+}

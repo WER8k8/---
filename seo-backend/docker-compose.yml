@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: seo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: seo_matrix_db
+      MYSQL_USER: seo_user
+      MYSQL_PASSWORD: seo_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - seo-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: seo-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - seo-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seo-backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: seo_matrix_db
+      DB_USER: seo_user
+      DB_PASSWORD: seo_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: seo-matrix-super-secret-key-2024-change-in-production
+      API_PREFIX: /api/v1
+      FRONTEND_URL: http://localhost:5173
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - seo-network
+    volumes:
+      - ./logs:/app/logs
+
+  frontend:
+    build:
+      context: ../seo-admin
+      dockerfile: Dockerfile
+    container_name: seo-admin
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - seo-network
+
+volumes:
+  mysql-data:
+  redis-data:
+
+networks:
+  seo-network:
+    driver: bridge

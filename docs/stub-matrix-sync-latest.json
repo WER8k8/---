@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "task": "T-PM-02",
+  "platform_count_ts": 19,
+  "platform_count_matrix": 19,
+  "killed_count_ts": 3,
+  "killed_count_matrix": 3,
+  "client_count_ts": 6,
+  "client_count_matrix": 6,
+  "missing_in_matrix": [],
+  "extra_in_matrix": [],
+  "killed_missing_in_matrix": [],
+  "killed_extra_in_matrix": [],
+  "client_missing_in_matrix": [],
+  "client_extra_in_matrix": [],
+  "lab_kill_overlap": [],
+  "matrix_path": ".project\\stub-matrix-T-PM-02-v1.json"
+}

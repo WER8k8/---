@@ -1,0 +1,69 @@
+# 夜间无人开发 · 任务队列（按顺序消费，未完成项留到下一夜）
+# 铁律：只推进 商业飞轮OS-开发总文档.md 主线，不改 DeerFlow+Accio 方向
+
+version: "2026-05-25"
+max_tasks_per_night: 3
+forbidden:
+  - 大规模重构无关模块
+  - 删除 accio_skill_catalog 对标项
+  - 自动 git push / 自动对外发信
+  - 用七步/演讲需求挤掉飞轮 P0
+
+tasks:
+  - id: N1
+    status: done
+    priority: P0
+    title: 飞轮 pipeline 轮询 API + 副驾展示
+    paths:
+      - backend/app/api/v1/routes/ubrain_commercial_os.py
+      - frontend/admin/src/views/client/copilot.vue
+    acceptance:
+      - GET /commercial-os/pipelines 返回最近编排
+      - 副驾显示最近 pipeline status
+    verify:
+      - python -m pytest tests/unit/test_commercial_os_flywheel.py -q
+
+  - id: N2
+    status: done
+    priority: P0
+    title: DeerFlow job 完成后自动刷新副驾飞轮状态
+    paths:
+      - frontend/admin/src/views/client/copilot.vue
+    acceptance:
+      - job status=success 时调用 loadFlywheel
+    verify:
+      - 手动 E2E 或保留单测
+
+  - id: N3
+    status: done
+    priority: P1
+    title: n8n webhook 示例 JSON + 文档实测段落
+    paths:
+      - docs/出海计/商业OS飞轮-开源组件对接.md
+      - docs/出海计/examples/n8n-deerflow-done.json
+    acceptance:
+      - 示例 body 可被 POST webhook 解析
+    verify:
+      - curl 或 pytest 集成（可选）
+
+  - id: N4
+    status: done
+    priority: P1
+    title: 定时反馈 sync 运维脚本（Windows 任务计划友好）
+    paths:
+      - scripts/ubrain-feedback-sync.ps1
+    acceptance:
+      - 脚本调用 POST feedback/sync（需 TOKEN 环境变量）
+    verify:
+      - 文档说明 TOKEN 配置
+
+  - id: N5
+    status: done
+    priority: P2
+    title: skill-catalog gap 项 stub API（image_sourcing 返回 501+说明）
+    paths:
+      - backend/app/api/v1/routes/ubrain_commercial_os.py
+    acceptance:
+      - 不删 catalog 条目，仅明确 gap 响应
+    verify:
+      - pytest 一条

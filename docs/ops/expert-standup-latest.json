@@ -1,0 +1,18 @@
+{
+  "day": "2026-07-10",
+  "roster_day": "2026-07-10",
+  "run_kind": "full_roster",
+  "roster_today": true,
+  "generated_at": "2026-07-10T12:26:09.977694+00:00",
+  "daily_ok": true,
+  "pass_count": 9,
+  "lane_count": 9,
+  "auto_fixed": false,
+  "auto_actions": [],
+  "backlog": [],
+  "owner_review": [],
+  "owner_review_count": 0,
+  "needs_owner": false,
+  "markdown": "# 专家每日站会 · 2026-07-10\n\n## 扫描摘要（诚实）\n- 全量 9 Lane: 今日已跑 (run_kind=full_roster, day=2026-07-10)\n- Lane 通过: 9/9\n- 扫描结果: 全绿\n\n## 已自动处理（小事，有探针证据）\n- 无自动修补动作\n\n## 请您过目（大事 / 诚实冲突）\n- 无大事。今日全量扫描通过，Owner 可忽略。\n\n## 下一轮\n- 08:00 计划任务跑 full_roster（LOCALAPPDATA 启动器，避免中文路径 267011）\n- FAIL Lane 优先由对应专家在 Cursor 修代码\n\n归档: docs/ops/daily-runs/2026-07-10.json\n诚实门禁: docs/ops/ops-honesty-latest.json",
+  "notify_text": "【优丁专家站会 2026-07-10】\n全量扫描: 今日已跑\nLane: 9/9 全绿\n自动修(探针证实): 否\n请您过目: 0 项\n· 无大事。\n详情: docs/ops/expert-standup-latest.md"
+}
