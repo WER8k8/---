@@ -3,7 +3,7 @@ feature: acquisition-persist-experience-loop
 status: delivered
 updated: 2026-09-18
 branch: feat/acquire-mobius-20260918
-commits: 67e9d342..PREVIEW
+commits: 67e9d342..a9049ea27272
 ---
 
 # 获客落库与经验闭环（compose-next#2）
