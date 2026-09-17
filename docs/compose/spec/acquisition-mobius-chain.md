@@ -1,9 +1,9 @@
-﻿---
+---
 feature: acquisition-mobius-chain
 status: delivered
 updated: 2026-09-18
 branch: feat/acquire-mobius-20260918
-commits: f5cb60d2..WORKTREE
+commits: f5cb60d2..2c800773b5eb
 ---
 
 # 获客莫比乌斯链（智慧调度 → 跟单卡 → 好用闭环）
