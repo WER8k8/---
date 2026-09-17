@@ -259,3 +259,14 @@ export function listFollowups(tenantId = 'demo', includeLost = false): Promise<{
     `/acquisition/followups?tenant_id=${encodeURIComponent(tenantId)}&include_lost=${includeLost ? 'true' : 'false'}`,
   ).then(unwrap)
 }
+
+/** 获客渠道健康（real/mock 红标） */
+export function listAcquisitionChannels(): Promise<{
+  channels: Array<{ id: string; name: string; status: string; reason: string; is_mock: boolean }>
+  mock_count?: number
+  real_count?: number
+  hint?: string
+  error?: string
+}> {
+  return apiGet<any>('/acquisition/channels').then(unwrap)
+}

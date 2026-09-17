@@ -56,6 +56,15 @@
         <a-alert v-if="alert" class="mt-3" :type="alertType" show-icon :message="alert" />
       </a-card>
 
+      <a-card v-if="channels && channels.channels.length" size="small" title="获客渠道（红标=演示/未开通）">
+        <div class="flex flex-wrap gap-2">
+          <a-tag v-for="ch in channels.channels" :key="ch.id" :color="ch.is_mock ? 'error' : 'success'">
+            {{ ch.name }}{{ ch.is_mock ? ' · 演示' : ' · 可用' }}
+          </a-tag>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">{{ channels.hint }}</div>
+      </a-card>
+
       <!-- 今日待办 SLA -->
       <a-card size="small" title="今日待办（先逾期，后将到期）">
         <div class="flex items-center gap-2 mb-2">
@@ -231,6 +240,7 @@ import {
   getWalletStatus,
   ingestReply,
   listPlaybooks,
+  listAcquisitionChannels,
   listFollowups,
   materializeOpsCard,
   previewIntent,
@@ -274,6 +284,11 @@ const intentAnalysis = ref<{
 } | null>(null)
 
 const followupLoading = ref(false)
+const channels = ref<Awaited<ReturnType<typeof listAcquisitionChannels>> | null>(null)
+
+async function loadChannels() {
+  try { channels.value = await listAcquisitionChannels() } catch { channels.value = null }
+}
 const followups = ref<Awaited<ReturnType<typeof listFollowups>> | null>(null)
 
 async function loadFollowups() {
@@ -601,6 +616,7 @@ onMounted(async () => {
     }
   }
   await loadFollowups()
+  void loadChannels()
 })
 
 const wallet = ref<{

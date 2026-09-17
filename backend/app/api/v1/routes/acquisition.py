@@ -549,9 +549,38 @@ def acquisition_translate(
 def acquisition_wallet_status(
     tenant_id: str = "demo",
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    """Token/套餐闸状态；无账本不编造。"""
-    return check_wallet_status(tenant_id)
+    """Token/套餐闸状态；有账本读真余额，无账本不编造。"""
+    return check_wallet_status(tenant_id, db=_resolve_db(db))
+
+
+@router.get("/channels")
+def acquisition_channels(current_user: User = Depends(get_current_user)):
+    """获客渠道健康：real / mock / coming_soon（前端红标）。"""
+    try:
+        from app.services.ubrain.channel_status import get_all_channel_statuses
+        items = get_all_channel_statuses()
+        channels = [
+            {
+                "id": c.id,
+                "name": c.name,
+                "status": c.status,
+                "reason": c.reason,
+                "is_mock": c.status != "real",
+            }
+            for c in items
+        ]
+    except Exception as exc:  # noqa: BLE001
+        channels = []
+        return {"channels": [], "error": str(exc)[:200], "hint": "渠道状态服务不可用"}
+    mock_n = sum(1 for c in channels if c.get("is_mock"))
+    return {
+        "channels": channels,
+        "mock_count": mock_n,
+        "real_count": len(channels) - mock_n,
+        "hint": "标记为「演示/未配置」的渠道结果不可当作真实线索。",
+    }
 
 
 @router.post("/dispatch", response_model=DispatchResponse)

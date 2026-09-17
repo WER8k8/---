@@ -16,8 +16,31 @@ logger = logging.getLogger(__name__)
 
 
 def _try_external_translate(text: str, from_lang: str, to_lang: str) -> Optional[dict[str, Any]]:
-    """尝试外部翻译引擎；未配置返回 None。"""
-    # 预留：跨境语言桥 / DeepL / 云翻译 — 未接通时必须 None，禁止 stub 假译
+    """尝试外部翻译引擎；未配置返回 None。禁止 stub 假译。"""
+    # 1) LibreTranslate sidecar（跨境文案机翻，须标注 machine）
+    try:
+        from app.services.cross_border.libretranslate_sidecar import sidecar_base_url
+        import httpx
+
+        base = (sidecar_base_url() or "").rstrip("/")
+        if base:
+            payload = {
+                "q": text,
+                "source": "auto" if from_lang in ("", "auto") else from_lang,
+                "target": to_lang or "zh",
+                "format": "text",
+            }
+            with httpx.Client(timeout=8.0) as client:
+                resp = client.post(f"{base}/translate", json=payload)
+            if resp.status_code < 300:
+                data = resp.json() if resp.content else {}
+                translated = ""
+                if isinstance(data, dict):
+                    translated = str(data.get("translatedText") or data.get("translated") or "")
+                if translated and translated != text:
+                    return {"translated": translated, "provider": "libretranslate"}
+    except Exception:  # noqa: BLE001
+        pass
     return None
 
 
