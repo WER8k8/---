@@ -11,8 +11,10 @@ from typing import Any, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
 from app.core.security import get_current_user
+from app.db.session import get_db
 from app.models.user import User
 from app.schemas.hermes_orchestration import IntentEvent
 from app.services.acquisition import (
@@ -22,12 +24,25 @@ from app.services.acquisition import (
     playbook_store,
     score_grade,
 )
+from app.services.acquisition.experience_feed import record_acquisition_event, record_ops_loss
+from app.services.acquisition.repo import persist_inquiry, persist_prospect_lead
 from app.services.acquisition.translate_service import translate_text
 from app.services.acquisition.wallet_guard import check_wallet_status
 
 # FIX-30：router 自带 prefix="/acquisition"，auto_discovery 必须用空外挂前缀，
 # 否则会变成 /api/v1/acquisition/acquisition/*（前端 404）。
 ROUTE_PREFIX = ""
+
+
+def _resolve_db(db: Any = None) -> Any:
+    """单测直调时 db 可能是 Depends 占位；无真实 Session 一律当 None。"""
+    if db is None:
+        return None
+    if type(db).__name__ in ("Depends", "DependsObject"):
+        return None
+    if not hasattr(db, "add"):
+        return None
+    return db
 ROUTE_TAGS = ["获客"]
 
 router = APIRouter(prefix="/acquisition", tags=["获客"])
@@ -58,6 +73,7 @@ class IntentPreviewResponse(BaseModel):
     nodes: List[NodePreview]
     skill_refs: List[dict[str, Any]]
     playbook_tips: List[str]
+    experience: Optional[dict[str, Any]] = None
 
 
 class BuyerUpsertRequest(BaseModel):
@@ -131,6 +147,7 @@ class TranslateRequest(BaseModel):
 async def intent_preview(
     body: IntentPreviewRequest,
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """意图 → 任务图预览（不真正派发）。傻子都行：先看节点与是否人审。"""
     from app.services.hermes import planner_service as ps
@@ -165,6 +182,15 @@ async def intent_preview(
     if country:
         tips = playbook_store.tips_for(country, buyer_type="new")
     skill_refs = list((ev.payload or {}).get("_skill_refs") or [])
+    exp = record_acquisition_event(
+        _resolve_db(db),
+        tenant_id=body.tenant_id,
+        event="intent_preview",
+        inquiry_id="",
+        success=True,
+        detail=f"intent={body.intent}; source={source}; nodes={len(nodes)}",
+        executor_id="planner_preview",
+    )
     return IntentPreviewResponse(
         plan_id=graph.plan_id,
         source=source,
@@ -173,6 +199,7 @@ async def intent_preview(
         nodes=nodes,
         skill_refs=skill_refs,
         playbook_tips=tips,
+        experience=exp,
     )
 
 
@@ -250,6 +277,7 @@ def ops_card_touch(
     inquiry_id: str,
     body: OpsCardTouchRequest,
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     card = ops_card_store.record_touch(
         inquiry_id,
@@ -258,7 +286,16 @@ def ops_card_touch(
         next_action=body.next_action,
         next_action_at=body.next_action_at,
     )
-    return {"card": card.to_dict(), "summary": card.summary_lines()}
+    exp = record_acquisition_event(
+        _resolve_db(db),
+        tenant_id=card.tenant_id,
+        event="ops_touch",
+        inquiry_id=inquiry_id,
+        success=True,
+        detail=body.summary[:200],
+        executor_id="ops_card",
+    )
+    return {"card": card.to_dict(), "summary": card.summary_lines(), "experience": exp}
 
 
 @router.post("/ops-card/{inquiry_id}/note")
@@ -276,9 +313,17 @@ def ops_card_loss(
     inquiry_id: str,
     body: OpsCardLossRequest,
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     card = ops_card_store.record_loss(inquiry_id, body.reasons, body.note)
-    return {"card": card.to_dict(), "summary": card.summary_lines()}
+    exp = record_ops_loss(
+        _resolve_db(db),
+        tenant_id=card.tenant_id,
+        inquiry_id=inquiry_id,
+        reasons=list(body.reasons or []),
+        note=body.note or "",
+    )
+    return {"card": card.to_dict(), "summary": card.summary_lines(), "experience": exp}
 
 
 # ── Playbook ───────────────────────────────────────────────
@@ -321,8 +366,9 @@ def playbooks_tips(
 def reply_ingest(
     body: ReplyIngestRequest,
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    """客户回复 → 身份锁建档（可选）→ 跟单卡 → 记跟进。"""
+    """客户回复 → 身份锁建档（可选）→ 跟单卡 → 记跟进 → 尽力落库+经验。"""
     if not body.inquiry_id:
         raise HTTPException(status_code=400, detail="inquiry_id required")
     alerts: list[str] = []
@@ -365,12 +411,51 @@ def reply_ingest(
         summary=summary_line,
         next_action="24h 内回复；先问数量/港口/认证/付款",
     )
+    session = _resolve_db(db)
+    persistence = {
+        "inquiry": persist_inquiry(
+            session,
+            tenant_id=body.tenant_id,
+            inquiry_id=body.inquiry_id,
+            message=body.message,
+            email=body.email,
+            contact_name=body.contact_name,
+            company_name=body.company_name,
+            product="",
+            country=body.country,
+            channel=body.channel or "inbound",
+            assigned_to=body.owner_user_id,
+        ),
+        "lead": persist_prospect_lead(
+            session,
+            tenant_id=body.tenant_id,
+            email=body.email,
+            company_name=body.company_name,
+            country=body.country,
+            contact_name=body.contact_name,
+            contact_title=body.contact_title,
+            buyer_type=body.buyer_type,
+            channel=body.channel or "reply_ingest",
+            inquiry_ref=body.inquiry_id,
+        ),
+    }
+    experience = record_acquisition_event(
+        session,
+        tenant_id=body.tenant_id,
+        event="reply_ingest",
+        inquiry_id=body.inquiry_id,
+        success=True,
+        detail=summary_line,
+        executor_id="acquisition_ops",
+    )
     return {
         "card": card.to_dict(),
         "summary": card.summary_lines(),
         "alerts": alerts,
         "buyer_id": buyer_id,
         "playbook_tips": tips,
+        "persistence": persistence,
+        "experience": experience,
     }
 
 
