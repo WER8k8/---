@@ -3,7 +3,7 @@ feature: acquisition-ops-dispatch
 status: delivered
 updated: 2026-09-18
 branch: feat/acquire-mobius-20260918
-commits: 5d08166c..HEAD
+commits: 5d08166c..7ce2b087d9a8
 ---
 
 # 作战台一键派发编排（compose-next#3）
