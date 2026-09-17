@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** GrapesJS 编辑器界面中文（侧栏、工具栏、样式管理器、图层等） */
 const traitInputAttr = { placeholder: '例如：在此输入文字' };
 

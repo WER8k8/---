@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="baidu-tools-page" title="百度站长工具" subtitle="百度索引、抓取与搜索词数据管理" surface="elevated">
     <YdHonestDataBanner

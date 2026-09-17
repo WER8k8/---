@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """超管：客户新增/自填平台来源审计（只读）。"""
 
 from typing import Optional

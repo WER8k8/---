@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO-10：矩阵词/收录关键词 → DeerFlow research_hints。"""
 
 from __future__ import annotations

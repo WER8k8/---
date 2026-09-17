@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Auto-Scaling Service: 租户资源自动扩容.
 
 当租户 AI 配额使用率达到阈值时，自动升级至高一级套餐；

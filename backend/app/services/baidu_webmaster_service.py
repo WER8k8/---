@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """百度搜索资源平台（站长平台）API 集成服务"""
 from typing import Any, Optional
 
@@ -97,6 +99,55 @@ class BaiduWebmasterService:
                 return {"success": True, "data": resp.json()}
             except httpx.HTTPError as exc:
                 return {"success": False, "message": f"百度API请求失败: {exc}", "data": None}
+
+    @staticmethod
+    async def push_urls(
+        site_url: str,
+        urls: list[str],
+        token: Optional[str] = None,
+        batch_size: int = 10,
+    ) -> dict[str, Any]:
+        """URL 级增量推送（新页面秒级送审，不止 sitemap）。
+
+        对应缺口 #5：百度站长平台的「普通收录 - URL 提交」API，
+        新发布的页面可即时送审，不等 sitemap 爬取周期。
+        无 token 时仅开发环境显式 mock，生产必须配置 token。
+        """
+
+        # 清理并去重，控制单批数量（百度单次上限一般 10 条以内）
+        clean = []
+        for u in urls:
+            u = (u or "").strip()
+            if u and u not in clean:
+                clean.append(u)
+        if not clean:
+            return {"success": False, "message": "无有效 URL 可推送", "data": None}
+
+        if not token:
+            return BaiduWebmasterService._no_token_response(
+                mock_payload={
+                    "site_url": site_url,
+                    "pushed": len(clean),
+                    "batch_size": batch_size,
+                    "remain_quota": 20,
+                }
+            )
+
+        total = 0
+        async with httpx.AsyncClient(timeout=30) as client:
+            for i in range(0, len(clean), batch_size):
+                batch = clean[i : i + batch_size]
+                try:
+                    resp = await client.post(
+                        f"{BaiduWebmasterService.API_BASE}/url/push",
+                        json={"site": site_url, "urls": batch, "token": token},
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+                    total += int(data.get("pushed", len(batch)))
+                except httpx.HTTPError as exc:
+                    return {"success": False, "message": f"百度URL推送失败: {exc}", "data": {"pushed": total}}
+        return {"success": True, "data": {"pushed": total, "requested": len(clean), "batches": (len(clean) + batch_size - 1) // batch_size}}
 
     @staticmethod
     async def get_index_count(

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """超级管理员种子数据初始化
 
 在 init_db() 之后调用，插入默认角色/权限/菜单数据。

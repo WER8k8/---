@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """认证授权领域 — stub（待从 routes/auth.py 迁移）"""
 from fastapi import APIRouter
 from app.domains.base import DomainModule

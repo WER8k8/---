@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """用户钱包服务（WALLET-SVC）
 
 BUG-04 修复：余额与流水落库（wallet_accounts / wallet_transactions），

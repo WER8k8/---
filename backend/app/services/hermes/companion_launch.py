@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """优丁平台专属 · 浏览器伴侣唤起（内容仅来自本平台任务，不可独立外发）。"""
 
 from __future__ import annotations

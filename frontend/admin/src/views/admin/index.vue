@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated">
     <div class="admin-dashboard platform-theme coachpro-dashboard">
@@ -174,6 +177,12 @@
 </template>
 
 <script setup lang="ts">
+
+import { apiGet } from '@/utils/api'
+
+onMounted(async () => {
+  try { await apiGet('/dashboard') } catch { /* 空状态 */ }
+})
 import type { Component } from 'vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 企业站公共壳（顶栏 / 导航 / 页脚）与多页路由链接 */
 
 import type { SiteBuilderTemplateId } from './types';

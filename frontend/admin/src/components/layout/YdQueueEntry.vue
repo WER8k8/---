@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <a-dropdown :trigger="['click']">
     <a-badge :count="totalBadge" :offset="[-2, 2]" :number-style="{ fontSize: '10px' }">

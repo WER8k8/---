@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+import json
+
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class ProductDocumentCreate(BaseModel):
@@ -90,6 +94,17 @@ class ProductCreate(BaseModel):
     sort_order: Optional[int] = 0
     is_active: Optional[bool] = True
 
+    @field_validator("specifications", mode="before")
+    @classmethod
+    def parse_specifications(cls, v):
+        if isinstance(v, str):
+            try:
+                parsed = json.loads(v)
+            except (json.JSONDecodeError, TypeError):
+                parsed = v
+            return parsed if isinstance(parsed, dict) else {"规格": parsed}
+        return v
+
 
 class ProductUpdate(BaseModel):
     category_id: Optional[str] = None
@@ -112,6 +127,17 @@ class ProductUpdate(BaseModel):
     meta_description: Optional[str] = None
     sort_order: Optional[int] = None
     is_active: Optional[bool] = None
+
+    @field_validator("specifications", mode="before")
+    @classmethod
+    def parse_specifications(cls, v):
+        if isinstance(v, str):
+            try:
+                parsed = json.loads(v)
+            except (json.JSONDecodeError, TypeError):
+                parsed = v
+            return parsed if isinstance(parsed, dict) else {"规格": parsed}
+        return v
 
 
 class ProductResponse(BaseModel):
@@ -139,6 +165,17 @@ class ProductResponse(BaseModel):
     view_count: int
     created_at: datetime
     model_config = {"from_attributes": True}
+
+    @field_validator("specifications", mode="before")
+    @classmethod
+    def parse_specifications(cls, v):
+        if isinstance(v, str):
+            try:
+                parsed = json.loads(v)
+            except (json.JSONDecodeError, TypeError):
+                parsed = v
+            return parsed if isinstance(parsed, dict) else {"规格": parsed}
+        return v
 
 
 class ProductListResponse(BaseModel):

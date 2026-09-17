@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO诊断工具路由 - 免费SEO诊断线索收集"""
 
 from fastapi import APIRouter, Depends
@@ -20,6 +22,12 @@ class DiagnosisLeadBody(BaseModel):
     """诊断线索提交体"""
     name: str = Field(..., min_length=1, max_length=100, description="姓名")
     phone: str = Field(..., min_length=1, max_length=50, description="手机号")
+
+
+@router.get("/seo-diagnosis", tags=["SEO诊断"])
+def get_seo_diagnosis():
+    """获取SEO诊断状态/配置"""
+    return success_response(data={"status": "idle", "diagnoses": []})
 
 
 @router.post("/seo-diagnosis", tags=["SEO诊断"])

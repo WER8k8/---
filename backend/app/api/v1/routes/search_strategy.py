@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 智能搜索策略 API 路由 — FIX-60"""
 
 from typing import Optional
@@ -10,6 +12,7 @@ from app.services.ubrain.search_strategy_builder import (
     search_strategy_builder,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/search-strategy", tags=["获客·智能搜索"])
 
 

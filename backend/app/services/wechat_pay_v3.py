@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """微信支付 API v3 — Native 下单与回调解密（配置齐全时走真实接口）。"""
 
 from __future__ import annotations
@@ -195,7 +197,7 @@ class WeChatPayV3Client:
         with httpx.Client(timeout=20.0) as client:
             resp = client.post(WECHAT_NATIVE_URL, content=body.encode("utf-8"), headers=headers)
         if resp.status_code >= 400:
-            logger.error("WeChat native order failed: %s %s", resp.status_code, resp.text[:500])
+            logger.error("WeChat native order failed: %s %s", resp.status_code, resp.text[:200])
             raise RuntimeError(f"微信下单失败 HTTP {resp.status_code}")
         data = resp.json()
         return {

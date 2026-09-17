@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <a-popover trigger="click" placement="bottomRight" overlay-class-name="yd-col-settings-pop">
     <template #content>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Technical Q&A 路由 — 基于批准知识库的带引用技术问答（公开端点）。
 
 端点：POST /api/v1/technical-qna

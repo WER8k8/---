@@ -1,8 +1,11 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { watch } from 'vue';
 import { defineStore } from 'pinia';
 
 export type UiTheme = 'light' | 'dark';
-export type UiAccentRole = 'platform' | 'client' | 'agent';
+export type UiAccentRole = 'platform' | 'client' | 'partner' | 'agent';
 export type UiRadiusScale = 'sm' | 'md' | 'lg';
 export type UiTableDensity = 'compact' | 'default' | 'comfortable';
 
@@ -75,9 +78,10 @@ function radiusToPx(scale: UiRadiusScale): number {
 }
 
 const ACCENT_BRAND: Record<UiAccentRole, string> = {
-  platform: '', // uses primaryColor
-  client: '#4a9b8c',
-  agent: '#0d9488',
+ platform: '', // uses primaryColor
+ client: '#2563eb', // YouDing 客青蓝
+ partner: '#7c6dd8',
+ agent: '#0d9488', // YouDing 搜索智青
 };
 
 export const useUiPreferencesStore = defineStore('uiPreferences', {

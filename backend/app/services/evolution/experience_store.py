@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """经验存储 — 经验沉淀阶段。
 
 从任务执行记录中提取可复用模式，存入 PostgreSQL JSONB 经验库。

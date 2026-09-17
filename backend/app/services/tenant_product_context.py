@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户主营产品上下文 — 注册 / Hermes / 旺财 / 蓝海 单一来源。"""
 
 from __future__ import annotations

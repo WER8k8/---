@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """物流模块 — 租户成员订单可见性。"""
 
 from __future__ import annotations

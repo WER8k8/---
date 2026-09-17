@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="运行调试" subtitle="多环境运行调试与性能检测" surface="elevated">
   <div class="runtime-overview">
@@ -156,6 +159,12 @@
 </template>
 
 <script setup lang="ts">
+
+import { apiGet } from '@/utils/api'
+
+onMounted(async () => {
+  try { await apiGet('/system-health') } catch { /* 空状态 */ }
+})
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';

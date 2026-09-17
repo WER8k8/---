@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 产品页 AI 生成 — 拼 prompt 走 /api/v1/ai/generate（NVIDIA NIM） */
 
 export type ProductAiGenerateParams = {

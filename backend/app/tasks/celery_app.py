@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from celery import Celery
 from celery.schedules import crontab
 
@@ -80,6 +82,15 @@ celery_app.conf.update(
         "meter-events-aggregate-hourly": {
             "task": "app.tasks.billing_tasks.aggregate_meter_events",
             "schedule": crontab(minute=5),
+        },
+        # PC-04: 平台账号会话巡检（每日一次，低峰时段）。纯 DB 判定，不触网。
+        "platform-session-patrol-daily": {
+            "task": "app.tasks.seo_tasks.patrol_platform_sessions_daily",
+            "schedule": crontab(
+                hour=settings.PLATFORM_SESSION_PATROL_HOUR,
+                minute=settings.PLATFORM_SESSION_PATROL_MINUTE,
+            ),
+            "options": {"max_instances": 1},
         },
     },
     task_routes={

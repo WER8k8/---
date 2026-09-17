@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 视频矩阵真发编排 — 预检 → 分发 → 验真汇总。"""
 
 from __future__ import annotations

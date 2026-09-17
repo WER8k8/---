@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="矩阵系统设置" subtitle="配置 SEO 矩阵系统的各项参数" surface="elevated">
     <template #actions>

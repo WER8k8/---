@@ -250,6 +250,8 @@ def check_deerflow() -> None:
             "keyword_research", "content_creation", "seo_publish", "page_creation",
             "seo_metadata", "multi_channel_publish", "buyer_research",
             "outreach_letter", "email_dispatch",
+            # 2026-09-14 对标阿里国际 Accio Work 新增：结构化市场洞察 + 横向比价排序
+            "market_insight", "supplier_compare",
         ]
         missing = [i for i in intents if f"_exec_{i}" not in src]
         record(
@@ -583,4 +585,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

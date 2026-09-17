@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """只读 IMAP 询盘收取 Sidecar — mymailclaw 对标，禁止 SMTP 自动发信。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SSL Certificate model for independent domain SSL auto-issuance."""
 import uuid
 from datetime import datetime, timezone

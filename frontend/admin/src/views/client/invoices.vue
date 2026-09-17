@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="开票申请" subtitle="针对已支付订单申请增值税发票，须财务审核后开具" surface="elevated">
   <div class="coachpro-tertiary coachpro-tertiary--client p-4 max-w-4xl mx-auto space-y-4">

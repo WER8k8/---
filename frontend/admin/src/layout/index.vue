@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <CertWatermark>
   <div class="shell" :class="`shell--${shellMode}`">
@@ -395,6 +398,7 @@ const menuItems = computed(() => {
           { title: 'Platform 三区', children: [
             { name:'AdminPlatformZones',path:'/admin/platform-zones',title:'三区治理',icon:'AppstoreOutlined' },
             { name:'AdminPlatformRegistry',path:'/admin/platform-registry',title:'平台来源审计',icon:'GlobalOutlined' },
+            { name:'AdminPlatformCredentials',path:'/admin/platform-credentials',title:'平台凭证',icon:'KeyOutlined' },
             { name:'AdminDemoRehearsal',path:'/admin/demo-rehearsal',title:'七步彩排',icon:'PlayCircleOutlined' },
           ]},
           { title: '运营管理', children: [
@@ -562,6 +566,7 @@ const pageTitles: Record<string,{title:string;subtitle:string}> = {
   '/admin/hierarchy':{title:'层级管理',subtitle:'L1-L4 组织架构与权限'},
   '/admin/platform-zones':{title:'三区治理',subtitle:'Platform / Client / Agent 与送检开关'},
   '/admin/platform-registry':{title:'平台来源审计',subtitle:'客户自填/连接平台 · 养号与指纹模板（仅超管）'},
+  '/admin/platform-credentials':{title:'平台凭证与真发就绪',subtitle:'凭证字段、缺项、会话巡检（仅超管）'},
 }
 
 function matchPageMeta(path: string) {

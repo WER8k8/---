@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="开通向导" subtitle="跟着做就行：先开店 → 再让人看见 → 最后销售能接单" surface="elevated">
     <main class="onboarding-page coachpro-tertiary coachpro-tertiary--client max-w-3xl mx-auto py-6 px-4" aria-label="新手指引向导">

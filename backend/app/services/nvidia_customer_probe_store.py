@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """英伟达客户可用模型探测快照（system_settings）。"""
 
 from __future__ import annotations

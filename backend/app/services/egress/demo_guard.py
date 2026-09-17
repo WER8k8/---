@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """清除历史演示 IP 槽位（禁止假数据进入平台池统计）。"""
 
 from __future__ import annotations

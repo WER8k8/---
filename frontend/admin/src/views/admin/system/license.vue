@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="许可证管理" subtitle="管理系统许可证和授权状态" surface="elevated">
     <template #actions>

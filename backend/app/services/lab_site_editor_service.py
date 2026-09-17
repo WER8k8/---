@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """FE-11 站点编辑器试点 — 草稿读写（租户 settings 或用户级文件兜底）"""
 
 from __future__ import annotations

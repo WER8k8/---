@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """能力注册表持久化模型（总纲 §4.6-4 / §5.2.4 / §8；迁移 083）。
 
 替代 agent_hub_service 进程内内存 list，使 Skill/MCP/Plugin/数据源

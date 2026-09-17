@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出海计 Push — FCM Legacy HTTP（配置 FCM_SERVER_KEY 后真推送）。"""
 
 from __future__ import annotations

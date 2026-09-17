@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """LangChain 服务层 — 模型分发、会话管理、流式对话、知识库 RAG"""
 
 import asyncio

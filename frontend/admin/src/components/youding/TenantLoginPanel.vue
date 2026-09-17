@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <aside class="brand-col" :class="{ 'brand-col--dark': variant === 'dark' }">
     <div class="brand-col__inner">

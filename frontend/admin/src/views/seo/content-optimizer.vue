@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI内容优化" subtitle="使用AI智能优化网站内容和SEO元素" surface="elevated">
     <a-card title="优化配置">

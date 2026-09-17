@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="ai-content" title="AI 内容助手" subtitle="内容生成 · SEO 优化 · 智能改写" surface="elevated">
     <a-row :gutter="16">

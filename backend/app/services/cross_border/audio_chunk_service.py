@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """长媒体听写分片：ffmpeg 切段、并行转写、扇入合并。"""
 
 from __future__ import annotations

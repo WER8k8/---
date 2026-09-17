@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="分润规则配置" subtitle="首单合计 ≤30%，续费合计 ≤10%（L1 平台留存）" surface="elevated">
     <template #actions>

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="ai-logs" title="调用日志" subtitle="AI 调用记录 · Token 用量 · 费用统计" surface="elevated">
     <template #actions>

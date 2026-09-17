@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """数据库 Schema 自动修复 — 启动时检测并补全缺失列
 
 解决 SoftDeleteMixin 等 mixin 定义了 deleted_at 但旧数据库表缺少该列的问题。

@@ -1,4 +1,4 @@
-# AI 协作入口（全 IDE 通用：Cursor / Qoder / CodeBuddy / 灵码 等）
+# 开发协作入口
 
 改代码前 **先读仓库内契约**，不要凭记忆或旧文档恢复已删除能力。
 
@@ -67,10 +67,10 @@ powershell -File scripts/verify-login-entry-lock.ps1
 
 ## 工作区隔离
 
-见 `.cursor/rules/00-workspace-isolation.mdc`（若存在 junction）或 `docs/DEV-TOOLS-ISOLATION.md`：
+见 `docs/DEV-TOOLS-ISOLATION.md`：
 
 - 产品代码：`backend/` `frontend/` `deploy/` `docs/` `scripts/` `.project/`
-- 勿把 `.cursor/`、CodeGraph 索引提交入库
+- 勿把本地 IDE 配置、代码索引提交入库
 
 ## 本地开发
 
@@ -109,7 +109,7 @@ powershell -File scripts/start-dev-admin.ps1
 
 前提：Nuxt `:3000` + API `:8001` 已起；预览 URL 形如 `http://127.0.0.1:3000/tenant?__tenant=dev.local&lpro=1`。
 
-Cursor 里可说：「跑租户 SEO 审计」→ 代理执行 `run-tenant-seo-audit.ps1`，按 P0/P1 修 title/meta/visitor-context。
+跑租户 SEO 审计：`powershell -File scripts/run-tenant-seo-audit.ps1`，按 P0/P1 修 title/meta/visitor-context。
 
 外部 GEO/商务方案对照（Medusa、GEO Optimizer、Edge Middleware 等）：[`docs/integrations/external-geo-commerce-alignment.md`](docs/integrations/external-geo-commerce-alignment.md)
 

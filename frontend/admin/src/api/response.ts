@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 与 axios / parseApiBody 一致：从 fetch JSON 取出 data 或裸对象 */
 export function unwrapFetchedJson<T = unknown>(raw: unknown): T {
   if (raw == null || typeof raw !== 'object') {

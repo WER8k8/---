@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { onUnmounted, type Ref } from 'vue';
 
 import { submitPublicInquiry } from '../utils/submitPublicInquiry';

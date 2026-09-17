@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Celery 异步任务队列 — FIX-43
 
 提供 Celery 集成配置和多队列支持：

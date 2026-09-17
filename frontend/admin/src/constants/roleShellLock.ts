@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * ROLE-SHELL-LOCK-01 · 租户 / 平台超管 / 代理（含省代）登录后壳隔离
  *
  * 契约：.project/role-shell-lock.json

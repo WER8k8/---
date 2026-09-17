@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付路由 - 支付订单创建、查询、回调、套餐查询"""
 import json
 import logging

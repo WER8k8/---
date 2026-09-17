@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Skill 注册表服务（轮17-1/17-2）。
 
 替代 SkillRegistry 的内存 list（Trade AI skill_base.py 的 register/get/list_all

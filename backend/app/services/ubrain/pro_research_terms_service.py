@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """COMP-03：Pro 定时市场研究服务条款（租户可见 · 已脱敏）。"""
 
 from __future__ import annotations

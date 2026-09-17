@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开发信可达性 — 质量评分、垃圾箱风险、发送窗口（研究员×PM 契约）。"""
 
 from __future__ import annotations

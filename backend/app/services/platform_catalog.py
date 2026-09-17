@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """40 平台主数据目录（国内 20 + 海外 20）。"""
 
 from __future__ import annotations

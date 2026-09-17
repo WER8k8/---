@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="system-health-layout min-h-screen bg-gray-50">
     <div class="px-6 pt-6">

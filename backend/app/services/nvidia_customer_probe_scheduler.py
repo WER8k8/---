@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """英伟达客户可用模型定时探测：默认每日 1:00 / 12:00 / 20:00（北京时间）。"""
 
 from __future__ import annotations

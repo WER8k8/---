@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-G-CC-02 — 1 长文 → 多平台变体 + 开发信摘要。"""
 
 from __future__ import annotations

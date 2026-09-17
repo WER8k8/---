@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Products list API with in-memory mock data and HTTP cache headers.
  */
 import { defineEventHandler, getQuery } from 'h3'

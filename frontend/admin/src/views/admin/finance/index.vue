@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="财务中台" subtitle="营收 / 成本 / 分润 / 净利润（单位：元）" surface="elevated">
     <template #actions>

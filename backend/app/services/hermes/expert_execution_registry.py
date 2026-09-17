@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """专家执行注册表 — 让专家真正执行专职工作。
 
 基于 ECC (Everything Claude Code) 技能体系，为每个专家角色定义实际执行操作：

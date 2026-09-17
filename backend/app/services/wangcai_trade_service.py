@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """公开站旺财 — 海关/出口问答（不暴露 Hermes/Agent 品牌）。"""
 
 from __future__ import annotations

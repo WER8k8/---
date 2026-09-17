@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 持续迭代闭环 — 宪法 + DeerFlow + 研究员 + 营销/各部门 + ECC。
 
 L1 只读采集 → L2 ResearchBrief → L3 ECC 评审 → L4 部门路由 → L5 PM Inbox

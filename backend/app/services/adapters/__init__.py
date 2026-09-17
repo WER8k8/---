@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Adapter 层（Execution Plane 平级适配器集合，总纲 §3.1）。
 
 本包只放外部能力的适配桥接，禁止业务逻辑；所有适配器必须：

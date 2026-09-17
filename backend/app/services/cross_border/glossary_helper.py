@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """建材术语库片段 — 供 LLM 翻译/回复时引用。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """第三方 OAuth 登录：授权 URL 生成与 code 换身份。
 
 支持平台：QQ互联 | 微信开放平台 | 飞书 | 钉钉
@@ -69,6 +71,20 @@ _WECHAT_ERROR_MAP: dict[int, str] = {
     42002: "refresh_token 超时",
     48001: "API 未授权",
 }
+
+
+# ── 日志脱敏 ──────────────────────────────────────────────
+
+_SENSITIVE_BODY_KEYS = frozenset(
+    {"access_token", "accessToken", "refresh_token", "openid", "unionid", "token", "secret", "app_secret"}
+)
+
+
+def _mask_body(body) -> dict:
+    """对 OAuth 响应体脱敏：敏感键只保留是否存在，其余原样返回，防止日志泄露 token/openid。"""
+    if not isinstance(body, dict):
+        return {"<type>": type(body).__name__}
+    return {k: ("<masked>" if k in _SENSITIVE_BODY_KEYS else v) for k, v in body.items()}
 
 
 # ── 重定向 URI ────────────────────────────────────────────
@@ -404,7 +420,7 @@ def _exchange_qq(code: str) -> Tuple[str, Optional[str]]:
 
         access = token_body.get("access_token")
         if not access:
-            logger.error("[QQ OAuth] Token 响应缺少 access_token: %s", token_body)
+            logger.error("[QQ OAuth] Token 响应缺少 access_token: %s", _mask_body(token_body))
             raise ValueError("qq_token_failed: 未获取到 access_token")
 
         logger.info(
@@ -427,7 +443,7 @@ def _exchange_qq(code: str) -> Tuple[str, Optional[str]]:
 
         openid = openid_body.get("openid")
         if not openid:
-            logger.error("[QQ OAuth] OpenID 响应缺少 openid: %s", openid_body)
+            logger.error("[QQ OAuth] OpenID 响应缺少 openid: %s", _mask_body(openid_body))
             raise ValueError("qq_openid_missing")
 
         logger.info("[QQ OAuth] OpenID: %s...", openid[:8])
@@ -549,7 +565,7 @@ def _exchange_wechat(code: str) -> Tuple[str, Optional[str]]:
         refresh_token = token_body.get("refresh_token")
         scope = token_body.get("scope", "")
         if not openid or not access_token:
-            logger.error("[WeChat OAuth] Token 响应不完整: %s", token_body)
+            logger.error("[WeChat OAuth] Token 响应不完整: %s", _mask_body(token_body))
             raise ValueError("wechat_openid_missing")
 
         logger.info(

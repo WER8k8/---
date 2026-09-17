@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Policy Engine：统一策略裁决（总纲 §3.1/§7.2/§6.6 P2；轮20）。
 
 升级 paperclip approval_gate（人审）+ budget_guard（配额）为统一裁决入口。

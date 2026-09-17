@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """国际支付路由模块。"""
 
 from __future__ import annotations
@@ -13,7 +15,7 @@ from app.services.paypal_pay_service import PayPalPayService
 
 router = APIRouter(prefix="/payments/international", tags=["International Payments"])
 
-ROUTE_PREFIX = "/payments/international"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["International Payments"]
 
 

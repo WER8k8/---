@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """产品智能匹配（Product Finder）公开路由。
 
 端点：POST /api/v1/matching/product-match

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付模块模型 - 支付订单与支付渠道配置"""
 
 import uuid

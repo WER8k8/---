@@ -1,8 +1,13 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <a-config-provider :locale="zhCN" :theme="antTheme">
-    <a class="skip-link" href="#main-content">跳到主要内容</a>
-    <router-view />
-    <CookieConsent />
+    <div :style="[cssVars, { fontSize: `calc(15px * ${combinedScale})` }]">
+      <a class="skip-link" href="#main-content">跳到主要内容</a>
+      <router-view />
+      <CookieConsent />
+    </div>
   </a-config-provider>
 </template>
 
@@ -16,12 +21,14 @@ import { storeToRefs } from 'pinia';
 
 import { useUiPreferencesStore } from '@/stores/uiPreferences';
 import { useRumBeacon } from '@/composables/useRumBeacon';
+import { useAdaptiveLayout } from '@/composables/useAdaptiveLayout';
 import CookieConsent from '@/components/common/CookieConsent.vue';
 
 dayjs.locale('zh-cn');
 
 const ui = useUiPreferencesStore();
 useRumBeacon();
+const { cssVars, persona, combinedScale } = useAdaptiveLayout();
 const { theme, primaryColor, antBorderRadius, accentRole } = storeToRefs(ui);
 
 const antTheme = computed(() => {
@@ -55,21 +62,24 @@ const antTheme = computed(() => {
       }
     : {};
 
+  const s = combinedScale.value;
+  const fs = (base: number) => Math.round(base * s);
+
   return {
     algorithm: isDark ? antThemeAlgorithm.darkAlgorithm : antThemeAlgorithm.defaultAlgorithm,
     token: {
       colorPrimary: isDark ? darkPrimary : accent,
       borderRadius: antBorderRadius.value,
       fontFamily: 'var(--uj-font-sans)',
-      fontSize: 15,
-      fontSizeSM: 13,
-      fontSizeLG: 17,
-      fontSizeXL: 20,
-      fontSizeHeading1: 34,
-      fontSizeHeading2: 28,
-      fontSizeHeading3: 22,
-      fontSizeHeading4: 18,
-      fontSizeHeading5: 15,
+      fontSize: fs(15),
+      fontSizeSM: fs(13),
+      fontSizeLG: fs(17),
+      fontSizeXL: fs(20),
+      fontSizeHeading1: fs(34),
+      fontSizeHeading2: fs(28),
+      fontSizeHeading3: fs(22),
+      fontSizeHeading4: fs(18),
+      fontSizeHeading5: fs(15),
       ...darkTokens,
     },
   };

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Accio Executor Plugin for Hermes — 销售飞轮（接真实服务）。
 
 承载实现（已存在，本插件只做契约适配，**不再返回硬编码假数据**）：

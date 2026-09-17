@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一任务控制面服务（总纲 §4.6-1/§4.6-2 / §8 082；轮23 任务端接线）。
 
 把 ai_tasks → task_traces → terminal_hook(evolution) → meter_events 接成一条真实链路：

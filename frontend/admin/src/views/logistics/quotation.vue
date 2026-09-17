@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="报价单生成" subtitle="建材物流报价单管理" surface="elevated">
     <template #actions>

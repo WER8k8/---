@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """P1-06：裂变奖励类型（Token / 现金券 / 免费月 / 套餐升级）。"""
 
 from __future__ import annotations

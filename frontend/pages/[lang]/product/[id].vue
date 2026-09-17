@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- 产品详情页 - SSR渲染，SEO友好 -->

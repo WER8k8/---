@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Site Build and Distribution Scenario Template.
 Defines the standard TaskGraph for taking product specs and generating a multi-language site.
 """

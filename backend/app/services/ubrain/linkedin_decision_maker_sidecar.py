@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """LinkedIn 决策人 enrichment Sidecar — P3 restricted，须 evidence_url + 人工核实。"""
 
 from __future__ import annotations

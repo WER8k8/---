@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="分润结算" subtitle="审核代理分润计提并标记已结算" surface="elevated">
     <template #actions>

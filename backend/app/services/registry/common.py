@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """注册表公共工具：JSON 安全解析、状态校验、唯一性帮助。"""
 
 from __future__ import annotations

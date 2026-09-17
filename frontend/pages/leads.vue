@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="leads-page max-w-[430px] mx-auto px-4 py-6">
     <!-- 页眉 -->

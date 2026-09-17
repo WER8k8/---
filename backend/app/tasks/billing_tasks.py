@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """轮22：计量周期汇总任务（总纲 §4.6-8：Celery beat 汇总进现有计费）。
 
 仅将 meter_events 中未汇总事件并入既有计费账本（token_ledger / finance_ledger），

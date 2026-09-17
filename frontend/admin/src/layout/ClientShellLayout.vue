@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="client-shell">
     <header class="client-header">
@@ -28,31 +31,24 @@
     <div class="client-body">
       <aside class="client-sidebar" :class="{ 'client-sidebar--open': mobileOpen }">
         <nav class="client-nav" aria-label="主要功能">
-          <button
-            v-for="item in primaryMenuItems"
-            :key="item.path"
-            type="button"
-            class="client-nav__item"
-            :class="{
-              'client-nav__item--active': isActiveMenu(item.path),
-              'client-nav__item--primary': item.path === '/client/today',
-            }"
-            @click="navigate(item.path)"
-          >
-            <YdNavIcon :name="item.icon" size="sm" :active="isActiveMenu(item.path)" />
-            <span>{{ item.label }}</span>
-          </button>
-          <button
-            type="button"
-            class="client-nav__item client-nav__more"
-            :class="{ 'client-nav__item--active': moreDrawerActive }"
-            aria-haspopup="dialog"
-            :aria-expanded="moreOpen"
-            @click="moreOpen = true"
-          >
-            <YdNavIcon name="AppstoreOutlined" size="sm" :active="moreDrawerActive" />
-            <span>更多功能</span>
-          </button>
+          <div v-for="group in categorizedNavGroups" :key="group.key" class="client-nav__group">
+            <div class="client-nav__group-title">{{ group.title }}</div>
+            <button
+              v-for="item in group.items"
+              :key="item.path"
+              type="button"
+              class="client-nav__item"
+              :class="{
+                'client-nav__item--active': isActiveMenu(item.path),
+                'client-nav__item--highlight': item.highlight,
+              }"
+              @click="navigate(item.path)"
+            >
+              <YdNavIcon :name="item.icon" size="sm" :active="isActiveMenu(item.path)" />
+              <span class="client-nav__item-label">{{ item.label }}</span>
+              <span v-if="item.badge" class="client-nav__badge">{{ item.badge }}</span>
+            </button>
+          </div>
         </nav>
       </aside>
       <div v-if="mobileOpen" class="client-overlay" @click="mobileOpen = false" />
@@ -62,30 +58,6 @@
         <router-view />
       </main>
     </div>
-    <a-drawer
-      v-model:open="moreOpen"
-      title="更多功能"
-      placement="left"
-      :width="300"
-      class="client-more-drawer"
-      :body-style="{ padding: '8px 0' }"
-    >
-      <p class="client-more-drawer__hint">进阶工具收在这里；SEO/裂变等实验项需开实验室模式才显示。</p>
-      <section v-for="group in moreMenuGroups" :key="group.title" class="client-more-drawer__group">
-        <h3>{{ group.title }}</h3>
-        <button
-          v-for="item in group.children"
-          :key="item.path"
-          type="button"
-          class="client-more-drawer__item"
-          :class="{ 'client-more-drawer__item--active': isActiveMenu(item.path) }"
-          @click="navigate(item.path)"
-        >
-          <YdNavIcon :name="item.icon" size="sm" :active="isActiveMenu(item.path)" />
-          <span>{{ item.title }}</span>
-        </button>
-      </section>
-    </a-drawer>
     <UBrainAssistant />
   </div>
 </template>
@@ -161,6 +133,83 @@ function isActiveMenu(path: string) {
   return p === path || p.startsWith(`${path}/`);
 }
 
+interface CategorizedNavItem {
+  label: string;
+  path: string;
+  icon: string;
+  badge?: string;
+  highlight?: boolean;
+}
+
+interface CategorizedNavGroup {
+  key: string;
+  title: string;
+  items: CategorizedNavItem[];
+}
+
+const categorizedNavGroups: CategorizedNavGroup[] = [
+  {
+    key: 'overview',
+    title: '经营中枢',
+    items: [
+      { label: '今日三步', path: '/client/today', icon: 'ThunderboltOutlined', highlight: true },
+      { label: '经营概览', path: '/client/dashboard', icon: 'DashboardOutlined' },
+      { label: '开通向导', path: '/client/onboarding', icon: 'CarryOutOutlined' },
+    ],
+  },
+  {
+    key: 'site',
+    title: '独立站与多模态空间',
+    items: [
+      { label: '可视化建站', path: '/client/site-editor', icon: 'EditOutlined', highlight: true, badge: '核心' },
+      { label: '模板社区', path: '/client/explore', icon: 'AppstoreOutlined', badge: 'Meoo' },
+      { label: '专属技能', path: '/client/skills', icon: 'ThunderboltOutlined', badge: '新' },
+      { label: '产品图片空间', path: '/client/product-images', icon: 'PictureOutlined' },
+      { label: '视频空间', path: '/client/video-space', icon: 'VideoCameraOutlined' },
+    ],
+  },
+
+  {
+    key: 'leads',
+    title: '拓客与商机',
+    items: [
+      { label: '询盘管理', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
+      { label: '询盘队列', path: '/client/queues/inquiries', icon: 'OrderedListOutlined' },
+      { label: '邮件营销', path: '/client/email-campaigns', icon: 'MailOutlined' },
+      { label: '外贸工具指南', path: '/client/trade-tools', icon: 'QuestionCircleOutlined' },
+    ],
+  },
+  {
+    key: 'catalog',
+    title: '发品与分发',
+    items: [
+      { label: '产品管理', path: '/client/products', icon: 'ShoppingOutlined' },
+      { label: '内容管理', path: '/client/content', icon: 'FileOutlined' },
+      { label: '多端分发', path: '/client/distribute', icon: 'SendOutlined' },
+      { label: '跨平台数据', path: '/client/cross-platform', icon: 'BarChartOutlined' },
+    ],
+  },
+  {
+    key: 'operations',
+    title: '履约与账户',
+    items: [
+      { label: '套餐与续费', path: '/client/billing', icon: 'AccountBookOutlined' },
+      { label: 'AI 流量充值', path: '/client/tokens', icon: 'ThunderboltOutlined' },
+      { label: '履约队列', path: '/client/queues/fulfillment', icon: 'CarryOutOutlined' },
+      { label: '系统设置', path: '/client/settings', icon: 'SettingOutlined' },
+    ],
+  },
+  {
+    key: 'goodjob',
+    title: 'GoodJob CRM',
+    items: [
+      { label: 'GoodJob 全景', path: '/client/annex/goodjob', icon: 'GlobalOutlined', highlight: true },
+      { label: '票据中心管理', path: '/client/annex/goodjob/tickets', icon: 'FileTextOutlined' },
+      { label: '客户管理', path: '/client/annex/goodjob/customers', icon: 'TeamOutlined' },
+    ],
+  },
+];
+
 const primaryMenuItems = [
   { label: '今日三步', path: '/client/today', icon: 'ThunderboltOutlined' },
   { label: '获客', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
@@ -169,21 +218,13 @@ const primaryMenuItems = [
   { label: '账户', path: '/client/billing', icon: 'AccountBookOutlined' },
 ] as const;
 
-const moreMenuGroups = computed(() => getClientMoreShellMenu());
-
-const moreDrawerActive = computed(() =>
-  moreMenuGroups.value.some((g) => g.children.some((item) => isActiveMenu(item.path))),
-);
-
 function navigate(path: string) {
   if (isActiveMenu(path)) {
     mobileOpen.value = false;
-    moreOpen.value = false;
     return;
   }
   void router.push(path);
   mobileOpen.value = false;
-  moreOpen.value = false;
 }
 
 async function logout() {
@@ -192,7 +233,9 @@ async function logout() {
 }
 
 onMounted(async () => {
-  uiPrefs.setAccentRole('client');
+  if (uiPrefs.accentRole !== 'client') {
+    uiPrefs.setAccentRole('client');
+  }
   await tenantBrand.load();
 });
 </script>
@@ -239,7 +282,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgb(37 99 235 / 0.3);
+  box-shadow: 0 4px 12px rgb(74 155 140 / 0.25);
 }
 .client-header__name {
   font-size: 15px;
@@ -274,39 +317,73 @@ onMounted(async () => {
   overflow-y: auto;
 }
 .client-nav {
-  padding: 12px 10px;
+  padding: 14px 10px 24px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
   min-height: calc(100vh - var(--uj-header-h, 52px) - 24px);
+}
+.client-nav__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.client-nav__group-title {
+  padding: 0 12px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
 }
 .client-nav__item {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 11px 14px;
+  padding: 8px 12px;
   border: none;
-  border-radius: var(--uj-radius-md);
+  border-radius: var(--uj-radius-md, 8px);
   background: transparent;
   color: var(--uj-text-secondary, #475569);
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
+  position: relative;
 }
 .client-nav__item:hover {
-  background: #f8fafc;
+  background: #f1f5f9;
+  color: #1e293b;
+}
+.client-nav__item-label {
+  flex: 1;
+  min-width: 0;
+  truncate: true;
 }
 .client-nav__item--active {
-  background: var(--uj-brand-muted);
-  color: var(--uj-brand-deep);
+  background: var(--uj-brand-muted, rgba(74, 155, 140, 0.12));
+  color: var(--uj-brand-deep, #2a6b60) !important;
   font-weight: 600;
 }
-.client-nav__icon {
-  font-size: 17px;
+.client-nav__item--highlight:not(.client-nav__item--active) {
+  color: #1e293b;
+  font-weight: 600;
+}
+.client-nav__badge {
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 9999px;
+  background: #e0f2fe;
+  color: #0369a1;
+  margin-left: auto;
+}
+.client-nav__item--active .client-nav__badge {
+  background: #d8f2e9;
+  color: #2a6b60;
 }
 .client-content {
   flex: 1;
@@ -314,51 +391,11 @@ onMounted(async () => {
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: var(--uj-space-page) 16px;
+  padding: var(--uj-space-page, 16px) 20px;
   box-sizing: border-box;
 }
 .client-overlay {
   display: none;
-}
-.client-more-drawer__hint {
-  margin: 0 16px 12px;
-  font-size: 12px;
-  color: var(--uj-text-muted);
-  line-height: 1.5;
-}
-.client-more-drawer__group {
-  margin-bottom: 8px;
-}
-.client-more-drawer__group h3 {
-  margin: 0;
-  padding: 8px 16px 4px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--uj-text-muted);
-}
-.client-more-drawer__item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 16px;
-  border: none;
-  background: transparent;
-  color: var(--uj-text-secondary, #475569);
-  font-size: 14px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-}
-.client-more-drawer__item:hover {
-  background: #f8fafc;
-}
-.client-more-drawer__item--active {
-  background: var(--uj-brand-muted);
-  color: var(--uj-brand-deep);
-  font-weight: 600;
 }
 @media (max-width: 768px) {
   .client-header__menu {

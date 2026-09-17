@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户级 AI 场景模型覆盖（存于 tenant.settings.ai_scenario_overrides）。"""
 
 from __future__ import annotations

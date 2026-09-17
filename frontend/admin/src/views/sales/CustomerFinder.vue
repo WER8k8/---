@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated">
     <template #actions>
@@ -278,7 +281,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { YdPage } from '@/components/youding';
 import {
@@ -342,6 +345,8 @@ const selectedCustomer = ref<Customer | null>(null);
 const customers = ref<Customer[]>([]);
 const customerSource = ref<Customer[]>([]);
 const sidecarStatus = ref<Record<string, { healthy?: boolean | null; configured?: boolean }>>({});
+const sidecarAbort = new AbortController();
+onUnmounted(() => sidecarAbort.abort());
 const intelPanels = ref<string[]>([]);
 const lastSearchMeta = ref<{ find_mode?: string; probe_mode?: string; email_enrichment?: unknown }>({});
 
@@ -481,8 +486,8 @@ const channelStatusLoaded = ref(false);
 
 async function loadChannelStatuses() {
   try {
-    const res = await apiGet('/super-agent/sales/channels');
-    const channels: ChannelStatus[] = res?.data ?? [];
+    const res = await apiGet<ChannelStatus[] | { data?: ChannelStatus[] }>('/super-agent/sales/channels');
+    const channels: ChannelStatus[] = Array.isArray(res) ? res : (res?.data ?? []);
     const map: Record<string, ChannelStatus> = {};
     for (const ch of channels) map[ch.id] = ch;
     channelStatusMap.value = map;
@@ -493,7 +498,7 @@ async function loadChannelStatuses() {
   }
 }
 
-// FIX-5: 动态渠道选项 — mock 渠道添加 "(演示数据)" 标注
+// FIX-5: 动态渠道选项 — 未配置渠道添加 "(演示)" 标注
 // 零成本获客引擎：免费管道（Google CSE + 网站抓取 + 邮箱验证）
 const searchSourceOptions = computed(() => {
   const base = [
@@ -513,7 +518,7 @@ const searchSourceOptions = computed(() => {
     if (opt.value === 'free_pipeline') return opt;
     const ch = map[opt.value];
     if (!ch || ch.status === 'real') return opt;
-    return { ...opt, label: `${opt.label}（演示数据）` };
+    return { ...opt, label: `${opt.label}（演示）` };
   });
 });
 
@@ -556,6 +561,8 @@ async function loadSidecarStatus() {
   try {
     const res = await apiGet<{ data?: Record<string, unknown> }>(
       '/foreign-trade/integrations/sidecars/status',
+      undefined,
+      { timeoutMs: 10000, signal: sidecarAbort.signal },
     );
     const data = (res as { data?: Record<string, unknown> })?.data ?? res;
     sidecarStatus.value = (data as typeof sidecarStatus.value) || {};

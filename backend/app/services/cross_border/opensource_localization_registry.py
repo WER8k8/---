@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开源视频本地化上游注册表 — 对标 Vozo / 山海智影；智能优先级见 OPTIMAL_PICK_ORDER。"""
 
 

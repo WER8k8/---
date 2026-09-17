@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AiToEarn 能力 Hub API — 对齐 Create/Publish/Engage/Analytics。"""
 
 from __future__ import annotations

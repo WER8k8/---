@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="视频管理中心" subtitle="AI 视频生成工厂 · 管理所有生成的视频与音频文件" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Egress Executor Plugin — 静态 IP 槽位分配 + 指纹环境。
 
 对应业务链第 7 环「分配」：给租户的社媒账号分配**独立静态 IP** 与**指纹环境**，

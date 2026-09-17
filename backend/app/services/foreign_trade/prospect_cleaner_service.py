@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """潜客数据清洗 — 改编自 EricHong123/Eric_Frank DataCleanerSkill（核心逻辑，无 pandas）。"""
 
 from __future__ import annotations

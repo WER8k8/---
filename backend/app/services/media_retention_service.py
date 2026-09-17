@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频成品保留：预览 TTL、下载/发布 handoff、文件清理。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开票申请 API — 租户提交 + 财务审核。"""
 
 from typing import Optional

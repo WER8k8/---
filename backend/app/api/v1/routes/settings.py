@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """系统设置路由 - 模块化架构"""
 
 from fastapi import APIRouter, Depends

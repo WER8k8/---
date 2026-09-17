@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """关键词排名查询 API 路由 — 对接 rank_checker.py 真实爬虫"""
 from typing import List, Optional
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
 
 from app.core.response import success_response
+from app.core.security import get_current_user
+from app.models.user import User
 from app.services.rank_checker import RankChecker
 
 
@@ -40,6 +44,7 @@ async def check_rank(
     domain: str = Query("youding.com", description="目标域名"),
     engine: str = Query("baidu", description="搜索引擎 (baidu/google/bing)"),
     max_pages: int = Query(5, ge=1, le=10, description="最大查询页数"),
+    current_user: User = Depends(get_current_user),
 ):
     """查询单个关键词在指定搜索引擎的排名（真实爬取，失败则降级模拟数据）"""
     result = RankChecker.check(keyword, domain, engine, max_pages)
@@ -47,7 +52,10 @@ async def check_rank(
 
 
 @router.post("/rank/batch-check")
-async def batch_check_rank(request: BatchRankCheckRequest):
+async def batch_check_rank(
+    request: BatchRankCheckRequest,
+    current_user: User = Depends(get_current_user),
+):
     """批量查询关键词排名"""
     results = RankChecker.batch_check(
         keywords=request.keywords,

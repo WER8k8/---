@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """发布分层路由 — 集 SAU / biliup / xhs-mcp / 原生 / AiToEarn。"""
 
 from __future__ import annotations

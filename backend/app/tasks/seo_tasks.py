@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import logging
 
 from celery import shared_task
@@ -160,3 +162,38 @@ def seo_research_hints_sync(self, max_tenants: int = 100):
     finally:
         db.close()
         release_scheduler_lock("seo_research_hints_sync")
+
+
+@shared_task(bind=True, max_retries=1, default_retry_delay=600)
+def patrol_platform_sessions_daily(self, cookie_stale_days: int = None, limit: int = 500):
+    """PC-04：平台账号会话巡检，把明显过期的 logged_in 账号摘成 expired。
+
+    只做 DB 判定（token 到期 + cookie 老化），不发网络请求、不做在线探活，
+    因此结果不代表「一定能发」，只代表「这批号需要重绑」。
+    """
+    from app.services.scheduler_leader import release_scheduler_lock, try_acquire_scheduler_lock
+    if not try_acquire_scheduler_lock("platform_session_patrol", ttl_seconds=_LOCK_TTL):
+        logger.info("platform_session_patrol lock held by another instance, skipping")
+        return {"skipped": True, "reason": "leader_lock_busy"}
+    db: Session = SessionLocal()
+    try:
+        from app.core.config import settings
+        from app.services.platform_session_patrol_service import patrol_platform_sessions
+        days = (
+            int(cookie_stale_days)
+            if cookie_stale_days is not None
+            else int(settings.PLATFORM_COOKIE_STALE_DAYS)
+        )
+        report = patrol_platform_sessions(db, cookie_stale_days=days, limit=limit)
+        logger.info(
+            "platform_session_patrol done: scanned=%s marked=%s",
+            report.get("logged_in_scanned"),
+            report.get("expired_marked"),
+        )
+        return report
+    except Exception as exc:
+        logger.error("platform_session_patrol failed: %s", exc)
+        raise self.retry(exc=exc) from exc
+    finally:
+        db.close()
+        release_scheduler_lock("platform_session_patrol")

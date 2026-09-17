@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain AI Agent 决策追踪服务
 
 提供决策记录、执行追踪、反馈收集与性能归因的完整闭环。

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """LinkedIn Sales Navigator API 正式接入 — FIX-55
 
 LinkedIn Sales Navigator API (v2) 集成：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出海参谋 M1 — 定时从 UN Comtrade 刷新海关公开统计 JSON。"""
 
 from __future__ import annotations

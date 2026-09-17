@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 核心编排服务。
 
 管理公司、Agent、目标、任务的全生命周期。

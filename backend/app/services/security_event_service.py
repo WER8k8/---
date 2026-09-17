@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """成果保护：高价值安全事件写入 operation_logs（供鉴定与追溯）。"""
 
 from __future__ import annotations

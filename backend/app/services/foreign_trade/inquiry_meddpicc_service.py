@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-L-DC-01 — 询盘 MEDDPICC 字段提取与评分。"""
 
 from __future__ import annotations

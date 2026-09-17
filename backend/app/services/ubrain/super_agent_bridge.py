@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AccioWork 原生桥 — 无 ai_engine 包时使用 UBrain 卖货服务。"""
 
 from __future__ import annotations

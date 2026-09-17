@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Order Executor Plugin for Hermes Orchestration.
 
 把既有 order services（order_addon_service / order_payment_sync_service）
@@ -11,6 +13,7 @@
 from __future__ import annotations
 
 import logging
+import secrets
 import uuid
 from typing import Any, Dict
 
@@ -83,6 +86,7 @@ class OrderExecutor(BaseExecutor):
                     currency=str(params.get("currency") or "USD"),
                     status=OrderStatus.PENDING,
                     payment_status=PaymentStatus.PENDING,
+                    access_token=secrets.token_hex(32),
                 )
                 context.db.add(order)
                 context.db.flush()
@@ -96,7 +100,7 @@ class OrderExecutor(BaseExecutor):
                     )
                 )
                 context.db.commit()
-                result = {"order_id": str(order.id), "order_number": order.order_number, "status": "pending"}
+                result = {"order_id": str(order.id), "order_number": order.order_number, "status": "pending", "access_token": order.access_token}
         except (ImportError, AttributeError) as exc:
             return ExecutorResult(
                 node_id=node.id,

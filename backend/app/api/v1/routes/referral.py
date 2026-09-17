@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户裂变推荐系统路由"""
 
 from fastapi import APIRouter, Depends, Query
@@ -14,6 +16,13 @@ from app.services.referral_service import ReferralService
 ROUTE_PREFIX = ""
 
 router = APIRouter(prefix="/referral", tags=["呼朋唤友推荐"])
+
+
+@router.get("", include_in_schema=False)
+@router.get("/")
+def get_referral_root():
+    """获取邀请推荐基础配置/规则概览"""
+    return success_response(data={"status": "ok", "message": "referral system active"})
 
 
 @router.get("/my-code")

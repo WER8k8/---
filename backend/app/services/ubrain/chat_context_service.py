@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain 对话上下文：经营快照 + 记忆，供 general LLM 与智能路由使用。"""
 
 from __future__ import annotations

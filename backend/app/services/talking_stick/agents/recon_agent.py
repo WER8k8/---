@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Talking-Stick 侦察Agent
 负责遍历目录、收集源码、依赖清单，初步标记风险文件

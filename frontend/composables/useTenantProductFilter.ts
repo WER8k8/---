@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { computed, ref, type Ref } from 'vue';
 import { categorySlug, productSlug, type TenantCatalogProduct } from '../utils/tenant-product-slug';
 

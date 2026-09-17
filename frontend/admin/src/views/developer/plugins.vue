@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="插件市场" subtitle="扩展插件管理与安装" surface="elevated">
     <template #actions>
@@ -121,7 +124,7 @@ onMounted(async () => {
     const r = await fetch('/api/v1/developer/plugins', { headers: { Authorization: `Bearer ${tk}` } })
     if (!r.ok) throw new Error('HTTP ' + r.status)
     const d = await r.json()
-    if (d.data) plugins.value = d.data
+    if (Array.isArray(d.data?.items)) plugins.value = d.data.items
   } catch { message.warning('数据加载失败，请稍后重试') }
 })
 </script>

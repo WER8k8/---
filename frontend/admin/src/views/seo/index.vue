@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="space-y-6 animate-fade-in">
     <div class="flex items-center justify-between">

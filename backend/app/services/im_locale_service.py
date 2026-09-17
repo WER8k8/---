@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """IM 渠道多语言文案与访客解析（12 语种）。"""
 
 from __future__ import annotations

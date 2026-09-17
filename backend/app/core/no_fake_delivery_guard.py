@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """禁止假交付 — 出站响应扫描（生产路径硬拒绝）。"""
 
 from __future__ import annotations

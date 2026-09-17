@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DATA_SOURCE 插槽适配器：调用既有线索富化门面。"""
 
 from __future__ import annotations

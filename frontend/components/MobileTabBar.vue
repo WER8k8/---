@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <nav
     class="bg-white shadow-sm border-t border-gray-100 fixed bottom-0 left-0 right-0 z-50"

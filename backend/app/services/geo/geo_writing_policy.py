@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO 写作策略 v3 — Princeton 引用战术 + arXiv 2026 最新研究 + 去 AI 味。
 
 战术版本随 tech-radar 外网检索更新；见 TACTICS_VERSION。

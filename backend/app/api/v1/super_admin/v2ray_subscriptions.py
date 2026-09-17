@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 # DEPRECATED (P1-14): v2ray product is legacy. Kept for backward compat; scheduled for removal after product decision.
 """V2Ray 订阅管理 API — 与前端 v2rayAPI / subscription.vue 对齐。"""
 

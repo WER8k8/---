@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """国密算法服务 — FIX-13: GmSSL 认证库替换
 
 支持国密标准算法：

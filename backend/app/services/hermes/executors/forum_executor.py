@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Forum Executor Plugin for Hermes Orchestration.
 
 把既有 forum_webhook_service / forum_sidecar_service 包成

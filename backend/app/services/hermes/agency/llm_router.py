@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """agency-orchestrator 10 provider / 7 免 Key — Hermes LLM 路由（对齐 ao factory）。"""
 
 from __future__ import annotations

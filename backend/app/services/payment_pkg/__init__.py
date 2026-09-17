@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付服务子包（单一职责拆分）
 
 - wechat_pay: 微信支付 Native / 验签 / 退款底层能力

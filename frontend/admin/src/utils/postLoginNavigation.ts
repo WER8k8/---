@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 登录成功后唯一跳转 SSOT（LOGIN-LOCK-01 + ROLE-SHELL-LOCK-01）
  * 登录页、OAuth 回调、router 已登录访问 /login 均须走此函数。
  *

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="套餐续费" subtitle="选择套餐并完成支付" surface="elevated">
     <template #actions>

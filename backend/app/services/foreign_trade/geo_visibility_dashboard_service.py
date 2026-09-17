@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-G-GEO-DASH — GEO/AEO 客户可见性看板（对标迈富时效果报告）。"""
 
 from __future__ import annotations

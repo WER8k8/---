@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """无 LLM 时的卖货助手智能回复：并列多种策略，结合经营快照给出可执行建议。"""
 
 from __future__ import annotations

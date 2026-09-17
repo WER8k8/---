@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="yd-pro-worktabs" :class="[`yd-pro-worktabs--${shellMode}`, { 'yd-pro-worktabs--tabs-only': hideMeta }]">
     <div v-if="!hideMeta" class="yd-pro-worktabs__meta">

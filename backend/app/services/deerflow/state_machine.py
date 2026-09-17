@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 执行引擎状态机核心。
 
 定义任务生命周期状态、转移规则和转移逻辑。

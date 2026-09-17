@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """国际询盘采集系统 - 独立于国内业务的数据库模型"""
 
 import uuid

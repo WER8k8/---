@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Refresh 令牌轮转黑名单：优先 Redis（多实例 / 重启后仍拒绝已吊销 refresh），失败降级进程内内存。"""
 
 from __future__ import annotations

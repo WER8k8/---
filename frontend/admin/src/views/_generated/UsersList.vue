@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="用户 列表" subtitle="数据列表 · 列设置与筛选" surface="elevated">
     <YdSearchBar @search="search" @reset="reset">
@@ -59,7 +62,7 @@ const {
   defaultQuery: { search: '' },
   columns,
   fetcher: async (q) => {
-    const raw = await apiGet('/api/v1/users/', {
+    const raw = await apiGet('/users/', {
       page: q.page,
       page_size: q.pageSize,
       search: q.search,

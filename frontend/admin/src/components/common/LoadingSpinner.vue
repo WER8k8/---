@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <!-- Skeleton mode: show SkeletonCard instead of spinner -->
   <div v-if="skeleton" class="loading-skeleton" :class="{ fullscreen }">

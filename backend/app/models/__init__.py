@@ -1,4 +1,6 @@
-﻿from app.core.database import Base
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+from app.core.database import Base
 from app.models.agent_tree import AgentNode
 from app.models.admin import (AdminMenu, AdminPermission, AdminRole,
                               LoginLog, RolePermission)

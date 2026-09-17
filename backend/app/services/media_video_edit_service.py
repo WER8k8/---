@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频剪辑与调试（ffmpeg + 脚本重渲）。"""
 
 from __future__ import annotations

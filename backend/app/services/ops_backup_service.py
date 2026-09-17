@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """运维备份（SQLite 文件 + 元数据快照）。"""
 
 from __future__ import annotations

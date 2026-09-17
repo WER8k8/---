@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="SEO 性能与安全监控" subtitle="网站性能指标、SEO健康检查与安全审计" surface="elevated">
     <YdHonestDataBanner

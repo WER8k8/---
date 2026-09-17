@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="tenants-layout">
     <a-tabs v-if="isTabManagedRoute" :active-key="tab" @change="onTab">

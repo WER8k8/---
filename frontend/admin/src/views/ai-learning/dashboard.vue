@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 深度学习看板" subtitle="AI使用统计 · 模型性能 · 成本趋势 · 实时对接 /api/v1/super-admin/ai-cost" surface="elevated">
     <template #actions>

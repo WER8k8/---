@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 定时调度 — 每日市场研究 + 与 Hermes 运维循环联动。"""
 
 from __future__ import annotations

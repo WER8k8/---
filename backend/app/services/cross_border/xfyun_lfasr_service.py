@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """讯飞语音转写（LFASR / raasr）— 云端听写兜底。
 
 文档：https://www.xfyun.cn/doc/asr/lfasr/API.html

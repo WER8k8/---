@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """百度百家号发布适配器 — 真实对接百家号开放平台 API。
 
 支持:

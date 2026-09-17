@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 每日排名攻坚 — 多引擎 probe + 战术雷达 + ECC 评审 + 回归告警。"""
 
 from __future__ import annotations

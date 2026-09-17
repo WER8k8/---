@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """附属统一登录路由 · annex_ticket 签发与校验（§9.3）.
 
 端点：
@@ -18,6 +20,7 @@ from sqlalchemy.orm import Session
 
 from app.core.response import error_response, success_response
 from app.core.security import get_current_user
+from app.core.tenant_scope import scope_tenant_id
 from app.db.session import get_db
 from app.models.user import User
 from app.services.annex import ticket_service
@@ -55,6 +58,10 @@ def issue_annex_ticket(
     annex = (body.annex or "").strip()
     if annex not in ticket_service.SUPPORTED_ANNEXES:
         return error_response(400, f"未知附属 {annex!r}")
+    # 租户归属取自 ADR-002 共用真源（user_tenants 关联表）；平台级用户为 None → 空串。
+    # 已知未决：一个用户可挂多条 active user_tenants，而 UserTenant 无 primary 标记，
+    # 共用真源用无排序 .first() → 多租户用户归属不确定（全站同此口径，非 annex 专有）。
+    tenant_id = scope_tenant_id(db, current_user)
     try:
         data = ticket_service.issue_annex_ticket(
             user_id=str(current_user.id),
@@ -62,6 +69,7 @@ def issue_annex_ticket(
             user_email=current_user.email,
             uj_role=current_user.role or "",
             annex=annex,
+            tenant_id=str(tenant_id or ""),
         )
     except ValueError as exc:
         return error_response(400, str(exc))

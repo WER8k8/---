@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div v-if="checklist.length" class="rounded-2xl border border-gray-100 bg-white p-5">
     <div class="flex items-center justify-between mb-4">

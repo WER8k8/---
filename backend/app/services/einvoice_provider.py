@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """全电发票 Provider 适配层 — 诺诺/百望等可插拔；未配置时走人工 mark-issued。"""
 
 from __future__ import annotations

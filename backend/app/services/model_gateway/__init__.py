@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Model Gateway — 轮16 重构（总纲 §4.6）。
 
 能力标签路由 + 成本记账门面。复用既有 get_ai_engine() 单例，不重建已存在模块。

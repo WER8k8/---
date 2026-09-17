@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """技能商店 API — 参考 CocoLoop Skill Store 体系。
 
 提供技能搜索、筛选、安全审核、精选集合等功能。
@@ -9,7 +11,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 
-from app.core.security import get_current_user
+from app.core.security import get_current_user, require_admin
 from app.models.user import User
 from app.services.ubrain.skill_audit_service import (
     analyze_skill_risk,
@@ -20,7 +22,22 @@ from app.services.ubrain.skill_audit_service import (
     search_skills,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/skill-store", tags=["技能商店"])
+
+
+@router.get("/marketplace/summary")
+async def marketplace_summary():
+    """统一插件+技能市场汇总 — 合并 skill_store 与旺财插件数据。"""
+    from app.services.hermes.registry import list_plugins, public_market_item, catalog_meta
+
+    skills = get_skill_catalog_with_security()
+    plugins = [public_market_item(p) for p in list_plugins(visibility="public")]
+    return {
+        "skills": {"items": skills, "count": len(skills)},
+        "plugins": {"items": plugins, "count": len(plugins), "meta": catalog_meta()},
+        "total": len(skills) + len(plugins),
+    }
 
 
 @router.get("/catalog")
@@ -57,7 +74,7 @@ async def get_skill_detail(skill_id: str):
 
 
 @router.post("/skills/{skill_id}/risk-analyze")
-async def analyze_skill(skill_id: str):
+async def analyze_skill(skill_id: str, _admin: User = Depends(require_admin)):
     """分析技能安全风险"""
     return analyze_skill_risk(skill_id)
 

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { defineEventHandler, getQuery, createError, setHeader, getHeader } from 'h3'
 
 export default defineEventHandler(async (event) => {

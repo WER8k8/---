@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -9,8 +11,10 @@ from app.api.v1.seo.eeat import router as eeat_router
 from app.api.v1.seo.keyword_ranking import router as keyword_ranking_router
 from app.api.v1.seo.llms_txt import router as llms_txt_router
 from app.api.v1.seo.llms_txt_generator import router as llms_txt_gen_router
-from app.api.v1.seo.schema_markup import router as schema_markup_router
+from app.api.v1.seo.indexnow import router as indexnow_router
+from app.api.v1.seo.product_seo import router as product_seo_router
 from app.api.v1.seo.report_export import router as report_export_router
+from app.api.v1.seo.schema_markup import router as schema_markup_router
 from app.api.v1.seo.site_audit import router as site_audit_router
 from app.core.database import get_db
 from app.core.security import require_admin
@@ -22,6 +26,8 @@ from app.schemas.seo import (KeywordCreate, KeywordResponse, KeywordUpdate,
                              SiteAuditResponse)
 
 router = APIRouter()
+router.include_router(product_seo_router)
+router.include_router(indexnow_router)
 router.include_router(dashboard_router, tags=["seo-dashboard"])
 router.include_router(
     content_optimizer_router,

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """从原片音轨粗估解说者性别（基频启发式），用于英文 TTS 音色匹配。"""
 
 from __future__ import annotations

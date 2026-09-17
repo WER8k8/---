@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Product Finder 匹配引擎 — 请求 / 响应 Pydantic 模型。
 
 这些模型仅描述数据结构，不包含任何业务逻辑，可被路由层与引擎层共用。

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="渲染队列" subtitle="多媒体渲染任务管理与调度" surface="elevated">
     <template #actions>

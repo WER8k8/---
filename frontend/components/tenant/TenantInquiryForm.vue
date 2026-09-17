@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <form class="tenant-inquiry-form" @submit.prevent="onSubmit">
     <div class="tenant-inquiry-form-grid">

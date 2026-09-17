@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ECommerceCrawlers 爬虫配方注册表 — 映射 GitHub 子项目到本系统能力。
 
 来源：https://github.com/DropsDevopsOrg/ECommerceCrawlers

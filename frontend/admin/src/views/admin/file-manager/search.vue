@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="全局检索" subtitle="在文件概览收藏路径内做关键词过滤" surface="elevated">
     <template #actions>

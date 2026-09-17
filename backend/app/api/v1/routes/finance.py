@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """财务中台 MVP — 营收/成本流水"""
 
 from datetime import datetime, timezone

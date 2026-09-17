@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="customer-detail">
     <!-- 客户基本信息 -->
@@ -124,6 +127,7 @@
 import { ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { MailOutlined, MessageOutlined, EditOutlined, CommentOutlined } from '@ant-design/icons-vue';
+import { apiPut } from '@/utils/api';
 import type { Customer } from '@/types/sales';
 
 const props = defineProps<{
@@ -206,12 +210,7 @@ function handleStartNegotiation() {
 async function handleUpdateStatus() {
   try {
     const newStatus = props.customer.status === 'new' ? 'contacted' : props.customer.status === 'contacted' ? 'qualified' : 'converted';
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/v1/sales/customers/${props.customer.id}/status`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
-    });
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    await apiPut(`/super-agent/sales/customer-finder/${props.customer.id}/status`, { status: newStatus });
     message.success(`客户状态已更新为: ${newStatus}`);
     emit('update-status', props.customer, newStatus);
   } catch (error) {

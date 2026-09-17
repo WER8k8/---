@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ITER-03b · 抖音评论真实拉取 — AiToEarn / SAU 导出 / Inbox 文件（禁止造评论）。"""
 
 from __future__ import annotations

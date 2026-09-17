@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <article class="p-4 mb-3 bg-white rounded-xl border border-slate-200 transition-all duration-200 relative overflow-hidden
     hover:-translate-y-0.5 hover:shadow-lg hover:border-teal-600">

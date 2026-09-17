@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="外贸 AI 技能台" subtitle="7 个核心外贸技能，一键执行" surface="elevated">
     <div class="skill-console">

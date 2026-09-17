@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 全球化多语言模型
 - GlossaryTerm: 行业术语多语言标准化

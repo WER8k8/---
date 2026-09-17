@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 结果审核器。
 
 对执行结果进行审核，决定是否需要人工确认或打回重做。

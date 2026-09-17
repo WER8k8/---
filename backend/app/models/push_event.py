@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Lane P · 销售推送事件（企微应用消息 / 群机器人）。"""
 
 from __future__ import annotations

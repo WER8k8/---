@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 智能建站工作流 — ECC 专家流水线 + 设计技能约束。"""
 
 

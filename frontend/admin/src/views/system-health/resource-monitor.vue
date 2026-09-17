@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="资源监控" subtitle="实时系统资源与进程管理" surface="elevated">
     <template #actions>

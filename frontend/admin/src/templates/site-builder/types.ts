@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 可视化建站 · 模板与导出结构（与 tenant site_content 对齐） */
 
 export type SiteBuilderTemplateId =
@@ -16,6 +19,15 @@ export interface SiteBuilderTemplateMeta {
   name: string;
   description: string;
   industry: string;
+  category?: 'portal' | 'ai' | 'tools' | 'h5';
+  categoryLabel?: string;
+  author?: string;
+  authorAvatar?: string;
+  views?: string;
+  likes?: number;
+  tags?: string[];
+  prompt?: string;
+  coverUrl?: string;
 }
 
 export interface SiteContentSnapshot {

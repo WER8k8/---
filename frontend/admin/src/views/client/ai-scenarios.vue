@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 场景模型" subtitle="为各业务场景指定具体模型，留空则使用平台默认" surface="elevated">
     <template #actions>

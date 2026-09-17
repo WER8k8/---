@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Gemini 音频听写兜底（多模态 generateContent，非专用 ASR）。
 
 使用已有 AI_GEMINI_API_KEY；小文件 inline base64，大文件走 Files API。

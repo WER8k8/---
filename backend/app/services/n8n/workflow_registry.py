@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """n8n 工作流注册表。
 
 管理 n8n 工作流的注册、查询、启用/禁用，存储 workflow_id、endpoint、auth_config。
@@ -247,7 +249,15 @@ def _ensure_one_workflow(
         return
 
     endpoint = (os.environ.get(url_env) or "").strip()
-    enabled = (os.environ.get(enabled_env) or "false").strip().lower() == "true"
+    raw_enabled = os.environ.get(enabled_env)
+    # §12 激活：dev/test 环境下，只要配置了 webhook URL 且未显式禁用，就默认启用，
+    # 避免内建工作流被静默跳过（此前默认 false 导致出站通知永不发生）。生产仍须显式 opt-in。
+    if raw_enabled is None:
+        import os as _os
+        _env = _os.environ.get("ENVIRONMENT", "development").lower()
+        enabled = bool(endpoint) and _env in ("development", "test", "dev")
+    else:
+        enabled = raw_enabled.strip().lower() == "true"
     auth_raw = (os.environ.get(auth_env) or "").strip()
     auth_config: dict[str, Any] = {}
     if auth_raw and ":" in auth_raw:

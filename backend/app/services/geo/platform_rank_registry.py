@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """平台 × GEO 排名权重注册表 — 排名优先准则下的发布顺序。
 
 平台越多、且覆盖 AI/搜索训练源，GEO 引用面越广；本模块为「先上高权重、再扩探索」提供排序。
@@ -48,6 +50,35 @@ _PLATFORM_PROFILES: tuple[tuple[str, float, AdapterStatus, str, str, int], ...] 
     ("Global Sources", 0.72, "exploration", "global", "article", 36),
     ("Reddit", 0.60, "stub", "global", "article", 48),
     ("Medium", 0.58, "exploration", "global", "article", 54),
+    # --- 09-13 补齐（PC-03）：platforms 目录 50 个平台，此处原先只有 30 个。
+    # 缺席的后果不是「少一行档案」而是被排序挤出获客面：geo_weight 回落 0.5、
+    # rank_priority 回落 99，publish_order_for_ranking 取前 N 时 AliExpress / eBay /
+    # WhatsApp / Pinterest / Telegram 这类渠道压根排不进来 —— 与「全平台」打法直接冲突。
+    # 权重取值：优先给能进 AI/搜索训练源的 UGC 与图文博客（Quora / Telegram / Blogger），
+    # 其次是 B2B 与电商目录站（有链接反哺、引用面稳定），纯社交通讯类排后。
+    # rank_priority 全部取 56 以后的偶数，避开上方已用档位；未接真发的排序仍靠
+    # rank_score 里的 status_factor 降权，不靠把 priority 推大来隐藏。
+    ("Quora", 0.74, "exploration", "global", "article", 56),
+    ("Pinterest", 0.66, "stub", "global", "article", 58),
+    ("WordPress.com", 0.64, "exploration", "global", "article", 60),
+    ("Thomasnet", 0.62, "exploration", "global", "article", 62),
+    ("Telegram Channel", 0.62, "exploration", "global", "article", 64),
+    ("Blogger", 0.60, "exploration", "global", "article", 66),
+    ("TradeKey", 0.60, "exploration", "global", "article", 68),
+    ("Amazon Seller", 0.58, "exploration", "global", "article", 70),
+    ("Kompass", 0.58, "exploration", "global", "article", 72),
+    ("VK", 0.56, "exploration", "global", "article", 74),
+    ("eBay", 0.52, "exploration", "global", "article", 76),
+    ("LINE Official", 0.52, "exploration", "global", "article", 78),
+    ("AliExpress", 0.50, "exploration", "global", "article", 80),
+    ("WhatsApp", 0.50, "exploration", "global", "article", 82),
+    ("Tumblr", 0.50, "exploration", "global", "article", 84),
+    ("脉脉", 0.48, "exploration", "cn", "article", 86),
+    ("Snapchat", 0.46, "stub", "global", "short_video", 88),
+    ("Shopee", 0.46, "exploration", "global", "article", 90),
+    ("Zalo", 0.44, "exploration", "global", "article", 92),
+    ("Lazada", 0.44, "exploration", "global", "article", 94),
+    ("淘宝逛逛", 0.42, "exploration", "cn", "short_video", 96),
 )
 
 

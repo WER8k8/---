@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip Agent 编排层数据模型。
 
 融合 Paperclip 理念到现有 Hermes + DeerFlow 2.0 架构：

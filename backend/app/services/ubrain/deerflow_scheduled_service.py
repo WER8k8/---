@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 定时更新 — 套餐门控入队 + 分 lane 队列消费。"""
 
 

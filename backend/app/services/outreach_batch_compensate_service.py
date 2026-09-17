@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """批量外联补偿服务 —— ORCH-19 修复
 
 处理批量发信场景下的事务补偿：

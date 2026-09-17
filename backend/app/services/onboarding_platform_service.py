@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开户向导 — 首个平台绑定（内嵌 OAuth/Cookie，不跳转菜单）。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** Paperclip Agent 编排管理 API 客户端 */
 import { apiGet, apiPost, apiPut } from '@/utils/api'
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Security package: ClawPatrol + JWT/auth (re-export from app.core.security.py)."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """数据库会话 — 从 app.core.database 统一 get_db，避免双引擎问题"""
 import logging
 
@@ -20,6 +22,7 @@ _INQUIRY_ATTRIBUTION_COLS = (
 
 def _ensure_inquiry_attribution_columns() -> None:
     """开发/未跑 Alembic 033 时补齐 inquiries 归因列（生产请用 alembic upgrade）。"""
+    import re
     try:
         insp = inspect(engine)
         if "inquiries" not in insp.get_table_names():
@@ -29,6 +32,10 @@ def _ensure_inquiry_attribution_columns() -> None:
         with engine.begin() as conn:
             for col, col_type in _INQUIRY_ATTRIBUTION_COLS:
                 if col in existing:
+                    continue
+                # 严格白名单：仅允许字母、数字、下划线，且以字母/下划线开头
+                if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", col):
+                    logger.warning("Skipping unsafe column name: %s", col)
                     continue
                 safe_col = conn.engine.dialect.identifier_preparer.quote(col)
                 if dialect == "postgresql":
@@ -308,6 +315,47 @@ def _ensure_iproyal_egress_schema() -> None:
         logger.warning("Could not ensure IPRoyal egress schema: %s", exc)
 
 
+_ORDER_TRADE_COLS = (
+    ("incoterms", "VARCHAR(10)"),
+    ("payment_terms", "VARCHAR(50)"),
+    ("deposit_ratio", "NUMERIC(5, 2)"),
+    ("deposit_amount", "NUMERIC(10, 2)"),
+    ("port_of_loading", "VARCHAR(100)"),
+    ("port_of_discharge", "VARCHAR(100)"),
+    ("gross_weight", "NUMERIC(12, 3)"),
+    ("net_weight", "NUMERIC(12, 3)"),
+    ("volume", "NUMERIC(12, 3)"),
+    ("shipping_marks", "TEXT"),
+    ("container_no", "VARCHAR(50)"),
+    ("bl_number", "VARCHAR(50)"),
+)
+
+
+def _ensure_order_trade_columns() -> None:
+    """未跑 111 迁移时补齐 orders 外贸履约字段（P/I 定金 + CI/箱单数据）。"""
+    try:
+        insp = inspect(engine)
+        if "orders" not in insp.get_table_names():
+            return
+        existing = {c["name"] for c in insp.get_columns("orders")}
+        dialect = engine.dialect.name
+        with engine.begin() as conn:
+            preparer = conn.engine.dialect.identifier_preparer
+            for col, col_type in _ORDER_TRADE_COLS:
+                if col in existing:
+                    continue
+                safe_col = preparer.quote(col)
+                if dialect == "postgresql":
+                    conn.execute(
+                        text(f"ALTER TABLE orders ADD COLUMN IF NOT EXISTS {safe_col} {col_type}")
+                    )
+                else:
+                    conn.execute(text(f"ALTER TABLE orders ADD COLUMN {safe_col} {col_type}"))
+                logger.info("Added orders.%s for foreign-trade fulfillment", col)
+    except Exception as exc:
+        logger.warning("Could not ensure order trade columns: %s", exc)
+
+
 def init_db():
     """初始化数据库表结构（保留 in session 层以维持向后兼容）"""
     import app.models  # noqa: F401 — 注册全部 ORM（含 SiteAnalyticsEvent）
@@ -323,3 +371,4 @@ def init_db():
     _ensure_platform_account_columns()
     _ensure_seo_metadata_columns()
     _ensure_ai_model_sort_order_column()
+    _ensure_order_trade_columns()

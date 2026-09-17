@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一 AI 调用：场景解析、引擎调用、用量落库、降级。"""
 
 from __future__ import annotations

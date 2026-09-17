@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Wangcai Executor Plugin for Hermes Orchestration.
 
 把既有旺财统一入口 `ask_wangcai_for_tenant`（公开站海关/出口问答，

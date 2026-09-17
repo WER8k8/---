@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """将 M0 内置矩阵写入 trade_country_category（幂等）。"""
 
 from __future__ import annotations

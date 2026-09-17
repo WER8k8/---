@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """保温厂试点：HTTPS 演示域与七步②彩排检查。"""
 
 from __future__ import annotations

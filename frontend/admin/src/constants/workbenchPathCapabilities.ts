@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { WORKBENCH_CAPABILITY_REGISTRY } from '@/constants/workbenchCapabilityRegistry';
 
 /** 去掉 query/hash，并折叠末尾 `/`（根路径除外） */

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain 统一助手 API。"""
 
 import logging
@@ -301,7 +303,7 @@ def ubrain_action_audit_summary(
 
 
 @router.get("/tools")
-def ubrain_tools():
+def ubrain_tools(current_user: User = Depends(get_current_user)):
     """处理 GET /tools 请求，ubrain相关资源。
     :return: 返回处理结果。
     """

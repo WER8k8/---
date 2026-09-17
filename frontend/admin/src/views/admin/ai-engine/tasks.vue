@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 任务看板" subtitle="跟踪 AI 相关待办（本地），与调度中心生产任务分工" surface="elevated">
     <template #actions>

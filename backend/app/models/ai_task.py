@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一任务控制面模型（总纲 §4.6-1 / §8 082_unify_ai_tasks；轮23 补 ORM 映射）。
 
 ai_tasks 表由迁移 082 建好（11 态状态机 + 幂等 + checkpoint + lease），

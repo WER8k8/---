@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="询盘管理" subtitle="管理客户咨询和询价信息" surface="elevated">
     <template #actions>
@@ -513,7 +516,7 @@ async function loadData() {
   try {
     const p = new URLSearchParams()
     p.set('page', '1')
-    p.set('page_size', '200')
+    p.set('page_size', '100')
     if (filterTab.value) p.set('status', filterTab.value)
     if (sourceFilter.value) p.set('source_channel', sourceFilter.value)
     const r = await fetch('/api/v1/inquiries/unified?' + p.toString(), {

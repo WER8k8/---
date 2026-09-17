@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """NVIDIA Cosmos NIM /v1/infer 客户端（文生视频等）。"""
 
 from __future__ import annotations

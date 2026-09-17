@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """现金券线下核销 — 超管确认已兑付。"""
 
 from __future__ import annotations

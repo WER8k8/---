@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <section v-if="items.length" class="jtbd-checklist uj-glass-panel">
     <header class="jtbd-checklist__head">

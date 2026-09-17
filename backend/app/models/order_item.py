@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Order Item Model - 订单明细模型
 订单中的产品明细（一个订单可包含多个产品）

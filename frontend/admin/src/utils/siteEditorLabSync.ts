@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * site-editor-lab · Formily 草稿 ↔ 租户 site_content 双向映射
  * 对齐 L-Pro 发布门禁 + SITE-JTBD-01 四要素
  */

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 # DEPRECATED (P1-14): v2ray tracker is legacy. Kept for backward compat.
 """
 V2Ray Tracker API - 版本追踪与状态检查

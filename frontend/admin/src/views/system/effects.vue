@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="自定义特效组件" subtitle="配置页面交互动画和视觉特效" surface="elevated">
     <a-row :gutter="16">

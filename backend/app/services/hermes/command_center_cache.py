@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """司令部快照缓存 — Redis + Stale-While-Revalidate + 云端后台预热。
 
 生产路径目标：用户打开司令部 <1s（命中 Redis 预热缓存），后台异步刷新保持新鲜度。

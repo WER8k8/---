@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """凭证库加密层（总纲 §3.1/§8 迁移 087；轮20）。
 
 - 默认后端 aes_gcm：AES-256-GCM（复用 field_crypto 的 HKDF 派生模式），

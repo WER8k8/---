@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="intl-dashboard" title="采集概览" subtitle="国际询盘采集统计、地区分布与近期动态" surface="elevated">
     <PageDataBar

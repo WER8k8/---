@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="性能与安全" subtitle="系统性能指标与安全审计" surface="elevated">
     <!-- 标签页切换 -->

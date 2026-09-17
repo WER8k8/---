@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-L-PL-01 — 询盘管道阶段 MQL→SQL→报价→PI→定金。"""
 
 from __future__ import annotations

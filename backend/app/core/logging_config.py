@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 日志轮转和监控告警配置
 """
@@ -31,6 +33,10 @@ class ContextEnrichFilter(logging.Filter):
 _EMAIL_PATTERN = re.compile(r'([a-zA-Z0-9_.+-])[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)')
 _PHONE_PATTERN = re.compile(r'(1[3-9]\d)\d{4}(\d{4})')
 _PASSWORD_PATTERN = re.compile(r'(password|passwd|pwd|secret|token)["\']?\s*[:=]\s*["\']?([^"\'\s,]+)', re.IGNORECASE)
+# API Key 脱敏（OpenAI/NVIDIA 等）
+_API_KEY_PATTERN = re.compile(r'(sk-[a-zA-Z0-9]{20,}|nvapi-[a-zA-Z0-9_-]{20,})')
+# JWT Token 脱敏（Bearer token）
+_JWT_PATTERN = re.compile(r'(Bearer\s+)[a-zA-Z0-9\-_.]+', re.IGNORECASE)
 
 def mask_pii(text: str) -> str:
     """脱敏日志中的个人敏感隐私信息（PII）。"""
@@ -39,6 +45,8 @@ def mask_pii(text: str) -> str:
     text = _EMAIL_PATTERN.sub(r'\1***@\2', text)
     text = _PHONE_PATTERN.sub(r'\1****\2', text)
     text = _PASSWORD_PATTERN.sub(r'\1="******"', text)
+    text = _API_KEY_PATTERN.sub(r'***REDACTED_API_KEY***', text)
+    text = _JWT_PATTERN.sub(r'\1***REDACTED_JWT***', text)
     return text
 
 

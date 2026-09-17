@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="系统概览" subtitle="查看系统整体运行状态和关键指标" surface="elevated">
   <div class="system-overview">

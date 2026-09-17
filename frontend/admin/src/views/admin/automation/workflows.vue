@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="工作流说明" subtitle="用步骤文本描述编排，本地草稿" surface="elevated">
     <template #actions>

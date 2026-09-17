@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """应用启动引导模块 — 从 main.py lifespan 中提取调度器启动逻辑，保持行为一致。
 
 所有调度器启动失败不阻塞主进程，仅在日志中记录警告。

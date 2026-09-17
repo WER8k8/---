@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一发布母版 — 按平台名匹配变体并创建 PublishTask。
 
 双关卡接入（总纲 §6.4，文章链路）：
@@ -175,6 +177,14 @@ def _publish_single_platform(
     db.add(task)
     db.flush()
     master.status = "ready"
+    # 一核多形（缺口 #8 持久化）：变体/DeerFlow 发布路径同样落一份事实内核快照，
+    # 使同一母版的多平台形态都源自同一份可回溯的硬事实，而非每次现算即丢。
+    try:
+        from app.services.geo.content_kernel_bridge import persist_kernel
+
+        persist_kernel(master)
+    except Exception as exc:  # 内核落库失败不得阻断发布主链
+        logger.debug("事实内核快照落库失败 master=%s: %s", master.id, exc)
     match = {
         "platform_id": plat.id,
         "platform_name": plat.name,

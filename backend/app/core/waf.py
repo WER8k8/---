@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 WAF防火墙规则配置
 提供SQL注入、XSS、路径遍历等常见攻击防护

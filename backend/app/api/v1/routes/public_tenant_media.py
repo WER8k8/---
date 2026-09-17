@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户官网公开视频页（SEO/GEO 收录，无需登录）。"""
 
 from datetime import timedelta

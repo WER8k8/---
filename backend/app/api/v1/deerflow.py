@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 执行引擎 API 路由。
 
 提供任务管理、状态转移、人工审核的 REST 接口。
@@ -17,8 +19,9 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.response import error_json_response, success_response
-from app.core.security import require_admin
+from app.core.security import get_current_user
 from app.models.deerflow_job import DeerflowJob
+from app.models.user import User
 from app.services.deerflow.checkpoint import CheckpointManager
 from app.services.deerflow.executor import SubTaskExecutionError
 from app.services.deerflow.planner import TaskPlanner
@@ -113,6 +116,7 @@ def _get_machine(
 def create_job(
     request: CreateJobRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """创建 DeerFlow 任务。
 
@@ -144,6 +148,7 @@ def list_jobs(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出 DeerFlow 任务。"""
     query = db.query(DeerflowJob)
@@ -166,6 +171,7 @@ def list_jobs(
 def get_job(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取任务详情。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -178,6 +184,7 @@ def get_job(
 def delete_job(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """删除任务。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -197,6 +204,7 @@ def delete_job(
 def start_job(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """开始执行任务：CREATED -> PLANNING。"""
     try:
@@ -222,6 +230,7 @@ def start_job(
 def execute_job(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """触发执行：PLANNING -> EXECUTING。
 
@@ -246,6 +255,7 @@ def cancel_job(
     job_id: str,
     request: TransitionRequest = TransitionRequest(),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """取消任务。"""
     try:
@@ -262,6 +272,7 @@ def cancel_job(
 def retry_job(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """重试失败任务：FAILED -> RETRY -> EXECUTING。"""
     try:
@@ -293,6 +304,7 @@ def retry_job(
 def get_review_result(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取审核结果。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -313,6 +325,7 @@ def human_decision(
     job_id: str,
     request: HumanDecisionRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """人工决策（WAIT_HUMAN 状态）。
 
@@ -347,6 +360,7 @@ def human_decision(
 def get_checkpoint(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取任务 checkpoint。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -365,6 +379,7 @@ def get_checkpoint(
 def list_snapshots(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出 checkpoint 快照。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -381,6 +396,7 @@ def rollback_checkpoint(
     job_id: str,
     steps: int = Query(1, ge=1, le=10, description="回滚步数"),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """回滚 checkpoint 到历史快照。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -399,6 +415,7 @@ def rollback_checkpoint(
 def get_resume_info(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取任务恢复点信息。"""
     job = db.query(DeerflowJob).filter(DeerflowJob.id == job_id).first()
@@ -426,6 +443,7 @@ def get_resume_info(
 def get_job_status(
     job_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取任务当前状态。"""
     try:
@@ -445,7 +463,9 @@ def get_job_status(
 
 
 @router.get("/statuses")
-def list_statuses():
+def list_statuses(
+    current_user: User = Depends(get_current_user),
+):
     """列出所有可用状态和转移规则。"""
     transitions = {}
     for from_status, to_statuses in _TRANSITIONS.items():

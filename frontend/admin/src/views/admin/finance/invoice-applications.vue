@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="开票审核" subtitle="审核租户开票申请，线下/税控开具后登记发票号码" surface="elevated">
     <template #actions>

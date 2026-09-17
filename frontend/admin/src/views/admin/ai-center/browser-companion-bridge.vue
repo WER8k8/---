@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="浏览器伴侣工作台" subtitle="优丁平台专属 · 内容仅来自本平台任务">
     <a-alert

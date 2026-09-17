@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 租户 Research Brief 预制模板（Hermes×AnySearch 研究沉淀）。"""
 
 from __future__ import annotations

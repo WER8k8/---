@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """site_content 多语种 i18n 生成 · 建站补全 · 存量租户回填。"""
 
 from __future__ import annotations

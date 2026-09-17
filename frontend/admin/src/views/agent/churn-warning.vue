@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="客户流失预警" subtitle="自动检测有流失风险的客户，及时跟进挽回" surface="elevated">
     <template #actions>

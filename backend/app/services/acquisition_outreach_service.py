@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """获客邮件序列 — 复用 EmailOutreach，经 JobGateway 真发。"""
 
 from __future__ import annotations

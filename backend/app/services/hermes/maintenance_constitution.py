@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 巡站维护宪法 — 底层写死：只维护、不破坏。
 
 任何维护动作须经 assert_maintenance_action 校验；禁止类动作在编译期常量中冻结。

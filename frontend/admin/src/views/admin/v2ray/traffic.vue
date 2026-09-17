@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="流量统计" subtitle="代理流量使用情况 · 按节点/按天统计" surface="elevated">
     <template #actions>

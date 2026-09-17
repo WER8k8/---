@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import type { ISchema } from '@formily/json-schema';
 
 /** 建站工作台 · SEO 三轨：Google 英文 / 百度中文 / Yandex 俄语 */

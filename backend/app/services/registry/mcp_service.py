@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MCP 注册表服务（轮17-3；轮19 扩展 connector-manifest 字段）。
 
 替代 agent_hub_service 的进程内 _custom_mcp_servers 列表，改为 083

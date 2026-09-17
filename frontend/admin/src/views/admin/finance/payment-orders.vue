@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="租户支付订单" subtitle="全平台租户付款单 · 与分润/财务台账同源" surface="elevated">
     <template #actions>

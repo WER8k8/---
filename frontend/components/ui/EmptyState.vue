@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="flex flex-col items-center justify-center py-12 px-6 text-center">
     <div class="text-5xl mb-4 opacity-50">{{ icon }}</div>

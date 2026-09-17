@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Trade AI Assistant — OSINT Layer 5: 技术栈检测（BuiltWith-style）。
 

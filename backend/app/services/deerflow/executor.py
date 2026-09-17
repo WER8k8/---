@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 子任务执行器。
 
 负责执行规划器生成的子任务，每个子任务有独立的 Trace span。
@@ -38,9 +40,11 @@ def _ensure_foreign_trade_skills() -> None:
             competitor_profile_skill,
             copywriting_skill,
             customer_research_skill,
+            market_insight_skill,
             prospect_skill,
             sales_enablement_skill,
             seo_audit_skill,
+            supplier_compare_skill,
         )
     except Exception as exc:  # noqa: BLE001
         logger.warning("外贸技能模块导入失败，相关 intent 将降级: %s", exc)
@@ -236,6 +240,17 @@ class SubTaskExecutor:
         end_time = datetime.now(timezone.utc)
         result.finished_at = end_time.isoformat()
         result.duration_ms = int((end_time - start_time).total_seconds() * 1000)
+        # 事实层抽取：内容类子任务把产出抽成 FactKernel 挂到 result，
+        # 供统一发布台按平台形态投影（不写 DB、不发网络；失败不影响主链）。
+        if result.success and result.output:
+            try:
+                from app.services.deerflow.kernel_bridge import extract_kernel_from_subtask
+
+                kernel = extract_kernel_from_subtask(result.intent, result.output)
+                if kernel is not None:
+                    result.output["fact_kernel"] = kernel.to_dict()
+            except Exception as exc:  # 事实层抽取失败不得阻断 DeerFlow 主链
+                logger.debug("deerflow 事实层抽取失败 subtask=%s: %s", subtask.id, exc)
         # 通知回调
         if self.on_subtask_complete:
             try:
@@ -329,6 +344,14 @@ class SubTaskExecutor:
         # 邮件发送
         if intent == "email_dispatch":
             return self._exec_email_dispatch(params)
+
+        # 目标市场洞察（对标 Accio Work 市场洞察）
+        if intent == "market_insight":
+            return self._exec_market_insight(params)
+
+        # 供应商/同行比较排序卡（对标 Accio Work 比价与供应商比较）
+        if intent == "supplier_compare":
+            return self._exec_supplier_compare(params)
 
         # 通用 Hermes/Paperclip 调用
         return self._exec_generic(subtask)
@@ -893,9 +916,126 @@ class SubTaskExecutor:
             return {
                 "status": "completed",
                 "degraded": True,
-                "note": f"email_dispatch 真实服务不可用，降级占位: {str(exc)[:160]}",
-                "sent_count": 0,
+            "note": f"email_dispatch 真实服务不可用，降级占位: {str(exc)[:160]}",
+            "sent_count": 0,
+        }
+
+    def _exec_market_insight(self, params: dict[str, Any]) -> dict[str, Any]:
+        """目标市场洞察：接 market_insight 技能（对标 Accio Work 市场洞察能力）。"""
+        category = str(params.get("category") or params.get("product_name") or params.get("keyword") or "")
+        target_market = str(
+            params.get("target_market")
+            or params.get("market")
+            or params.get("country")
+            or params.get("region")
+            or ""
+        )
+        if not category or not target_market:
+            return self._degraded(
+                "market_insight",
+                "缺少必填参数 category 与 target_market（缺一即无法定位洞察对象）",
+                params,
+                insight=None,
+            )
+        # SkillMeta.prompt_template.format(**params) 要求占位符齐全，缺任一键 KeyError，
+        # 故此处显式补齐 input_schema 的全部键。
+        skill_params = {
+            "category": category,
+            "target_market": target_market,
+            "our_position": str(params.get("our_position") or "中等价位、可定制、交期稳定的中国制造商"),
+            "horizon": str(params.get("horizon") or "未来 12 个月"),
+        }
+        try:
+            _ensure_foreign_trade_skills()
+            from app.services.foreign_trade import skill_registry
+
+            result = _run_coro(skill_registry.execute("market_insight", skill_params))
+            if not getattr(result, "success", False):
+                return self._degraded(
+                    "market_insight",
+                    f"market_insight 技能执行失败: {getattr(result, 'error', '未知')}"
+                    "（常见原因：AI 服务未配置 LLM 凭据）",
+                    params,
+                    insight=None,
+                )
+            return {
+                "status": "completed",
+                "degraded": False,
+                "category": category,
+                "target_market": target_market,
+                "insight": getattr(result, "data", None),
+                "model_used": getattr(result, "model_used", None),
+                "tokens_used": getattr(result, "tokens_used", 0),
+                # 洞察是模型推断而非一手数据，诚实标记原样透出，禁止上层当既成事实
+                "human_verify_required": True,
             }
+        except Exception as exc:  # noqa: BLE001
+            return self._degraded(
+                "market_insight",
+                f"market_insight 执行异常: {str(exc)[:200]}",
+                params,
+                insight=None,
+            )
+
+    def _exec_supplier_compare(self, params: dict[str, Any]) -> dict[str, Any]:
+        """供应商/同行比较排序卡：接 supplier_compare 技能（对标 Accio Work 比价链）。"""
+        category = str(params.get("category") or params.get("product_name") or "")
+        target_market = str(params.get("target_market") or params.get("market") or params.get("country") or "")
+        raw_candidates = params.get("candidates") or params.get("suppliers") or params.get("subjects") or ""
+        if isinstance(raw_candidates, (list, tuple)):
+            # 允许上游直接给名单/对象列表（如 matching_engine 结果或人工填写的同行清单）
+            candidates = "\n".join(
+                item if isinstance(item, str) else json.dumps(item, ensure_ascii=False)
+                for item in raw_candidates
+            )
+        else:
+            candidates = str(raw_candidates).strip()
+        if not category or not target_market or not candidates:
+            return self._degraded(
+                "supplier_compare",
+                "缺少必填参数 category / target_market / candidates"
+                "（候选主体必须由调用方给定，不允许模型杜撰公司名）",
+                params,
+                comparison=None,
+            )
+        skill_params = {
+            "category": category,
+            "target_market": target_market,
+            "candidates": candidates,
+            "criteria": str(params.get("criteria") or "价格、认证合规、交期、MOQ、售后与本地支持"),
+            "our_position": str(params.get("our_position") or "中等价位、可定制、交期稳定的中国制造商"),
+        }
+        try:
+            _ensure_foreign_trade_skills()
+            from app.services.foreign_trade import skill_registry
+
+            result = _run_coro(skill_registry.execute("supplier_compare", skill_params))
+            if not getattr(result, "success", False):
+                return self._degraded(
+                    "supplier_compare",
+                    f"supplier_compare 技能执行失败: {getattr(result, 'error', '未知')}"
+                    "（常见原因：AI 服务未配置 LLM 凭据）",
+                    params,
+                    comparison=None,
+                )
+            return {
+                "status": "completed",
+                "degraded": False,
+                "category": category,
+                "target_market": target_market,
+                "candidate_count": len([line for line in candidates.splitlines() if line.strip()]),
+                "comparison": getattr(result, "data", None),
+                "model_used": getattr(result, "model_used", None),
+                "tokens_used": getattr(result, "tokens_used", 0),
+                "human_verify_required": True,
+            }
+        except Exception as exc:  # noqa: BLE001
+            return self._degraded(
+                "supplier_compare",
+                f"supplier_compare 执行异常: {str(exc)[:200]}",
+                params,
+                comparison=None,
+            )
 
     def _exec_generic(self, subtask: SubTask) -> dict[str, Any]:
         """未知 intent 兜底：登记为 Paperclip 任务，等 Agent 心跳认领执行。

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI Hunter 找客旁路 — 对接 xiongQvQ/AI_Find_Customer 式 Sidecar HTTP API。
 
 主站不内置深度爬虫；Sidecar 返回须带 evidence_url，一律 human_verify。

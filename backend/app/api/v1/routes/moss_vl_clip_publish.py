@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL AI 剪辑、一键分发、热更新/回滚及官方整仓管理路由。"""
 
 from __future__ import annotations
 
 from typing import Any
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from app.services.moss_auto_clip_pipeline import MossAutoClipPipeline
@@ -11,10 +13,12 @@ from app.services.moss_clip_and_publish_workflow import MossClipAndPublishWorkfl
 from app.services.moss_vl.hot_reload_manager import MossHotReloadManager
 from app.services.moss_vl.repo_syncer import MossRepoSyncer
 from app.services.moss_vl_service import MossVLService
+from app.core.security import require_admin
+from app.models.user import User
 
 router = APIRouter(prefix="/moss-vl", tags=["MOSS-VL 智能剪辑与官方全仓管理"])
 
-ROUTE_PREFIX = "/moss-vl"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["MOSS-VL 智能剪辑与官方全仓管理"]
 
 
@@ -52,7 +56,7 @@ class MossRollbackRequest(BaseModel):
 
 
 @router.post("/analyze", summary="MOSS-VL 时空多模态视频解析")
-def analyze_video(req: MossAnalyzeRequest) -> dict[str, Any]:
+def analyze_video(req: MossAnalyzeRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     service = MossVLService()
     result = service.analyze_video_spatiotemporal(
         video_path_or_url=req.video_source,
@@ -62,7 +66,7 @@ def analyze_video(req: MossAnalyzeRequest) -> dict[str, Any]:
 
 
 @router.post("/auto-clip", summary="MOSS-VL AI 智能高光剪辑切片")
-def auto_clip(req: MossAutoClipRequest) -> dict[str, Any]:
+def auto_clip(req: MossAutoClipRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     pipeline = MossAutoClipPipeline()
     result = pipeline.execute_auto_clip_pipeline(
         video_path_or_url=req.video_source,
@@ -76,7 +80,7 @@ def auto_clip(req: MossAutoClipRequest) -> dict[str, Any]:
 
 
 @router.post("/clip-and-publish", summary="端到端：MOSS 智能剪辑 + 全平台一键矩阵分发")
-def clip_and_publish(req: MossClipAndPublishRequest) -> dict[str, Any]:
+def clip_and_publish(req: MossClipAndPublishRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     workflow = MossClipAndPublishWorkflow()
     result = workflow.run_clip_and_publish_workflow(
         video_path_or_url=req.video_source,
@@ -91,19 +95,19 @@ def clip_and_publish(req: MossClipAndPublishRequest) -> dict[str, Any]:
 # ================== MOSS-VL 热更新与回滚运维管理接口 ==================
 
 @router.get("/version/status", summary="查询 MOSS-VL 当前运行版本与健康状态")
-def get_version_status() -> dict[str, Any]:
+def get_version_status(_admin: User = Depends(require_admin)) -> dict[str, Any]:
     manager = MossHotReloadManager()
     return {"code": 0, "msg": "查询成功", "data": manager.get_runtime_status()}
 
 
 @router.post("/version/check-upstream", summary="检查 OpenMOSS 官方仓库最新更新")
-def check_upstream() -> dict[str, Any]:
+def check_upstream(_admin: User = Depends(require_admin)) -> dict[str, Any]:
     manager = MossHotReloadManager()
     return {"code": 0, "msg": "上游检查完成", "data": manager.check_upstream_updates()}
 
 
 @router.post("/version/hot-reload", summary="执行零停机双缓冲热更新")
-def hot_reload_model(req: MossHotReloadRequest) -> dict[str, Any]:
+def hot_reload_model(req: MossHotReloadRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     manager = MossHotReloadManager()
     res = manager.hot_reload(
         new_commit_hash=req.commit_hash,
@@ -115,7 +119,7 @@ def hot_reload_model(req: MossHotReloadRequest) -> dict[str, Any]:
 
 
 @router.post("/version/rollback", summary="一键秒级回滚至稳定版本")
-def rollback_model(req: MossRollbackRequest) -> dict[str, Any]:
+def rollback_model(req: MossRollbackRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     manager = MossHotReloadManager()
     res = manager.rollback_to_version(target_version_id=req.target_version_id)
     code = 0 if res.get("success") else 1
@@ -123,7 +127,7 @@ def rollback_model(req: MossRollbackRequest) -> dict[str, Any]:
 
 
 @router.get("/version/history", summary="查询 MOSS-VL 历史快照清单")
-def get_version_history() -> dict[str, Any]:
+def get_version_history(_admin: User = Depends(require_admin)) -> dict[str, Any]:
     manager = MossHotReloadManager()
     return {"code": 0, "msg": "查询成功", "data": manager.get_version_history()}
 
@@ -131,7 +135,7 @@ def get_version_history() -> dict[str, Any]:
 # ================== MOSS-VL 官方物理整仓状态与诊断接口 ==================
 
 @router.get("/repo/status", summary="查询 MOSS-VL 官方开源整仓本地挂载与完整度状态")
-def get_repo_status() -> dict[str, Any]:
+def get_repo_status(_admin: User = Depends(require_admin)) -> dict[str, Any]:
     syncer = MossRepoSyncer()
     report = syncer.get_repo_inspection_report()
     return {"code": 0, "msg": "官方整仓状态就绪", "data": report}

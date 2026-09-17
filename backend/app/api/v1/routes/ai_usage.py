@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI Token 用量监控与告警路由 - 模块化架构（真实数据库查询，无 mock 回退）"""
 
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func
+from sqlalchemy import Float, Integer, func
 from sqlalchemy.orm import Session
 
 from app.core.response import error_response, success_response
@@ -34,20 +36,20 @@ def get_usage_overview(
     now = datetime.now(timezone.utc)
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     month_start = today_start.replace(day=1)
-    today_total = _safe_sum(db, AIUsageLog.total_tokens, AIUsageLog.created_at >= today_start)
-    month_total = _safe_sum(db, AIUsageLog.total_tokens, AIUsageLog.created_at >= month_start)
-    total_all = _safe_sum(db, AIUsageLog.total_tokens)
-    month_cost = _safe_sum(db, AIUsageLog.cost, AIUsageLog.created_at >= month_start)
+    today_total = _safe_sum(db, func.cast(AIUsageLog.total_tokens, Integer), AIUsageLog.created_at >= today_start)
+    month_total = _safe_sum(db, func.cast(AIUsageLog.total_tokens, Integer), AIUsageLog.created_at >= month_start)
+    total_all = _safe_sum(db, func.cast(AIUsageLog.total_tokens, Integer))
+    month_cost = _safe_sum(db, func.cast(AIUsageLog.cost, Float), AIUsageLog.created_at >= month_start)
     model_rows = (
         db.query(
             AIUsageLog.model_name,
             func.count(AIUsageLog.id).label("call_count"),
-            func.sum(AIUsageLog.total_tokens).label("total_tokens"),
-            func.sum(AIUsageLog.cost).label("total_cost"),
+            func.sum(func.cast(AIUsageLog.total_tokens, Integer)).label("total_tokens"),
+            func.sum(func.cast(AIUsageLog.cost, Float)).label("total_cost"),
         )
         .filter(AIUsageLog.created_at >= month_start)
         .group_by(AIUsageLog.model_name)
-        .order_by(func.sum(AIUsageLog.total_tokens).desc())
+        .order_by(func.sum(func.cast(AIUsageLog.total_tokens, Integer)).desc())
         .all()
     )
     # 从租户配置获取配额限制（默认 10000K tokens）
@@ -95,7 +97,7 @@ def get_daily_usage(
     rows = (
         db.query(
             func.date(AIUsageLog.created_at).label("date"),
-            func.sum(AIUsageLog.total_tokens).label("tokens"),
+            func.sum(func.cast(AIUsageLog.total_tokens, Integer)).label("tokens"),
             func.count(AIUsageLog.id).label("calls"),
         )
         .filter(AIUsageLog.created_at >= since)
@@ -134,12 +136,12 @@ def get_model_ranking(
         db.query(
             AIUsageLog.model_name,
             func.count(AIUsageLog.id).label("call_count"),
-            func.sum(AIUsageLog.total_tokens).label("total_tokens"),
-            func.sum(AIUsageLog.cost).label("total_cost"),
+            func.sum(func.cast(AIUsageLog.total_tokens, Integer)).label("total_tokens"),
+            func.sum(func.cast(AIUsageLog.cost, Float)).label("total_cost"),
         )
         .filter(AIUsageLog.created_at >= month_start)
         .group_by(AIUsageLog.model_name)
-        .order_by(func.sum(AIUsageLog.total_tokens).desc())
+        .order_by(func.sum(func.cast(AIUsageLog.total_tokens, Integer)).desc())
         .all()
     )
     total = sum((int(r.total_tokens) or 0) for r in rows) or 1

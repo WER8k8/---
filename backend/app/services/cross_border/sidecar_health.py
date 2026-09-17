@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Sidecar 健康探测 — mock/reference 不得计为已配置。"""
 
 from __future__ import annotations

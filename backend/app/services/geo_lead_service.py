@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO Lead Service - 询盘统计服务（从sourcechain-geo-engine合并）
 
 提供 Lead 相关的业务逻辑，包括：

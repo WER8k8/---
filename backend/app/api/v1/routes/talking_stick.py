@@ -1,12 +1,16 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Talking-Stick 安全扫描API
 提供漏洞扫描任务的提交、状态查询、结果获取等接口
 """
 
 from typing import Any, Dict, Optional
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from pydantic import BaseModel, Field
 
+from app.core.security import require_admin
+from app.models.user import User
 from ....services.talking_stick.config import ConfigManager
 from ....services.talking_stick.scheduler import Scheduler
 
@@ -51,7 +55,7 @@ class TaskStatusResponse(BaseModel):
 
 
 @router.post("/scan", response_model=ScanResponse, tags=["Talking-Stick安全扫描"])
-async def submit_scan_task(request: ScanRequest, background_tasks: BackgroundTasks):
+async def submit_scan_task(request: ScanRequest, background_tasks: BackgroundTasks, _admin: User = Depends(require_admin)):
     """提交安全扫描任务"""
     try:
         scheduler = get_scheduler()
@@ -67,7 +71,7 @@ async def submit_scan_task(request: ScanRequest, background_tasks: BackgroundTas
 
 
 @router.get("/scan/{task_id}/status", response_model=TaskStatusResponse, tags=["Talking-Stick安全扫描"])
-async def get_scan_status(task_id: str):
+async def get_scan_status(task_id: str, _admin: User = Depends(require_admin)):
     """获取扫描任务状态"""
     try:
         scheduler = get_scheduler()
@@ -84,7 +88,7 @@ async def get_scan_status(task_id: str):
 
 
 @router.get("/scan/{task_id}/result", tags=["Talking-Stick安全扫描"])
-async def get_scan_result(task_id: str):
+async def get_scan_result(task_id: str, _admin: User = Depends(require_admin)):
     """获取扫描任务结果"""
     try:
         scheduler = get_scheduler()
@@ -101,7 +105,7 @@ async def get_scan_result(task_id: str):
 
 
 @router.delete("/scan/{task_id}", tags=["Talking-Stick安全扫描"])
-async def cancel_scan_task(task_id: str):
+async def cancel_scan_task(task_id: str, _admin: User = Depends(require_admin)):
     """取消扫描任务"""
     try:
         scheduler = get_scheduler()
@@ -118,7 +122,7 @@ async def cancel_scan_task(task_id: str):
 
 
 @router.get("/scans", tags=["Talking-Stick安全扫描"])
-async def list_all_scans():
+async def list_all_scans(_admin: User = Depends(require_admin)):
     """列出所有扫描任务"""
     try:
         scheduler = get_scheduler()
@@ -130,7 +134,7 @@ async def list_all_scans():
 
 
 @router.delete("/scans/completed", tags=["Talking-Stick安全扫描"])
-async def clear_completed_scans():
+async def clear_completed_scans(_admin: User = Depends(require_admin)):
     """清理已完成的扫描任务"""
     try:
         scheduler = get_scheduler()
@@ -142,7 +146,7 @@ async def clear_completed_scans():
 
 
 @router.get("/health", tags=["Talking-Stick安全扫描"])
-async def health_check():
+async def health_check(_admin: User = Depends(require_admin)):
     """Talking-Stick健康检查"""
     return {
         "status": "healthy",

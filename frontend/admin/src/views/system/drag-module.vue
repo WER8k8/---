@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="自定义拖拽模块" subtitle="配置可拖拽的页面模块" surface="elevated">
     <template #actions>

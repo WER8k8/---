@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 export { default as TenantLoginPanel } from './TenantLoginPanel.vue';
 export { default as LoginOAuthButtons } from './LoginOAuthButtons.vue';
 export { default as YdDataTable } from './YdDataTable.vue';

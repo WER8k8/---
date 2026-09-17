@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="套餐配置" subtitle="SaaS订阅套餐定义与管理" surface="elevated">
     <template #actions>

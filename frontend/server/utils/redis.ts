@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Redis client utility with graceful fallback.
  * If Redis is not available, falls back to in-memory cache.
  */

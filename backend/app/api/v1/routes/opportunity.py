@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Opportunity 路由 — CRM 销售机会管道（管理端）。"""
 
 from __future__ import annotations

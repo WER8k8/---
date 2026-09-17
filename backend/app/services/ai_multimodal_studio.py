@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多模态外贸营销工厂服务 - 真实大模型驱动的生图提示词、社媒营销发帖、外贸短视频分镜生成与视频剪辑装配。"""
 
 from __future__ import annotations

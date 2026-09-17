@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <!-- 外层导航项，position: relative 给下拉菜单做定位父级 -->
   <div

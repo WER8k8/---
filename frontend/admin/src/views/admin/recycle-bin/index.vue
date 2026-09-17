@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated">
     <div class="recycle-bin">
@@ -63,7 +66,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { message, Modal } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
+import { ydConfirm } from '@/utils/ydModal'
 import YdPage from '@/components/youding/YdPage.vue'
 import { apiGet, apiPost, apiDelete } from '@/utils/api'
 
@@ -152,7 +156,7 @@ async function restoreItem(item: TrashedItem) {
 }
 
 function permanentDeleteItem(item: TrashedItem) {
-  Modal.confirm({
+  ydConfirm({
     title: '永久删除',
     content: `确定要永久删除「${item.name}」吗？此操作不可撤销。`,
     okType: 'danger',
@@ -171,7 +175,7 @@ function permanentDeleteItem(item: TrashedItem) {
 }
 
 function batchPermanentDelete() {
-  Modal.confirm({
+  ydConfirm({
     title: '批量永久删除',
     content: `确定要永久删除选中的 ${selectedRows.value.length} 项吗？此操作不可撤销。`,
     okType: 'danger',

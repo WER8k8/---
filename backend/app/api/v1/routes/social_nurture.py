@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """海外养号周期 API（持久化 + 频控 + 互动管理）。"""
 
 import logging

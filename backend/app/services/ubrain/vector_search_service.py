@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Vector Search Service - Qdrant 向量检索服务
 
 提供基于 Qdrant 的高性能向量搜索能力。
@@ -7,6 +9,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any, Optional
 
 import numpy as np
@@ -14,6 +17,10 @@ import numpy as np
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
+# PostgreSQL 标识符（表名/字段名）无法作为绑定参数，只能白名单校验后拼接，
+# 否则用户可控的 collection 名 / filter 键可直接注入 SQL。
+_SAFE_IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
 
 # 延迟导入 Qdrant 和 Neo4j，避免启动时强依赖未安装的包
 try:
@@ -64,6 +71,12 @@ _DISTANCE_MAP = {
     "Dot": Distance.DOT if _QDRANT_AVAILABLE else None,
     "Manhattan": Distance.MANHATTAN if _QDRANT_AVAILABLE else None,
 }
+
+
+def _assert_safe_ident(name: Any, what: str = "collection") -> None:
+    """校验数据库标识符（表名/字段名），非法则抛错，防止 SQL 注入。"""
+    if not isinstance(name, str) or not _SAFE_IDENT_RE.match(name):
+        raise ValueError(f"非法的{what}名称: {name!r}")
 
 
 class VectorSearchService:
@@ -475,6 +488,9 @@ class VectorSearchService:
         :param distance: 参数 distance
         :return: 返回处理结果。
         """
+        _assert_safe_ident(name)
+        if not isinstance(vector_size, int) or not (1 <= vector_size <= 65535):
+            raise ValueError(f"非法的向量维度: {vector_size!r}")
         try:
             with self._pg_fallback_session_factory() as db:  # type: ignore[call-arg]
                 # 确保 pgvector 扩展已启用
@@ -511,6 +527,7 @@ class VectorSearchService:
         :param name: 参数 name
         :return: 返回处理结果。
         """
+        _assert_safe_ident(name)
         try:
             with self._pg_fallback_session_factory() as db:  # type: ignore[call-arg]
                 db.execute(text(f"DROP TABLE IF EXISTS {name}"))
@@ -539,6 +556,7 @@ class VectorSearchService:
         """
         import uuid
         import json
+        _assert_safe_ident(collection_name)
         try:
             with self._pg_fallback_session_factory() as db:  # type: ignore[call-arg]
                 upserted = 0
@@ -584,6 +602,7 @@ class VectorSearchService:
         :return: 返回处理结果。
         """
         import json
+        _assert_safe_ident(collection_name)
         try:
             with self._pg_fallback_session_factory() as db:  # type: ignore[call-arg]
                 where_clause = ""
@@ -592,9 +611,10 @@ class VectorSearchService:
                     "limit": top_k,
                 }
                 if filters:
-                    # 简单支持 payload 字段等值过滤
+                    # 简单支持 payload 字段等值过滤（键名须为安全标识符，值走绑定参数）
                     filter_parts = []
                     for key, value in filters.items():
+                        _assert_safe_ident(key, what="过滤字段")
                         filter_parts.append(f"payload->>'{key}' = :f_{key}")
                         params[f"f_{key}"] = str(value)
                     if filter_parts:
@@ -631,6 +651,7 @@ class VectorSearchService:
         :param point_ids: 参数 point_ids
         :return: 返回处理结果。
         """
+        _assert_safe_ident(collection_name)
         try:
             with self._pg_fallback_session_factory() as db:  # type: ignore[call-arg]
                 db.execute(

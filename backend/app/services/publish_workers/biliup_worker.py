@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """biliup CLI Worker — B站专用，可解析 BV 回执。"""
 
 from __future__ import annotations

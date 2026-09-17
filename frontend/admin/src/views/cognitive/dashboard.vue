@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="知识图谱" subtitle="建材行业知识库 · 语义索引 · RAG检索" surface="elevated">
     <template #actions>

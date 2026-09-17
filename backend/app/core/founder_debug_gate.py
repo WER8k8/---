@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """创始人专属调试门禁：超管 + 微信唯一（优先）或开发令牌 + 可选 IP。"""
 
 from __future__ import annotations

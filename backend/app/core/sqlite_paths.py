@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Resolve SQLite DATABASE_URL to a real file (backend vs repo root)."""
 
 from __future__ import annotations

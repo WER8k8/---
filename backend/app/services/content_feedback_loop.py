@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """内容反馈闭环 — publish -> rank probe -> feedback -> adjust tactics
 
 Content Feedback Loop (CFL):

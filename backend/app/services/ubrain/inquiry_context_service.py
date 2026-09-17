@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Accio A2/A3/A4：租户真实询盘上下文 → 草稿、评分与经营快照。"""
 
 from __future__ import annotations

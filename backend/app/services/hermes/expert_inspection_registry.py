@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """专家巡检注册表 — 基于 ECC (Everything Claude Code) 真实技能体系实现专家功能。
 
 ECC 包含：36个专用子智能体、271+个技能模块、92+个命令

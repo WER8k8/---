@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO 收录复检 — 供 API 与 Celery 共用。"""
 
 from __future__ import annotations

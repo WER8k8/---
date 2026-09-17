@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Lab BFF — FE-11 站点编辑器试点草稿"""
 
 from __future__ import annotations

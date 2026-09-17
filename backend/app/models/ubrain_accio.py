@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain-X / Accio 卖货：租户记忆与采购商候选线索。"""
 
 import uuid

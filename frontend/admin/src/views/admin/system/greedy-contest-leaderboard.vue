@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="挣钱大赛排行榜" subtitle="211 专家记分 · protected 永不下线 · 7×24 耐力赛" surface="elevated">
     <template #actions>

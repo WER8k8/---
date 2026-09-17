@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 媒体 URL：相对路径补 origin；外链走同源代理，避免 WebView ORB */
 export function resolveMediaAssetUrl(url: string): string {
   const raw = (url || '').trim();

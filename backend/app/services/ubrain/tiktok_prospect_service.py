@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """TikTok 外贸客户开发服务 — 从 TikTok 短视频挖掘采购需求。
 
 TikTok 是全球最火的短视频平台，拥有超过 15 亿用户，

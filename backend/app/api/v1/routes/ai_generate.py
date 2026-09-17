@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 生成/优化路由 — 统一走场景调度与用量落库。"""
 
 from typing import Optional

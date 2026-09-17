@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="SDK 管理" subtitle="多语言 SDK 版本管理与分发" surface="elevated">
     <template #actions>

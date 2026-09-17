@@ -1,4 +1,7 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+﻿﻿﻿﻿<template>
   <YdPage title="模型管理" subtitle="管理35大AI模型平台 — 配置API Key即可启用对应模型" surface="elevated">
     <template #actions>
       <a-button type="primary" @click="showAddModal = true">
@@ -288,9 +291,6 @@ import {
   StarFilled,
   DatabaseFilled,
 } from '@ant-design/icons-vue';
-import FingerprintOutlined from '@ant-design/icons-vue';
-import SparklesFilled from '@ant-design/icons-vue';
-import SparklesOutlined from '@ant-design/icons-vue';
 
 interface HealthCheckResult {
   healthy: boolean;
@@ -414,7 +414,7 @@ const platformList = ref<ModelPlatform[]>([
     description: 'OpenAI最新一代大语言模型，支持多模态输入，生态系统最为完善',
     configured: false,
     enabled: false,
-    icon: SparklesFilled,
+    icon: BulbFilled,
     getKeyUrl: 'https://platform.openai.com/api-keys',
   },
   {
@@ -492,7 +492,7 @@ const platformList = ref<ModelPlatform[]>([
     description: '零一万物李开复团队打造，中文和英文能力均衡，性价比高',
     configured: false,
     enabled: false,
-    icon: FingerprintOutlined,
+    icon: ExperimentOutlined,
     getKeyUrl: 'https://platform.lingyiwanwu.com/apikeys',
   },
   {
@@ -687,7 +687,7 @@ const platformList = ref<ModelPlatform[]>([
     description: 'MiniMax海螺AI中国版，多模态理解能力强',
     configured: false,
     enabled: false,
-    icon: SparklesOutlined,
+    icon: StarOutlined,
     getKeyUrl: 'https://www.minimax.cn',
   },
   {

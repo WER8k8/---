@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { message } from 'ant-design-vue'
 
 type NotifyType = 'warning' | 'error' | 'info' | 'success'

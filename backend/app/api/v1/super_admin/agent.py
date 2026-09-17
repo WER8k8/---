@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """智能代理工作流 API — 进程监控/管理 + MCP Bridge"""
 
 import os
@@ -20,13 +22,6 @@ router = APIRouter()
 
 # 代理进程注册表
 AGENT_REGISTRY = {
-    "lingma_assist": {
-        "name": "Lingma 助手",
-        "exe": "Lingma-Assist.exe",
-        "icon": "🤖",
-        "description": "AI 编程助手代理",
-        "port": None,
-    },
     "local_dashboard": {
         "name": "本地仪表盘",
         "exe": "Local-Dashboard.exe",

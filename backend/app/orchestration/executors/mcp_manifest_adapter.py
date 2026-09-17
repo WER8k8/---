@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MCP_TOOL 插槽适配器：读取租户隔离的已注册 MCP 清单。"""
 
 from __future__ import annotations

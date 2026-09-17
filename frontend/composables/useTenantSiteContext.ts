@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 按当前 Host 从后端解析 tenant_id，供埋点与询盘归因（优先于静态 env）。
  */
 export function useTenantSiteContext() {

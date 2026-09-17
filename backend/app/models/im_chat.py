@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """聊天消息数据库模型（IM用户间聊天，与AI聊天分开）"""
 
 from datetime import datetime

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """三大增长内置工具 API。"""
 
 from typing import Any, Optional
@@ -30,6 +32,13 @@ from app.services.growth_tools_service import (
 from app.services.geo.headless_rank_probe_service import (
     headless_probe_sidecar_status,
     run_headless_probe_batch,
+)
+
+from app.services.geo.ranking_loop_service import (
+    build_rank_loop_report,
+    collect_baidu_evidence,
+    collect_gsc_evidence,
+    probe_google_engines,
 )
 
 
@@ -288,6 +297,37 @@ def get_headless_probe_status(
 class BaiduProbeBody(BaseModel):
     keyword: str = Field(..., min_length=1, max_length=200)
     site: str | None = Field(None, max_length=500)
+
+class RankLoopBody(BaseModel):
+    keyword: str = Field(..., min_length=1, max_length=200)
+    target_url: str = Field(..., min_length=8, max_length=500)
+    site_url: str | None = Field(None, max_length=500, description="GSC/百度回收站点域（默认取 target_url）")
+    days: int = Field(default=28, ge=1, le=90)
+    include_headless: bool = Field(default=True, description="是否把最近 headless 探针快照并入判定")
+
+
+@router.post("/ai-traffic/rank-loop")
+async def run_rank_loop(
+    body: RankLoopBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """获客排名闭环：GSC（谷歌/AI Overviews）+ 百度站长（国内）+ headless 探针 统一命中判定。
+
+    无凭证的引擎一律 not_configured/unknown（不假成功），dev mock 如实标记。"""
+    kw = body.keyword.strip()
+    url = body.target_url.strip()
+    evidence: list[Any] = []
+    if body.include_headless:
+        evidence += probe_google_engines(kw, url)
+    evidence.append(await collect_gsc_evidence(kw, url, site_url=body.site_url, days=body.days))
+    evidence.append(await collect_baidu_evidence(kw, url, site_url=body.site_url))
+    report = build_rank_loop_report(
+        db, kw, url,
+        evidence=evidence,
+        merge_headless_snapshot=body.include_headless,
+    )
+    return success_response(data=report)
 
 
 @router.post("/ai-traffic/baidu-probe")

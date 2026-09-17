@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """超级管理员后台 API - 统一路由分组"""
 
 from fastapi import APIRouter

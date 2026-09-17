@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { nextTick, onMounted, onUnmounted, ref, type Ref } from 'vue'
 
 const STORAGE_KEY = 'caiwang_assistant_pos'

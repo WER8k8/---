@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="产品管理" subtitle="管理产品信息和分类" surface="elevated">
     <template #actions>
@@ -221,6 +224,7 @@ import {
   Modal,
   message,
 } from 'ant-design-vue';
+import axios from 'axios';
 import { ydConfirm } from '@/utils/ydModal';
 import { productsAPI, unwrapApiData } from '@/api';
 
@@ -325,7 +329,11 @@ async function fetchProducts(page = 1) {
       ? (data!.items as any[])
       : Array.isArray(data)
         ? (data as unknown as any[])
-        : [];
+        : Array.isArray((data as any)?.records)
+          ? (data as any).records
+          : Array.isArray((data as any)?.list)
+            ? (data as any).list
+            : [];
     const catMap = new Map(
       Array.isArray(categories.value) ? categories.value.map((c: any) => [c.id, c.name]) : []
     );
@@ -336,10 +344,11 @@ async function fetchProducts(page = 1) {
     const total = typeof data?.total === 'number' ? data.total : items.length;
     pagination.value.total = total;
   } catch (e: unknown) {
+    if (axios.isCancel(e)) return;
     if (import.meta.env.DEV) console.error('Failed to fetch products:', e);
     products.value = [];
     pagination.value.total = 0;
-    listError.value = '产品列表加载失败（请确认已登录且后端 /api/v1/products 可用）。';
+    listError.value = '产品列表加载失败，请稍后重试（后端 /api/v1/products 暂不可用）。';
     message.error(listError.value);
   } finally {
     loading.value = false;

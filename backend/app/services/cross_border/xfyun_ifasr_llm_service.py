@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """讯飞「录音文件转写大模型」WebAPI（Ifasr LLM）。
 
 文档：https://www.xfyun.cn/doc/spark/asr_llm/Ifasr_llm.html

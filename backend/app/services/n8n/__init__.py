@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """n8n 集成服务模块。
 
 提供 n8n 工作流触发、Webhook 接收、工作流注册三大能力：

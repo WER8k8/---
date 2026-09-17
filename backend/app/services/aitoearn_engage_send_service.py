@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """社媒互动 — 批准后经 AiToEarn 真发回复（禁止无回执假成功）。"""
 
 from __future__ import annotations

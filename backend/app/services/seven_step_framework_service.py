@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """商用七步主链 — 框架级自动验收（P0 彩排优先）。"""
 
 from __future__ import annotations

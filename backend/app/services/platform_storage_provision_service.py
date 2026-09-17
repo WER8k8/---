@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """平台级产品图存储（七牛 / R2）开通、探测与验收 — 运维自动化。"""
 
 from __future__ import annotations

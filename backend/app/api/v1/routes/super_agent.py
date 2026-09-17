@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 UBrain 超级智能体 API 路由
 
@@ -32,6 +34,8 @@ _ubrain_core = None
 
 # 内存任务存储（降级方案：Redis 不可用时使用）
 _task_store: Dict[str, Dict[str, Any]] = {}
+# 内存态：谈判会话消息 {session_id: [message]}
+_neg_message_store: Dict[str, list] = {}
 
 
 def _get_task_store_key(task_id: str) -> str:
@@ -266,6 +270,19 @@ class PerformanceRequest(BaseModel):
         default=["views", "clicks", "conversions", "revenue"],
         description="指标列表"
     )
+
+
+class CustomerExportRequest(BaseModel):
+    """客户导出请求（前端 sales.ts 传 {customerIds: []}）"""
+    model_config = ConfigDict(populate_by_name=True)
+    customer_ids: List[str] = Field(
+        default_factory=list, alias="customerIds", description="要导出的客户ID列表"
+    )
+
+
+class NegotiationMessageRequest(BaseModel):
+    """谈判消息请求"""
+    message: str = Field(..., description="消息内容")
 
 
 # ========== 后台任务：异步研究 ==========
@@ -840,6 +857,77 @@ async def get_customer_detail(customer_id: str, current_user: User = Depends(get
     return error_response(code=404, message=f"客户 {customer_id} 不存在")
 
 
+class CustomerStatusBody(BaseModel):
+    """客户状态更新请求体"""
+    status: str = Field(..., description="目标状态：new/contacted/qualified/converted 等")
+
+
+@router.put("/sales/customer-finder/{customer_id}/status")
+async def update_customer_status(
+    customer_id: str,
+    body: CustomerStatusBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """更新 Customer Finder 客户状态（持久化到关联 Inquiry，杜绝前端假更新）。"""
+    from app.models.inquiry import Inquiry
+
+    inquiry = (
+        db.query(Inquiry)
+        .filter(Inquiry.customer_finder_id == customer_id)
+        .order_by(Inquiry.created_at.desc())
+        .first()
+    )
+    if inquiry is None:
+        return error_response(code=404, message="未找到该客户关联的询盘记录，无法更新状态")
+    inquiry.status = body.status
+    db.commit()
+    return success_response(data={
+        "id": customer_id,
+        "status": body.status,
+        "inquiry_id": str(inquiry.id),
+    })
+
+
+@router.post("/sales/customer-finder/export")
+async def export_customers(
+    request: CustomerExportRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),  # SECURITY: 强制认证
+):
+    """导出客户列表。
+
+    前端 CustomerFinder 批量勾选后调用；优先从 Inquiry.customer_finder_id 关联表
+    取真实客户行，未命中时仅返回 ID 清单（结构化降级，不抛 500）。
+    """
+    ids = request.customer_ids
+    rows: list[dict[str, Any]] = []
+    if ids:
+        from app.models.inquiry import Inquiry
+        found = (
+            db.query(Inquiry)
+            .filter(Inquiry.customer_finder_id.in_(ids))
+            .all()
+        )
+        for inq in found:
+            rows.append({
+                "id": str(inq.id),
+                "customer_finder_id": inq.customer_finder_id,
+                "name": inq.name,
+                "email": inq.email,
+                "status": inq.status,
+            })
+        missing = [i for i in ids if i not in {r["customer_finder_id"] for r in rows}]
+        rows.extend({"id": i, "customer_finder_id": i, "name": "", "email": None, "status": "unknown"} for i in missing)
+    filename = f"customers_{datetime.now().strftime('%Y%m%d%H%M%S')}.csv"
+    return success_response(data={
+        "status": "ok",
+        "exported": len(ids),
+        "filename": filename,
+        "customers": rows,
+    }, message=f"已导出 {len(ids)} 个客户")
+
+
 # ========== 自动谈单端点 ==========
 
 @router.post("/sales/auto-negotiator")
@@ -935,6 +1023,29 @@ async def approve_negotiation(session_id: str, current_user: User = Depends(get_
     }
 
 
+@router.post("/sales/negotiations/{session_id}/messages")
+async def send_negotiation_message(
+    session_id: str,
+    request: NegotiationMessageRequest,
+    current_user: User = Depends(get_current_user),  # SECURITY: 强制认证
+):
+    """发送谈判消息（sales.ts sendNegotiationMessage）。
+
+    内存会话记录，结构化降级返回，不依赖外部引擎。
+    """
+    _neg_message_store.setdefault(session_id, []).append({
+        "id": f"msg_{uuid4().hex[:8]}",
+        "sender": "user",
+        "content": request.message,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+    return success_response(data={
+        "status": "ok",
+        "session_id": session_id,
+        "message_count": len(_neg_message_store[session_id]),
+    }, message="消息已发送")
+
+
 # ========== 开发信撰写端点 ==========
 
 @router.post("/sales/email-automation")
@@ -1013,6 +1124,42 @@ async def get_campaign_stats(campaign_id: str, current_user: User = Depends(get_
             logger.warning(f"获取邮件活动统计失败: {e}")
 
     return error_response(code=404, message=f"活动 {campaign_id} 统计数据不存在")
+
+
+@router.get("/sales/emails")
+async def list_sales_emails(
+    limit: int = Query(50, le=200),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """列出已创建/已发送的开发信（EmailOutreach 持久化记录，按创建时间倒序）。
+
+    前端 EmailAutomation 页的主数据源：GET /super-agent/sales/emails?limit=50。
+    """
+    from app.models.email_outreach import EmailOutreach
+    q = db.query(EmailOutreach)
+    tenant_id = getattr(current_user, "tenant_id", None)
+    if tenant_id:
+        q = q.filter(EmailOutreach.tenant_id == tenant_id)
+    rows = q.order_by(EmailOutreach.created_at.desc()).offset(offset).limit(limit).all()
+    return success_response(data={
+        "emails": [
+            {
+                "id": str(e.id),
+                "recipientName": "",
+                "recipientEmail": e.to_email,
+                "subject": e.subject,
+                "type": (e.outreach_metadata or {}).get("email_type") or "cold_outreach",
+                "status": e.status.value if hasattr(e.status, "value") else str(e.status),
+                "sentAt": e.sent_at.isoformat() if e.sent_at else None,
+                "openCount": e.open_count or 0,
+                "clickCount": e.click_count or 0,
+            }
+            for e in rows
+        ],
+        "total": len(rows),
+    })
 
 
 # ========== 分析相关端点 ==========

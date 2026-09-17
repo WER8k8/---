@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """线索评分引擎 v2 — FIX-36
 
 多维加权评分模型，从以下维度评估线索质量：

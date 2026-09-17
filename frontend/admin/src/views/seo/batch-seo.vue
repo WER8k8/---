@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="批量SEO管理" subtitle="批量管理页面SEO信息" surface="elevated">
     <template #actions>

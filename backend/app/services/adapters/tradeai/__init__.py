@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Trade AI Agent 适配器（总纲 §5.2：代码级嫁接，MIT）。
 
 来源：Trade AI Agent（Gitee: LBones-li/agent_trade_b，README 声明 MIT；

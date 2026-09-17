@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="Platform 三区治理" subtitle="运营 · 商业 · 治理 · 送检开关" surface="elevated">
   <div class="platform-zones">

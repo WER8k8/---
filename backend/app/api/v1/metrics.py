@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Prometheus指标导出器 - 提供系统性能指标"""
 
 import time
@@ -7,6 +9,7 @@ from fastapi import APIRouter, Response
 from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Gauge, Histogram,
                                generate_latest)
 
+ROUTE_PREFIX = ""
 router = APIRouter()
 
 # 定义指标

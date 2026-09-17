@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 审批闸口与 Hermes 等人任务桥。
 
 Hermes 的 `wait_human` 节点原本只能靠任务控制面手动放行；这里把它同步成

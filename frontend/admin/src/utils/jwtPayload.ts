@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 仅客户端解析 JWT payload，不做签名校验（与后端校验分离） */
 
 const KNOWN_JWT_ROLES = new Set([

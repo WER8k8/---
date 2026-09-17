@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="代码扫描" subtitle="全局检索与代码关联分析" surface="elevated">
     <template #actions>

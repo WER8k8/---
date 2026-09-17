@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """未登录访客视频任务归属：guest_token → tenant_id。"""
 
 from __future__ import annotations

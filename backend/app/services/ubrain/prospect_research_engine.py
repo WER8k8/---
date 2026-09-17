@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RAG 客户洞察 + 定制化开发信 — FIX-56
 
 基于检索增强生成（RAG）的客户研究 + 个性化开发信引擎：

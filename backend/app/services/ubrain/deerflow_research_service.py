@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 风格深度研究 — Planner / Researcher / Reviewer / Writer → Research Brief。"""
 
 from __future__ import annotations

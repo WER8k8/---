@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="摸金校尉总控" subtitle="全球累计 · 大赛 · 耐力赛 · 搞钱闭环 · Survival 真钱" surface="elevated">
     <template #actions>

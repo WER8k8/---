@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from app.core.no_fake_delivery import stamp_mock
 import logging
 import os
@@ -530,7 +532,7 @@ class AIEngine:
                         }
                         return SmartAIResponse(res_content, meta)
                     else:
-                        logger.warning(f"大模型网关返回异常 {resp.status_code}: {resp.text}")
+                        logger.warning(f"大模型网关返回异常 {resp.status_code}: {resp.text[:200]}")
             except Exception as e:
                 last_error = e
                 logger.warning(f"大模型网关第 {attempt + 1}/{max_retries} 次调用失败: {e}")

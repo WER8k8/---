@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """财务中台业务逻辑：成本归集、对账导出。"""
 
 from __future__ import annotations

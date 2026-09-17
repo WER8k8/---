@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """询盘入口聚合 — 统一说明 v1 / v2 / unified 路径。"""
 
 from sqlalchemy import func

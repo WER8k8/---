@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """平台落地页线索 — 自动分配销售 + 飞书通知。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated">
   <div class="chj-app">
@@ -141,13 +144,13 @@ async function apiGet(path: string) {
 
 async function loadConfig() {
   try {
-    const res = await fetch('/api/v1/client/branding', { headers: authHeaders() })
+    const res = await fetch('/client/branding', { headers: authHeaders() })
     const body = await res.json()
     const data = body.data ?? body
     if (data.company_name) brandName.value = data.company_name
   } catch {}
   try {
-    const d = await apiGet('/api/v1/app/v1/config')
+    const d = await apiGet('/app/v1/config')
     if (brandName.value === '您的公司' && d.app_name) brandName.value = d.app_name
     pushMode.value = d.push?.provider || ''
   } catch {}
@@ -156,14 +159,14 @@ async function loadConfig() {
 
 async function loadHome() {
   try {
-    const d = await apiGet('/api/v1/app/v1/home')
+    const d = await apiGet('/app/v1/home')
     if (d.brand?.name) brandName.value = d.brand.name
   } catch {}
 }
 
 async function loadToday() {
   try {
-    const d = await apiGet('/api/v1/app/v1/today')
+    const d = await apiGet('/app/v1/today')
     todos.value = d.todos || []
     blueHint.value = d.blue_ocean_hint || null
     disclaimer.value = d.disclaimer || ''
@@ -185,7 +188,7 @@ async function registerDevice() {
     `web-${crypto.randomUUID?.() || Date.now()}`
   localStorage.setItem('chuhaiji_device_token', token)
   try {
-    await fetch('/api/v1/app/v1/devices/register', {
+    await fetch('/app/v1/devices/register', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -199,7 +202,7 @@ async function registerDevice() {
 
 async function refreshOfflineCache() {
   try {
-    const d = await apiGet('/api/v1/app/v1/inquiries/offline?limit=80')
+    const d = await apiGet('/app/v1/inquiries/offline?limit=80')
     const items = d.items || []
     localStorage.setItem('chuhaiji_offline_inquiries', JSON.stringify(items))
     localStorage.setItem('chuhaiji_offline_cached_at', d.cached_at || '')
@@ -212,7 +215,7 @@ async function refreshOfflineCache() {
 
 async function testPush() {
   try {
-    const d = await fetch('/api/v1/app/v1/push/test', {
+    const d = await fetch('/app/v1/push/test', {
       method: 'POST',
       headers: authHeaders(),
     })
@@ -244,7 +247,7 @@ function startVoice() {
   rec.onresult = async (ev: { results: SpeechRecognitionResultList }) => {
     const text = ev.results[0][0].transcript
     try {
-      const res = await fetch('/api/v1/app/v1/voice/transcribe', {
+      const res = await fetch('/app/v1/voice/transcribe', {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ text }),
@@ -294,7 +297,7 @@ async function sendChat() {
   chatLoading.value = true
   await scrollChat()
   try {
-    const res = await fetch('/api/v1/app/v1/assistant/chat', {
+    const res = await fetch('/app/v1/assistant/chat', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ message: text }),

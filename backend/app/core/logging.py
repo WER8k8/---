@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """日志模块 — app.core.logging_config 的兼容层。"""
 
 from app.core.logging_config import LogConfig

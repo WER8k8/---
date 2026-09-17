@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ECC SOP Resolver: resolve `sop_ref` URIs to skill content.
 
 The sop_ref format is `ecc://<skill_code>/<action>`.

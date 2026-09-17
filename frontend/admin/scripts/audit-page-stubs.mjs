@@ -46,6 +46,7 @@ const AUDIT_EXCLUDE = new Set([
   'access-denied.vue',
   'login/oauth-callback.vue',
   'login/index.vue',
+  'login/LoginBrandColumn.vue',
   'PrivacyPolicy.vue',
   'TermsOfService.vue',
   'admin/components/AdminModulePlaceholder.vue',

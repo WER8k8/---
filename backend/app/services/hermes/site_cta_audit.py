@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """生成站双 CTA + 24h 询盘承诺抽检（western-inquiry-conversion）。"""
 
 from __future__ import annotations

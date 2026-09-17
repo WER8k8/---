@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Shell Nav Kernel — 纯函数，无 Vue 依赖（Google: 可单测的核心逻辑层）
  * 激活态 / 标题 / 路径收集：一处计算，layout · Worktab · 全局搜索共用
  */

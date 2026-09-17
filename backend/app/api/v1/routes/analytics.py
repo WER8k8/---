@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """数据分析路由 - 流量埋点与运营看板"""
 
 import time
@@ -452,6 +454,55 @@ def get_dashboard_data(
             "hot_cases": _hot_cases_from_db(db),
         }
     )
+
+
+@router.get("/sales")
+def get_sales_analytics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """销售工作台统计（/sales/dashboard 数据源）。"""
+    if not _board_roles_ok(current_user):
+        return error_response(403, "权限不足")
+
+    from datetime import datetime, timedelta, timezone
+    from app.models.inquiry import Inquiry
+    from app.services.finance_honesty import is_excluded_inquiry
+
+    tid = resolve_tenant_id(db, user=current_user)
+    q = db.query(Inquiry).filter(Inquiry.is_active)
+    if tid:
+        q = q.filter(Inquiry.tenant_id == tid)
+    real = [r for r in q.all() if not is_excluded_inquiry(r)]
+
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    yesterday_start = today_start - timedelta(days=1)
+    month_start = today_start.replace(day=1)
+    today = [r for r in real if r.created_at and r.created_at >= today_start]
+    yesterday = [
+        r for r in real
+        if r.created_at and yesterday_start <= r.created_at < today_start
+    ]
+    month = [r for r in real if r.created_at and r.created_at >= month_start]
+    processed = [r for r in month if r.status in ("contacted", "converted", "won", "closed")]
+    converted = [r for r in month if r.status in ("converted", "won")]
+    y = len(yesterday)
+    trend = round((len(today) - y) / y * 100, 1) if y else 0
+    return success_response(data={
+        "todayInquiries": len(today),
+        "inquiryTrend": trend,
+        "monthlyProcessed": len(processed),
+        "monthlyInquiryTarget": 120,
+        "processRate": round(len(processed) / len(month) * 100, 1) if month else 0,
+        "monthlyConversion": len(converted),
+        "monthlyConversionTarget": 30,
+        "conversionRate": round(len(converted) / len(month) * 100, 1) if month else 0,
+        "totalLeads": len(real),
+        "newLeadsThisMonth": len(month),
+        "avgResponseTime": "—",
+        "satisfaction": "—",
+    })
 
 
 @router.get("/products")

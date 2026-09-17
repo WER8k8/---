@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Inquiry Model - 询盘模型
 买家向商家发起的询盘（询价请求）
@@ -17,7 +19,10 @@ class Inquiry(SoftDeleteMixin, Base):
     __tablename__ = "inquiries"
     id = Column(UUID_TYPE, primary_key=True, default=lambda: str(_uuid_lib.uuid4()))
     name = Column(String(100), nullable=False)
-    phone = Column(String(50), nullable=False)
+    # phone 可空：公开询盘允许"只留邮箱"（routes/inquiries.py 的
+    # require_contact_channel 一直允许 phone 或 email 二选一，列约束此前与
+    # 校验口径不一致，导致 email-only 询盘落库必 500）。见迁移 113。
+    phone = Column(String(50), nullable=True)
     email = Column(String(200), nullable=True)
     product = Column(String(100), nullable=True)
     message = Column(Text, nullable=False)

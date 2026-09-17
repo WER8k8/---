@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated" title="审批管理" subtitle="Agent 操作审批 · 批准 / 拒绝 · 审批历史">
     <template #actions>

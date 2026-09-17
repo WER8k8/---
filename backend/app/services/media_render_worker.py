@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多媒体工厂渲染 worker：queued → rendering → done/failed。"""
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +20,10 @@ from app.services.cosmos_infer_service import (
     infer_text_to_video,
     script_to_video_prompt,
     write_mock_video,
+)
+from app.services.wan_video_service import (
+    is_wan_video_configured,
+    render_video_with_wan,
 )
 from app.services.media_cloud_upload_service import run_cloud_upload_background
 from app.services.media_retention_service import apply_render_complete_metadata
@@ -130,6 +137,13 @@ def run_render_task(db: Session, task_id: str) -> MediaRenderTask:
         _set_progress(db, task, 20)
         output_dir = _media_output_dir()
         output_path = output_dir / f"{task.id}.mp4"
+        engine = getattr(settings, "VIDEO_GENERATION_ENGINE", "wan").lower().strip()
+        is_wan_preferred = (
+            engine == "wan"
+            or str(model or "").lower().startswith(("wan", "wanx"))
+            or not getattr(settings, "AI_NVIDIA_COSMOS_BASE_URL", None)
+        )
+
         if settings.MEDIA_FACTORY_MOCK_RENDER:
             write_mock_video(
                 output_path,
@@ -143,6 +157,34 @@ def run_render_task(db: Session, task_id: str) -> MediaRenderTask:
             task.progress = 100
             task.finished_at = _now()
             success = True
+        elif is_wan_preferred:
+            # 采用阿里 Wan-Video (Wan2.1) 最优解引擎
+            _set_progress(db, task, 30)
+
+            def progress_cb(pct: int, hint: str):
+                _set_progress(db, task, pct)
+
+            wan_res = asyncio.run(
+                render_video_with_wan(
+                    prompt=prompt,
+                    output_path=output_path,
+                    image_url=task.image_url,
+                    model=model if str(model or "").startswith("wan") else "wanx2.1-t2v-plus",
+                    resolution=task.resolution or "720p",
+                    aspect=task.aspect or "16:9",
+                    on_progress=progress_cb,
+                )
+            )
+            if wan_res.get("ok") and output_path.is_file():
+                task.result_path = str(output_path)
+                task.result_url = f"/uploads/media_factory/{task.id}.mp4"
+                _attach_edit_metadata(db, task, output_path, mock=bool(wan_res.get("degraded")))
+                task.status = "done"
+                task.progress = 100
+                task.finished_at = _now()
+                success = True
+            else:
+                raise RuntimeError(wan_res.get("error") or "Wan-Video 渲染未产出有效视频")
         else:
             _set_progress(db, task, 40)
             video_bytes = infer_text_to_video(

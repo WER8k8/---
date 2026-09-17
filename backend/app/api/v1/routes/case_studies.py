@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """案例管理路由 - 优化版 - 解决N+1查询和添加缓存"""
 
 import uuid
@@ -21,6 +23,15 @@ ROUTE_PREFIX = "/case-studies"
 ROUTE_TAGS = ["案例管理"]
 
 router = APIRouter()
+
+
+def _is_valid_uuid(s: str) -> bool:
+    """非法 UUID 字符串直接查 PG UUID 列会抛 DataError→500，先挡成 404。"""
+    try:
+        uuid.UUID(s)
+        return True
+    except ValueError:
+        return False
 
 
 def _safe_case_image_dict(img) -> dict:
@@ -127,6 +138,8 @@ async def get_case_study(
     db: Session = Depends(get_db),
 ):
     """获取单个案例详情（公开）- 优化：使用joinedload预加载图片"""
+    if not _is_valid_uuid(case_id):
+        return error_response(404, "案例不存在")
     case = (
         db.query(CaseStudy)
         .options(joinedload(CaseStudy.images), joinedload(CaseStudy.product))
@@ -155,6 +168,8 @@ async def add_case_study_image(
     """为案例添加一张图片"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin", "editor"]:
         return error_response(403, "权限不足")
+    if not _is_valid_uuid(case_id):
+        return error_response(404, "案例不存在")
     case = db.query(CaseStudy).filter(CaseStudy.id == case_id).first()
     if not case:
         return error_response(404, "案例不存在")
@@ -205,6 +220,8 @@ async def update_case_study(
     """更新案例"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin"]:
         return error_response(403, "权限不足")
+    if not _is_valid_uuid(case_id):
+        return error_response(404, "案例不存在")
 
     case = db.query(CaseStudy).filter(CaseStudy.id == case_id).first()
     if not case:
@@ -234,6 +251,8 @@ async def delete_case_study(
     """删除案例"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin"]:
         return error_response(403, "权限不足")
+    if not _is_valid_uuid(case_id):
+        return error_response(404, "案例不存在")
 
     case = db.query(CaseStudy).filter(CaseStudy.id == case_id).first()
     if not case:

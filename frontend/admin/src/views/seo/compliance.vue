@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="compliance-page" title="广告法合规审查" subtitle="自动检测广告法违禁词，确保内容合规" surface="elevated">
     <!-- 内容扫描 -->

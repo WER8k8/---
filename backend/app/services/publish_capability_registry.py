@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """发布能力注册表 — 多 Worker 真发，禁止假成功。"""
 
 from __future__ import annotations
@@ -30,6 +32,10 @@ LIVE_PUBLISHER_KEYS = frozenset(
         "wechat",
         "toutiao",
         "zhihu",
+        # 海外 B2B 拓客（Alibaba 国际站 / Made-in-China / GlobalSources）
+        "alibaba",
+        "made_in_china",
+        "globalsources",
     }
 )
 
@@ -52,7 +58,6 @@ STUB_PUBLISHER_KEYS = frozenset(
         "reddit",
         "tumblr",
         "threads",
-        "pinterest",
         "weibo",
         "douyin",
         "kuaishou",
@@ -83,6 +88,32 @@ STUB_PUBLISHER_KEYS = frozenset(
         "wordpress_com",
         "linkedin_company",
         "tiktok",
+        # --- 09-13 全平台对齐补齐（PC-05）：与 publish_service.PUBLISHER_MAP 里的
+        # UnimplementedPublisher 键一一对应。登记在此，rank registry 的 adapter 口径
+        # 与 publish_block_reason 才能认出它们是「已登记、未接真发」，
+        # 而不是当成未知键放行 —— 未知键 + 视频内容会一路落到默认 Worker 链上假可选。
+        "wechat_channels",
+        "qieehao",
+        "wangyi_hao",
+        "sohu_hao",
+        "yidianzixun",
+        "dayuhao",
+        "jianshu",
+        "maimai",
+        "taobao_guangguang",
+        "ali1688",
+        "huizhong",
+        "line_official",
+        "zalo",
+        "vk",
+        "quora",
+        "amazon_seller",
+        "tradekey",
+        "kompass",
+        "thomasnet",
+        "aliexpress",
+        "shopee",
+        "lazada",
     }
 )
 
@@ -135,10 +166,13 @@ def publish_block_reason(
             return None
         kind = "视频" if video else "内容"
         label = name or key or "该平台"
+        # 文案保留机器可读码：下游 classify_publish_failure 的排除判定依赖它，
+        # 缺配置 = NOT_CONFIGURED，未实现 = NOT_IMPLEMENTED，二者都不能误判成 cookie 过期
         return (
             f"{label} 无可用发布 Worker（请配置 SAU / biliup / xhs-mcp 或 AITOEARN_API_KEY）"
+            f"（PLATFORM_NOT_CONFIGURED）"
             if video
-            else f"{label} 尚未接入真实{kind}发布 API"
+            else f"{label} 尚未接入真实{kind}发布 API（PLATFORM_NOT_IMPLEMENTED）"
         )
 
     if video and name in TEXT_ADAPTER_PLATFORM_NAMES and name != "小红书":

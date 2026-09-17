@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """customer_pool 投影同步 · UJ 真相 → GoodJob 工作副本.
 
 设计出处：uj-annex-integration-design §10.5 / §10.19；批次 B。

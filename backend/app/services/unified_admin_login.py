@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """主站 users 与 SEO 矩阵 admin_users 的统一登录解析（不丢数据、可签发同一 JWT）。"""
 
 from __future__ import annotations

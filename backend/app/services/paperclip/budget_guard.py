@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 预算控制服务。
 
 管理 Agent 月度积分预算：余额检查、消费扣费、月初重置、预警。

@@ -10,10 +10,11 @@
   --uj-header-h: 52px;
   --uj-client-sidebar-w: 232px;
 
-  /* v2 增量 — 三壳统一 */
-  --uj-shell-client-accent: #5a9fd4;
-  --uj-shell-agent-accent: #4db6a0;
+  /* v2 增量 — 四壳统一（LOCKED 基准） */
   --uj-shell-platform-accent: #5eb8a8;
+  --uj-shell-client-accent: #5a9fd4;
+  --uj-shell-partner-accent: #7c6dd8;
+  --uj-shell-agent-accent: #4db6a0;
 
   /* KPI 白底卡片（Agent S0） */
   --uj-kpi-bg: #ffffff;

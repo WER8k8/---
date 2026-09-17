@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """一键建站 API 路由 — POST /api/v1/sites/build。"""
 
 from __future__ import annotations

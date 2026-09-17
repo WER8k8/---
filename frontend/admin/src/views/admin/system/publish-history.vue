@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="统一发布历史" subtitle="SEO 图文矩阵 + 视频矩阵" surface="elevated">
     <template #actions>

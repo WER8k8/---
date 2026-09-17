@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 前端 API 层假交付硬拒绝（与后端 no_fake_delivery 宪章对齐）
  */
 

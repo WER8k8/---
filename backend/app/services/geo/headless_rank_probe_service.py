@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Headless 排名探针 — 外置 Sidecar（Playwright/Browser Use）或显式 dev stub。
 
 未配置 Sidecar 时返回 skipped/503，禁止伪造排名。

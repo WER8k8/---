@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付成功后自动开户 / 续费"""
 
 from datetime import datetime, timedelta, timezone

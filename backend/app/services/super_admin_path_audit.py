@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """P0-08：前端 super-admin 引用与 FastAPI 挂载路径对齐审计。"""
 
 from __future__ import annotations

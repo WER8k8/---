@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="EEAT 管理" subtitle="作者管理、EEAT评分与信任信号" surface="elevated">
     <YdHonestDataBanner

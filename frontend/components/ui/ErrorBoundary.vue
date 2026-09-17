@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <script setup lang="ts">
 import { ref, onErrorCaptured, type ComponentPublicInstance, type VNode } from 'vue';
 import { useI18n } from 'vue-i18n';

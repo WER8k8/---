@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出口 IP — manual 运营录入 / mock 演示 / asocks JIT 采购 / iproyal 长期养号。"""
 
 from __future__ import annotations

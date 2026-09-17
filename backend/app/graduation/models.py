@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 功能开关（Feature Flag）模型
 支持灰度发布、A/B测试、紧急回滚

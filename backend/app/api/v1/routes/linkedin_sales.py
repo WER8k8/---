@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """LinkedIn Sales Navigator API 路由 — FIX-55"""
 
 from typing import Optional
@@ -11,6 +13,7 @@ from app.services.ubrain.linkedin_sales_navigator_service import (
     linkedin_decision_maker_service,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/linkedin-sales", tags=["获客·LinkedIn"])
 
 

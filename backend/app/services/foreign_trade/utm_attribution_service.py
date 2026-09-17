@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-P-TR-01 — UTM 全链路：矩阵 publish_task → 独立域 → 询盘。"""
 
 from __future__ import annotations

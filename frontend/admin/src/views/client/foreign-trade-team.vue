@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 外贸团队" subtitle="B2B 专家角色 · 技能与边界说明" surface="elevated">
     <a-alert v-if="note" type="info" show-icon class="mb-4" :message="note" />

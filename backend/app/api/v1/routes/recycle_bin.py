@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """回收站 API — 软删除内容的查询、恢复、永久删除"""
 from typing import Optional
 from fastapi import APIRouter, Depends, Query

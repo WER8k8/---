@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="健康看板" subtitle="实时系统状态监控" surface="elevated">
     <template #actions>

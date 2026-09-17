@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Content Executor Plugin — 内容页创建与发布。
 
 承载实现（已存在）：

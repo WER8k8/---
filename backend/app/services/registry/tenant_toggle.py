@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户能力开关（轮17-7）。
 
 tenant_capability_toggles：按租户 × 能力类型 × 能力实例 显式启用/停用。

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-G-CC-04 — 发布前人审清单（数字/认证/MOQ）。"""
 
 from __future__ import annotations

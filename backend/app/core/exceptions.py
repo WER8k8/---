@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import logging
 from enum import IntEnum
 from typing import Any, Dict, Optional

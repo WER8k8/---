@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="收录监控" subtitle="实时监控内容收录状态，追踪百度排名变化" surface="elevated">
     <YdHonestDataBanner

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """官网域名邮箱 enrichment Sidecar — AI Hunter 后处理，须 source_url。"""
 
 from __future__ import annotations

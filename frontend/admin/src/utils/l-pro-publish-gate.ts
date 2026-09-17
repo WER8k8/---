@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** SITE-DESIGN-01 · L-Pro 发布门禁（前端评估，与 backend site_l_pro_service 对齐） */
 
 export interface LProPublishIssue {

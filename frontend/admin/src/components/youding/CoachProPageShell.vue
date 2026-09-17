@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage :surface="surface" :title="pageTitle" :subtitle="pageSubtitle">
     <template v-if="$slots.actions" #actions>

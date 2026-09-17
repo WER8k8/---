@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """精品出海轨编排 — 开源 sidecar / Vozo / 回退禁止假成功。"""
 
 from __future__ import annotations
@@ -26,198 +28,23 @@ ProgressFn = Callable[[int, str], None] | None
 TrackId = str  # standard | opensource_premium | vozo
 
 
-def _run_premium_overseas_job_extracted(result, task, track_norm):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param result, task, track_norm: 输入参数
-    :return: 无返回（仅副作用）
-    """
-    cfg = load_edit_config(task)
-    cfg["cross_border_premium"] = {
-        **result,
-        "track": track_norm,
-        "media_task_id": str(task.id),
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-    }
-    save_edit_config(db, task, cfg)
-    result["media_task_id"] = str(task.id)
-    result["track"] = track_norm
-
-def _run_premium_overseas_job_extracted1():
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param self: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    """精品轨：仅在上游真实成功时 ok=true；禁止静默回退标准轨冒充精品。"""
-    task = get_render_task_for_user(db, media_task_id, user)
-    return task
-
-def _run_premium_overseas_job_extracted2(_run_premium_overseas_job_extracted1):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted1()
-    return task
-
-def _run_premium_overseas_job_extracted3(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted2(_run_premium_overseas_job_extracted1)
-    return task
-
-def _run_premium_overseas_job_extracted4(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted3(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2)
-    return task
-
-def _run_premium_overseas_job_extracted5(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted4(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3)
-    return task
-
-def _run_premium_overseas_job_extracted6(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted5(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4)
-    return task
-
-def _run_premium_overseas_job_extracted7(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted6(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5)
-    return task
-
-def _run_premium_overseas_job_extracted8(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted7(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6)
-    return task
-
-def _run_premium_overseas_job_extracted9(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted8(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7)
-    return task
-
-def _run_premium_overseas_job_extracted10(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted9(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8)
-    return task
-
-def _run_premium_overseas_job_extracted11(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted10(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted12(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted11(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted13(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted12(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted14(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted13(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted15(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted14(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted16(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted15(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted17(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted16(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted18(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted17, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted17, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted17(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
-def _run_premium_overseas_job_extracted19(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted17, _run_premium_overseas_job_extracted18, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9):
-    """提取出的子流程，封装原函数的局部计算逻辑。
-
-    :param _run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted17, _run_premium_overseas_job_extracted18, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9: 输入参数
-    :return: 返回 task 等计算结果
-    """
-    task = _run_premium_overseas_job_extracted18(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted17, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
-    return task
-
 async def _run_premium_opensource_track(
-    db, tenant, user, media_task_id, transcript_zh, voice_consent,
-    output_mode, dub_voice_gender, localization_provider, track_norm, task, on_progress,
+    db: Session,
+    tenant: Tenant,
+    user: User,
+    media_task_id: str,
+    transcript_zh: str | None,
+    voice_consent: bool,
+    output_mode: str,
+    dub_voice_gender: str,
+    localization_provider: str | None,
+    track_norm: str,
+    task: Any,
+    on_progress: ProgressFn,
+    target_lang: str = "en",
+    voice_clone: bool = True,
+    lip_sync: bool = True,
+    distribute_platforms: list[str] | None = None,
 ) -> dict[str, Any]:
     """开源精品轨：选择可用 provider 并执行配音/字幕生成。"""
     active = pick_active_opensource_provider(localization_provider)
@@ -227,7 +54,7 @@ async def _run_premium_opensource_track(
             "error_code": "OPENSOURCE_NOT_CONFIGURED",
             "hint": (
                 "无可用的真实本地化上游。请配置听写+ffmpeg+edge-tts，"
-                "或部署通过健康探测的 Linly/YouDub sidecar。"
+                "或部署通过健康探测的 Linly/CosyVoice/MuseTalk sidecar。"
             ),
         }
     if active["id"] == "youding_self_hosted":
@@ -241,17 +68,16 @@ async def _run_premium_opensource_track(
             output_mode=output_mode,
             auto_asr=not (transcript_zh or "").strip(),
             dub_voice_gender=dub_voice_gender,
+            target_lang=target_lang,
+            voice_clone=voice_clone,
+            lip_sync=lip_sync,
+            distribute_platforms=distribute_platforms,
             on_progress=on_progress,
         )
         if result.get("ok"):
             result["localization_provider"] = "youding_self_hosted"
             result["localization_mode"] = "self_hosted_real"
-            result["lip_sync"] = False
             result["track"] = track_norm
-            result.setdefault(
-                "hint",
-                "已通过内置真实链生成英文配音/字幕（无口型克隆），发送前请人工听看核对。",
-            )
         return result
     else:
         return await run_opensource_premium_job(
@@ -273,25 +99,14 @@ async def run_premium_overseas_job(
     voice_consent: bool = False,
     output_mode: str = "dub",
     dub_voice_gender: str = "auto",
+    target_lang: str = "en",
+    voice_clone: bool = True,
+    lip_sync: bool = True,
+    distribute_platforms: list[str] | None = None,
     on_progress: ProgressFn = None,
 ) -> dict[str, Any]:
-    """run_premium_overseas_job。
-
-    参数说明：
-    :param db: 参数 db
-    :param tenant: 参数 tenant
-    :param user: 参数 user
-    :param media_task_id: 参数 media_task_id
-    :param track: 参数 track
-    :param localization_provider: 参数 localization_provider
-    :param transcript_zh: 参数 transcript_zh
-    :param voice_consent: 参数 voice_consent
-    :param output_mode: 参数 output_mode
-    :param dub_voice_gender: 参数 dub_voice_gender
-    :param on_progress: 参数 on_progress
-    :return: 返回处理结果。
-    """
-    task = _run_premium_overseas_job_extracted19(_run_premium_overseas_job_extracted1, _run_premium_overseas_job_extracted10, _run_premium_overseas_job_extracted11, _run_premium_overseas_job_extracted12, _run_premium_overseas_job_extracted13, _run_premium_overseas_job_extracted14, _run_premium_overseas_job_extracted15, _run_premium_overseas_job_extracted16, _run_premium_overseas_job_extracted17, _run_premium_overseas_job_extracted18, _run_premium_overseas_job_extracted2, _run_premium_overseas_job_extracted3, _run_premium_overseas_job_extracted4, _run_premium_overseas_job_extracted5, _run_premium_overseas_job_extracted6, _run_premium_overseas_job_extracted7, _run_premium_overseas_job_extracted8, _run_premium_overseas_job_extracted9)
+    """精品出海轨执行入口。"""
+    task = get_render_task_for_user(db, media_task_id, user)
     if not task or str(task.tenant_id or "") != str(tenant.id):
         return {"ok": False, "error": "找不到该视频，请先上传中文产品片"}
 
@@ -316,8 +131,22 @@ async def run_premium_overseas_job(
         )
     elif track_norm in ("opensource_premium", "opensource", "premium"):
         result = await _run_premium_opensource_track(
-            db, tenant, user, media_task_id, transcript_zh, voice_consent,
-            output_mode, dub_voice_gender, localization_provider, track_norm, task, on_progress,
+            db,
+            tenant,
+            user,
+            media_task_id,
+            transcript_zh,
+            voice_consent,
+            output_mode,
+            dub_voice_gender,
+            localization_provider,
+            track_norm,
+            task,
+            on_progress,
+            target_lang=target_lang,
+            voice_clone=voice_clone,
+            lip_sync=lip_sync,
+            distribute_platforms=distribute_platforms,
         )
     elif track_norm == "standard":
         return await run_video_dub_job(
@@ -330,6 +159,10 @@ async def run_premium_overseas_job(
             output_mode=output_mode,
             auto_asr=not (transcript_zh or "").strip(),
             dub_voice_gender=dub_voice_gender,
+            target_lang=target_lang,
+            voice_clone=voice_clone,
+            lip_sync=lip_sync,
+            distribute_platforms=distribute_platforms,
             on_progress=on_progress,
         )
     else:
@@ -344,5 +177,14 @@ async def run_premium_overseas_job(
         result.setdefault("track", track_norm)
         return result
 
-    _run_premium_overseas_job_extracted(result, task, track_norm)
+    cfg = load_edit_config(task)
+    cfg["cross_border_premium"] = {
+        **result,
+        "track": track_norm,
+        "media_task_id": str(task.id),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    save_edit_config(db, task, cfg)
+    result["media_task_id"] = str(task.id)
+    result["track"] = track_norm
     return result

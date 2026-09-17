@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 CSRF Protection Middleware
 
@@ -41,17 +43,32 @@ _API_EXEMPT_PREFIXES: tuple[str, ...] = (
     "/api/v1/admin-bff/auth/refresh",
     "/api/v1/admin-bff/auth/logout",
     "/api/v1/admin-bff/logout",
+    # 附属项目票据换取与核销（GoodJob / Trade AI）— 跨系统票据协议跳过 CSRF
+    "/api/v1/annex",
     # 公开找产品端点（Product Finder）— 无需登录，跳过 CSRF
     "/api/v1/matching",
     # 公开 RFQ 提交端点 — 无需登录，跳过 CSRF
     "/api/v1/rfq",
+    # 租户独立域上的匿名公开端点（旺财问答 / agent 可撮合出口的目录·筛货·询盘）。
+    # 这一族没有 Cookie 会话可劫持：按 domain 定位租户、只写入公开线索，
+    # 防滥用靠各自的限流与幂等键（见 public_agent_storefront），不靠 CSRF。
+    # 同时修正既有 POST /public/tenants/{domain}/wangcai/ask 匿名调用会被 403 的问题。
+    "/api/v1/public/tenants/",
     # 公开工程计算器端点 — 无需登录，跳过 CSRF
     "/api/v1/calculator",
     # 公开技术问答（基于批准知识库）— 无需登录，跳过 CSRF
     "/api/v1/technical-qna",
+    # 公开询盘表单与谈判 API — 跳过 Cookie CSRF（走 Bearer 或无状态提交）
+    "/api/v1/inquiries",
+    "/api/v1/negotiation",
+    "/api/v1/logistics",
+    "/api/v1/orders",
+    "/api/v1/marketing",
+    "/api/v1/seo/indexnow",
 )
 
 _WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+
 
 _COOKIE_NAME = "csrf_token"
 _COOKIE_MAX_AGE = 3600  # 1 hour

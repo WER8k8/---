@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 GEO RAG 内容质量评估器
 移植自 sourcechain-geo-engine/backend/app/services/rag_evaluator.py

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """字段级加密：AES-256-GCM，用于敏感 PII 字段（email/phone）。
 
 密钥来源：通过 HKDF-SHA256 从 SECRET_KEY 派生 32 字节加密密钥。

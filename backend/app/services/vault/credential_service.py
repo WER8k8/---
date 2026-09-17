@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """凭证库服务（总纲 §3.1/§8 迁移 087；轮20）。
 
 统一密钥入库：store（加密+AAD 四元绑定）→ resolve（解密，校验绑定与

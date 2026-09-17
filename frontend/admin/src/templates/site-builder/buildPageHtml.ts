@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { buildEnterpriseSiteCss, type SiteThemePack } from './enterpriseSiteStyles';
 import { buildSiteChrome, type ShellContext, type VisualSitePage } from './buildPageShell';
 import {
@@ -148,8 +151,8 @@ function buildHero(
     </section>`;
   }
 
-  return `<section id="hero" class="sb-hero" style="background:${theme.heroBg}">
-    <div class="sb-container sb-hero-grid">
+  return `<section id="hero" class="sb-hero sb-hero-aurora" style="background:${theme.heroBg}">
+    <div class="sb-container sb-hero-grid" style="position:relative;z-index:1">
       <div>${inner}</div>
       ${visual}
     </div>
@@ -320,7 +323,34 @@ export function buildPageHtml(
       </section>`
     : '';
 
+  const structuredDataLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ManufacturingOrganization',
+    'name': ctx.brandName,
+    'description': heroDesc,
+    'telephone': ctx.phone,
+    'email': ctx.email,
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': ctx.address,
+      'addressCountry': 'CN',
+    },
+    'hasCertification': certList.map((c) => ({
+      '@type': 'Certification',
+      'name': c,
+    })),
+    'makesOffer': productItems.slice(0, 4).map((p) => ({
+      '@type': 'Offer',
+      'itemOffered': {
+        '@type': 'Product',
+        'name': (p as { name?: string }).name || 'B2B Product',
+        'description': (p as { summary?: string }).summary || '',
+      },
+    })),
+  });
+
   const html = `
+<script type="application/ld+json">${structuredDataLd}</script>
 <section class="sb-page" data-gjs-type="wrapper">
   ${shell.top}
   ${shell.header}

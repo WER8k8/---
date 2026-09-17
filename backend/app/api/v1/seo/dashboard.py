@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import json
 import re
 from datetime import datetime, timedelta, timezone
@@ -12,7 +14,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
 from app.core.response import success_response
-from app.core.security import optional_auth
+from app.core.security import get_current_user, optional_auth
 from app.models.content import ContentPage
 from app.models.seo_metadata import SeoMetadata
 from app.models.inquiry import Inquiry
@@ -325,6 +327,7 @@ def _build_dashboard_product_stats(db: Session, real_inq_rows):
 def get_seo_dashboard(
     time_range: str = Query("week", alias="range"),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """管理端数据概览：聚合 SEO、产品、询盘、内容（与 `/api/v1/analytics/dashboard` 互补，统一前端入口）。"""
     if time_range not in ("today", "week", "month"):

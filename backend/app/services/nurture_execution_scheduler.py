@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """养号全链路调度器 — 互动执行 + 定时发布 + 状态升级 + 规则计划。"""
 
 from __future__ import annotations

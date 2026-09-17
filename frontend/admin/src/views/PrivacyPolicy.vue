@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="privacy-wrap">
     <a class="skip-link" href="#privacy-main">跳到主要内容</a>

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="Rank Scheduler" subtitle="关键词排名调度 · DB 同步 · 即时检测" surface="elevated">
     <template #actions>

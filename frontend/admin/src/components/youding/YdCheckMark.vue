@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <span class="yd-check-mark" :class="`yd-check-mark--${kind}`" aria-hidden="true">
     <CheckCircleOutlined v-if="kind === 'pass'" />

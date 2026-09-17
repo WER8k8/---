@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO 报告 HTML 导出（可浏览器打印为 PDF）。"""
 
 from __future__ import annotations

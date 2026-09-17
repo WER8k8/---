@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="多语言管理" subtitle="全球化站点语言版本 · 翻译进度 · 质量监控" surface="elevated">
     <template #actions>

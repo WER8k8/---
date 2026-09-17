@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="intl-inquiries" title="海外询盘" subtitle="按地区、状态筛选并管理国际客户询盘" surface="elevated">
     <!-- 筛选栏 -->

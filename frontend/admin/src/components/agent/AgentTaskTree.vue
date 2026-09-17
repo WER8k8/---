@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="agent-task-tree">
     <div v-if="goal" class="agent-task-tree__goal">

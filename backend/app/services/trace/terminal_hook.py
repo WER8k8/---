@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """终态钩子 — 任务终态接线至经验飞轮（总纲 §4.6-7 / §6.6 P3）。
 
 触发时机：Pipeline / Hermes / DeerFlow 等执行到达终态（done/failed）后调用。

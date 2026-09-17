@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO Schemas - Pydantic models for GEO engine
 
 This module defines the Pydantic models used by the GEO engine API endpoints.

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="L4 发布队列" subtitle="摸金校尉 staging · 人工审核通过/驳回" surface="elevated">
     <template #actions>
@@ -149,8 +152,8 @@ const taskCols = [
   { title: '操作', key: 'actions', width: 80 },
 ]
 
-function rowKey(record: GreedyPublishItem, index: number) {
-  return `${record.sku || 'item'}-${record.queued_at || index}`
+function rowKey(record: GreedyPublishItem) {
+  return String(record.queue_index ?? `${record.sku || 'item'}-${record.queued_at || ''}`)
 }
 
 function bodyText(record: GreedyPublishItem) {

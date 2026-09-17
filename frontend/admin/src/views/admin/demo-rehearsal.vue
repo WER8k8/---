@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
 
   <YdPage title="90 秒送检彩排" subtitle="融资 / 鉴定演示路径 · 顺序不可改" surface="brand-hero">
@@ -528,10 +531,8 @@ function stepStatusColor(status: string) {
 
 
 
-function isAppRoute(path: string): boolean {
-
-  return path.startsWith('/') && !path.startsWith('/api/');
-
+function isAppRoute(path?: string): boolean {
+  return !!path && path.startsWith('/') && !path.startsWith('/api/');
 }
 
 

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import type { ISchema } from '@formily/json-schema';
 import { L_PRO_TIER1_SELECT_OPTIONS } from '@/constants/lProTier1Locales';
 

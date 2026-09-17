@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="yd-onboarding-card uj-kpi-card">
     <h3 class="yd-onboarding-card__title">{{ title }}</h3>

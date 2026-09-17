@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Accio gap 技能 ID（避免 catalog ↔ handlers 循环导入）。"""
 
 

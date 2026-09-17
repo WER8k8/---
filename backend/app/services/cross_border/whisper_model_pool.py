@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Whisper 模型单例预热（Worker 启动后复用）。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeepSeek Harness 外层运行时接入路由（总纲 §外层 / 轮次续接）。
 
 把 dsh 作为"外层编排大脑"暴露给后端：
@@ -51,28 +53,23 @@ class InvokeResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
+    """公共探活字段：不暴露内部路径 / API Key 存在性 / LLM base_url。"""
     available: bool
     sdk_importable: bool
-    sdk_error: Optional[str] = None
-    runtime_binary: Optional[str] = None
     enabled: bool
-    repo_dir: str
-    repo_present: bool
-    dsh_home: str
-    workspace: str
-    profile: str
-    provider: str
-    model: str
-    has_api_key: bool
-    base_url: Optional[str] = None
 
 
 @router.get("/health", response_model=HealthResponse)
 def health() -> dict:
-    """dsh 运行时可用性探测（无需鉴权也可访问，便于运维探活）。"""
+    """dsh 运行时可用性探测（无需鉴权也可访问，便于运维探活；仅返回公共状态）。"""
     from app.services.deepseek_harness.client import health as _health
 
-    return _health()
+    raw = _health()
+    return {
+        "available": bool(raw.get("available")),
+        "sdk_importable": bool(raw.get("sdk_importable")),
+        "enabled": bool(raw.get("enabled")),
+    }
 
 
 @router.post("/invoke", response_model=InvokeResponse)

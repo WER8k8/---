@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 审批门服务。
 
 管理 Agent 雇佣、任务执行等关键操作的审批流程。

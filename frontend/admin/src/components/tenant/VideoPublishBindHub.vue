@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <section v-if="hub" class="video-bind-hub panel">
     <div class="vbh-head">

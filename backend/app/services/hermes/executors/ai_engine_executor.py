@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI Engine Executor Plugin for Hermes Orchestration.
 
 把既有 AI 能力层（DeepSeek Harness / ubrain / deerflow L1 路由）

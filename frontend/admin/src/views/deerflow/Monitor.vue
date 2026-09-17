@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="p-6 max-w-6xl mx-auto">
     <h1 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """摸金校尉 · 挣钱大赛 + 专家记忆 — 持续盈利者不下线，越赛越有 experience。"""
 
 from __future__ import annotations

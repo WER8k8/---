@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户级 AI 配置路由"""
 
 from datetime import datetime, timezone
@@ -16,10 +18,10 @@ from app.core.field_crypto import encrypt_field, decrypt_field
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
-ROUTE_PREFIX = "/tenant-ai-config"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["租户AI配置"]
 
-router = APIRouter(prefix="/ai-config", tags=["租户AI配置"])
+router = APIRouter(prefix="/tenant-ai-config", tags=["租户AI配置"])
 
 
 @router.get("/my-configs")

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """一键建站核心编排器。
 
 串联 Vision 分析、结构生成、多语言内容、SEO 优化、站点组装五个步骤，

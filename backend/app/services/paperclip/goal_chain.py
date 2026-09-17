@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 目标对齐链服务。
 
 构建使命 → 项目 → 目标 → 任务的完整链路，支持进度冒泡更新。

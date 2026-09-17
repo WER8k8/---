@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <Card class="p-5">
     <h2 class="text-lg font-semibold text-gray-900 mb-4">运费快速测算</h2>

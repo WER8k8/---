@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-P-GSC-02 — Google Search Console / Google Ads 归因 webhook 回环。"""
 
 from __future__ import annotations

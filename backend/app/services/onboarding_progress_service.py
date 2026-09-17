@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开户待办六步 — 真实进度判定（对齐 client-dashboard-bento-spec §3）
 
 七步商业链第 ⑤ 步「询盘 IM」子任务（不新增主步）：

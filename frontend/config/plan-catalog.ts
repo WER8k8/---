@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 套餐功能矩阵 — 与 backend/app/api/v1/admin_bff/plan_catalog.py 同源
  * Plan Gate：backend/app/services/plan_gate_service.py · FEATURE_MIN_PLAN
  * 对外文案：docs/marketing/plan-copy-deck.md

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """n8n 集成 API 路由。
 
 提供 n8n 工作流管理、Webhook 接收、触发调用三大类接口：
@@ -26,10 +28,12 @@ from __future__ import annotations
 import logging
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from pydantic import BaseModel, Field
 
 from app.core.response import success_response
+from app.core.security import require_admin
+from app.models.user import User
 from app.services.n8n.trigger import N8nTriggerService, trigger_n8n_workflow
 from app.services.n8n.webhook import N8nWebhookService, verify_webhook_signature
 from app.services.n8n.workflow_registry import (
@@ -148,6 +152,7 @@ async def receive_n8n_webhook(
 @router.post("/workflows", tags=["n8n-workflow"])
 async def register_workflow(
     body: WorkflowRegisterRequest,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """注册 n8n 工作流。
 
@@ -179,6 +184,7 @@ async def register_workflow(
 async def list_workflows(
     scene: Optional[str] = Query(None, description="按触发场景过滤"),
     enabled_only: bool = Query(False, description="仅显示启用的工作流"),
+    _admin: User = Depends(require_admin),
 ):
     """列出所有已注册的 n8n 工作流。"""
     registry = get_workflow_registry()
@@ -198,6 +204,7 @@ async def list_workflows(
 @router.get("/workflows/{workflow_id}", tags=["n8n-workflow"])
 async def get_workflow(
     workflow_id: str,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """获取工作流详情。"""
     registry = get_workflow_registry()
@@ -214,6 +221,7 @@ async def get_workflow(
 async def update_workflow(
     workflow_id: str,
     body: WorkflowUpdateRequest,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """更新工作流配置。"""
     registry = get_workflow_registry()
@@ -235,6 +243,7 @@ async def update_workflow(
 @router.delete("/workflows/{workflow_id}", tags=["n8n-workflow"])
 async def unregister_workflow(
     workflow_id: str,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """注销工作流。"""
     registry = get_workflow_registry()
@@ -250,6 +259,7 @@ async def unregister_workflow(
 async def toggle_workflow(
     workflow_id: str,
     body: WorkflowToggleRequest,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """启用/禁用工作流。"""
     registry = get_workflow_registry()
@@ -274,6 +284,7 @@ async def toggle_workflow(
 async def trigger_workflow(
     workflow_id: str,
     body: WorkflowTriggerRequest,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """同步触发 n8n 工作流。
 
@@ -304,6 +315,7 @@ async def trigger_workflow(
 async def trigger_workflow_async(
     workflow_id: str,
     body: WorkflowTriggerRequest,
+    _admin: User = Depends(require_admin),
 ) -> dict[str, Any]:
     """异步触发 n8n 工作流（Celery）。
 
@@ -344,7 +356,7 @@ async def trigger_workflow_async(
 # ============================================================
 
 @router.get("/stats", tags=["n8n-stats"])
-async def get_n8n_stats() -> Any:
+async def get_n8n_stats(_admin: User = Depends(require_admin)) -> Any:
     """获取 n8n 集成统计信息。"""
     registry = get_workflow_registry()
     stats = registry.get_stats()
@@ -355,14 +367,30 @@ async def get_n8n_stats() -> Any:
 # 工具函数
 # ============================================================
 
+_SENSITIVE_CONFIG_KEYS = (
+    "secret", "token", "api_key", "apikey", "password",
+    "credential", "authorization", "auth", "signature",
+)
+
+
+def _sanitize_auth_config(auth_config: Any) -> Any:
+    """返回 auth_config 脱敏副本：签名密钥/token/凭据类值一律打码，不回显给调用方。"""
+    if not isinstance(auth_config, dict):
+        return auth_config
+    return {
+        k: ("******" if (any(s in str(k).lower() for s in _SENSITIVE_CONFIG_KEYS) and v) else v)
+        for k, v in auth_config.items()
+    }
+
+
 def _record_to_dict(record: WorkflowRecord) -> dict[str, Any]:
-    """将 WorkflowRecord 转换为字典。"""
+    """将 WorkflowRecord 转换为字典（auth_config 敏感值脱敏）。"""
     return {
         "id": record.id,
         "workflow_id": record.workflow_id,
         "name": record.name,
         "endpoint": record.endpoint,
-        "auth_config": record.auth_config,
+        "auth_config": _sanitize_auth_config(record.auth_config),
         "enabled": record.enabled,
         "description": record.description,
         "tags": record.tags,

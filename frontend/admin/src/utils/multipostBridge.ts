@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** MultiPost 扩展 API — 仅能从优丁已授权域名页唤起 */
 
 export type MultipostResponse = {

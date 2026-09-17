@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """流水线状态机（总纲 §6.5：11 态）。
 
 主链：generated→cleansing→cleansed→reviewing→approved→distributing→verifying→done

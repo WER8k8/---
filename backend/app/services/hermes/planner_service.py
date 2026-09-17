@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 拆解器（Planner）—— 意图 → 任务图。
 
 这是整条编排链的「大脑」入口：把一句自然语言需求拆成可执行的 TaskGraph。

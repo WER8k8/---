@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """证据回传模型（总纲 §4.7 P5：合规执行须留证）。
 
 每次 Browser Runtime 实际执行（无论成功失败）必须产出 EvidenceRecord

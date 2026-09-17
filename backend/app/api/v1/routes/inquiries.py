@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """询盘管理路由 - 模块化架构"""
 
 import csv
@@ -6,7 +8,7 @@ import re
 import time
 from collections import defaultdict
 from io import StringIO
-from typing import Optional
+from typing import Optional, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import StreamingResponse
@@ -37,21 +39,27 @@ def _check_inquiry_rate(ip: str) -> None:
     _inquiry_rate_store[ip].append(now)
 
 
-def _check_inquiry_duplicate(db, email: str, phone: str, message: str) -> None:
-    """30 分钟内相同 email+消息 hash 视为重复"""
-    if not email:
-        return
-    msg_hash = hashlib.md5((message or "").strip().encode()).hexdigest()[:16]
+def _find_recent_duplicate_inquiry(db, email: Optional[str], phone: Optional[str], tenant_id: Optional[str] = None):
+    """查找近期（30分钟内）相同邮箱或电话的现有询盘以供智能合并。"""
+    if not email and not phone:
+        return None
     from app.models.inquiry import Inquiry
     from datetime import datetime, timedelta, timezone
     cutoff = datetime.now(timezone.utc) - timedelta(minutes=30)
-    dup = db.query(Inquiry).filter(
-        Inquiry.email == email,
-        Inquiry.source_utm.isnot(None),
-        Inquiry.created_at > cutoff,
-    ).first()
-    if dup:
-        raise HTTPException(429, "您已提交过类似询盘，请稍后再试")
+    query = db.query(Inquiry).filter(Inquiry.created_at > cutoff)
+    if tenant_id:
+        cols = {c.key for c in Inquiry.__table__.columns}
+        if "tenant_id" in cols:
+            query = query.filter(Inquiry.tenant_id == tenant_id)
+
+    filters = []
+    if email:
+        filters.append(Inquiry.email == email)
+    if phone:
+        filters.append(Inquiry.phone == phone)
+    from sqlalchemy import or_
+    return query.filter(or_(*filters)).first()
+
 from sqlalchemy.orm import Session
 
 from app.core.response import error_response, success_response
@@ -94,10 +102,44 @@ def inquiries_portal(
     return success_response(data=InquiriesPortalService(db).portal_meta())
 
 
+def _resolve_caller_tenant_id(db: Session, current_user: User) -> Optional[str]:
+    """解析当前请求用户的 tenant_id；超管返回 None（全局）。"""
+    if getattr(current_user, "role", None) in ("super_admin",):
+        return None
+    tid = getattr(current_user, "tenant_id", None)
+    if tid:
+        return str(tid)
+    try:
+        from app.models.tenant import UserTenant
+        link = (
+            db.query(UserTenant)
+            .filter(UserTenant.user_id == str(current_user.id), UserTenant.is_active.is_(True))
+            .first()
+        )
+        if link and link.tenant_id:
+            return str(link.tenant_id)
+    except Exception:
+        pass
+    return None
+
+
+def _check_inquiry_tenant_access(inquiry: Inquiry, db: Session, current_user: User, action: str = "访问") -> Optional[Any]:
+    """校验询盘租户归属：跨租户返回 403 错误响应，合法放行返回 None。"""
+    if getattr(current_user, "role", None) in ("super_admin",):
+        return None
+    caller_tid = _resolve_caller_tenant_id(db, current_user)
+    inq_tid = str(inquiry.tenant_id) if getattr(inquiry, "tenant_id", None) else None
+    if inq_tid and caller_tid and inq_tid != caller_tid:
+        return error_response(403, f"无权{action}其他租户的询盘")
+    if inq_tid and not caller_tid:
+        return error_response(403, f"无权{action}该租户的询盘")
+    return None
+
+
 @router.get("/unified")
 def list_inquiries_unified(
     page: int = Query(1, ge=1),
-    page_size: int = Query(20, ge=1, le=100),
+    page_size: int = Query(20, ge=1, le=200),
     status: Optional[str] = None,
     search: Optional[str] = None,
     source_channel: Optional[str] = Query(None, description="来源渠道筛选 T3"),
@@ -105,15 +147,17 @@ def list_inquiries_unified(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """统一询盘列表（兼容 SEO 线索与 B2B 询盘列）。"""
+    """统一询盘列表（兼容 SEO 线索与 B2B 询盘列，强制租户隔离）。"""
     assigned_filter: Optional[str] = None
     if current_user.role == "sales":
         assigned_filter = str(current_user.id)
+    caller_tid = _resolve_caller_tenant_id(db, current_user)
     data = InquiriesUnifiedService(db).list_page(
         page=page,
         page_size=page_size,
         status=status,
         search=search,
+        tenant_id=caller_tid,
         source_channel=source_channel,
         assigned_to=assigned_filter,
         pipeline_stage=pipeline_stage,
@@ -126,8 +170,12 @@ class InquiryStatusUpdate(BaseModel):
 
 
 # 询盘状态白名单（避免任意字符串落库，ORCH-08/09/10 同类问题修复）
+# 2026-09-13 对齐前端实际取值：views/inquiries/index.vue 的「标记处理中」发
+# quoted、「完成」发 accepted；展示层还识别 new/processing。原白名单缺这四个
+# 值导致按钮点击必 400（主链断点）。
 _VALID_INQUIRY_STATUSES = frozenset({
     "pending", "in_progress", "resolved", "closed", "archived",
+    "new", "quoted", "accepted", "processing",
 })
 
 
@@ -213,6 +261,7 @@ class PublicInquiryCreate(BaseModel):
         return self
 
 
+@router.get("", include_in_schema=False)
 @router.get("/")
 def list_inquiries(
         response: Response,
@@ -233,11 +282,13 @@ def list_inquiries(
     if page_size > 100:
         page_size = 100
     effective_status = status_filter or status
+    caller_tid = _resolve_caller_tenant_id(db, current_user)
     data = InquiriesUnifiedService(db).list_page(
         page=page,
         page_size=page_size,
         status=effective_status,
         search=search,
+        tenant_id=caller_tid,
     )
     data["deprecated"] = True
     data["use_instead"] = "/api/v1/inquiries/unified"
@@ -254,18 +305,20 @@ def export_inquiries_csv(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """导出询盘为 CSV（需登录，含 source_channel）"""
+    """导出询盘为 CSV（需登录，强制当前租户隔离导出，含 source_channel）"""
     from app.core.data_export_guard import assert_export_allowed
     # 询盘导出按租户数据范围；避免 admin 走 platform 触发创始人门禁（T-P0-15）
     scope = "tenant"
     if current_user.role not in ["admin", "super_admin", "tenant_admin", "sales"]:
         return error_response(403, "权限不足")
     effective_status = status_filter or status
+    caller_tid = _resolve_caller_tenant_id(db, current_user)
     data = InquiriesUnifiedService(db).list_page(
         page=1,
         page_size=5000,
         status=effective_status,
         search=search,
+        tenant_id=caller_tid,
         source_channel=source_channel,
     )
     rows = data["items"]
@@ -433,6 +486,9 @@ def assign_inquiry_owner(
     inquiry = db.query(Inquiry).filter(Inquiry.id == inquiry_id).first()
     if not inquiry:
         return error_response(404, "询盘不存在")
+    denial = _check_inquiry_tenant_access(inquiry, db, current_user, "分配")
+    if denial:
+        return denial
     from app.services.inquiry_lead_assignment_service import assign_inquiry
     try:
         data = assign_inquiry(
@@ -462,6 +518,9 @@ def inquiry_assignment_history(
     inquiry = db.query(Inquiry).filter(Inquiry.id == inquiry_id).first()
     if not inquiry:
         return error_response(404, "询盘不存在")
+    denial = _check_inquiry_tenant_access(inquiry, db, current_user, "查看")
+    if denial:
+        return denial
     if current_user.role == "sales" and getattr(inquiry, "assigned_to", None) != str(current_user.id):
         return error_response(403, "仅可查看本人负责询盘的审计")
 
@@ -472,12 +531,15 @@ def inquiry_assignment_history(
 @router.get("/{inquiry_id}")
 def get_inquiry(inquiry_id: str, db: Session = Depends(get_db),
                 current_user: User = Depends(get_current_user)):
-    """获取单个询盘详情（含意向分与 Discovery 追问）。"""
+    """获取单个询盘详情（含意向分与 Discovery 追问，强制租户隔离）。"""
     inquiry = db.query(Inquiry).filter(
         Inquiry.id == inquiry_id,
         Inquiry.is_active).first()
     if not inquiry:
         return error_response(404, "询盘不存在")
+    denial = _check_inquiry_tenant_access(inquiry, db, current_user, "查看")
+    if denial:
+        return denial
 
     from app.services.inquiries_unified_service import InquiriesUnifiedService, serialize_inquiry
     from app.services.ubrain.inquiry_intel_service import enrich_inquiry_intel
@@ -488,14 +550,29 @@ def get_inquiry(inquiry_id: str, db: Session = Depends(get_db),
 
 @router.post("/public")
 def create_public_inquiry(body: PublicInquiryCreate, request: Request, db: Session = Depends(get_db)):
-    """公开询盘（推荐：租户站 / IM 条表单）。"""
-    # 防刷：IP 限流 + 重复检测
+    """公开询盘（推荐：租户站 / IM 条表单，支持智能多渠道线索去重与追加合并）。"""
     client_ip = request.client.host if request.client else "unknown"
     fwd = request.headers.get("x-forwarded-for")
     if fwd:
         client_ip = fwd.split(",")[0].strip()
     _check_inquiry_rate(client_ip)
-    _check_inquiry_duplicate(db, body.email, body.phone, body.message)
+
+    # 智能去重合并：若同一买家在30分钟内再次提交，追加需求留言并提升意向权重
+    existing = _find_recent_duplicate_inquiry(db, body.email, body.phone, body.tenant_id)
+    if existing:
+        try:
+            old_msg = getattr(existing, "message", "") or ""
+            new_msg = f"{old_msg}\n---\n[Follow-up Inquiry]: {body.message}"
+            existing.message = new_msg
+            if body.product and not getattr(existing, "product", None):
+                existing.product = body.product
+            db.commit()
+            db.refresh(existing)
+            data = InquiriesUnifiedService(db)._enrich_public_lead_row(existing)
+            return success_response(data=data, message="已识别历史沟通记录，需求已成功追加合并")
+        except Exception:
+            db.rollback()
+
     try:
         data = InquiriesUnifiedService(db).create_public_lead(
             name=body.name,
@@ -520,6 +597,7 @@ def create_public_inquiry(body: PublicInquiryCreate, request: Request, db: Sessi
     return success_response(data=data, message="询盘提交成功")
 
 
+
 @router.post("/")
 def create_inquiry(
     body: PublicInquiryCreate, db: Session = Depends(get_db)
@@ -534,13 +612,16 @@ def update_inquiry(
         req: InquiryUpdate,
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)):
-    """更新询盘"""
+    """更新询盘（强制租户隔离）"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin", "sales"]:
         return error_response(403, "权限不足")
 
     inquiry = db.query(Inquiry).filter(Inquiry.id == inquiry_id).first()
     if not inquiry:
         return error_response(404, "询盘不存在")
+    denial = _check_inquiry_tenant_access(inquiry, db, current_user, "修改")
+    if denial:
+        return denial
 
     for k, v in req.items():
         if hasattr(inquiry, k):
@@ -557,12 +638,15 @@ def update_inquiry_status(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """更新询盘状态（后台快捷接口）"""
+    """更新询盘状态（后台快捷接口，强制租户隔离）"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin", "sales"]:
         return error_response(403, "权限不足")
     inquiry = db.query(Inquiry).filter(Inquiry.id == inquiry_id).first()
     if not inquiry:
         return error_response(404, "询盘不存在")
+    denial = _check_inquiry_tenant_access(inquiry, db, current_user, "修改")
+    if denial:
+        return denial
     # ORCH-08 修复：状态白名单校验，防止任意字符串落库
     new_status = body.status.strip().lower()
     if new_status not in _VALID_INQUIRY_STATUSES:
@@ -578,13 +662,16 @@ def delete_inquiry(
         inquiry_id: str,
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)):
-    """删除询盘"""
+    """删除询盘（强制租户隔离）"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin"]:
         return error_response(403, "权限不足")
 
     inquiry = db.query(Inquiry).filter(Inquiry.id == inquiry_id).first()
     if not inquiry:
         return error_response(404, "询盘不存在")
+    denial = _check_inquiry_tenant_access(inquiry, db, current_user, "删除")
+    if denial:
+        return denial
 
     db.delete(inquiry)
     db.commit()
@@ -611,3 +698,16 @@ def _safe_inquiry_dict(inquiry) -> dict:
         "created_at": str(inquiry.created_at) if inquiry.created_at else None,
         "updated_at": str(inquiry.updated_at) if inquiry.updated_at else None,
     }
+
+
+@router.post("/{inquiry_id}/create-quote", summary="从该询盘快速创建报价单")
+def quick_create_quote(
+    inquiry_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """外贸商业闭环快捷入口：为指定询盘一键创建报价单草稿。"""
+    from app.api.v1.quotes import create_from_inquiry, QuoteFromInquiryRequest
+    req = QuoteFromInquiryRequest(inquiry_id=inquiry_id)
+    return create_from_inquiry(req=req, db=db, current_user=current_user)
+

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """高级安全 API — FIX-13 国密算法 + FIX-14 零信任架构
 
 - 国密 SM3/SM4 加密/哈希/HMAC

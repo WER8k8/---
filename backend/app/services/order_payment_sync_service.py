@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """B2B 订单支付状态联动。"""
 
 from __future__ import annotations
@@ -39,8 +41,17 @@ def update_order_payment_status(
         raise ValueError("订单不存在")
 
     order.payment_status = status
-    if auto_confirm and status == "paid" and order.status == "pending":
-        order.status = "confirmed"
+    if auto_confirm:
+        if status == "partial":
+            if order.status in ("pending", "confirmed"):
+                order.status = "deposit_received"
+        elif status == "paid":
+            if order.status == "pending":
+                order.status = "confirmed"
+            elif order.status == "deposit_received":
+                order.status = "in_production"
+            elif order.status == "shipped":
+                order.status = "final_payment_received"
     db.commit()
     db.refresh(order)
     return {

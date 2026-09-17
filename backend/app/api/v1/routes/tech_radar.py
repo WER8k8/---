@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO 技术雷达 API — 定时抓取 + 自动进化"""
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
@@ -10,7 +12,7 @@ from app.models.user import User
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
-ROUTE_PREFIX = "/tech-radar"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["技术雷达"]
 
 router = APIRouter()

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """邮件追踪事件模型（P1-3）—— 打开/点击/回复事件记录。"""
 
 from __future__ import annotations

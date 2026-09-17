@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { ref } from 'vue'
 
 /** 全局悬浮助手面板开关（任意页面可唤起） */

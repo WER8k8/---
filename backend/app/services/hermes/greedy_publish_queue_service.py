@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """L4 发布队列人工审核 — 通过/驳回 + 审核历史。"""
 
 from __future__ import annotations

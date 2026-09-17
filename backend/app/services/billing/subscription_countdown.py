@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """订阅到期倒计时 · 纯函数服务（零迁移、零外部依赖）.
 
 数据源均为既有字段：tenants.expires_at / tenants.trial_ends_at、

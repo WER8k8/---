@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """邮件追踪服务 — FIX-47
 
 提供邮件打开/点击/回复追踪功能：

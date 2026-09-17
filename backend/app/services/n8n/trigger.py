@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """n8n 工作流触发器。
 
 向 n8n 发送 Webhook 请求触发工作流，支持：

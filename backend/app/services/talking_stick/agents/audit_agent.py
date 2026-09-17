@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Talking-Stick 审计Agent
 负责精读风险代码，寻找已知漏洞（OWASP Top10、命令注入、XSS、SSRF、权限缺陷）

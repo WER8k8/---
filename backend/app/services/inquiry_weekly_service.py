@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户询盘周报 — P0-5 honest 报表（数字可为 0，不可假）。"""
 
 from __future__ import annotations
@@ -59,6 +61,6 @@ def build_inquiry_weekly_report(db: Session, tenant: Tenant) -> dict[str, Any]:
         "with_phone": with_phone,
         "all_pending": all_pending,
         "today_received": today_received,
-        "honest_note": "数字来自本租户真实询盘；0 表示本周暂无，不是系统故障。",
-        "north_star": "有效跟进 = 已处理（非待处理）且尽量拿到可回拨电话。",
+        "honest_note": "数据来源于真实入库买家询盘流；0 代表当前暂无新讯，全天候持续监听中。",
+        "north_star": "商机转化原则：高意向买家 30 分钟内 WhatsApp/电话双轨响应，及时确认规格并出具形式发票(PI)。",
     }

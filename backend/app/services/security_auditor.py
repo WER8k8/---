@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """安全审计服务 - OWASP TOP 10漏洞扫描与检测（AI驱动）"""
 
 import logging

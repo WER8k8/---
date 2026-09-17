@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes A2A 技能市场 — Brief→ECC→部门路由 沉底为可调用 Agent 技能。
 
 合规：只读探测 + 虚拟积分结算预览；禁止真 SMTP/群发/未授权爬取。

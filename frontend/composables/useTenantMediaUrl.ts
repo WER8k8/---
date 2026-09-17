@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 租户站媒体 URL — /uploads 走 Nuxt→API 代理，避免指到 :3000 无文件 */
 export function useTenantMediaUrl() {
   const config = useRuntimeConfig();

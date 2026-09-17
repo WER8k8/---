@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 公网站点三分法 — 代码与文档唯一源
  * 镜像：.project/public-sites.json
  *

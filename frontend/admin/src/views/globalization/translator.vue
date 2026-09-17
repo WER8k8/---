@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="翻译引擎" subtitle="AI 驱动多语言翻译 · 对接 LangChain RAG · 支持批量" surface="elevated">
     <template #actions>

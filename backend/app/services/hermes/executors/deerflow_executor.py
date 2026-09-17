@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow Executor Plugin for Hermes Orchestration."""
 from __future__ import annotations
 
@@ -27,6 +29,9 @@ _CAPABILITY_TO_INTENT: Dict[str, str] = {
     "prospect.enrich": "buyer_research",
     "publish.multi": "multi_channel_publish",
     "publish.single": "seo_publish",
+    # 2026-09-14 对标阿里国际 Accio Work：结构化市场洞察 + 供应商横向比价
+    "research.market_insight": "market_insight",
+    "research.supplier_compare": "supplier_compare",
 }
 
 
@@ -105,6 +110,18 @@ class DeerflowExecutor(BaseExecutor):
         return {
             "research.deep_run": {"desc": "深度研究（DeerFlow 9 意图之一）", "input": ["topic", "depth"]},
             "seo.optimize": {"desc": "SEO/GEO 优化", "input": ["site_url", "product_name"]},
+            "research.market_insight": {
+                "desc": "目标市场洞察（需求驱动/价格带/准入壁垒/买家画像/动作清单）",
+                "input": ["category", "target_market"],
+                "output": ["insight", "confidence", "human_verify_required"],
+                "needs_approval": False,
+            },
+            "research.supplier_compare": {
+                "desc": "供应商/同行横向比较排序卡（候选主体须由调用方给定）",
+                "input": ["category", "target_market", "candidates"],
+                "output": ["comparison", "ranking", "human_verify_required"],
+                "needs_approval": False,
+            },
             # G.7：content.create 归 content 执行器主属；DeerFlow 的 AI 内容生成
             # 走同一 capability 名会与 content 撞名触发 verify_executors 冲突 WARN。
             # 映射表 _CAPABILITY_TO_INTENT 保留 content.create→content_creation，

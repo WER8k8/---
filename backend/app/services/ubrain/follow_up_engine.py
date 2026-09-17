@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """智能 Follow-up 策略引擎 — FIX-57
 
 基于客户行为的多渠道智能跟进系统：

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="模型管理" subtitle="管理 AI 模型、版本和部署配置" surface="elevated">
     <template #actions>

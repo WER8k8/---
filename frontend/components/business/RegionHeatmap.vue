@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <Card>
     <h2 class="text-lg font-semibold mb-4 bg-gradient-to-r from-teal-700 to-green-500 bg-clip-text text-transparent">

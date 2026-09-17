@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """site_content 按访客语言解析 i18n 覆盖层（Hero/About 等正文 + CMS 数组）。"""
 
 from __future__ import annotations

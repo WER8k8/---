@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """建材行业知识库 - RAG检索服务
 
 基于向量化检索，让AI能回答建材行业的专业问题。

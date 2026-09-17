@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RAG 客户洞察 API 路由 — FIX-56"""
 
 from typing import Optional
@@ -10,6 +12,7 @@ from app.services.ubrain.prospect_research_engine import (
     prospect_research_engine,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/prospect-research", tags=["获客·RAG洞察"])
 
 

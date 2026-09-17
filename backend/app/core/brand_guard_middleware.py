@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UB-06：租户可见 API 响应统一品牌脱敏。"""
 
 from __future__ import annotations

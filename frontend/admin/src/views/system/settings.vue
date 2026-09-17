@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="系统设置" subtitle="基本设置、拖拽模块与特效组件" surface="elevated">
     <div class="flex gap-6">

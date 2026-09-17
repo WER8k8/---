@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """论坛 Webhook — 新问题 → SEO 候选；含联系方式 → 询盘草稿；采纳答案 → Wiki 草稿。"""
 
 from __future__ import annotations

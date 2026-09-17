@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Product Category Model - 产品分类模型
 建材产品的分类体系（支持多级分类）

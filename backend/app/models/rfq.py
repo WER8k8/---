@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RFQ Model - 买家需求单（B2B 询价请求，Finder→RFQ 核心转化闭环）"""
 
 from __future__ import annotations

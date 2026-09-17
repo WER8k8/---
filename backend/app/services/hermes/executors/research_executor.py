@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Research Executor Plugin for Hermes Orchestration.
 
 把既有 hermes/research_brief_service + foreign_trade/customer_research_skill

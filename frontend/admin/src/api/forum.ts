@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 论坛 Sidecar — Apache Answer 嵌入与 Webhook */
 
 import { apiGet, apiPost, apiPut } from '@/utils/api';

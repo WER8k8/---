@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Google 搜索客户开发服务 — 通过 Google 搜索引擎地毯式开发海外客户。
 
 Google 是全球最大的搜索引擎，每天处理数十亿次搜索请求，

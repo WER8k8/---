@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """智能体协同中心 — DeerFlow 任务真实数据（非硬编码队列）。"""
 
 from __future__ import annotations

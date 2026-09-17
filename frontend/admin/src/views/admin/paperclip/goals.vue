@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated" title="目标管理" subtitle="使命 → 项目 → 目标 → 任务 · 层级对齐链">
     <template #actions>

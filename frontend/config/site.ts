@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 export const SITE_CONFIG = {
   name: '优丁建材',
   fullName: '优丁建材有限公司',

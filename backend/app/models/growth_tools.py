@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """增长工具 — 专属词库条目（行业/品牌/竞品/需求）+ Agent 跑盘记录。"""
 
 from __future__ import annotations

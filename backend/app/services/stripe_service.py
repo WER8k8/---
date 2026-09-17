@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Stripe 支付集成骨架 — 轻量 httpx 直调 REST API，不强依赖 stripe SDK。
 
 功能：
@@ -183,7 +185,7 @@ def _call_stripe_checkout_api(
         raise RuntimeError(f"Stripe API 请求失败: {exc}") from exc
 
     if resp.status_code >= 400:
-        error_body = resp.text[:500]
+        error_body = resp.text[:200]
         logger.error("Stripe 创建 Session 失败: HTTP %s | %s", resp.status_code, error_body)
         raise RuntimeError(f"Stripe 创建 Session 失败 HTTP {resp.status_code}")
 

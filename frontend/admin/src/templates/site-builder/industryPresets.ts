@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 行业默认文案包 — 模板切换 / AI 同步时补全空字段 */
 
 import type { SiteBuilderTemplateId, SiteContentSnapshot } from './types';

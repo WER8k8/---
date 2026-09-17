@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """WhatsApp Business Cloud API 路由 — FIX-54"""
 
 from typing import Optional
@@ -13,6 +15,7 @@ from app.services.ubrain.whatsapp_business_service import (
     whatsapp_outreach_service,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/whatsapp", tags=["获客·WhatsApp"])
 
 

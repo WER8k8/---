@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户到期续费提醒 — 飞书 + 邮件，幂等按到期日去重。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """XRoPE (Cross-attention Rotary Position Embedding) 时空三维统一位置编码器。
 
 基于复旦大学 MOSS-VL 核心技术报告 (arXiv 2608.15045)，

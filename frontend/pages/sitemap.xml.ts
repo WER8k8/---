@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { defineEventHandler, setHeader } from 'h3';
 import { SITE_CONFIG } from '~/config/site';
 

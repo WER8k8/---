@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** AI 爬虫 UA 识别 — 对标 Edge GEO Middleware，适配 Nuxt Nitro */
 
 const AI_CRAWLER_PATTERNS: Array<{ family: string; re: RegExp }> = [

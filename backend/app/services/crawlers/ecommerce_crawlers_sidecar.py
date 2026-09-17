@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ECommerceCrawlers Sidecar — 外置 Python 爬虫 Worker HTTP 网关。"""
 
 from __future__ import annotations

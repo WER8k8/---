@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """site_content ↔ 旧版 brand 字段桥接（公开站与编辑器兼容）。"""
 
 from __future__ import annotations

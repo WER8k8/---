@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """全媒体工作室能力注册表 — ASR / 剪辑适配器 / TTS，供前端枢纽页与运维探测。"""
 
 from __future__ import annotations

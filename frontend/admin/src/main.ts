@@ -1,8 +1,12 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 /** Ant Design Vue 4：组件样式走 CSS-in-JS，全局仅需 reset */
 import 'ant-design-vue/dist/reset.css';
 import './styles/design-tokens-v3.scss';
+import './styles/adaptive-tokens.scss';
 import './styles/mint-glass-shell.scss';
 import './styles/shell-theme-dark.scss';
 import './styles/coachpro-mint-motion.scss';
@@ -21,6 +25,9 @@ const app = createApp(App);
 app.use(createPinia());
 initUiPreferencesWatch();
 app.use(router);
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  (window as unknown as { __ROUTER__: typeof router }).__ROUTER__ = router;
+}
 
 void useAuthStore().ensureAuthInitialized();
 

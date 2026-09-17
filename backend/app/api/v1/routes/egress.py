@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """静态 IP 槽位与浏览器指纹 API"""
 
 from typing import Any, Optional

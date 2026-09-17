@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GitHub 生态侦察 — 代用户翻找开源项目，映射系统短板，推送 PM Inbox（不自动安装）。
 
 研究员/ECC 职责：按 catalog 缺口 + 关键词搜索 GitHub，去重已收录 curated，

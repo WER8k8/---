@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 心跳调度引擎。
 
 以 daemon 线程定时扫描所有 heartbeat_enabled=True 且到期的 Agent，

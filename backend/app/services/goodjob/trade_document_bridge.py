@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """trade-documents 桥 · 单证生成委派 GoodJob（批次 B）.
 
 设计出处：uj-annex-integration-design §10.18（六件套缺口扫描）/ §10.19。
@@ -102,3 +104,46 @@ def poll_document_task(
 ) -> ExecutionResult | None:
     """查询单证任务结果；result_ref 指向 GoodJob 侧单据/请求引用。"""
     return executor.poll(idempotency_key)
+
+
+def submit_stage_sync_task(
+    executor: GoodJobExecutor,
+    *,
+    tenant_id: str,
+    order_id: str,
+    stage: str,
+    step_number: int = 1,
+    status: str = "in_progress",
+    payload: Mapping[str, Any] | None = None,
+) -> str | None:
+    """向 GoodJob 提交外贸7步履约生命周期状态同步任务。"""
+    if not executor.enabled:
+        return None
+    tenant_id = str(tenant_id or "").strip()
+    if not tenant_id:
+        raise ValueError("履约阶段同步缺 tenant_id（多租户隔离红线）")
+    order_id = str(order_id or "").strip()
+    if not order_id:
+        raise ValueError("履约阶段同步缺 order_id")
+    stage = str(stage or "").strip()
+    sync_payload = {
+        "order_id": order_id,
+        "stage": stage,
+        "step_number": int(step_number),
+        "status": status,
+        "details": dict(payload or {}),
+        "synced_at": _now_iso(),
+    }
+    idempotency_key = f"gj-stage:{tenant_id}:{order_id}:{stage}:{step_number}"[:_KEY_MAX_LEN]
+    package = TaskPackage(
+        tenant_id=tenant_id,
+        idempotency_key=idempotency_key,
+        lease_ttl=_LEASE_TTL_SECONDS,
+        checkpoint="v1",
+        budget={"max_retries": 1},
+    )
+    from app.orchestration.executors.goodjob_executor import TASK_TYPE_STAGE_SYNC
+    return executor.submit(
+        package, task_type=TASK_TYPE_STAGE_SYNC, payload=sync_payload
+    )
+

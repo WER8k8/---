@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Tavily 外网 AI/SEO 新闻搜索（RADAR-09）。"""
 
 from __future__ import annotations

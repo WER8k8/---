@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * S0 · Stub 可见性矩阵（PM-01 / SAAS-01）
  * 策略：Hide | PlanGate | Lab | Kill
  */
@@ -31,7 +34,7 @@ export const CLIENT_STUB_RULES: StubRouteRule[] = [
   { path: '/client/egress', strategy: 'planGate', note: '出口 IP · Enterprise' },
   { path: '/client/ai-scenarios', strategy: 'planGate', note: 'AI 场景 · PlanGate' },
   { path: '/client/app', strategy: 'hide', note: '出海计 App 壳 · 非送检菜单' },
-  { path: '/client/copilot', strategy: 'hide', note: '卖货副驾研发中' },
+  { path: '/client/copilot', strategy: 'show', note: '卖货飞轮 · ECC 认证开放' },
 ]
 
 const CLIENT_HIDDEN = new Set(
@@ -119,6 +122,7 @@ export const PLATFORM_OPS_ALWAYS_VISIBLE: string[] = [
   '/admin/system/progress-board',
   '/admin/platform-zones',
   '/admin/platform-registry',
+  '/admin/platform-credentials',
   '/admin/file-manager',
 ]
 
@@ -135,7 +139,6 @@ export function isPlatformKilledPath(path: string): boolean {
 
 export const PLATFORM_LAB_PREFIXES = [
   '/admin/v2ray',
-  '/admin/annex',
   '/agent-hub',
   '/media-factory',
   '/admin/code-tools',
@@ -154,6 +157,13 @@ export const PLATFORM_LAB_PREFIXES = [
   '/tenants/product-showcase',
   '/tenants/white-label',
 ]
+
+/**
+ * 附属执行台（/admin/annex/*）不再列为 Lab：
+ * TradeAI 与 GoodJob 属 SYSTEM-LOCK-02 八大子系统，常态必须有可达入口，
+ * 藏在实验室开关后会让「子系统没入口」被误判成「子系统没设计」。
+ * 未部署时页面自身已有降级提示，不需要靠菜单隐藏来表达状态。
+ */
 
 export function isPlatformLabPath(path: string): boolean {
   const p = path.split('?')[0]

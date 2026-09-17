@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """agency-orchestrator YAML 工作流执行 — Hermes 驱动的 Python DAG 引擎。"""
 
 from __future__ import annotations

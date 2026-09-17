@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Pinia 状态管理统一导出
  *
  * 所有 store 必须通过此文件导出，组件统一从 '@/stores' import

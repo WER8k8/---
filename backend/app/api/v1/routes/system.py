@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """系统管理路由 - 整合版（合并 routes/system.py + system_routes.py）"""
 
 import logging
@@ -86,7 +88,6 @@ def health_check(db: Session = Depends(get_db)):
             "status": "healthy" if healthy else "degraded",
             "database": checks.get("database", "unknown"),
             "redis": checks.get("redis", "unknown"),
-            "environment": settings.ENVIRONMENT,
         }
     )
 

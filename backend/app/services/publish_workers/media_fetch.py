@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """将云视频 URL 拉到 Worker 本地路径（SAU / xhs-mcp 需要本地文件）。"""
 
 from __future__ import annotations

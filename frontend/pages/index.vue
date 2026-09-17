@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="b2b-home pt-14 sm:pt-16 lg:pt-20">
     <!-- hztyco / tingertech：顶栏联系 -->

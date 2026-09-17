@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 运维告警 — 飞书 Webhook（巡站 / 技术雷达 / 异常）。"""
 
 from __future__ import annotations

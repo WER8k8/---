@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Legacy APIResponse ↔ UAC 契约桥接（仅 BFF 层使用，不泄漏到 domain）"""
 
 from __future__ import annotations
@@ -41,7 +43,7 @@ def forward_success_or_legacy(result: Any, transform_data: Any = None) -> Any:
     """成功则包装 UAC 数据，保留 Cookie；失败则原样返回 legacy 响应。"""
     try:
         payload = unwrap_api_envelope(result)
-        logger.debug("forward_success_or_legacy: payload=%s", payload)
+        logger.debug("forward_success_or_legacy: code=%s data_keys=%s", payload.get("code"), list((payload.get("data") or {}).keys()))
         if payload.get("code") != 0:
             return result
         data = payload.get("data")

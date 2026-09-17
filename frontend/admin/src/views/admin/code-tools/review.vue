@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="代码审查" subtitle="代码质量检查和安全审计" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """平台发现与扩展 — 对照 catalog / live 适配器，持续拉高 GEO 覆盖面。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户 Profile 隔离（总纲 §4.7：每租户独立 Profile 防跨租户泄漏）。
 
 红线 1：Profile 路径不可越界（任何 resolve 调用必须落在 config 根目录之下）；

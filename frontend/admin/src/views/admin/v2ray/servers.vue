@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="V2RayN 服务器配置" subtitle="V2Ray / Xray 服务器节点管理" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 进化引擎数据模型。
 
 存储进化闭环产生的所有数据：任务执行记录、经验条目、Skill/SOP版本、

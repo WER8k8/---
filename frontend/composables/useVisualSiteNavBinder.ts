@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 可视化站点多页导航：开发预览时保留 __tenant 查询参数 */
 
 export function bindVisualSiteNavLinks(root: HTMLElement | null | undefined): () => void {

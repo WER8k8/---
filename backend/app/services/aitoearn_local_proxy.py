@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AiToEarn MCP 本地代理 — 离线回退 + 缓存层。
 
 当 AiToEarn 云端服务不可用时，提供：

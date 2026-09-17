@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="products-page">
     <!-- Hero Section -->
@@ -357,9 +360,20 @@ watch([selectedCategory, searchQuery], () => {
   currentPage.value = 1;
 });
 
+// SSR 预取数据确保 Google 爬虫首屏抓取到完整内容
+await useAsyncData('initial-products', async () => {
+  await Promise.all([
+    productStore.fetchCategories(),
+    productStore.fetchProducts(),
+  ]);
+  return true;
+});
+
 onMounted(async () => {
-  await productStore.fetchCategories();
-  await productStore.fetchProducts();
+  if (productStore.products.length === 0) {
+    await productStore.fetchCategories();
+    await productStore.fetchProducts();
+  }
 });
 
 useHead({
@@ -370,7 +384,36 @@ useHead({
       content: computed(() => t('products.seo.desc')),
     },
     { name: 'keywords', content: computed(() => t('products.seo.keywords')) },
+    { property: 'og:title', content: computed(() => t('products.seo.title')) },
+    { property: 'og:description', content: computed(() => t('products.seo.desc')) },
+    { property: 'og:type', content: 'website' },
   ],
+  script: computed(() => {
+    const items = productStore.products.slice(0, 20).map((p, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: p.name,
+      url: `${SITE_CONFIG.url}/products/${p.slug}`,
+      image: p.image_url || `${SITE_CONFIG.url}${SITE_CONFIG.productDefaultImage}`,
+    }));
+
+    return [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: t('products.title'),
+          description: t('products.subtitle'),
+          url: `${SITE_CONFIG.url}/products`,
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: items,
+          },
+        }),
+      },
+    ];
+  }),
 });
 </script>
 

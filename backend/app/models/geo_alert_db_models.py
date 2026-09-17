@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO Alert Models - SQLAlchemy 模型
 GEO 专用预警系统，与现有 alert.py (AlertRule/AlertEvent) 并存
 新表名：geo_alert_rules, geo_alerts, geo_alert_histories

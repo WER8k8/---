@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, Text, DateTime, Boolean, Integer, ForeignKey, Index

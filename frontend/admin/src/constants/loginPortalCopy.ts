@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * LOGIN-LOCK-01 · 平台超管唯一登录入口
  *
  * 硬锁契约：../../.project/login-entry-lock.json

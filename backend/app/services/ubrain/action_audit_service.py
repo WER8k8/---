@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Accio A5：UBrain / 对外动作审计（不含真实 SMTP 外发本身）。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Merchant Profiles API Router - 商家资料API
 """
@@ -11,7 +13,8 @@ from app.core.response import success_response
 from app.models.merchant_profile import MerchantProfile
 from app.models.user import User
 
-router = APIRouter(prefix="/api/v1/merchant-profiles", tags=["merchant-profiles"])
+ROUTE_PREFIX = ""
+router = APIRouter(prefix="/merchant-profiles", tags=["merchant-profiles"])
 
 
 @router.post("/", response_model=dict)

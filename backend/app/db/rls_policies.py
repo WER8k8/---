@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RLS 试点策略（总纲 §8 088_rls_pilot，轮 25-A）。
 
 目标：6 张高风险表加 RLS + 连接池 checkout/checkin 钩子，P2 剩余一半。

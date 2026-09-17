@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 超级管理员工作台能力项（与路由 path 对齐，供按级别划拨与过滤） */
 
 export type WorkbenchTone =

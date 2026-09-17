@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Browser Runtime（P5）— Playwright + CDP 浏览器执行层（总纲 §4.7）。
 
 本轮 25-B 仅落地骨架（runtime 核心 + 租户 Profile 隔离 + 证据回传 + Policy 闸门），

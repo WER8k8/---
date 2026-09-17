@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
 
   <nav class="yd-finance-nav" aria-label="财务子模块导航">

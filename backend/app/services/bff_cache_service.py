@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """BFF 首屏缓存 — Redis 优先，开发环境内存兜底（Phase 4 / T-ARCH-2）。"""
 
 from __future__ import annotations

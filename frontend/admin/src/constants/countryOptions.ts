@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 国家/地区选项（ISO 代码 + 中文名，无国旗 emoji） */
 export const COUNTRY_OPTIONS = [
   { value: 'US', label: '美国' },

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户 RAG 销售话术 — 禁止脱离授权区间报价。"""
 
 from __future__ import annotations

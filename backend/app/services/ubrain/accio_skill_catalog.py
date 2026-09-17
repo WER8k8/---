@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AccioWork 39+ 技能包对标目录（本系统实现状态）。"""
 
 from __future__ import annotations

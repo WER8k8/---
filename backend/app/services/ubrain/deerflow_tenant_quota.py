@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 租户套餐/配额 — 定时市场研究仅对符合条件的租户。"""
 
 from __future__ import annotations

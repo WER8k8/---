@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开户第三方账号 / 云存储 — 注册与实名流程编排（平台代开 vs 客户自备）。"""
 
 from __future__ import annotations

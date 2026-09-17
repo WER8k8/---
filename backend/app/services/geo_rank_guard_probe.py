@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO Rank Guard 探针 — 司令部 / Celery / Hermes 告警共用。"""
 
 from __future__ import annotations

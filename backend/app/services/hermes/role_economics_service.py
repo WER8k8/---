@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """211 专家变现契约 — 每位角色须有赚钱路径，否则不得摸金上场。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SKILL 插槽适配器：读取磁盘 SKILL.md 标准包。"""
 
 from __future__ import annotations

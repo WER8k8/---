@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="客户开户" subtitle="提交开户并生成收款二维码" surface="elevated">
   <div class="agent-account-opening coachpro-tertiary coachpro-tertiary--agent">

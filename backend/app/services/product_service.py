@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """产品服务层"""
 
 import os
@@ -14,6 +16,15 @@ from app.repositories.product_repository import (CategoryRepository,
 from app.repositories.user_repository import OperationLogRepository
 from app.schemas.product import (CategoryCreate, CategoryTreeResponse,
                                  CategoryUpdate, ProductCreate, ProductUpdate)
+
+
+def _is_valid_uuid(s: str) -> bool:
+    """非法 UUID 字符串直接查 PG UUID 列会抛 DataError→500，先挡成 404。"""
+    try:
+        uuid.UUID(s)
+        return True
+    except ValueError:
+        return False
 
 
 class CategoryService:
@@ -159,6 +170,8 @@ class ProductService:
 
     def get_product(self, product_id: str) -> Optional[Product]:
         """获取单个产品"""
+        if not _is_valid_uuid(product_id):
+            return None
         return self.product_repo.get_by_id(product_id)
 
     def get_product_by_slug(self, slug: str) -> Optional[Product]:

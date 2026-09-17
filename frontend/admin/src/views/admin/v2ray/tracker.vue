@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="版本跟踪" subtitle="v2rayN 开源项目 · 每6小时自动检查 · GitHub Releases 热更新" surface="elevated">
     <template #actions>

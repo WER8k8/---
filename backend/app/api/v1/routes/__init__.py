@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """API v1 路由模块汇聚层。
 
 已通过 FIX-30 auto_discovery 机制实现了完全的自动路由注册。
@@ -5,17 +7,10 @@
 """
 from pathlib import Path
 from fastapi import APIRouter
-from app.core.response import success_response
 from app.api.v1.routes.auto_discovery import auto_register_routes
 
 router = APIRouter(prefix="/v1")
 
-@router.get("/health", tags=["系统"])
-def v1_health():
-    """API v1 根级健康检查（便于网关探测 `/api/v1/health`）"""
-    return success_response(data={"status": "ok"})
-
-# 自动扫描并挂载所有路由。
 # 注意：不在包 __init__ 执行期直接调用 auto_register_routes，否则会因循环 import
 # （路由子模块回引 app.api.v1.routes / app.main 等尚未完成初始化的包）导致逐模块导入
 # 被静默跳过，最终业务路由全部丢失（仅剩 /v1/health）。
@@ -38,7 +33,23 @@ def register_routes():
     import logging
 
     # 1) 扫描 routes/ 子目录（FIX-30 auto_discovery 原有范围）
-    count_routes = auto_register_routes(router, exclude_modules={"metrics"})
+    #    exclude ab_test：routes/ab_test.py 为假桩（硬编码空数据不查库），
+    #    真实实现是顶层 app.api.v1.ab_test（17 端点，前端 pause/complete/variants/stats 全靠它）。
+    count_routes = auto_register_routes(router, exclude_modules={"metrics", "ab_test", "invoice_applications"})
+
+    # 2c) invoice_applications 含 client_router/finance_router 双子路由（自带 /client /finance 前缀），
+    #     不能走 auto_discovery 的模块名前缀自动包装，否则双前缀；照 admin_bff 先例显式并入。
+    try:
+        from app.api.v1.routes.invoice_applications import (
+            client_router as invoice_client_router,
+            finance_router as invoice_finance_router,
+        )
+
+        router.include_router(invoice_client_router)
+        router.include_router(invoice_finance_router)
+        logging.getLogger(__name__).info("FIX-30: 已挂载 invoice_applications client/finance 双子路由")
+    except Exception as _inv_exc:  # noqa: BLE001
+        logging.getLogger(__name__).error("FIX-30: 挂载 invoice_applications 失败: %s", _inv_exc)
 
     # 2) 手动挂载 admin_bff（它是子包，auto_discovery 不会扫子包；且 prefix/tags 内部自管）
     from app.api.v1.admin_bff import router as admin_bff_router
@@ -62,13 +73,33 @@ def register_routes():
         logging.getLogger(__name__).info("P0-02: 已挂载 super_admin 子包（prefix=/super-admin）")
     except Exception as _sa_exc:  # noqa: BLE001
         logging.getLogger(__name__).error("P0-02: 挂载 super_admin 子包失败: %s", _sa_exc)
+    try:
+        from app.api.v1.marketing import router as marketing_router
+        router.include_router(marketing_router)
+        logging.getLogger(__name__).info("MarTech: 已挂载 marketing 子包")
+    except Exception as _mkt_exc:  # noqa: BLE001
+        logging.getLogger(__name__).error("MarTech: 挂载 marketing 子包失败: %s", _mkt_exc)
+    try:
+        from app.api.v1.geo import router as geo_router
+        router.include_router(geo_router)
+        logging.getLogger(__name__).info("GEO: 已挂载 geo 子包")
+    except Exception as _geo_exc:  # noqa: BLE001
+        logging.getLogger(__name__).error("GEO: 挂载 geo 子包失败: %s", _geo_exc)
 
     # 3) 扫描 app.api.v1 顶层散落 .py 模块（不在 routes/ 下的独立文件）
-    #    显式排除：routes（已扫）、admin_bff（已手动）、ai/chat/seo/super_admin/system（子包）
+    #    显式排除：routes（已扫）、admin_bff（已手动）、ai/chat/seo/super_admin/system/marketing/geo（子包）
     from app.api.v1.routes.auto_discovery import _resolve_domain_tag as _domain_tag
     _TOP_LEVEL_EXCLUDE = {
-        "routes", "admin_bff", "ai", "chat", "seo", "super_admin", "system",
+        "routes", "admin_bff", "ai", "chat", "seo", "super_admin", "system", "marketing", "geo",
         "__init__",  # 包初始化文件，无 router
+        # 重复实现：routes/ 下已有权威版本（routes.analytics 11 路由 / routes.users
+        # 覆盖全部用户端点），顶层文件仅保留模型供 import，路由不再注册。
+        "analytics", "users",
+        # routes/ 权威版已服务前端全部调用（含 /products/popular、/products/slug/{slug}、
+        # /content/pages/stats、/content/pages/upload-image、/content/seo/{type}/{id}）。
+        # 顶层独有端点（by-slug、pages/export、seo/page/{id} 等）零调用方或已被
+        # routes/ 泛化模式遮蔽（seo/page/{id} → seo/{resource_type}/{resource_id}），不再注册。
+        "content", "products",
     }
     import importlib, pkgutil
     top_count = 0

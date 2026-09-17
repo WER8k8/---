@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """全球累计（周/月/年）+ 摸金打江山人格（羞耻感·奋发图强·比上次更强）。"""
 
 from __future__ import annotations

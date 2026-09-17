@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出海参谋海关数据 — 每周定时从 Comtrade 刷新。"""
 
 from __future__ import annotations

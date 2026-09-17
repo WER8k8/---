@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="任务调度备忘" subtitle="记录 Cron 表达式与说明（本地草案）" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 任务队列：入队、执行、轮询（Phase 1 进程内执行，可接 cron）。"""
 
 from __future__ import annotations
@@ -235,6 +237,41 @@ def _run_matrix_publish(db: Session, job: DeerflowJob, payload: dict[str, Any]) 
     )
 
 
+def run_subtask_intent(
+    db: Session,
+    job: DeerflowJob,
+    payload: dict[str, Any],
+    *,
+    intent: str,
+) -> dict[str, Any]:
+    """把一个 intent 交给 DeerFlow SubTaskExecutor 执行，与计划路径共用同一实现。
+
+    存在理由：市场洞察 / 供应商比较这类能力既要能被编排计划调用，
+    也要能被 UBrain 异步入队直接调用。两处各写一份必然走偏，故统一走执行器。
+    """
+    from app.services.deerflow.executor import SubTaskExecutionError, SubTaskExecutor
+    from app.services.deerflow.planner import SubTask
+
+    params = {k: v for k, v in (payload or {}).items() if k != "context"}
+    subtask = SubTask(
+        title=f"{job.intent} (job={job.id})",
+        intent=intent,
+        agent_ref=str(params.get("agent_ref") or ""),
+        parameters=params,
+    )
+    executor = SubTaskExecutor(db=db, job=job)
+    result = executor.execute_subtask(subtask)
+    if not result.success:
+        raise SubTaskExecutionError(
+            f"{intent} 执行失败: {result.error or '未知原因'}",
+            subtask_id=subtask.id,
+            result=result,
+        )
+    output = dict(result.output or {})
+    output.setdefault("intent", intent)
+    return output
+
+
 def _dispatch_intent(db: Session, job: DeerflowJob, payload: dict[str, Any]) -> dict[str, Any]:
     """按 job.intent 分发执行具体业务，返回结果 dict；不支持的 intent 抛 ValueError。
 
@@ -269,6 +306,10 @@ def _dispatch_intent(db: Session, job: DeerflowJob, payload: dict[str, Any]) -> 
             tenant_id=str(job.tenant_id),
             message=str(payload.get("message") or "蓝海市场研究"),
         )
+    elif job.intent in ("market_insight", "supplier_compare"):
+        # 对标 Accio Work 的结构化市场洞察与横向比价：复用 SubTaskExecutor，
+        # 与 DeerFlow 计划路径共用同一个 intent 实现（不另开一份逻辑）。
+        result = run_subtask_intent(db, job, payload, intent=job.intent)
     elif job.intent == "flywheel_loop":
         from app.services.hermes.flywheel_workflow import run_closed_loop_flywheel
         result = run_closed_loop_flywheel(

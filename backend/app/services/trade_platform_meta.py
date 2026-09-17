@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """外贸平台分类元数据 — 注册 / 开户指引展示用。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """n8n Webhook 接收服务。
 
 接收 n8n 工作流的回调请求，提供：

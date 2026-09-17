@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """旺财统一入口 — 公开站与开户向导必须同源。
 
 V1.9+：WangcaiRouter 总编排接入（阶段 1，不依赖 LLM）：

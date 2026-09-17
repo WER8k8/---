@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """潜客线索 4 维评分服务（匹配度 / 邮箱可信度 / 证据完整度 / 联系人完整度）。"""
 
 from __future__ import annotations

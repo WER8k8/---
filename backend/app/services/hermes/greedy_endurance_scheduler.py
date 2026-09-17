@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """7×24 持久耐力赛调度 — 每小时检查 30 天擂台是否满期并轮转。"""
 
 from __future__ import annotations

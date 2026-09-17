@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 HTTPS证书配置和SSL中间件
 支持Let's Encrypt自动证书管理

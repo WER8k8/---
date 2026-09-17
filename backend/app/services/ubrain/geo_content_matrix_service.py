@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO/SEO 内容矩阵 — 借鉴 agency-orchestrator seo-content-matrix + content-pipeline DAG。
 
 上游：关键词 → 策略 → 母版成稿 → SEO 审 → 多平台变体

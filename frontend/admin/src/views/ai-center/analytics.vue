@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="ai-analytics" title="智能分析" subtitle="SEO 分析 · 转化漏斗 · 用户行为分析" surface="elevated">
     <template #actions>

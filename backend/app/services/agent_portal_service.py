@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """代理业绩看板 — 聚合租户、支付、财务台账与分润结算。"""
 
 from __future__ import annotations

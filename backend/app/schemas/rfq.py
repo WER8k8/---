@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RFQ 请求 / 响应 Pydantic 模型 — 买家需求单（B2B 询价）。"""
 
 from __future__ import annotations

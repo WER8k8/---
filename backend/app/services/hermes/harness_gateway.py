@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeepSeek Harness Gateway —— 最外层意图入口（接真实拆解器）。
 
 ⚠️ 本文件此前是**桩**：`intent` 硬编码为 `"inferred_from_harness"`、

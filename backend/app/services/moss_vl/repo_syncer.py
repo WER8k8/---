@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL 官方开源仓库自动化同步与环境检测工具。"""
 
 from __future__ import annotations

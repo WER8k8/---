@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """缓存工具模块 — FIX-24: 三级缓存架构
 
 L1: 进程内 LRU（<1ms，容量 1000 条，TTL 30s）

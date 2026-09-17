@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="升级后可使用该能力" surface="elevated">
   <div class="plan-gate-page coachpro-tertiary coachpro-tertiary--client">

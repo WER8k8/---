@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """设备指纹 + 授权码 + 套餐订单 服务（P1-5）。"""
 
 from __future__ import annotations

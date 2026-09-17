@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow ↔ Accio 商业 OS：研究洞察、编排执行、效果回流。"""
 
 import uuid

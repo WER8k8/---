@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="industry-hub-page min-h-screen bg-surface">
     <section class="bg-gradient-to-br from-primary/5 via-surface to-accent/5 py-12 sm:py-16 lg:py-20">

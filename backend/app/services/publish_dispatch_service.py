@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO 矩阵图文发布：平台适配器 + PublishService 异步回退。"""
 
 from __future__ import annotations
 
 import asyncio
+import re
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -22,6 +25,9 @@ _NAME_ADAPTER_IMPORTS: dict[str, tuple[str, str]] = {
     "微博": ("app.services.platforms.weibo", "WeiboPublisherAdapter"),
     "头条号": ("app.services.platforms.toutiao", "ToutiaoPublisherAdapter"),
     "CSDN": ("app.services.platforms.csdn", "CSDNPublisherAdapter"),
+    "Alibaba.com": ("app.services.platforms.b2b_global", "AlibabaPublisherAdapter"),
+    "Made-in-China.com": ("app.services.platforms.b2b_global", "MadeInChinaPublisherAdapter"),
+    "Global Sources": ("app.services.platforms.b2b_global", "GlobalSourcesPublisherAdapter"),
 }
 
 # 平台名 → PublishService PUBLISHER_MAP 键
@@ -35,7 +41,41 @@ _NAME_PUBLISHER_KEY: dict[str, str] = {
     "LinkedIn": "linkedin",
     "Twitter": "twitter",
     "TikTok": "douyin",
+    "X": "twitter",
+    "Telegram Channel": "telegram",
+    "WhatsApp": "whatsapp_business",
+    # 中文平台名 slug 化后为空，只能靠这里的显式映射；缺失即解析失败（宁缺不借）。
+    "微信公众号": "wechat",
+    "头条号": "toutiao",
+    "知乎": "zhihu",
+    "微博": "weibo",
+    "微信视频号": "wechat_channels",
+    "企鹅号": "qieehao",
+    "网易号": "wangyi_hao",
+    "搜狐号": "sohu_hao",
+    "一点资讯": "yidianzixun",
+    "大鱼号": "dayuhao",
+    "简书": "jianshu",
+    "脉脉": "maimai",
+    "淘宝逛逛": "taobao_guangguang",
+    "1688": "ali1688",
+    "慧聪网": "huizhong",
 }
+
+
+def _name_slug_key(name: str) -> str:
+    """平台显示名 → PUBLISHER_MAP 键（仅当该键真的存在时）。
+
+    例：Reddit → reddit、Medium → medium、VK → vk。命中不了返回空串，交由调用方判失败。
+    """
+    slug = re.sub(r"[^a-z0-9]+", "_", str(name or "").strip().lower()).strip("_")
+    if not slug:
+        return ""
+    candidates = (slug, slug.replace("_", "-"), slug.replace("-", "_"))
+    for candidate in candidates:
+        if candidate in PUBLISHER_MAP:
+            return candidate
+    return ""
 
 
 def _load_name_adapters() -> dict[str, type]:
@@ -65,24 +105,47 @@ def publisher_key_for_platform(platform: Platform) -> str:
 
 
 def _publisher_key(platform: Platform) -> str:
-    """_publisher_key。
+    """平台 → PublishService 的 PUBLISHER_MAP 键；解析不出返回空串。
 
-    参数说明：
-    :param platform: 参数 platform
-    :return: 返回处理结果。
+    历史 P0：末尾曾以 ``return "zhihu"`` 兜底，导致 Alibaba.com / Reddit / Medium 等
+    30 个无键平台全部解析成 zhihu，而 zhihu 在 PUBLISHER_MAP 里是真 ZhihuPublisher，
+    于是「发海外平台」实际会把内容发到知乎。现在宁缺不借：返回空串，由调用方判失败
+    （见 publish_service.py:1055「禁止借用 ZhihuPublisher 占位假发」）。
+
+    P1 补刀（09-13）：曾保留的 ``platform_type`` 兜底是同一个 bug 的另一半，实测误路由：
+      · 微信视频号(type=wechat) → wechat = WeChatPublisher（微信公众号发布器）→ 串号真发
+      · 头条号(type=byte) → douyin，而 douyin 在 STUB_PUBLISHER_KEYS 里，
+        于是 publish_block_reason 先把「有真适配器」的头条号判成未接入，图文永远发不出去
+      · 大鱼号(type=byte) → douyin，同理被冒名挡下
+    现在只认两件事：显式平台名映射、以及平台名本身能 slug 成真实存在的键。
+    platform_type 是粗分类（wechat/byte/social/b2b…），不允许再当作发布器键。
     """
-    if platform.name in _NAME_PUBLISHER_KEY:
-        key = _NAME_PUBLISHER_KEY[platform.name]
+    name = str(getattr(platform, "name", "") or "").strip()
+    if name in _NAME_PUBLISHER_KEY:
+        key = _NAME_PUBLISHER_KEY[name]
         if key in PUBLISHER_MAP:
             return key
-    ptype = (platform.platform_type or "").strip().lower()
-    if ptype in PUBLISHER_MAP:
-        return ptype
-    if ptype == "video":
-        return "youtube"
-    if ptype == "byte":
-        return "douyin"
-    return "zhihu"
+    return _name_slug_key(name)
+
+
+def _require_publisher_key(platform: Platform, pub_key: str) -> str:
+    """无发布器键 → 明确失败，绝不改投其它平台。"""
+    if not pub_key:
+        raise RuntimeError(
+            f"PLATFORM_NOT_IMPLEMENTED: {platform.name} 尚无可用发布器"
+            "（PUBLISHER_MAP 无对应键，且未提供平台适配器），不会代发至其它平台"
+        )
+    return pub_key
+
+
+def _note_publish_auth_failure(db: Session, account: PlatformAccount, error_text: str) -> None:
+    """发布报鉴权失败时，顺手把账号置为 expired（PC-04）。"""
+    from app.services.platform_session_patrol_service import note_publish_failure
+
+    try:
+        note_publish_failure(db, account, error_text, commit=True)
+    except Exception:  # noqa: BLE001 — 巡检回写失败绝不影响发布结果传播
+        return
 
 
 def _content_payload(content: GeneratedContent) -> dict[str, Any]:
@@ -171,7 +234,11 @@ class SeoPublishService:
         adapters = _load_name_adapters()
         adapter_cls = adapters.get(platform.name)
         if adapter_cls is not None:
-            url = adapter_cls(self.db).publish(platform, account, gc)
+            try:
+                url = adapter_cls(self.db).publish(platform, account, gc)
+            except Exception as exc:  # noqa: BLE001 — 原样抛出，只顺手记一次会话失效
+                _note_publish_auth_failure(self.db, account, f"{type(exc).__name__}: {exc}")
+                raise
             if not (url or "").strip():
                 raise RuntimeError(f"{platform.name} 发布未返回作品链接，视为失败")
             return url
@@ -184,8 +251,14 @@ class SeoPublishService:
             "video_url": content.get("video_url") or "",
             "tags": content.get("tags") or [],
         }
+        _require_publisher_key(platform, pub_key)
         result = asyncio.run(self._async_svc.publish(pub_key, payload))
         if result.get("status") != "success":
+            _note_publish_auth_failure(
+                self.db,
+                account,
+                result.get("error_message") or result.get("error_code") or "",
+            )
             raise RuntimeError(result.get("error_message") or f"发布到 {platform.name} 失败")
         url = (result.get("platform_post_url") or "").strip()
         if not url and not (result.get("platform_post_id") or "").strip():
@@ -220,14 +293,24 @@ class SeoPublishService:
         adapter_cls = adapters.get(platform.name)
         if adapter_cls is not None:
             adapter = adapter_cls(self.db)
-            url = adapter.publish(platform, account, content)
+            try:
+                url = adapter.publish(platform, account, content)
+            except Exception as exc:  # noqa: BLE001 — 原样抛出，只顺手记一次会话失效
+                _note_publish_auth_failure(self.db, account, f"{type(exc).__name__}: {exc}")
+                raise
             if not (url or "").strip():
                 raise RuntimeError(f"{platform.name} 发布未返回作品链接，视为失败")
             return url
 
         pub_key = _publisher_key(platform)
+        _require_publisher_key(platform, pub_key)
         result = asyncio.run(self._async_svc.publish(pub_key, _content_payload(content)))
         if result.get("status") != "success":
+            _note_publish_auth_failure(
+                self.db,
+                account,
+                result.get("error_message") or result.get("error_code") or "",
+            )
             raise RuntimeError(result.get("error_message") or f"发布到 {platform.name} 失败")
         url = (result.get("platform_post_url") or "").strip()
         if not url and not (result.get("platform_post_id") or "").strip():

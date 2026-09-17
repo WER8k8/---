@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Plan Gate — 套餐功能校验（BE-04）
 
 边界：只读 tenant.plan + plan_catalog；不修改租户状态。

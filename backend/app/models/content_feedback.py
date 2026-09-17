@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Content Feedback Loop — DB models for feedback checks and industry patterns.
 
 Tables:

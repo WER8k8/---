@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated">
   <div class="client-dashboard tenant-theme coachpro-tertiary coachpro-tertiary--client">
@@ -35,154 +38,126 @@
     />
 
     <section class="kpi-grid">
-      <YdStatsCard label="今日询盘" :value="stats[0].value" hint="24 小时内新增" tone="blue" compact />
-      <YdStatsCard label="待处理询盘" :value="stats[1].value" hint="建议优先电话跟进" tone="amber" compact />
-      <YdStatsCard label="产品数量" :value="stats[2].value" hint="在售 + 草稿" tone="green" compact />
-      <YdStatsCard label="关键词覆盖" :value="stats[3].value" hint="SEO / GEO 词包" tone="purple" compact />
+      <YdStatsCard label="今日海外询盘" :value="stats[0].value" hint="24 小时内全网新增" compact />
+      <YdStatsCard label="待响应商机" :value="stats[1].value" hint="建议 30 分钟内 WhatsApp 直连" compact />
+      <YdStatsCard label="品类规格建模" :value="stats[2].value" hint="外贸在售与产业带候选" compact />
+      <YdStatsCard label="全球关键词矩阵" :value="stats[3].value" hint="Google SEO / GEO 国际词包" compact />
     </section>
 
     <p v-if="dataHonestyNote" class="honesty-note">{{ dataHonestyNote }}</p>
 
-    <section v-if="funnelSteps.length" class="panel uj-glass-panel funnel-panel">
-      <header class="funnel-head">
-        <h3>卖货漏斗</h3>
-        <p class="funnel-note">基于账户真实询盘与发布记录，非示意图</p>
-        <a-button size="small" type="link" @click="router.push('/client/inquiries')">去询盘跟进</a-button>
-      </header>
-      <div v-for="step in funnelSteps" :key="step.key" class="funnel-row">
-        <span class="funnel-label">{{ step.label }}</span>
-        <div class="funnel-track">
-          <div class="funnel-fill" :style="{ width: `${step.pct}%` }" />
-        </div>
-        <span class="funnel-count">{{ step.count }}</span>
-      </div>
-    </section>
-
-    <section
-      v-if="journeyHealth && journeyHealth.score_pct != null && journeyHealth.score_pct < 100"
-      class="panel uj-glass-panel journey-health-panel"
-    >
-      <header class="journey-head">
-        <div>
-          <h3>开户主链健康度</h3>
-          <p class="journey-sub">
-            主链 {{ journeyHealth.critical_done }}/{{ journeyHealth.critical_total }}
-            （{{ journeyHealth.score_pct }}%）· 完成度 {{ journeyHealth.checklist_done }}/{{ journeyHealth.checklist_total }}
-          </p>
-        </div>
-        <a-button
-          v-if="journeyHealth.next_action?.route"
-          size="small"
-          type="primary"
-          @click="router.push(journeyHealth.next_action.route)"
-        >
-          {{ journeyHealth.next_action.title || '继续开户' }}
-        </a-button>
-      </header>
-      <ul v-if="journeyInsight.length" class="journey-insights">
-        <li v-for="item in journeyInsight" :key="item.role">
-          <span class="journey-role">{{ item.label }}</span>
-          <p>{{ item.insight }}</p>
-          <small v-if="item.action">{{ item.action }}</small>
-        </li>
-      </ul>
-      <p v-if="tradeDisclaimer" class="journey-disclaimer">{{ tradeDisclaimer }}</p>
-    </section>
-
-    <JtbdSiteChecklist
-      v-if="jtbdChecklist.length && jtbdIncomplete"
-      :items="jtbdChecklist"
-      class="mb-4"
-    />
-
-    <section v-if="onboardingRoadmap.length && roadmapIncomplete" class="panel uj-glass-panel roadmap-panel">
-      <OnboardingPlainRoadmap :phases="onboardingRoadmap" title="开户还要做的事" />
-      <div v-if="onboardingGuides.length" class="guide-links">
-        <p class="guide-links__label">配置帮助（点开就能做）</p>
-        <div class="roadmap-actions">
-          <a-button
-            v-for="g in onboardingGuides"
-            :key="g.id"
-            size="small"
-            @click="router.push(g.route || '/client/onboarding')"
-          >
-            {{ g.title }}
-          </a-button>
-        </div>
-      </div>
-      <div class="roadmap-actions">
-        <a-button size="small" type="primary" @click="router.push('/client/onboarding')">打开开通向导</a-button>
-        <a-button size="small" @click="router.push('/client/distribute')">去绑平台发视频</a-button>
-      </div>
-    </section>
-
-    <YdOnboardingCard
-      v-if="onboardingSteps.length"
-      class="client-dashboard__onboarding"
-      :steps="onboardingSteps"
-      cta-label="继续下一步 →"
-    />
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-      <div class="lg:col-span-2">
+    <!-- 核心业务中心：左 70% 询盘与外贸转化漏斗 + 右 30% 独立站与出海进展 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6">
+      <div class="lg:col-span-2 space-y-6">
+        <!-- 1. 最新买家询盘 (第一优先级) -->
         <div class="panel uj-glass-panel p-5">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-base font-bold text-gray-900">最新询盘</h2>
-            <a class="text-xs text-primary-600 hover:underline" href="/client/inquiries">查看全部 →</a>
+            <div>
+              <h2 class="text-base font-bold text-slate-900">最新海外买家询盘</h2>
+              <p class="text-xs text-slate-500 mt-0.5">直接关联西方采购决策流与 WhatsApp 即时跟进</p>
+            </div>
+            <a class="text-xs text-blue-600 font-medium hover:underline" href="/client/inquiries">全部询盘 ({{ stats[1].value }} 待处理) →</a>
           </div>
           <YdEmptyState v-if="!recentInquiries.length" variant="inquiry" @action="router.push('/client/inquiries')" />
           <div v-else class="space-y-3">
             <div
               v-for="inq in recentInquiries"
               :key="inq.id"
-              class="inq-row flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 cursor-pointer"
+              class="inq-row flex items-center justify-between p-3.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-blue-50/40 hover:border-blue-200 cursor-pointer transition-colors"
               role="button"
               tabindex="0"
               @click="router.push('/client/inquiries')"
               @keydown.enter.prevent="router.push('/client/inquiries')"
             >
-              <div class="min-w-0">
-                <p class="text-sm font-medium truncate">{{ inq.name }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ inq.message?.slice(0, 40) }}</p>
+              <div class="min-w-0 pr-4">
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-semibold text-slate-900 truncate">{{ inq.name }}</p>
+                  <span v-if="inq.country" class="text-[10px] px-1.5 py-0.5 bg-slate-200 text-slate-700 rounded font-medium">{{ inq.country }}</span>
+                </div>
+                <p class="text-xs text-slate-600 truncate mt-1">{{ inq.message?.slice(0, 60) }}</p>
               </div>
-              <span class="text-xs text-gray-400">{{ inq.time }}</span>
+              <span class="text-xs text-slate-400 shrink-0">{{ inq.time }}</span>
             </div>
           </div>
         </div>
-      </div>
-      <div class="panel uj-glass-panel p-5">
-        <h2 class="text-base font-bold text-gray-900 mb-3">我的站点</h2>
-        <a :href="siteUrl" target="_blank" class="text-primary-600 text-sm hover:underline">访问我的网站 →</a>
-        <div v-if="httpsProbe" class="https-probe mt-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-medium text-gray-700">独立域 HTTPS 彩排</span>
-            <a-tag :color="httpsTagColor">{{ httpsTagText }}</a-tag>
+
+        <!-- 2. 全球拓客转化漏斗 -->
+        <section v-if="funnelSteps.length" class="panel uj-glass-panel funnel-panel">
+          <header class="funnel-head">
+            <div>
+              <h3>全网买家拓客与转化漏斗</h3>
+              <p class="funnel-note">基于真实商机、独立站意向与出站分发记录</p>
+            </div>
+            <a-button size="small" type="link" @click="router.push('/client/inquiries')">去询盘跟进 →</a-button>
+          </header>
+          <div v-for="step in funnelSteps" :key="step.key" class="funnel-row">
+            <span class="funnel-label">{{ step.label }}</span>
+            <div class="funnel-track">
+              <div class="funnel-fill" :style="{ width: `${step.pct}%` }" />
+            </div>
+            <span class="funnel-count">{{ step.count }}</span>
           </div>
-          <p class="text-xs text-gray-500 mt-1">{{ httpsProbeMessage }}</p>
-          <ul v-if="httpsNextSteps.length" class="https-next-steps">
-            <li v-for="(s, i) in httpsNextSteps" :key="i">{{ s }}</li>
-          </ul>
-          <div class="https-probe-actions mt-2">
-            <a-button size="small" type="link" :loading="httpsLoading" @click="loadHttpsProbe">刷新探针</a-button>
-            <a-button v-if="!httpsProbe.ready_for_pilot" size="small" type="link" @click="router.push('/client/site-editor')">
-              去绑定独立域
+        </section>
+      </div>
+
+      <!-- 右侧 30%：独立站状态与集中收敛的开店进度 -->
+      <div class="space-y-6">
+        <!-- 我的独立官网状态 -->
+        <div class="panel uj-glass-panel p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-bold text-slate-900">独立站与全球域名</h2>
+            <a :href="siteUrl" target="_blank" class="text-blue-600 text-xs font-medium hover:underline">预览网站 ↗</a>
+          </div>
+          <p class="text-xs text-slate-500 mb-3">Google SEO / GEO 国际排名称重中枢</p>
+          <div v-if="httpsProbe" class="https-probe p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-medium text-slate-700">HTTPS 独立域名探针</span>
+              <a-tag :color="httpsTagColor">{{ httpsTagText }}</a-tag>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">{{ httpsProbeMessage }}</p>
+            <div class="https-probe-actions mt-2 flex items-center gap-2">
+              <a-button size="small" type="link" class="px-0 text-xs" :loading="httpsLoading" @click="loadHttpsProbe">刷新探针</a-button>
+              <a-button v-if="!httpsProbe.ready_for_pilot" size="small" type="link" class="text-xs" @click="router.push('/client/site-editor')">
+                去绑定独立域
+              </a-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 统一集中的开户与外贸就绪进度 (收敛替代原先4处重复组件) -->
+        <section
+          v-if="journeyHealth && journeyHealth.score_pct != null && journeyHealth.score_pct < 100"
+          class="panel uj-glass-panel p-5"
+        >
+          <div class="flex items-start justify-between gap-2 mb-3">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">外贸开店与合规进度</h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                关键就绪度 {{ journeyHealth.score_pct }}%
+              </p>
+            </div>
+            <a-button
+              v-if="journeyHealth.next_action?.route"
+              size="small"
+              type="primary"
+              @click="router.push(journeyHealth.next_action.route)"
+            >
+              {{ journeyHealth.next_action.title || '继续完善' }}
             </a-button>
           </div>
-        </div>
-        <div class="mt-4 tenant-alerts">
-          <div class="tenant-alert" v-for="a in tenantAlerts" :key="a.title">
-            <span class="dot" :class="'dot-' + a.level" />
-            <div>
-              <p>{{ a.title }}</p>
-              <small>{{ a.desc }}</small>
-            </div>
-          </div>
-        </div>
+          <ul v-if="journeyInsight.length" class="space-y-2 mt-3">
+            <li v-for="item in journeyInsight" :key="item.role" class="p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+              <span class="text-xs font-semibold text-blue-600 block">{{ item.label }}</span>
+              <p class="text-xs text-slate-600 mt-1">{{ item.insight }}</p>
+            </li>
+          </ul>
+        </section>
       </div>
     </div>
   </div>
   </YdPage>
 </template>
+
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, reactive, ref } from 'vue';

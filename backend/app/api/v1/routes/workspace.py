@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """搜客执行台 + 写信台 路由（P1-1 + P1-2）。"""
 
 from fastapi import APIRouter, Depends, HTTPException

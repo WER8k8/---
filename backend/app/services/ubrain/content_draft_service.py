@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain-X：将 lead_content_pack 选题写入 ContentMaster 草稿（人审后发布）。"""
 
 from __future__ import annotations

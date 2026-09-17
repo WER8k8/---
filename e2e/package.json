@@ -1,0 +1,17 @@
+{
+  "name": "youding-e2e-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
+    "test:responsive": "playwright test responsive-layout.spec.ts",
+    "test:golden": "playwright test golden-flows.spec.ts",
+    "test:report": "playwright show-report",
+    "test:ci": "playwright test --reporter=github"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

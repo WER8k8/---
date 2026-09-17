@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """四壳解析 — 角色 → shell / homePath（UAC 唯一源）"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="case-detail-page">
     <!-- Loading State -->
@@ -328,6 +331,49 @@ useHead({
       ),
     },
   ],
+  link: [{ rel: 'canonical', href: `${SITE_CONFIG.url}/cases/${slug}` }],
+  script: computed(() => {
+    if (!caseItem.value) return [];
+    const c = caseItem.value;
+    const caseUrl = `${SITE_CONFIG.url}/cases/${slug}`;
+
+    return [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'CreativeWork',
+          name: c.project_name,
+          headline: c.project_name,
+          description: c.description || '',
+          image: c.cover_image || `${SITE_CONFIG.url}/images/case-default.jpg`,
+          url: caseUrl,
+          author: {
+            '@type': 'Organization',
+            name: SITE_CONFIG.fullName,
+          },
+          locationCreated: {
+            '@type': 'Place',
+            name: c.location || 'China',
+          },
+          about: c.industry || 'Building Materials & Insulation Project',
+          datePublished: c.created_at || '2026-01-01',
+        }),
+      },
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_CONFIG.url}/` },
+            { '@type': 'ListItem', position: 2, name: 'Case Studies', item: `${SITE_CONFIG.url}/cases` },
+            { '@type': 'ListItem', position: 3, name: c.project_name, item: caseUrl },
+          ],
+        }),
+      },
+    ];
+  }),
 });
 </script>
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """工作区全局搜索（UX-2c）— 菜单 + 询盘 + 母版 + 订单。"""
 
 from fastapi import APIRouter, Depends, Query

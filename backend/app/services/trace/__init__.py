@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一 Trace / 经验飞轮接线（总纲 §4.6-7 / §6.6 P3）。
 
 - trace_service：task_traces 链式追踪读写 + 记分卡聚合。

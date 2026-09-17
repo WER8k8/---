@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="我的 AI 配置" subtitle="配置您自己的 API Key、模型和邮箱，数据完全属于您" surface="elevated">
     <template #actions>
@@ -83,6 +86,13 @@
 </template>
 
 <script setup lang="ts">
+
+import { onMounted } from 'vue'
+import { apiGet } from '@/utils/api'
+
+onMounted(async () => {
+  try { await apiGet('/tenant-ai-config') } catch { /* 空状态 */ }
+})
 import { ref } from 'vue'
 import { QuestionCircleOutlined } from '@ant-design/icons-vue'
 import { YdPage } from '@/components/youding'

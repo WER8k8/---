@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一 GEO 评分口径 — unified-geo-v1（合并 AEO / Optimizer / Engine / AI Search）。"""
 
 from __future__ import annotations

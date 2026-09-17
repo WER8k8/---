@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 AI Recommendations API Router - AI推荐API
 """
@@ -7,7 +9,9 @@ from typing import List, Optional
 import uuid
 
 from app.core.database import get_db
+from app.core.security import get_current_user
 from app.models.ai_recommendation import AIRecommendation
+from app.models.user import User
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -24,7 +28,8 @@ def create_ai_recommendation(
     score: float,  # 0-1
     reason: Optional[str] = None,
     algorithm: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """创建AI推荐记录"""
     try:
@@ -50,7 +55,8 @@ def get_recommendations_for_user(
     algorithm: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=50),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取用户的推荐产品列表"""
     query = db.query(AIRecommendation).filter(AIRecommendation.user_id == uuid.UUID(user_id))
@@ -72,7 +78,7 @@ def get_recommendations_for_user(
 
 
 @router.get("/{recommendation_id}", response_model=dict)
-def get_recommendation(recommendation_id: str, db: Session = Depends(get_db)):
+def get_recommendation(recommendation_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """获取推荐记录详情"""
     recommendation = db.query(AIRecommendation).filter(AIRecommendation.id == uuid.UUID(recommendation_id)).first()
     if not recommendation:
@@ -90,7 +96,7 @@ def get_recommendation(recommendation_id: str, db: Session = Depends(get_db)):
 
 
 @router.delete("/{recommendation_id}")
-def delete_recommendation(recommendation_id: str, db: Session = Depends(get_db)):
+def delete_recommendation(recommendation_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """删除推荐记录"""
     recommendation = db.query(AIRecommendation).filter(AIRecommendation.id == uuid.UUID(recommendation_id)).first()
     if not recommendation:
@@ -108,7 +114,8 @@ def list_recommendations(
     algorithm: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出推荐记录（支持过滤）"""
     query = db.query(AIRecommendation)

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeepSeek Harness 客户端（懒加载官方 SDK，绝不污染导入期）。
 
 对外暴露三个安全函数：
@@ -116,3 +118,13 @@ def run_turn(
         "model": model or cfg.model,
         "profile": profile or cfg.profile,
     }
+
+
+def get_experience_suggestions(task_type: str, top_k: int = 5):
+    from app.services.hermes.experience_engine import get_engine
+    return get_engine().query(task_type, top_k)
+
+
+def record_intent_result(intent: str, success: bool):
+    from app.services.hermes.experience_engine import get_engine
+    get_engine().record(f"intent:{intent}", success, 0.0)

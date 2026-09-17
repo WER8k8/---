@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <!-- 手风琴标题（点击展开/收起） -->

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import type { SiteContentSnapshot } from './types';
 
 /** 从 GrapesJS 导出的 HTML 反向提取关键文案（保存时同步结构化字段） */

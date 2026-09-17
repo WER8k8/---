@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 调用日志" subtitle="按场景、模型查看真实调用记录（来自 AIUsageLog）。" surface="elevated">
     <template #actions>

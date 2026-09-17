@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="安全防护" subtitle="系统安全监控与防护管理" surface="elevated">
   <div class="security-overview">

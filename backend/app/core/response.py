@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一API响应格式"""
 # TODO [P2] 高频 API 可迁移到 orjson (pip install orjson) 提升序列化速度 3-5x（待性能瓶颈确认后实施）
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Token 加购 — 支付成功后充值 Token（幂等按 order_no）。"""
 
 from __future__ import annotations

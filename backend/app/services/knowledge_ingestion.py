@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """知识库自动沉淀服务
 
 将调研结果、GEO 探测数据、竞品分析自动沉淀到 knowledge_base/，

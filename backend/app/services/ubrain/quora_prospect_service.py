@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Quora 外贸客户开发服务 — 从 Quora 问答平台挖掘采购需求。
 
 Quora 是全球最大的问答平台，拥有大量行业专家和采购决策者，

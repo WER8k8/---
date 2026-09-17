@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """外贸研究员 — 只读信号 → ResearchBrief JSON（违宪动作禁止自动执行）。"""
 
 from __future__ import annotations

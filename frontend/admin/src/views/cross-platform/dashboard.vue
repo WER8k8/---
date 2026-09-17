@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="cross-platform-dashboard">
     <a-page-header title="跨平台数据看板" sub-title="AiToEarn 全平台数据聚合">
@@ -288,9 +291,9 @@ async function refreshData() {
   loading.value = true;
   try {
     const [overviewRes, nurtureRes, publishRes] = await Promise.all([
-      api.get('/api/v1/cross-platform-dashboard/overview'),
-      api.get('/api/v1/cross-platform-dashboard/nurture'),
-      api.get('/api/v1/cross-platform-dashboard/publish?days=7'),
+      api.get('/cross-platform-dashboard/overview'),
+      api.get('/cross-platform-dashboard/nurture'),
+      api.get('/cross-platform-dashboard/publish?days=7'),
     ]);
     overview.value = overviewRes.data?.data || {};
     nurture.value = nurtureRes.data?.data || {};

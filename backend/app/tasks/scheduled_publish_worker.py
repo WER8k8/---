@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """定时发布调度器 — 借鉴 AiToEarn enqueue-publishing-task scheduler。
 
 定期扫描 scheduled_publishes 表中 pending 状态且到达发布时间的任务，

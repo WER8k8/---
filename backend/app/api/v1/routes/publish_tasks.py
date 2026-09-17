@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Publish Task API Routes - Unified Publishing Platform MVP."""
 from typing import Any, Dict, List, Optional
 from uuid import UUID
@@ -70,6 +72,7 @@ def list_publish_tasks(
 @router.get("/queue/stats")
 def get_queue_stats(
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取发布队列统计信息。"""
     pending = db.query(func.count()).filter(PublishTask.status == "pending").scalar()
@@ -92,6 +95,7 @@ def get_queue_stats(
 def get_publish_task(
     task_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """根据 ID 获取发布任务。"""
     result = db.query(PublishTask).filter(PublishTask.id == str(task_id)).first()
@@ -105,6 +109,7 @@ def update_publish_task(
     task_id: UUID,
     task_data: Dict[str, Any],
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """更新发布任务（状态、计划时间等）。"""
     result = db.query(PublishTask).filter(PublishTask.id == str(task_id)).first()
@@ -125,6 +130,7 @@ def update_publish_task(
 def retry_publish_task(
     task_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """重试失败的发布任务。"""
     result = db.query(PublishTask).filter(PublishTask.id == str(task_id)).first()

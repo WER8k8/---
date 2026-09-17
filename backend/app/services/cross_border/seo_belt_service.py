@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """大城+河间 SEO/GEO 词库 — Client 预览与入库（W3）。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """增长工具 Agent 工作流 — 热词 → 成稿 → 质检 → 引流监测快照。"""
 
 from __future__ import annotations

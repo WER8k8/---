@@ -1,4 +1,4 @@
-﻿# Start local dev: backend :8001 + admin Vite (5173, or 5174+ if busy)
+# Start local dev: backend :8001 + admin Vite (5173, or 5174+ if busy)
 # Usage:
 #   powershell -File scripts/start-dev-admin.ps1
 #   powershell -File scripts/start-dev-admin.ps1 -Lan
@@ -275,6 +275,36 @@ if (-not (Test-TenantNuxt $TenantPort) -or $ForceRestart) {
   }
 }
 
+# 附属二 GoodJob CRM 服务自动化启动检查（:5188 / :4188）
+$GoodJobDir = Join-Path (Split-Path -Parent $Root) '_external\goodjob-crm'
+if (Test-Path -LiteralPath $GoodJobDir) {
+  $gjWebPort = 5188
+  $gjApiPort = 4188
+  function Test-PortOpen([int]$port) {
+    try {
+      $client = New-Object System.Net.Sockets.TcpClient('127.0.0.1', $port)
+      $client.Close()
+      return $true
+    } catch { return $false }
+  }
+  if (-not (Test-PortOpen $gjApiPort)) {
+    Write-Host "Starting GoodJob CRM backend on :$gjApiPort" -ForegroundColor Cyan
+    $gjBackendDir = Join-Path $GoodJobDir 'backend'
+    Start-Process powershell -WindowStyle Hidden -ArgumentList @(
+      '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
+      "cd '$gjBackendDir'; npx tsx src/server.ts"
+    )
+  }
+  if (-not (Test-PortOpen $gjWebPort)) {
+    Write-Host "Starting GoodJob CRM frontend on :$gjWebPort" -ForegroundColor Cyan
+    $gjFrontendDir = Join-Path $GoodJobDir 'frontend'
+    Start-Process powershell -WindowStyle Hidden -ArgumentList @(
+      '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
+      "cd '$gjFrontendDir'; npx vite --host 127.0.0.1 --port $gjWebPort"
+    )
+  }
+}
+
 Write-Host ''
 Write-Host "Backend : http://127.0.0.1:$ApiPort/docs" -ForegroundColor Green
 Write-Host "Login   : http://127.0.0.1:$AdminPort/login  (LOGIN-LOCK-01)" -ForegroundColor Green
@@ -286,6 +316,7 @@ if ($Lan -and $LanIp) {
 Write-Host "admin   : admin / admin123  -> /admin" -ForegroundColor Yellow
 Write-Host "tenant  : tenant / tenant123 -> /client/today  (dev.local)" -ForegroundColor Yellow
 Write-Host "inquiry : /client/inquiries -> language bridge (summary + EN draft)" -ForegroundColor DarkGray
+Write-Host "goodjob : /client/annex/goodjob -> GoodJob CRM 附属执行台 (:5188)" -ForegroundColor Cyan
 Write-Host "agent   : agent / agent123 -> /agent/performance" -ForegroundColor Yellow
 Write-Host "ref     : .project/dev-login-accounts.json" -ForegroundColor DarkGray
 Write-Host ''

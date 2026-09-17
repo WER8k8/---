@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL AI 剪辑与一键分发联动工作流（集成 SEO/GEO/AAO 排名自动增强）。"""
 
 from __future__ import annotations

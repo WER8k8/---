@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UN Comtrade 公开 API — 中国出口按 HS 章别拉取目的国贸易额。"""
 
 from __future__ import annotations

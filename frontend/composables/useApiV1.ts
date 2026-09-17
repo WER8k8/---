@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 租户站统一 API 基址：优先 API_HOST，其次同源 /api/v1 代理。
  */
 export function useApiV1Base(): string {

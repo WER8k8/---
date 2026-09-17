@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """安全中间件模块 — 路径安全 + 限流
 
 注意：SQL注入/XSS/路径遍历/命令注入检测已统一由 WAFMiddleware (waf.py) 处理，

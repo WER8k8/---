@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="代码生成" subtitle="脚手架与片段（本地占位生成，可对接 AI 接口）" surface="elevated">
   <div class="p-6 space-y-6">

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Wangcai ask -> unified ai_task entry (H.5: 旺财接入 Hermes 任务面).
 
 公开旺财端点保持响应契约不变，但执行改走与 UBrain（H.3）相同的

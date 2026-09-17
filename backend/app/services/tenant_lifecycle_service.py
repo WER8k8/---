@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户订阅生命周期：到期冻结、试用结束处理。"""
 
 from __future__ import annotations

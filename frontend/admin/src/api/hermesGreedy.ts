@@ -1,4 +1,7 @@
-﻿import { apiGet, apiPost } from '@/utils/api'
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+import { apiGet, apiPost } from '@/utils/api'
 
 export type GreedyPersonality = {
   mood: string
@@ -256,7 +259,7 @@ export async function fetchGreedySurvivalPublishTasks(limit = 20): Promise<{
 }
 
 export async function retryPublishTask(taskId: string): Promise<void> {
-  await apiPost(`/publish/tasks/${taskId}/retry`)
+  await apiPost(`/platforms/publish/tasks/${taskId}/retry`)
 }
 
 export async function recordSurvivalSettlement(payload: {

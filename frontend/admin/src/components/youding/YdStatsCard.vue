@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div
     class="yd-stats-card uj-kpi-card uj-glass-panel"
@@ -65,12 +68,13 @@ const shownValue = computed(() => {
 });
 
 const toneColors: Record<string, string> = {
-  blue: '#4a9b8c',
-  green: 'var(--uj-brand-deep, #3d8f7a)',
-  amber: '#b8954a',
-  purple: 'var(--uj-brand-hover, #5eb8a8)',
-  default: 'var(--uj-text-secondary, #0f2924)',
+  blue: '#2563eb',
+  green: '#10b981',
+  amber: '#d97706',
+  purple: '#6366f1',
+  default: '#0f172a',
 };
+
 
 const valueStyle = computed(() =>
   props.tone && props.tone !== 'default' ? { color: toneColors[props.tone] } : undefined,

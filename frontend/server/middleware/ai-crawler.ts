@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Nuxt 版 AI 爬虫网关 — 识别 Bot UA，预取 llms 语义载荷 + 产品结构化数据供 render 钩子注入。
  * 对标 Next.js Edge GEO Middleware，运行在 Nitro server middleware 层。
  */

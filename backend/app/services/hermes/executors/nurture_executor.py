@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Nurture Executor Plugin — 多平台账号养护（养号）。
 
 业务链第 7 环：分发出去的账号需要「养」——按各平台的养护规则推进周期，

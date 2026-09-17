@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """浏览器伴侣插件 — 本地 Chrome/Edge 扩展，不进服务端执行。"""
 
 from __future__ import annotations

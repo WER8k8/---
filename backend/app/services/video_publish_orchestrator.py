@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 编排的视频真发 — 多 Worker 链式尝试 + 强制验真 + 养号频控。
 
 增强自原版本，新增：

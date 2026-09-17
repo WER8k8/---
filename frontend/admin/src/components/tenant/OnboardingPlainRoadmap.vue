@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div v-if="phases.length" class="onboarding-roadmap rounded-2xl border border-slate-100 bg-white p-5">
     <div class="mb-4">

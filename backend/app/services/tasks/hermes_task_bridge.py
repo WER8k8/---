@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ai_tasks → Hermes 编排桥（打通中央断点；总纲 §4.6 / 轮24 后续）。
 
 背景：ai_tasks 是一张"被动影子表"——状态机/checkpoint 真实，但此前没有任何代码
@@ -486,6 +488,13 @@ def _run_hermes_node(db: Session, task: Any) -> dict[str, Any]:
         sop_ref=data.get("sop_ref"),
         persona_ref=data.get("persona_ref"),
     )
+
+    # ECC SOP 注入（J.2）：sop_ref 解析为技能内容后随 node.input 传给执行器，供 LLM 遵循作业标准
+    if node.sop_ref:
+        from app.services.hermes.sop_resolver import resolve_sop_ref
+        sop = resolve_sop_ref(node.sop_ref, db=db)
+        if sop.get("content"):
+            node.input = {**dict(node.input or {}), "sop": sop}
 
     context = ExecutorContext(
         db=db,

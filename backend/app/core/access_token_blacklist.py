@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Access Token 黑名单：登出后将 JWT jti 加入黑名单，阻止已登出令牌继续使用。
 
 优先 Redis（多实例共享），不可用时降级进程内内存。

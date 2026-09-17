@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """邮件追踪像素路由（P1-3）—— 无需登录鉴权，内置安全防护。"""
 
 import re

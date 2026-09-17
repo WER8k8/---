@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 统一编排链 API 客户端（Hermes / AiTask）
  *
  * 后端落点：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户级 llms.txt / llms-full.txt — 从 site_content 生成 AI 可读索引。"""
 
 from __future__ import annotations

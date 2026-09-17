@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 租户站流量埋点：会话 ID、页面浏览、点击归因（供询盘提交携带）。
  */
 const SESSION_KEY = 'uj_site_session_id'

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """询盘 v1 / v2 / unified 统一序列化与列表。"""
 
 from __future__ import annotations

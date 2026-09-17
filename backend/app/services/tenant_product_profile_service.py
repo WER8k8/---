@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户产品画像 — 产品库优先 · 产业带 · 可选联网调研（开发信/建站共用）。"""
 
 from __future__ import annotations

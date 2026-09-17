@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage :title="pageTitle" :subtitle="pageSubtitle" surface="elevated">
   <div class="fm-page p-6 space-y-6">

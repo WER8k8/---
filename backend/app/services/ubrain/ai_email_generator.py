@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 开发信生成 — FIX-48
 
 基于客户画像自动生成个性化开发信：

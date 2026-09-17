@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 卖货飞轮闭环 — 研究 → 找客 → 编排（内部调度，对外脱敏）。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """CHANNEL 插槽适配器：暴露既有渠道状态与唯一询盘写入口。"""
 
 from __future__ import annotations

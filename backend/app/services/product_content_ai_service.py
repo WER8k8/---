@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """产品页 AI 生成/润色 — 走 NVIDIA NIM 场景模型（invoke_llm）。"""
 
 from __future__ import annotations

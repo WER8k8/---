@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 7×24 巡站维护 — 只读探测 + 建议，不执行破坏性操作。"""
 
 from __future__ import annotations

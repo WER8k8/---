@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """数据导出门禁：平台级导出仅创始人 + 全量留痕。"""
 
 from __future__ import annotations

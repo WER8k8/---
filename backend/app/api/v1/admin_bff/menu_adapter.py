@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """菜单 BFF — HTTP 薄层；DB 菜单优先，否则静态 seed"""
 
 from typing import Optional

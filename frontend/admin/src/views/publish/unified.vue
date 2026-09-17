@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
 
   <YdPage title="统一发布台" subtitle="GEO 内容矩阵 → 母版人审 → 按平台变体发布" surface="elevated">

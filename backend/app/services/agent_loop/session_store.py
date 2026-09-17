@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Agent run 状态存储（内存 + 可选 Redis）。
 
 BUG-15 修复：添加持久化保障和异常处理。

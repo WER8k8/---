@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="LBS测距" subtitle="基于位置的服务与路径规划" surface="elevated">
     <template #actions>

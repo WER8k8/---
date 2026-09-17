@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """并行聚合 B2B / GEO 旁路就绪态（避免 /integrations/sidecars/status 串行超时）。"""
 
 from __future__ import annotations
@@ -52,17 +54,19 @@ def build_integrations_sidecars_status(*, timeout_sec: float = 2.5) -> dict[str,
         "forum_answer": forum_sidecar_status,
     }
     out: dict[str, Any] = {}
-    with ThreadPoolExecutor(max_workers=min(12, len(probes))) as pool:
-        futures = {pool.submit(_safe_call, fn, label=key): key for key, fn in probes.items()}
-        try:
-            for fut in as_completed(futures, timeout=timeout_sec + 2):
-                key = futures[fut]
-                try:
-                    out[key] = fut.result(timeout=0.1)
-                except Exception as exc:
-                    out[key] = {"configured": False, "healthy": False, "detail": str(exc)[:200]}
-        except TimeoutError:
-            pass
+    pool = ThreadPoolExecutor(max_workers=min(12, len(probes)))
+    futures = {pool.submit(_safe_call, fn, label=key): key for key, fn in probes.items()}
+    try:
+        for fut in as_completed(futures, timeout=timeout_sec):
+            key = futures[fut]
+            try:
+                out[key] = fut.result(timeout=0.1)
+            except Exception as exc:
+                out[key] = {"configured": False, "healthy": False, "detail": str(exc)[:200]}
+    except TimeoutError:
+        pass
+    finally:
+        pool.shutdown(wait=False)  # 不等慢 probe 线程，接口 ~2.5s 内必返
     for key in probes:
         out.setdefault(key, {"configured": False, "healthy": None, "detail": "probe_timeout"})
     return out

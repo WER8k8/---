@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="autopilot-progress">
     <div v-for="step in displaySteps" :key="step.id" class="autopilot-progress__row">

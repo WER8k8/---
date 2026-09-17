@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 控制台" subtitle="AI 提供商与模型池总览 — 快速接入15大第三方大模型" surface="elevated">
   <div class="ai-overview">

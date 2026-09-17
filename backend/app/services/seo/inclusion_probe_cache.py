@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """收录探测 probe_mode 侧车缓存（无 schema 迁移）。"""
 
 from __future__ import annotations

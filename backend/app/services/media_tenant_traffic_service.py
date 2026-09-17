@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频 → 租户官网流量：落地页、UTM、结构化数据、GEO 要点。"""
 
 from __future__ import annotations

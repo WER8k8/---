@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Leads list API - proxied from backend.
  */
 import { defineEventHandler, getQuery } from 'h3'

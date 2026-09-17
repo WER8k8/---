@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开户指引 — 即时通讯联系方式写入官网 contact 页（挂件读取，非旺财 Trade Q&A）。"""
 
 from __future__ import annotations

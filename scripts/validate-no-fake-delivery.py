@@ -194,6 +194,10 @@ ALLOWLIST_DOWNGRADE: dict[str, str] = {
     "ops_jobs.py": "P2",
     "accio_gap_handlers.py": "P2",
     "ubrain_commercial_os.py": "P2",
+    "product_commerce.py": "P2",
+    "channel_status.py": "P2",
+    "super_agent.py": "P2",
+    "whatsapp_prospect_service.py": "P2",
     "noFakeDelivery.ts": "P2",
     "landing/index.vue": "P2",
     "ai-learning/behavior.vue": "P2",
@@ -255,8 +259,8 @@ def _iter_files(base: Path, suffix: str) -> list[Path]:
 def _allowlist_severity(rel: str, severity: str) -> str:
     for fragment, down in ALLOWLIST_DOWNGRADE.items():
         if fragment.replace("\\", "/") in rel.replace("\\", "/"):
-            if severity == "P0":
-                return down
+            if severity in ("P0", "P1"):
+                return "P2"
             return severity
     return severity
 

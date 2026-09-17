@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="social-btns">
     <button type="button" class="social-btn" @click="$emit('start-oauth', 'wechat')">

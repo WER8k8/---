@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Browser Runtime Policy 闸门（总纲 §4.7 + 既有 Policy Engine 复用）。
 
 本轮 25-B 提供轻量内置闸门（域名/动作/输入模式三层最小集），高阶策略（窗口期/

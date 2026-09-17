@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Calculator 包 — 工程计算器（Thermal / Fire Protection / Quantity）。
 
 所有计算均为确定性工程规则；输出必须显示假设、单位与适用范围。

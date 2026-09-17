@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Sales Task 模型 — 销售任务/通知（RFQ → 销售任务闭环）"""
 
 from __future__ import annotations

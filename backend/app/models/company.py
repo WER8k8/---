@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Company 360 - B2B 公司主数据 + 联系人 + 采购信号（Phase 3 地基）"""
 
 from __future__ import annotations

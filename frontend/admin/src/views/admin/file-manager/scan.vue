@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="文件扫描登记" subtitle="登记路径/发现备忘，与代码扫描联动" surface="elevated">
     <template #actions>

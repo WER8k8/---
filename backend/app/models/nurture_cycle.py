@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """持久化养号周期 + 平台养号规则模板（从 AiToEarn 互动管理模型合并）。"""
 
 from __future__ import annotations

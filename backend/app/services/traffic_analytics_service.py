@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """流量看板：埋点落库、日 UV/PV、点击排行、询盘/电话归因。"""
 
 from __future__ import annotations

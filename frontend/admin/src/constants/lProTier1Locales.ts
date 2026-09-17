@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** SITE-DESIGN-01 · Tier1 12 语（与 backend im_locale_service.SUPPORTED_LANGUAGES 对齐） */
 
 export const L_PRO_TIER1_LOCALES = [

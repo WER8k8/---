@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """VID-11：多平台标题/描述长度适配。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Canary 发布门禁（总纲 §1.3 第4条 / §6.6 P3 / E14）。
 
 发布流程：Draft → 评估(Evaluation) → Canary(5/25/50/100% 阶梯，按租户百分比分流)

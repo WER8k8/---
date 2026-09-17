@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="用户管理" subtitle="管理系统用户、角色和权限分配" surface="elevated">
     <template #actions>

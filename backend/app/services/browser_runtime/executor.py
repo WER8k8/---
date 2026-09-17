@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Browser Runtime 真实执行器（轮25-C，Playwright 真接入）。
 
 按 evidence.py 的 EvidenceRecord 6 态契约，落地 navigate / extract / screenshot

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """一键建站各步骤 Prompt 模板。
 
 每个步骤有独立的 system / user prompt 组合，用于驱动 LLM 完成特定子任务。

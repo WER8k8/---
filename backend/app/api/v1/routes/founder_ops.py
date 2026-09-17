@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """创始人运维 / 国密调试（国密 + 微信唯一，浏览器可用，不返回源码）。"""
 
 from __future__ import annotations

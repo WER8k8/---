@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="API网关" subtitle="开放API管理与开发者文档" surface="elevated">
     <template #actions>

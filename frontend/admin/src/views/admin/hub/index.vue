@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="hub-admin p-4">
     <h2 class="text-lg font-semibold mb-4">总站枢纽 / GSC</h2>

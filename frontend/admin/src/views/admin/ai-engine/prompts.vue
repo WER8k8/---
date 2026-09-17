@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="提示词管理" subtitle="管理和优化 AI 提示词模板" surface="elevated">
     <template #actions>

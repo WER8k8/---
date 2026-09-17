@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="产业带 SEO 词库" subtitle="大城主材 · 河间配套" surface="elevated">
     <a-alert

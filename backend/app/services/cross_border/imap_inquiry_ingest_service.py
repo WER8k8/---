@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """只读 IMAP 询盘入库 — 去重 + 诚实门禁（禁止假询盘、禁止自动回复）。"""
 
 from __future__ import annotations

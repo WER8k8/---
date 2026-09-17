@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="买家问答" subtitle="Apache Answer Sidecar · SEO 长尾" surface="elevated">
     <a-alert type="info" show-icon class="mb-4" :message="config?.honest_note || '问答页嵌入独立站，新问题进 SEO 候选，不自动灌帖'" />

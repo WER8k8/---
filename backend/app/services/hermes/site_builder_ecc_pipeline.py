@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 建站 ECC 专家流水线 — 美工/文案/视觉营销/美学 UI，非裸 LLM。"""
 
 from __future__ import annotations

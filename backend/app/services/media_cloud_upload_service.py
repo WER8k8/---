@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """渲染完成后异步上云：酷播（国内播放）+ R2（海外发布）。"""
 
 from __future__ import annotations

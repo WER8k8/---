@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """代理层级树路由
 
 提供代理组织数据的树形结构查询接口：
@@ -287,6 +289,8 @@ def get_all_levels_summary(
     )
 
 
+@router.get("", include_in_schema=False)
+@router.get("/")
 @router.get("/full")
 def get_full_tree(
     db: Session = Depends(get_db),

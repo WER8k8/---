@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
     <!-- Loading State -->

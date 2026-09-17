@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hunter.io / Apollo.io 付费 API 路由 — FIX-53"""
 
 from typing import Optional
@@ -7,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from app.core.security import get_current_user
 from app.services.ubrain.hunter_service import lead_enrichment_service
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/lead-enrichment", tags=["获客·付费API"])
 
 

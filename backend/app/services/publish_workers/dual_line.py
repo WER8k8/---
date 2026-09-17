@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """双线发布 — 主路（SAU/专用 Worker）+ 备路（AiToEarn）同时部署，主败备上。"""
 
 from __future__ import annotations

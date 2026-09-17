@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * GEO Content Generation API
  * Proxies content generation requests to UJ backend with Redis caching.
  */

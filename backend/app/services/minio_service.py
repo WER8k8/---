@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MinIO对象存储服务 — 租户隔离增强
 
 所有对象键强制使用 {tenant_id}/ 前缀，确保：

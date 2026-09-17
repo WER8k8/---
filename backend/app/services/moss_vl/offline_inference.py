@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL 官方离线视频全景推理引擎。
 
 对齐官方 `inference/run_inference.py` 架构：

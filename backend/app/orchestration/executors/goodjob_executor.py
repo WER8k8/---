@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GoodJob 执行器适配器 · 批次 B 桥的 UJ 侧端口.
 
 设计出处：uj-annex-integration-design §10.5 / §10.19。
@@ -38,6 +40,7 @@ DEFAULT_TIMEOUT_SECONDS = 10.0
 TASK_PATH = "/api/uj-bridge/task-packages"
 TASK_TYPE_CUSTOMER_POOL = "customer_pool.sync"
 TASK_TYPE_TRADE_DOCUMENT = "trade_document.generate"
+TASK_TYPE_STAGE_SYNC = "crm.sync_stage"
 _HANDLE_CACHE_LIMIT = 1000
 
 

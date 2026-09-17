@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """凭证库持久化模型（总纲 §1.2 / §4.6 / §8 迁移 087；轮20）。
 
 credentials：统一密钥入库加密（AES-256-GCM 默认 / SM4 国密可选），

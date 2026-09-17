@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeepSeek Harness 外层智能体运行时接入包。
 
 把开源 "一切皆插件" Agent 运行时 DeepSeek Harness（dsh，github.com/deepseek-ai/deepseek-harness）

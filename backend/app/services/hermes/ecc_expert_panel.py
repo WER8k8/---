@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes ECC 专家人格评审 — 对齐 docs/技术栈-智能体-MCP-调度表，只读测试、不装依赖。"""
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ class EccExpert:
     categories: frozenset[str]
 
 
-# 与 ECC / 灵码调度表一致的主责 + 门控
+# 与 ECC 调度表一致的主责 + 门控
 EXPERT_ROSTER: tuple[EccExpert, ...] = (
     EccExpert("frontend-architect", "前端架构师", "typescript-reviewer", frozenset({"frontend"})),
     EccExpert("insulation-backend-developer", "后端开发专家", "code-reviewer", frozenset({"backend"})),

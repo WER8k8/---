@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 租户建站 — 上传产品白底图到平台存储（客户只需提供产品图，不生成装饰图）。
  */
 import { getAuthToken } from '@/utils/api';

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 插件注册表 — 对内完整目录，对外经 marketplace 脱敏。"""
 
 from __future__ import annotations

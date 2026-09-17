@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一编排摄入 API（对接总纲 §4.6 统一任务面）。
 
 把"外部请求 / 上传事件 / n8n 入站"等统一接入 ai_tasks，再派发 Hermes 编排：
@@ -64,6 +66,16 @@ def _resolve_tenant_id(
     if not link:
         raise HTTPException(status_code=400, detail="用户未关联任何租户")
     return str(link.tenant_id)
+
+
+class OrchestrationWebhookRequest(BaseModel):
+    """n8n / 外部系统入站意图（补 HarnessGateway 入口断点）。"""
+    tenant_id: str = Field(..., description="租户 ID")
+    text: Optional[str] = Field(None, description="自由文本意图")
+    intent: Optional[str] = Field(None, description="结构化高层意图（二选一：text / intent）")
+    channel: Optional[str] = Field("n8n", description="触发渠道")
+    context: Optional[Dict[str, Any]] = Field(None, description="上下文（语言/配额提示等）")
+    payload: Optional[Dict[str, Any]] = Field(None, description="业务参数")
 
 
 @router.post("/tasks", response_model=OrchestrationTaskResponse)
@@ -194,3 +206,18 @@ def get_orchestration_task(
     if not task:
         raise HTTPException(status_code=404, detail="task_not_found")
     return OrchestrationTaskResponse(task_id=str(task.id), status=task.status)
+
+
+@router.post("/webhook/intent", response_model=OrchestrationFromIntentResponse)
+async def ingest_webhook_intent(
+    req: OrchestrationWebhookRequest,
+    db: Session = Depends(get_db),
+) -> OrchestrationFromIntentResponse:
+    """n8n / 外部 webhook 入站 → HarnessGateway 归一化→拆解→返回计划（不自动派发）。"""
+    from app.services.hermes.harness_gateway import process_inbound_webhook
+    result = await process_inbound_webhook(db, req.model_dump())
+    return OrchestrationFromIntentResponse(
+        plan_id=result["plan_id"],
+        graph_source=result["graph_source"],
+        node_count=result["node_count"],
+    )

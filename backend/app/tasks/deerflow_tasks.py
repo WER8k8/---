@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 执行引擎 Celery 任务。
 
 提供 DeerFlow 任务的异步执行能力，与状态机协作完成完整的任务生命周期。

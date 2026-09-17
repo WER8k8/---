@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多级代理分润规则表（首单 / 续费 × 层级）。"""
 
 import uuid

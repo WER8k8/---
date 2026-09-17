@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """国密 SM2/SM3/SM4 工具（敏感字段加密、完整性校验、接口签名）。
 
 依赖 gmssl；未安装时 encrypt/decrypt 会抛出明确错误，应用仍可启动。

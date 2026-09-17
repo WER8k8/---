@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <!-- 安全审计 -->
 <template>
   <YdPage title="安全审计" subtitle="管理员操作与安全相关 resource 的审计流水" surface="elevated">

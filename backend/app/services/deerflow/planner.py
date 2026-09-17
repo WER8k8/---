@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 任务规划器。
 
 将复杂任务拆解为可独立执行的子任务，生成执行计划。
@@ -227,7 +229,47 @@ class TaskPlanner:
                 "priority": 2,
             },
         ],
+        # 对标阿里国际 Accio Work 的 agent 分工（市场研究 → 横向比价 → 转成内容资产）。
+        # 参数不再写死在模板里：create_plan 会把 job payload 合并进每个子任务，
+        # 所以调用方只需在 payload 给 category / target_market / candidates。
+        "market_intelligence": [
+            {
+                "title": "目标市场洞察",
+                "description": "按品类 × 目标市场产出需求驱动、价格带、准入壁垒、买家画像与动作清单",
+                "intent": "market_insight",
+                "agent_ref": "sales/research-analyst",
+                "priority": 0,
+            },
+            {
+                "title": "供应商横向比较",
+                "description": "对候选供给方做维度化排序，产出打单话术与待补证据",
+                "intent": "supplier_compare",
+                "agent_ref": "sales/research-analyst",
+                "priority": 1,
+            },
+            {
+                "title": "洞察转内容",
+                "description": "把洞察结论交给关键词研究，进 SEO/GEO 内容链路",
+                "intent": "keyword_research",
+                "agent_ref": "marketing/seo-specialist",
+                "priority": 2,
+            },
+        ],
     }
+
+    @staticmethod
+    def _job_payload(job: DeerflowJob) -> dict[str, Any]:
+        """读取 job.payload_json；坏 JSON 或空值一律当空字典，不让规划阶段因此炸掉。"""
+        raw = getattr(job, "payload_json", None)
+        if not raw:
+            return {}
+        try:
+            data = json.loads(raw) if isinstance(raw, str) else raw
+        except (json.JSONDecodeError, TypeError):
+            logger.warning("job payload 解析失败，按空参数处理: job=%s", job.id)
+            return {}
+        return data if isinstance(data, dict) else {}
+
     def __init__(self, db: Session):
         """__init__。
 
@@ -262,13 +304,20 @@ class TaskPlanner:
         if subtask_defs:
             subtasks = []
             for i, defn in enumerate(subtask_defs):
+                # 模板子任务此前永远拿到空 parameters，导致 buyer_research / outreach_letter
+                # 这类需要必填参数的 intent 在模板路径上必然降级（2026-09-14 复刻 Accio
+                # 能力时发现）。这里把 job payload 合并进来，defn 内显式给的参数优先。
+                merged_params: dict[str, Any] = {
+                    k: v for k, v in self._job_payload(job).items() if k != "context"
+                }
+                merged_params.update(defn.get("parameters") or {})
                 st = SubTask(
                     title=defn.get("title", f"子任务 {i + 1}"),
                     description=defn.get("description", ""),
                     intent=defn.get("intent", job.intent),
                     agent_ref=defn.get("agent_ref", ""),
                     priority=defn.get("priority", i),
-                    parameters=defn.get("parameters", {}),
+                    parameters=merged_params,
                     timeout_seconds=defn.get("timeout_seconds", 300),
                     max_retries=defn.get("max_retries", 2),
                 )

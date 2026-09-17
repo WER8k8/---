@@ -14,9 +14,9 @@ config/prod/.env
 config/test/.env
 config/dev/.env
 
-# 保留示例配置文件（不排除）
-!config/.env.dev
-!config/.env.test
+# 保留示例配置文件（不排除，仅 .example 后缀）
+!config/.env.dev.example
+!config/.env.test.example
 !config/.env.prod.example
 !config/prod/.env.example
 !config/test/.env.example
@@ -77,8 +77,10 @@ uploads/
 .pytest_cache/
 .coverage
 htmlcov/
-test_*.py
+# 仅忽略 backend 根目录下的临时试跑脚本；tests/ 内正式单测必须进版本库
+/test_*.py
 pytest-*.txt
+!tests/**/*.py
 
 # ================ 临时文件 ================
 *.tmp

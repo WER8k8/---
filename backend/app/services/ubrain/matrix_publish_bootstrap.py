@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """矩阵发布零配置引导 — 自动补平台、占位账号、内容母版草稿。"""
 
 from __future__ import annotations

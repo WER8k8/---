@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SITE-DESIGN-01 · L-Pro 模板填槽与发布门禁。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """线索处理 Pipeline + 评分 API — FIX-35/36
 
 端点：
@@ -12,6 +14,7 @@ from fastapi import APIRouter, Depends, Query
 from app.core.security import get_current_user
 from app.core.response import success_response, error_response
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/lead", tags=["获客引擎"])
 
 

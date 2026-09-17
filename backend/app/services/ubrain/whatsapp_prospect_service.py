@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """WhatsApp 外贸客户开发服务 — 参考 whatsfinds.com 获客模式。
 
 WhatsApp 全球月活用户超20亿，在中东、南美、东南亚等市场的商务沟通渗透率超85%。

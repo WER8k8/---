@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户独立域 SSL 申请状态机（mock / HTTP 委托）。"""
 
 from __future__ import annotations

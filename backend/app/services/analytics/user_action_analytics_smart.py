@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UserActionAnalyzePlatform 智能层 — 中文状态与一键分析。"""
 
 from __future__ import annotations

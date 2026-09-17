@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="专家记忆查询" subtitle="查看 AI 专家在「挣钱大赛」里积累的经验与备注（运维/调试用）" surface="elevated">
     <template #actions>

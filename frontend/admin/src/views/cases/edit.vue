@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage
     :title="isEdit ? '编辑案例' : '添加案例'"
@@ -124,6 +127,12 @@
 </template>
 
 <script setup lang="ts">
+
+import { apiGet } from '@/utils/api'
+
+onMounted(async () => {
+  try { await apiGet('/content') } catch { /* 空状态 */ }
+})
 import { ref, computed, onMounted } from 'vue';
 import { YdPage } from '@/components/youding';
 import { useRoute, useRouter } from 'vue-router';

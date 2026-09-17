@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """通用能力插槽契约 · Universal Capability Slot Contract.
 
 设计出处：uj-annex-integration-design §10.16；对应架构体检 P1 缺口

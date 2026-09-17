@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户企微推送配置 — 客户自有 CorpID / 应用 / 接收人。"""
 
 from __future__ import annotations

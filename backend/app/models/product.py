@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """产品和分类模型 — 支持 JSON 规格参数、文档管理。"""
 import json
 import uuid

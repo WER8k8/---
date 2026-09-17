@@ -2,11 +2,11 @@
   "@context": "https://schema.org",
   "@type": "VideoObject",
   "name": "3秒揭秘行业顶尖黑科技！",
-  "description": "【专业解析】3秒揭秘行业顶尖黑科技！。围绕PRO-SPEC、终极结论与购买建议、产品全貌开箱、核心性能通电实测、PASSED、竞品同框对比深度实测，全程22.5秒高能切片，包含关键操作演示与权威指标对比。",
+  "description": "【专业解析】3秒揭秘行业顶尖黑科技！。围绕PASSED、终极结论与购买建议、PRO-SPEC、竞品同框对比、产品全貌开箱、核心性能通电实测深度实测，全程22.5秒高能切片，包含关键操作演示与权威指标对比。",
   "thumbnailUrl": [
     "https://media.example.com/clips/clip_001_0s_22s_cover.jpg"
   ],
-  "uploadDate": "2026-09-12T22:13:49Z",
+  "uploadDate": "2026-09-14T20:28:00Z",
   "duration": "PT22S",
   "contentUrl": "https://media.example.com/clips/clip_001_0s_22s_9_16.mp4",
   "hasPart": [
@@ -26,8 +26,8 @@
     }
   ],
   "keywords": [
-    "PRO-SPEC评测",
-    "PRO-SPEC使用教程",
+    "PASSED评测",
+    "PASSED使用教程",
     "短视频高光解析",
     "出海好物推荐",
     "硬核产品实测"

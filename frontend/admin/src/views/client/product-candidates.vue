@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="产业带产品候选" subtitle="大城+河间 AI 调研 · 勾选导入产品库" surface="elevated">
     <a-alert type="warning" show-icon class="mb-4" :message="honestNote" />

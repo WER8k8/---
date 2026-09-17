@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """获客工具集 API — FIX-38/39/40
 
 CSV 导入导出、漏斗仪表板、ROI 计算器、Onboarding 引导
@@ -11,6 +13,7 @@ from app.core.security import get_current_user
 from app.core.response import success_response, error_response
 from app.core.cache import async_cache_decorator
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/lead", tags=["获客引擎"])
 
 

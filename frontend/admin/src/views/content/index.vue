@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="内容管理" subtitle="管理网站页面内容" surface="elevated">
     <template #actions>
@@ -162,6 +165,12 @@
 </template>
 
 <script setup lang="ts">
+
+import { apiGet } from '@/utils/api'
+
+onMounted(async () => {
+  try { await apiGet('/content') } catch { /* 空状态 */ }
+})
 import { ref, computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { YdDataTable, YdPage, YdTableToolbar } from '@/components/youding';

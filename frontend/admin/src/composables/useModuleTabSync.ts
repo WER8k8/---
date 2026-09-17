@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { ref, watch, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import type { Key } from 'ant-design-vue/es/_util/type'

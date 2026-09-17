@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div v-if="showBar" class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] border-t border-gray-200 md:hidden pb-[env(safe-area-inset-bottom)]">
     <div v-if="imChannels.length > 1" class="flex justify-center gap-1 px-2 pt-1">

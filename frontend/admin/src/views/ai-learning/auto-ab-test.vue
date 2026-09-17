@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="A/B 自动化测试" subtitle="千组文案并行测试 · 自动筛选最优解 · 对接后端 /ai-learning/auto-ab-test API" surface="elevated">
     <template #actions>

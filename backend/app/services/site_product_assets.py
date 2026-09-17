@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户产品图 ↔ site_content 挂接（客户只提供产品名与白底图，不生成装饰图）。"""
 
 from __future__ import annotations

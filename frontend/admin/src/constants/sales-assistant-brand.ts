@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 功能模块名（与租户公司名无关）；助手话术以租户 company_name 为准 */
 
 export const FEATURE = {

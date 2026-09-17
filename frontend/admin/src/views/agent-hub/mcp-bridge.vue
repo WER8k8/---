@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="MCP桥接" subtitle="Model Context Protocol 服务管理与工具发现" surface="elevated">
     <template #actions>

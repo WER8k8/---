@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 7×24 巡站调度 — 只读维护，间隔可配置。"""
 
 from __future__ import annotations

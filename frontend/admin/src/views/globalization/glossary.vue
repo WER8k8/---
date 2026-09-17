@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="术语库" :subtitle="`行业术语多语言标准化 · ${terms.length} 条已收录`" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """养号执行 Worker — 通过 AiToEarn API 自动执行点赞/评论/关注。
 
 将 NurtureCycle 中 pending 的互动记录实际发送到 AiToEarn 平台执行，

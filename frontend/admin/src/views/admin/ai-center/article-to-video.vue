@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="文章转视频" subtitle="文章 → 分镜脚本 → Cosmos 渲染队列 → 成品视频" surface="elevated">
     <template #actions>

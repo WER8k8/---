@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 超管运维：全平台队列分页 + SLO 指标。"""
 
 from __future__ import annotations

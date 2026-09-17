@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="协同看板" subtitle="AI Agent集群运行状态概览" surface="elevated">
     <template #actions>

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="news-page">
     <section class="news-hero bg-gradient-to-br from-[#667eea] to-[#764ba2] py-16 md:py-24">

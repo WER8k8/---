@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Model Gateway 门面（总纲 §4.6）。
 
 复用既有 get_ai_engine() 单例，不重建已存在模块；新增能力标签路由 + 成本记账。

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="出海参谋" subtitle="规则矩阵 · 蓝海 + 海关试点（M0/M1/M2）" surface="elevated">
     <template #actions>

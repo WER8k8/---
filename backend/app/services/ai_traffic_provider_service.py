@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户自选 AI 大模型平台（AI 流量充值与租户偏好）。"""
 
 from __future__ import annotations

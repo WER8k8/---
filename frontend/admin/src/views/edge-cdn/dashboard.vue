@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="CDN 概览" subtitle="边缘加速与内容分发总览" surface="elevated">
     <template #actions>

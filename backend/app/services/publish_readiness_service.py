@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """发布就绪总览 — 建站 / IP 槽位 / 平台绑号，供内容分发中心使用。"""
 
 from __future__ import annotations

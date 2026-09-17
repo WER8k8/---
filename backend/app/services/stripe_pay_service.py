@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Stripe 国际支付服务模块 - 支持 Checkout Session、Webhook 验签、多币种与 Token 充值联动。"""
 
 from __future__ import annotations

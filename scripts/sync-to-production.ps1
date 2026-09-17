@@ -14,8 +14,8 @@ if ($Paths -and $Paths.Trim()) {
     $PathList = $Paths -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }
 }
 $excludeDirs = @(
-    '.git','.cursor','.vscode','.agents','.claude','.codebuddy','.codegraph',
-    '.lingma','.pytest_cache','.qodo','.trae','.uploads','.vs','.workbuddy',
+    '.git','.vscode',
+    '.pytest_cache','.uploads','.vs',
     '.ao-output','.artifacts','node_modules','.venv','venv','__pycache__',
     '.nuxt','.output','dist','build','coverage','.htmlcov',
     'backup_auto_20260505_133809','claude-desktop-zh-localization',

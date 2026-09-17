@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="出口代理槽位" :subtitle="pageSubtitle" surface="elevated">
   <div class="client-egress coachpro-tertiary coachpro-tertiary--client p-4 max-w-3xl mx-auto">

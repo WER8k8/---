@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Product Image Model - 产品图片模型
 产品的多张图片（支持主图、排序）

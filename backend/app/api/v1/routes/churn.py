@@ -1,15 +1,19 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户流失预警 API"""
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.core.response import success_response
+from app.core.security import get_current_user
 from app.db.session import get_db
+from app.models.user import User
 from app.services.churn_service import ChurnService
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
-ROUTE_PREFIX = "/churn"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["客户流失预警"]
 
 router = APIRouter(prefix="/churn", tags=["客户流失预警"])
@@ -42,7 +46,10 @@ def _serialize_tenant(raw: dict, contacted_ids: set[str]) -> dict:
 
 
 @router.get("/at-risk")
-def get_at_risk_tenants(db: Session = Depends(get_db)):
+def get_at_risk_tenants(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """获取有流失风险的租户列表"""
     tenants_raw = ChurnService.get_at_risk_tenants(db)
     contacted = set(ChurnService.get_contacted_list(db))
@@ -60,21 +67,31 @@ def get_at_risk_tenants(db: Session = Depends(get_db)):
 
 
 @router.get("/tips")
-def get_retention_tips(db: Session = Depends(get_db)):
+def get_retention_tips(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """获取挽留建议"""
     tips = ChurnService.get_retention_tips(db)
     return success_response(data=tips)
 
 
 @router.post("/mark-contacted/{tenant_id}")
-def mark_contacted(tenant_id: str, db: Session = Depends(get_db)):
+def mark_contacted(
+    tenant_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """标记客户为已联系"""
     result = ChurnService.mark_contacted(db, tenant_id)
     return success_response(data=result)
 
 
 @router.get("/trend")
-def get_churn_trend(db: Session = Depends(get_db)):
+def get_churn_trend(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """获取流失趋势"""
     trend = ChurnService.get_churn_trend(db)
     return success_response(data=trend)

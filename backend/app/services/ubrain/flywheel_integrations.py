@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """P2 外挂槽位：Mem0 双写、PostHog 埋点、n8n 状态（未配置则 no-op）。"""
 
 from __future__ import annotations

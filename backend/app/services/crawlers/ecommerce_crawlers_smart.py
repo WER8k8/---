@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ECommerceCrawlers 智能层 — 大白话状态、自动补全合规字段、一键探测。"""
 
 from __future__ import annotations

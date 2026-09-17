@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RADAR-07 / AI-03：Hermes ops vs 租户 customer AI 场景分流快照。"""
 
 from __future__ import annotations

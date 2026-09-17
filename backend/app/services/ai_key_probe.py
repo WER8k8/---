@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """T-QA-08 / G4：检测是否配置可用 AI Key（非仅 Mock）。"""
 
 from __future__ import annotations

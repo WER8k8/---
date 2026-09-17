@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多媒体工厂业务逻辑。"""
 
 
@@ -160,12 +162,14 @@ def create_render_task(db: Session, payload: dict[str, Any]) -> MediaRenderTask:
     mappings = get_scenario_mappings(db)
     scenario = (payload.get("scenario") or "article_to_video_render").strip()
     video_model = (
-
         payload.get("video_model")
         or mappings.get(scenario)
         or mappings.get("article_to_video_render")
-        or mappings.get("text_to_video", "nvidia/cosmos-predict1-5b")
-
+        or (
+            "wanx2.1-t2v-plus"
+            if getattr(settings, "VIDEO_GENERATION_ENGINE", "wan") == "wan"
+            else mappings.get("text_to_video", "nvidia/cosmos-predict1-5b")
+        )
     )
     title = (payload.get("title") or script[:40] or "视频任务").strip()
     prompt_text = (payload.get("prompt_text") or script_to_video_prompt(script)).strip()

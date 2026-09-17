@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """标杆来源取长补短 — 供研究员 / Admin / ecosystem API 引用。"""
 
 from __future__ import annotations

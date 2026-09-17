@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """WhatsApp Business Cloud API 正式接入 — FIX-54
 
 Meta WhatsApp Cloud API v17.0+ 集成：

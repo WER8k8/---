@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 GEO Alert Models - 预警数据模型
 从 sourcechain-geo-engine 的 models/alerts.py 转移而来

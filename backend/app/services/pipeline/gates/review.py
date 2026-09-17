@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """复核关卡 ReviewGate（总纲 §6.4-2）。
 
 职责：清洗通过后的第二道关。自动复核（打分≥阈值→自动通过）+

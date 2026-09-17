@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """专家自治：自动修补（小事）+ 站会总结 + 通知 Owner（大事）。"""
 
 from __future__ import annotations

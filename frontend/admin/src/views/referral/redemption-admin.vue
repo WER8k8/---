@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="现金券线下核销" subtitle="邀请满 5 人发放的现金券，财务线下兑付后在此确认" surface="elevated">
     <template #actions>

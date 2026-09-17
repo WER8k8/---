@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """节点终态钩子链（H.7：D 类机制层 Evolution / Pipeline 变钩子，不做独立引擎）。
 
 接线纪律（与 n8n 出站通知同规格）：
@@ -110,6 +112,25 @@ def _fire_evolution(
     )
     report.evolution_recorded = True
     report.evolution_record_id = str(getattr(record, "id", "") or "")
+
+    # 同步沉淀至 ExperienceEngine（供 DAG Governor 拓扑分析与少样本增强）
+    try:
+        from app.services.hermes.experience_engine import get_engine
+        duration = 0.0
+        if getattr(task, "created_at", None) and getattr(task, "updated_at", None):
+            try:
+                duration = max(0.0, (task.updated_at - task.created_at).total_seconds())
+            except Exception:
+                duration = 0.0
+        get_engine().record(
+            task_type=task_type,
+            success=success,
+            duration=duration,
+            error_type=error_code,
+            solution=str(error_message or "")[:200] if not success else None,
+        )
+    except Exception as exp_exc:  # noqa: BLE001
+        logger.debug("experience_engine record failed (ignored): %s", exp_exc)
 
     # 机会式经验沉淀：只有回溯窗口内样本够多才扫（低开销护栏，不新增调度入口）。
     try:

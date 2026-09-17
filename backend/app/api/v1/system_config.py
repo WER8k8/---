@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 System Config API Router - 系统配置API
 """
@@ -8,7 +10,9 @@ import uuid
 
 from app.core.database import get_db
 from app.core.response import success_response
+from app.core.security import get_current_user
 from app.models.system_config import SystemConfig
+from app.models.user import User
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -25,7 +29,8 @@ def create_system_config(
     value_type: str = "string",  # string/number/boolean/json
     description: Optional[str] = None,
     is_public: bool = False,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """创建系统配置"""
     try:
@@ -46,7 +51,7 @@ def create_system_config(
 
 
 @router.get("/{config_id}", response_model=dict)
-def get_system_config(config_id: str, db: Session = Depends(get_db)):
+def get_system_config(config_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """获取系统配置详情"""
     config = db.query(SystemConfig).filter(SystemConfig.id == uuid.UUID(config_id)).first()
     if not config:
@@ -65,7 +70,7 @@ def get_system_config(config_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/by-key/{key}", response_model=dict)
-def get_system_config_by_key(key: str, db: Session = Depends(get_db)):
+def get_system_config_by_key(key: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """根据key获取系统配置"""
     config = db.query(SystemConfig).filter(SystemConfig.key == key).first()
     if not config:
@@ -90,7 +95,8 @@ def update_system_config(
     value_type: Optional[str] = None,
     description: Optional[str] = None,
     is_public: Optional[bool] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """更新系统配置"""
     config = db.query(SystemConfig).filter(SystemConfig.id == uuid.UUID(config_id)).first()
@@ -112,7 +118,7 @@ def update_system_config(
 
 
 @router.delete("/{config_id}")
-def delete_system_config(config_id: str, db: Session = Depends(get_db)):
+def delete_system_config(config_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """删除系统配置"""
     config = db.query(SystemConfig).filter(SystemConfig.id == uuid.UUID(config_id)).first()
     if not config:
@@ -128,7 +134,8 @@ def list_system_configs(
     is_public: Optional[bool] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出系统配置（支持过滤）"""
     query = db.query(SystemConfig)

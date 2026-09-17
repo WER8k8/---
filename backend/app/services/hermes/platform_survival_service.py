@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 平台生存基金 — 财迷疯真钱账本（仅超管收款，与租户账单隔离）。"""
 
 from __future__ import annotations

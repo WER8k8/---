@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RADAR-08：技术雷达 Markdown 日报导出。"""
 
 from __future__ import annotations

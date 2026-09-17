@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage :title="pageTitle" subtitle="全屏对话 · 出口研判、蓝海市场、询盘回复" surface="elevated">
   <div class="assistant-page">

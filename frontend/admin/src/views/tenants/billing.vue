@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="计费结算" subtitle="套餐选购 / 账单管理 / 支付记录" surface="elevated">
     <template #actions>

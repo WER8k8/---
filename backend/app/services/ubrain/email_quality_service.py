@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开发信质量评估 + A/B 测试 + 获客流程标准化 — FIX-58 & FIX-59
 
 FIX-58: 开发信质量评估 + A/B 测试

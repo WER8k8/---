@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户级平台账号：列表、绑定 upsert、媒体发布解析。"""
 
 from __future__ import annotations
@@ -10,6 +12,13 @@ from sqlalchemy.orm import Session
 
 from app.models.content import Platform, PlatformAccount, PlatformConfig
 from app.models.user import User
+from app.services.platform_credential_guide import (
+    CREDENTIAL_STORAGE,
+    all_credential_fields,
+    guide_for_platform,
+    missing_from,
+    required_platform_key,
+)
 from app.services.tenant_scenario_service import resolve_tenant_id_for_user
 
 
@@ -238,3 +247,214 @@ def resolve_platform_for_publish(
             Platform.platform_type == ref,
         )
     ).first()
+
+
+# ===========================================================================
+# 凭证落地：读（合并三处存放位）/ 写（token_data + cookie_data + configs）/ 脱敏状态
+# 铁律：任何出参只给字段名与掩码，绝不回传密钥原文（用户级规则：输出必脱敏）。
+# ===========================================================================
+
+# payload 里允许直接出现的凭证键（其余业务字段由调用方自己处理）
+_CREDENTIAL_KEYS = frozenset(
+    {
+        "cookie",
+        "cookie_data",
+        "token_data",
+        "credentials",
+        "configs",
+        "appid",
+        "appsecret",
+        "password",
+        "access_token",
+        "x_zse_93",
+        "x_zse_96",
+        "x_zse_99",
+        "column_id",
+        "tags",
+    }
+)
+
+# 明确不属于「凭证」的配置键（脱敏状态里不展示，避免把运营参数当密钥）
+_NON_SECRET_CONFIG_KEYS = frozenset(
+    {
+        "column_id",
+        "tags",
+        "browser_profile_id",
+        "egress_endpoint_id",
+    }
+)
+
+
+def _mask(value: Any) -> str:
+    """密钥掩码：只露首尾各 2 位，中间以 * 代替；短值整体打码。"""
+    text = str(value or "")
+    if len(text) <= 4:
+        return "*" * max(len(text), 1)
+    return f"{text[:2]}{'*' * 6}{text[-2:]}"
+
+
+def collect_credentials(
+    db: Session,
+    account: PlatformAccount,
+    platform: Platform | None = None,
+) -> dict[str, str]:
+    """汇总某账号可用凭证：token_data(JSON) + cookie_data + PlatformConfig。
+
+    取值优先级：PlatformConfig < cookie_data < token_data（token_data 是结构化真源）。
+    返回 {字段名: 原值}，仅供服务端内部使用，禁止直接序列化给前端。
+    """
+    out: dict[str, str] = {}
+    try:
+        rows = db.query(PlatformConfig).filter_by(account_id=account.id).all()
+        for row in rows:
+            if row.config_value:
+                out[str(row.config_key)] = str(row.config_value)
+    except Exception:  # noqa: BLE001 — 配置表读取失败不阻断，退回列上的凭证
+        pass
+
+    cookie = (account.cookie_data or "").strip()
+    if cookie:
+        out["cookie"] = cookie
+        plat_name = getattr(platform, "name", None)
+        req_key = required_platform_key(plat_name)
+        for field in all_credential_fields(req_key):
+            if CREDENTIAL_STORAGE.get(field) == "cookie":
+                out.setdefault(field, cookie)
+
+    token_data = account.token_data if isinstance(account.token_data, dict) else {}
+    for key, value in token_data.items():
+        if value is None or str(value) == "":
+            continue
+        out[str(key)] = str(value)
+    return out
+
+
+def apply_credentials(
+    db: Session,
+    *,
+    account: PlatformAccount,
+    platform: Platform,
+    payload: dict[str, Any],
+) -> int:
+    """把 payload 里的凭证写进三处存放位（不 commit，由调用方管事务）。
+
+    支持三种写法，前端与 curl 都能用：
+      · {"cookie": "..."} / {"cookie_data": "..."}      → cookie_data（并镜像到该平台的 *_cookie 字段）
+      · {"token_data": {...}} / {"credentials": {...}}  → token_data（按键合并，不整体覆盖）
+      · {"configs": {...}} 或平铺 appid/appsecret/...    → platform_configs 键值
+    返回写入的凭证字段数（0 表示本次没带凭证，保持原值不动）。
+    """
+    written = 0
+    token_data = dict(account.token_data or {}) if isinstance(account.token_data, dict) else {}
+    configs: dict[str, str] = {}
+    req_key = required_platform_key(getattr(platform, "name", None))
+    guide_fields = set(all_credential_fields(req_key))
+
+    raw_token = payload.get("token_data")
+    if raw_token is None:
+        raw_token = payload.get("credentials")
+    if isinstance(raw_token, dict):
+        for key, value in raw_token.items():
+            if value is None or str(value).strip() == "":
+                continue
+            token_data[str(key)] = str(value)
+            written += 1
+
+    cookie_in = payload.get("cookie")
+    if cookie_in is None:
+        cookie_in = payload.get("cookie_data")
+    if cookie_in is not None and str(cookie_in).strip():
+        cookie = str(cookie_in).strip()
+        account.cookie_data = cookie
+        mirrored = False
+        for field in all_credential_fields(req_key):
+            if CREDENTIAL_STORAGE.get(field) == "cookie":
+                token_data[field] = cookie
+                mirrored = True
+        if not mirrored:
+            token_data.setdefault("cookie", cookie)
+        written += 1
+
+    raw_configs = payload.get("configs")
+    if isinstance(raw_configs, dict):
+        for key, value in raw_configs.items():
+            if value is None or str(value).strip() == "":
+                continue
+            configs[str(key)] = str(value)
+    for key, value in payload.items():
+        if key in {"token_data", "credentials", "cookie", "cookie_data", "configs"}:
+            continue
+        if value is None or str(value).strip() == "":
+            continue
+        text = str(value).strip()
+        # 指引登记的凭证字段（如 alibaba_member_id）平铺传入时按字段路由，
+        # cookie 类同时写 cookie_data，其余进 token_data
+        if key in guide_fields:
+            if CREDENTIAL_STORAGE.get(key) == "cookie":
+                account.cookie_data = text
+            token_data[key] = text
+            written += 1
+        elif key in _CREDENTIAL_KEYS:
+            if CREDENTIAL_STORAGE.get(key) == "cookie":
+                account.cookie_data = text
+                token_data[key] = text
+            else:
+                configs[key] = text
+            written += 1
+
+    if token_data:
+        account.token_data = token_data
+
+    # 先落库再查：autoflush=False 的会话里，未 flush 的新行查不到，会重复插同键配置
+    db.flush()
+    for key, value in configs.items():
+        row = (
+            db.query(PlatformConfig)
+            .filter_by(account_id=account.id, config_key=key)
+            .first()
+        )
+        if row:
+            row.config_value = value
+        else:
+            db.add(
+                PlatformConfig(
+                    platform_id=str(platform.id),
+                    account_id=account.id,
+                    config_key=key,
+                    config_value=value,
+                )
+            )
+    return written
+
+
+def credential_status(
+    db: Session,
+    account: PlatformAccount,
+    platform: Platform | None = None,
+) -> dict[str, Any]:
+    """凭证状态（脱敏）。给列表/详情页判断「这个号到底能不能真发」。
+
+    - has_credentials：是否存有任何非运营参数类凭证
+    - credential_fields：已有字段名 + 掩码值（绝不回原文）
+    - missing_fields：按必填组算出的缺项（空即具备真发前置）
+    - publish_ready：字段级门禁通过与否；无门禁的平台以 has_credentials 判定
+    """
+    merged = collect_credentials(db, account, platform)
+    secret_keys = [
+        key
+        for key in merged
+        if key not in _NON_SECRET_CONFIG_KEYS and not key.startswith("nurture_")
+    ]
+    req_key = required_platform_key(getattr(platform, "name", None))
+    missing = missing_from(merged, req_key) if req_key else []
+    guide = guide_for_platform(getattr(platform, "name", None))
+    return {
+        "has_credentials": bool(secret_keys),
+        "credential_fields": [
+            {"name": key, "masked": _mask(merged.get(key))} for key in sorted(secret_keys)
+        ],
+        "missing_fields": missing,
+        "publish_ready": (not missing) if req_key else bool(secret_keys),
+        "guide_key": (guide or {}).get("key") if guide else None,
+        "credential_source": (guide or {}).get("storage") if guide else None,
+    }

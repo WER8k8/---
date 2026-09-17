@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """摸金校尉 · 搞钱闭环日调度 — 与 SaaS Hermes 巡站调度隔离。"""
 
 from __future__ import annotations

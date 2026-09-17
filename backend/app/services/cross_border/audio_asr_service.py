@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频/音频 → 中文听写（Whisper 多后端 + 讯飞 LFASR 直传，长媒体分片扇出扇入）。"""
 
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Knowledge Graph Service - Neo4j 知识图谱服务
 
 提供基于 Neo4j 的实体图谱构建、查询、最短路径、语义搜索能力。
@@ -472,7 +474,14 @@ class KnowledgeGraphService:
         if self._use_memory_fallback:
             return self._memory_semantic_search(query_text, top_k)
 
+        # 防 Cypher 注入：节点标签/字段名只允许安全标识符（用户可控，直接拼进 MATCH/WHERE）
+        import re as _re
+        if not isinstance(node_label, str) or not _re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", node_label):
+            raise ValueError(f"非法节点标签: {node_label!r}")
         fields = search_fields or ["name", "description", "title"]
+        for f in fields:
+            if not isinstance(f, str) or not _re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", f):
+                raise ValueError(f"非法搜索字段: {f!r}")
         keywords = query_text.lower().split()
         if not keywords:
             return []

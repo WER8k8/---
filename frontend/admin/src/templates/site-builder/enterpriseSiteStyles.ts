@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 企业站共用样式（buildPageHtml + GrapesJS 区块） */
 
 export interface SiteThemePack {
@@ -133,6 +136,106 @@ export function buildEnterpriseSiteCss(theme: SiteThemePack): string {
   .sb-hero{padding:40px 0}
   .sb-hero--banner .sb-hero-overlay{padding:48px 0}
   .sb-section{padding:40px 0}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UI PRO MAX: React Bits + Animata + Vengeance UI 极客动效体系
+   让客户网站瞬间呈现出数十万定制级的高级感与商业转化吸引力
+   ══════════════════════════════════════════════════════════════ */
+
+/* 1. Vengeance UI: Aurora Mesh Hero 极光呼吸动效背景 */
+.sb-hero-aurora {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 10% 20%, rgba(74, 155, 140, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 60%);
+}
+.sb-hero-aurora::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(74, 155, 140, 0.12) 0%, rgba(14, 165, 233, 0.06) 35%, transparent 70%);
+  animation: sb-aurora-spin 28s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes sb-aurora-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 2. React Bits: Spotlight Card & 3D Hover 聚光灯流光卡片 */
+.sb-card, .sb-stat, .sb-prod, .sb-solution, .sb-knowledge-card {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+  overflow: hidden;
+}
+.sb-card:hover, .sb-stat:hover, .sb-prod:hover, .sb-solution:hover, .sb-knowledge-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.1), 0 0 20px rgba(74, 155, 140, 0.12);
+  border-color: rgba(74, 155, 140, 0.4);
+}
+.sb-card::after, .sb-stat::after, .sb-prod::after, .sb-solution::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(74, 155, 140, 0.06), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.sb-card:hover::after, .sb-stat:hover::after, .sb-prod:hover::after {
+  opacity: 1;
+}
+
+/* 3. Animata: 微交互浮光按钮 (Shine & Water Ripple Effect) */
+.sb-cta {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sb-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transition: all 0.6s ease;
+  transform: skewX(-20deg);
+}
+.sb-cta:hover::before {
+  left: 140%;
+}
+.sb-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(74, 155, 140, 0.4);
+  filter: brightness(1.05);
+}
+.sb-cta:active {
+  transform: translateY(0);
+}
+
+/* 4. React Bits: Floating Badges (微浮动信任胶囊) */
+.sb-trust-pill, .sb-cert-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.sb-trust-pill:hover, .sb-cert-item:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  border-color: rgba(74, 155, 140, 0.4);
+}
+
+/* 5. Vengeance UI: 闪耀发光标题 (Text Gradient Shimmer) */
+.sb-hero-title {
+  background: linear-gradient(135deg, ${theme.primary} 0%, color-mix(in srgb, ${theme.primary} 75%, ${theme.accent}) 50%, ${theme.accent} 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 `.trim();
 }

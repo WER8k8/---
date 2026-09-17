@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开户首篇 — SEO 引用种子 + GeneratedContent + PublishTask 真入队。"""
 
 from __future__ import annotations

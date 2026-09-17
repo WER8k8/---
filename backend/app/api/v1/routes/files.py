@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """文件管理路由 - 上传、列表、删除（国内七牛 / 海外 R2 分轨）"""
 
 import os
@@ -92,6 +94,10 @@ def _validate_extension(filename: str) -> tuple[str, str | None]:
 
     :return: 返回 tuple[str, str | None] 类型的结果。
     """
+    # 路径遍历防护：拦截 ../ 或 \\ 等路径字符
+    import re
+    if re.search(r"[/\\\.]{2,}", filename) or ".." in filename:
+        return "", "文件名包含非法路径字符"
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
     if ext not in ALLOWED_EXTENSIONS:
         return ext, f"不支持的文件类型 .{ext}，允许: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
@@ -127,6 +133,13 @@ def upload_file(
     ext, err = _validate_extension(original_filename)
     if err:
         return error_response(400, err)
+
+    # P2-8: Content-Type 校验（防止客户端伪造）
+    if file.content_type:
+        import mimetypes
+        expected_mime = mimetypes.guess_type(original_filename)[0]
+        if expected_mime and file.content_type != expected_mime:
+            return error_response(400, f"Content-Type 不匹配：期望 {expected_mime}，实际 {file.content_type}")
 
     if not is_platform_admin(current_user) and storage_region:
         return error_response(403, "仅平台超管可指定存储分区")

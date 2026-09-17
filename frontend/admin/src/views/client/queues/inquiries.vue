@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="询盘队列" subtitle="待处理询盘 · 今日优先跟进" surface="elevated">
     <div v-if="pipelineSummary?.stages?.length" class="yd-panel p-3 mb-3 flex flex-wrap gap-2 items-center">
@@ -99,6 +102,9 @@
           <a-button size="small" :loading="ftLoading === 'osint'" @click="runInquiryOsint">背调</a-button>
           <a-button size="small" :loading="ftLoading === 'meddpicc'" @click="runInquiryMeddpicc">MEDDPICC</a-button>
           <a-button size="small" :loading="ftLoading === 'pi'" @click="runInquiryPi">生成 PI</a-button>
+          <a-button size="small" type="default" @click="router.push('/client/annex/goodjob/customers')">
+            GoodJob 客户档案
+          </a-button>
         </div>
         <div v-if="bridgeSummary" class="mt-3 p-2 bg-amber-50 rounded text-xs">
           <p class="font-medium text-amber-900">中文摘要（给老板看）</p>

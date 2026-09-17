@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """旺财 N3/N7 持久化接线（迁移 094：wangcai_sessions + wangcai_qa_log，轮14）。
 
 设计纪律（对齐总纲 §7A.3 / 实施指南 3.4、4.4-4）：

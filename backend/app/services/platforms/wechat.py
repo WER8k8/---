@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """微信公众号发布适配器 —— 真实对接微信公众平台 API"""
 
 import json

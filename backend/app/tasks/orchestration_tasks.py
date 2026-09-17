@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """编排任务消费（ai_tasks → Hermes 桥的 Celery 入口）。
 
 由统一编排摄入路由 POST /orchestration/tasks 派发：create_task → process_ai_task.delay。

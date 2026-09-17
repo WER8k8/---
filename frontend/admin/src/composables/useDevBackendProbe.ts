@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { onMounted, onUnmounted, ref } from 'vue'
 
 /** 开发环境：周期性探测 API 是否存活，避免「全站转圈却不知道后端挂了」 */

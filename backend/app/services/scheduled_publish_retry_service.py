@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ScheduledPublish 重试服务 —— ORCH-12 修复
 
 处理死状态：failed/dispatched 的出站跃迁。

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 租户媒体空间 — 产品图片 / 视频共用 files API 与七牛·R2 分轨存储 */
 
 import type { RouteLocationNormalizedLoaded } from 'vue-router';

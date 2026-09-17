@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """新询盘 → Push 通知商家（APP-1b 生产链路）。"""
 
 from __future__ import annotations
@@ -52,6 +54,10 @@ def notify_new_public_inquiry(db: Session, inquiry: Inquiry) -> dict[str, Any]:
             r = notify_inquiry_pending(db, uid, max(pending, 1))
             results.append({"user_id": uid, **r})
         except Exception as exc:
+            try:
+                db.rollback()
+            except Exception:
+                pass
             logger.warning("inquiry push failed user=%s: %s", uid, exc)
     sent = sum(1 for r in results if (r.get("sent") or 0) > 0)
     wecom_result: dict[str, Any] = {"skipped": True}
@@ -59,6 +65,10 @@ def notify_new_public_inquiry(db: Session, inquiry: Inquiry) -> dict[str, Any]:
         from app.services.sales_push_service import notify_inquiry_wecom
         wecom_result = notify_inquiry_wecom(db, inquiry)
     except Exception as exc:
+        try:
+            db.rollback()
+        except Exception:
+            pass
         logger.warning("wecom inquiry push failed: %s", exc)
         wecom_result = {"sent": False, "error": str(exc)}
 

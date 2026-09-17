@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO 元数据 — 单表 seo_metadata，resource_* 为主键列，entity_* 为历史别名。"""
 
 from __future__ import annotations

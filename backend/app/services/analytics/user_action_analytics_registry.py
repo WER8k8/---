@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UserActionAnalyzePlatform 模块注册 — Spark 电商行为分析 → 本系统 Lane。
 
 来源：https://github.com/oeljeklaus-you/UserActionAnalyzePlatform

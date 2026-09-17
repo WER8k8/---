@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="多平台分发" subtitle="AI 生成内容 · 选择平台 · 一键群发" surface="elevated">
   <div class="publish-page">

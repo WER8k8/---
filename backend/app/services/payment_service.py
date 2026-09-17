@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付服务 - 支付订单管理 + 微信支付 Native 模式（扫码支付）"""
 
 import hashlib

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 GEO Rank Guard — 发布前五维质量门禁
 移植自 sourcechain-geo-engine/backend/app/services/rank_guard.py

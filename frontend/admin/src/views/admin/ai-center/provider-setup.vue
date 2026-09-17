@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 平台接入" subtitle="选择大模型平台、配置 API Key 并完成连接测试" surface="elevated">
   <div class="provider-setup">

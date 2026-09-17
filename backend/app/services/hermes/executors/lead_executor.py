@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Lead Search Executor Plugin for Hermes Orchestration.
 
 把既有 `GeoLeadService.search_leads`（geo 拓客搜索）包成

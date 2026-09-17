@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 会话与 JWT 判定（与 stores/auth、api 拦截器共用，避免误退登录） */
 
 import { decodeJwtPayload, isJwtExpired, jwtRoleFromPayload } from '@/utils/jwtPayload';

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """财务实收与汇总诚实过滤 — 排除 mock-pay、种子询盘、探针埋点。"""
 
 from __future__ import annotations

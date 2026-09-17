@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Hermes 智能建站 — 统一走 ai_site_builder 插件，设计技能约束防跑偏。
  * 客户只需：产品名 + 可选产品白底图；文案/结构由 Hermes + 大模型生成。
  */

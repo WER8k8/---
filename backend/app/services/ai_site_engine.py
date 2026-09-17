@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 智能多语言外贸独立站生成引擎。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO 技术雷达 v2 — 定时抓取 GEO/SEO 最新论文、论坛、白帽技术、开源工具。
 
 抓取源分类：

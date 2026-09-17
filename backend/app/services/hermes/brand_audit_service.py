@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """COMP-02 品牌抽检：扫描租户/落地页可见文案是否泄露禁词。"""
 
 from __future__ import annotations

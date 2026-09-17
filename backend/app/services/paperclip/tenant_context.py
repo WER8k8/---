@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip 租户业务上下文 — 聚合产品/视频/询盘/行业数据供 220 个 Agent 使用。
 
 每个租户的 220 个 Agent 都通过此模块获取完整的业务上下文，

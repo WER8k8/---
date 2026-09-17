@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GDPR 合规服务 — FIX-46
 
 提供 GDPR 合规所需功能：

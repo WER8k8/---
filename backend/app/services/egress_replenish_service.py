@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """IPRoyal 缓冲池补充与永续续费服务（长期养号核心）。
 
 职责：

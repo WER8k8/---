@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """禁止假交付 — 生产路径门控助手。"""
 
 from __future__ import annotations

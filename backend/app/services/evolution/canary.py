@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """灰度发布 — Draft → Evaluation → Canary → Approved → Production。
 
 支持按租户/百分比分流，所有进化操作需人工审批才能进入 Production。

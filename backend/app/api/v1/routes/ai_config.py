@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI配置路由 - 真实数据库，禁止硬编码统计"""
 
 from fastapi import APIRouter, Depends

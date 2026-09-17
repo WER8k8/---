@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow → ai_tasks 影子双写桥（总纲 §4.6-1 收编过渡；轮24-A 首批调用方）。
 
 总纲裁决：ai_tasks 是任务真相源，DeerflowJob/PaperclipTask 双写过渡 2 个迭代后

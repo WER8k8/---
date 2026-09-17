@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """代理独立壳 API（UX-3a）— L2/L3 业绩与下级汇总。"""
 
 from typing import Optional
@@ -47,6 +49,20 @@ def agent_dashboard(
     svc = AgentPortalService(db)
     data = svc.build_dashboard(current_user)
     if not data:
+        if current_user.role in {"admin", "super_admin"}:
+            return success_response(data={
+                "stats": {
+                    "total_clients": 0,
+                    "monthly_new_clients": 0,
+                    "monthly_new_trend": 0,
+                    "monthly_revenue": 0,
+                    "monthly_revenue_count": 0,
+                    "pending_commission": 0,
+                    "estimated_settle_date": "—",
+                },
+                "subordinates": [],
+                "recent_activities": [],
+            })
         return error_response(404, "代理节点不存在")
     return success_response(data=data)
 

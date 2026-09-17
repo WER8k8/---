@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """询盘负责人变更 — 结构化审计（operation_logs）。"""
 
 from __future__ import annotations

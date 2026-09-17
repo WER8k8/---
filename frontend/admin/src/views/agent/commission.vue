@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="佣金管理" subtitle="佣金记录、结算状态与本月预估" surface="elevated">
   <div class="agent-commission coachpro-tertiary coachpro-tertiary--agent">

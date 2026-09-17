@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import os
 import secrets
 import warnings
@@ -304,7 +306,14 @@ class Settings(BaseSettings):
         "video_understanding": "nvidia/cosmos-reason2-8b",
         "embedding": "nvidia/nv-embed-v1",
     }
-    # 多媒体工厂 / Cosmos 渲染
+    # 阿里 Wan-Video (Wan2.1) 视频生成引擎配置
+    VIDEO_GENERATION_ENGINE: str = "wan"  # wan | cosmos
+    WAN_VIDEO_BASE_URL: Optional[str] = None
+    WAN_VIDEO_API_KEY: Optional[str] = None
+    WAN_VIDEO_MODEL_T2V: str = "wanx2.1-t2v-plus"
+    WAN_VIDEO_MODEL_I2V: str = "wanx2.1-i2v-plus"
+
+    # 多媒体工厂 / 渲染服务配置
     MEDIA_FACTORY_AUTO_RENDER: bool = True
     MEDIA_FACTORY_MOCK_RENDER: bool = False
     MEDIA_FACTORY_AI_WRITE_TIMEOUT: int = 8
@@ -422,6 +431,10 @@ class Settings(BaseSettings):
     PLATFORM_SURVIVAL_DAILY_TARGET_CNY_MINOR: int = 100000
     SURVIVAL_WORLDFIRST_CLIENT_ID: Optional[str] = None
     SURVIVAL_WORLDFIRST_WEBHOOK_SECRET: Optional[str] = None
+    # PC-04 平台账号会话巡检配置（每日低峰纯 DB 判定过期，不触网）
+    PLATFORM_SESSION_PATROL_HOUR: int = 4
+    PLATFORM_SESSION_PATROL_MINUTE: int = 15
+    PLATFORM_COOKIE_STALE_DAYS: int = 30
     # 财迷疯 · 摸金校尉分身（与 SaaS Hermes 维护宪法隔离）
     HERMES_GREEDY_AVATAR_ENABLED: bool = True
     HERMES_GREEDY_AUTO_PUBLISH_ENABLED: Optional[bool] = None
@@ -753,7 +766,7 @@ class Settings(BaseSettings):
     FEISHU_DEFAULT_GROUP_ID: str = ""  # 默认消息群组ID
     FEISHU_NOTIFICATION_ENABLED: bool = True  # 是否启用飞书通知（默认开启）
     FEISHU_WEBHOOK_URL: str = ""  # 飞书群机器人Webhook地址
-    FEISHU_LINGMA_WEBHOOK_URL: str = ""  # 灵码专用飞书群机器人Webhook地址
+    FEISHU_OPS_WEBHOOK_URL: str = ""  # 运维通知飞书群机器人 Webhook 地址
     # 询盘 IM / 社媒 Worker（MOD-02 · Lane I/P）
     INQUIRY_WEBHOOK_SECRET: str = ""
     SOCIAL_INTERACTION_WEBHOOK_SECRET: str = ""

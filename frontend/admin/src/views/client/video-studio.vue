@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="全媒体剪辑台" subtitle="听写 · 翻译 · 多轨剪辑 · 分发" surface="elevated">
     <a-alert

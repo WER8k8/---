@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="LLMs.txt生成" subtitle="为搜索引擎生成优化的LLMs.txt文件" surface="elevated">
     <a-card title="生成配置">

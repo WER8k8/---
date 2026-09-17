@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Browser Executor Plugin for Hermes Orchestration.
 
 把既有 browser_runtime（取证/爬取）包成 ExecutorRegistry 插件，

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """后端 i18n 脚手架（M7，ADR-002 附带交付）。
 
 设计：消息目录 + `t(key, locale)` + `resolve_locale(request)`。

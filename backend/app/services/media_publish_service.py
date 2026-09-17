@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多媒体工厂 → 多平台发布（带 video_url，不破坏 SEO 正文）。"""
 
 from __future__ import annotations

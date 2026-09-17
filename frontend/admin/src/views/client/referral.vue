@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="呼朋唤友" subtitle="分享邀请链接，好友首单付费后获得 AI 流量奖励" surface="elevated">
   <div class="client-referral coachpro-tertiary coachpro-tertiary--client p-4 max-w-xl mx-auto">

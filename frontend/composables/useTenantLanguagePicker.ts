@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** L-Pro 租户站 · Tier1 核心语 + Tier2 扩展语 */
 
 export interface TenantLanguageOption {

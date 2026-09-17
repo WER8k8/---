@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <a-card size="small" class="customs-research-panel mb-4" title="海关买家反查（受限）">
     <a-alert
@@ -73,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { message } from 'ant-design-vue';
 
 import { customsBuyerResearch, foreignTradeSidecarsStatus } from '@/api/foreign-trade';
@@ -96,6 +99,8 @@ const form = reactive({
 const loading = ref(false);
 const brief = ref<Record<string, unknown> | null>(null);
 const sidecarOk = ref(false);
+const sidecarAbort = new AbortController();
+onUnmounted(() => sidecarAbort.abort());
 
 const buyers = computed(() => {
   const rows = brief.value?.buyer_history;
@@ -110,7 +115,7 @@ const columns = [
 
 async function loadSidecar() {
   try {
-    const res = await foreignTradeSidecarsStatus();
+    const res = await foreignTradeSidecarsStatus({ timeoutMs: 10000, signal: sidecarAbort.signal });
     const data = (res as { data?: Record<string, unknown> })?.data ?? res;
     const st = (data as Record<string, { healthy?: boolean }>).customs_data_spider;
     sidecarOk.value = st?.healthy === true;

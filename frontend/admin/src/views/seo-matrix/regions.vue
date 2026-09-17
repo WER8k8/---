@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="地域词库" subtitle="管理全国省市区三级地域数据和行业关键词" surface="elevated">
     <template #actions>

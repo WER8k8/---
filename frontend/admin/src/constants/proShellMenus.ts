@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * YoudingProLayout · Client / Partner / Agent 侧栏菜单（一壳三 accent）
  * @see docs/youding-omni-pro-design-LOCKED.md P2
  */
@@ -72,7 +75,16 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
     title: '附属执行台',
     children: [
       { name: 'ClientAnnexTradeAi', path: '/client/annex/trade-ai', title: 'TradeAI 执行台', icon: 'ThunderboltOutlined' },
-      { name: 'ClientAnnexGoodjob', path: '/client/annex/goodjob', title: 'GoodJob 执行台', icon: 'GlobalOutlined' },
+      {
+        name: 'ClientAnnexGoodjob',
+        path: '/client/annex/goodjob',
+        title: 'GoodJob CRM',
+        icon: 'GlobalOutlined',
+        children: [
+          { name: 'ClientAnnexGoodjobTickets', path: '/client/annex/goodjob/tickets', title: '票据中心管理', icon: 'FileTextOutlined' },
+          { name: 'ClientAnnexGoodjobCustomers', path: '/client/annex/goodjob/customers', title: '客户管理', icon: 'TeamOutlined' },
+        ],
+      },
     ],
   },
 ];

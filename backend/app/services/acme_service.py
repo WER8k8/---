@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ACME Service - Let's Encrypt SSL certificate auto-issuance.
 
 Implements real ACMEv2 protocol interaction with Let's Encrypt,
@@ -316,7 +318,7 @@ class ACMEClient:
             challenge_url, {}, kid=self.account_url
         )
         if resp.status_code not in (200, 201):
-            logger.warning("Challenge response failed: %s %s", resp.status_code, resp.text)
+            logger.warning("Challenge response failed: %s %s", resp.status_code, resp.text[:200])
 
         # Poll until the challenge is validated or times out
         start = time.time()
@@ -358,7 +360,7 @@ class ACMEClient:
             if status == "valid":
                 return True
             elif status == "invalid":
-                logger.error("Authorization invalid: %s", data)
+                logger.error("Authorization invalid: identifier=%s", data.get("identifier", {}).get("value"))
                 return False
 
         return False

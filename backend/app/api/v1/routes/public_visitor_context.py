@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """公开站访客地域上下文 — IP/Accept-Language → 语言 + 旺财/站点 UI 文案。"""
 
 from fastapi import APIRouter, Depends, Query, Request

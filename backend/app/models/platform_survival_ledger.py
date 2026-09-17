@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """平台生存基金台账 — 仅超管收款账号；与租户 PaymentOrder / 代理分润完全隔离。"""
 
 import uuid

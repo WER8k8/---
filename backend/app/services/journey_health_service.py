@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户旅程健康度 — PM / 数据 / 用研可读的缺口诊断（非 mock 分数）。"""
 
 from __future__ import annotations

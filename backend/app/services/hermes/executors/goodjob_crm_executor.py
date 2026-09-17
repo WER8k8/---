@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GoodJob CRM Executor — 接真实 HTTP 桥（不再返回硬编码假单证）。
 
 ⚠️ 本文件此前是**危险 mock**：硬编码了假的卖家抬头、**假银行账号与假 SWIFT**、
@@ -23,7 +25,11 @@
 from __future__ import annotations
 
 import logging
+import os
+from datetime import datetime, timezone
 from typing import Any, Dict
+
+import httpx
 
 from app.schemas.hermes_orchestration import ExecutorResult, TaskNode
 
@@ -31,12 +37,28 @@ from .base import BaseExecutor, ExecutorContext, ExecutorRegistry
 
 logger = logging.getLogger(__name__)
 
+_GOODJOB_TIMEOUT = httpx.Timeout(15.0)
+
+
+def _goodjob_base_url() -> str:
+    return os.environ.get("GOODJOB_BASE_URL", "").strip()
+
+
+def _goodjob_headers() -> dict[str, str]:
+    token = os.environ.get("GOODJOB_API_TOKEN", "").strip()
+    h = {"Content-Type": "application/json"}
+    if token:
+        h["Authorization"] = f"Bearer {token}"
+    return h
+
 _DOC_CAPS = frozenset({
     "trade.docs",
     "document.generate_pi", "generate_pi", "pi_generator",
     "document.generate_trade_docs", "trade_document.generate",
     # P3: 7步履约·商机建档同步 + 单证生成（同走真实单证工作室桥，未配置即失败）
     "crm.sync_stage", "sync_stage",
+    "crm.sync_lead", "sync_lead",
+    "crm.update_opportunity", "update_opportunity",
 })
 
 # capability → 默认单证类型（真实桥会做白名单校验）
@@ -95,6 +117,55 @@ class GoodJobCrmExecutor(BaseExecutor):
                     "goodjob_bridge_disabled: 未配置 GOODJOB_BASE_URL，GoodJob 桥已禁用。"
                     "**不返回假单证**。配置后自动生效。"
                 ),
+            )
+
+        if capability in ("crm.sync_stage", "sync_stage"):
+            order_id = str(params.get("order_id") or params.get("order") or params.get("inquiry_id") or node.id).strip()
+            stage = str(params.get("stage") or "deposit_received").strip()
+            step_number = int(params.get("step_number") or 1)
+            status_val = str(params.get("status") or "synced").strip()
+            try:
+                from app.services.goodjob.trade_document_bridge import submit_stage_sync_task
+                handle = submit_stage_sync_task(
+                    executor,
+                    tenant_id=context.tenant_id,
+                    order_id=order_id,
+                    stage=stage,
+                    step_number=step_number,
+                    status=status_val,
+                    payload=params,
+                )
+            except ValueError as exc:
+                return ExecutorResult(
+                    node_id=node.id,
+                    status="failed",
+                    output={"order_id": order_id, "stage": stage},
+                    error=f"bridge_validation: {exc}",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.exception("GoodJobCrm: 提交履约阶段同步任务失败 node=%s", node.id)
+                return ExecutorResult(
+                    node_id=node.id, status="failed", output={},
+                    error=f"{type(exc).__name__}: {exc}",
+                )
+            if handle is None:
+                return ExecutorResult(
+                    node_id=node.id,
+                    status="failed",
+                    output={"order_id": order_id, "stage": stage},
+                    error="bridge_returned_none: 桥未受理（禁用或上游拒绝），不视为成功",
+                )
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={
+                    "executor": self.get_executor_name(),
+                    "order_id": order_id,
+                    "stage": stage,
+                    "step_number": step_number,
+                    "handle": handle,
+                    "note": f"外贸7步履约第 {step_number} 步 [{stage}] 已同步至 GoodJob CRM",
+                },
             )
 
         # ② 组装真实参数（缺 tenant_id / inquiry_id 由真桥抛错，本层不兜造）
@@ -157,6 +228,84 @@ class GoodJobCrmExecutor(BaseExecutor):
         )
 
 
+    # ── CRM 商机同步 ─────────────────────────────────────────
+
+    async def sync_lead_to_crm(self, lead_data: dict[str, Any]) -> dict[str, Any]:
+        """将线索同步到 GoodJob CRM。
+
+        lead_data 必填: company_name, contact_name, email
+        lead_data 可选: phone, country, source, inquiry_id, extra
+        返回: {"success": bool, "lead_id": str|None, "error": str|None}
+        """
+        base = _goodjob_base_url()
+        if not base:
+            return {"success": False, "lead_id": None, "error": "GOODJOB_BASE_URL 未配置，GoodJob CRM 桥不可用"}
+
+        required = ("company_name", "contact_name", "email")
+        missing = [f for f in required if not lead_data.get(f)]
+        if missing:
+            return {"success": False, "lead_id": None, "error": f"缺少必填字段: {missing}"}
+
+        payload = {
+            "company_name": lead_data["company_name"],
+            "contact_name": lead_data["contact_name"],
+            "email": lead_data["email"],
+            "phone": lead_data.get("phone", ""),
+            "country": lead_data.get("country", ""),
+            "source": lead_data.get("source", "website"),
+            "inquiry_id": lead_data.get("inquiry_id", ""),
+            "extra": lead_data.get("extra") or {},
+            "synced_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        }
+        try:
+            async with httpx.AsyncClient(timeout=_GOODJOB_TIMEOUT) as client:
+                resp = await client.post(f"{base}/api/crm/leads", json=payload, headers=_goodjob_headers())
+                resp.raise_for_status()
+                data = resp.json()
+                return {"success": True, "lead_id": data.get("lead_id") or data.get("id"), "error": None}
+        except httpx.HTTPStatusError as exc:
+            logger.warning("sync_lead_to_crm HTTP %s: %s", exc.response.status_code, exc.response.text[:200])
+            return {"success": False, "lead_id": None, "error": f"HTTP {exc.response.status_code}"}
+        except Exception as exc:
+            logger.exception("sync_lead_to_crm failed")
+            return {"success": False, "lead_id": None, "error": f"{type(exc).__name__}: {exc}"}
+
+    async def update_opportunity_status(self, opportunity_id: str, status: str) -> dict[str, Any]:
+        """更新 GoodJob CRM 商机状态。
+
+        status 白名单: new / contacted / qualified / negotiated / won / lost
+        返回: {"success": bool, "error": str|None}
+        """
+        VALID_STATUSES = ("new", "contacted", "qualified", "negotiated", "won", "lost")
+        status = (status or "").strip().lower()
+        if status not in VALID_STATUSES:
+            return {"success": False, "error": f"非法状态 {status!r}，合法值: {VALID_STATUSES}"}
+
+        opportunity_id = str(opportunity_id or "").strip()
+        if not opportunity_id:
+            return {"success": False, "error": "opportunity_id 不能为空"}
+
+        base = _goodjob_base_url()
+        if not base:
+            return {"success": False, "error": "GOODJOB_BASE_URL 未配置，GoodJob CRM 桥不可用"}
+
+        payload = {"status": status, "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+        try:
+            async with httpx.AsyncClient(timeout=_GOODJOB_TIMEOUT) as client:
+                resp = await client.patch(
+                    f"{base}/api/crm/opportunities/{opportunity_id}",
+                    json=payload,
+                    headers=_goodjob_headers(),
+                )
+                resp.raise_for_status()
+                return {"success": True, "error": None}
+        except httpx.HTTPStatusError as exc:
+            logger.warning("update_opportunity_status HTTP %s: %s", exc.response.status_code, exc.response.text[:200])
+            return {"success": False, "error": f"HTTP {exc.response.status_code}"}
+        except Exception as exc:
+            logger.exception("update_opportunity_status failed")
+            return {"success": False, "error": f"{type(exc).__name__}: {exc}"}
+
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:
         return {
@@ -174,11 +323,32 @@ class GoodJobCrmExecutor(BaseExecutor):
                 "cost": {"tokens": 0, "seconds": 120},
                 "needs_approval": True,
             },
+            "document.generate_trade_docs": {
+                "desc": "发运单证 CI/PL 生成（走真实 GoodJob 单证工作室桥；未配置即明确失败，不造单证）",
+                "input": ["doc_type", "items", "inquiry_id", "bl_number", "container_no"],
+                "output": ["handle", "doc_type", "inquiry_id"],
+                "cost": {"tokens": 0, "seconds": 120},
+                "needs_approval": True,
+            },
             "crm.sync_stage": {
                 "desc": "外贸 7 步履约·商机建档同步（GoodJob 漏斗阶段归档；走真实单证工作室桥校验，未配置即失败）",
                 "input": ["stage", "lead_id"],
                 "output": ["stage", "lead_id", "synced_at"],
                 "cost": {"tokens": 0, "seconds": 60},
+                "needs_approval": False,
+            },
+            "crm.sync_lead": {
+                "desc": "线索同步到 GoodJob CRM（走真实 HTTP 桥；未配置即明确失败）",
+                "input": ["company_name", "contact_name", "email", "phone", "country", "source"],
+                "output": ["lead_id", "success"],
+                "cost": {"tokens": 0, "seconds": 30},
+                "needs_approval": False,
+            },
+            "crm.update_opportunity": {
+                "desc": "更新 GoodJob CRM 商机状态（new/contacted/qualified/negotiated/won/lost）",
+                "input": ["opportunity_id", "status"],
+                "output": ["success"],
+                "cost": {"tokens": 0, "seconds": 15},
                 "needs_approval": False,
             },
         }

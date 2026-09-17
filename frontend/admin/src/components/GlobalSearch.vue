@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <Teleport to="body">
     <div v-if="paletteOpen" class="search-overlay" @click.self="close">

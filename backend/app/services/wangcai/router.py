@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """WangcaiRouter 总编排（实施指南 §0.1 链路；阶段 1 收口，不依赖 LLM 可上线）。
 
 流程（指南 0.1）：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """大模型网关防腐层 (Anti-Corruption Layer) - 改造 10
 
 应用 Strangler Fig 模式，在现有的大模型调用服务（如 OpenAI、Gemini 等直连）之上，

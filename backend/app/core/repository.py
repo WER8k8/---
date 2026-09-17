@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Repository 层 — FIX-42
 
 提供统一的数据访问抽象层，隔离业务逻辑与数据库操作。

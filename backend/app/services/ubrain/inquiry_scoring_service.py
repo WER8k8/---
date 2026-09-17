@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """询盘意向评分 — 副驾 inquiry_score 与公开询盘创建共用。"""
 
 from __future__ import annotations

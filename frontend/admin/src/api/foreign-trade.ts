@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 外贸标杆能力 API — OSINT / ICP / PI / 询盘 / 发布人审 / 专家团队
  */
 
@@ -136,8 +139,8 @@ export type SidecarHealth = {
   compliance?: string;
 };
 
-export function foreignTradeSidecarsStatus() {
-  return apiGet<Record<string, SidecarHealth>>('/foreign-trade/integrations/sidecars/status');
+export function foreignTradeSidecarsStatus(options?: { timeoutMs?: number; signal?: AbortSignal }) {
+  return apiGet<Record<string, SidecarHealth>>('/foreign-trade/integrations/sidecars/status', undefined, options);
 }
 
 export function linkedinDecisionMakers(payload: {

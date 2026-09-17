@@ -1,16 +1,20 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 独立站生成与发布路由。"""
 
 from __future__ import annotations
 
 from typing import Any
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
+from app.core.security import require_admin
+from app.models.user import User
 from app.services.ai_site_engine import AISiteEngine, SUPPORTED_LOCALES
 
 router = APIRouter(prefix="/sites/ai", tags=["AI Site Studio"])
 
-ROUTE_PREFIX = "/sites/ai"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["AI Site Studio"]
 
 
@@ -36,7 +40,7 @@ class PublishSiteRequest(BaseModel):
 
 
 @router.post("/generate", summary="一键 AI 生成外贸独立站落地页")
-async def generate_site(req: GenerateSiteRequest) -> dict[str, Any]:
+async def generate_site(req: GenerateSiteRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     engine = AISiteEngine()
     schema = await engine.generate_landing_page(
         product_name=req.product_name,
@@ -50,19 +54,19 @@ async def generate_site(req: GenerateSiteRequest) -> dict[str, Any]:
 
 
 @router.post("/translate", summary="一键翻译生成多语种独立站镜像")
-def translate_site(req: TranslateSiteRequest) -> dict[str, Any]:
+def translate_site(req: TranslateSiteRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     engine = AISiteEngine()
     translated = engine.translate_site_schema(req.page_schema, req.target_locale)
     return {"code": 0, "msg": "ok", "data": translated}
 
 
 @router.get("/locales", summary="获取支持的多语言列表")
-def list_locales() -> dict[str, Any]:
+def list_locales(_admin: User = Depends(require_admin)) -> dict[str, Any]:
     return {"code": 0, "msg": "ok", "data": SUPPORTED_LOCALES}
 
 
 @router.post("/publish", summary="一键发布独立站")
-def publish_site(req: PublishSiteRequest) -> dict[str, Any]:
+def publish_site(req: PublishSiteRequest, _admin: User = Depends(require_admin)) -> dict[str, Any]:
     domain = req.custom_domain or f"{req.site_id}.globaltrade-ai.site"
     return {
         "code": 0,

@@ -54,7 +54,7 @@
 :root[data-uj-accent='client'] {
   --uj-accent-role: client;
   --uj-brand: var(--uj-shell-client-accent);
-  --uj-brand-hover: #3d8578;
+  --uj-brand-hover: var(--uj-shell-client-accent-hover);
   --uj-brand-muted: rgb(74 155 140 / 0.12);
   --uj-kpi-accent-bar: 3px solid var(--uj-shell-client-accent);
 }
@@ -73,6 +73,18 @@
 
 :root[data-uj-theme='dark'][data-uj-accent='agent'] {
   --uj-brand-muted: rgb(77 182 160 / 0.16);
+}
+
+:root[data-uj-accent='partner'] {
+  --uj-accent-role: partner;
+  --uj-brand: var(--uj-shell-partner-accent);
+  --uj-brand-hover: #6b5cc6;
+  --uj-brand-muted: rgb(124 109 216 / 0.12);
+  --uj-kpi-accent-bar: 3px solid var(--uj-shell-partner-accent);
+}
+
+:root[data-uj-theme='dark'][data-uj-accent='partner'] {
+  --uj-brand-muted: rgb(124 109 216 / 0.18);
 }
 
 :root[data-uj-accent='platform'] {

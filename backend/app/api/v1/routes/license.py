@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """License Management API - 许可证管理接口（P1-5 扩展：设备指纹 + 授权码 + 套餐订单）"""
 
 import uuid
@@ -15,7 +17,8 @@ from app.models.tenant import Tenant, TenantPlan
 from app.models.user import User
 from app.services import license_service
 
-router = APIRouter(prefix="/api/v1/license", tags=["license"])
+ROUTE_PREFIX = ""
+router = APIRouter(prefix="/license", tags=["license"])
 
 
 def _generate_license_key() -> str:

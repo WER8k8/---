@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """优丁内置真实出海链 — 无 sidecar、无 mock，走 video_dub_service 全链路。"""
 
 from __future__ import annotations

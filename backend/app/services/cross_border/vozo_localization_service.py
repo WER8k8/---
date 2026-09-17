@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Vozo Enterprise 精品轨 — 有 Key 才调用；无 Key / 失败禁止假成功。"""
 
 from __future__ import annotations

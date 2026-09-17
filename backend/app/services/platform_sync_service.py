@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户新增平台 → 超管审计、默认养号模板、指纹模板（客户无感）。"""
 
 from __future__ import annotations

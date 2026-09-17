@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="协议优化" subtitle="HTTP/3、Brotli、TLS 优化配置" surface="elevated">
     <template #actions>

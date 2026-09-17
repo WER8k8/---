@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """CustomsDataSpider Sidecar — 海关买家 research brief，须 evidence_url + 人工核实。"""
 
 from __future__ import annotations

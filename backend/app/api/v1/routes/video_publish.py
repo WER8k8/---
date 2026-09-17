@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一视频发布 API — Hermes 编排，一个入口，真发到各视频平台。"""
 
 

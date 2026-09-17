@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="重构备忘" subtitle="记录重构意图与影响面，持久化在本机" surface="elevated">
     <template #actions>

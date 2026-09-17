@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { getActivePinia } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
@@ -280,7 +283,7 @@ export const seoAPI = {
     api.get('/seo/dashboard', { params, softAuthFailure: true }),
   seoPagesSummary: () => api.get('/seo/seo-pages-summary'),
   generateLLMSTxt: (data: any) => api.post('/seo/llms-txt/generate', data),
-  validateLLMSTxt: (data: { content: string }) => api.post('/seo/llms-txt/validate', data),
+  validateLLMSTxt: (data: { content: string }) => api.post('/seo/llms-txt/validate-llms-txt', data),
   optimizeContent: (data: any) => api.post('/seo/content-optimizer/optimize', data),
   audit: (data: any) => api.post('/seo/site-audit', data),
   getAudit: (id: string) => api.get(`/seo/site-audit/${id}`),
@@ -295,18 +298,18 @@ export const seoAPI = {
   schemaTypes: () => api.get('/seo/schema-markup/types'),
   schemaDelete: (id: string) => api.delete(`/seo/schema-markup/${id}`),
   schemaSave: (data: Record<string, unknown>) => api.post('/seo/schema-markup', data),
-  authors: () => api.get('/seo/eeat/authors'),
-  authorCreate: (data: any) => api.post('/seo/eeat/authors', data),
-  authorUpdate: (id: string, data: any) => api.put(`/seo/eeat/authors/${id}`, data),
-  authorDelete: (id: string) => api.delete(`/seo/eeat/authors/${id}`),
-  trustSignals: () => api.get('/seo/eeat/trust-signals'),
-  score: (data: any) => api.post('/seo/eeat/score', data),
+  authors: () => api.get('/seo/authors'),
+  authorCreate: (data: any) => api.post('/seo/authors', data),
+  authorUpdate: (id: string, data: any) => api.put(`/seo/authors/${id}`, data),
+  authorDelete: (id: string) => api.delete(`/seo/authors/${id}`),
+  trustSignals: () => api.get('/seo/trust-signals'),
+  score: (data: any) => api.post('/seo/score', data),
   auditLogs: (params?: Record<string, any>) => api.get('/system/audit/logs', { params }),
   deleteAuditLog: (id: string) => api.delete(`/system/audit/logs/${id}`),
   clearAuditLogs: () => api.delete('/system/audit/logs'),
   // 鎵归噺SEO
-  batchApplyRule: (data: any) => api.post('/seo/batch-seo/seo-batch-apply-rule', data),
-  extractParams: (data: any) => api.post('/seo/batch-seo/extract-params', data),
+  batchApplyRule: (data: any) => api.post('/seo/seo-batch-apply-rule', data),
+  extractParams: (data: any) => api.post('/seo/content-optimizer/extract-params', data),
 };
 
 export const contentAPI = {
@@ -357,6 +360,43 @@ export const usersAPI = {
 };
 
 /** SEO 鐭╅樀 `/api/v1/seo-matrix/*`锛屼笌 FastAPI `seo_matrix.py` 瀵归綈 */
+// PC-01：凭证字段必须原样透传给后端 apply_credentials（cookie / cookie_data /
+// token_data / credentials / configs 以及指引登记的平铺字段名）。
+// 旧实现只挑 5 个字段发送，把 cookie 与 token 整个丢掉，面板填了也存不下。
+// 这里只剥掉前端 alias 与展示字段，其余一律保留；未知键后端会自行忽略，不会报错。
+const PLATFORM_ACCOUNT_META_KEYS = new Set([
+  'platform',
+  'platform_id',
+  'name',
+  'account_name',
+  'username',
+  'email',
+  'is_active',
+  'login_status',
+  'id',
+  'tenant_id',
+]);
+
+// 导出供单测把守「凭证字段不被丢弃」这条回归（旧实现正是在这里漏字段）
+export function buildPlatformAccountBody(
+  data: Record<string, unknown>,
+): Record<string, unknown> {
+  const body: Record<string, unknown> = {
+    platform_id: data.platform_id ?? data.platform,
+    account_name: data.account_name ?? data.name,
+  };
+  if (data.username !== undefined) body.username = data.username;
+  if (data.email !== undefined) body.email = data.email;
+  if (data.is_active !== undefined) body.is_active = data.is_active;
+  if (data.login_status !== undefined) body.login_status = data.login_status;
+  for (const [key, value] of Object.entries(data)) {
+    if (PLATFORM_ACCOUNT_META_KEYS.has(key)) continue;
+    if (value === undefined || value === null || value === '') continue;
+    body[key] = value;
+  }
+  return body;
+}
+
 export const seoMatrixAPI = {
   getSettings: () => api.get('/seo-matrix/settings'),
   updateSettings: (data: Record<string, unknown>) => api.put('/seo-matrix/settings', data),
@@ -436,21 +476,18 @@ export const seoMatrixAPI = {
   getPlatforms: () => api.get('/seo-matrix/platforms'),
   getPlatformAccounts: (params?: Record<string, unknown>) =>
     api.get('/seo-matrix/platform-accounts', { params }),
+  // PC-01：凭证字段必须透传。后端 apply_credentials 认 cookie/cookie_data、
+  // token_data/credentials、configs 以及指引登记的平铺字段名，四种写法皆可。
+  // 之前这层只挑 5 个字段发送，把 cookie 与 token 整个丢掉，导致面板填了也存不下。
   createPlatformAccount: (data: Record<string, unknown>) =>
-    api.post('/seo-matrix/platform-accounts', {
-      platform_id: data.platform_id ?? data.platform,
-      account_name: data.account_name ?? data.name,
-      username: data.username,
-      email: data.email,
-    }),
+    api.post('/seo-matrix/platform-accounts', buildPlatformAccountBody(data)),
   updatePlatformAccount: (id: string, data: Record<string, unknown>) =>
-    api.put(`/seo-matrix/platform-accounts/${id}`, {
-      platform_id: data.platform_id ?? data.platform,
-      account_name: data.account_name ?? data.name,
-      username: data.username,
-      email: data.email,
-      is_active: data.is_active,
-    }),
+    api.put(`/seo-matrix/platform-accounts/${id}`, buildPlatformAccountBody(data)),
+  // PC-02：凭证申请指引（每个平台去哪申请、要哪些字段、环境变量是否已配）
+  getPlatformCredentialGuide: () => api.get('/seo-matrix/platform-credential-guide'),
+  // PC-04：会话巡检（dry_run 先看命中名单，不改库）
+  patrolPlatformSessions: (body?: { dry_run?: boolean; cookie_stale_days?: number; limit?: number }) =>
+    api.post('/seo-matrix/platform-session-patrol', body ?? { dry_run: true }),
 
   getPublishTasks: (params?: Record<string, unknown>) => {
     const p = { ...params };
@@ -557,7 +594,7 @@ export const abTestAPI = {
   update: (id: string, data: Record<string, unknown>) => api.put(`/ab-test/${id}`, data),
   remove: (id: string) => api.delete(`/ab-test/${id}`),
   start: (id: string) => api.post(`/ab-test/${id}/start`),
-  stop: (id: string) => api.post(`/ab-test/${id}/stop`),
+  stop: (id: string) => api.post(`/ab-test/${id}/pause`),
 };
 
 /** 椋炰功 `/api/v1/feishu`锛埪?5锛?*/
@@ -651,8 +688,8 @@ export const tenantsAPI = {
   overview: () => api.get('/tenants'),
   plans: () => api.get('/tenants/plans'),
   updatePlans: (data: Record<string, unknown>) => api.put('/tenants/plans', data),
-  billing: (params?: Record<string, unknown>) => api.get('/tenants/billing', { params }),
-  whiteLabel: () => api.get('/tenants/white-label'),
+  billing: (params?: Record<string, unknown>) => api.get('/tenants/invoices', { params }),
+  whiteLabel: (tenantId: string) => api.get(`/tenants/${tenantId}/white-label`),
 };
 
 /** 璁ょ煡鏅鸿兘 `/api/v1/cognitive/*` */

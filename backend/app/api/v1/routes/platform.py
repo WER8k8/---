@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多平台分发 API 路由 - 平台账号管理、内容分发、会话保持"""
 
 import logging

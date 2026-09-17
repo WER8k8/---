@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """OpenTelemetry配置 - 分布式追踪 (租户隔离增强)
 
 所有 Span 强制携带 tenant_id attribute，确保：

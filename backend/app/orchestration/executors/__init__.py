@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """六插槽契约的真实适配器实现目录（见 §10.16/§10.19）。"""
 
 from app.orchestration.executors.channel_frontend_adapter import ChannelFrontendAdapter

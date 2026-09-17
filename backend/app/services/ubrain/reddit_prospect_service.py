@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Reddit 外贸客户开发服务 — 从 Reddit 社区挖掘潜在采购商线索。
 
 Reddit 是全球最大的兴趣社区平台，拥有大量行业细分社区（subreddit），

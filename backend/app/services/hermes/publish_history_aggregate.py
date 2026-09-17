@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """超管统一发布历史：SEO 图文 + 视频矩阵。"""
 
 from __future__ import annotations

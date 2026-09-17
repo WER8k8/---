@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { Conversation, Message, MessageMetadata } from '@/types/conversation';

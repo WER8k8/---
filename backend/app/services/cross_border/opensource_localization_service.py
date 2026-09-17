@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开源精品轨执行器 — 统一 sidecar 契约或 KrillinAI CLI；未配置则明确失败。"""
 
 from __future__ import annotations

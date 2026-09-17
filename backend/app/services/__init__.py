@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from app.services.agent_hub_service import AgentHubService, agent_hub_service
 from app.services.cognitive_service import CognitiveService, cognitive_service
 from app.services.content_optimizer import ContentOptimizer

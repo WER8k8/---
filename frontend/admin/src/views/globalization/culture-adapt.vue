@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="文化适配" subtitle="多区域市场合规 · 本地化检查 · 格式适配" surface="elevated">
     <template #actions>

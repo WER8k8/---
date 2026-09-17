@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI-M1：海关公开统计试点数据（带来源标注，非实时报关 API）。"""
 
 from __future__ import annotations

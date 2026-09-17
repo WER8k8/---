@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 内容生成模板 API"""
 
 from fastapi import APIRouter, Depends, Query
@@ -13,7 +15,7 @@ from app.models.ai_template import AITemplate
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
-ROUTE_PREFIX = "/ai/templates"
+ROUTE_PREFIX = ""
 ROUTE_TAGS = ["AI模板管理"]
 
 router = APIRouter(prefix="/ai/templates", tags=["AI模板管理"])

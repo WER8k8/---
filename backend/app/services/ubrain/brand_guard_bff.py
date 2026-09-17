@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UB-06：飞轮 BFF 层统一脱敏序列化。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { ref, computed } from 'vue';
 import { useConversationStore } from '@/stores/conversation';
 import * as conversationAPI from '@/api/ubrain/conversation';

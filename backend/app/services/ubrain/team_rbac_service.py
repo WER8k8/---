@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户团队 RBAC 快照 — 角色权限矩阵（ROLE_PERMISSIONS + 超管 DB 角色）。"""
 
 from __future__ import annotations

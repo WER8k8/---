@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="SEO 矩阵数据看板" subtitle="全国县域建材关键词智能监控中心" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """KrillinAI sidecar/CLI 适配器 — 仅在上游就绪时调用，禁止假成功。"""
 
 from __future__ import annotations

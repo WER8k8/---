@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="超管司令部" subtitle="L0 作战态势 · Hermes 巡站 · DeerFlow 研究 · SEO · 视频矩阵" surface="elevated">
     <template #actions>

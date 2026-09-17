@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """浏览器 RUM 采集与 Rank Guard 快照联动。"""
 
 from __future__ import annotations

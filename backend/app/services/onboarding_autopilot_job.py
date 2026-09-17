@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """注册后后台 autopilot — 0 等待进向导。"""
 
 from __future__ import annotations

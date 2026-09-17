@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Base Executor Contract for Hermes Orchestration.
 
 三份契约之一（见 docs/架构设计-智能编排内核-任务图驱动-2026-09-06.md §2 契约三）。

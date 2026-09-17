@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Site Builder Executor Plugin for Hermes Orchestration.
 
 把已有的建站实现（`hermes_task_bridge._run_site_build` 所依赖的

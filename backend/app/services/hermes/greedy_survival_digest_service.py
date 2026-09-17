@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """摸金校尉 · Survival 周报 — 飞书推送（全球累计 + 人格 + 大赛 Top5）。"""
 
 from __future__ import annotations

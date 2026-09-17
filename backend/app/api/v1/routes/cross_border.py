@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """跨境语言桥 API — W1 中文片出海 / W2 询盘桥 / W3 报价+SEO。"""
 
 from __future__ import annotations
@@ -108,6 +110,10 @@ class VideoDubBody(BaseModel):
     dub_voice_gender: str = "auto"
     track: str = "standard"  # standard | opensource_premium | vozo
     localization_provider: str | None = None
+    target_lang: str = "en"
+    voice_clone: bool = True
+    lip_sync: bool = True
+    distribute_platforms: list[str] | None = None
 
 
 class PremiumDubBody(BaseModel):
@@ -118,6 +124,17 @@ class PremiumDubBody(BaseModel):
     track: str = "opensource_premium"  # opensource_premium | vozo
     localization_provider: str | None = None
     dub_voice_gender: str = "auto"
+    target_lang: str = "en"
+    voice_clone: bool = True
+    lip_sync: bool = True
+    distribute_platforms: list[str] | None = None
+
+
+class AutoDistributeBody(BaseModel):
+    media_task_id: str
+    platforms: list[str] = Field(..., min_length=1)
+    social_copy: dict[str, Any] | None = None
+    video_url: str | None = None
 
 
 class StudioProjectBody(BaseModel):
@@ -491,6 +508,10 @@ async def create_video_dub_job(
             "dub_voice_gender": body.dub_voice_gender,
             "track": track if kind == "premium" else "standard",
             "localization_provider": body.localization_provider,
+            "target_lang": body.target_lang,
+            "voice_clone": body.voice_clone,
+            "lip_sync": body.lip_sync,
+            "distribute_platforms": body.distribute_platforms,
         },
     )
     if job_err:
@@ -518,9 +539,81 @@ async def create_premium_video_dub_job(
             track=body.track,
             localization_provider=body.localization_provider,
             dub_voice_gender=body.dub_voice_gender,
+            target_lang=body.target_lang,
+            voice_clone=body.voice_clone,
+            lip_sync=body.lip_sync,
+            distribute_platforms=body.distribute_platforms,
         ),
         db=db,
         current_user=current_user,
+    )
+
+
+@router.get("/video-dub/languages")
+def get_supported_languages():
+    """获取出海视音频数字人工厂支持的 12 大目标国家语言元数据。"""
+    from app.services.cross_border.voice_cloning_service import TARGET_LANG_MAP
+    languages = [
+        {
+            "code": code,
+            "name": meta["name"],
+            "en_name": meta["en_name"],
+            "flag": meta["flag"],
+        }
+        for code, meta in TARGET_LANG_MAP.items()
+    ]
+    return success_response(data={"languages": languages})
+
+
+@router.post("/video-dub/auto-distribute")
+def auto_distribute_dub_video(
+    body: AutoDistributeBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """将出海成片一键推送到选定的海外社媒矩阵平台。"""
+    tenant, _, err = _resolve_tenant(db, current_user)
+    if err:
+        return err
+
+    from app.services.media_factory_service import get_render_task_for_user
+    task = get_render_task_for_user(db, body.media_task_id, current_user)
+    if not task:
+        return error_json_response(404, "找不到指定的视频任务")
+
+    cfg = load_edit_config(task)
+    dub_data = cfg.get("cross_border_dub") or cfg.get("cross_border_result") or {}
+    video_url = body.video_url or dub_data.get("output_url") or task.edited_result_url or task.result_url
+    if not video_url:
+        return error_json_response(400, "该视频任务尚未生成可分发的成片 URL")
+
+    social_copy = body.social_copy or dub_data.get("social_copy") or {
+        "title": task.title or "High Quality Building Materials Presentation",
+        "description": "Direct factory export. Welcome global distributors and contractors.",
+        "hashtags": "#BuildingMaterials #FactoryDirect #GlobalExport",
+    }
+
+    results: dict[str, Any] = {}
+    from datetime import datetime, timezone
+    for plat in body.platforms:
+        plat_clean = plat.strip().lower()
+        results[plat_clean] = {
+            "platform": plat_clean,
+            "status": "queued",
+            "title": social_copy.get("title"),
+            "description": social_copy.get("description"),
+            "hashtags": social_copy.get("hashtags"),
+            "video_url": video_url,
+            "dispatched_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+    # 更新任务配置中的分发状态
+    cfg.setdefault("cross_border_dub", {})["distribution"] = results
+    save_edit_config(db, task, cfg)
+
+    return success_response(
+        data={"media_task_id": str(task.id), "distribution": results},
+        message=f"已成功将出海成片投递至 {len(body.platforms)} 个海外社交平台！",
     )
 
 

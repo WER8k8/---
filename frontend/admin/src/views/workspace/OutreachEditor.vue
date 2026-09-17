@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 写信工作台" subtitle="根据客户画像和企业优势生成开发信" surface="elevated">
     <template #actions>

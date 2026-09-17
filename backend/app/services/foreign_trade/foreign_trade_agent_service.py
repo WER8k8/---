@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """外贸标杆能力 — 智能体编排门面（UBrain / Hermes / DeerFlow 统一入口）。"""
 
 from __future__ import annotations

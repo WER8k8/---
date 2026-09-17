@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="智能问答" subtitle="基于RAG的建材行业智能问答系统" surface="elevated">
     <template #actions>

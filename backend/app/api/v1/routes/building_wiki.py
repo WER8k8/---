@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI建材百科路由 - 建材行业知识文章生成与管理"""
 
 from datetime import datetime

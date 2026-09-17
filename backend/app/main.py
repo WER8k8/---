@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """FastAPI主应用"""
 
 import os
@@ -560,7 +562,14 @@ app.add_middleware(
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "X-Requested-With",
+        "X-CSRF-Token",
+        "Accept",
+        "Origin",
+    ],
 )
 
 # HTTP安全响应头（API）
@@ -578,6 +587,10 @@ app.add_middleware(CSRFMiddleware)
 # FIX-29: API 请求签名 + 防重放中间件（生产环境强制验证写操作）
 from app.core.request_signature import RequestSignatureMiddleware
 app.add_middleware(RequestSignatureMiddleware)
+
+# §14 Prompt 注入防御中间件（拦截含 AI prompt 的写请求；dev/test 默认启用，生产默认关闭可 env 覆盖）
+from app.core.prompt_injection_middleware import PromptInjectionMiddleware
+app.add_middleware(PromptInjectionMiddleware)
 
 # WAF防火墙配置（SQL注入、XSS、路径遍历、命令注入统一检测）
 setup_waf(app)
@@ -631,13 +644,74 @@ app.include_router(metrics_router)
 # === 根级探活端点(供 K8s/Nginx 健康检查) ===
 @app.get("/", tags=["系统"], include_in_schema=False)
 async def root_index():
-    """根路径 — 返回服务标识(无敏感信息)"""
+    """根路径 — 仅返回服务标识（不暴露版本/环境/DEBUG 开关等指纹信息）"""
     return {
         "name": settings.APP_NAME,
-        "version": settings.PROJECT_VERSION,
-        "environment": settings.ENVIRONMENT,
-        "docs": "/docs" if settings.DEBUG else "(disabled in production)",
+        "status": "ok",
     }
+
+
+# === 根级搜索引擎与 AI 爬虫发现端点 ===
+@app.get("/robots.txt", tags=["SEO"], include_in_schema=False)
+async def root_robots_txt(request: Request):
+    from app.api.v1.robots import get_robots_txt
+    return await get_robots_txt(request)
+
+
+@app.get("/sitemap.xml", tags=["SEO"], include_in_schema=False)
+async def root_sitemap_xml(request: Request):
+    from app.api.v1.sitemap import generate_sitemap
+    from app.core.database import get_db
+    db = next(get_db())
+    try:
+        return await generate_sitemap(request, tenant_id=None, db=db)
+    finally:
+        db.close()
+
+
+@app.get("/sitemap-index.xml", tags=["SEO"], include_in_schema=False)
+async def root_sitemap_index_xml(request: Request):
+    from app.api.v1.sitemap import generate_sitemap_index
+    return await generate_sitemap_index(request)
+
+
+@app.get("/llms.txt", tags=["SEO"], include_in_schema=False)
+async def root_llms_txt(request: Request):
+    from app.api.v1.llms_txt import get_llms_txt
+    from app.core.database import get_db
+    db = next(get_db())
+    try:
+        return await get_llms_txt(request, db=db)
+    finally:
+        db.close()
+
+
+@app.get("/llms-full.txt", tags=["SEO"], include_in_schema=False)
+async def root_llms_full_txt(request: Request):
+    from app.api.v1.llms_txt import get_llms_full_txt
+    from app.core.database import get_db
+    db = next(get_db())
+    try:
+        return await get_llms_full_txt(request, db=db)
+    finally:
+        db.close()
+
+
+@app.get("/gmc-feed.xml", tags=["MarTech"], include_in_schema=False)
+async def root_gmc_feed_xml(request: Request):
+    from app.api.v1.marketing.gmc import get_gmc_feed
+    from app.core.database import get_db
+    db = next(get_db())
+    try:
+        return await get_gmc_feed(request, tenant_id=None, db=db)
+    finally:
+        db.close()
+
+
+@app.get("/indexnow-key.txt", tags=["SEO"], include_in_schema=False)
+async def root_indexnow_key_txt():
+    from app.api.v1.seo.indexnow import get_indexnow_key
+    return await get_indexnow_key()
 
 
 @app.get("/health", tags=["系统"], include_in_schema=False)

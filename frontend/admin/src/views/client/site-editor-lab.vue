@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="站点内容补齐" subtitle="Formily 快速补全 L-Pro 发布门禁 — 与可视化建站同页能力" surface="elevated">
     <div class="site-editor-lab coachpro-tertiary coachpro-tertiary--client">

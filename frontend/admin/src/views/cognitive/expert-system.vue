@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="专家系统" subtitle="建材行业规则引擎 · 推理系统 · 对接RAG知识库" surface="elevated">
     <template #actions>

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="路由规则" subtitle="代理路由策略 · 分流规则 · 域名/IP 黑白名单" surface="elevated">
     <template #actions>

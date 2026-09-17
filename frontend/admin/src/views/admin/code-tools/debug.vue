@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="调试工作台" subtitle="日志与堆栈分行展示，数据仅存本地浏览器" surface="elevated">
   <div class="page p-6 space-y-4">

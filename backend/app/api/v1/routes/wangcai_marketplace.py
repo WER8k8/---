@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """旺财插件市场 — 对外 API（不含 Hermes / 第三方商标）。"""
 
 from fastapi import APIRouter, Depends, Query

@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * /platform SaaS 营销页文案 — 与 plan-copy-deck.md 同源
  * Admin /landing 后续对齐时复用本模块（MKT-PLATFORM-02）
  */

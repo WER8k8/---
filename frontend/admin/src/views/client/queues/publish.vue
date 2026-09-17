@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="发布队列" subtitle="多平台发布任务进度 · 含 SAU 定时排期" surface="elevated">
     <section v-if="scheduledItems.length" class="scheduled-panel yd-panel">

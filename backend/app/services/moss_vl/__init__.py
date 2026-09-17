@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """OpenMOSS / MOSS-VL 完整多模态开源引擎包。
 
 提供离线视频全景推理、Real-Time 流式会话、XRoPE 时空三维位置编码、

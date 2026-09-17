@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户开户一站式编排：验证码、AI 场景、云存储路径、平台账号槽位。"""
 
 from __future__ import annotations

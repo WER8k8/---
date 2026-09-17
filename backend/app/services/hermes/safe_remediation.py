@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 安全自愈 — 仅白名单动作，违宪即拒绝。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="TTS 配音工作室" subtitle="文本转语音与多音色合成" surface="elevated">
   <div class="space-y-6 animate-fade-in">

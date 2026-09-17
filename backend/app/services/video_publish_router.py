@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一视频发布口 — Hermes 双线编排：主路 SAU + 备路 AiToEarn + 强制验真。"""
 
 from __future__ import annotations

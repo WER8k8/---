@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Chat Sessions API Router - AI对话会话API
 """
@@ -8,7 +10,9 @@ import uuid
 
 from app.core.database import get_db
 from app.core.response import success_response
+from app.core.security import get_current_user
 from app.models.chat_session import ChatSession
+from app.models.user import User
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -23,7 +27,8 @@ def create_chat_session(
     user_id: str,
     session_name: Optional[str] = None,
     model_used: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """创建AI对话会话"""
     try:
@@ -42,7 +47,7 @@ def create_chat_session(
 
 
 @router.get("/{session_id}", response_model=dict)
-def get_chat_session(session_id: str, db: Session = Depends(get_db)):
+def get_chat_session(session_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """获取对话会话详情"""
     session = db.query(ChatSession).filter(ChatSession.id == uuid.UUID(session_id)).first()
     if not session:
@@ -66,7 +71,8 @@ def list_user_chat_sessions(
     status: Optional[str] = None,  # active/archived
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=50),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出用户的所有对话会话"""
     query = db.query(ChatSession).filter(ChatSession.user_id == uuid.UUID(user_id))
@@ -93,7 +99,8 @@ def update_chat_session(
     session_name: Optional[str] = None,
     model_used: Optional[str] = None,
     status: Optional[str] = None,  # active/archived
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """更新对话会话"""
     session = db.query(ChatSession).filter(ChatSession.id == uuid.UUID(session_id)).first()
@@ -113,7 +120,7 @@ def update_chat_session(
 
 
 @router.delete("/{session_id}")
-def delete_chat_session(session_id: str, db: Session = Depends(get_db)):
+def delete_chat_session(session_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """删除对话会话（软删除，改为archived）"""
     session = db.query(ChatSession).filter(ChatSession.id == uuid.UUID(session_id)).first()
     if not session:
@@ -131,7 +138,8 @@ def add_message_to_session(
     content: str,
     tokens: Optional[int] = None,
     model: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """向会话添加消息"""
     try:
@@ -171,7 +179,8 @@ def get_session_messages(
     session_id: str,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取会话的所有消息"""
     from app.models.chat_message import ChatMessage

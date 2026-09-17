@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <Teleport to="body">
     <div
@@ -8,10 +11,10 @@
       aria-label="悬浮卖货智能助手"
       :style="rootStyle"
     >
-      <span v-if="!open" class="ubrain-hint">
-        <AssistantMascot :size="18" mood="idle" class="hint-mascot" />
-        {{ ASSISTANT_MASCOT.name }}
-      </span>
+      <div v-if="!open" class="ubrain-meoo-bubble" @click="togglePanel">
+        <span class="bubble-text">{{ ASSISTANT_MASCOT.bubbleTip }}</span>
+        <span class="bubble-arrow" />
+      </div>
       <div v-if="open" class="ubrain-panel">
         <header
           class="ubrain-header"
@@ -221,68 +224,59 @@ async function send() {
 .ubrain-root.dragging * {
   cursor: grabbing !important;
 }
-.ubrain-hint {
-  pointer-events: none;
+.ubrain-meoo-bubble {
+  pointer-events: auto;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #b45309;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  padding: 3px 10px 3px 6px;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 4px;
 }
-.hint-mascot {
-  margin-top: -1px;
+.ubrain-meoo-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.12);
+  border-color: rgba(203, 213, 225, 0.9);
+}
+.bubble-arrow {
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-right: 1px solid rgba(226, 232, 240, 0.85);
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
 }
 .ubrain-fab {
   pointer-events: auto;
   width: 60px;
   height: 60px;
   border-radius: 9999px;
-  background: linear-gradient(145deg, #fffbeb, #fef3c7);
-  color: #fff;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.38);
-  border: 2px solid #fff;
   cursor: grab;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  overflow: hidden;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   flex-shrink: 0;
 }
-.ubrain-fab.pulsing {
-  animation: fab-pulse 2.4s ease-in-out infinite;
-}
 .ubrain-fab:hover {
-  transform: scale(1.06);
-  box-shadow: 0 12px 32px rgba(245, 158, 11, 0.48);
+  transform: scale(1.08);
 }
 .ubrain-fab.open {
-  background: #475569;
-  animation: none;
-}
-.ubrain-root.dragging .ubrain-fab:hover {
-  transform: none;
-}
-.fab-close {
-  font-size: 1.75rem;
-  line-height: 1;
-  color: #fff;
-  font-weight: 300;
-}
-@keyframes fab-pulse {
-  0%,
-  100% {
-    box-shadow: 0 10px 28px rgba(245, 158, 11, 0.35);
-  }
-  50% {
-    box-shadow: 0 10px 32px rgba(245, 158, 11, 0.55), 0 0 0 6px rgba(251, 191, 36, 0.18);
-  }
+  background: #1e293b;
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
 }
 .ubrain-panel {
   pointer-events: auto;

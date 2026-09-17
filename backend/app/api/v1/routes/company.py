@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Company 360 路由 — 公司主数据 + 联系人 + 信号聚合（Account 360 后端）。"""
 
 from __future__ import annotations

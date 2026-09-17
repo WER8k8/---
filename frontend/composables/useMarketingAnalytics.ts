@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * SaaS 营销页（/platform）埋点 — 漏斗与 CTA 归因
  */
 const SESSION_KEY = 'uj_marketing_session_id';

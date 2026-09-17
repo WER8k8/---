@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes ops：Rank Scheduler 状态与 keywords 表同步。"""
 
 from __future__ import annotations

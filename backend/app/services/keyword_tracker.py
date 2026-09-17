@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 关键词排名追踪服务 - Phase 4
 用于追踪百度、360、搜狗等搜索引擎的关键词排名

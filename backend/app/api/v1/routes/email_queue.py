@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """邮件发送队列 + 数据飞轮 + 加密审计 + AI 安全 API — FIX-62 ~ FIX-65
 
 FIX-62: 邮件发送队列（高吞吐 + 高送达率）

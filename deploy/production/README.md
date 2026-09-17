@@ -5,7 +5,7 @@
 
 ## 服务器部署步骤（摘要）
 
-1. 从 git 拉取 **`上线网站`** 指定 tag/分支（非 CodeBuddy 参考仓）
+1. 从 git 拉取 **`上线网站`** 指定 tag/分支（主开发仓）
 2. 构建前端：`frontend/admin` → `npm ci && npm run build`
 3. 后端：Python 3.11+、PostgreSQL、Redis（见 `backend/config/prod/.env.example`）
 4. 复制本目录 `env.template` → 服务器 `/opt/youding/.env`（路径自定）

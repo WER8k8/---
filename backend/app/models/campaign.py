@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Campaign / ABM 数据模型 — AI Outbound 序列（Phase 5）"""
 
 from __future__ import annotations

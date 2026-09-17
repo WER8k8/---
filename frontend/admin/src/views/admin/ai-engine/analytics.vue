@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 分析" subtitle="聚合全站 SEO 仪表盘指标，支持本地分析备忘" surface="elevated">
     <template #actions>

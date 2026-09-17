@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """酷播云（保利威点播）官方上传接口。"""
 
 from __future__ import annotations

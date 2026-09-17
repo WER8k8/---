@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { ref, watch } from 'vue';
 
 const STORAGE_KEY = 'admin-workspace-v1';

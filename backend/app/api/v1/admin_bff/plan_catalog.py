@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """套餐功能矩阵 — 与 docs/marketing/plan-copy-deck.md §四 对齐（BFF 只读出口）"""
 
 from __future__ import annotations

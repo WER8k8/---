@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一发布母版 — 一篇内容多发各平台"""
 
 import uuid
@@ -35,3 +37,5 @@ class ContentMaster(Base):
     preflight_checklist_json = Column(Text, nullable=True)
     preflight_approved_at = Column(DateTime(timezone=True), nullable=True)
     preflight_approved_by = Column(UUID_TYPE, ForeignKey("users.id"), nullable=True)
+    # 一核多形的事实内核快照（母版级唯一真源，发布/投影时落库；缺硬事实时如实存降级值）
+    fact_kernel_json = Column(JSON, nullable=True)

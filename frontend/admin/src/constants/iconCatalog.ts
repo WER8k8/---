@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 业务图标目录（Ant Design 图标名，禁止 emoji）
  * 与 antIconMap.resolveAntIcon 配合使用
  */

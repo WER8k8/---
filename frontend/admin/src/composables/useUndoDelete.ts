@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * useUndoDelete — 删除后 5 秒内可撤销
  *
  * 用法:

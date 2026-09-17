@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <header class="topbar">
     <div class="flex items-center gap-3">
@@ -38,6 +41,8 @@
       </button>
 
       <span class="yd-pro-topbar__clock hidden lg:inline">{{ timeStr }}</span>
+
+      <AdaptiveControls class="hidden md:flex" />
 
       <button class="icon-btn" title="AI Copilot" @click="copilotOpen = !copilotOpen">
         <YdReliefIcon :icon="RobotOutlined" size="sm" />
@@ -111,6 +116,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons-vue'
 import YdQueueEntry from '@/components/layout/YdQueueEntry.vue'
+import AdaptiveControls from '@/components/adaptive/AdaptiveControls.vue'
 import { YdReliefIcon } from '@/components/youding'
 import { useGlobalSearch } from '@/composables/useGlobalSearch'
 import { decodeJwtPayload, jwtRoleFromPayload } from '@/utils/jwtPayload'

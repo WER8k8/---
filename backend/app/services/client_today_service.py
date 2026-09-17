@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Client / 出海计 App — 今日一件事 + 出海参谋蓝海 Top1。"""
 
 from __future__ import annotations

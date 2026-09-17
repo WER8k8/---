@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { onUnmounted, ref, shallowRef, type Ref } from 'vue';
 import grapesjs, { type Editor } from 'grapesjs';
 import gjsPresetWebpage from 'grapesjs-preset-webpage';

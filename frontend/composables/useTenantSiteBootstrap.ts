@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 租户独立站 · 共享加载与 L-Pro 模式检测 */
 
 import { computed } from 'vue';

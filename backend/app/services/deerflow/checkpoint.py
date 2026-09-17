@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 断点管理器。
 
 负责保存和恢复任务的执行状态（checkpoint）。

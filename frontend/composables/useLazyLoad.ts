@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Code Splitting and Lazy Loading Utilities
  *
  * Provides utilities for:

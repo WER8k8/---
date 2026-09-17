@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """工程计算器引擎 — 纯函数，无 Web 依赖，可单元测试。
 
 包含：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes Task Control Supervisor.
 Responsible for executing the TaskGraph DAG by mapping TaskNodes to AiTasks.
 """
@@ -10,6 +12,7 @@ import asyncio
 
 from app.models.ai_task import AiTask, TASK_STATUSES
 from app.schemas.hermes_orchestration import TaskGraph, TaskNode, ExecutorResult
+from app.services.hermes.experience_engine import get_engine
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +21,9 @@ MAX_DAG_NODES = 100
 
 def _validate_dag_topology(nodes: List[TaskNode]) -> None:
     """DAG Governor: 拓扑防爆护栏与死循环检测。"""
+    engine = get_engine()
+    historical_exp = engine.query("dag_validation", top_k=3)
+
     if len(nodes) > MAX_DAG_NODES:
         raise ValueError(
             f"DAG Governor: TaskGraph 超过最大节点数限制 (上限 {MAX_DAG_NODES}，当前 {len(nodes)})"
@@ -248,6 +254,7 @@ def advance_plan(db: Session, plan_task_id: str) -> list[str]:
                     "advance_plan: 节点 %s 失败且策略为 abort，触发 Saga 回滚", task.id
                 )
                 compensate_plan(db, plan_task_id)
+                get_engine().record("advance_plan", False, 0.0, error_type="abort")
                 return []
 
     # 3. 筛选并激活就绪节点（含三重闸门：并发 / 审批 / 预算）
@@ -386,6 +393,8 @@ def advance_plan(db: Session, plan_task_id: str) -> list[str]:
     if all_terminal:
         plan_task.status = "done" if all_succeeded else "failed"
         db.add(plan_task)
+        get_engine().record("advance_plan", all_succeeded, 0.0,
+                           error_type=None if all_succeeded else "partial_failure")
     elif plan_task.status != "executing":
         plan_task.status = "executing"
         db.add(plan_task)

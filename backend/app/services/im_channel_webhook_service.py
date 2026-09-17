@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """七步⑤：企微 / 抖音私信 → 统一询盘入库（框架 webhook 入口）。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="低代码平台" subtitle="可视化拖拽搭建应用界面" surface="elevated">
     <template #actions>

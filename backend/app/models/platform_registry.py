@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户侧新增/自填平台与租户的关联审计（仅超管可见，客户 API 不暴露）。"""
 
 import uuid

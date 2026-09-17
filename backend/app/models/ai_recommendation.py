@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 AI Recommendation Model - AI推荐模型
 AI推荐系统的推荐记录（用户-产品推荐对）

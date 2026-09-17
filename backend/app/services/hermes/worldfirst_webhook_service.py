@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """万里汇 WorldFirst Webhook → 财迷疯 survival 台账（摸金校尉 L6 自动收款）。"""
 
 from __future__ import annotations

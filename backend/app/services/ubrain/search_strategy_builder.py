@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 辅助搜索策略构建器 — FIX-60
 
 智能搜索策略引擎：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """摸金校尉 · 生产就绪检查 + 平台自营租户 bootstrap。"""
 
 from __future__ import annotations

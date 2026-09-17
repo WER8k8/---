@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 站点主导航（顶栏与移动端抽屉共用） */
 export interface SiteNavLink {
   /** i18n 键名，如 'nav.home' */

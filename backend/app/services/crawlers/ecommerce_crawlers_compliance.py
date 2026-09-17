@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ECommerceCrawlers 合规门禁 — 无 Sidecar / 无授权 / 无 evidence 一律拒绝。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 一键开业 — Time-to-Value 自动编排 */
 import { apiPost } from '@/utils/api';
 

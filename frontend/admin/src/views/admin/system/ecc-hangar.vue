@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="ECC 专家机库" subtitle="Hermes 技术雷达 · 只读专家评审 · 不自动装依赖" surface="elevated">
     <template #actions>

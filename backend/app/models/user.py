@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """用户模型 — 支持多角色、第三方登录、AI 推荐等。"""
 import uuid
 from datetime import datetime, timezone

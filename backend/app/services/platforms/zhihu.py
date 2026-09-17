@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """知乎发布适配器 — 真实对接知乎专栏 API。
 
 支持:

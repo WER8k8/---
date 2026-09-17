@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 租户站联系方式展示 — 与 backend visitor_locale_service 规则对齐。
  * 优先消费 visitor-context.contact_channels；缺省时按 cn_compliant_only 本地兜底。
  */

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import asyncio
 import json
 import logging
@@ -58,7 +60,7 @@ class FeishuClient:
         )
         data = resp.json()
         if data.get("code") != 0:
-            logger.error(f"获取飞书token失败: {data}")
+            logger.error("获取飞书token失败: code=%s msg=%s", data.get("code"), data.get("msg"))
             return
         self._tenant_access_token = data["tenant_access_token"]
         self._token_expire_time = time.time() + data.get("expire", 7200) - 60
@@ -225,7 +227,7 @@ class FeishuClient:
         data = resp.json()
         if data.get("code") == 0:
             return data["data"]["image_key"]
-        logger.error(f"上传图片失败: {data}")
+        logger.error("上传图片失败: code=%s msg=%s", data.get("code"), data.get("msg"))
         return None
 
     async def close(self):
@@ -274,7 +276,7 @@ class FeishuClient:
         )
         data = resp.json()
         if data.get("code") != 0:
-            logger.error(f"获取飞书token失败: {data}")
+            logger.error("获取飞书token失败: code=%s msg=%s", data.get("code"), data.get("msg"))
             return
         self._tenant_access_token = data["tenant_access_token"]
         self._token_expire_time = time.time() + data.get("expire", 7200) - 60

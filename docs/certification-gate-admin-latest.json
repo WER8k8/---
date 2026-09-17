@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T12:24:51.160Z",
+  "generatedAt": "2026-09-14T23:24:55.029Z",
   "target": "省级软件评测 — 管理端功能门禁",
   "ready": true,
   "blocked": false,
@@ -58,7 +58,7 @@
         "ok": true,
         "decision_id": "CONSOLE-REGRESSION-LOCK-01",
         "checked": {
-          "vue_files": 380,
+          "vue_files": 416,
           "formily": "frontend/admin/src/components/youding/YdFormilyForm.vue",
           "billing": "frontend/admin/src/views/tenants/billing.vue"
         }
@@ -71,7 +71,7 @@
       "exitCode": 0,
       "summary": "P0=0 P1=0 P2=0",
       "raw": {
-        "totalVue": 289,
+        "totalVue": 321,
         "flagged": 0,
         "P0": 0,
         "P1": 0,
@@ -84,9 +84,9 @@
       "ok": true,
       "blocking": false,
       "exitCode": 0,
-      "summary": "missing=0/90",
+      "summary": "missing=0/96",
       "raw": {
-        "total": 90,
+        "total": 96,
         "missing": [],
         "source": "platformShellMenu.ts"
       }
@@ -123,7 +123,7 @@
       "summary": "menuLinked=0 flagged=0",
       "raw": {
         "menuLinked": 0,
-        "total": 20,
+        "total": 22,
         "items": []
       }
     },
@@ -150,14 +150,71 @@
         "ok": true,
         "task": "NO-FAKE-DELIVERY-DEEP",
         "scanned": {
-          "backend_py": 794,
-          "frontend_vue": 380,
-          "frontend_ts": 142
+          "backend_py": 1231,
+          "frontend_vue": 416,
+          "frontend_ts": 154
         },
         "p0_count": 0,
         "p1_count": 0,
-        "p2_count": 0,
-        "findings": [],
+        "p2_count": 8,
+        "findings": [
+          {
+            "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
+            "line": 78,
+            "label": "ע�ͳ���ģ��ʵ�ֵ�δ�ſ�",
+            "severity": "P2",
+            "snippet": "# ����ģ��������������ʵ���ֱ���"
+          },
+          {
+            "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
+            "line": 105,
+            "label": "ע�ͳ���ģ��ʵ�ֵ�δ�ſ�",
+            "severity": "P2",
+            "snippet": "\"\"\"������ְ���ģ��ӿڣ�����������ʵ֧������\"\"\""
+          },
+          {
+            "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
+            "line": 136,
+            "label": "ע�ͳ���ģ��ʵ�ֵ�δ�ſ�",
+            "severity": "P2",
+            "snippet": "\"total_earned\": 0,  # ����������ʵ����"
+          },
+          {
+            "file": "backend\\app\\api\\v1\\routes\\super_agent.py",
+            "line": 732,
+            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "severity": "P2",
+            "snippet": "- \"mock\": ��δʵ�֣�������ʾ���ݣ�ǰ��Ӧ��ע\"��ʾ\"�����أ�"
+          },
+          {
+            "file": "backend\\app\\services\\ubrain\\channel_status.py",
+            "line": 90,
+            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "severity": "P2",
+            "snippet": "return ChannelInfo(\"tiktok\", \"TikTok\", \"mock\", \"TikTok �������ڿ����У���ǰ������ʾ����\")"
+          },
+          {
+            "file": "backend\\app\\services\\ubrain\\channel_status.py",
+            "line": 97,
+            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "severity": "P2",
+            "snippet": "return ChannelInfo(\"quora\", \"Quora\", \"mock\", \"Quora �������ڿ����У���ǰ������ʾ����\")"
+          },
+          {
+            "file": "backend\\app\\services\\ubrain\\channel_status.py",
+            "line": 104,
+            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "severity": "P2",
+            "snippet": "return ChannelInfo(\"reddit\", \"Reddit\", \"mock\", \"Reddit �������ڿ����У���ǰ������ʾ����\")"
+          },
+          {
+            "file": "backend\\app\\services\\ubrain\\whatsapp_prospect_service.py",
+            "line": 464,
+            "label": "��Ӧ�庬 mock:true����ȷ�������ſأ�",
+            "severity": "P2",
+            "snippet": "\"mock\": True,"
+          }
+        ],
         "p0_findings": [],
         "p1_findings": []
       },
@@ -168,74 +225,22 @@
       "ok": true,
       "blocking": false,
       "exitCode": 0,
-      "summary": "ok",
+      "summary": "skipped — dev stack not up",
       "raw": {
-        "ok": true,
-        "task": "TENANT-SEO-AUDIT",
-        "tenant": "dev.local",
-        "pages": {
-          "zh_default": {
-            "url": "http://127.0.0.1:3000/tenant?__tenant=dev.local&lpro=1",
-            "status": 200,
-            "issue_count": 0
-          },
-          "en": {
-            "url": "http://127.0.0.1:3000/tenant?__tenant=dev.local&lpro=1&language=en",
-            "status": 200,
-            "issue_count": 0
-          }
-        },
-        "summary": {
-          "P0": 0,
-          "P1": 0,
-          "P2": 0
-        },
-        "issues": [],
-        "out_of_scope": [
-          "���� URL ���� site-audit���� Admin /seo/site-audit��",
-          "�ٶ�/Google ��ʵ��������¼"
-        ]
+        "skipped": true
       },
-      "skipped": false
+      "skipped": true
     },
     {
       "script": "tenant-geo-audit",
       "ok": true,
       "blocking": false,
       "exitCode": 0,
-      "summary": "ok",
+      "summary": "skipped — dev stack not up",
       "raw": {
-        "ok": true,
-        "task": "TENANT-GEO-AUDIT",
-        "tenant": "dev.local",
-        "checks": {
-          "llms_txt": {
-            "url": "http://127.0.0.1:3000/llms.txt?__tenant=dev.local&lpro=1",
-            "status": 200,
-            "bytes": 3668
-          },
-          "llms_full": {
-            "url": "http://127.0.0.1:3000/llms-full.txt?__tenant=dev.local&lpro=1",
-            "status": 200,
-            "bytes": 2355
-          },
-          "tenant_html": {
-            "status": 200,
-            "bytes": 68226
-          },
-          "ai_crawler_html": {
-            "status": 200,
-            "bytes": 70827
-          }
-        },
-        "summary": {
-          "P0": 0,
-          "P1": 0
-        },
-        "issues": [],
-        "score_contract": "unified-geo-v1"
+        "skipped": true
       },
-      "skipped": false
+      "skipped": true
     }
   ],
   "recommendation": "管理端门禁通过；继续完成后端 preflight、测试报告实填、PM 签字与性能/安全附件"

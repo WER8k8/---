@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes TaskGraph and Intent Orchestration Schemas (Plan-as-Data)."""
 
 from typing import Any, Dict, List, Literal, Optional, Union

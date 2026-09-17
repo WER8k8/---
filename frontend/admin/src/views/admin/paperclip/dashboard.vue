@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated" title="Paperclip 总控面板" subtitle="Agent 编排管理 · 目标对齐 · 心跳监控">
     <template #actions>

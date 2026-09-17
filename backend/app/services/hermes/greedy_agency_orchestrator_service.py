@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 财迷疯 × agency-agents-zh — 专家库编排（SaaS 内嵌 220+ 角色）。"""
 
 from __future__ import annotations

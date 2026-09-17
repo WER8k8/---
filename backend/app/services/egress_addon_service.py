@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """IP 槽位加购 — 支付成功后增加租户 egress_ip_quota。"""
 
 from __future__ import annotations

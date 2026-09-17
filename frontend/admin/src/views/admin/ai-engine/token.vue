@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="Token 账本" subtitle="查看租户 Token 余额、消费记录与充值" surface="elevated">
   <div class="token-ledger">

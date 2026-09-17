@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { unwrapFetchedJson } from '@/api';
 import { apiFetch } from './fetchWrapper';
 

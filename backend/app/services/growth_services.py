@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """推荐奖励机制 + 客户成功体系 — FIX-49/50
 
 推荐奖励：

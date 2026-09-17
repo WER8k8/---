@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="分类管理" subtitle="产品分类树 · 来自 /products/categories/tree" surface="elevated">
     <template #actions>

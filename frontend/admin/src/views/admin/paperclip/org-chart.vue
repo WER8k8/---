@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated" title="组织架构管理" subtitle="Agent 层级管理 · 技能分配 · 状态控制">
     <template #actions>

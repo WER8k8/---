@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="集成栈状态" subtitle="FastAPI 主栈与可选 Node seo-backend 健康一览" surface="elevated">
     <template #actions>

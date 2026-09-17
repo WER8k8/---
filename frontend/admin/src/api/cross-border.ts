@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 跨境语言桥 — W1/W2/W3 Client API */
 
 import { apiGet, apiPatch, apiPost, authHeaders, fetchWithAuthRetry, getAuthToken } from '@/utils/api';
@@ -85,6 +88,18 @@ export type VideoDubResult = {
   tts_voice?: string;
   dub_voice_gender?: string;
   dub_voice_source?: string;
+  target_lang?: string;
+  target_lang_name?: string;
+  target_lang_flag?: string;
+  script_translated?: string;
+  social_copy?: {
+    title?: string;
+    description?: string;
+    tags?: string[];
+    hashtags?: string;
+  };
+  distribute_platforms?: string[];
+  distribution_status?: Record<string, any>;
 };
 
 export type ProductCandidate = {
@@ -452,15 +467,47 @@ export async function transcribeVideo(
   };
 }
 
+export type SupportedLanguage = {
+  code: string;
+  name: string;
+  en_name: string;
+  flag: string;
+};
+
+export function fetchSupportedLanguages() {
+  return apiGet<{ languages: SupportedLanguage[] }>('/cross-border/video-dub/languages');
+}
+
+export function autoDistributeDubVideo(
+  mediaTaskId: string,
+  platforms: string[],
+  socialCopy?: Record<string, any>,
+  videoUrl?: string,
+) {
+  return apiPost<{ media_task_id: string; distribution: Record<string, any> }>(
+    '/cross-border/video-dub/auto-distribute',
+    {
+      media_task_id: mediaTaskId,
+      platforms,
+      social_copy: socialCopy,
+      video_url: videoUrl,
+    },
+  );
+}
+
 export async function runOneClickOverseas(
   payload: {
     media_task_id: string;
     transcript_zh?: string;
     voice_consent?: boolean;
-    output_mode?: 'subtitle' | 'dub';
+    output_mode?: 'subtitle' | 'dub' | 'burn';
     dub_voice_gender?: 'auto' | 'male' | 'female';
     track?: 'standard' | 'opensource_premium' | 'vozo';
     localization_provider?: string;
+    target_lang?: string;
+    voice_clone?: boolean;
+    lip_sync?: boolean;
+    distribute_platforms?: string[];
   },
   onProgress?: (s: CrossBorderJobStatus) => void,
 ): Promise<VideoDubResult> {
@@ -474,6 +521,10 @@ export async function runOneClickOverseas(
       dub_voice_gender: payload.dub_voice_gender || 'auto',
       track: payload.track || 'standard',
       localization_provider: payload.localization_provider,
+      target_lang: payload.target_lang || 'en',
+      voice_clone: payload.voice_clone ?? true,
+      lip_sync: payload.lip_sync ?? true,
+      distribute_platforms: payload.distribute_platforms,
     },
     onProgress,
   );
@@ -484,10 +535,14 @@ export async function runPremiumOverseas(
     media_task_id: string;
     transcript_zh?: string;
     voice_consent?: boolean;
-    output_mode?: 'subtitle' | 'dub';
+    output_mode?: 'subtitle' | 'dub' | 'burn';
     dub_voice_gender?: 'auto' | 'male' | 'female';
     track?: 'opensource_premium' | 'vozo';
     localization_provider?: string;
+    target_lang?: string;
+    voice_clone?: boolean;
+    lip_sync?: boolean;
+    distribute_platforms?: string[];
   },
   onProgress?: (s: CrossBorderJobStatus) => void,
 ): Promise<VideoDubResult> {
@@ -499,6 +554,10 @@ export async function runPremiumOverseas(
     track: payload.track || 'opensource_premium',
     localization_provider: payload.localization_provider,
     dub_voice_gender: payload.dub_voice_gender || 'auto',
+    target_lang: payload.target_lang || 'en',
+    voice_clone: payload.voice_clone ?? true,
+    lip_sync: payload.lip_sync ?? true,
+    distribute_platforms: payload.distribute_platforms,
   });
   const jobId = enqueued.job_id;
   if (!jobId) throw new Error('精品出海入队失败');
@@ -527,6 +586,10 @@ export async function createVideoDubJob(
     dub_voice_gender?: 'auto' | 'male' | 'female';
     track?: string;
     localization_provider?: string;
+    target_lang?: string;
+    voice_clone?: boolean;
+    lip_sync?: boolean;
+    distribute_platforms?: string[];
   },
   onProgress?: (s: CrossBorderJobStatus) => void,
 ): Promise<VideoDubResult> {

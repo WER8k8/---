@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频任务 SEO / GEO 增强：独立 VideoObject，不覆盖文章页既有 Schema。"""
 
 from __future__ import annotations

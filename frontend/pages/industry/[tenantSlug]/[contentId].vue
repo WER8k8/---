@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="industry-content-page min-h-screen bg-surface">
     <div v-if="pending" class="min-h-[50vh] flex items-center justify-center">

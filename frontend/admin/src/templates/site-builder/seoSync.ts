@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import type { SiteContentSnapshot, SiteSeoFields } from './types';
 
 function i18nHomeOverlay(snapshot: SiteContentSnapshot, lang: string): Record<string, unknown> {

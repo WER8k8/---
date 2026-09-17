@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="建材行业知识库" subtitle="基于建材行业国家标准、产品参数与施工规范的智能知识问答" surface="elevated">
   <div class="knowledge-base">

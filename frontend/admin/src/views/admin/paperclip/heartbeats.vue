@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage surface="elevated" title="心跳监控" subtitle="心跳引擎控制 · Agent 健康状态 · 历史日志">
     <template #actions>

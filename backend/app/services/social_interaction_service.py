@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Lane I · 社媒评论/私信 → 意向识别 → 谈单草稿 → 可验证发送。"""
 
 from __future__ import annotations

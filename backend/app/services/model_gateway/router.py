@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """能力路由：required_capabilities + 四维信号 → ai_engine 场景 tier。
 
 评分维度（总纲 038 并入 Model Router）：Quality + Speed + Cost + Privacy。

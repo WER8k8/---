@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip Agent 编排 API — 公司 / Agent / 目标 / 任务 / 心跳 / 预算 / 审批"""
 
 from fastapi import APIRouter, Depends, HTTPException, Query

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """财旺/UBrain 预制回复模板 — 事实与指令骨架；口语润色由 LLM assist 完成。"""
 
 from __future__ import annotations

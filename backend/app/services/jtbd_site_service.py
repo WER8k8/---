@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SITE-JTBD-01 · B2B 建站思维层（与 frontend industryPresets.ts 对齐）。"""
 
 from __future__ import annotations

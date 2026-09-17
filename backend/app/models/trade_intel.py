@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出海参谋 — 品类×国家规则（M0 可落库维护）。"""
 
 import uuid

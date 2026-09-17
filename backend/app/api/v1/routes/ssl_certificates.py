@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SSL Certificate API Routes - Auto-issuance via Let's Encrypt."""
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
@@ -15,16 +17,20 @@ from app.schemas.ssl_certificate import (
     SSLCertificateResponse,
     SSLCertificateUpdate,
 )
+from app.core.security import require_admin
+from app.models.user import User
 from app.services.acme_service import SSLCertificateService
 
 logger = get_logger(__name__)
-router = APIRouter(prefix="/api/v1/ssl-certificates", tags=["SSL证书管理"])
+ROUTE_PREFIX = ""
+router = APIRouter(prefix="/ssl-certificates", tags=["SSL证书管理"])
 
 
 @router.post("", response_model=SSLCertificateResponse, status_code=status.HTTP_201_CREATED)
 async def create_ssl_certificate(
     cert_data: SSLCertificateCreate,
     db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
 ) -> SSLCertificate:
     """Request SSL certificate issuance for a domain.
 
@@ -84,6 +90,7 @@ async def create_ssl_certificate(
 @router.get("", response_model=List[SSLCertificateResponse])
 async def list_ssl_certificates(
     tenant_id: UUID = Query(...),
+    _admin: User = Depends(require_admin),
     is_active: Optional[str] = Query(None),
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
@@ -115,6 +122,7 @@ async def list_ssl_certificates(
 async def get_ssl_certificate(
     cert_id: UUID,
     db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
 ) -> SSLCertificate:
     """Get SSL certificate by ID.
 
@@ -140,6 +148,7 @@ async def get_ssl_certificate(
 async def renew_ssl_certificate(
     cert_id: UUID,
     db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
 ) -> Dict[str, Any]:
     """手动触发证书续期。
 
@@ -187,6 +196,7 @@ async def renew_ssl_certificate(
 @router.post("/auto-renew", response_model=Dict[str, Any])
 async def trigger_auto_renewal(
     db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
 ) -> Dict[str, Any]:
     """Trigger auto-renewal check for all certificates.
 

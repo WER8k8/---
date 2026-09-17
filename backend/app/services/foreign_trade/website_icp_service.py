@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """官网 ICP 画像 — 改编自 qingchuh/sale_agent_factory WebAnalyzer（MIT）。"""
 
 from __future__ import annotations

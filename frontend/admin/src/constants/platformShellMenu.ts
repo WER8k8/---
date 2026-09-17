@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** Platform 超管侧栏菜单 SSOT — 与 check-nav-routes / Nav Kernel 对齐 */
 import type { ShellMenuGroup } from '@/types/shellNav';
 import { PLATFORM_OPS_ALWAYS_VISIBLE } from '@/constants/stubVisibility';

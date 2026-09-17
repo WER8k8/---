@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Prometheus指标导出器 - 提供系统性能指标
 
 使用私有 registry 避免重复注册冲突。

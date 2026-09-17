@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """自动备份服务 — 每日凌晨3点执行，保留最近7天"""
 
 import json

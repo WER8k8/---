@@ -1,6 +1,7 @@
 /**
- * Formily × Ant Design Vue 最小桥接（BJ-01 · `_ref/formily-antdv-x3` 对齐子集）
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
+import { defineComponent, h } from 'vue';
 import { Input as AntInput, Select, Switch, Form } from 'ant-design-vue';
 import type { Field } from '@formily/core';
 import { connect, mapProps } from '@formily/vue';
@@ -43,10 +44,22 @@ export const FormilySelect = connect(
   }),
 );
 
-export const FormilySwitch = connect(
-  Switch,
-  mapProps({ value: 'checked' }, (props) => {
-    const { value, ...rest } = props;
-    return rest;
-  }),
-);
+const SafeSwitch = defineComponent({
+  name: 'SafeSwitch',
+  props: ['value', 'checked'],
+  emits: ['change', 'update:checked'],
+  setup(props, { emit, attrs }) {
+    return () =>
+      h(Switch, {
+        ...attrs,
+        checked: props.checked !== undefined ? Boolean(props.checked) : Boolean(props.value),
+        'onUpdate:checked': (val: unknown) => {
+          emit('update:checked', Boolean(val));
+          emit('change', Boolean(val));
+        },
+      });
+  },
+});
+
+export const FormilySwitch = connect(SafeSwitch, mapProps({ value: 'checked' }));
+

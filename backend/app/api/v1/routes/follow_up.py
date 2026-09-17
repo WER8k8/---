@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """智能 Follow-up API 路由 — FIX-57"""
 
 from typing import Optional
@@ -14,6 +16,7 @@ from app.services.ubrain.follow_up_engine import (
     follow_up_engine,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/follow-up", tags=["获客·智能跟进"])
 
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Product Categories API Router - 产品分类API
 """
@@ -8,7 +10,9 @@ import uuid
 
 from app.core.database import get_db
 from app.core.response import success_response
+from app.core.security import get_current_user
 from app.models.product_category import ProductCategory
+from app.models.user import User
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -29,7 +33,8 @@ def create_product_category(
     sort_order: int = 0,
     meta_title: Optional[str] = None,
     meta_description: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """创建产品分类"""
     try:
@@ -54,7 +59,7 @@ def create_product_category(
 
 
 @router.get("/{category_id}", response_model=dict)
-def get_product_category(category_id: str, db: Session = Depends(get_db)):
+def get_product_category(category_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """获取产品分类详情"""
     category = db.query(ProductCategory).filter(ProductCategory.id == uuid.UUID(category_id)).first()
     if not category:
@@ -79,7 +84,8 @@ def list_product_categories(
     level: Optional[int] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出产品分类（支持按父分类/层级过滤）"""
     query = db.query(ProductCategory)
@@ -113,7 +119,8 @@ def update_product_category(
     sort_order: Optional[int] = None,
     meta_title: Optional[str] = None,
     meta_description: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """更新产品分类"""
     category = db.query(ProductCategory).filter(ProductCategory.id == uuid.UUID(category_id)).first()
@@ -145,7 +152,7 @@ def update_product_category(
 
 
 @router.delete("/{category_id}")
-def delete_product_category(category_id: str, db: Session = Depends(get_db)):
+def delete_product_category(category_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """删除产品分类"""
     category = db.query(ProductCategory).filter(ProductCategory.id == uuid.UUID(category_id)).first()
     if not category:

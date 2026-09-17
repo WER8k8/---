@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """知识库 API 路由"""
 
 from fastapi import APIRouter, Depends, Query
@@ -11,7 +13,7 @@ from app.services.rag_pricing_guard import validate_sales_text
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
-ROUTE_PREFIX = "/ai/knowledge"
+ROUTE_PREFIX = "/knowledge"
 ROUTE_TAGS = ["知识库"]
 
 router = APIRouter(tags=["知识库"])

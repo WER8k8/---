@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """登录暴力破解防护：优先 Redis（多实例共享），失败降级进程内内存；接口与阈值行为保持不变。"""
 
 from __future__ import annotations

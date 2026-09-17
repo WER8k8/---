@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户侧访问控制 — ROLE_PERMISSIONS + 超管 DB 权限码 + 路由守卫。"""
 
 from __future__ import annotations

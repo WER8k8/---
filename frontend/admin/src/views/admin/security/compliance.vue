@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="合规检查" subtitle="超管内控检查清单（本地）+ 外链站点合规工具" surface="elevated">
     <template #actions>

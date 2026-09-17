@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户 AI 通道自动对接：充值后接通所选平台 Key；无 Key 时无缝降级免费 NVIDIA。"""
 
 from __future__ import annotations

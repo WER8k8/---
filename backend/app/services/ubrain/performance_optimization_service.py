@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """性能优化服务 — FIX-66~69
 
 FIX-66: 异步化 + 消息驱动（EventBus 增强 + 异步任务编排）

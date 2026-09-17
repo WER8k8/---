@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI推荐系统服务 - 协同过滤与内容推荐算法"""
 
 import logging

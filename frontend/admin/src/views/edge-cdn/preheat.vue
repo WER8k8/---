@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="内容预热" subtitle="Push/Pull 缓存预热策略" surface="elevated">
     <template #actions>
@@ -97,7 +100,7 @@ async function loadTasks() {
     const r = await fetch('/api/v1/edge-cdn/preheat', { headers: { Authorization: `Bearer ${tk}` } })
     if (!r.ok) throw new Error('HTTP ' + r.status)
     const d = await r.json()
-    tasks.value = d.data ?? []
+    tasks.value = Array.isArray(d.data?.preheat_queue) ? d.data.preheat_queue : []
   } catch {
     message.warning('数据加载失败，请稍后重试')
     tasks.value = []

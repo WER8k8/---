@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 
 from app.core.database import UUID_TYPE, Base
 from app.core.field_crypto import encrypt_field, decrypt_field
@@ -135,11 +137,13 @@ class AIUsageLog(Base):
     provider_id = Column(UUID_TYPE, nullable=False, index=True)
     model_name = Column(String(100), nullable=False, index=True)
     task_type = Column(String(50), nullable=False, index=True)
-    prompt_tokens = Column(Integer, default=0)
-    completion_tokens = Column(Integer, default=0)
-    total_tokens = Column(Integer, default=0)
-    cost = Column(Float, default=0.0)
-    duration_ms = Column(Integer, default=0)
+    # 注意：DB 实际列类型为 varchar（写入端 ai_config_service 主动 str()），
+    # 模型必须对齐 String，否则 PG 上 SELECT 整行会因 result processor 类型不匹配 500。
+    prompt_tokens = Column(String(50), default="0")
+    completion_tokens = Column(String(50), default="0")
+    total_tokens = Column(String(50), default="0")
+    cost = Column(String(50), default="0")
+    duration_ms = Column(String(50), default="0")
     success = Column(Boolean, default=True, nullable=False)
     error_message = Column(Text)
     created_at = Column(

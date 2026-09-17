@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """生产路径出站 JSON 假交付扫描中间件。"""
 
 from __future__ import annotations

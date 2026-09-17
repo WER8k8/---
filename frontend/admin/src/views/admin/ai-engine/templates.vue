@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="内容生成模板" subtitle="管理 AI 内容生成模板，支持优化、SEO、代码等场景" surface="elevated">
     <template #actions>
@@ -133,7 +136,7 @@ function taskLabel(t:string) { return taskLabelMap[t] || t; }
 async function loadTemplates() {
   loading.value = true;
   try {
-    const res = await apiGet('/api/v1/ai/templates', {
+    const res = await apiGet('/ai/templates', {
       page: pagination.value.current,
       page_size: pagination.value.pageSize,
       task_type: filterTask.value || undefined,
@@ -176,9 +179,9 @@ async function saveTemplate() {
     const payload = { ...form.value };
     let res;
     if (editing.value) {
-      res = await apiPut(`/api/v1/ai/templates/${editing.value}`, payload);
+      res = await apiPut(`/ai/templates/${editing.value}`, payload);
     } else {
-      res = await apiPost('/api/v1/ai/templates', payload);
+      res = await apiPost('/ai/templates', payload);
     }
     if (res.code === 0) {
       message.success(editing.value ? '更新成功' : '创建成功');
@@ -196,7 +199,7 @@ async function saveTemplate() {
 
 async function toggleActive(rec: any, active: boolean) {
   try {
-    const res = await apiPut(`/api/v1/ai/templates/${rec.id}`, { is_active: active });
+    const res = await apiPut(`/ai/templates/${rec.id}`, { is_active: active });
     if (res.code === 0) {
       rec.is_active = active;
       message.success(active ? '已启用' : '已禁用');
@@ -210,7 +213,7 @@ async function toggleActive(rec: any, active: boolean) {
 async function deleteTemplate(id: string) {
   if (!confirm('确定删除此模板？')) return;
   try {
-    await apiDelete(`/api/v1/ai/templates/${id}`);
+    await apiDelete(`/ai/templates/${id}`);
     message.success('删除成功');
     await loadTemplates();
   } catch (e: any) {

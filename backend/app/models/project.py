@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Project Intelligence 数据模型 — 项目/招标信号（Phase 4）"""
 
 from __future__ import annotations

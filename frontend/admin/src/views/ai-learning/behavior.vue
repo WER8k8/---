@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="用户行为分析" subtitle="页面停留 · 点击热力图 · 行为模式挖掘（真实流量埋点）" surface="elevated">
     <template #actions>

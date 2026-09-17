@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow + AccioWork 商业 OS 飞轮 — 记忆 / 编排 / 反馈（可接 Mem0、n8n）。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """矩阵发布 — 计划预览、PublishTask 创建、视频真发统一入口。"""
 
 from __future__ import annotations

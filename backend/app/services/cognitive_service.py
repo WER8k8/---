@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """认知智能与知识图谱服务层 — 仅返回真实可核对数据或诚实空态。"""
 
 from typing import Any, Dict

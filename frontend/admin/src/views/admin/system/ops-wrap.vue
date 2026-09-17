@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="运维收尾批处理" subtitle="到期冻结 · AI 成本归集 · 发布队列（蜂群收尾一键触发）" surface="elevated">
     <template #actions>

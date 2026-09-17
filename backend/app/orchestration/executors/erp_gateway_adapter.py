@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ERP_BACKEND 插槽适配器：复用订单真相，不虚构库存。"""
 
 from __future__ import annotations

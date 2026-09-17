@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="代码工具" subtitle="代码编辑、生成和重构工具管理" surface="elevated">
     <YdHonestDataBanner

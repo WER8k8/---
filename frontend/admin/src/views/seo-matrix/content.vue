@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI 文案生成" subtitle="基于关键词智能生成高质量 SEO 文案" surface="elevated">
     <template #actions>

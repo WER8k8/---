@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-G-SM-04 — 平台账号 login_status 超时告警。"""
 
 from __future__ import annotations

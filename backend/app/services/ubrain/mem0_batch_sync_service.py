@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """INT-03：Mem0 洞察批量双写（超管触发 · 未配置则 no-op）。"""
 
 from __future__ import annotations

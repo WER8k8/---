@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Wangcai Session / QA Log Models - 旺财访客会话与问答日志（总纲 §7A.3 / 迁移 094）
 

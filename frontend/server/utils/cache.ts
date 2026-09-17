@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import type { H3Event } from 'h3'
 import { setHeader, getHeader, getQuery } from 'h3'
 

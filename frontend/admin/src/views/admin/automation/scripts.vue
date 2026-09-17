@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="脚本库" subtitle="保存常用脚本片段（本地）" surface="elevated">
     <template #actions>

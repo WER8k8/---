@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """能力标签（总纲 §4.6）：reasoning/coding/vision/writing/translation/structured_output/cheap/fast。
 
 业务只传 required_capabilities + budget；router 将其映射为 ai_engine 场景 tier。

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <header
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out"

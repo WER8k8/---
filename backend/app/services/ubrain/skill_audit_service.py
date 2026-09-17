@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """技能安全审核服务 — 参考 CocoLoop BSS安全扫描体系。
 
 CocoLoop 采用全链路安全审核：

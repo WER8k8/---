@@ -1,0 +1,7 @@
+{
+  "ts": "20260915-105812",
+  "git_rev": "f5cb60d2438671157e283ce00dbe7be6ddc88c82",
+  "alembic_rev": "unknown",
+  "db_backup": "deploy/snapshots/db-20260915-105812.sql",
+  "db_type": "sqlite"
+}

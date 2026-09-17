@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """LinkedIn 外贸客户开发服务 — 从 LinkedIn 挖掘 B2B 决策人。
 
 LinkedIn 是全球最大的职场社交平台，拥有超过 8 亿用户，

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="代理能力划拨" subtitle="各级别后台 API 边界与前台工作台入口勾选（localStorage）" surface="elevated">
     <template #actions>

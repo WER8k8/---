@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="A/B 测试" subtitle="/api/v1/ab-test 实验列表与启停" surface="elevated">
     <template #actions>

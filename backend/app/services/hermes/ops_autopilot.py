@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 运维自动驾驶 — 巡站 + 技术雷达 + 自愈 + 飞书通知。"""
 
 from __future__ import annotations

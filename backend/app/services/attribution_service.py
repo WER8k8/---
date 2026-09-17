@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """归因服务 — 连接各模块的自动化桥接层。
 
 Connection ②: GEO Low Score → 自动重试内容生成

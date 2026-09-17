@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes × agency-orchestrator — 专家角色库编排桥接。"""
 
 from __future__ import annotations

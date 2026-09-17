@@ -1,9 +1,12 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <section class="today-strip" :class="{ 'today-strip--done': allDone }" aria-label="今日三步摘要">
     <div class="today-strip__main">
       <div class="today-strip__head">
-        <span class="today-strip__badge">今日三步</span>
-        <h2>{{ payload.headline || '绑域 → 发首条 → 收询盘' }}</h2>
+        <span class="today-strip__badge">外贸开店关键进展</span>
+        <h2>{{ payload.headline || '建站上线 ➔ 首发推广 ➔ 捕获海外询盘' }}</h2>
       </div>
       <div
         class="today-strip__progress"
@@ -18,11 +21,12 @@
         <span>{{ payload.done_count ?? 0 }}/{{ payload.total_steps ?? 3 }} 完成</span>
       </div>
       <p v-if="nextStep && !allDone" class="today-strip__next">
-        下一步：<strong>{{ nextStep.title }}</strong> — {{ nextStep.hint }}
+        建议优先处理：<strong>{{ nextStep.title }}</strong> — {{ nextStep.hint }}
       </p>
       <p v-else-if="allDone" class="today-strip__next today-strip__next--ok">
-        三步已完成，继续保持发布与跟进节奏。
+        核心闭环已就绪，保持日常询盘跟进与多平台发品节奏。
       </p>
+
     </div>
     <div class="today-strip__actions">
       <a-button v-if="nextStep && !allDone" type="primary" @click="go(nextStep.route)">
@@ -67,7 +71,7 @@ onMounted(() => {
 }
 
 .today-strip--done {
-  border-left: 3px solid #5c7284;
+  border-left: 3px solid #2563eb;
 }
 
 .today-strip__badge {
@@ -77,8 +81,8 @@ onMounted(() => {
   border-radius: 6px;
   font-size: 11px;
   font-weight: 600;
-  color: #4a6a7c;
-  background: #edf3f7;
+  color: #1e40af;
+  background: #eff6ff;
 }
 
 .today-strip h2 {
@@ -87,7 +91,7 @@ onMounted(() => {
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #1f2937;
+  color: #0f172a;
 }
 
 .today-strip__progress {
@@ -110,9 +114,9 @@ onMounted(() => {
 
 .today-strip__fill {
   height: 100%;
-  border-radius: inherit;
-  background: #5c7284;
-  transition: width 0.35s ease;
+  border-radius: 999px;
+  background: #2563eb;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .today-strip__next {
@@ -140,13 +144,18 @@ onMounted(() => {
 .today-strip__actions :deep(.ant-btn-primary) {
   font-weight: 600;
   border-radius: 8px !important;
-  background: #5c7284;
-  border-color: #5c7284;
-  box-shadow: none;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+.today-strip__actions :deep(.ant-btn-primary:hover) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
 }
 
 .today-strip__actions :deep(.ant-btn-link) {
-  color: #5c7284 !important;
+  color: #2563eb !important;
   padding-right: 0;
 }
 

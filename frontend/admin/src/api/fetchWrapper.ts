@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * @deprecated FIX-4: 此模块已废弃，请统一使用 axios 实例（通常在 @/api/ 或 @/utils/api.ts 中）。
  *
  * 废弃原因：

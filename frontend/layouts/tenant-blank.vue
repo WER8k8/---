@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="tenant-blank-root min-h-screen">
     <div v-if="booting" class="tenant-blank-boot" aria-live="polite">

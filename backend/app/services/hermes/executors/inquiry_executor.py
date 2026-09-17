@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Inquiry Capture Executor Plugin for Hermes Orchestration.
 
 把既有 `InquiriesUnifiedService.create_public_lead` 包成 ExecutorRegistry

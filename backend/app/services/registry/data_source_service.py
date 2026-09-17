@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """数据源合规评审服务（轮17-6）。
 
 §5.2.4：数据源接入前必须登记四元元数据（name/data_class/license_basis/

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """商业 OS 飞轮 API — Mem0/n8n/PostHog 外挂槽位。"""
 
 import os
@@ -80,7 +82,7 @@ def _audit(
 
 
 @router.get("/gaps")
-def accio_skill_gaps():
+def accio_skill_gaps(current_user: User = Depends(get_current_user)):
     """Accio 对标目录中未完整实现的技能（不删条目，仅列 gap）。"""
     gaps = list_gap_skills()
     return success_response(
@@ -93,7 +95,7 @@ def accio_skill_gaps():
 
 
 @router.get("/partial-skills")
-def accio_partial_mvp_skills():
+def accio_partial_mvp_skills(current_user: User = Depends(get_current_user)):
     """partial 且已有 MVP 端点的技能（副驾「可先试用」）。"""
     items = list_partial_mvp_skills()
     return success_response(
@@ -114,6 +116,7 @@ def accio_skill_gap_stub(
     locale: str = Query("zh", max_length=10),
     budget_usd: Optional[float] = Query(None, ge=0, le=1_000_000),
     rfq_lines: Optional[str] = Query(None, max_length=4000),
+    current_user: User = Depends(get_current_user),
 ):
     """
     gap 技能：T-ACCIO-1～4 走 MVP 200；其余未实现技能仍 501 + 说明。
@@ -204,7 +207,7 @@ async def accio_skill_gap_execute(
 
 
 @router.get("/skill-catalog")
-def accio_skill_catalog():
+def accio_skill_catalog(current_user: User = Depends(get_current_user)):
     """AccioWork 技能包对标目录 + 本系统实现覆盖率。"""
     return success_response(
         data={
@@ -261,14 +264,14 @@ def create_research_brief(
 
 
 @router.get("/integrations")
-def commercial_os_integrations():
+def commercial_os_integrations(current_user: User = Depends(get_current_user)):
     """P2 外挂槽位配置状态（Mem0 / PostHog / n8n / DeerFlow 旁路）。"""
     from app.services.ubrain.flywheel_integrations import flywheel_integrations_status
     return success_response(data=flywheel_integrations_status())
 
 
 @router.get("/deerflow-sidecar")
-def commercial_os_deerflow_sidecar():
+def commercial_os_deerflow_sidecar(current_user: User = Depends(get_current_user)):
     """官方 DeerFlow 旁路可达性（未配置则仅本机 Lite）。"""
     from app.services.ubrain.deerflow_sidecar import deerflow_sidecar_status
     return success_response(data=deerflow_sidecar_status())
@@ -378,14 +381,11 @@ class N8nWebhookBody(BaseModel):
 
 @router.get("/webhook/health")
 def n8n_webhook_health():
-    """INT-02：n8n 连通性探针（无需认证）。"""
-    secret = os.getenv("N8N_WEBHOOK_SECRET", "").strip()
+    """INT-02：n8n 连通性探针（无需认证，仅返回公共状态，不暴露密钥存在性/内部路径）。"""
     return success_response(
         data={
             "ready": True,
-            "auth_required": bool(secret),
-            "path": "/api/v1/ubrain/commercial-os/webhook",
-            "events": ["deerflow_done", "manual_pipeline", "feedback"],
+            "status": "ok",
         }
     )
 

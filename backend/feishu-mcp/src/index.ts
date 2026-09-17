@@ -3,7 +3,7 @@ export interface Env {
   FEISHU_APP_SECRET: string;
   FEISHU_VERIFICATION_TOKEN: string;
   FEISHU_API_BASE_URL: string;
-  FEISHU_LINGMA_WEBHOOK_URL: string;
+  FEISHU_OPS_WEBHOOK_URL: string;
 }
 
 interface TokenCache {
@@ -240,8 +240,8 @@ const tools: ToolDescription[] = [
     },
   },
   {
-    name: "send_lingma_text",
-    description: "向灵码飞书群发送文本消息（使用Webhook）",
+    name: "send_ops_text",
+    description: "向运维飞书群发送文本消息（使用Webhook）",
     parameters: {
       text: {
         type: "string",
@@ -251,8 +251,8 @@ const tools: ToolDescription[] = [
     },
   },
   {
-    name: "send_lingma_card",
-    description: "向灵码飞书群发送卡片消息（使用Webhook）",
+    name: "send_ops_card",
+    description: "向运维飞书群发送卡片消息（使用Webhook）",
     parameters: {
       card: {
         type: "object",
@@ -447,7 +447,7 @@ async function handleToolCall(env: Env, request: McpRequest): Promise<McpRespons
         return { id: request.id, result };
       }
 
-      case "send_lingma_text": {
+      case "send_ops_text": {
         const { text } = params as Record<string, string>;
         if (!text) {
           return {
@@ -455,17 +455,17 @@ async function handleToolCall(env: Env, request: McpRequest): Promise<McpRespons
             error: { code: 400, message: "缺少必要参数: text" },
           };
         }
-        if (!env.FEISHU_LINGMA_WEBHOOK_URL) {
+        if (!env.FEISHU_OPS_WEBHOOK_URL) {
           return {
             id: request.id,
-            error: { code: 500, message: "灵码Webhook地址未配置" },
+            error: { code: 500, message: "运维 Webhook 地址未配置" },
           };
         }
-        const webhookResult = await sendWebhookMessage(env.FEISHU_LINGMA_WEBHOOK_URL, text, "text");
+        const webhookResult = await sendWebhookMessage(env.FEISHU_OPS_WEBHOOK_URL, text, "text");
         return { id: request.id, result: webhookResult };
       }
 
-      case "send_lingma_card": {
+      case "send_ops_card": {
         const { card: cardParam } = params as Record<string, unknown>;
         if (!cardParam) {
           return {
@@ -473,13 +473,13 @@ async function handleToolCall(env: Env, request: McpRequest): Promise<McpRespons
             error: { code: 400, message: "缺少必要参数: card" },
           };
         }
-        if (!env.FEISHU_LINGMA_WEBHOOK_URL) {
+        if (!env.FEISHU_OPS_WEBHOOK_URL) {
           return {
             id: request.id,
-            error: { code: 500, message: "灵码Webhook地址未配置" },
+            error: { code: 500, message: "运维 Webhook 地址未配置" },
           };
         }
-        const webhookResult = await sendWebhookMessage(env.FEISHU_LINGMA_WEBHOOK_URL, JSON.stringify(cardParam), "interactive");
+        const webhookResult = await sendWebhookMessage(env.FEISHU_OPS_WEBHOOK_URL, JSON.stringify(cardParam), "interactive");
         return { id: request.id, result: webhookResult };
       }
 

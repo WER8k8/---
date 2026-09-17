@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="关键词管理" subtitle="AI 智能组合生成县域建材关键词" surface="elevated">
     <template #actions>

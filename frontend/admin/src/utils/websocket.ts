@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { io, Socket } from 'socket.io-client';
 import type { WebSocketConfig, WebSocketMessage } from '@/types/websocket';
 

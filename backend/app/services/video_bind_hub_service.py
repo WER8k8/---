@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频发布绑定中枢 — 登录优丁后一次入口绑号（含 AiToEarn 同步）。"""
 
 from __future__ import annotations

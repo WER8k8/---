@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """TTS 配音合成 — 开发显式 mock；生产无上游时 503。"""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="site-editor-gap-panel uj-glass-panel">
     <header class="site-editor-gap-panel__head">

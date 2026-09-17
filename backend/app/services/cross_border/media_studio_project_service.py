@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """全媒体工作室项目持久化 — SRT/segments 存于 media_task edit_config。"""
 
 from __future__ import annotations

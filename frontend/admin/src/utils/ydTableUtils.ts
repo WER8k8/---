@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** PAGE-01 · 分页响应适配（对齐 Art useTable 多格式） */
 
 export interface YdPageResult<T> {

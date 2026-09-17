@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * HTML 内容净化 composable — 基于 DOMPurify
  * 用于 v-html 场景的 XSS 防护
  */

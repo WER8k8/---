@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Skill 运行态 × 发布态 映射矩阵（轮17-5）。
 
 Trade AI BaseSkill 使用运行态（SKILL_STATUS，5 态：pending/running/success/

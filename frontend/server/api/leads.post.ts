@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Submit a new lead/inquiry - proxied from backend.
  */
 import { defineEventHandler, readBody } from 'h3'

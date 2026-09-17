@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="权限管理" subtitle="配置角色权限、菜单权限和操作权限" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """邮件追踪服务（P1-3）—— 像素回调 + 发送追踪。"""
 
 from __future__ import annotations

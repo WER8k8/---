@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 学习 / 自我进化概览 — 从 UBrain 与操作日志聚合真实计数。"""
 
 from __future__ import annotations

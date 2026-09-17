@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="支付码与接口" subtitle="微信/支付宝收款配置、回调地址、探针二维码与证书缓存" surface="elevated">
     <template #actions>

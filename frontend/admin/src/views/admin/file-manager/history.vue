@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <!-- 文件与对象变更历史 -->
 <template>
   <YdPage title="文件与对象变更历史" subtitle="以全站操作审计为准，可按 action / resource_type 缩小范围" surface="elevated">

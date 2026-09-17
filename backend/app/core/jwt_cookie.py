@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """JWT HttpOnly Cookie 工具 — FIX-22: 安全升级，Token 不再暴露给 JavaScript。
 
 生产环境 Cookie 属性：

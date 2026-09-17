@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """外贸 B2B 工具·技能·生态 API — 随源码部署。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Trade AI Agent Executor — 接真实适配器（不再返回假数据）。
 
 ⚠️ 本文件此前是**纯 mock**：伪造格式类似 `buyerN@<keyword>-intl.com` 的假线索邮箱、

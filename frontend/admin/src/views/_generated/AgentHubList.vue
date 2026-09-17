@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="智能体协同 列表" subtitle="数据列表 · 列设置与筛选" surface="elevated">
     <YdSearchBar @search="search" @reset="reset">
@@ -59,7 +62,7 @@ const {
   defaultQuery: { search: '' },
   columns,
   fetcher: async (q) => {
-    const raw = await apiGet('/api/v1/agent-hub/', {
+    const raw = await apiGet('/agent-hub/', {
       page: q.page,
       page_size: q.pageSize,
       search: q.search,

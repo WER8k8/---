@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GW-G-AEO-01 — 站点/母版文案 vs 禁泄露品牌词 + 租户事实一致性。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开发信质量评估 + A/B 测试 + 获客流程 API 路由 — FIX-58 & FIX-59"""
 
 from typing import Optional
@@ -12,6 +14,7 @@ from app.services.ubrain.email_quality_service import (
     OutreachStage,
 )
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/outreach-quality", tags=["获客·质量"])
 
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """视频 SEO / GEO / AAO 综合排名优化引擎。
 
 针对多模态视频内容，自动生成：

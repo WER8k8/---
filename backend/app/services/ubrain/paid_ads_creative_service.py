@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """付费广告创意 — 结构化变体 + 可选 AI 增强。"""
 
 from __future__ import annotations

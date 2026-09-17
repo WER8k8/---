@@ -1,9 +1,12 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <section class="yd-today-workbench panel uj-glass-panel">
     <header class="yd-today-workbench__head">
       <div class="yd-today-workbench__intro">
-        <p class="yd-today-workbench__kicker">登录 30 秒就知道该干什么</p>
-        <h2 class="yd-today-workbench__title">今日工作台</h2>
+        <p class="yd-today-workbench__kicker">B2B 外贸出海经营中枢</p>
+        <h2 class="yd-today-workbench__title">经营控制台</h2>
         <p v-if="headline" class="yd-today-workbench__headline">{{ headline }}</p>
       </div>
       <div class="yd-today-workbench__plan">
@@ -16,11 +19,12 @@
     <div class="yd-today-workbench__usage">
       <YdUsageMeter
         class="yd-today-workbench__meter"
-        label="AI 额度（本月）"
+        label="AI 算力点数（本月）"
         :used="aiUsed"
         :max="aiMax"
         :hint="usageHint"
       />
+
       <YdUsageMeter
         v-if="publishUsed > 0"
         class="yd-today-workbench__meter"
@@ -134,8 +138,9 @@ const usageHint = computed(() => {
     margin: 0;
     font-size: 12px;
     font-weight: 600;
-    color: var(--uj-brand, #4a9b8c);
+    color: var(--uj-brand, #2563eb);
   }
+
 
   &__title {
     margin: 4px 0 0;

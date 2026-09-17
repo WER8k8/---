@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 导出当前表格数据为 CSV（UTF-8 BOM） */
 export function downloadTableCsv(
   filename: string,

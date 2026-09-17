@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Publish Service - handles content publishing to various platforms.
 
 Implements real API integration for:
@@ -1087,6 +1089,34 @@ PUBLISHER_MAP = {
     "wordpress_com": UnimplementedPublisher,
     "linkedin_company": UnimplementedPublisher,
     "tiktok": UnimplementedPublisher,
+    # --- 09-13 全平台对齐补齐（PC-05）-------------------------------------------
+    # 这些是 platforms 表目录里有、但既无真发 Publisher 也无平台适配器的渠道。
+    # 过去它们要么解析不出键、要么被 platform_type 兜底借到 douyin/wechat，
+    # 要么在 publish_block_reason 里查不到身份而被判「已放行」。现在各给一个显式键，
+    # 全部挂 UnimplementedPublisher：命中即返回 PLATFORM_NOT_IMPLEMENTED，不发起任何请求。
+    # 接入真发时，把对应行的类换成真 Publisher 并同步 STUB_PUBLISHER_KEYS 即可。
+    "wechat_channels": UnimplementedPublisher,      # 微信视频号（≠ 微信公众号 wechat）
+    "qieehao": UnimplementedPublisher,              # 企鹅号
+    "wangyi_hao": UnimplementedPublisher,           # 网易号
+    "sohu_hao": UnimplementedPublisher,             # 搜狐号
+    "yidianzixun": UnimplementedPublisher,          # 一点资讯
+    "dayuhao": UnimplementedPublisher,              # 大鱼号
+    "jianshu": UnimplementedPublisher,              # 简书
+    "maimai": UnimplementedPublisher,               # 脉脉
+    "taobao_guangguang": UnimplementedPublisher,    # 淘宝逛逛
+    "ali1688": UnimplementedPublisher,              # 1688
+    "huizhong": UnimplementedPublisher,             # 慧聪网
+    "line_official": UnimplementedPublisher,        # LINE Official
+    "zalo": UnimplementedPublisher,                 # Zalo
+    "vk": UnimplementedPublisher,                   # VK
+    "quora": UnimplementedPublisher,                # Quora
+    "amazon_seller": UnimplementedPublisher,        # Amazon Seller（≠ 电商 amazon 键）
+    "tradekey": UnimplementedPublisher,             # TradeKey
+    "kompass": UnimplementedPublisher,              # Kompass
+    "thomasnet": UnimplementedPublisher,            # Thomasnet
+    "aliexpress": UnimplementedPublisher,           # AliExpress
+    "shopee": UnimplementedPublisher,               # Shopee
+    "lazada": UnimplementedPublisher,               # Lazada
 }
 
 

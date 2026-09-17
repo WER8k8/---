@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import type { SiteBuilderTemplateId } from './types';
 import { layoutKind, layoutLabel } from './buildPageShell';
 

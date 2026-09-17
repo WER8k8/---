@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """论坛语言桥 — 英文问→中文摘要；老板中文答→英文发布草稿（FORUM-05）。"""
 
 from __future__ import annotations

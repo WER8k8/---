@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="账号绑定" subtitle="绑定第三方账号后，可在登录页使用该方式登录" surface="elevated">
   <div class="p-4 max-w-2xl">

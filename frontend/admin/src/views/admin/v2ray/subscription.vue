@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="订阅管理" subtitle="订阅链接导入 · 自动更新 · 节点提取" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """微信支付服务（Native 扫码支付 + 回调验签 + 退款）
 
 本模块只负责微信支付相关能力，迁移自原 app.services.payment_service 的

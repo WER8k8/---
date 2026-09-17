@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Claw Patrol - AI安全防火墙
 基于Deno 2.8 Claw Patrol设计，用于防护AI生成代码的恶意执行

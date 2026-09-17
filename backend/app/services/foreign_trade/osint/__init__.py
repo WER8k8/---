@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """OSINT 六层背调 — 改编自 chefroger/smart-trade-ai (MIT)，见 THIRD_PARTY_ATTRIBUTION.md。"""
 
 from app.services.foreign_trade.osint.constants import (

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """双栈集成状态 — FastAPI 主库 + SEO 矩阵 + 可选 Node seo-backend。"""
 
 from __future__ import annotations

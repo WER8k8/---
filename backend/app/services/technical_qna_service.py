@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Technical Q&A — 基于批准知识库的带引用技术问答。
 
 确定性检索：仅从 approved (is_active) 知识库返回内容，绝不编造参数/认证/标准。

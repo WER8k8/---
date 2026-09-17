@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AiToEarn Relay — 抖音/快手/B站等短视频平台真发。
 
 增强自原版本，新增：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """挣钱项目看板 — 从大赛轮次、专家归因收入、L4 审核历史聚合，禁止写死假数。"""
 
 from __future__ import annotations
@@ -256,6 +258,7 @@ def _aggregate_sku_stats(
     参数说明：
     :return: 返回 sku_stats 聚合结果。
     """
+    sku_stats: dict[str, dict[str, Any]] = {}
     for rnd in rounds:
         if not isinstance(rnd, dict):
             continue

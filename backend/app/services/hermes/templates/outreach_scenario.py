@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """B2B Outreach and Lead Gen Scenario Template.
 Defines the TaskGraph for finding leads, profiling them, and sending personalized emails.
 """

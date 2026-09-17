@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """认证 BFF — HTTP 薄层；转发 legacy auth，输出 Vben 契约"""
 
 from fastapi import APIRouter, Depends, Request

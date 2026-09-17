@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户 settings JSON 解析（P1-05 等）。"""
 
 from __future__ import annotations

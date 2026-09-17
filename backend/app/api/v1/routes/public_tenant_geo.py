@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """公开 API — 租户 llms.txt / GEO 统一评分 / AI 搜索探针。"""
 
 from datetime import timedelta

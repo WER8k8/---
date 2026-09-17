@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """内容管理路由 - 优化版 - 添加缓存和分页验证"""
 
 from typing import List
@@ -25,6 +27,22 @@ ROUTE_PREFIX = "/content"
 ROUTE_TAGS = ["内容管理"]
 
 router = APIRouter(tags=["内容管理"])
+
+
+def _is_global_admin(user: User) -> bool:
+    """仅平台级超管可跨属主操作共享 CMS 页面。"""
+    return user.role in ("admin", "super_admin")
+
+
+def _ensure_owned(service: ContentPageService, page_id: str, user: User):
+    """写操作属主校验：非全局超管只能操作本人创建的页面（防跨属主越权）。"""
+    if _is_global_admin(user):
+        return
+    page = service.get_page(page_id)
+    if page is None:
+        raise ValueError("page_not_found")
+    if str(page.author_id or "") != str(user.id):
+        raise ValueError("forbidden")
 
 
 @router.get("", summary="内容管理根路径")
@@ -151,6 +169,15 @@ async def batch_delete_pages(
         return error_response(403, "权限不足")
 
     service = ContentPageService(db)
+    if not _is_global_admin(current_user):
+        owned = []
+        for pid in page_ids:
+            try:
+                _ensure_owned(service, pid, current_user)
+                owned.append(pid)
+            except ValueError:
+                continue
+        page_ids = owned
     deleted = service.batch_delete(page_ids, deleted_by=current_user.id)
     return success_response(message=f"成功删除 {deleted} 个页面")
 
@@ -166,6 +193,15 @@ async def batch_publish_pages(
         return error_response(403, "权限不足")
 
     service = ContentPageService(db)
+    if not _is_global_admin(current_user):
+        owned = []
+        for pid in page_ids:
+            try:
+                _ensure_owned(service, pid, current_user)
+                owned.append(pid)
+            except ValueError:
+                continue
+        page_ids = owned
     published = service.batch_publish(page_ids, published_by=current_user.id)
     return success_response(message=f"成功发布 {published} 个页面")
 
@@ -236,6 +272,11 @@ async def update_page(
 
     service = ContentPageService(db)
     try:
+        _ensure_owned(service, page_id, current_user)
+    except ValueError as e:
+        return error_response(404 if str(e) == "page_not_found" else 403, "页面不存在" if str(e) == "page_not_found" else "无权操作他人页面")
+
+    try:
         page = service.update_page(
             page_id, page_data, updated_by=current_user.id)
         if not page:
@@ -258,6 +299,11 @@ async def delete_page(
         return error_response(403, "权限不足")
 
     service = ContentPageService(db)
+    try:
+        _ensure_owned(service, page_id, current_user)
+    except ValueError as e:
+        return error_response(404 if str(e) == "page_not_found" else 403, "页面不存在" if str(e) == "page_not_found" else "无权操作他人页面")
+
     if not service.delete_page(page_id, deleted_by=current_user.id):
         return error_response(404, "页面不存在")
 

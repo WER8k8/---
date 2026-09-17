@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Lane P · 询盘/社媒互动 → 租户企微推送编排。"""
 
 from __future__ import annotations

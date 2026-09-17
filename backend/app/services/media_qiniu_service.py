@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """七牛云 Kodo — 国内产品图存储（S3 类对象存储 + CDN 域名）。"""
 
 from __future__ import annotations

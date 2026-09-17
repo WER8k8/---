@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """CRM 销售管线路由 — 商机（Opportunity）管理
 
 端点：

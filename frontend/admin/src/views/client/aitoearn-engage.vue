@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
 
   <YdPage title="评论互动" subtitle="拉评 · AI 草稿 · AiToEarn 真回复" surface="elevated">

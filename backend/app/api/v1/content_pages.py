@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Content Pages API Router - 内容页面API
 """
@@ -9,9 +11,12 @@ from datetime import datetime
 
 from app.core.database import get_db
 from app.core.response import success_response
+from app.core.security import get_current_user
 from app.models.content import ContentPage
+from app.models.user import User
 
-router = APIRouter(prefix="/api/v1/content-pages", tags=["content-pages"])
+ROUTE_PREFIX = ""
+router = APIRouter(prefix="/content-pages", tags=["content-pages"])
 
 
 @router.post("/", response_model=dict)
@@ -27,7 +32,8 @@ def create_content_page(
     reading_time: Optional[int] = None,
     language: str = "en",
     hreflang_group: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """创建内容页面"""
     try:
@@ -58,7 +64,7 @@ def create_content_page(
 
 
 @router.get("/{page_id}", response_model=dict)
-def get_content_page(page_id: str, db: Session = Depends(get_db)):
+def get_content_page(page_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """获取内容页面详情"""
     page = db.query(ContentPage).filter(ContentPage.id == uuid.UUID(page_id)).first()
     if not page:
@@ -88,7 +94,8 @@ def list_content_pages(
     language: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """列出内容页面（支持过滤）"""
     query = db.query(ContentPage)
@@ -127,7 +134,8 @@ def update_content_page(
     featured_image: Optional[str] = None,
     reading_time: Optional[int] = None,
     language: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """更新内容页面"""
     page = db.query(ContentPage).filter(ContentPage.id == uuid.UUID(page_id)).first()
@@ -159,7 +167,7 @@ def update_content_page(
 
 
 @router.delete("/{page_id}")
-def delete_content_page(page_id: str, db: Session = Depends(get_db)):
+def delete_content_page(page_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """删除内容页面"""
     page = db.query(ContentPage).filter(ContentPage.id == uuid.UUID(page_id)).first()
     if not page:
@@ -171,7 +179,7 @@ def delete_content_page(page_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/{page_id}/view")
-def increment_view_count(page_id: str, db: Session = Depends(get_db)):
+def increment_view_count(page_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """增加页面浏览量"""
     page = db.query(ContentPage).filter(ContentPage.id == uuid.UUID(page_id)).first()
     if not page:

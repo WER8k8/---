@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="域名绑定" subtitle="主域名与自定义域名 · DNS 验证 · SSL 证书" surface="elevated">
   <div class="space-y-6">

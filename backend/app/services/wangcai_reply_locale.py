@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """旺财贸易问答回复 — 按访客语言加标题/脚注包装（数据层可仍为英文）。"""
 
 from __future__ import annotations

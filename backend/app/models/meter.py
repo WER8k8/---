@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一计量埋点（总纲 §4.6-8 / §6.6 P4 / 迁移总表 086）
 
 meter_events：append-only 计量事件表，只增不改。

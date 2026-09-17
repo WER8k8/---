@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一计量埋点与账单对账（总纲 §4.6-8 / §6.6 P4 / §7.6）
 
 - emit*：7 类埋点动作，append-only 写入 meter_events（event_key 幂等去重）。

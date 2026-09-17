@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """领域注册状态 API — FIX-31
 
 提供领域模块注册信息的查询端点。
@@ -8,6 +10,7 @@ from app.core.security import get_current_user
 from app.core.response import success_response
 from app.domains import DOMAIN_REGISTRY, list_domains
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/domains", tags=["领域注册"])
 
 

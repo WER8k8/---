@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Paperclip → ai_tasks 影子双写桥（总纲 §4.6-1 收编过渡第 2 迭代；轮24-B）。
 
 与 deerflow_bridge 同构：把 PaperclipTask 生命周期（created→running→success/failed）

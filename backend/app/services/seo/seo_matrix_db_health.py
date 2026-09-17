@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO-09：独立 SEO 矩阵库连通性探针（司令部健康）。"""
 
 from __future__ import annotations

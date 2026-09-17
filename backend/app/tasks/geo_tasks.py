@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO Celery 任务 — 技术雷达 / Rank Guard / 竞品监控。"""
 
 import asyncio

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户入驻引导 API"""
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel

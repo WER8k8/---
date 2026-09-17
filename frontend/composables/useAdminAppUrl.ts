@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * Admin SPA 外链（注册 / 登录 / 完整 Landing 镜像）
  * 生产通过 NUXT_PUBLIC_UNIFIED_ADMIN_LOGIN_URL 注入；本地默认 :5173
  */

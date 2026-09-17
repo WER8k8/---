@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 GEO Alert Service - 预警服务层（SQLAlchemy 版本）
 使用 UJ 项目的 SQLAlchemy session 模式

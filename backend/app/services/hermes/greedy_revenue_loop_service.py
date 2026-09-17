@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """财迷疯 · 摸金校尉 — 搞钱商业闭环（调研→编排→生产→发出→卖出跟踪→收款 KPI）。
 
 仅 platform_survival scope；不触 SaaS 租户主流程。宪法：greedy_avatar_constitution.py

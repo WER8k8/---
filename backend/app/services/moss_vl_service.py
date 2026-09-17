@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL 时空多模态视频大模型服务总中枢（支持动态热更新与回滚）。"""
 
 from __future__ import annotations

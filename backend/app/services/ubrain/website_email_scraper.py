@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 零成本网站邮箱抓取服务 — 从目标公司网站提取邮箱
 

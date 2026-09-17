@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """PostgreSQL Row Level Security (RLS) — 数据库层租户隔离
 
 通过 PostgreSQL 的 Row Level Security 机制，在数据库层面强制执行租户数据隔离：
@@ -122,6 +124,9 @@ def setup_rls_policies(
     if engine.dialect.name != "postgresql":
         log.warning("[RLS] 非 PostgreSQL 方言 %s，跳过 RLS 部署（仅 PG 支持）", engine.dialect.name)
         return {"enabled": [], "skipped": []}
+    # 安全警告：生产环境应显式传 force=True，避免表属主绕过 RLS
+    if not force:
+        log.warning("[RLS] force=False：仅对表属主生效，非表属主角色可能绕过。生产环境建议显式传 force=True")
     # 查询所有带 tenant_id 列的表
     discovery_sql = """
         SELECT table_schema, table_name

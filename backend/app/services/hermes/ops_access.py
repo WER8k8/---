@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 运维 API 访问门控 — L0 超管专用，租户不可见。"""
 
 from __future__ import annotations

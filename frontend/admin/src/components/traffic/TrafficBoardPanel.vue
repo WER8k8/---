@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="traffic-board">
     <div class="flex flex-wrap items-center justify-between gap-3 mb-6">

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 租户站缺省社证/案例 — 建站未填内容时的建材外贸语境后备 */
 
 export type TenantProofCase = {

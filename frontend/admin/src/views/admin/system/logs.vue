@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="系统日志" subtitle="操作审计流水 · GET /api/v1/system/audit/logs" surface="elevated">
     <template #actions>

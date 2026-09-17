@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """场景健康检查结果持久化（system_settings）。"""
 
 from __future__ import annotations

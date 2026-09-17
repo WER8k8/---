@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Accio 对标 gap 技能 — 预览载荷 + 带 DB 上下文真执行。"""
 
 from __future__ import annotations

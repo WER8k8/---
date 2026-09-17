@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 GEO Agents — 竞品追踪 + 技术雷达 + 定时调度
 移植自 sourcechain-geo-engine/backend/app/agents/

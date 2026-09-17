@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """成本记账（总纲 §4.6）：每次 LLM 调用写 model_call_ledger，可汇总至 token_ledger。
 
 设计原则：

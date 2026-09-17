@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * FIX-9: 路由拆分引导
  * =====================
  * 本文件 1930 行，建议按角色壳拆分为独立模块：
@@ -122,8 +125,10 @@ const routes: RouteRecordRaw[] = [
       },
       { path: 'dashboard', name: 'ClientDashboard', component: () => import('@/views/client/dashboard.vue'), meta: { title: '工作台' } },
       { path: 'annex/trade-ai', name: 'ClientAnnexTradeAi', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: 'TradeAI 执行台', annexKey: 'trade-ai' } },
-      { path: 'annex/goodjob', name: 'ClientAnnexGoodjob', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: 'GoodJob 执行台', annexKey: 'goodjob' } },
-      { path: 'traffic', name: 'ClientTrafficBoard', component: () => import('@/views/client/traffic-board.vue'), meta: { title: '流量看板' } },
+     { path: 'annex/goodjob', name: 'ClientAnnexGoodjob', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: 'GoodJob 执行台', annexKey: 'goodjob' } },
+      { path: 'annex/goodjob/tickets', name: 'ClientAnnexGoodjobTickets', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: 'GoodJob CRM · 票据中心管理', annexKey: 'goodjob', annexModule: 'tickets' } },
+      { path: 'annex/goodjob/customers', name: 'ClientAnnexGoodjobCustomers', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: 'GoodJob CRM · 客户管理', annexKey: 'goodjob', annexModule: 'customers' } },
+     { path: 'traffic', name: 'ClientTrafficBoard', component: () => import('@/views/client/traffic-board.vue'), meta: { title: '流量看板' } },
       { path: 'assistant', name: 'ClientAssistant', component: () => import('@/views/client/assistant.vue'), meta: { title: '卖货智能助手' } },
       { path: 'copilot', name: 'ClientCopilot', component: () => import('@/views/client/copilot.vue'), meta: { title: '卖货飞轮' } },
       {
@@ -236,6 +241,8 @@ const routes: RouteRecordRaw[] = [
       { path: 'workspace/outreach', name: 'OutreachEditor', component: () => import('@/views/workspace/OutreachEditor.vue'), meta: { title: '写信工作台' } },
       { path: 'email-campaigns', name: 'ClientEmailCampaigns', component: () => import('@/views/sales/EmailAutomation.vue'), meta: { title: '邮件营销' } },
       { path: 'workspace/skills', name: 'SkillConsole', component: () => import('@/views/workspace/SkillConsole.vue'), meta: { title: 'AI 技能台' } },
+      { path: 'skills', name: 'ClientSkillsMarket', component: () => import('@/views/client/skills-market.vue'), meta: { title: 'Meoo专属技能' } },
+      { path: 'explore', name: 'ClientTemplatesExplore', component: () => import('@/views/client/templates-explore.vue'), meta: { title: '创意社区与模板' } },
       { path: 'ai-config', name: 'ClientAiConfig', component: () => import('@/views/client/ai-config.vue'), meta: { title: 'AI 配置' } },
       {
         path: 'trade-tools',
@@ -449,6 +456,40 @@ const routes: RouteRecordRaw[] = [
             meta: { title: '平台来源审计', icon: 'GlobalOutlined' },
           },
           {
+            path: 'platform-credentials',
+            name: 'AdminPlatformCredentials',
+            component: () => import('@/views/admin/platform-credentials.vue'),
+            meta: { title: '平台凭证', icon: 'KeyOutlined' },
+          },
+          // 附属执行台（SYSTEM-LOCK-02 第⑤⑥子系统）：路径必须与
+          // constants/annexModules.ts 的 adminPath 及 platformShellMenu 的菜单项一致，
+          // 即 /admin/annex/*。此前误挂在 system 子级下（实际解析成
+          // /admin/system/annex/*），导致菜单点进去渲染 NotFound「无入口」。
+          {
+            path: 'annex/trade-ai',
+            name: 'AnnexTradeAi',
+            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
+            meta: { title: 'TradeAI 执行台', group: 'biz', icon: 'ThunderboltOutlined', annexKey: 'trade-ai' },
+          },
+          {
+            path: 'annex/goodjob',
+            name: 'AnnexGoodjob',
+            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
+            meta: { title: 'GoodJob 执行台', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob' },
+          },
+          {
+            path: 'annex/goodjob/tickets',
+            name: 'AnnexGoodjobTickets',
+            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
+            meta: { title: 'GoodJob CRM · 票据中心管理', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob', annexModule: 'tickets' },
+          },
+          {
+            path: 'annex/goodjob/customers',
+            name: 'AnnexGoodjobCustomers',
+            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
+            meta: { title: 'GoodJob CRM · 客户管理', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob', annexModule: 'customers' },
+          },
+          {
             path: 'demo-rehearsal',
             name: 'AdminDemoRehearsal',
             component: () => import('@/views/admin/demo-rehearsal.vue'),
@@ -608,18 +649,6 @@ const routes: RouteRecordRaw[] = [
                 name: 'SystemIntegrationsStack',
                 component: () => import('@/views/admin/system/integrations-stack.vue'),
                 meta: { title: '集成栈', group: 'biz', icon: 'ApiOutlined' },
-              },
-              {
-                path: 'annex/trade-ai',
-                name: 'AnnexTradeAi',
-                component: () => import('@/views/annex/AnnexEmbedPage.vue'),
-                meta: { title: 'TradeAI 执行台', group: 'biz', icon: 'ThunderboltOutlined', annexKey: 'trade-ai' },
-              },
-              {
-                path: 'annex/goodjob',
-                name: 'AnnexGoodjob',
-                component: () => import('@/views/annex/AnnexEmbedPage.vue'),
-                meta: { title: 'GoodJob 执行台', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob' },
               },
               {
                 path: 'license',

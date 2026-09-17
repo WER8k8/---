@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI文章生成器" subtitle="使用英伟达AI模型生成高质量专业文章" surface="elevated">
     <template #actions>

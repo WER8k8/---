@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """小红书发布适配器 — 真实对接小红书创作者平台 API。
 
 支持:

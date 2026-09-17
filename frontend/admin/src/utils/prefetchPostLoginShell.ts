@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 登录后首屏壳懒加载预热：避免 dev 下 Vite 首次编译 layout 导致 router.replace 长时间挂起、登录钮一直转圈。
  */
 import { resolveRoleShellTier } from '@/constants/roleShellLock';

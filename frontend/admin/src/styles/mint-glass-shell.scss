@@ -31,8 +31,10 @@
   --uj-text-secondary: #3d5c54;
 
   --uj-shell-platform-accent: #5eb8a8;
-  --uj-shell-client-accent: #4a9b8c;
+  --uj-shell-client-accent: #5a9fd4;
+  --uj-shell-client-accent-hover: #1d4ed8;
   --uj-shell-agent-accent: #4db6a0;
+  --uj-shell-partner-accent: #7c6dd8;
 
   --uj-sidebar-bg: var(--uj-glass-bg-strong);
   --uj-sidebar-active: rgb(94 200 176 / 0.2);
@@ -361,9 +363,16 @@
   box-shadow: 0 2px 8px rgb(13 148 136 / 0.1);
 }
 
+.shell--partner {
+  --uj-brand: #7c6dd8;
+  --uj-brand-hover: #6b5cc6;
+  --uj-brand-deep: #5a4bb4;
+  --uj-brand-muted: rgb(124 109 216 / 0.14);
+}
+
 .shell--partner .sidebar-brand-mark {
-  background: linear-gradient(145deg, #7aa8bd 0%, #5f88a0 55%, #4a6d82 100%) !important;
-  box-shadow: 0 4px 14px rgb(95 136 160 / 0.35);
+  background: linear-gradient(145deg, #9b8de8 0%, #7c6dd8 55%, #6b5cc6 100%) !important;
+  box-shadow: 0 4px 14px rgb(124 109 216 / 0.35);
 }
 
 /* Worktabs 角色胶囊随 accent（组件内用 token） */

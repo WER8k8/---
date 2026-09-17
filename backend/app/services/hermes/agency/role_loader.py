@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """agency-orchestrator 角色库加载 — 产品内嵌 agency-agents 中文专家人格。"""
 
 from __future__ import annotations

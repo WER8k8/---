@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL-Realtime 官方实时流式会话 API。
 
 100% 对齐官方 Hugging Face `OpenMOSS-Team/MOSS-VL-Realtime` 接口：

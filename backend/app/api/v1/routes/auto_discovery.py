@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """API 路由自动发现 — FIX-30: 按业务域分包 + 自动注册
 
 提供路由自动发现机制，扫描 routes/ 目录，自动注册所有 router 实例。

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 System Config Model - 系统配置模型
 系统全局配置（汇率、税费、功能开关等）

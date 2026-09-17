@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Skill/SOP 版本管理 — 语义化版本 + 状态机。
 
 管理 Skill 和 SOP 的版本生命周期：

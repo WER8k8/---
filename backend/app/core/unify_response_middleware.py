@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 将 /api/v1 下「未带 code 字段」的 JSON 成功响应统一包装为 APIResponse，
 与 docs/4-API接口定义.md 约定一致；已返回 { code, ... } 的响应原样透传。

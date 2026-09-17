@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="min-h-screen bg-white">
     <!-- 首屏 Hero 区 - 移动端优先，1.5秒内可见 -->

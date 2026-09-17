@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="租户管理" subtitle="多租户隔离与资源配额管理" surface="elevated">
     <template #actions>

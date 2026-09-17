@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="摸金累计看板" subtitle="全球周/月/年累计 · 打江山人格 · 比上次更强" surface="elevated">
     <template #actions>

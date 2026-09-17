@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="站点审计" subtitle="检测网站SEO问题并获取优化建议" surface="elevated">
     <a-card title="审计配置">

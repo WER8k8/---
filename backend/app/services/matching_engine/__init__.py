@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Product Finder 匹配引擎包。
 
 暴露 ``MatchingEngine`` 及请求/响应模型，供路由层调用。

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """性能监控服务 - 追踪API响应时间和系统性能指标"""
 
 import json

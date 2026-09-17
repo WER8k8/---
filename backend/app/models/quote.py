@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Quote Model - 报价模型，商家向买家提供的报价单（B2B RFQ 闭环）。"""
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Numeric, Date, Integer, Float
 from sqlalchemy.sql import func

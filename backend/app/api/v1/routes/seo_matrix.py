@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """全国县域建材SEO矩阵系统 API路由"""
 
 import json
@@ -11,7 +13,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.core.response import error_response, success_response
-from app.core.security import get_current_user
+from app.core.security import get_current_user, require_admin
 from app.db.session import get_db
 from app.models.content import (AIGenerationConfig, ContentTemplate,
                                 GeneratedContent, InclusionStatus, Platform,
@@ -987,8 +989,8 @@ def generate_content(
             content = template.content.format(
                 district_name=district.name,
                 keyword=keyword.keyword,
-                brand="Lingma建材",
-                website="https://www.lingma.com",
+                brand="示例建材",
+                website="https://www.example-buildmat.com",
                 phone="400-888-8888",
             )
         except Exception as e:
@@ -1382,27 +1384,56 @@ def _platform_login_hint(name: str, region: str) -> str:
 @router.get("/platform-accounts")
 def list_platform_accounts(
         platform_id: Optional[str] = None,
-        db: Session = Depends(get_db)):
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)):
     """获取平台账号列表"""
+    from app.services.platform_account_service import credential_status
+
     query = db.query(PlatformAccount).filter_by(is_active=True)
     if platform_id:
         query = query.filter_by(platform_id=platform_id)
 
     accounts = query.all()
+    platforms = {str(p.id): p for p in db.query(Platform).all()}
     result = []
     for acc in accounts:
+        platform = platforms.get(str(acc.platform_id))
         result.append(
             {
                 "id": acc.id,
                 "platform_id": acc.platform_id,
+                "platform_name": getattr(platform, "name", None),
                 "account_name": acc.account_name,
                 "username": acc.username,
                 "email": acc.email,
                 "login_status": acc.login_status,
                 "last_login_at": acc.last_login_at,
+                # 凭证只回字段名与掩码，绝不回传密钥原文
+                "credential_status": credential_status(db, acc, platform),
             }
         )
     return success_response(data=result)
+
+
+@router.get("/platform-credential-guide")
+def platform_credential_guide(current_user: User = Depends(get_current_user)):
+    """凭证申请指引：每个平台去哪申请、要哪些字段、缺什么。
+
+    出参不含任何密钥值，环境变量类凭证只回 configured 布尔。
+    """
+    from app.services.platform_credential_guide import env_credential_status, guides_payload
+
+    return success_response(
+        data={
+            "guides": guides_payload(),
+            "env_status": env_credential_status(),
+            "storage_note": (
+                "凭证有三处落点：平台账号（cookie / token_data / configs）、"
+                "backend/.env 环境变量、platform_configs 键值表。"
+                "读取优先级 configs < cookie < token_data。"
+            ),
+        }
+    )
 
 
 @router.post("/platform-accounts")
@@ -1411,15 +1442,27 @@ def create_platform_account(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)):
     """创建平台账号"""
+    from app.services.platform_account_service import apply_credentials, resolve_tenant_scope
+
+    platform = db.query(Platform).filter(Platform.id == account["platform_id"]).first()
+    if not platform:
+        return error_response(404, "平台不存在，请先确认 platform_id（见 /platforms 清单）")
+
     new_acc = PlatformAccount(
         platform_id=account["platform_id"],
         account_name=account["account_name"],
         username=account.get("username"),
         email=account.get("email"),
+        tenant_id=resolve_tenant_scope(db, current_user),
     )
     db.add(new_acc)
+    db.flush()  # 先取到 account.id，凭证才能落到 platform_configs
+    written = apply_credentials(db, account=new_acc, platform=platform, payload=account)
     db.commit()
-    return success_response(data={"id": new_acc.id}, message="账号创建成功")
+    return success_response(
+        data={"id": new_acc.id, "credential_fields_written": written},
+        message="账号创建成功" if written else "账号创建成功（本次未写入凭证）",
+    )
 
 
 @router.put("/platform-accounts/{account_id}")
@@ -1450,8 +1493,56 @@ def update_platform_account(
         acc.email = account["email"]
     if "is_active" in account:
         acc.is_active = bool(account["is_active"])
+    if "login_status" in account:
+        acc.login_status = str(account["login_status"])
+
+    from app.services.platform_account_service import apply_credentials
+
+    written = 0
+    platform = db.query(Platform).filter(Platform.id == acc.platform_id).first()
+    if platform is not None:
+        written = apply_credentials(db, account=acc, platform=platform, payload=account)
     db.commit()
-    return success_response(message="账号已更新")
+    return success_response(
+        data={"credential_fields_written": written},
+        message="账号已更新" if written else "账号已更新（本次未写入凭证）",
+    )
+
+
+@router.post("/platform-session-patrol")
+def platform_session_patrol(
+    payload: dict = Body(default={}),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """PC-04：手动触发平台账号会话巡检（cookie/token 过期判定）。
+
+    dry_run=true 只出报告不改库，供运营先看「会命中谁」；
+    正式执行会把命中的 logged_in 账号置为 expired（不会自动恢复，须重绑）。
+    报告只含 account_id / 平台名 / 判定原因 / 有没有凭证，绝不回传凭证内容。
+    """
+    from app.core.config import settings
+    from app.services.platform_session_patrol_service import patrol_platform_sessions
+
+    dry_run = bool(payload.get("dry_run", False))
+    stale_raw = payload.get("cookie_stale_days")
+    stale_days = (
+        int(stale_raw) if stale_raw is not None else int(settings.PLATFORM_COOKIE_STALE_DAYS)
+    )
+    report = patrol_platform_sessions(
+        db,
+        cookie_stale_days=stale_days,
+        dry_run=dry_run,
+        limit=int(payload.get("limit") or 500),
+    )
+    return success_response(
+        data=report,
+        message=(
+            "试跑完成：未改动任何账号状态"
+            if dry_run
+            else f"巡检完成，已置 expired {report.get('expired_marked', 0)} 个账号"
+        ),
+    )
 
 
 @router.post("/generate")
@@ -1839,6 +1930,7 @@ def list_publish_tasks(
     page: int = 1,
     page_size: int = 20,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """获取发布任务列表"""
     query = db.query(PublishTask)
@@ -2247,8 +2339,9 @@ def list_publish_logs(
     page: int = 1,
     page_size: int = 20,
     db: Session = Depends(get_db),
+    _admin: User = Depends(require_admin),
 ):
-    """获取发布日志"""
+    """获取发布日志（管理操作）"""
     query = db.query(PublishLog)
     if task_id:
         query = query.filter_by(task_id=task_id)

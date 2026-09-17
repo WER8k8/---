@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """GEO 引擎 — 多模型收录与「推荐位」探测。
 
 probe_mode:

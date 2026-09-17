@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """英伟达客户侧可用模型探测（卖货副驾 / 旺财插件场景）。"""
 
 from __future__ import annotations

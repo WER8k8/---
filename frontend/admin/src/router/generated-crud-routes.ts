@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** AUTO-GENERATED · BJ-03 · do not edit by hand */
 import type { RouteRecordRaw } from 'vue-router';
 

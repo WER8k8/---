@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """产业带 AI 调研 → 产品库候选（须人工勾选导入，默认未上架）。"""
 
 from __future__ import annotations

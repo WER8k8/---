@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MCP SSE Transport Route for Hermes Brain.
 This exposes the Hermes Orchestrator via standard Server-Sent Events (SSE)
 so that external systems like DeepSeek Harness can connect as an MCP Client.
@@ -8,7 +10,9 @@ import asyncio
 import json
 import logging
 from sqlalchemy.orm import Session
-from app.api import deps
+from app.db.session import get_db
+from app.core.security import require_admin
+from app.models.user import User
 from app.services.hermes.hermes_mcp_server import HermesMCPServer
 
 router = APIRouter()
@@ -18,7 +22,7 @@ logger = logging.getLogger(__name__)
 mcp_clients = []
 
 @router.get("/sse")
-async def mcp_sse_connection(request: Request):
+async def mcp_sse_connection(request: Request, _admin: User = Depends(require_admin)):
     """Establishes an SSE connection for the MCP protocol."""
     
     async def event_generator():
@@ -40,10 +44,10 @@ async def mcp_sse_connection(request: Request):
 
 
 @router.post("/messages")
-async def mcp_messages(request: Request, client_id: str, db: Session = Depends(deps.get_db)):
+async def mcp_messages(request: Request, client_id: str, db: Session = Depends(get_db), _admin: User = Depends(require_admin)):
     """Receives JSON-RPC messages from the MCP client."""
     payload = await request.json()
-    logger.info(f"Received MCP Message from {client_id}: {payload}")
+    logger.info("Received MCP Message from %s: method=%s", client_id, payload.get("method"))
     
     # 1. Handle tool requests
     if payload.get("method") == "tools/list":

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """LangChain 控制台 API — 流式对话 + 会话管理 + 知识库 RAG"""
 
 import json

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付权益发放补偿任务巡检服务
 
 BUG-02 修复配套：定时巡检 payment_compensation_tasks 表，

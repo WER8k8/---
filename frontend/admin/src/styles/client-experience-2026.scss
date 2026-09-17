@@ -1,47 +1,56 @@
 /**
- * 租户壳 · 2026 客户体验层（Taste V5 M3 D5 · LOCKED client accent）
+ * 租户壳 · 2026 客户体验层（去 AI 塑料感 · 工业级薄荷绿 + 钛金冷灰）
  * 仅作用于 .client-shell，不污染平台超管壳
  */
 .client-shell {
-  --client-hero-from: #1f2937;
-  --client-hero-to: #374151;
+  --client-hero-from: #173f3a;
+  --client-hero-to: #24564d;
   --client-surface: #ffffff;
-  --client-muted: #64748b;
-  --client-accent: #5c7284;
-  --client-ring: rgb(92 114 132 / 0.35);
-  --client-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* 租户壳：中性浅灰底，避免薄荷 mesh 与卡片/侧栏撞色 */
-  --uj-bg-page: #f3f4f6;
-  --uj-bg-page-mesh: #f3f4f6;
-  --uj-brand-muted: rgb(92 114 132 / 0.12);
+  --client-muted: #647a77;
+  --client-accent: #4a9b8c;
+  --client-ring: rgb(74 155 140 / 0.25);
+  --client-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* 租户壳：纯净现代工业冷灰底，与薄荷品牌色保持一致 */
+  --uj-bg-page: #f8fafc;
+  --uj-bg-page-mesh: #f8fafc;
+  --uj-brand: #4a9b8c;
+  --uj-brand-hover: #3d8578;
+  --uj-brand-deep: #2a6b60;
+  --uj-brand-muted: rgb(74 155 140 / 0.12);
+
+  /* 字体排印 */
+  --uj-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .client-shell .client-header {
-  backdrop-filter: blur(12px);
-  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(16px);
+  background: rgb(255 255 255 / 0.95);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .client-shell .client-nav__item {
   transition:
-    background 0.18s var(--client-ease),
-    color 0.18s var(--client-ease),
-    transform 0.18s var(--client-ease);
+    background 0.16s var(--client-ease),
+    color 0.16s var(--client-ease),
+    transform 0.16s var(--client-ease);
 }
 
 .client-shell .client-nav__item:focus-visible {
-  outline: 2px solid var(--uj-brand);
+  outline: 2px solid #4a9b8c;
   outline-offset: 2px;
 }
 
 .client-shell .client-nav__item--active {
-  background: #e8edf2 !important;
-  color: #1f2937 !important;
-  box-shadow: inset 3px 0 0 var(--client-accent, #5c7284);
+  background: rgb(74 155 140 / 0.12) !important;
+  color: #2a6b60 !important;
+  box-shadow: inset 3.5px 0 0 #4a9b8c;
+  font-weight: 600;
 }
 
 .client-shell .client-header__logo {
-  background: var(--client-accent, #5c7284) !important;
-  box-shadow: none !important;
+  background: linear-gradient(135deg, #2a6b60 0%, #4a9b8c 100%) !important;
+  box-shadow: 0 4px 12px rgb(74 155 140 / 0.25) !important;
 }
 
 .client-shell .client-content {
@@ -53,10 +62,27 @@
   font-weight: 600;
 }
 
-.client-shell .client-nav__more {
-  margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px solid var(--uj-border);
+/* 租户端 Ant Design 控件与按钮深度适配薄荷品牌色 */
+.client-shell :deep(.ant-btn-primary),
+.client-shell .ant-btn-primary {
+  background: #4a9b8c !important;
+  border-color: #4a9b8c !important;
+  box-shadow: 0 2px 4px rgb(74 155 140 / 0.15) !important;
+}
+
+.client-shell :deep(.ant-btn-primary:hover),
+.client-shell .ant-btn-primary:hover {
+  background: #3d8578 !important;
+  border-color: #3d8578 !important;
+}
+
+/* 面板实体化：去掉多余浮空的大阴影，转向精密仪器感 */
+.client-shell :deep(.panel),
+.client-shell .panel {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -67,3 +93,4 @@
     animation: none !important;
   }
 }
+

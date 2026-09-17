@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** P1-01：统一 IM 路由（/im-routing/channels 与 /mobile/im-routing 同源） */
 
 export type ImChannel = {

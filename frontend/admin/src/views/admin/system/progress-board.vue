@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="开发进度看板" subtitle="Sprint 任务进度 · 未完成项数" surface="elevated">
   <div class="progress-board p-4">

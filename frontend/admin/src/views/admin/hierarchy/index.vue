@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="层级管理" subtitle="L1 超管 → L2 省代 → L3 市代 → L4 租户" surface="elevated">
   <div class="hierarchy-root">

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出海参谋 JSON 数据加载（M0 矩阵 / M1 海关 / 市场数据源）。"""
 
 from __future__ import annotations

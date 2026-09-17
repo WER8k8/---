@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 平台侧角色展示 SSOT（用户可见中文，与 JWT role 字段对齐）
  *
  * - super_admin：平台超管，全量侧栏（含挣钱大赛 / 摸金校尉）

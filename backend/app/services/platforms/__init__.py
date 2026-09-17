@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from app.services.platforms.wechat import WeChatPublisher, WeChatPublisherAdapter
 from app.services.platforms.zhihu import ZhihuPublisher, ZhihuPublisherAdapter
 from app.services.platforms.toutiao import ToutiaoPublisher, ToutiaoPublisherAdapter

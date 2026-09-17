@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付运维操作审计 — 探针 / 证书刷新 / staging 自检等落库。"""
 
 from __future__ import annotations

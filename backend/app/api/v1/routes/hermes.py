@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 内部插件平台 API — 运维/编排；租户侧请用旺财插件市场。"""
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request

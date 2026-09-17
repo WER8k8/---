@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """廊坊大城 + 沧州河间 建筑主材/附属 SEO 词库入库 — P0-4。"""
 
 from __future__ import annotations

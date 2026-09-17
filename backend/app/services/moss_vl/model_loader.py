@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """MOSS-VL 官方模型权重加载器与量化支持。
 
 原生支持从 Hugging Face 或阿里魔搭（ModelScope）加载：

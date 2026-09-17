@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Chat Message Model - AI对话消息模型
 AI聊天消息（用户消息/助手回复/系统消息）

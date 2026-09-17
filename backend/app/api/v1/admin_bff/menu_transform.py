@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """菜单树 → UacMenuRoute 转换（无 HTTP）"""
 
 from __future__ import annotations

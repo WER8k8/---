@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes agency LLM — 服务器/bootstrap 安装计划（非交互部分可脚本化）。"""
 
 from __future__ import annotations

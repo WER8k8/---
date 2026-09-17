@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """IPRoyal Reseller API 客户端 — 静态住宅IP自动采购。"""
 
 from __future__ import annotations

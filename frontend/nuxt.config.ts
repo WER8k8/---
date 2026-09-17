@@ -77,7 +77,7 @@ export default defineNuxtConfig({
           content: process.env.SITE_DESCRIPTION || '优丁建材专注新型建筑材料研发与生产，为客户提供优质、环保、高性能的轻集料混凝土产品',
         },
         { name: 'keywords', content: '轻集料混凝土,陶粒混凝土,保温砂浆,建筑材料,保温材料,轻质混凝土' },
-        { name: 'theme-color', content: '#9a3412' },
+        { name: 'theme-color', content: '#4a9b8c' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'mobile-web-app-capable', content: 'yes' },
@@ -250,7 +250,6 @@ export default defineNuxtConfig({
 
   css: [
     '~/assets/css/main.css',
-    '~/assets/css/b2b-industrial.css',
     '~/assets/css/animations.css',
     '~/assets/css/mobile.css',
     '~/assets/css/luna-tokens.css',
@@ -313,7 +312,7 @@ export default defineNuxtConfig({
       name: '优丁建材',
       short_name: '优丁建材',
       description: '专业轻集料混凝土与保温材料供应商',
-      theme_color: '#3b82f6',
+      theme_color: '#4a9b8c',
       background_color: '#ffffff',
       display: 'standalone',
       display_override: ['window-controls-overlay', 'minimal-ui'],

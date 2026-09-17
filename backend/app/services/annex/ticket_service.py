@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """附属统一登录票据服务 · UJ 为唯一身份源.
 
 设计出处：uj-annex-integration-design §9.3（短时授权票据 annex_ticket）；

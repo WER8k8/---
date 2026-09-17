@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Browser Runtime 核心（总纲 §4.7 P5：Playwright + CDP）。
 
 本轮 25-B 仅落地**接口契约 + 降级语义**，真实 Playwright 调用实现留待 25-C。

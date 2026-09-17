@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="Schema标记管理" subtitle="生成与管理结构化数据标记" surface="elevated">
     <YdHonestDataBanner

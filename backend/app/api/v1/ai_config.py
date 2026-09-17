@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI模型配置API路由"""
 
 from typing import Optional
@@ -16,6 +18,7 @@ from app.schemas.ai_config import (AIModelConfigCreate, AIModelConfigResponse,
                                    ModelSwitchRequest, ProviderListResponse)
 from app.services.ai_config_service import AIConfigService
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/ai-config", tags=["AI配置"])
 
 

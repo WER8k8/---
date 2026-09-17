@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """三大增长内置工具 — 热门词库 / 内容质检 / AI 引流监测。"""
 
 from __future__ import annotations

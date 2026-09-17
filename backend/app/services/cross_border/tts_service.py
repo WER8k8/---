@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """英文 TTS — edge-tts（无需 API Key）。"""
 
 from __future__ import annotations

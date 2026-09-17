@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="经营日报" subtitle="每日经营数据自动汇总" surface="elevated">
     <template #actions>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 建材垂直参数 API路由
 
@@ -18,7 +20,8 @@ from app.schemas.im_routing_and_specs import (
 from app.core.security import get_current_user
 from app.models.user import User
 
-router = APIRouter(prefix="/api/v1/building-specs", tags=["建材参数管理"])
+ROUTE_PREFIX = ""
+router = APIRouter(prefix="/building-specs", tags=["建材参数管理"])
 
 
 @router.post("/", response_model=BuildingMaterialSpecResponse, status_code=201)

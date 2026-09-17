@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """微博发布适配器 — 真实对接微博开放平台 API。
 
 支持:

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="出口报价一页" subtitle="FOB / MOQ · 绑定产品库" surface="elevated">
     <a-alert

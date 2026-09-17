@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """财迷疯分身宪法（摸金校尉）— 与 SaaS Hermes 维护宪法隔离。
 
 SaaS Hermes：巡站维护，只读 + 建议（maintenance_constitution）。

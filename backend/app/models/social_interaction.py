@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """社媒互动（评论/私信）— 自动谈单状态机落库。"""
 
 from __future__ import annotations

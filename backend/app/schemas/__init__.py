@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from app.schemas.ab_test import (ABTestConversionResponse, ABTestCreate,
                                  ABTestDetailResponse, ABTestEventResponse,
                                  ABTestResponse, ABTestUpdate,

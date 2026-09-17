@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO Backend 反向代理 — 统一 API 网关
 
 将 seo-backend (Express/Node.js :3000) 的请求代理到 FastAPI，
@@ -18,7 +20,7 @@ SEO_BACKEND_URL = os.getenv("SEO_BACKEND_URL", "http://localhost:3000")
 
 
 @router.get("/health")
-def seo_backend_health():
+def seo_backend_health(user=Depends(get_current_super_admin)):
     """检查 SEO Backend 连通性"""
     import httpx
     try:

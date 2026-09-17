@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Perplexity / Copilot 等 AI 搜索探针 — 无 Key 时诚实跳过，禁止假收录。"""
 
 from __future__ import annotations

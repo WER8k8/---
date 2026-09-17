@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """用户钱包路由"""
 import logging
 import os
@@ -18,6 +20,7 @@ from app.services.user_wallet_service import (
 )
 
 log = logging.getLogger(__name__)
+ROUTE_PREFIX = ""
 router = APIRouter(prefix='/wallet', tags=['用户钱包'])
 
 

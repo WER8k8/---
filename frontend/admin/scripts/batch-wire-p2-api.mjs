@@ -53,6 +53,9 @@ const PATH_API = {
   'agent/traffic-board.vue': '/agent-portal/traffic-board',
   'ai-learning/conversion-funnel.vue': '/ai-learning/conversion-funnel',
   'client/traffic-board.vue': '/analytics/traffic-board',
+  'client/ai-config.vue': '/tenant-ai-config',
+  'client/skills-market.vue': '/ai/templates',
+  'client/templates-explore.vue': '/ai/templates',
   'globalization/culture-adapt.vue': '/international',
   'globalization/glossary.vue': '/international',
   'operations/traffic-board.vue': '/analytics/operations/traffic-board',
@@ -88,9 +91,10 @@ function wireFile(rel, apiPath) {
   if (/\bapiGet\b/.test(src) || /\bpageGet\b/.test(src) || /\busePageData\b/.test(src)) {
     return false
   }
+  const hasOnMounted = /import\s*\{[^}]*\bonMounted\b/.test(src)
+  const vueImport = hasOnMounted ? '' : `import { onMounted } from 'vue'\n`
   const hook = `
-import { onMounted } from 'vue'
-import { apiGet } from '@/utils/api'
+${vueImport}import { apiGet } from '@/utils/api'
 
 onMounted(async () => {
   try { await apiGet('${apiPath}') } catch { /* 空状态 */ }

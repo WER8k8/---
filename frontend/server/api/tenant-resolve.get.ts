@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * 根据 Host 解析租户 ID — 代理后端 /api/v1/domains/resolve
  */
 import { defineEventHandler, getQuery, createError } from 'h3'

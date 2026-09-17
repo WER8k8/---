@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一发布母版 API"""
 
 from typing import Any, Optional
@@ -19,6 +21,10 @@ from app.services.foreign_trade.publish_preflight_checklist_service import (
     apply_preflight_checklist,
     load_preflight_checklist,
     validate_preflight,
+)
+from app.services.geo.content_kernel_bridge import (
+    persist_kernel,
+    touch_kernel_on_update,
 )
 
 
@@ -145,6 +151,7 @@ def _serialize(row: ContentMaster) -> dict[str, Any]:
 
     :return: 返回 dict[str, Any] 类型的结果。
     """
+    kernel = row.fact_kernel_json if isinstance(row.fact_kernel_json, dict) else None
     return {
         "id": row.id,
         "tenant_id": row.tenant_id,
@@ -161,6 +168,9 @@ def _serialize(row: ContentMaster) -> dict[str, Any]:
         "preflight_approved_at": row.preflight_approved_at.isoformat()
         if row.preflight_approved_at
         else None,
+        "fact_kernel": kernel,
+        "fact_kernel_ready": bool(kernel and kernel.get("schema_ready")),
+        "fact_kernel_completeness": kernel.get("completeness") if kernel else None,
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "updated_at": row.updated_at.isoformat() if row.updated_at else None,
     }
@@ -248,6 +258,8 @@ def create_content_master(
         created_by=current_user.id,
         status="draft",
     )
+    # 一核多形：建档即落事实内核（缺硬事实时如实降级，不阻断创建）
+    persist_kernel(row)
     db.add(row)
     db.commit()
     db.refresh(row)
@@ -399,6 +411,9 @@ def update_content_master(
         setattr(row, k, v)
     if checklist is not None:
         apply_preflight_checklist(row, checklist, user_id=str(current_user.id))
+    # 事实字段变了就作废旧内核并按新文案重组（避免拿旧硬事实发新内容）
+    touch_kernel_on_update(row, set(data.keys()))
+    persist_kernel(row)
     db.commit()
     db.refresh(row)
     return success_response(data=_serialize(row), message="已更新")
@@ -484,6 +499,8 @@ def publish_from_master(
     if not task_ids:
         return error_response(400, "无可用平台账号，请先配置 platform_accounts")
     row.status = "ready"
+    # 发布前落一次事实内核快照：留痕「这条内容当时有哪些可查证硬事实」
+    persist_kernel(row)
     db.commit()
     return success_response(
         data={"task_ids": task_ids, "count": len(task_ids)},

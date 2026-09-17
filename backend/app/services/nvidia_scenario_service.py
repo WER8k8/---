@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """NVIDIA 按业务场景选择/切换模型（持久化到 ai_model_configs）。"""
 
 from __future__ import annotations

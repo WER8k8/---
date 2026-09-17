@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """site_content CMS 数组字段多语种模板（stats / badges / milestones 等）。"""
 
 from __future__ import annotations

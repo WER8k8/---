@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain AI Agent 决策追踪与效果归因 API
 
 与 UBrain 助手路由（ubrain.py）解耦，专门承载 AI 决策闭环追踪能力。

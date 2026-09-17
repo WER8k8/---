@@ -260,7 +260,7 @@ def main() -> int:
     check("禁用态派单静默 None",
           doc_bridge_mod.submit_document_task(ex_off, tenant_id="t1", inquiry_id="i1", doc_type="CI", items=[]) is None)
 
-    print("== 8. 两侧契约一致性（UJ py ↔ GoodJob ts）==")
+    print("== 8. 两侧契约一致性（UJ py <-> GoodJob ts）==")
     ts_candidates = [
         os.path.normpath(os.path.join(_BACKEND, "..", "..", "..", "_external", "goodjob-crm",
                                       "backend", "src", "integrations", "uj-bridge-routes.ts")),

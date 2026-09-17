@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="代码格式化工作台" subtitle="JSON 美化与片段保存（本地）" surface="elevated">
     <template #actions>

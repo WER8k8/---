@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * UAC 类型 — 与 backend/app/api/v1/admin_bff/schemas 对齐
  */
 

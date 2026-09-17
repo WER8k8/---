@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 询盘 API v2 兼容层 — 全部转发至 /api/v1/inquiries/unified（T-P0-14）。
 """

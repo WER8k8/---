@@ -1,14 +1,19 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 浏览器 RUM 信标 — Admin 壳上报 Core Web Vitals */
 import { onMounted } from 'vue'
+import { authHeaders } from '@/utils/api'
 
 function sendBeacon(payload: Record<string, unknown>) {
   const body = JSON.stringify(payload)
   const url = '/api/v1/analytics/rum'
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }))
-    return
-  }
-  void fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+  void fetch(url, {
+    method: 'POST',
+    keepalive: true,
+    headers: authHeaders(),
+    body,
+  }).catch(() => {})
 }
 
 export function useRumBeacon() {

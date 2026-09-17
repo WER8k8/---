@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """事件总线 + 事件驱动架构 — FIX-41
 
 轻量级进程内事件总线，支持：

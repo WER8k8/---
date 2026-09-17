@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 统一 API 调用工具 + 认证令牌管理
  * 替代散落各处的 localStorage.getItem('admin_token') + 手动 fetch()
  */
@@ -90,14 +93,25 @@ type QueryParams = Record<string, string | number | boolean | undefined | null>;
 /** 开发态 API 超时（毫秒），避免后端挂掉时全站无限转圈 */
 const API_FETCH_TIMEOUT_MS = 15_000;
 
-async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs = API_FETCH_TIMEOUT_MS): Promise<Response> {
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs = API_FETCH_TIMEOUT_MS,
+  externalSignal?: AbortSignal,
+): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const cancel = externalSignal ?? init.signal ?? null;
+  if (cancel) {
+    if (cancel.aborted) controller.abort();
+    else cancel.addEventListener('abort', () => controller.abort(), { once: true });
+  }
   try {
     const res = await fetch(url, { ...init, signal: controller.signal, credentials: 'include' });
     captureCsrfEchoToken(res);
     return res;
   } catch (err) {
+    if (cancel?.aborted) throw err; // 外部主动中止（如组件卸载），原样抛出由调用方 catch 静默处理
     if (err instanceof DOMException && err.name === 'AbortError') {
       throw new ApiError(
         0,
@@ -118,8 +132,9 @@ export async function fetchWithAuthRetry(
   init: RequestInit,
   retried = false,
   timeoutMs = API_FETCH_TIMEOUT_MS,
+  signal?: AbortSignal,
 ): Promise<Response> {
-  const res = await fetchWithTimeout(url, init, timeoutMs);
+  const res = await fetchWithTimeout(url, init, timeoutMs, signal);
   if (
     res.status !== 401 ||
     retried ||
@@ -146,7 +161,7 @@ export async function fetchWithAuthRetry(
     ...(init.headers as Record<string, string> | undefined),
     ...authHeaders(),
   };
-  return fetchWithAuthRetry(url, { ...init, headers: nextHeaders }, true, timeoutMs);
+  return fetchWithAuthRetry(url, { ...init, headers: nextHeaders }, true, timeoutMs, signal);
 }
 
 /** fetch + 认证头 + 401 静默续期（与 axios 拦截器同源逻辑） */
@@ -160,6 +175,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
 
 type ApiRequestOptions = {
   timeoutMs?: number
+  signal?: AbortSignal
 }
 
 /** 统一 GET 请求 */
@@ -179,6 +195,7 @@ export async function apiGet<T = any>(
     { headers: authHeaders() },
     false,
     options?.timeoutMs,
+    options?.signal,
   );
   if (!res.ok) await throwApiError(res, `GET ${path}`);
   const body = await res.json();

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 产品图片空间 — 租户建站 / 超管运营共用（LOGIN-LOCK 相关路径见 file-manager） */
 
 export {

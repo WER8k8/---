@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """四壳菜单静态种子 — 纯数据，无 HTTP / 无 DB
 
 对齐：

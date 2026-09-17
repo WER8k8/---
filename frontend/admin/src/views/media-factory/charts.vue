@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="动态图表引擎" subtitle="AI 数据可视化与动画图表生成" surface="elevated">
   <div class="space-y-6 animate-fade-in">

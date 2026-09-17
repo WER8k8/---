@@ -1,8 +1,13 @@
-from fastapi import APIRouter, HTTPException
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Any
+from app.core.security import require_admin
+from app.models.user import User
 from app.services.workflow_canvas_service import WorkflowCanvasService
 
+ROUTE_PREFIX = ""
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 service = WorkflowCanvasService()
 
@@ -20,7 +25,7 @@ class WorkflowRequest(BaseModel):
     edges: List[WorkflowEdge]
 
 @router.post("/execute")
-async def execute_workflow(request: WorkflowRequest):
+async def execute_workflow(request: WorkflowRequest, _admin: User = Depends(require_admin)):
     try:
         result = await service.execute_workflow(request.model_dump())
         return result

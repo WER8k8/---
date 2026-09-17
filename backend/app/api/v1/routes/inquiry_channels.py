@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """企微 / 抖音等 IM 渠道 webhook（七步⑤ 框架入口）。"""
 
 import json

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """开发信生成技能 — 对应 cold-email SKILL.md。"""
 
 from app.services.foreign_trade.skill_registry import SkillMeta, skill_registry

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """对外文案脱敏：禁止第三方 Agent 产品商标进入用户可见字段。"""
 
 from __future__ import annotations

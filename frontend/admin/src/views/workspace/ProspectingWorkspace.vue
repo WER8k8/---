@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="搜客执行台" subtitle="从产品词到可运营客户机会的完整工作流" surface="elevated">
     <template #actions>
@@ -419,15 +422,15 @@ function goToOutreach() {
 }
 
 async function exportResults() {
-  message.info('导出功能开发中')
+  message.warning('导出功能尚未开放')
 }
 
 function batchConvert() {
-  message.info('批量转换功能开发中')
+  message.warning('批量转换功能尚未开放')
 }
 
 function batchExport() {
-  message.info('批量导出功能开发中')
+  message.warning('批量导出功能尚未开放')
 }
 
 function filterResults() {}

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 零成本获客 API —— 完全免费的客户开发能力
 
@@ -19,7 +21,7 @@ from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
 from datetime import timedelta
@@ -45,12 +47,19 @@ router = APIRouter(prefix="/lead-generation", tags=["获客引擎"])
 
 class LeadSearchRequest(BaseModel):
     """获客搜索请求"""
-    keywords: str = Field(..., description="搜索关键词，如 'building materials supplier USA'")
+    keywords: list[str] = Field(..., description="搜索关键词列表，如 ['building materials', 'supplier']")
     country: Optional[str] = Field(None, description="目标国家，如 US、DE、UK")
     industry: Optional[str] = Field(None, description="行业")
-    max_results: int = Field(10, ge=1, le=50, description="最大结果数")
+    max_results: int = Field(10, ge=1, le=500, description="最大结果数")
     verify_emails: bool = Field(True, description="是否验证邮箱有效性（较慢但更准）")
     min_confidence: float = Field(0.3, ge=0.0, le=1.0, description="最低邮箱置信度")
+
+    @field_validator("keywords", mode="before")
+    @classmethod
+    def _normalize_keywords(cls, v):
+        if isinstance(v, str):
+            return [v]
+        return v
 
 
 class FoundLeadEmail(BaseModel):
@@ -211,7 +220,7 @@ async def search_leads(
     import time
     start = time.time()
     # 构造搜索查询
-    query_parts = [req.keywords]
+    query_parts = list(req.keywords)
     if req.country:
         query_parts.append(req.country)
     if req.industry:

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """微信支付平台证书 — 按 serial 缓存，验签失败时刷新一次。"""
 
 from __future__ import annotations

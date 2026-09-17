@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SaaS多租户与商业化路由 - 真实数据库实现"""
 
 import uuid
@@ -1050,6 +1052,61 @@ def update_tenant_plan(
     )
 
 
+class AddTenantDomainRequest(BaseModel):
+    domain: str = Field(..., min_length=3, max_length=255)
+
+
+@router.get("/domains")
+def get_tenant_domains(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """获取当前租户域名列表（主域名与自定义域名）"""
+    ut = db.query(UserTenant).filter(UserTenant.user_id == current_user.id, UserTenant.is_active.is_(True)).first()
+    tenant = db.query(Tenant).filter(Tenant.id == ut.tenant_id).first() if ut else db.query(Tenant).first()
+    primary = (tenant.domain if tenant else "") or "dev.local"
+    raw = tenant.custom_domains if tenant else ""
+    if isinstance(raw, str):
+        try:
+            custom_domains = json.loads(raw) if raw else []
+        except Exception:
+            custom_domains = [raw] if raw else []
+    elif isinstance(raw, list):
+        custom_domains = raw
+    else:
+        custom_domains = []
+    domain_list = [{"id": d, "domain": d, "verifyStatus": "verified", "sslStatus": "active"} for d in custom_domains]
+    return success_response(data={"primaryDomain": primary, "domains": domain_list})
+
+
+@router.post("/domains")
+def add_tenant_domain(
+    body: AddTenantDomainRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """为当前租户添加自定义域名"""
+    ut = db.query(UserTenant).filter(UserTenant.user_id == current_user.id, UserTenant.is_active.is_(True)).first()
+    tenant = db.query(Tenant).filter(Tenant.id == ut.tenant_id).first() if ut else db.query(Tenant).first()
+    if not tenant:
+        return error_response(404, "租户不存在")
+    raw = tenant.custom_domains
+    if isinstance(raw, str):
+        try:
+            cur = json.loads(raw) if raw else []
+        except Exception:
+            cur = [raw] if raw else []
+    elif isinstance(raw, list):
+        cur = list(raw)
+    else:
+        cur = []
+    if body.domain not in cur:
+        cur.append(body.domain)
+        tenant.custom_domains = json.dumps(cur)
+        db.commit()
+    return success_response(message="域名已添加", data={"domain": body.domain})
+
+
 @router.get("/{tenant_id}", response_model=APIResponse[TenantResponse])
 def get_tenant(
     tenant_id: str,
@@ -1057,7 +1114,7 @@ def get_tenant(
     current_user: User = Depends(get_current_user),
 ):
     """获取租户详情"""
-    if tenant_id in {"plans", "register", "current", "pricing", "invoices"}:
+    if tenant_id in {"plans", "register", "current", "pricing", "invoices", "domains"}:
         return error_response(404, "接口不存在")
 
     if current_user.role not in ["admin", "super_admin"]:

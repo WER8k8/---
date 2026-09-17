@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """RFQ 评分服务 — 确定性规则，不可由 LLM 覆盖。
 
 评分规则（Technical Spec §6 / Master Spec §12）：

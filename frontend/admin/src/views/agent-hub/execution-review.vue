@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="执行复盘" subtitle="任务执行记录与对比分析" surface="elevated">
     <template #actions>

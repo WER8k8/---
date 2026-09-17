@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="Survival 真钱台账" subtitle="财迷疯生存基金 · WorldFirst · 与租户账单隔离" surface="elevated">
     <template #actions>

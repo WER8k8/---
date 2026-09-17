@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """出海参谋 M2 — 商业海关 API 适配层（可配置外部数据源）。"""
 
 from __future__ import annotations

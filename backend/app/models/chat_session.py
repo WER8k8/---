@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Chat Session Model - AI对话会话模型
 AI聊天会话（一个会话包含多条消息）

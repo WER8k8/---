@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """共享租户作用域助手（ADR-002 应用层隔离第一道防线）。
 
 复用既有的 `resolve_tenant_id_for_user`（经 `user_tenants` 关联表解析用户归属；

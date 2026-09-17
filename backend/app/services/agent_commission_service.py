@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """支付成功 → 多级代理分润（沿 agent-tree 向上拆分，幂等）。"""
 
 from __future__ import annotations

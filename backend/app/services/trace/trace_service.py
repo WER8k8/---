@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一 Trace 服务 — 链式追踪的写入/读取与记分卡聚合（总纲 §4.6-7 / §8 085_traces）。
 
 - start/complete/fail：任务执行生命周期落 Trace（prompt 正文只存引用）。

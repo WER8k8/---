@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="AI建材百科" subtitle="AI自动生成建材行业知识文章并发布到网站" surface="elevated">
     <!-- 生成文章区域 -->
@@ -209,7 +212,7 @@ import {
 import api from '@/api'
 import { ydConfirm } from '@/utils/ydModal'
 
-const basePath = '/api/v1/seo/building-wiki'
+const basePath = '/building-wiki'
 
 const tablePanelRef = ref<HTMLElement | null>(null)
 const ui = useUiPreferencesStore()

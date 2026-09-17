@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """矩阵发布结果通知 — 飞书 / Slack Webhook（诚实：仅汇报验真结果）。"""
 
 from __future__ import annotations

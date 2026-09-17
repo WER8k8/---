@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """统一发布台 API — 汇聚母版、任务、状态的一站式入口
 
 工作流: ContentMaster(母版) → PublishTask(任务队列) → 执行结果
@@ -331,6 +333,8 @@ def quick_publish(
     """
     from app.services.hub_urls import build_dual_links
     from sqlalchemy.orm import selectinload
+    from app.services.geo.content_kernel_bridge import persist_kernel
+    from app.services.geo.platform_content_router import PlatformGroup
     master = (
         db.query(ContentMaster)
         .options(selectinload(ContentMaster.platforms))
@@ -400,12 +404,17 @@ def quick_publish(
         return error_response(400, "无可用平台账号，请先配置 platform_accounts")
 
     master.status = "ready"
+    # 落库事实内核（缺口 #8 持久化）：发布一次即留一份可回溯的硬事实快照
+    kernel = persist_kernel(master)
     db.commit()
     return success_response(
         data={
             "master_id": master.id,
             "task_ids": task_ids,
             "count": len(task_ids),
+            "fact_kernel": kernel.to_dict() if kernel else None,
+            "fact_kernel_persisted": kernel is not None,
+            "groups": [PlatformGroup.SEARCH, PlatformGroup.SOCIAL, PlatformGroup.B2B, PlatformGroup.KNOWLEDGE],
         },
         message=f"已创建 {len(task_ids)} 条发布任务",
     )

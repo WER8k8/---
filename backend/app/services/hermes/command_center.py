@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """L0 超管司令部 — 聚合 Hermes / DeerFlow / SEO / 视频 Worker 态势（只读）。"""
 
 from __future__ import annotations
@@ -384,6 +386,7 @@ def _run_command_center_sections(db: Session) -> tuple[dict[str, Any], dict[str,
     patrol = sections.get("patrol") or {"latest": {}}
     patrol_latest = patrol.get("latest") or {}
     overall = patrol_latest.get("overall_status") or "unknown"
+    built_ms = max(1, int((time.perf_counter() - started) * 1000))
     return sections, ops, ecc_hangar, overall, built_ms
 
 
@@ -403,7 +406,7 @@ def _assemble_command_center_payload(
         "positioning": "L0_super_admin_command_core",
         "overall_status": overall,
         "ops_autopilot": ops,
-        "patrol": patrol,
+        "patrol": sections.get("patrol") or {},
         "deerflow": {
             "scheduler": sections.get("deerflow_scheduler") or {},
             "latest": sections.get("deerflow_latest") or {},

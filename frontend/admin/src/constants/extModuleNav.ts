@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 扩展域子模块导航（侧栏「建设中」页面统一动作） */
 
 export interface ExtModuleNavLink {

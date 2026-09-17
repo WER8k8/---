@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """P1-10：40 平台 catalog 与 DB 对齐检查。"""
 
 from __future__ import annotations

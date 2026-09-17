@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Skill 运行时基类（移植自 Trade AI Agent `app/core/skill_base.py`，MIT，保留出处）。
 
 改造点（合并红线 §融合裁决）：

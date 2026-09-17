@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Permissions 权限矩阵（轮17-8）。
 
 能力资源访问权限精确到五级：read / write / execute / delete / publish。

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """抖音评论采集 Worker — 批量入库（文件/HTTP 批处理，禁止假评论）。"""
 
 from __future__ import annotations

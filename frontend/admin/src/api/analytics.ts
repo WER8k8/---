@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 数据分析 / 流量看板 API */
 import { apiGet } from '@/utils/api'
 

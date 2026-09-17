@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * L-Pro 租户站 SEO：<title> / description / keywords + canonical + hreflang（en/zh/ru）
  * Google 英文 · 百度中文 · Yandex 俄语 — 各语言独立 URL（?language=）与独立 meta。
  */

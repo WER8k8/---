@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """编排层公共契约（适配器契约目录，见架构体检 P1 缺口与设计文档 §10.16）。"""
 
 from app.orchestration.interfaces import (

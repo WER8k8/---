@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 巡站快照持久化（仅单键 SystemSetting）。"""
 
 from __future__ import annotations

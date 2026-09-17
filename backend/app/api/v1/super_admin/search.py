@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """全局搜索 API — 跨模块搜索
 
 PII 加密说明：email 字段已加密，不支持 contains 模糊搜索。

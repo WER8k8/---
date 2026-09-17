@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div
     class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100"

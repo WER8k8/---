@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="yd-client-plan-bar" :class="{ 'yd-client-plan-bar--warn': showUpgrade }">
     <div class="yd-client-plan-bar__left">
@@ -13,12 +16,13 @@
     <div class="yd-client-plan-bar__meters">
       <YdUsageMeter
         class="yd-client-plan-bar__meter"
-        label="AI 额度（本月）"
+        label="AI 算力点数（本月）"
         :used="snapshot.aiUsed"
         :max="Math.max(snapshot.aiMax, 1)"
         :hint="usageHint"
       />
     </div>
+
     <div class="yd-client-plan-bar__actions">
       <a-button v-if="showUpgrade" type="primary" size="small" @click="goBilling">升级套餐</a-button>
       <a-button v-else type="link" size="small" @click="goBilling">套餐与用量</a-button>

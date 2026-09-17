@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """站点流量与行为埋点（租户站 → 运营看板）。"""
 
 import uuid

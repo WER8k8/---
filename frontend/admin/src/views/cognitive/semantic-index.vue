@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="语义索引" subtitle="向量嵌入 · 语义搜索 · 百万技术文档自然语言检索" surface="elevated">
     <template #actions>

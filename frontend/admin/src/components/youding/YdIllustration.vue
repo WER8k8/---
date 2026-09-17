@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="yd-illustration" :class="`yd-illustration--${size}`">
     <YdReliefIcon :icon="resolveAntIcon(icon)" size="lg" />

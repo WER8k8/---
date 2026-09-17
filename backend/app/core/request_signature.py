@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """API 请求签名 + 防重放中间件 — FIX-29: 安全增强
 
 防重放策略：
@@ -51,6 +53,8 @@ _SKIP_SIGNATURE_PATHS = {
     "/api/v1/admin-bff/logout",
     "/api/v1/admin-bff/auth/login",
     "/api/v1/admin-bff/auth/refresh",
+    "/api/v1/marketing/events",
+    "/api/v1/seo/indexnow/submit",
 }
 
 

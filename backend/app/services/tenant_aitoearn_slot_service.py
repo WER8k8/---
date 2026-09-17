@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户 AiToEarn 槽位 — 一客户一组矩阵号，与池内其他租户隔离。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SAU HTTP Sidecar 客户端 — 远程 Worker 机执行 Playwright 上传。"""
 
 from __future__ import annotations

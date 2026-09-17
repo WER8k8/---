@@ -1,0 +1,149 @@
+/**
+ * AI 自适应布局 CSS 令牌
+ * 三维自适应：屏幕 × 角色 × 场景
+ */
+
+:root {
+  // ===== 基础字号令牌（可被 persona.fontSizeScale 缩放）=====
+  --uj-adaptive-scale: 1;
+  --uj-font-base: calc(15px * var(--uj-adaptive-scale));
+  --uj-font-xs: calc(12px * var(--uj-adaptive-scale));
+  --uj-font-sm: calc(13px * var(--uj-adaptive-scale));
+  --uj-font-md: calc(15px * var(--uj-adaptive-scale));
+  --uj-font-lg: calc(17px * var(--uj-adaptive-scale));
+  --uj-font-xl: calc(20px * var(--uj-adaptive-scale));
+  --uj-font-2xl: calc(24px * var(--uj-adaptive-scale));
+  --uj-font-3xl: calc(30px * var(--uj-adaptive-scale));
+
+  // ===== 间距令牌（密度感知）=====
+  --uj-space-xs: calc(4px * var(--uj-adaptive-scale));
+  --uj-space-sm: calc(8px * var(--uj-adaptive-scale));
+  --uj-space-md: calc(16px * var(--uj-adaptive-scale));
+  --uj-space-lg: calc(24px * var(--uj-adaptive-scale));
+  --uj-space-xl: calc(32px * var(--uj-adaptive-scale));
+
+  // ===== 断点令牌 =====
+  --bp-xs: 480px;
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  --bp-2xl: 1536px;
+
+  // ===== 布局模式令牌 =====
+  --uj-sidebar-width: 248px;
+  --uj-sidebar-collapsed-width: 64px;
+  --uj-header-height: 52px;
+  --uj-content-max: 1440px;
+  --uj-content-padding: 24px;
+
+  // ===== 图标尺寸令牌 =====
+  --uj-icon-sm: 16px;
+  --uj-icon-md: 20px;
+  --uj-icon-lg: 24px;
+
+  // ===== 圆角令牌 =====
+  --uj-radius-sm: 4px;
+  --uj-radius-md: 8px;
+  --uj-radius-lg: 12px;
+  --uj-radius-xl: 16px;
+}
+
+html {
+  font-size: calc(15px * var(--uj-adaptive-scale, 1));
+}
+
+body {
+  font-size: var(--uj-font-base, calc(15px * var(--uj-adaptive-scale, 1)));
+}
+
+// ===== 建站系统保护隔离（不建站系统改变）=====
+// 确保客户独立站建站画布、GrapesJS 设计器与预览区域不受全局缩放侵入
+.site-builder-isolated,
+.grapesjs-editor-frame,
+.site-canvas-container,
+.site-editor-preview,
+.yd-grapes-editor__canvas,
+.gjs-editor,
+.gjs-cv-canvas,
+.gjs-frame {
+  --uj-adaptive-scale: 1 !important;
+  font-size: 15px !important;
+}
+
+// ===== 超小屏（<480px）=====
+@media (max-width: 479px) {
+  :root {
+    --uj-content-padding: 12px;
+    --uj-header-height: 44px;
+  }
+}
+
+// ===== 小屏手机（480-767px）=====
+@media (min-width: 480px) and (max-width: 767px) {
+  :root {
+    --uj-content-padding: 16px;
+    --uj-header-height: 48px;
+  }
+}
+
+// ===== 平板（768-1023px）=====
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --uj-sidebar-width: 200px;
+    --uj-content-padding: 20px;
+  }
+}
+
+// ===== 大屏（>=1536px）=====
+@media (min-width: 1536px) {
+  :root {
+    --uj-content-max: 1600px;
+    --uj-content-padding: 32px;
+  }
+}
+
+// ===== 角色密度：舒适模式 =====
+.adaptive-density-comfortable {
+  --uj-content-padding: calc(var(--uj-content-padding) * 1.2);
+  --uj-table-row-height: 52px;
+  --uj-card-padding: var(--uj-space-lg);
+}
+
+// ===== 角色密度：紧凑模式 =====
+.adaptive-density-compact {
+  --uj-content-padding: calc(var(--uj-content-padding) * 0.8);
+  --uj-table-row-height: 36px;
+  --uj-card-padding: var(--uj-space-sm);
+}
+
+// ===== 场景模式：展会 =====
+.adaptive-scenario-exhibition {
+  --uj-sidebar-width: 0px;
+  --uj-header-height: 40px;
+  --uj-content-padding: 0;
+}
+
+// ===== 场景模式：专注 =====
+.adaptive-scenario-focus {
+  --uj-sidebar-width: 0px;
+  --uj-content-max: 900px;
+}
+
+// ===== 减弱动效 =====
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ===== 高对比度 =====
+@media (prefers-contrast: more) {
+  :root {
+    --uj-text: #000;
+    --uj-text-secondary: #333;
+    --uj-border: #000;
+  }
+}

@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * RTL support plugin
  * Sets the dir attribute on <html> based on the current locale
  * Currently supports Arabic (ar) as RTL

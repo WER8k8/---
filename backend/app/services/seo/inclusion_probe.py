@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """搜索引擎收录探测 — Baidu site: 查询（失败可降级 HTTP 探活）。"""
 
 from __future__ import annotations

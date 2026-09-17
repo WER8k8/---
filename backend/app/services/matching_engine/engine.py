@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Product Finder 匹配引擎（纯函数，不依赖 FastAPI / SQLAlchemy）。
 
 三层算法：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """DeerFlow 执行引擎 — 状态机驱动的任务编排。
 
 提供复杂任务的规划、执行、审核、断点恢复能力。

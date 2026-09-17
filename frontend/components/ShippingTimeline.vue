@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
     <h3 class="text-lg font-bold text-gray-800 mb-4">{{ t('shipping.step1') || 'Shipping Timeline' }}</h3>

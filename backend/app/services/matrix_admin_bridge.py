@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO 矩阵 admin_users 只读校验：MySQL（生产）与 SQLite（本地）双模式，供统一登录使用。"""
 
 from __future__ import annotations

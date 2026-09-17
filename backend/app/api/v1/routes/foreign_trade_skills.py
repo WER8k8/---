@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """外贸 AI 技能 API 路由。"""
 
 from fastapi import APIRouter, Depends
@@ -27,6 +29,8 @@ def _ensure_skills_loaded():
         import app.services.foreign_trade.sales_enablement_skill  # noqa: F401
         import app.services.foreign_trade.seo_audit_skill  # noqa: F401
         import app.services.foreign_trade.copywriting_skill  # noqa: F401
+        import app.services.foreign_trade.market_insight_skill  # noqa: F401
+        import app.services.foreign_trade.supplier_compare_skill  # noqa: F401
 
 
 @router.get("/")

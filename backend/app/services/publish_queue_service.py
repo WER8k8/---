@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """发布队列生产化：统计、僵死恢复、失败重试。"""
 
 from __future__ import annotations

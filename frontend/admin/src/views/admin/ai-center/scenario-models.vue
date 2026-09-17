@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="场景模型切换" subtitle="不同功能使用不同模型：文章、视频、对话等场景独立配置，保存后立即生效。" surface="elevated">
     <template #actions>

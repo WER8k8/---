@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AccioWork 卖货核心：找客、开发信、谈单草稿（画像级 + 人审发送）。"""
 
 from __future__ import annotations

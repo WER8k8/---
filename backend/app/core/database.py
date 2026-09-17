@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 import sqlalchemy
 from sqlalchemy import String, create_engine, event
 from sqlalchemy.orm import DeclarativeBase, sessionmaker

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="ai-dashboard" title="AI 控制台" subtitle="AI 引擎整体状态 · 用量统计 · 快速入口" surface="elevated">
     <template #actions>

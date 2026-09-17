@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage class="keyword-ranking-page" title="关键词排名追踪" subtitle="追踪关键词在搜索引擎中的排名变化" surface="elevated">
     <YdHonestDataBanner
@@ -402,7 +405,7 @@ function recomputeSummaryFromKeywords(list) {
 const loading = ref(false);
 const tracking = ref(false);
 const keywords = ref([]);
-const dataTrust = ref<'live' | 'mock'>('live');
+const dataTrust = ref('live');
 const hasSimulatedRank = ref(false);
 
 /** 已移除 mock 榜单：API 不可用时仅展示空表 */

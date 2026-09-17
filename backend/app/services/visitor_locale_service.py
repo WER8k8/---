@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """访客 IP / 请求头 → 国家与语言；外贸站与旺财 UI 随地域自动切换。"""
 
 from __future__ import annotations

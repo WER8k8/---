@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <a-card v-if="studio" title="当前项目" size="small" class="mb-4" :loading="loading">
     <template #extra>

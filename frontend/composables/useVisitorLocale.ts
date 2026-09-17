@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 访客 IP 段 → 国家/语言；外贸站与旺财 UI 自动跟随 */
 
 import { ref, computed, type Ref } from 'vue';

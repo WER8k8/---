@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 认证相关路径（勿在页面模板中拼接展示，仅供代码引用） */
 export function apiV1Base(): string {
   const b = (import.meta as unknown as { env?: { VITE_API_BASE?: string } }).env?.VITE_API_BASE;

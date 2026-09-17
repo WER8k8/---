@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** SSR/浏览器统一的 API 根路径 */
 export function useApiRoot() {
   const config = useRuntimeConfig()

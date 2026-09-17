@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 Merchant Profile Model - 商家资料模型
 用于存储商家的公司信息、认证状态、联系方式等

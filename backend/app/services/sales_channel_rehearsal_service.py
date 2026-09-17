@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """七步⑤ 本地/租户彩排 — 5a 入站、5b 企微推送、5c 评论入库。"""
 
 from __future__ import annotations

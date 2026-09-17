@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Skill 执行上下文（移植自 Trade AI Agent `app/core/context.py`，MIT，保留出处）。
 
 改造点（合并红线）：

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """租户登录页搜索 — 只读查询，不含认证逻辑"""
 
 from __future__ import annotations

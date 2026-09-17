@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """FOB/MOQ 出口报价一页 — 绑定产品库（W3 / XF-D2）。"""
 
 from __future__ import annotations

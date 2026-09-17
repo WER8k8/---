@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """代码质量服务 — FIX-70~73
 
 FIX-70: 前端代码质量（ESLint + Prettier + Vitest 配置生成与合规检查）

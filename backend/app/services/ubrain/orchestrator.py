@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """UBrain v1 — 意图识别 + 工具调用（走现有 API 数据或 M0 规则）。"""
 
 from __future__ import annotations
@@ -53,6 +55,72 @@ _CAPABILITY_QUESTION_RE = re.compile(
 
 _EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
 
+# 目标市场识别：只收通用地理名，不收品类词。
+# 品类一律走「用户明说」或「租户产品档案」，不把建材等行业词硬编进内核
+# （对齐 AEOS 核心观点 1：去行业化通用 B2B 抽象，行业只是参数化 Profile）。
+_MARKET_ALIASES: tuple[str, ...] = (
+    "沙特阿拉伯", "阿联酋", "迪拜", "阿曼", "卡塔尔", "科威特", "巴林",
+    "沙特", "印尼", "马来西亚", "马来", "澳洲",
+    "哈萨克斯坦", "乌兹别克斯坦", "巴基斯坦", "孟加拉", "斯里兰卡",
+    "尼日利亚", "南非", "埃及", "摩洛哥", "肯尼亚", "加纳", "坦桑尼亚",
+    "墨西哥", "巴西", "哥伦比亚", "智利", "秘鲁", "阿根廷",
+    "美国", "加拿大", "德国", "法国", "英国", "意大利", "西班牙", "荷兰",
+    "波兰", "俄罗斯", "日本", "韩国", "新加坡", "马来西亚", "印度尼西亚",
+    "泰国", "越南", "菲律宾", "印度", "澳大利亚", "新西兰",
+    "中东", "东南亚", "南亚", "中亚", "拉美", "拉丁美洲", "非洲",
+    "欧洲", "北美", "海湾", "GCC", "SASO",
+)
+
+_COMPANY_TOKEN_RE = re.compile(
+    r"[\u4e00-\u9fa5A-Za-z0-9&.\-]{2,40}?[\s]{0,2}"
+    r"(?:公司|集团|有限公司|股份|工业|实业|Co\.?|Corp\.?|Inc\.?|Ltd\.?|LLC|GmbH|S\.A\.|Group)",
+    re.I,
+)
+
+
+def _extract_insight_subject(message: str) -> dict[str, Any]:
+    """从自然语言里抽 品类 / 目标市场 / 候选主体，供市场洞察与供应商比较使用。
+
+    抽不到就返回空值，由调用方明确向用户追问；绝不替用户编一个品类或市场。
+    """
+    text = (message or "").strip()
+    out: dict[str, Any] = {"category": "", "target_market": "", "candidates": ""}
+    if not text:
+        return out
+
+    # 按别名长度倒序匹配：否则「印度尼西亚」会被「印度」抢先命中，
+    # 「沙特阿拉伯」会退化成「沙特」。别表写顺序不再敏感。
+    market = next(
+        (alias for alias in sorted(_MARKET_ALIASES, key=len, reverse=True) if alias in text),
+        "",
+    )
+    out["target_market"] = market
+
+    candidates = [c.strip() for c in _COMPANY_TOKEN_RE.findall(text) if len(c.strip()) >= 3]
+    # 去重保序，至少两家才构成"比较"
+    uniq: list[str] = []
+    for cand in candidates:
+        if cand not in uniq:
+            uniq.append(cand)
+    if len(uniq) >= 2:
+        out["candidates"] = "\n".join(uniq)
+
+    # 品类：优先「把 X 出口到 Y」「X 在 Y 的洞察」这类显式句式，剥掉地理词与动词后再看还剩什么
+    residual = text
+    for alias in sorted(_MARKET_ALIASES, key=len, reverse=True):
+        residual = residual.replace(alias, " ")
+    for cand in uniq:
+        residual = residual.replace(cand, " ")
+    residual = re.sub(
+        r"(市场洞察|洞察报告|需求驱动|价格带|准入壁垒|买家画像|供应商|同行|厂家|厂商|对手|比较|对比|排序|横向|比价|出口|外销|出海|分析|机会|报告|到|去|在|的|请|帮我|给我|我们|一下|看看|这个|那个|做个|做一个|做一份|来一份|出一份|，|,|、|。|\?|？|!|！|\s|market\s*insight|compare\s+suppliers?)",
+        " ",
+        residual,
+        flags=re.I,
+    )
+    guess = " ".join(token for token in residual.split() if len(token) >= 2)
+    out["category"] = guess[:60]
+    return out
+
 
 LONG_RUNNING_INTENTS = frozenset(
     {
@@ -63,6 +131,9 @@ LONG_RUNNING_INTENTS = frozenset(
         "flywheel_loop",
         "osint_check",
         "website_icp",
+        # 对标 Accio Work 的两条新能力（LLM 驱动，默认走异步入队）
+        "market_insight",
+        "supplier_compare",
     }
 )
 
@@ -85,6 +156,8 @@ class UBrainOrchestrator:
         "blue_ocean",
         "hs_lookup",
         "market_research",
+        "market_insight",
+        "supplier_compare",
         "sync_feedback",
         "ops_snapshot",
         "general",
@@ -180,6 +253,22 @@ class UBrainOrchestrator:
             return "export_feasibility"
         if re.search(r"(市场研究|竞品.{0,6}报告|反哺)", m, re.I):
             return "market_research"
+        # 放在 market_research 之后：「市场研究」这类老说法保持原路由，
+        # 只有明确要洞察/横向比较时才走对标 Accio Work 的新能力。
+        if re.search(
+            r"(市场洞察|洞察报告|需求驱动|价格带|准入壁垒|买家画像|目标市场.{0,10}(分析|机会|洞察)|"
+            r"market\s*insight)",
+            m,
+            re.I,
+        ):
+            return "market_insight"
+        if re.search(
+            r"((对比|比较|排序|哪家|谁更|横向|比价).{0,14}(供应商|同行|厂家|厂商|对手)|"
+            r"供应商.{0,6}(对比|比较|排序)|compare\s+suppliers?)",
+            m,
+            re.I,
+        ):
+            return "supplier_compare"
         return None
 
     def _match_intent_group_b(self, m: str) -> str | None:
@@ -571,6 +660,10 @@ class UBrainOrchestrator:
             reply, tool_result = self._handle_weekly_lead_report(db, tenant_id)
         elif intent == "market_research":
             reply, tool_result = self._handle_market_research(message, ctx, db, effective_tenant)
+        elif intent in ("market_insight", "supplier_compare"):
+            reply, tool_result = self._handle_accio_replica_intent(
+                intent, message, ctx, db, effective_tenant
+            )
         elif intent == "sync_feedback":
             reply, tool_result = self._handle_sync_feedback(ctx, db, effective_tenant)
         elif intent == "flywheel_loop":
@@ -1101,6 +1194,93 @@ class UBrainOrchestrator:
                     f"后续编排：{tool_result.get('next_pipeline', '')}"
                 )
         return reply, tool_result
+
+    def _handle_accio_replica_intent(
+        self,
+        intent: str,
+        message: str,
+        ctx: dict[str, Any],
+        db: Session | None,
+        effective_tenant: str | None,
+    ) -> tuple[str, dict[str, Any]]:
+        """市场洞察 / 供应商比较（对标阿里国际 Accio Work）。
+
+        与 DeerFlow 计划路径共用同一 intent 实现：这里只入队 + 消费，
+        不再自己算一遍，避免两条链路结论不一致。
+        """
+        subject = _extract_insight_subject(message)
+        tool_result: dict[str, Any] = {
+            "intent": intent,
+            "category": subject.get("category"),
+            "target_market": subject.get("target_market"),
+        }
+        if db is None or not effective_tenant:
+            return (
+                "市场洞察与供应商比较需要登录租户后运行（结果会沉淀进租户洞察）。",
+                {**tool_result, "available": False},
+            )
+
+        missing: list[str] = []
+        if not subject.get("category"):
+            missing.append("品类")
+        if not subject.get("target_market"):
+            missing.append("目标市场")
+        if intent == "supplier_compare" and not subject.get("candidates"):
+            missing.append("要比较的供应商/同行名单")
+        if missing:
+            # 参数不全就明说要什么，不硬猜一个品类糊弄过去
+            return (
+                f"还缺 {'、'.join(missing)} 才能出结论。"
+                "例：「岩棉板 出口 沙特 市场洞察」，"
+                "或「对比 A 公司、B 公司、C 公司在沙特的岩棉板供应商」。",
+                {**tool_result, "available": False, "missing_params": missing},
+            )
+
+        payload: dict[str, Any] = {
+            "category": subject["category"],
+            "target_market": subject["target_market"],
+        }
+        if subject.get("candidates"):
+            payload["candidates"] = subject["candidates"]
+        job = enqueue_job(
+            db,
+            tenant_id=str(effective_tenant),
+            intent=intent,
+            payload=payload,
+            created_by=ctx.get("user_id"),
+        )
+        tool_result["job_id"] = job.id
+
+        if ctx.get("async") and not ctx.get("sync"):
+            tool_result["job_status"] = "queued"
+            tool_result["mode"] = "deerflow_async"
+            return (
+                f"已入队{('市场洞察' if intent == 'market_insight' else '供应商横向比较')}"
+                f"（{job.id[:8]}…），完成后结论会沉淀进租户洞察。",
+                tool_result,
+            )
+
+        ran = run_job(db, job.id)
+        tool_result["job_status"] = ran["status"]
+        result = ran.get("result") or {}
+        if result:
+            tool_result.update(result)
+        label = "市场洞察" if intent == "market_insight" else "供应商比较"
+        if ran.get("status") != "success":
+            return f"{label}失败：{ran.get('error_message') or '未知错误'}", tool_result
+        if result.get("degraded"):
+            return f"{label}未完成：{result.get('reason') or '执行降级'}", tool_result
+        body = result.get("insight") or result.get("comparison") or {}
+        confidence = body.get("confidence") if isinstance(body, dict) else None
+        verify = body.get("verification_required") if isinstance(body, dict) else None
+        parts = [f"{label}已生成（品类 {subject['category']} × 市场 {subject['target_market']}）。"]
+        if confidence:
+            parts.append(f"模型置信度 {confidence}；")
+        if verify:
+            parts.append(f"待人工核实 {len(verify)} 项。")
+        else:
+            parts.append("结论为模型推断，须经人工核实后方可对外使用。")
+        return "".join(parts), tool_result
 
     def _handle_sync_feedback(
         self,

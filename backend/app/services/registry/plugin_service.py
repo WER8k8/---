@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Plugin 注册表服务（轮17-4）。
 
 plugins/plugin_versions 表持久化。Plugin 带 manifest（JSON 容器），版本化发布。

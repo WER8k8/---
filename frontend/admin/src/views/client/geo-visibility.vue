@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="GEO 可见性" subtitle="AEO · 统一 GEO 分 · llms.txt · AI 探针" surface="elevated">
     <template v-if="loading">

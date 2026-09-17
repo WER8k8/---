@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="转化漏斗" subtitle="访问→浏览→询盘→成交 全链路转化分析" surface="elevated">
     <template #actions>

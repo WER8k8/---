@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 营销 Lane — AnySearch 数字产品/智能体变现深度拆解与工作流编排。"""
 
 from __future__ import annotations

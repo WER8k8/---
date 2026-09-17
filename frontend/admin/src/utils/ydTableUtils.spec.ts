@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 import { describe, expect, it } from 'vitest';
 
 import { adaptPaginatedResponse } from '@/utils/ydTableUtils';

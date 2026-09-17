@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """海外多渠道智能客服 Agent (WhatsApp / LiveChat Widget)。"""
 
 from __future__ import annotations

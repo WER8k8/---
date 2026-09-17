@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """余额支付接入服务 — FEAT-余额支付
 
 基于已有 user_wallet_service 提供余额支付能力。

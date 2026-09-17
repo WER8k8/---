@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """海关/买家情报 brief — 公开统计 + playbook，禁止无来源 buyer 列表落库。"""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 # mypy: ignore-errors
 """
 Rank Monitor - 排名监控器
@@ -5,7 +7,6 @@ Rank Monitor - 排名监控器
 监控关键词在AI搜索引擎（ChatGPT、Perplexity、Bard）中的排名，
 跟踪排名变化趋势，触发排名变化告警。
 
-Author: 小鹅 - 基于微软Azure最佳实践和苹果Swift并发模式重写
 """
 
 from __future__ import annotations

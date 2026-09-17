@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """管理员用户管理接口
 
 PII 加密说明：email 字段以 AES-256-GCM 加密存储。

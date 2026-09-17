@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="自动化概览" subtitle="调度、代码工具与脚本编排集中入口" surface="elevated">
   <div class="auto-overview p-6 space-y-6">

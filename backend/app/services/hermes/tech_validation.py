@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes 对抓取技术候选做安全验证（不安装、不改依赖）。"""
 
 from __future__ import annotations

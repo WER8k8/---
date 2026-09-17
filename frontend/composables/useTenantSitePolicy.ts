@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** P1-05：租户独立站隐藏总站友链 */
 import { SITE_CONFIG } from '~/config/site'
 

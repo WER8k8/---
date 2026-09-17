@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="DeerFlow 队列监控" subtitle="全平台任务 · SLO · 失败率" surface="elevated">
     <template #actions>

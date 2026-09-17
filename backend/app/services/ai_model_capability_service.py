@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """AI 模型能力解析与健康探测（供超管配置页展示）。"""
 
 from __future__ import annotations

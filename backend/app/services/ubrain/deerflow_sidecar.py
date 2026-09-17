@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """官方 DeerFlow 2.0 旁路：可选 HTTP 研究服务，失败则回退本机 Lite。
 
 DeerFlow 2.0 是字节跳动开源的超级智能体框架，基于 LangGraph + LangChain 构建。

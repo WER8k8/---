@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """用户钱包 — 余额账户与交易流水（BUG-04 修复：DB 落库唯一真相源）
 
 原实现余额存于进程内存 dict + Redis 30 天 TTL，重启即清零、多 worker 数据分裂。

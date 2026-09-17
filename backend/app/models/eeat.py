@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 from datetime import datetime
 
 from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey,

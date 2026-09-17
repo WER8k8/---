@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """智能物流与定价路由 - 模块化架构"""
 
 from uuid import UUID
@@ -11,6 +13,10 @@ from app.db.session import get_db
 from app.models.order import Order
 from app.models.user import User
 from app.services.logistics_dashboard_service import build_logistics_overview
+from app.services.logistics_router_service import (
+    lbs_distance_estimate,
+    plan_route,
+)
 from app.services.logistics_tracking_service import (
     fetch_tracking_payload,
     get_order_for_user,
@@ -82,15 +88,33 @@ def get_lbs_routing(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """LBS测距与路径规划"""
+    """LBS测距与路径规划（无地图 API 时返回估算占位并明确标记 estimate）。"""
     if current_user.role not in ["admin", "super_admin", "tenant_admin"]:
         return error_response(403, "权限不足")
-    return success_response(
-        data={
-            "distance_km": 0,
-            "estimated_time_min": 0,
-            "route_points": [],
-            "toll_fee": 0})
+    origin = {"lat": origin_lat, "lng": origin_lng} if origin_lat is not None or origin_lng is not None else None
+    return success_response(data=lbs_distance_estimate(origin, dest_city))
+
+
+@router.get("/routing-plan")
+def get_routing_plan(
+    origin: str = Query(..., min_length=1, description="始发地"),
+    destination: str = Query(..., min_length=1, description="目的地"),
+    weight_kg: float = Query(0, ge=0, description="重量 kg"),
+    volume: float = Query(0, ge=0, description="体积 m3，可选"),
+    urgency: str = Query("standard", description="standard / express"),
+    preference: str = Query("balanced", description="balanced/cheapest/fastest/safest"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """多物流商比价 + 智能路由规划（§10）。"""
+    if current_user.role not in ["admin", "super_admin", "tenant_admin"]:
+        return error_response(403, "权限不足")
+    plan = plan_route(
+        origin=origin, destination=destination,
+        weight_kg=weight_kg, volume=volume,
+        urgency=urgency, preference=preference,
+    )
+    return success_response(data=plan)
 
 
 @router.get("/freight-calc")

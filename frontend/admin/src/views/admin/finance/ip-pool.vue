@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="静态 IP 池" subtitle="长期固定 · 纯静态住宅 IP · 平台池与租户分配" surface="elevated">
     <template #actions>

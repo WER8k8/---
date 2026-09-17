@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Hermes · 按租户 site_content 正文 AI 翻译为多语种 i18n。"""
 
 from __future__ import annotations

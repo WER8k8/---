@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """ARCH-03：Hermes 写库边界静态审计（只读扫描）。"""
 
 from __future__ import annotations

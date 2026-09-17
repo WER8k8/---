@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Engagement Executor Plugin for Hermes Orchestration.
 
 把既有 aitoearn_engage_send_service（社媒互动/触达）包成

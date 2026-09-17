@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 性能监控服务
 集成Lighthouse CI，检查性能预算，触发性能告警

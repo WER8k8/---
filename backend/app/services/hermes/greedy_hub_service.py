@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """摸金校尉总控 Hub — 一次拉取累计/大赛/耐力/闭环/队列/生存脉搏。"""
 
 from __future__ import annotations

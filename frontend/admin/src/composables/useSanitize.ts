@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
+/**
  * XSS 防护 composable — 基于 DOMPurify
  * 对 v-html 渲染内容进行安全过滤
  */

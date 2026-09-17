@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="系统配置" subtitle="配置系统参数和运行环境设置" surface="elevated">
     <template #actions>

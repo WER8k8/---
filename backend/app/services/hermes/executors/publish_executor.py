@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Publish Executor Plugin — 多平台内容分发。
 
 ⚠️ 重要：本插件**刻意不使用** `PublishDispatchService.distribute`

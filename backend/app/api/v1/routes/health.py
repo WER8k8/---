@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
 系统健康检查端点
 
@@ -35,11 +37,11 @@ def health_check():
     基础健康检查
 
     返回服务是否存活。不依赖任何外部资源，用于负载均衡器存活探针。
+    仅返回公共状态字段，不暴露版本等指纹信息。
     """
     return APIResponse.success(
         data={
             "status": "ok",
-            "version": "1.0.0",
         }
     )
 

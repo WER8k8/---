@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """请求 ID / trace_id 贯穿中间件（审计 CLOSE-09）。
 
 - 生成或透传 X-Request-ID，写入 contextvars（线程/异步任务间自动透传）

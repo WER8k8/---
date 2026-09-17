@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 <template>
   <YdPage title="Token 用量" subtitle="监控 AI 调用消耗、配额与告警配置" surface="elevated">
   <div class="usage-page">

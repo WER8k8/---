@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ */
 /** 套餐展示：合并后端 TenantPlan 与营销文案，保证与配额/功能开关一致 */
 
 export type ApiTenantPlan = {
