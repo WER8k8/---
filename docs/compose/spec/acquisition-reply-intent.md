@@ -3,7 +3,7 @@ feature: acquisition-reply-intent
 status: delivered
 updated: 2026-09-18
 branch: feat/acquire-mobius-20260918
-commits: d657dcc6..HEAD
+commits: d657dcc6..e47ed865b490
 ---
 
 # 回复意图判断与阶段入卡（compose-next#4）
