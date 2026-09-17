@@ -35,6 +35,7 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
     title: '获客转化',
     children: [
       { name: 'ClientInquiries', path: '/client/inquiries', title: '询盘管理', icon: 'MessageOutlined' },
+      { name: 'ClientAcquisitionOps', path: '/client/acquisition-ops', title: '获客作战台', icon: 'AimOutlined' },
       { name: 'ClientInquiryQueue', path: '/client/queues/inquiries', title: '询盘队列', icon: 'OrderedListOutlined' },
       { name: 'ClientEmailCampaigns', path: '/client/email-campaigns', title: '邮件营销', icon: 'MailOutlined' },
       { name: 'ClientTradeTools', path: '/client/trade-tools', title: '外贸工具指南', icon: 'QuestionCircleOutlined' },
