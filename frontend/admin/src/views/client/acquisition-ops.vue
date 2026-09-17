@@ -45,6 +45,14 @@
           :message="`译文（${translateResult.provider}${translateResult.degraded ? ' · 降级' : ''}）`"
           :description="translateResult.translated"
         />
+        <a-alert
+          v-if="intentAnalysis"
+          class="mt-3"
+          :type="intentAnalysis.intent === 'reject_competitor' ? 'error' : 'info'"
+          show-icon
+          :message="`意图判断：${INTENT_LABELS[intentAnalysis.intent] || intentAnalysis.intent}（${intentAnalysis.confidence}）`"
+          :description="`${intentAnalysis.reason} ｜ 建议阶段：${intentAnalysis.stage_suggestion} ｜ 下一步：${intentAnalysis.next_action}${intentAnalysis.talk_track ? ' ｜ 话术：' + intentAnalysis.talk_track : ''}`"
+        />
         <a-alert v-if="alert" class="mt-3" :type="alertType" show-icon :message="alert" />
       </a-card>
 
@@ -213,6 +221,27 @@ const summary = ref<Partial<OpsCardSummary>>({})
 const tips = ref<string[]>([])
 const tenantId = ref('demo')
 
+/** 回复意图展示标签（与 backend intent_classifier 枚举对齐） */
+const INTENT_LABELS: Record<string, string> = {
+  price_haggling: '压价议价',
+  request_quote: '索取报价',
+  request_sample: '索要样品',
+  payment_discuss: '付款谈判',
+  cert_insist: '认证要求',
+  quantity_port: '数量/港口',
+  reject_competitor: '已选同行/流失风险',
+  generic_interest: '泛意向',
+  unknown: '未识别',
+}
+const intentAnalysis = ref<{
+  intent: string
+  stage_suggestion: string
+  confidence: number
+  reason: string
+  next_action: string
+  talk_track: string
+} | null>(null)
+
 async function resolveTenantId(): Promise<string> {
   if (tenantId.value && tenantId.value !== 'demo') return tenantId.value
   try {
@@ -329,6 +358,7 @@ async function onIngestReply() {
       owner_user_id: form.owner_user_id,
     })
     applyCard(resp)
+    intentAnalysis.value = resp.intent_analysis || null
     if (resp.playbook_tips && resp.playbook_tips.length) {
       tips.value = resp.playbook_tips.slice(0, 8)
     } else {
@@ -336,6 +366,12 @@ async function onIngestReply() {
     }
     if (resp.alerts && resp.alerts.length) {
       setAlert(resp.alerts.join('；'), 'warning')
+    } else if (resp.intent_analysis) {
+      const lab = INTENT_LABELS[resp.intent_analysis.intent] || resp.intent_analysis.intent
+      setAlert(
+        `已建卡。意图：${lab}。下一步：${resp.intent_analysis.next_action}`,
+        resp.intent_analysis.intent === 'reject_competitor' ? 'warning' : 'success',
+      )
     } else {
       setAlert('已建卡并记录跟进。请看下方六格信息。', 'success')
     }

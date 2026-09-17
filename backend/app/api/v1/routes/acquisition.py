@@ -26,6 +26,7 @@ from app.services.acquisition import (
 )
 from app.services.acquisition.dispatch_service import dispatch_acquisition
 from app.services.acquisition.experience_feed import record_acquisition_event, record_ops_loss
+from app.services.acquisition.intent_classifier import classify_reply
 from app.services.acquisition.repo import persist_inquiry, persist_prospect_lead
 from app.services.acquisition.translate_service import translate_text
 from app.services.acquisition.wallet_guard import check_wallet_status
@@ -419,6 +420,15 @@ def reply_ingest(
         grade_label, grade_reason = score_grade(body.grade)
     tips = playbook_store.tips_for(body.country, buyer_type=effective_type) if body.country else []
     buyer = buyer_store.get(buyer_id) if buyer_id else None
+    intent_analysis = classify_reply(body.message, country=body.country)
+    stage = intent_analysis.get("stage_suggestion") or "engaged"
+    # Spec S2.2：现卡 stage 已是 lost 则不覆盖；lost 仅由 loss API 设置
+    card = ops_card_store.get_by_inquiry(body.inquiry_id)
+    if card and card.stage == "lost":
+        stage = "lost"
+    tips = list(tips)
+    if intent_analysis.get("talk_track"):
+        tips.insert(0, str(intent_analysis["talk_track"]))
     card = ops_card_store.materialize(
         tenant_id=body.tenant_id,
         inquiry_id=body.inquiry_id,
@@ -428,13 +438,14 @@ def reply_ingest(
         grade=grade_label,
         grade_reason=grade_reason,
         playbook_tips=tips,
+        stage=stage,
     )
     summary_line = (body.message or "（客户回复）").strip()[:200]
     card = ops_card_store.record_touch(
         body.inquiry_id,
         channel=body.channel or "inbound",
         summary=summary_line,
-        next_action="24h 内回复；先问数量/港口/认证/付款",
+        next_action=str(intent_analysis.get("next_action") or "24h 内回复；先问数量/港口/认证/付款"),
     )
     session = _resolve_db(db)
     persistence = {
@@ -481,6 +492,7 @@ def reply_ingest(
         "playbook_tips": tips,
         "persistence": persistence,
         "experience": experience,
+        "intent_analysis": intent_analysis,
     }
 
 

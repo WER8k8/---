@@ -160,7 +160,20 @@ export async function ingestReply(body: {
   contact_name?: string
   company_name?: string
   email?: string
-}): Promise<OpsCardResponse & { alerts?: string[]; playbook_tips?: string[] }> {
+}): Promise<
+  OpsCardResponse & {
+    alerts?: string[]
+    playbook_tips?: string[]
+    intent_analysis?: {
+      intent: string
+      stage_suggestion: string
+      confidence: number
+      reason: string
+      next_action: string
+      talk_track: string
+    }
+  }
+> {
   const raw = await apiPost<any>('/acquisition/reply-ingest', body).then(unwrap)
   return raw
 }
