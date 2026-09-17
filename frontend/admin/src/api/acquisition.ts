@@ -260,6 +260,47 @@ export function listFollowups(tenantId = 'demo', includeLost = false): Promise<{
   ).then(unwrap)
 }
 
+export function updateOpsCardPayment(
+  inquiryId: string,
+  body: {
+    pi_no?: string
+    deposit_amount?: number
+    deposit_due?: string
+    deposit_paid_at?: string
+    balance_amount?: number
+    balance_status?: string
+    voucher_url?: string
+    overdue_days?: number
+  },
+): Promise<OpsCardResponse> {
+  return apiPost<any>(`/acquisition/ops-card/${encodeURIComponent(inquiryId)}/payment`, body).then(unwrap)
+}
+
+export function updateOpsCardLogistics(
+  inquiryId: string,
+  body: {
+    forwarder?: string
+    carrier?: string
+    bl_no?: string
+    container_no?: string
+    etd?: string
+    eta?: string
+    milestone?: string
+  },
+): Promise<OpsCardResponse> {
+  return apiPost<any>(`/acquisition/ops-card/${encodeURIComponent(inquiryId)}/logistics`, body).then(unwrap)
+}
+
+export function updateOpsCardGoods(
+  inquiryId: string,
+  body: {
+    sku_lines?: Array<{ name?: string; spec?: string; qty?: number; unit?: string; price?: number; currency?: string }>
+    container_hint?: string
+  },
+): Promise<OpsCardResponse> {
+  return apiPost<any>(`/acquisition/ops-card/${encodeURIComponent(inquiryId)}/goods`, body).then(unwrap)
+}
+
 /** 获客渠道健康（real/mock 红标） */
 export function listAcquisitionChannels(): Promise<{
   channels: Array<{ id: string; name: string; status: string; reason: string; is_mock: boolean }>

@@ -121,6 +121,41 @@ class OpsCardLossRequest(BaseModel):
     note: str = ""
 
 
+class OpsCardPaymentRequest(BaseModel):
+    pi_no: str = ""
+    deposit_amount: float = 0
+    deposit_due: str = ""
+    deposit_paid_at: str = ""
+    balance_amount: float = 0
+    balance_status: str = ""  # pending/paid/overdue
+    voucher_url: str = ""
+    overdue_days: int = 0
+
+
+class OpsCardLogisticsRequest(BaseModel):
+    forwarder: str = ""
+    carrier: str = ""
+    bl_no: str = ""
+    container_no: str = ""
+    etd: str = ""
+    eta: str = ""
+    milestone: str = ""
+
+
+class OpsCardSkuLineRequest(BaseModel):
+    name: str = ""
+    spec: str = ""
+    qty: float = 0
+    unit: str = ""
+    price: float = 0
+    currency: str = "USD"
+
+
+class OpsCardGoodsRequest(BaseModel):
+    sku_lines: List[OpsCardSkuLineRequest] = Field(default_factory=list)
+    container_hint: str = ""
+
+
 class ReplyIngestRequest(BaseModel):
     tenant_id: str = "demo"
     inquiry_id: str
@@ -351,6 +386,73 @@ def ops_card_loss(
         note=body.note or "",
     )
     return {"card": card.to_dict(), "summary": card.summary_lines(), "experience": exp}
+
+
+@router.post("/ops-card/{inquiry_id}/payment")
+def ops_card_payment(
+    inquiry_id: str,
+    body: OpsCardPaymentRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """更新收款（定金/尾款/PI）——傻子都行大白话字段。"""
+    card = ops_card_store.update_payment(
+        inquiry_id,
+        pi_no=body.pi_no,
+        deposit_amount=body.deposit_amount,
+        deposit_due=body.deposit_due,
+        deposit_paid_at=body.deposit_paid_at,
+        balance_amount=body.balance_amount,
+        balance_status=body.balance_status,
+        voucher_url=body.voucher_url,
+        overdue_days=body.overdue_days,
+    )
+    return {"card": card.to_dict(), "summary": card.summary_lines()}
+
+
+@router.post("/ops-card/{inquiry_id}/logistics")
+def ops_card_logistics(
+    inquiry_id: str,
+    body: OpsCardLogisticsRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """更新物流（货代/柜号/ETD/ETA/里程碑）。"""
+    card = ops_card_store.update_logistics(
+        inquiry_id,
+        forwarder=body.forwarder,
+        carrier=body.carrier,
+        bl_no=body.bl_no,
+        container_no=body.container_no,
+        etd=body.etd,
+        eta=body.eta,
+        milestone=body.milestone,
+    )
+    return {"card": card.to_dict(), "summary": card.summary_lines()}
+
+
+@router.post("/ops-card/{inquiry_id}/goods")
+def ops_card_goods(
+    inquiry_id: str,
+    body: OpsCardGoodsRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """更新货物（发什么货）。"""
+    from app.services.acquisition import OpsCardSkuLine
+
+    card = ops_card_store.get_by_inquiry(inquiry_id)
+    if card is None:
+        from app.services.acquisition import OpsCard as _OC
+        card = _OC(inquiry_id=inquiry_id)
+    card.sku_lines = [
+        OpsCardSkuLine(
+            name=s.name, spec=s.spec, qty=s.qty, unit=s.unit,
+            price=s.price, currency=s.currency or "USD",
+        )
+        for s in body.sku_lines
+    ]
+    if body.container_hint is not None:
+        card.container_hint = body.container_hint
+    card = ops_card_store.update(card)
+    return {"card": card.to_dict(), "summary": card.summary_lines()}
 
 
 # ── Playbook ───────────────────────────────────────────────

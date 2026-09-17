@@ -170,6 +170,36 @@
               <b>{{ n.author }}</b> · {{ n.at }}：{{ n.body }}
             </div>
           </div>
+
+          <div class="mt-4">
+            <div class="font-semibold mb-1">收款 / 物流 / 货（可编辑）</div>
+            <div class="grid gap-2 md:grid-cols-3">
+              <div>
+                <div class="text-xs text-gray-500 mb-1">收款</div>
+                <a-input v-model:value="pay.pi_no" placeholder="PI 号" size="small" />
+                <a-input v-model:value="pay.deposit_amount" placeholder="定金金额" size="small" class="mt-1" />
+                <a-input v-model:value="pay.deposit_paid_at" placeholder="定金到账日" size="small" class="mt-1" />
+                <a-input v-model:value="pay.balance_status" placeholder="尾款 pending/paid/overdue" size="small" class="mt-1" />
+                <a-button size="small" type="primary" class="mt-1" :loading="loading" @click="onPay">保存收款</a-button>
+              </div>
+              <div>
+                <div class="text-xs text-gray-500 mb-1">物流</div>
+                <a-input v-model:value="logi.carrier" placeholder="船公司/货代" size="small" />
+                <a-input v-model:value="logi.bl_no" placeholder="提单号" size="small" class="mt-1" />
+                <a-input v-model:value="logi.etd" placeholder="ETD" size="small" class="mt-1" />
+                <a-input v-model:value="logi.eta" placeholder="ETA" size="small" class="mt-1" />
+                <a-button size="small" type="primary" class="mt-1" :loading="loading" @click="onLogi">保存物流</a-button>
+              </div>
+              <div>
+                <div class="text-xs text-gray-500 mb-1">发什么货</div>
+                <a-input v-model:value="goods.name" placeholder="品名" size="small" />
+                <a-input v-model:value="goods.spec" placeholder="规格" size="small" class="mt-1" />
+                <a-input v-model:value="goods.qty" placeholder="数量" size="small" class="mt-1" />
+                <a-input v-model:value="goods.unit" placeholder="单位" size="small" class="mt-1" />
+                <a-button size="small" type="primary" class="mt-1" :loading="loading" @click="onGoods">保存货物</a-button>
+              </div>
+            </div>
+          </div>
         </template>
       </a-card>
     </div>
@@ -247,6 +277,9 @@ import {
   recordOpsCardLoss,
   touchOpsCard,
   translateAcquisition,
+  updateOpsCardGoods,
+  updateOpsCardLogistics,
+  updateOpsCardPayment,
   type IntentPreviewResponse,
   type OpsCardPayload,
   type OpsCardResponse,
@@ -290,6 +323,69 @@ async function loadChannels() {
   try { channels.value = await listAcquisitionChannels() } catch { channels.value = null }
 }
 const followups = ref<Awaited<ReturnType<typeof listFollowups>> | null>(null)
+
+const pay = reactive({
+  pi_no: '',
+  deposit_amount: '',
+  deposit_paid_at: '',
+  balance_status: 'pending',
+})
+const logi = reactive({ carrier: '', bl_no: '', etd: '', eta: '' })
+const goods = reactive({ name: '', spec: '', qty: '', unit: 'pcs' })
+
+async function onPay() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await updateOpsCardPayment(form.inquiry_id, {
+      pi_no: pay.pi_no,
+      deposit_amount: Number(pay.deposit_amount) || 0,
+      deposit_paid_at: pay.deposit_paid_at,
+      balance_status: pay.balance_status || 'pending',
+    })
+    applyCard(resp)
+    setAlert('收款信息已保存。', 'success')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  } finally { loading.value = false }
+}
+
+async function onLogi() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await updateOpsCardLogistics(form.inquiry_id, {
+      carrier: logi.carrier,
+      bl_no: logi.bl_no,
+      etd: logi.etd,
+      eta: logi.eta,
+      milestone: logi.bl_no ? '已登记提单' : '',
+    })
+    applyCard(resp)
+    setAlert('物流信息已保存。', 'success')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  } finally { loading.value = false }
+}
+
+async function onGoods() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await updateOpsCardGoods(form.inquiry_id, {
+      sku_lines: [{
+        name: goods.name,
+        spec: goods.spec,
+        qty: Number(goods.qty) || 0,
+        unit: goods.unit || 'pcs',
+      }],
+    })
+    applyCard(resp)
+    setAlert('货物信息已保存。', 'success')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  } finally { loading.value = false }
+}
 
 async function loadFollowups() {
   followupLoading.value = true
