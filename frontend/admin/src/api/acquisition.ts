@@ -198,3 +198,28 @@ export function getWalletStatus(tenantId = 'demo'): Promise<{
 }> {
   return apiGet<any>(`/acquisition/wallet-status?tenant_id=${encodeURIComponent(tenantId)}`).then(unwrap)
 }
+
+/** 作战台一键派发：拆解任务图，auto_dispatch=true 时尝试真派发 */
+export function dispatchAcquisition(body: {
+  intent: string
+  tenant_id?: string
+  channel?: string
+  payload?: Record<string, unknown>
+  inquiry_id?: string
+  auto_dispatch?: boolean
+}): Promise<{
+  plan_id: string
+  graph_source: string
+  node_count: number
+  nodes: Array<Record<string, unknown>>
+  approval_required: string[]
+  dispatched: boolean
+  task_ids: string[]
+  plan_task_id: string
+  dispatch_error: string
+  persistence_note: string
+  experience?: Record<string, unknown> | null
+  card?: OpsCardPayload | null
+}> {
+  return apiPost<any>('/acquisition/dispatch', body).then(unwrap)
+}

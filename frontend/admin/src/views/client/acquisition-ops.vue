@@ -141,6 +141,19 @@
         <a-input v-model:value="preview.keyword" placeholder="关键词（如 rockwool / 石膏板）" />
         <a-input v-model:value="preview.country" placeholder="国家（如 SA / IN）" />
         <a-button type="primary" :loading="loading" block @click="onPreview">拆解给我看</a-button>
+        <a-button
+          v-if="previewResult"
+          type="primary"
+          :loading="dispatchLoading"
+          danger
+          block
+          @click="onDispatch"
+        >
+          确认派发（写入任务图并调度）
+        </a-button>
+        <a-alert v-if="dispatchResult" class="mt-2" :type="dispatchResult.dispatched ? 'success' : 'info'" show-icon
+          :message="dispatchResult.dispatched ? '已派发' : '已拆解（未派发）'"
+          :description="`${dispatchResult.persistence_note || ''} plan=${dispatchResult.plan_id} source=${dispatchResult.graph_source}`" />
         <div v-if="previewResult">
           <div class="mb-2 text-sm text-gray-600">
             来源：{{ previewResult.source }} ｜ 策略：{{ previewResult.strategy }}
@@ -175,6 +188,7 @@ import { message } from 'ant-design-vue'
 import YdPage from '@/components/youding/YdPage.vue'
 import {
   addOpsCardNote,
+  dispatchAcquisition,
   getOpsCard,
   getWalletStatus,
   ingestReply,
@@ -239,6 +253,16 @@ const lossOptions = [
 const showPreview = ref(false)
 const preview = reactive({ intent: 'find_leads', keyword: '', country: '' })
 const previewResult = ref<IntentPreviewResponse | null>(null)
+const dispatchLoading = ref(false)
+const dispatchResult = ref<{
+  plan_id: string
+  graph_source: string
+  node_count: number
+  dispatched: boolean
+  persistence_note: string
+  dispatch_error: string
+  card?: OpsCardPayload | null
+} | null>(null)
 const nodeCols = [
   { title: '步骤', dataIndex: 'id', width: 60 },
   { title: '谁来做', dataIndex: 'executor', width: 120 },
@@ -429,6 +453,45 @@ async function onPreview() {
     previewResult.value = null
   } finally {
     loading.value = false
+  }
+}
+
+async function onDispatch() {
+  dispatchLoading.value = true
+  try {
+    const tenant = await resolveTenantId()
+    dispatchResult.value = await dispatchAcquisition({
+      intent: preview.intent,
+      tenant_id: tenant,
+      payload: {
+        keyword: preview.keyword,
+        country: preview.country,
+        message: preview.keyword,
+        product_name: preview.keyword,
+        topic: preview.keyword,
+      },
+      inquiry_id: form.inquiry_id || '',
+      auto_dispatch: true,
+    })
+    if (form.inquiry_id) {
+      try {
+        const fresh = await getOpsCard(form.inquiry_id)
+        applyCard(fresh)
+      } catch {
+        /* ignore */
+      }
+    }
+    setAlert(
+      dispatchResult.value.dispatched
+        ? `已派发：${dispatchResult.value.node_count} 个步骤`
+        : `已拆解未派发：${dispatchResult.value.persistence_note || dispatchResult.value.dispatch_error}`,
+      dispatchResult.value.dispatched ? 'success' : 'info',
+    )
+  } catch (e: unknown) {
+    dispatchResult.value = null
+    message.error(e instanceof Error ? e.message : '派发失败')
+  } finally {
+    dispatchLoading.value = false
   }
 }
 

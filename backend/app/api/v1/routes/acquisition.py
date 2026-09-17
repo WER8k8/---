@@ -24,6 +24,7 @@ from app.services.acquisition import (
     playbook_store,
     score_grade,
 )
+from app.services.acquisition.dispatch_service import dispatch_acquisition
 from app.services.acquisition.experience_feed import record_acquisition_event, record_ops_loss
 from app.services.acquisition.repo import persist_inquiry, persist_prospect_lead
 from app.services.acquisition.translate_service import translate_text
@@ -139,6 +140,30 @@ class TranslateRequest(BaseModel):
     text: str
     from_lang: str = "auto"
     to_lang: str = "zh"
+
+
+class DispatchRequest(BaseModel):
+    intent: str
+    tenant_id: str = "demo"
+    channel: str = "acquisition_ops"
+    payload: dict[str, Any] = Field(default_factory=dict)
+    inquiry_id: str = ""
+    auto_dispatch: bool = False
+
+
+class DispatchResponse(BaseModel):
+    plan_id: str
+    graph_source: str
+    node_count: int
+    nodes: List[dict[str, Any]]
+    approval_required: List[str]
+    dispatched: bool
+    task_ids: List[str]
+    plan_task_id: str
+    dispatch_error: str
+    persistence_note: str
+    experience: Optional[dict[str, Any]] = None
+    card: Optional[dict[str, Any]] = None
 
 
 # ── 编排图预览（好用：先看懂再执行）─────────────────────────
@@ -475,3 +500,69 @@ def acquisition_wallet_status(
 ):
     """Token/套餐闸状态；无账本不编造。"""
     return check_wallet_status(tenant_id)
+
+
+@router.post("/dispatch", response_model=DispatchResponse)
+async def acquisition_dispatch(
+    body: DispatchRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """作战台一键派发：拆解任务图，可选真派发（复用爱马仕 supervisor）。"""
+    if not (body.intent or "").strip():
+        raise HTTPException(status_code=400, detail="intent required")
+    session = _resolve_db(db)
+    try:
+        result = await dispatch_acquisition(
+            session,
+            tenant_id=body.tenant_id,
+            intent=body.intent,
+            payload=dict(body.payload or {}),
+            channel=body.channel,
+            auto_dispatch=bool(body.auto_dispatch),
+        )
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=422, detail=f"拆解/派发失败: {exc}") from exc
+
+    card = None
+    if body.inquiry_id:
+        tips = []
+        country = str((body.payload or {}).get("country") or "").upper()
+        if country:
+            tips = playbook_store.tips_for(country, buyer_type="new")
+        card = ops_card_store.materialize(
+            tenant_id=body.tenant_id,
+            inquiry_id=body.inquiry_id,
+            stage="orchestrated",
+            playbook_tips=tips,
+        )
+        card = ops_card_store.add_note(
+            body.inquiry_id,
+            author="system",
+            body=f"已智能拆派 plan={result.get('plan_id')} source={result.get('graph_source')} dispatched={result.get('dispatched')}",
+            pinned=True,
+        )
+
+    exp = record_acquisition_event(
+        session,
+        tenant_id=body.tenant_id,
+        event="ops_dispatch",
+        inquiry_id=body.inquiry_id,
+        success=bool(result.get("dispatched")) or not body.auto_dispatch,
+        detail=f"intent={body.intent}; plan={result.get('plan_id')}; dispatched={result.get('dispatched')}",
+        executor_id="acquisition_dispatch",
+    )
+    return DispatchResponse(
+        plan_id=str(result.get("plan_id") or ""),
+        graph_source=str(result.get("graph_source") or ""),
+        node_count=int(result.get("node_count") or 0),
+        nodes=list(result.get("nodes") or []),
+        approval_required=list(result.get("approval_required") or []),
+        dispatched=bool(result.get("dispatched")),
+        task_ids=list(result.get("task_ids") or []),
+        plan_task_id=str(result.get("plan_task_id") or ""),
+        dispatch_error=str(result.get("dispatch_error") or ""),
+        persistence_note=str(result.get("persistence_note") or ""),
+        experience=exp,
+        card=card.to_dict() if card else None,
+    )
