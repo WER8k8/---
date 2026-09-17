@@ -257,6 +257,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '套餐续费' },
       },
       {
+        path: 'acquisition-ops',
+        name: 'ClientAcquisitionOps',
+        component: () => import('@/views/client/acquisition-ops.vue'),
+        meta: { title: '获客作战台' },
+      },
+      {
         path: 'plan-gate',
         name: 'ClientPlanGate',
         component: () => import('@/views/client/plan-gate.vue'),
