@@ -28,6 +28,7 @@ from app.services.acquisition.dispatch_service import dispatch_acquisition
 from app.services.acquisition.experience_feed import record_acquisition_event, record_ops_loss
 from app.services.acquisition.intent_classifier import classify_reply
 from app.services.acquisition.repo import persist_inquiry, persist_prospect_lead
+from app.services.acquisition.sla import card_sla, default_next_action_at
 from app.services.acquisition.translate_service import translate_text
 from app.services.acquisition.wallet_guard import check_wallet_status
 
@@ -441,11 +442,13 @@ def reply_ingest(
         stage=stage,
     )
     summary_line = (body.message or "（客户回复）").strip()[:200]
+    next_at = default_next_action_at(hours=24)
     card = ops_card_store.record_touch(
         body.inquiry_id,
         channel=body.channel or "inbound",
         summary=summary_line,
         next_action=str(intent_analysis.get("next_action") or "24h 内回复；先问数量/港口/认证/付款"),
+        next_action_at=next_at,
     )
     session = _resolve_db(db)
     persistence = {
@@ -493,6 +496,43 @@ def reply_ingest(
         "persistence": persistence,
         "experience": experience,
         "intent_analysis": intent_analysis,
+        "sla": card_sla(card),
+    }
+
+
+@router.get("/followups")
+def acquisition_followups(
+    tenant_id: str = "demo",
+    include_lost: bool = False,
+    current_user: User = Depends(get_current_user),
+):
+    """今日待办：按逾期/到期排序的跟单卡。"""
+    cards = ops_card_store.list_followups(tenant_id=tenant_id, include_lost=include_lost)
+    items = []
+    for c in cards:
+        sla = card_sla(c)
+        items.append({
+            "inquiry_id": c.inquiry_id,
+            "stage": c.stage,
+            "owner_user_id": c.owner_user_id,
+            "buyer_display": c.buyer_display,
+            "buyer_grade": c.buyer_grade,
+            "next_action": c.next_action,
+            "next_action_at": c.next_action_at,
+            "last_summary": c.last_summary,
+            "summary": c.summary_lines(),
+            "sla": sla,
+        })
+    # 紧急优先
+    rank = {"overdue": 0, "due": 1, "none": 2, "closed": 3}
+    items.sort(key=lambda x: rank.get(x["sla"]["sla"], 9))
+    overdue = sum(1 for i in items if i["sla"].get("overdue"))
+    return {
+        "tenant_id": tenant_id,
+        "total": len(items),
+        "overdue_count": overdue,
+        "items": items,
+        "hint": "先处理逾期，再处理将到期；流失单不进列表。",
     }
 
 

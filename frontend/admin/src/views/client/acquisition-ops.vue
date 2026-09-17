@@ -56,6 +56,36 @@
         <a-alert v-if="alert" class="mt-3" :type="alertType" show-icon :message="alert" />
       </a-card>
 
+      <!-- 今日待办 SLA -->
+      <a-card size="small" title="今日待办（先逾期，后将到期）">
+        <div class="flex items-center gap-2 mb-2">
+          <a-tag v-if="followups" color="processing">共 {{ followups.total }}</a-tag>
+          <a-tag v-if="followups && followups.overdue_count" color="error">逾期 {{ followups.overdue_count }}</a-tag>
+          <a-button size="small" :loading="followupLoading" @click="loadFollowups">刷新待办</a-button>
+        </div>
+        <div v-if="!followups || !followups.items.length" class="text-gray-400 text-sm py-2">
+          暂无待办。有客户回复或记录跟进后会出现在这里。
+        </div>
+        <div v-else class="space-y-2">
+          <div
+            v-for="item in followups.items.slice(0, 8)"
+            :key="item.inquiry_id"
+            class="acq-follow"
+            @click="openInquiry(item.inquiry_id)"
+          >
+            <div class="acq-follow-top">
+              <b>{{ item.buyer_display || item.inquiry_id }}</b>
+              <a-tag :color="item.sla.overdue ? 'error' : item.sla.sla === 'due' ? 'warning' : 'default'">
+                {{ item.sla.overdue ? '逾期' : item.sla.sla === 'due' ? '将到期' : '待安排' }}
+              </a-tag>
+              <a-tag v-if="item.buyer_grade">{{ item.buyer_grade }}级</a-tag>
+            </div>
+            <div class="text-sm text-gray-600">{{ item.next_action || item.last_summary || '—' }}</div>
+            <div class="text-xs text-gray-400">{{ item.sla.display }}</div>
+          </div>
+        </div>
+      </a-card>
+
       <!-- Playbook 提醒 -->
       <a-card v-if="tips.length" size="small" title="2. 系统提醒（怎么聊）">
         <a-alert type="info" show-icon message="进线作战提示">
@@ -201,6 +231,7 @@ import {
   getWalletStatus,
   ingestReply,
   listPlaybooks,
+  listFollowups,
   materializeOpsCard,
   previewIntent,
   recordOpsCardLoss,
@@ -241,6 +272,26 @@ const intentAnalysis = ref<{
   next_action: string
   talk_track: string
 } | null>(null)
+
+const followupLoading = ref(false)
+const followups = ref<Awaited<ReturnType<typeof listFollowups>> | null>(null)
+
+async function loadFollowups() {
+  followupLoading.value = true
+  try {
+    const tenant = await resolveTenantId()
+    followups.value = await listFollowups(tenant)
+  } catch {
+    followups.value = null
+  } finally {
+    followupLoading.value = false
+  }
+}
+
+function openInquiry(id: string) {
+  form.inquiry_id = id
+  void onLoadCard()
+}
 
 async function resolveTenantId(): Promise<string> {
   if (tenantId.value && tenantId.value !== 'demo') return tenantId.value
@@ -375,6 +426,7 @@ async function onIngestReply() {
     } else {
       setAlert('已建卡并记录跟进。请看下方六格信息。', 'success')
     }
+    void loadFollowups()
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e)
     setAlert(`保存失败：${msg}。请确认后端已启动，或稍后重试。`, 'error')
@@ -548,6 +600,7 @@ onMounted(async () => {
       message: '后端未启动或计费未接入',
     }
   }
+  await loadFollowups()
 })
 
 const wallet = ref<{
@@ -623,5 +676,22 @@ const translateResult = ref<{
   font-size: 13px;
   padding: 6px 0;
   border-bottom: 1px dashed #e5e7eb;
+}
+.acq-follow {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  background: #fff;
+}
+.acq-follow:hover {
+  border-color: #4a9b8c;
+}
+.acq-follow-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 4px;
 }
 </style>

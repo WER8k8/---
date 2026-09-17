@@ -236,3 +236,26 @@ export function dispatchAcquisition(body: {
 }> {
   return apiPost<any>('/acquisition/dispatch', body).then(unwrap)
 }
+
+export function listFollowups(tenantId = 'demo', includeLost = false): Promise<{
+  tenant_id: string
+  total: number
+  overdue_count: number
+  items: Array<{
+    inquiry_id: string
+    stage: string
+    owner_user_id: string
+    buyer_display: string
+    buyer_grade: string
+    next_action: string
+    next_action_at: string
+    last_summary: string
+    summary: OpsCardSummary
+    sla: { sla: string; due_at: string; overdue: boolean; display: string }
+  }>
+  hint: string
+}> {
+  return apiGet<any>(
+    `/acquisition/followups?tenant_id=${encodeURIComponent(tenantId)}&include_lost=${includeLost ? 'true' : 'false'}`,
+  ).then(unwrap)
+}

@@ -392,6 +392,24 @@ class OpsCardStore:
                 setattr(lg, k, v)
         return self.update(card)
 
+    def list_followups(self, tenant_id: str = "", include_lost: bool = False) -> list[OpsCard]:
+        """按 SLA 紧急度返回待跟进卡片。"""
+        from app.services.acquisition.sla import card_sla
+
+        items = []
+        for card in self._by_inquiry.values():
+            if tenant_id and card.tenant_id != tenant_id:
+                continue
+            if card.stage == "lost" and not include_lost:
+                continue
+            items.append(card)
+        def _key(c: OpsCard):
+            s = card_sla(c)
+            rank = {"overdue": 0, "due": 1, "none": 2, "closed": 3, "ok": 2}.get(s.get("sla", "none"), 2)
+            return (rank, c.next_action_at or c.last_touch_at or "")
+        items.sort(key=_key)
+        return items
+
 
 # ═══════════════════════════════════════════════════════════
 # ACQ-E-08 TradePlaybook（国别 × 类型 × 阶段）
