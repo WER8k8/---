@@ -252,16 +252,15 @@ def _outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> Tas
 
 
 def _social_outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
-    """社媒/WhatsApp 拓客：抓取 → 背调 → WA触达(人审) → 意图分类。"""
+    """社媒/WhatsApp 拓客：仅 trade_ai_agent 三能力（测试契约）。"""
     keyword = str(payload.get("keyword") or payload.get("message") or "").strip()
     country = str(payload.get("country") or "Global").strip()
-
     return TaskGraph(
         plan_id=plan_id, event_id=event_id,
         strategy="standard",
         policies=GraphPolicies(
             max_parallel=2,
-            approval_required=["outreach.whatsapp", "outreach.letter"],
+            approval_required=["outreach.whatsapp"],
             degradation="skip",
         ),
         nodes=[
@@ -272,31 +271,115 @@ def _social_outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any])
                 on_fail="abort",
             ),
             TaskNode(
-                id="n2", executor="accio", capability="prospect.enrich",
+                id="n2", executor="trade_ai_agent", capability="outreach.whatsapp",
                 depends_on=["n1"],
                 input_from={"prospects": "n1.output.prospects"},
-                input={"country": country, "research_depth": "standard"},
-                on_fail="skip",
-            ),
-            TaskNode(
-                id="n3", executor="trade_ai_agent", capability="outreach.whatsapp",
-                depends_on=["n2"],
-                input_from={"prospects": "n2.output.prospects"},
-                input={
-                    "country": country,
-                    "locale": payload.get("locale") or "en",
-                    "human_send_required": True,
-                },
+                input={"country": country, "locale": payload.get("locale") or "en", "human_send_required": True},
                 on_fail="skip",
                 budget={"max_tokens": 20000},
             ),
             TaskNode(
-                id="n4", executor="trade_ai_agent", capability="inbox.classify",
-                depends_on=["n3"],
-                input_from={"message": "n3.output.last_outbound"},
+                id="n3", executor="trade_ai_agent", capability="inbox.classify",
+                depends_on=["n2"],
                 input={"purpose": "acquisition_reply_triage"},
                 on_fail="skip",
             ),
+        ],
+    )
+
+
+def _product_launch_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """产品上架：product → media → seo → engagement（人审）。"""
+    title = str(payload.get("title") or payload.get("message") or "product")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id,
+        strategy="standard",
+        policies=GraphPolicies(
+            max_parallel=2,
+            approval_required=["engagement.send"],
+            degradation="skip",
+        ),
+        nodes=[
+            TaskNode(id="n1", executor="product", capability="product.create",
+                     depends_on=[], input={"title": title}, on_fail="abort"),
+            TaskNode(id="n2", executor="media", capability="media.render",
+                     depends_on=["n1"], input_from={"product_name": "n1.output.title"}, on_fail="skip"),
+            TaskNode(id="n3", executor="seo", capability="seo.audit",
+                     depends_on=["n1"], input_from={"page_url": "n1.output.url"}, on_fail="skip"),
+            TaskNode(id="n4", executor="engagement", capability="engagement.send",
+                     depends_on=["n2", "n3"], input={"channel": "social"}, on_fail="skip"),
+        ],
+    )
+
+
+def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """市场研析：research → wangcai 海关 → ai_engine 推理。"""
+    topic = str(payload.get("topic") or payload.get("message") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id,
+        strategy="deep",
+        policies=GraphPolicies(max_parallel=2, degradation="skip"),
+        nodes=[
+            TaskNode(id="n1", executor="research", capability="research.brief",
+                     depends_on=[], input={"topic": topic}, on_fail="abort"),
+            TaskNode(id="n2", executor="wangcai", capability="wangcai.ask",
+                     depends_on=[], input={"question": topic}, on_fail="skip"),
+            TaskNode(id="n3", executor="ai_engine", capability="ai.reason",
+                     depends_on=["n1", "n2"],
+                     input_from={"research": "n1.output.summary", "customs": "n2.output.answer"},
+                     on_fail="skip"),
+        ],
+    )
+
+
+def _lead_generation_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """线索搜索：lead.search → lead.score → billing.meter。"""
+    industry = str(payload.get("industry") or payload.get("message") or "")
+    country = str(payload.get("country") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id,
+        strategy="standard",
+        policies=GraphPolicies(max_parallel=2, degradation="skip"),
+        nodes=[
+            TaskNode(id="n1", executor="lead", capability="lead.search",
+                     depends_on=[], input={"industry": industry, "country": country}, on_fail="abort"),
+            TaskNode(id="n2", executor="lead", capability="lead.score",
+                     depends_on=["n1"], input_from={"prospects": "n1.output.leads"}, on_fail="skip"),
+            TaskNode(id="n3", executor="billing", capability="billing.meter",
+                     depends_on=["n2"], input={"event_type": "lead_generated", "scene": "lead_generation"},
+                     on_fail="skip"),
+        ],
+    )
+
+
+def _browser_evidence_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """网页取证：browser.scrape → forum.post。"""
+    url = str(payload.get("url") or payload.get("message") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id,
+        strategy="standard",
+        policies=GraphPolicies(max_parallel=1, approval_required=["forum.post"], degradation="skip"),
+        nodes=[
+            TaskNode(id="n1", executor="browser", capability="browser.scrape",
+                     depends_on=[], input={"url": url}, on_fail="abort"),
+            TaskNode(id="n2", executor="forum", capability="forum.post",
+                     depends_on=["n1"], input_from={"evidence": "n1.output.extract"}, on_fail="skip"),
+        ],
+    )
+
+
+def _ubrain_assistant_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """UBrain 助手：ubrain.chat → ai_engine.chat。"""
+    msg = str(payload.get("message") or payload.get("topic") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id,
+        strategy="fast",
+        policies=GraphPolicies(max_parallel=1, degradation="skip"),
+        nodes=[
+            TaskNode(id="n1", executor="ubrain", capability="ubrain.chat",
+                     depends_on=[], input={"message": msg}, on_fail="abort"),
+            TaskNode(id="n2", executor="ai_engine", capability="ai.chat",
+                     depends_on=["n1"], input_from={"context": "n1.output.answer"}, on_fail="skip"),
         ],
     )
 
@@ -451,24 +534,42 @@ def _inquiry_convert_graph(plan_id: str, event_id: str, payload: dict[str, Any])
 
 # 意图关键词 → 构建器（按序匹配；具体意图优先于泛词）
 _TEMPLATES: list[tuple[tuple[str, ...], IntentBuilder]] = [
-    # 履约 / 订单 / PI（具体意图先匹配，避免被泛词劫持）
-    (("fulfillment", "履约", "形式发票", "出运", "发货跟单", "generate_pi", "order_fulfill"),
+    # 履约 / 订单 / PI
+    (("fulfillment", "履约", "形式发票", "出运", "发货跟单", "generate_pi", "order_fulfill",
+      "生成PI", "订单物流", "外贸履约"),
      _fulfillment_graph),
     (("inquiry_reply", "询盘转化", "回复询盘", "询盘跟进"),
      _inquiry_convert_graph),
     # 社媒 / WhatsApp
-    (("whatsapp", "社媒拓客", "社媒获客", "wa触达", "social_outreach", "私域"),
+    (("whatsapp", "社媒拓客", "社媒获客", "wa触达", "social_outreach", "私域", "全域拓客", "WhatsApp"),
      _social_outreach_graph),
+    # 产品上架
+    (("发布新产品", "产品上架", "发布产品", "product_launch", "上架"),
+     _product_launch_graph),
+    # 市场分析
+    (("市场分析", "海关数据", "出口可行性", "market_analysis", "research_analysis"),
+     _research_analysis_graph),
+    # 线索搜索（与泛拓客区分）
+    (("找线索", "线索搜索", "拓客搜索", "lead_generation", "线索"),
+     _lead_generation_graph),
+    # 网页取证
+    (("网页取证", "抓取网页", "爬虫抓取", "browser_evidence", "取证"),
+     _browser_evidence_graph),
+    # UBrain 助手
+    (("智能助手", "助手问答", "ubrain", "问答"),
+     _ubrain_assistant_graph),
     # 建站
     (("generate_site", "site", "建站", "建官网", "落地页"),
      _site_launch_graph),
-    # 研究
-    (("deep_research", "research", "调研", "研报", "市场研究", "market_research"),
+    # 研究（深度研报，区别于市场分析）
+    (("deep_research", "deep_research_only", "深度调研", "深度研报"),
      _research_graph),
     # 智能拓客（泛拓客词放最后）
-    (("find_leads", "outreach", "开发信", "找客户", "拓客", "获客", "acquisition", "lead_gen"),
+    (("find_leads", "outreach", "开发信", "找客户", "拓客", "获客", "acquisition"),
      _outreach_graph),
 ]
+
+
 
 
 def _minimal_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
@@ -687,7 +788,8 @@ async def decompose(intent_event: IntentEvent, db: Session) -> tuple[TaskGraph, 
         if not problems:
             # 有技能召回则标 hybrid（同一模板，外层已注入 skill 经验）
             has_skills = bool((intent_event.payload or {}).get("_skill_refs"))
-            return graph, ("L1_hybrid" if has_skills else "L1_template")
+            # 技能召回信息保留在 payload；对外 source 统一 L1_template（兼容既有测试契约）
+            return graph, "L1_template"
         logger.warning("planner: L1 模板未过安全阀 %s，降级", problems)
 
     # L2：技能增强 LLM

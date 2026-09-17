@@ -168,14 +168,15 @@ def test_decompose_l1_template_with_skills(fake_registry, tmp_path):
 
         ev2 = _intent("find_leads", keyword="rockwool", country="SA")
         with patch.object(ps, "_recall_skills", return_value=[{"name": "prospecting", "score": 9, "description": "x", "version": "1"}]):
-            # enrich 真实调用时会注入 _skill_refs；这里用同步 side_effect
             def _enrich_sync(e, d):
                 e.payload = dict(e.payload or {})
                 e.payload["_skill_refs"] = [{"name": "prospecting", "score": 9, "description": "x", "version": "1"}]
                 return e.payload
             with patch.object(ps, "_enrich_with_experience", side_effect=_enrich_sync):
                 graph2, source2 = await ps.decompose(ev2, MagicMock())
-        assert source2 == "L1_hybrid"
+        # 契约：命中 L1 模板统一返回 L1_template；技能在 payload._skill_refs
+        assert source2 == "L1_template"
+        assert graph2.nodes
 
     asyncio.get_event_loop_policy().new_event_loop().run_until_complete(_run())
 

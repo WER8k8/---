@@ -38,15 +38,24 @@ def test_persist_inquiry_with_mock_db(monkeypatch):
             self.id = "x1"
     import app.services.acquisition.repo as repo
     import sys
-    # inject fake model module path usage via monkeypatch import
     class _Mod:
         Inquiry = _I
-    sys.modules['app.models.inquiry'] = _Mod  # type: ignore
-    db = MagicMock()
-    r = persist_inquiry(db, tenant_id="t1", inquiry_id="INQ-2", message="need quote",
-                        email="a@b.com", contact_name="Ahmed", country="SA")
-    assert r["persisted"] is True
-    assert db.add.called and db.commit.called
+    old_inq = sys.modules.get("app.models.inquiry")
+    old_lead = sys.modules.get("app.models.prospect_lead")
+    try:
+        sys.modules["app.models.inquiry"] = _Mod  # type: ignore
+        db = MagicMock()
+        r = persist_inquiry(db, tenant_id="t1", inquiry_id="INQ-2", message="need quote",
+                            email="a@b.com", contact_name="Ahmed", country="SA")
+        assert r["persisted"] is True
+        assert db.add.called and db.commit.called
+    finally:
+        if old_inq is not None:
+            sys.modules["app.models.inquiry"] = old_inq
+        else:
+            sys.modules.pop("app.models.inquiry", None)
+        if old_lead is not None:
+            sys.modules["app.models.prospect_lead"] = old_lead
 
 
 def test_persist_lead_no_identity():
@@ -134,14 +143,14 @@ def test_reply_ingest_with_fake_db_persists(monkeypatch):
     db = MagicMock()
 
     class _I:
+        id = "db-i"
         def __init__(self, **kw):
             self.__dict__.update(kw)
-            self.id = "db-i"
 
     class _P:
+        id = "db-p"
         def __init__(self, **kw):
             self.__dict__.update(kw)
-            self.id = "db-p"
 
     class _Eng:
         def __init__(self, _db):
@@ -150,25 +159,36 @@ def test_reply_ingest_with_fake_db_persists(monkeypatch):
             return SimpleNamespace(id="e2")
 
     import sys
-    sys.modules['app.models.inquiry'] = SimpleNamespace(Inquiry=_I)
-    sys.modules['app.models.prospect_lead'] = SimpleNamespace(
-        ProspectLead=_P,
-        LeadSource=SimpleNamespace(MANUAL_IMPORT="manual_import", HUNTER_IO="hunter", LINKEDIN="linkedin",
-                                   WHATSAPP="whatsapp", GOOGLE_CSE="google", WEBSITE_SCRAPE="web",
-                                   REFERRAL="referral"),
-    )
-    monkeypatch.setattr("app.services.evolution.engine.EvolutionEngine", _Eng)
-
-    body = acq_api.ReplyIngestRequest(
-        tenant_id="t1",
-        inquiry_id="INQ-DB-1",
-        message="hello",
-        email="z@z.com",
-        contact_name="Bob",
-        company_name="Acme",
-        country="SA",
-    )
-    resp = acq_api.reply_ingest(body, current_user=None, db=db)
-    assert resp["persistence"]["inquiry"]["persisted"] is True
-    assert resp["experience"]["recorded"] is True
-    assert db.commit.called
+    old_inq = sys.modules.get("app.models.inquiry")
+    old_lead = sys.modules.get("app.models.prospect_lead")
+    try:
+        sys.modules["app.models.inquiry"] = SimpleNamespace(Inquiry=_I)
+        sys.modules["app.models.prospect_lead"] = SimpleNamespace(
+            ProspectLead=_P,
+            LeadSource=SimpleNamespace(MANUAL_IMPORT="manual_import", HUNTER_IO="hunter", LINKEDIN="linkedin",
+                                       WHATSAPP="whatsapp", GOOGLE_CSE="google", WEBSITE_SCRAPE="web",
+                                       REFERRAL="referral"),
+        )
+        monkeypatch.setattr("app.services.evolution.engine.EvolutionEngine", _Eng)
+        body = acq_api.ReplyIngestRequest(
+            tenant_id="t1",
+            inquiry_id="INQ-DB-1",
+            message="hello",
+            email="z@z.com",
+            contact_name="Bob",
+            company_name="Acme",
+            country="SA",
+        )
+        resp = acq_api.reply_ingest(body, current_user=None, db=db)
+        assert resp["persistence"]["inquiry"]["persisted"] is True
+        assert resp["experience"]["recorded"] is True
+        assert db.commit.called
+    finally:
+        if old_inq is not None:
+            sys.modules["app.models.inquiry"] = old_inq
+        else:
+            sys.modules.pop("app.models.inquiry", None)
+        if old_lead is not None:
+            sys.modules["app.models.prospect_lead"] = old_lead
+        else:
+            sys.modules.pop("app.models.prospect_lead", None)
