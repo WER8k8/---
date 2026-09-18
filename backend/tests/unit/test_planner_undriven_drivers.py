@@ -45,7 +45,14 @@ class TestResearchAnalysis:
     def test_market_analysis_intent_resolves_to_l1(self):
         graph, source = _decompose("市场分析", {"topic": "Building materials export"})
         assert source == "L1_template"
-        assert {n.executor for n in graph.nodes} == {"research", "wangcai", "ai_engine", "module_matrix"}
+        assert {n.executor for n in graph.nodes} == {
+            "research",
+            "wangcai",
+            "ai_engine",
+            "module_matrix",
+            "commerce_ops",
+            "platform_ops",
+        }
 
     def test_research_analysis_passes_safety_valves(self):
         from app.services.hermes.planner_service import validate_graph

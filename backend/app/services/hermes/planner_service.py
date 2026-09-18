@@ -332,6 +332,14 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
                      depends_on=["n3"],
                      input={"module": str(payload.get("module") or "acquisition")},
                      on_fail="skip"),
+            TaskNode(id="n5", executor="commerce_ops", capability="commerce_ops.crm_pipeline",
+                     depends_on=["n3"],
+                     input={"tenant_id": str(payload.get("tenant_id") or "")},
+                     on_fail="skip"),
+            TaskNode(id="n6", executor="platform_ops", capability="platform_ops.system_health",
+                     depends_on=["n3"],
+                     input={},
+                     on_fail="skip"),
         ],
     )
 
