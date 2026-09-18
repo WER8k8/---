@@ -368,6 +368,14 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
                      depends_on=["n3"],
                      input={"tenant_id": str(payload.get("tenant_id") or "")},
                      on_fail="skip"),
+            TaskNode(id="n11", executor="compliance_ops", capability="compliance_ops.hash",
+                     depends_on=["n3"],
+                     input={"text": str(payload.get("topic") or payload.get("message") or "research")[:200]},
+                     on_fail="skip"),
+            TaskNode(id="n12", executor="portal_ops", capability="portal_ops.media_status",
+                     depends_on=["n3"],
+                     input={},
+                     on_fail="skip"),
         ],
     )
 

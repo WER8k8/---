@@ -16,6 +16,7 @@ REGISTERED = {
     "accio", "lead", "trade_ai_agent", "inquiry", "order", "goodjob_crm",
     "billing", "logistics", "trade_ops", "commerce_ops", "platform_ops",
     "module_matrix", "content_deep", "outreach_loop", "growth_probe", "agent_ops",
+    "compliance_ops", "portal_ops",
 }
 
 

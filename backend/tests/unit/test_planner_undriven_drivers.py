@@ -56,6 +56,8 @@ class TestResearchAnalysis:
             "outreach_loop",
             "growth_probe",
             "agent_ops",
+            "compliance_ops",
+            "portal_ops",
         }
 
     def test_research_analysis_passes_safety_valves(self):
