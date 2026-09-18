@@ -191,21 +191,33 @@ def _extract_token(request: Request) -> Optional[str]:
 
 
 def _get_token_jti(token: str) -> Optional[str]:
-    """_get_token_jti。
+    """从 JWT 取 jti（吊销名单查询用）。
 
-    参数说明：
-    :param token: 参数 token
-    :return: 返回处理结果。
+    优先校验过期；过期 token 仍解析 jti 以便命中吊销表，
+    但主鉴权路径 get_current_user 必须拒绝过期 token。
     """
     try:
         import jwt
-        payload = jwt.decode(
-            token, settings.JWT_SECRET_KEY,
-            algorithms=[settings.JWT_ALGORITHM],
-            options={"verify_exp": False},
-        )
-        return payload.get("jti")
-    except Exception:
+        from jwt.exceptions import ExpiredSignatureError
+
+        try:
+            payload = jwt.decode(
+                token,
+                settings.JWT_SECRET_KEY,
+                algorithms=[settings.JWT_ALGORITHM],
+            )
+            return payload.get("jti")
+        except ExpiredSignatureError:
+            payload = jwt.decode(
+                token,
+                settings.JWT_SECRET_KEY,
+                algorithms=[settings.JWT_ALGORITHM],
+                options={"verify_exp": False},
+            )
+            return payload.get("jti")
+    except Exception as exc:  # noqa: BLE001 — 仅取 jti，失败返回 None
+        import logging
+        logging.getLogger(__name__).debug("admin_auth jti parse failed: %s", exc)
         return None
 
 

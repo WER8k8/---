@@ -98,15 +98,18 @@ def _check_email_code_rate(email: str) -> None:
             if count > _EMAIL_CODE_LIMIT:
                 raise HTTPException(429, "验证码发送过于频繁，请 1 小时后再试")
             return
-        except (ConnectionError, TimeoutError, Exception):
+        except HTTPException:
+            raise
+        except Exception as redis_exc:
             import logging
             logger = logging.getLogger(__name__)
-            logger.warning("Redis 限流故障，降级到内存计数: %s", email)
+            logger.warning("Redis 限流故障，降级到内存计数: %s (%s)", email, redis_exc)
 
     now = time.time()
-    window = _email_code_store[email]
+    window = _email_code_store.get(email, [])
     _email_code_store[email] = [t for t in window if now - t < _EMAIL_CODE_WINDOW]
-    if count > _EMAIL_CODE_LIMIT:
+    # 内存回退：用窗口内条数限流，禁止引用未定义的 count
+    if len(_email_code_store[email]) >= _EMAIL_CODE_LIMIT:
         raise HTTPException(429, "验证码发送过于频繁，请 1 小时后再试")
     _email_code_store[email].append(now)
 

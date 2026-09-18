@@ -760,6 +760,10 @@ class Settings(BaseSettings):
     FEISHU_APP_SECRET: str = ""
     FEISHU_VERIFICATION_TOKEN: str = ""
     FEISHU_EVENT_ENCRYPT_KEY: str = ""
+    # 微信服务器回调验签 Token（与飞书 Token 严格分离，禁止混用）
+    WECHAT_VERIFICATION_TOKEN: str = ""
+    WECHAT_APP_ID: str = ""
+    WECHAT_APP_SECRET: str = ""
     FEISHU_BOT_NAME: str = "优丁建材助手"
     FEISHU_API_BASE_URL: str = "https://open.feishu.cn/open-apis"
     FEISHU_DEFAULT_RECEIVER: str = ""  # 默认消息接收者open_id

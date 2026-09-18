@@ -16,6 +16,7 @@ v2 增强：
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import logging
 import re
@@ -665,14 +666,20 @@ def refresh_wechat_token(refresh_token: str) -> dict:
 # ── 验证微信服务器签名 ────────────────────────────────────
 
 def verify_wechat_signature(signature: str, timestamp: str, nonce: str) -> bool:
-    """验证微信服务器推送的签名（用于事件回调）。"""
-    token = settings.FEISHU_VERIFICATION_TOKEN.strip()
-    if not token:
-        return False
+    """验证微信服务器推送的签名（用于事件回调）。
 
-    parts = sorted([token, timestamp, nonce])
+    必须使用微信配置的 Token，禁止误用飞书 Verification Token。
+    未配置时诚实拒绝（返回 False），不降级为「看起来像验过」。
+    """
+    token = (getattr(settings, "WECHAT_VERIFICATION_TOKEN", "") or "").strip()
+    if not token:
+        logger.warning("WECHAT_VERIFICATION_TOKEN 未配置，拒绝微信回调验签（禁止复用飞书 Token）")
+        return False
+    if not signature or not timestamp or not nonce:
+        return False
+    parts = sorted([token, str(timestamp), str(nonce)])
     expected = hashlib.sha1("".join(parts).encode("utf-8")).hexdigest()
-    return signature == expected
+    return hmac.compare_digest(signature.strip(), expected)
 
 
 # ── 工具函数 ──────────────────────────────────────────────

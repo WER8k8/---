@@ -541,6 +541,19 @@ async def stripe_webhook(request: Request, db: Session=Depends(get_db)):
         session = event.get('data') or {}
         if not isinstance(session, dict):
             return error_response(400, '事件数据格式异常')
+        # BUG-06 安全加固：必须确认 Stripe Session 实际已支付，避免伪造/未付 completed 事件
+        payment_status = str(session.get('payment_status') or '').lower()
+        session_status = str(session.get('status') or '').lower()
+        if payment_status and payment_status not in ('paid', 'no_payment_required'):
+            log.warning(
+                '[Payment] Stripe session 未支付拒绝入账 event=%s payment_status=%s status=%s',
+                event_id, payment_status, session_status,
+            )
+            return error_response(400, f'stripe session not paid: payment_status={payment_status}')
+        if session_status and session_status not in ('complete', 'completed', 'paid'):
+            # complete 为 checkout.session 标准终态；其它状态不入账
+            if payment_status not in ('paid', 'no_payment_required'):
+                return error_response(400, f'stripe session status={session_status} not payable')
         metadata = session.get('metadata') or {}
         order_no = (metadata.get('order_no') if isinstance(metadata, dict) else None) or ''
         if not order_no:
@@ -596,7 +609,13 @@ def balance_payment(order_no: str=Body(...), current_user: User=Depends(get_curr
        （置 paid + 记财务台账 + 发放权益），发放失败自动回滚 pending 并补偿退回余额。
     """
     try:
-        order = db.query(PaymentOrder).filter(PaymentOrder.order_no == order_no).first()
+        # FOR UPDATE：扣款前锁定订单行，降低并发双花
+        order = (
+            db.query(PaymentOrder)
+            .filter(PaymentOrder.order_no == order_no)
+            .with_for_update()
+            .first()
+        )
         if not order:
             return error_response(404, '订单不存在')
         if order.status != 'pending':
@@ -611,7 +630,7 @@ def balance_payment(order_no: str=Body(...), current_user: User=Depends(get_curr
         result = pay_order_with_balance(user_id=str(current_user.id), order_id=str(order.id), amount=amount, currency=getattr(order, 'currency', 'CNY'), tenant_id=str(order.tenant_id))
         if not result or not getattr(result, 'success', False):
             return error_response(400, (getattr(result, 'error', None) if result else None) or '余额支付失败')
-        # 复用回调一致的发放链路：原子置 paid + 收入 + 权益
+        # 复用回调一致的发放链路：原子置 paid + 收入 + 权益（UPDATE ... WHERE pending）
         try:
             from app.services.payment_pkg.payment_service_impl import PaymentService
             svc = PaymentService(db)

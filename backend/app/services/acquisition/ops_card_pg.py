@@ -102,21 +102,35 @@ def save_ops_card(card: Any) -> dict[str, Any]:
             pass
 
 
-def load_ops_card(inquiry_id: str) -> Optional[dict[str, Any]]:
+def load_ops_card(inquiry_id: str, tenant_id: str = "") -> Optional[dict[str, Any]]:
+    """按 inquiry_id 读跟单卡；若提供 tenant_id 则强制租户过滤（防越权）。"""
     session = _db()
     if session is None or not inquiry_id:
         return None
     try:
         from sqlalchemy import text
-        row = session.execute(
-            text("SELECT payload FROM acquisition_ops_cards WHERE inquiry_id = :iid"),
-            {"iid": inquiry_id},
-        ).scalar()
+        if tenant_id:
+            row = session.execute(
+                text(
+                    "SELECT payload FROM acquisition_ops_cards "
+                    "WHERE inquiry_id = :iid AND tenant_id = :tid"
+                ),
+                {"iid": inquiry_id, "tid": tenant_id},
+            ).scalar()
+        else:
+            # inquiry_id 为 UUID 时全局唯一；调用方应尽量传 tenant_id
+            row = session.execute(
+                text("SELECT payload FROM acquisition_ops_cards WHERE inquiry_id = :iid"),
+                {"iid": inquiry_id},
+            ).scalar()
         if not row:
             return None
         if isinstance(row, str):
             return json.loads(row)
-        return dict(row)
+        data = dict(row)
+        if tenant_id and str(data.get("tenant_id") or "") not in ("", str(tenant_id)):
+            return None
+        return data
     except Exception as exc:  # noqa: BLE001
         logger.debug("load_ops_card miss: %s", exc)
         return None

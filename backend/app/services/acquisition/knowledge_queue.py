@@ -180,11 +180,17 @@ class KnowledgeQueueStore:
     def list(self, *, tenant_id: str = "", category: str = "", only_pending: bool = False) -> list[dict[str, Any]]:
         out = []
         for it in self._items.values():
+            # 租户隔离：条目若带 tenant_id 则仅同租户可见；全局合规条目（无 tenant）所有人可见
+            item_tid = getattr(it, "tenant_id", "") or ""
+            if tenant_id and item_tid and item_tid != tenant_id:
+                continue
             if category and it.category != category:
                 continue
             if only_pending and it.done:
                 continue
-            out.append(it.__dict__)
+            row = dict(it.__dict__)
+            row.setdefault("tenant_id", item_tid)
+            out.append(row)
         out.sort(key=lambda x: (x.get("done", False), x.get("category") or "", x.get("id") or ""))
         return out
 

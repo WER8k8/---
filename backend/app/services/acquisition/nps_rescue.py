@@ -38,10 +38,15 @@ def nps_and_rescue_brief(
                 cards = [c for c in cards if getattr(c, "tenant_id", "") in ("", tenant_id)]
             card_n = len(cards)
             touch_n = sum(1 for c in cards if getattr(c, "last_touch_at", ""))
-            won_n = sum(1 for c in cards if getattr(c, "stage", "") == "won" or getattr(c, "won_at", ""))
+            won_n = sum(
+                1
+                for c in cards
+                if getattr(c, "stage", "") == "won" or bool(getattr(c, "won_at", ""))
+            )
             lost_n = sum(1 for c in cards if getattr(c, "stage", "") == "lost")
-        except Exception:
-            pass
+        except Exception as exc:  # noqa: BLE001
+            import logging
+            logging.getLogger(__name__).warning("nps rescue ops_store stats failed: %s", exc)
     if win_loss_view:
         won_n = won_n or int(win_loss_view.get("won_count") or 0)
         lost_n = lost_n or int(win_loss_view.get("lost_count") or 0)

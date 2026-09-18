@@ -8,6 +8,8 @@ import logging
 
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
+
 connect_args = {}
 if settings.DATABASE_URL.startswith("sqlite"):
     connect_args["check_same_thread"] = False
@@ -118,14 +120,12 @@ def _setup_rls_event_listener():
 try:
     _setup_rls_event_listener()
 except Exception as e:
-    logger = logging.getLogger(__name__)
     logger.warning("RLS事件监听器初始化失败，继续启动: %s", e)
-    pass  # RLS事件监听器初始化失败不应阻塞数据库引擎创建
 
 
 def rebind_engine(database_url: str | None = None) -> None:
     """按新 URL 重建 engine/SessionLocal（预检、脚本切换 SQLite/Postgres 用）。"""
-    global engine, SessionLocal, UUID_TYPE
+    global engine, SessionLocal, UUID_TYPE, read_engine
     url = database_url or settings.DATABASE_URL
     if url.startswith("sqlite"):
         from app.core.sqlite_paths import resolve_sqlite_database_url
@@ -142,9 +142,33 @@ def rebind_engine(database_url: str | None = None) -> None:
         pool_timeout=30,
         connect_args=args,
     )
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    # 读库：有独立 URL 则重建，否则跟随主库，避免 read_engine 陈旧
+    read_url = getattr(settings, "DATABASE_READ_URL", None) or ""
+    if read_url and read_url != url:
+        read_args = {}
+        if read_url.startswith("sqlite"):
+            from app.core.sqlite_paths import resolve_sqlite_database_url
+            read_url = resolve_sqlite_database_url(read_url)
+            read_args["check_same_thread"] = False
+        read_engine = create_engine(
+            read_url,
+            pool_size=40,
+            max_overflow=20,
+            pool_recycle=1800,
+            pool_pre_ping=not read_url.startswith("sqlite"),
+            pool_timeout=30,
+            connect_args=read_args,
+        )
+    else:
+        read_engine = engine
+    # 必须保留 RoutingSession，否则读写分离在 rebind 后失效
+    SessionLocal = sessionmaker(
+        class_=RoutingSession,
+        autocommit=False,
+        autoflush=False,
+        bind=engine,
+    )
     UUID_TYPE = get_uuid_column()
-    # 重新注册RLS事件监听器
     _setup_rls_event_listener()
 
 

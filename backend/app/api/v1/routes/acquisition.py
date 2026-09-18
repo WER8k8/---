@@ -1228,8 +1228,9 @@ def acquisition_billing_reconcile(
         try:
             with get_read_session() as rs:
                 return billing_reconcile(rs, tenant_id=tenant_id, window_hours=window_hours)
-        except Exception:
-            pass
+        except Exception as exc:  # noqa: BLE001 — 记录后回落主库，禁止静默
+            import logging
+            logging.getLogger(__name__).warning("reconcile read-session fallback: %s", exc)
     return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)
 
 
@@ -1281,17 +1282,6 @@ def acquisition_rate_limit_probe(
 def acquisition_rate_limit_stats(current_user: User = Depends(get_current_user)):
     """E-3 当前限流窗口占用。"""
     return acq_rate_limiter.stats()
-
-
-@router.get("/ops/reconcile")
-def acquisition_billing_reconcile(
-    tenant_id: str = "demo",
-    window_hours: int = 24,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    """E-5 meter vs ledger 对账（只读）。"""
-    return billing_reconcile(_resolve_db(db), tenant_id=tenant_id, window_hours=window_hours)
 
 
 @router.get("/ops/queues")

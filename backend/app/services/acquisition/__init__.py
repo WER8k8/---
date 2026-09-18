@@ -912,8 +912,11 @@ playbook_store = PlaybookStore()
 try:
     from app.services.acquisition.ops_card_pg import patch_store_persistence
     patch_store_persistence(ops_card_store)
-except Exception:
-    pass
+except Exception as _ops_pg_exc:  # noqa: BLE001
+    import logging
+    logging.getLogger(__name__).warning(
+        "ops_card PG persistence patch failed, memory-only: %s", _ops_pg_exc
+    )
 
 
 def score_grade(score: int) -> tuple[str, str]:
