@@ -36,6 +36,8 @@ from . import order_executor  # noqa: F401
 from . import browser_executor  # noqa: F401
 from . import billing_executor  # noqa: F401
 from . import ai_engine_executor  # noqa: F401
+# 全量路由模块矩阵（串联率补齐 2026-09-18）
+from . import module_matrix_executor  # noqa: F401
 
 __all__ = [
     "BaseExecutor",

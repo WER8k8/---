@@ -328,6 +328,10 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
                      depends_on=["n1", "n2"],
                      input_from={"research": "n1.output.summary", "customs": "n2.output.answer"},
                      on_fail="skip"),
+            TaskNode(id="n4", executor="module_matrix", capability="matrix.inspect",
+                     depends_on=["n3"],
+                     input={"module": str(payload.get("module") or "acquisition")},
+                     on_fail="skip"),
         ],
     )
 
