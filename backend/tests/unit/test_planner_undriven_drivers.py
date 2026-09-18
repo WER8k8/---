@@ -58,6 +58,7 @@ class TestResearchAnalysis:
             "agent_ops",
             "compliance_ops",
             "portal_ops",
+            "data_ops",
         }
 
     def test_research_analysis_passes_safety_valves(self):

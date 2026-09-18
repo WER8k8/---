@@ -376,6 +376,10 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
                      depends_on=["n3"],
                      input={},
                      on_fail="skip"),
+            TaskNode(id="n13", executor="data_ops", capability="data_ops.content_stats",
+                     depends_on=["n3"],
+                     input={},
+                     on_fail="skip"),
         ],
     )
 
