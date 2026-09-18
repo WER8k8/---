@@ -1,0 +1,4751 @@
+{
+  "tool": "OpenCodeReview (alibaba/open-code-review) host-agent mode",
+  "ocr_version": "v1.12.5",
+  "ocr_cli": "installed global @alibaba-group/open-code-review",
+  "llm_status": "unavailable — NVIDIA integrate.api.nvidia.com returned 410 Gone; Ollama registry TLS timeout",
+  "rules_source": "ocr rules check — System built-in **/*.{py,pyi,ipynb}",
+  "scan_roots": [
+    "backend/app",
+    "backend/scripts"
+  ],
+  "files_scanned": 1355,
+  "findings_total": 524,
+  "by_severity": {
+    "major": 287,
+    "minor": 217,
+    "blocking": 20
+  },
+  "by_rule": {
+    "silent-except": 273,
+    "perf-log-fstring": 217,
+    "security-sql-fstring": 13,
+    "security-md5": 10,
+    "security-eval": 4,
+    "security-shell": 3,
+    "resource-open": 2,
+    "route-duplicate": 1,
+    "env-cwd-trap": 1
+  },
+  "priority_findings_count": 109,
+  "blocking_count": 20,
+  "ocr_preview_hermes_files": 119,
+  "findings": [
+    {
+      "file": "backend/app/api/v1/routes/acquisition.py",
+      "line": 0,
+      "rule": "route-duplicate",
+      "severity": "major",
+      "message": "acquisition.py 中 /ops/reconcile 装饰器重复声明",
+      "evidence": "",
+      "priority": true
+    },
+    {
+      "file": "backend/.env",
+      "line": 0,
+      "rule": "env-cwd-trap",
+      "severity": "major",
+      "message": "env 声明 PG，但脚本 cwd≠backend 时会落到 SQLite（运行时陷阱）",
+      "evidence": "",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 58,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Sentry initialized: env={os.getenv('ENVIRONMENT', 'production')}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 59,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ImportError: /     pass  # sentry_sdk 未安装时静默跳过",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 69,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 78,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 98,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass  # 种子失败不阻塞启动",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 105,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 423,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 429,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 435,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 441,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 447,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 453,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 459,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 465,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 471,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 477,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 483,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 489,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 495,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/main.py",
+      "line": 501,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/admin_auth.py",
+      "line": 254,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/core/audit.py",
+      "line": 43,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/audit.py",
+      "line": 56,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/audit.py",
+      "line": 86,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/bootstrap.py",
+      "line": 276,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/bootstrap.py",
+      "line": 285,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 32,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "return f\"cache:{hashlib.md5(key_data.encode()).hexdigest()}\"",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 78,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"Cache hit: {cache_key}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 82,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Redis cache read failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 100,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Redis cache write failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 101,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, UnicodeDecodeError): /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 144,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Redis cache invalidation failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/cache_decorator.py",
+      "line": 163,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Cache stats failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/circuit_breaker.py",
+      "line": 83,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"CircuitBreaker {self.name} transitioned to HALF_OPEN\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/circuit_breaker.py",
+      "line": 101,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"CircuitBreaker {self.name} recovered and transitioned to CLOSED\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/circuit_breaker.py",
+      "line": 117,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"CircuitBreaker {self.name} failed in HALF_OPEN, returning to OPEN\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/circuit_breaker.py",
+      "line": 123,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"CircuitBreaker {self.name} exceeded failure threshold, transitioning to OPEN\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/config.py",
+      "line": 110,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/core/csrf_middleware.py",
+      "line": 136,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/executable_resolver.py",
+      "line": 78,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/executable_resolver.py",
+      "line": 84,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/executable_resolver.py",
+      "line": 99,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/executable_resolver.py",
+      "line": 123,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/logging_config.py",
+      "line": 235,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"告警处理器执行失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/logging_config.py",
+      "line": 306,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"飞书消息发送成功: {message[:50]}...\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/logging_config.py",
+      "line": 310,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"飞书消息发送失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/logging_config.py",
+      "line": 350,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"发送工作汇报失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/logging_config.py",
+      "line": 384,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"邮件告警: {alert_data['message']}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/logging_config.py",
+      "line": 395,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Webhook告警: {alert_data['message']}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/login_bruteforce.py",
+      "line": 200,
+      "rule": "security-eval",
+      "severity": "blocking",
+      "message": "存在 eval/exec 调用",
+      "evidence": "pipe.eval(_LUA_RECORD, 1, _redis_key_id(ik),",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/login_bruteforce.py",
+      "line": 202,
+      "rule": "security-eval",
+      "severity": "blocking",
+      "message": "存在 eval/exec 调用",
+      "evidence": "pipe.eval(_LUA_RECORD, 1, _redis_key_ip(client_ip),",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/opentelemetry_config.py",
+      "line": 86,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/opentelemetry_config.py",
+      "line": 101,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/opentelemetry_config.py",
+      "line": 114,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/opentelemetry_config.py",
+      "line": 149,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/opentelemetry_config.py",
+      "line": 155,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/performance_middleware.py",
+      "line": 59,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/performance_middleware.py",
+      "line": 70,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/performance_middleware.py",
+      "line": 87,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/performance_middleware.py",
+      "line": 92,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/rate_limit.py",
+      "line": 231,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/refresh_token_blacklist.py",
+      "line": 38,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/refresh_token_blacklist.py",
+      "line": 71,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/resilience.py",
+      "line": 33,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Retry limit reached for {func.__name__} after {max_retries} attempts.\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/resilience.py",
+      "line": 44,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Retry {retries}/{max_retries} for {func.__name__} after {delay:.2f}s due to {type(e).__name__}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/resilience.py",
+      "line": 73,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Fallback triggered for {func.__name__} due to {type(e).__name__}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security.py",
+      "line": 30,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security.py",
+      "line": 141,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security.py",
+      "line": 163,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security.py",
+      "line": 175,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security_middleware.py",
+      "line": 145,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass  # Redis 不可用时降级到内存限流",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/tenant_middleware.py",
+      "line": 222,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/tenant_middleware.py",
+      "line": 239,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass  # Trace 注入失败不应阻塞请求",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/uploads_path.py",
+      "line": 40,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/validation.py",
+      "line": 156,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/waf.py",
+      "line": 213,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except BaseException: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/waf.py",
+      "line": 245,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except BaseException: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/waf.py",
+      "line": 384,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except FileNotFoundError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/db/schema_healer.py",
+      "line": 60,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "cursor.execute(f\"PRAGMA table_info({table})\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/db/schema_healer.py",
+      "line": 92,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "conn.execute(f\"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/db/schema_healer.py",
+      "line": 102,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "conn.execute(f\"ALTER TABLE {table} ADD COLUMN tenant_id {tenant_col}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/db/schema_healer.py",
+      "line": 111,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "conn.execute(f\"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 77,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"🔍 开始分析内容: {len(content)} 字符, {len(target_keywords)} 个关键词\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 118,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 内容分析完成: 总分={overall_score:.1f}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 122,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 内容分析失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 433,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 内容优化完成: {score.overall_score:.1f} -> {new_score.overall_score:.1f}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 515,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"🧪 开始A/B测试: 样本量={sample_size}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 561,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ A/B测试完成: 胜者={winner}, 置信度={confidence:.2%}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/geo_optimizer.py",
+      "line": 565,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ A/B测试失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 141,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 添加监控关键词: {keyword} ({len(search_engines)}个引擎)\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 145,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 添加关键词失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 166,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"🔍 检查排名: {keyword} @ {search_engine.value}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 172,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"ℹ️ 未进入前10: {keyword}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 185,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 排名检查完成: {keyword} -> 第{position}位\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 194,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 排名检查失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 232,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"ℹ️ 关键词未出现在前10位: {keyword}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 276,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 所有关键词检查完成: {len(results)}个结果\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 304,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"读取历史排名失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 330,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"保存排名历史失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 331,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"保存排名历史: {rank.keyword} -> {rank.position}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 412,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"查询历史排名失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 430,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 获取排名趋势: {keyword} ({days}天, {len(trend)}个数据点)\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/rank_monitor.py",
+      "line": 500,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 排名报告生成完成: {len(report['details'])}个关键词-引擎组合\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/repositories.py",
+      "line": 464,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ create_alert_rule 失败: {rule_data}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/geo_engine/repositories.py",
+      "line": 1012,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (RuntimeError, OSError, Exception): /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 29,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ GraduationManager initialized with {len(self.flags)} flags\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 46,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 加载了{len(self.flags)}个功能开关\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 48,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 加载功能开关失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 59,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 保存功能开关失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 95,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 创建功能开关: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 109,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 功能开关不存在: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 117,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 激活功能开关: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 131,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 功能开关不存在: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 139,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 毕业功能开关: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 153,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 功能开关不存在: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 160,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 停用功能开关: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 175,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 功能开关不存在: {flag_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/manager.py",
+      "line": 185,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 更新灰度百分比: {flag_id} -> {percentage}%\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/graduation/models.py",
+      "line": 89,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "hash_obj = hashlib.md5(user_id.encode())",
+      "priority": false
+    },
+    {
+      "file": "backend/app/models/admin.py",
+      "line": 158,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"清理了 {deleted} 条过期登录日志\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/models/platform_registry.py",
+      "line": 35,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ImportError: /     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/models/product.py",
+      "line": 157,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ImportError: /     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 52,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"🔔 检查性能告警: {url} ({device})\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 86,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 告警检查完成: triggered={alert_triggered}, level={alert_level}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 90,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 告警检查失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 138,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 趋势检查失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 164,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"🚨 性能告警 [{level.upper()}]: {url} - {message}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 172,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ 告警通知已发送: {url}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/alert_trigger.py",
+      "line": 176,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ 告警通知发送失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/monitor.py",
+      "line": 68,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ PerformanceMonitor initialized with {len(self.budgets)} budgets\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/monitor.py",
+      "line": 88,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"🔍 运行Lighthouse: {url} ({device})\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/monitor.py",
+      "line": 106,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ Lighthouse执行失败: {result.stderr}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/monitor.py",
+      "line": 112,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"✅ Lighthouse完成: {url}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/monitor.py",
+      "line": 130,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"❌ Lighthouse审计失败: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/performance/monitor.py",
+      "line": 205,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/repositories/user_repository.py",
+      "line": 45,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass  # 历史明文数据或解密失败，保持原值",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 128,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Initialized NVIDIA model: {model_name} ({model_type})\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 130,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to initialize {model_name}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 149,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to initialize DeepSeek V4 Pro: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 167,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to initialize Claude: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 208,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to initialize OpenAI compatible model: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 225,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to initialize Gemini: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 276,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to initialize LLMs: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 365,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Switched to {cfg['provider']['type']} provider with model: {cfg['model']['name']}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 368,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to switch provider: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 422,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Unsupported provider type: {provider_type}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 425,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to create LLM for {provider_type}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 535,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"大模型网关返回异常 {resp.status_code}: {resp.text[:200]}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 538,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"大模型网关第 {attempt + 1}/{max_retries} 次调用失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 542,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"直接调用大模型网关最终失败: {last_error}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 638,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"LLM调用失败，已重试{max_retries}次: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 828,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_engine.py",
+      "line": 841,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_key_probe.py",
+      "line": 61,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_multimodal_studio.py",
+      "line": 71,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"大模型生图提示词生成降级: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_multimodal_studio.py",
+      "line": 115,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"大模型社媒发帖生成降级: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_multimodal_studio.py",
+      "line": 168,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"大模型视频脚本生成降级: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_recommendation_service.py",
+      "line": 245,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"生成推荐解释失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_search_probe_service.py",
+      "line": 102,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai_traffic_connect_service.py",
+      "line": 246,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/alert_service.py",
+      "line": 153,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/auto_backup.py",
+      "line": 80,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Backup failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/auto_backup.py",
+      "line": 114,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Removed old backup: {item}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/auto_backup.py",
+      "line": 115,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/auto_backup.py",
+      "line": 120,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Backup completed: {backup_name}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/client_today_three_service.py",
+      "line": 44,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/egress_jit_provision_service.py",
+      "line": 245,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/egress_quota_service.py",
+      "line": 52,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (TypeError, ValueError): /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/egress_replenish_service.py",
+      "line": 322,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/email_service.py",
+      "line": 150,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"邮件发送成功: {to_email}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/email_service.py",
+      "line": 154,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"邮件发送失败: {to_email}, 错误: {str(e)}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/finance_service.py",
+      "line": 319,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_agents.py",
+      "line": 195,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"[CompetitorMonitor] 检查关键词: {keyword}, 平台: {platforms}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_agents.py",
+      "line": 224,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_agents.py",
+      "line": 423,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"[GEOScheduler] Celery 未安装，跳过任务注册: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_engine_service.py",
+      "line": 127,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_engine_service.py",
+      "line": 188,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_engine_service.py",
+      "line": 418,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_engine_service.py",
+      "line": 464,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_engine_service.py",
+      "line": 540,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_lead_service.py",
+      "line": 80,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/geo_rank_guard_probe.py",
+      "line": 36,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/industry_pattern_service.py",
+      "line": 313,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 180,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 186,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 304,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 360,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 368,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 374,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 389,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 407,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 500,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiry_push_service.py",
+      "line": 59,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiry_push_service.py",
+      "line": 70,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/job_gateway.py",
+      "line": 90,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/keyword_tracker.py",
+      "line": 82,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"搜索请求失败: {search_engine} - {keyword}, 状态码: {response.status}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/keyword_tracker.py",
+      "line": 91,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"检查关键词排名失败: {keyword}, 错误: {str(e)}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/keyword_tracker.py",
+      "line": 174,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"保存排名历史失败: {str(e)}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/lab_site_editor_service.py",
+      "line": 73,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, OSError): /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/logistics_provider.py",
+      "line": 97,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "sign = hashlib.md5(f\"{param}{key}{customer}\".encode()).hexdigest().upper()",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/media_cloud_upload_service.py",
+      "line": 80,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except MediaR2Error: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/media_video_edit_service.py",
+      "line": 277,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/minio_service.py",
+      "line": 114,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except S3Error: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/moss_auto_clip_pipeline.py",
+      "line": 110,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"ffmpeg 切片异常或超时，降级为模拟产出: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/nurture_execution_scheduler.py",
+      "line": 148,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/nurture_execution_scheduler.py",
+      "line": 181,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/nurture_execution_scheduler.py",
+      "line": 214,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/nurture_execution_scheduler.py",
+      "line": 246,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/nvidia_scenario_service.py",
+      "line": 288,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/oauth_login.py",
+      "line": 279,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/onboarding_autopilot_job.py",
+      "line": 138,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/order_addon_service.py",
+      "line": 158,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/payment_service.py",
+      "line": 241,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "return hashlib.md5(raw.encode(\"utf-8\")).hexdigest().upper()",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/payment_service.py",
+      "line": 644,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (TypeError, ValueError): /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/paypal_pay_service.py",
+      "line": 83,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/rank_scheduler.py",
+      "line": 56,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"RankScheduler started (daily at {check_hour:02d}:{check_minute:02d})\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/rank_scheduler.py",
+      "line": 88,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"RankScheduler daily check failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/rank_scheduler.py",
+      "line": 107,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"RankScheduler: checking {len(keywords)} keywords\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/rank_scheduler.py",
+      "line": 117,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"RankScheduler: daily check completed, {len(results)} results\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/rank_scheduler.py",
+      "line": 131,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"RankScheduler check failed: {keyword}@{engine}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/rum_metrics_service.py",
+      "line": 109,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/security_auditor.py",
+      "line": 345,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"AI响应中未找到JSON数组: {content[:200]}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/security_auditor.py",
+      "line": 349,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"解析AI响应JSON失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/security_auditor.py",
+      "line": 352,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"AI代码分析失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/security_auditor.py",
+      "line": 384,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"分析文件失败 {file_path}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/security_auditor.py",
+      "line": 415,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"扫描文件失败 {file_path}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/social_interaction_service.py",
+      "line": 216,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ssl_certificate_service.py",
+      "line": 241,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/stripe_pay_service.py",
+      "line": 126,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/tenant_onboarding_service.py",
+      "line": 148,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/tenant_site_persistence.py",
+      "line": 70,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/trade_intel_service.py",
+      "line": 177,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/video_publish_orchestrator.py",
+      "line": 74,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/video_publish_orchestrator.py",
+      "line": 416,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/video_publish_orchestrator.py",
+      "line": 478,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/_scan_long.py",
+      "line": 12,
+      "rule": "resource-open",
+      "severity": "major",
+      "message": "open() 可能未用 with 管理",
+      "evidence": "src = open(path, \"r\", encoding=\"utf-8\").read()",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/deerflow_tasks.py",
+      "line": 65,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/deerflow_tasks.py",
+      "line": 193,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/ops_scheduler_tasks.py",
+      "line": 201,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/publish_tasks.py",
+      "line": 51,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Enqueued publish task {task_id} for platform {platform_id}, job_id={job.job_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/publish_tasks.py",
+      "line": 72,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Enqueued retry for task {task_id}, job_id={job.job_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/seo_tasks.py",
+      "line": 33,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"关键词 {keyword_id} 不存在\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/seo_tasks.py",
+      "line": 57,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"检查关键词 {keyword_id} 排名失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/seo_tasks.py",
+      "line": 84,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"提交关键词 {kw.id} 检查任务失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/seo_tasks.py",
+      "line": 141,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"站点审计失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/workers/publish_worker.py",
+      "line": 55,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Starting publish task {task_id} to platform {platform_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/workers/publish_worker.py",
+      "line": 59,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Publish task {task_id} completed: {result}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/workers/publish_worker.py",
+      "line": 82,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Publish task {task_id} failed: {e}\", exc_info=True)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/orders.py",
+      "line": 90,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/orders.py",
+      "line": 611,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/orders.py",
+      "line": 667,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 115,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"AI响应中未找到JSON: {content[:200]}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 125,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"解析AI响应JSON失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 128,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"生成Dashboard洞察失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 201,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"AI响应中未找到JSON: {content[:200]}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 212,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"解析AI响应JSON失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 215,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"异常检测失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 297,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"AI响应中未找到JSON: {content[:200]}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 308,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"解析AI响应JSON失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 311,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"趋势预测失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 404,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"AI响应中未找到JSON: {content[:200]}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/dashboard.py",
+      "line": 415,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"生成SEO洞察失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 41,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"AI WebSocket连接建立: user_id={user_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 50,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"AI WebSocket连接断开: user_id={user_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 60,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"发送AI消息失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 70,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"广播AI消息失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 149,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"未知的AI WebSocket action: {action}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 157,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"AI WebSocket断开: user_id={user_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/ai/ws.py",
+      "line": 160,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"AI WebSocket错误: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/routes/acquisition.py",
+      "line": 1231,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/client.py",
+      "line": 225,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/client.py",
+      "line": 362,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/domain.py",
+      "line": 69,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/domain.py",
+      "line": 270,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.DNSException): /                     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/domain.py",
+      "line": 275,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (socket.gaierror, TimeoutError, Exception): /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/inquiries.py",
+      "line": 121,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/lead_generation.py",
+      "line": 146,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Google CSE 搜索失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/lead_generation.py",
+      "line": 200,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"抓取 {domain} 邮箱失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/mcp_sse.py",
+      "line": 30,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"New MCP Client Connected: {client_id}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/mcp_sse.py",
+      "line": 37,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"MCP Client Disconnected: {client_id}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/mcp_sse.py",
+      "line": 40,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except asyncio.CancelledError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/mcp_sse.py",
+      "line": 78,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"MCP Tool Execution Failed: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/mobile_public.py",
+      "line": 32,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/negotiation.py",
+      "line": 253,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/negotiation.py",
+      "line": 340,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/public_tenant_geo.py",
+      "line": 111,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError, Exception): /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/seo_matrix.py",
+      "line": 1840,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"发布失败 platform={platform_id}: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/ssl_certificates.py",
+      "line": 82,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to issue certificate for {cert.domain}: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/ssl_certificates.py",
+      "line": 86,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Created SSL certificate for {cert.domain}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/ssl_certificates.py",
+      "line": 185,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Renewed SSL certificate for {cert.domain}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/ssl_certificates.py",
+      "line": 189,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to renew certificate for {cert.domain}: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 314,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"研究任务 {task_id} 执行失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 353,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"效果追踪失败: {track_err}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 361,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"执行任务 {execution_id} 失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 446,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"工作流 {workflow_id} 执行失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 565,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"指令生成失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 652,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"从 AccioWork 获取技能列表失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 721,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"技能 {request.skill_id} 执行失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 818,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"客户开发失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 833,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ImportError: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 855,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"从 AccioWork 获取客户详情失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 958,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"自动谈单失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 996,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"获取谈判列表失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1076,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"开发信生成失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1105,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"获取邮件活动列表失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1124,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"获取邮件活动统计失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1179,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"获取性能数据失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1209,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"生成优化反馈失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1224,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"获取仪表板数据失败: {e}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/tenants.py",
+      "line": 1447,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/video_publish.py",
+      "line": 219,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/seo/batch_seo.py",
+      "line": 243,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception as e: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/super_admin/geo_engine.py",
+      "line": 744,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"保存内容块失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/super_admin/geo_engine.py",
+      "line": 790,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"查询历史记录失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security/claw_patrol.py",
+      "line": 110,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to compile pattern {rule_id}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security/claw_patrol.py",
+      "line": 168,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"AST deep scan failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/security/runtime_isolation.py",
+      "line": 205,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/acquisition/billing_explain.py",
+      "line": 114,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/billing_explain.py",
+      "line": 137,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/dispatch_service.py",
+      "line": 46,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/nps_rescue.py",
+      "line": 43,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/onboarding.py",
+      "line": 86,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 49,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 56,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 94,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 101,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 126,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 177,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 181,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 207,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 228,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "line": 247,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/payment_risk.py",
+      "line": 82,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/payment_risk.py",
+      "line": 99,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/repo.py",
+      "line": 166,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/risk_rescan.py",
+      "line": 158,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/sanctions_source.py",
+      "line": 33,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/template_weights.py",
+      "line": 97,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/wangcai_line_b.py",
+      "line": 47,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/__init__.py",
+      "line": 915,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/agent_loop/growth_workflow.py",
+      "line": 524,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/ai_engine_v2.py",
+      "line": 64,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"LLMProvider.generate failed for {self.provider_name}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/ai_engine_v2.py",
+      "line": 237,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"generate_content failed for provider {provider}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/ai_engine_v2.py",
+      "line": 241,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Falling back to provider: {fallback_provider}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/ai_engine_v2.py",
+      "line": 253,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Fallback provider {fallback_provider} also failed: {fallback_err}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/ai_engine_v2.py",
+      "line": 360,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"chat failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/analytics_insight_service.py",
+      "line": 327,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to parse AI insights response: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/analytics_insight_service.py",
+      "line": 330,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"generate_ai_insights failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/analytics_insight_service.py",
+      "line": 563,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to parse visualization recommendation: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/analytics_insight_service.py",
+      "line": 565,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"recommend_visualization AI call failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/recommendation_service.py",
+      "line": 324,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to parse recommendation explanations: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/recommendation_service.py",
+      "line": 327,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"generate_recommendation_explanations failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/security_scan_service.py",
+      "line": 214,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to parse security scan response: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/security_scan_service.py",
+      "line": 255,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"scan_code_security failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/security_scan_service.py",
+      "line": 304,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Failed to read {dep_file}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ai/security_scan_service.py",
+      "line": 351,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"scan_dependencies failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/annex/ticket_service.py",
+      "line": 96,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass  # Redis 异常降级内存（安全侧：宁可两处都记一次）",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/audio_asr_service.py",
+      "line": 538,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/audio_chunk_service.py",
+      "line": 194,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/cross_border_worker.py",
+      "line": 117,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/forum_language_bridge_service.py",
+      "line": 33,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/forum_language_bridge_service.py",
+      "line": 40,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/gemini_audio_asr_service.py",
+      "line": 95,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/gemini_audio_asr_service.py",
+      "line": 105,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/inquiry_bridge_service.py",
+      "line": 35,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/inquiry_bridge_service.py",
+      "line": 42,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/opensource_localization_service.py",
+      "line": 487,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/tts_service.py",
+      "line": 159,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/tts_service.py",
+      "line": 289,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/tts_service.py",
+      "line": 295,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/tts_service.py",
+      "line": 358,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/video_dub_service.py",
+      "line": 86,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/video_dub_service.py",
+      "line": 92,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/video_dub_service.py",
+      "line": 135,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/video_dub_service.py",
+      "line": 188,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/video_dub_service.py",
+      "line": 607,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/voice_cloning_service.py",
+      "line": 179,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/cross_border/xfyun_lfasr_service.py",
+      "line": 92,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "md5_hex = hashlib.md5(base_string.encode(\"utf-8\")).hexdigest()",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/executor.py",
+      "line": 217,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/executor.py",
+      "line": 258,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/executor.py",
+      "line": 1146,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/executor.py",
+      "line": 1156,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/planner.py",
+      "line": 376,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/planner.py",
+      "line": 386,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/reviewer.py",
+      "line": 297,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/deerflow/reviewer.py",
+      "line": 307,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/evolution/canary.py",
+      "line": 127,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "hash_value = int(hashlib.md5(hash_key.encode()).hexdigest(), 16)",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/evolution/unified_experience.py",
+      "line": 77,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/evolution/unified_experience.py",
+      "line": 115,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 156,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"未找到飞书用户: {email}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 383,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"飞书广播消息发送成功\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 386,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"飞书消息发送失败: {result}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 391,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"飞书广播消息（文本）: {text[:50]}...\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 395,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"发送飞书广播消息异常: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 431,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"飞书Webhook消息发送成功\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 434,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"飞书Webhook消息发送失败: {result}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 437,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"飞书Webhook请求失败，状态码: {resp.status_code}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 441,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"发送飞书Webhook消息异常: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 478,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"飞书Webhook消息发送成功\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 481,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"飞书Webhook消息发送失败: {result}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 484,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"飞书Webhook请求失败，状态码: {resp.status_code}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/client.py",
+      "line": 488,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"发送飞书Webhook消息异常: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/feishu/handlers.py",
+      "line": 538,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"记录飞书消息日志失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/foreign_trade/integrations_sidecars_status_service.py",
+      "line": 66,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except TimeoutError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/foreign_trade/skill_registry.py",
+      "line": 105,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/foreign_trade/utm_attribution_service.py",
+      "line": 56,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/foreign_trade/utm_attribution_service.py",
+      "line": 160,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/hermes/a2a_skill_marketplace_service.py",
+      "line": 410,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/a2a_skill_marketplace_service.py",
+      "line": 438,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/biz_bot_actions.py",
+      "line": 354,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/consistency_harness_service.py",
+      "line": 179,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /                         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/consistency_harness_service.py",
+      "line": 202,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /                         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/daily_autonomous_cycle.py",
+      "line": 623,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_contest_memory_service.py",
+      "line": 288,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_contest_memory_service.py",
+      "line": 575,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_contest_memory_service.py",
+      "line": 589,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_contest_memory_service.py",
+      "line": 835,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_contest_memory_service.py",
+      "line": 864,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_cumulative_personality_service.py",
+      "line": 83,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_cumulative_personality_service.py",
+      "line": 102,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_production_readiness_service.py",
+      "line": 126,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_production_readiness_service.py",
+      "line": 139,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_project_board_service.py",
+      "line": 278,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (TypeError, ValueError): /                     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/greedy_publish_queue_service.py",
+      "line": 112,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/hermes_ai_lanes_service.py",
+      "line": 35,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/platform_survival_service.py",
+      "line": 89,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/role_economics_service.py",
+      "line": 84,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/role_economics_service.py",
+      "line": 217,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/site_patrol_service.py",
+      "line": 172,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/task_control_supervisor.py",
+      "line": 415,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Initiating Saga Compensation for Plan: {plan_task_id}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/task_control_supervisor.py",
+      "line": 442,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"Saga Compensation Complete for Plan: {plan_task_id}\")",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/model_gateway/ledger.py",
+      "line": 34,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/model_gateway/ledger.py",
+      "line": 70,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/moss_vl/model_loader.py",
+      "line": 50,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ImportError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/goal_chain.py",
+      "line": 95,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/heartbeat_engine.py",
+      "line": 59,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/heartbeat_engine.py",
+      "line": 317,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/heartbeat_engine.py",
+      "line": 348,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/orchestrator.py",
+      "line": 496,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/orchestrator.py",
+      "line": 557,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/orchestrator.py",
+      "line": 957,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/tenant_context.py",
+      "line": 165,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/tenant_context.py",
+      "line": 183,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/tenant_context.py",
+      "line": 274,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError): /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/tenant_context.py",
+      "line": 306,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/paperclip/tenant_context.py",
+      "line": 315,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/payment_pkg/wechat_pay.py",
+      "line": 237,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "return hashlib.md5(raw.encode(\"utf-8\")).hexdigest().upper()",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/platforms/baijiahao.py",
+      "line": 199,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "sign = hashlib.md5(sign_str.encode()).hexdigest()",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/platforms/wechat.py",
+      "line": 100,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"永久图片素材上传成功, media_id={media_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/platforms/wechat.py",
+      "line": 151,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"图文素材发布成功, media_id={media_id}, title={title}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/platforms/wechat.py",
+      "line": 178,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"群发成功, msg_id={msg_id}, media_id={media_id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/seo/inclusion_check_service.py",
+      "line": 181,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/talking_stick/file_lock.py",
+      "line": 46,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "path_hash = hashlib.md5(target_path.encode()).hexdigest()",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/talking_stick/file_lock.py",
+      "line": 102,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (IOError, OSError): /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/talking_stick/file_lock.py",
+      "line": 116,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (IOError, OSError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/talking_stick/file_lock.py",
+      "line": 152,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (IOError, OSError): /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/talking_stick/file_lock.py",
+      "line": 154,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/chat_context_service.py",
+      "line": 84,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/chat_context_service.py",
+      "line": 91,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/commercial_os_bridge.py",
+      "line": 461,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/dedup_engine.py",
+      "line": 89,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"去重命中（邮箱）: {email} -> {lead.id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/dedup_engine.py",
+      "line": 107,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"去重命中（LinkedIn）: {linkedin_url} -> {lead.id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/dedup_engine.py",
+      "line": 152,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.debug(f\"去重命中（电话）: {phone} -> {lead.id}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/deerflow_job_service.py",
+      "line": 478,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/deerflow_job_service.py",
+      "line": 492,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/deerflow_research_service.py",
+      "line": 45,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except json.JSONDecodeError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/deerflow_sidecar.py",
+      "line": 108,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/email_outreach_service.py",
+      "line": 89,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"幂等命中：邮件 {idempotency_key} 已存在，状态={existing.status.value}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/email_outreach_service.py",
+      "line": 323,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"邮件发送异常: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/email_queue_service.py",
+      "line": 219,
+      "rule": "security-md5",
+      "severity": "major",
+      "message": "使用 MD5（安全场景不推荐）",
+      "evidence": "item_id=f\"eq_{hashlib.md5(f'{to_email}{subject}{now}'.encode()).hexdigest()[:12]}\",",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/email_send_service.py",
+      "line": 126,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Resend 发送失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/follow_up_engine.py",
+      "line": 474,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /                         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/google_prospect_service.py",
+      "line": 143,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Google CSE API 请求失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/google_prospect_service.py",
+      "line": 146,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Google CSE API 异常: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/google_prospect_service.py",
+      "line": 172,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Google CSE 真实搜索失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/hunter_service.py",
+      "line": 379,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (ValueError, TypeError): /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/inquiry_context_service.py",
+      "line": 191,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/inquiry_context_service.py",
+      "line": 236,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/inquiry_context_service.py",
+      "line": 285,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/inquiry_context_service.py",
+      "line": 305,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/lead_search_task.py",
+      "line": 215,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"异步搜索失败 {task_id}: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/paid_ads_creative_service.py",
+      "line": 101,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/skill_audit_service.py",
+      "line": 107,
+      "rule": "security-eval",
+      "severity": "blocking",
+      "message": "存在 eval/exec 调用",
+      "evidence": "(\"exec(\", \"危险：动态代码执行\", \"high\"),",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/skill_audit_service.py",
+      "line": 108,
+      "rule": "security-eval",
+      "severity": "blocking",
+      "message": "存在 eval/exec 调用",
+      "evidence": "(\"eval(\", \"警告：动态表达式求值\", \"medium\"),",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/super_agent_bridge.py",
+      "line": 471,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"Channel {channel_name} failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/tenant_memory_service.py",
+      "line": 78,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (json.JSONDecodeError, TypeError, AttributeError): /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/website_email_scraper.py",
+      "line": 145,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"抓取 {domain} 邮箱失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/website_email_scraper.py",
+      "line": 158,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/whatsapp_business_service.py",
+      "line": 327,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
+      "line": 191,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"WhatsApp 真实搜索失败，降级到 mock: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
+      "line": 380,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"WhatsApp 号码验证失败，降级到 mock: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
+      "line": 427,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.warning(f\"WhatsApp contacts API 请求失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
+      "line": 463,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"[Mock WhatsApp] 发送给 {to}: {message[:50]}...\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
+      "line": 479,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp 消息发送失败: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/wangcai/persistence.py",
+      "line": 221,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/wangcai/router.py",
+      "line": 94,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except RuntimeError: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/adapters/tradeai/__init__.py",
+      "line": 145,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except ValueError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/agency/llm_router.py",
+      "line": 364,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/agency/orchestrator_bridge.py",
+      "line": 357,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/agency/role_loader.py",
+      "line": 32,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/agency/workflow_runner.py",
+      "line": 37,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/agency/workflow_runner.py",
+      "line": 231,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/agent_ops_executor.py",
+      "line": 116,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/data_ops_executor.py",
+      "line": 120,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/deerflow_executor.py",
+      "line": 60,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/inquiry_executor.py",
+      "line": 83,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/trade_ops_executor.py",
+      "line": 111,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/trade_ops_executor.py",
+      "line": 147,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/talking_stick/agents/verify_agent.py",
+      "line": 204,
+      "rule": "security-shell",
+      "severity": "blocking",
+      "message": "subprocess shell=True",
+      "evidence": "has_shell_true = \"shell=True\" in matched_content",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/greenchain_p0b_verify.py",
+      "line": 33,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "cur.execute(f\"DROP DATABASE IF EXISTS {GREEN_DB} WITH (FORCE)\")",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/greenchain_p0b_verify.py",
+      "line": 34,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "cur.execute(f\"CREATE DATABASE {GREEN_DB}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/greenchain_p0b_verify.py",
+      "line": 131,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "conn.cursor().execute(f\"DROP DATABASE {GREEN_DB} WITH (FORCE)\")",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/migrate_full_schema.py",
+      "line": 59,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"剩余缺列: {still_missing}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/opencodereview_host_detect.py",
+      "line": 79,
+      "rule": "security-shell",
+      "severity": "blocking",
+      "message": "subprocess shell=True",
+      "evidence": "if \"shell=True\" in line or \"shell = True\" in line:",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/opencodereview_host_detect.py",
+      "line": 80,
+      "rule": "security-shell",
+      "severity": "blocking",
+      "message": "subprocess shell=True",
+      "evidence": "add(path, i, \"security-shell\", \"blocking\", \"subprocess shell=True\", line)",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/orchestration_selfcheck.py",
+      "line": 248,
+      "rule": "resource-open",
+      "severity": "major",
+      "message": "open() 可能未用 with 管理",
+      "evidence": "src = open(ex_mod.__file__, encoding=\"utf-8\").read()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/patch_sqlite_content_pages.py",
+      "line": 22,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "cur.execute(f\"PRAGMA table_info({table})\")",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/probe_code_slices.py",
+      "line": 140,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "n = db.execute(text(f'select count(*) from \"{tname}\"')).scalar()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/probe_db_engine.py",
+      "line": 50,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "n = db.execute(text(f\"select count(*) from {t}\")).scalar()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/probe_empty_tables_by_domain.py",
+      "line": 87,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "n = db.execute(text(f'select count(*) from \"{t}\"')).scalar()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/probe_pg_density.py",
+      "line": 41,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "n = db.execute(text(f\"select count(*) from {t}\")).scalar()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/seed_acquisition_main_chain_demo.py",
+      "line": 51,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "return int(db.execute(text(f'select count(*) from \"{table}\"')).scalar() or 0)",
+      "priority": true
+    }
+  ],
+  "note": "本报告 = OpenCodeReview 官方规则集 + CLI 范围/规则解析 + 宿主代理静态检测；非 OCR 内置 LLM 自动评审（端点不可用）。"
+}
