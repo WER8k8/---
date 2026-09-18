@@ -1,0 +1,650 @@
+{
+  "status": "completed_with_errors",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 17,
+    "comments": 66,
+    "total_tokens": 565606,
+    "input_tokens": 539680,
+    "output_tokens": 25926,
+    "cache_read_tokens": 293632,
+    "elapsed": "5m39s",
+    "budget_exceeded": true
+  },
+  "tool_calls": {
+    "total": 45,
+    "by_tool": {
+      "code_comment": 12,
+      "file_find": 4,
+      "file_read": 29
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "BUG-06 Stripe checkout.session.completed is accepted without verifying the session's actual payment status. The webhook handler trusts `event.get('data', {})` to contain a dict, but never inspects `session.get('payment_status')` or `session.get('status')`. A Stripe session can complete in states other than paid (e.g. `payment_pending`, `complete` with no charge captured). Processing such an event will call `_mark_paid_and_provision`, mark the order as paid, and provision credits even though payment was never collected. Fix: assert `session.get('payment_status') == 'paid'` (or equivalently `session.get('status') == 'complete'` with verified charge) before provisioning. Add an explicit comment that this guard matches Stripe's idempotency policy.",
+      "existing_code": "        if event_type != 'checkout.session.completed':\n            # 非支付完成事件（如 checkout.session.expired）确认收到即可\n            return success_response(data={'ignored': True, 'event_type': event_type}, message='Webhook 处理成功')\n\n        session = event.get('data') or {}\n        if not isinstance(session, dict):\n            return error_response(400, '事件数据格式异常')\n        metadata = session.get('metadata') or {}\n        order_no = (metadata.get('order_no') if isinstance(metadata, dict) else None) or ''\n        if not order_no:\n            log.error('[Payment] Stripe Webhook 缺少 metadata.order_no，无法对账 event=%s', event_id)\n            return error_response(400, 'missing metadata.order_no')",
+      "start_line": 537,
+      "end_line": 548,
+      "category": "security",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "The Stripe webhook handler wraps the entire request body, signature verification, dedup, dispatch, and provisioning in a single broad `try / except Exception as e` returning 500. Stripe will retry any 5xx response aggressively. Signature failures should return 403, missing metadata should return 400, and known-ignored events should return 200 — none of these currently do. This turns every malformed/stale webhook delivery into a retry storm that also inflates error monitoring alerts. Fix: narrow the catch to unexpected internal errors only, and return explicit 2xx/4xx codes for expected cases before entering the try block (or restructure with early returns). Log errors instead of swallowing them inside the generic handler.",
+      "existing_code": "    except Exception as e:\n        log.exception('[Payment] Stripe Webhook 处理失败: %s', e)\n        return error_response(500, f'Webhook 处理失败: {e}')",
+      "start_line": 561,
+      "end_line": 563,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "`create_stripe_session` imports `PaymentService` from the internal package path `app.services.payment_pkg.payment_service_impl` on line 341, while the module-level import on line 13 brings in `app.services.payment_service`. These are different symbols and may mask a naming/aliasing issue. If the internal import is intentional, add a comment explaining why; otherwise use the module-level import consistently. This dual-import pattern increases maintenance risk when one path is updated and the other is not.",
+      "existing_code": "        from app.services.payment_pkg.payment_service_impl import PaymentService\n        svc = PaymentService(db)\n        created = svc.create_payment_order(",
+      "start_line": 485,
+      "end_line": 487,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "Same issue in the Stripe webhook handler: `PaymentService` is imported again from the internal path on line 408, diverging from the module-level import on line 13. This inconsistency makes refactoring/error-tracing harder. Align with the top-level import unless there is a documented reason.",
+      "existing_code": "        from app.services.payment_pkg.payment_service_impl import PaymentService\n        svc = PaymentService(db)\n        order = svc._mark_paid_and_provision(order_no, sync_data={",
+      "start_line": 550,
+      "end_line": 552,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "Stripe session creation constructs success_url and cancel_url via f-string interpolation of `settings.SITE_URL`. If `SITE_URL` is unset or malformed, the resulting redirect URLs will be invalid and the user will be dropped after payment. Validate `settings.SITE_URL` at startup (e.g. in lifespan/onStartup) rather than failing at request time. Alternatively, fall back to a well-known endpoint or return a clear config error before invoking Stripe.",
+      "existing_code": "            success_url=f'{settings.SITE_URL}/payment/success?session_id={{CHECKOUT_SESSION_ID}}',\n            cancel_url=f'{settings.SITE_URL}/payment/cancel',",
+      "start_line": 498,
+      "end_line": 499,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "The generic `/notify` endpoint logs a warning advising migration to channel-specific routes, but still processes the request through the same `_emit_payment_success_event` path. If a client accidentally or intentionally continues using this endpoint in production, audit trails will be mixed and signature enforcement may differ per-channel. Consider deprecating the route with a 410 Gone after a transition period rather than continuing to serve it alongside the channel-specific handlers.",
+      "existing_code": "    log.warning(\n        \"[Payment] 遗留通用 /notify 端点被调用，建议迁移至 /notify/wechat 与 /notify/alipay。\"\n        \"该端点仅在配置 PAYMENT_WEBHOOK_SECRET 且严验签通过时放行；严验模式下无可信签名直接拒绝（B-P0 F4）。\"\n    )",
+      "start_line": 315,
+      "end_line": 318,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "The module imports `APIResponse` from `app.core.response` but uses it inconsistently — some endpoints declare `response_model=APIResponse` while others omit it entirely. This makes OpenAPI schema incomplete and client generators may miss documented response shapes. Standardize by adding the decorator consistently, or remove it globally and rely on pydantic models instead.",
+      "existing_code": "@router.get('/channels/status', operation_id='payment_get_channels_status', response_model=APIResponse, summary='获取支付渠道配置与在线状态', description='查询微信支付与支付宝渠道配置就绪状态、真实商户连接状态及Mock模式状态。需要有效JWT管理员权限。')",
+      "start_line": 127,
+      "end_line": 127,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "Several ops endpoints use `dependencies=[]` on the decorator, which explicitly disables any default dependencies (such as security/auth dependencies defined on the router). This is likely intentional for audit/export endpoints, but verify that these endpoints still enforce admin role checks via `_payment_ops_allowed`. If `dependencies=[]` accidentally strips authentication middleware, any unauthenticated caller could access them. Confirm the router's default dependencies are truly unwanted for these routes.",
+      "existing_code": "@router.get('/ops/staging/public-reachability', ..., dependencies=[])\n@router.post('/ops/staging/public-notify-check', ..., dependencies=[])\n@router.get('/ops/audit/export', ..., dependencies=[])",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/payment.py",
+      "content": "The balance payment code calls `pay_order_with_balance` then `_mark_paid_and_provision` sequentially. If `_mark_paid_and_provision` raises (or the compensation path `_refund_balance_after_failed_pay` raises), the wallet may have already been debited without crediting the user. Wrap the compound sequence in a single database/workflow transaction where possible, or ensure the compensation function is idempotent and logged with sufficient context to allow manual recovery.",
+      "existing_code": "        result = pay_order_with_balance(user_id=str(current_user.id), order_id=str(order.id), amount=amount, currency=getattr(order, 'currency', 'CNY'), tenant_id=str(order.tenant_id))\n        if not result or not getattr(result, 'success', False):\n            return error_response(400, (getattr(result, 'error', None) if result else None) or '余额支付失败')\n        # 复用回调一致的发放链路：原子置 paid + 收入 + 权益\n        try:\n            from app.services.payment_pkg.payment_service_impl import PaymentService\n            svc = PaymentService(db)\n            paid = svc._mark_paid_and_provision(order.order_no)\n            if not paid:\n                # 并发下已被其它请求支付：补偿退回刚扣的余额\n                _refund_balance_after_failed_pay(current_user, amount, order)\n                return error_response(409, '订单已被支付，余额已退回')\n        except Exception:\n            log.exception('[Payment] 余额支付后发放权益失败，补偿退回余额: order=%s', order_no)\n            _refund_balance_after_failed_pay(current_user, amount, order)\n            return error_response(500, '权益发放失败，余额已退回，请稍后重试')",
+      "start_line": 611,
+      "end_line": 626,
+      "category": "security",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/services/adapters/__init__.py",
+      "content": "No issues found. The `__init__.py` is a package marker with only a docstring — it has no executable code, imports, or definitions to review.",
+      "existing_code": "# -*- coding: utf-8 -*-\n# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.\n\"\"\"Adapter 层（Execution Plane 平级适配器集合，总纲 §3.1）。\n\n本包只放外部能力的适配桥接，禁止业务逻辑；所有适配器必须：\n1. 不持有链路状态（状态归 ai_tasks / Control Plane）；\n2. 不绕过 Policy / 租户隔离；\n3. 可整体替换（冻结原则 §1.2-2）。\n\"\"\"",
+      "start_line": 1,
+      "end_line": 9,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/core/admin_auth.py",
+      "content": "Security: jwt.decode is called with verify_exp=False, which means revoked sessions using expired tokens will bypass the blacklist check. If a token is leaked and then the user logs out (revoking the session), an attacker can continue using the expired token indefinitely since the expiry check is disabled. The comment '防止 token 泄露后被吊销的会话仍可使用' contradicts this - it claims to prevent leaked tokens from being used, but verify_exp=False actually enables exactly that for expired tokens. Either remove verify_exp=False and handle expired token cases differently, or document why this is intentional and accept the security trade-off.",
+      "existing_code": "        payload = jwt.decode(\n            token, settings.JWT_SECRET_KEY,\n            algorithms=[settings.JWT_ALGORITHM],\n            options={\"verify_exp\": False},\n        )",
+      "start_line": 202,
+      "end_line": 206,
+      "category": "security",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/core/admin_auth.py",
+      "content": "Error handling: The bare except in _get_token_jti swallows ALL exceptions including JWTDecodeError, InvalidTokenError, and other authentication-related errors. This makes it impossible to distinguish between a valid token without JTI, a malformed token, a signature verification failure, or a Redis unavailability issue. During security incidents, this obscurity prevents effective investigation. At minimum, catch specific JWT exceptions and log them. Consider whether unauthorized tokens should be treated differently than tokens without JTI.",
+      "existing_code": "    except Exception:\n        return None",
+      "start_line": 208,
+      "end_line": 209,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/admin_auth.py",
+      "content": "Concurrency/Atomicity: get_user_permission_codes performs a non-atomic check-then-set pattern on Redis cache. Between the redis_client.get() and set_cache() calls, another request could update the database and invalidate the cache, leading to stale permissions being served. Additionally, there's no TTL set on cached permissions, so they persist indefinitely until explicitly invalidated. If invalidate_user_permission_cache is not called after role/permission changes (e.g., during admin operations), users may retain elevated privileges.",
+      "existing_code": "    if redis_client:\n        cached = redis_client.get(cache_key)\n        if cached:\n            import json\n            return json.loads(cached)\n\n    codes = _load_permission_codes(user, db)\n    if redis_client:\n        set_cache(cache_key, codes)",
+      "start_line": 50,
+      "end_line": 58,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/admin_auth.py",
+      "content": "Performance: build_menu_tree calls _load_permission_codes for every recursive call, causing repeated database queries. For a menu tree with N nodes, this results in O(N) permission code lookups when only one is needed. Move the permission loading outside the recursive function or pass codes as a parameter. Also, the menu SQL query does not filter by permission at the database level - it loads all visible menus and filters in Python, which is inefficient and potentially leaks data in multi-tenant scenarios if the filtering logic is incorrect.",
+      "existing_code": "    # 获取用户权限码\n    codes = _load_permission_codes(user, db)\n    has_all = \"*:*\" in codes\n    # 查询菜单\n    menus = (\n        db.query(AdminMenu)\n        .filter(\n            AdminMenu.parent_id == parent_id,\n            AdminMenu.visible == True,\n        )\n        .order_by(AdminMenu.sort_order)\n        .all()\n    )",
+      "start_line": 221,
+      "end_line": 233,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/admin_auth.py",
+      "content": "Correctness: The admin_session_revoked key format uses f\"admin_session_revoked:{user.id}:{jti}\" but there's no corresponding cleanup mechanism shown. If sessions are revoked frequently, this Redis key can grow unbounded. Additionally, the code assumes user.id is a string-compatible value - if it's an integer or UUID object, the f-string conversion should be explicit. Consider whether UUID objects need special handling.",
+      "existing_code": "            blacklisted = redis_client.get(f\"admin_session_revoked:{user.id}:{jti}\")",
+      "start_line": 35,
+      "end_line": 35,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/core/admin_auth.py",
+      "content": "Style: Multiple functions have verbose docstrings with generic ':param request: 参数 request' style documentation that adds no value. The checker functions in particular have boilerplate docstrings that should be removed or made meaningful. This adds noise without improving readability.",
+      "existing_code": "    async def checker(\n        request: Request,\n        user: User = Depends(get_current_user),\n        db: Session = Depends(get_db),\n    ) -\u003e User:\n        \"\"\"checker。\n\n        参数说明：\n        :param request: 参数 request\n        :param user: 参数 user\n        :param db: 参数 db\n        :return: 返回处理结果。\n        \"\"\"",
+      "start_line": 120,
+      "end_line": 132,
+      "category": "style",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "The `_tenant_orchestrators` dictionary is a module-level mutable global that is accessed and mutated without any thread synchronization. In a multi-threaded web service (Hermes supervisor pattern), concurrent calls to `tenant_orchestrator()` could race on the check-then-act pattern at lines 178-182: one thread might check `tenant_id not in _tenant_orchestrators` while another is in the middle of creating the orchestrator, potentially causing duplicate creation or, worse, a KeyError if `sys.modules` manipulation in `_load_vendor_isolated` races with this path.",
+      "existing_code": "_tenant_orchestrators: Dict[str, Any] = {}\n\n\ndef tenant_orchestrator(tenant_id: str) -\u003e Any:\n    \"\"\"按租户返回隔离的 AgentOrchestrator 实例（其原生为全局单例，总纲 §5.2.3-④ 改造项）。\"\"\"\n    if not tenant_id:\n        raise ValueError(\"tenant_id 必填（冻结原则 §1.2-3 租户隔离优先）\")\n    if tenant_id not in _tenant_orchestrators:\n        orch_cls = getattr(importlib.import_module(_EXPORTS[\"AgentOrchestrator\"]), \"AgentOrchestrator\")\n        _tenant_orchestrators[tenant_id] = orch_cls()\n        logger.info(\"tradeai adapter: created orchestrator for tenant=%s\", tenant_id)\n    return _tenant_orchestrators[tenant_id]",
+      "start_line": 191,
+      "end_line": 202,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "The `finally` block in `_load_vendor_isolated` (lines 130-136) restores saved modules and removes the vendor path from sys.path. However, if an exception occurs DURING the restore phase (e.g., `sys.modules.update(saved)` raises), the original app modules may be partially lost, and the vendor path may remain in sys.path. This is a fragile error recovery path that could leave the process in an inconsistent import state.",
+      "existing_code": "    except Exception as e:  # pragma: no cover\n        logger.error(\"tradeai adapter: vendor 加载失败 %s: %s\", type(e).__name__, e)\n        return False\n    finally:\n        sys.modules.update(saved)\n        try:\n            sys.path.remove(str(_backend_path))\n        except ValueError:\n            pass",
+      "start_line": 138,
+      "end_line": 146,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "The SECRET_KEY fallback logic at lines 61-70 has a subtle issue: when TRADEAI_SECRET_KEY is set but SECRET_KEY is already in os.environ (from a parent process), the dedicated key is ignored because `os.environ.get(\"SECRET_KEY\")` returns the parent's value, not None. This means the trade-ai-agent's security configuration could silently use the wrong SECRET_KEY. Additionally, the dev placeholder string is logged in the warning message, which could appear in logs.",
+      "existing_code": "    if not os.environ.get(\"SECRET_KEY\"):\n        dedicated = os.environ.get(\"TRADEAI_SECRET_KEY\", \"\").strip()\n        if dedicated:\n            os.environ[\"SECRET_KEY\"] = dedicated\n        else:\n            os.environ[\"SECRET_KEY\"] = \"tradeai-adapter-dev-key-change-in-prod\"\n            logger.warning(\n                \"tradeai adapter: SECRET_KEY 未配置，使用开发占位值；\"\n                \"生产环境必须设置 TRADEAI_SECRET_KEY（总纲 §7.7 密钥纪律）\"\n            )",
+      "start_line": 65,
+      "end_line": 74,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "Line 124: The bare `except Exception` in `_load_vendor_isolated` catches all exceptions including those during module restore in the `finally` block. This masks errors and makes debugging vendor loading failures difficult. The comment suggests it should be pragma: no cover, but it's still broad. Consider catching specific exceptions or at least re-raising after logging for unexpected error types.",
+      "existing_code": "    except Exception as e:  # pragma: no cover\n        logger.error(\"tradeai adapter: vendor 加载失败 %s: %s\", type(e).__name__, e)\n        return False",
+      "start_line": 138,
+      "end_line": 140,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "Lines 150-156: The `__getattr__` implementation uses `getattr(importlib.import_module(_EXPORTS[name]), name)` which can raise AttributeError in two ways: (1) if the module doesn't export the named attribute, or (2) if importlib.import_module fails. The original exception context is lost, making debugging harder. Consider using `raise ... from e` to preserve the traceback chain for import failures.",
+      "existing_code": "def __getattr__(name: str) -\u003e Any:\n    \"\"\"__getattr__。\n\n    参数说明：\n    :param name: 参数 name\n    :return: 返回处理结果。\n    \"\"\"\n    if name in _EXPORTS:\n        return getattr(importlib.import_module(_EXPORTS[name]), name)\n    raise AttributeError(f\"module {__name__!r} has no attribute {name!r}\")",
+      "start_line": 175,
+      "end_line": 184,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "The module-level execution at line 139 (`_loaded = _load_vendor_isolated()`) runs during import time. If this adapter module is imported in a multi-threaded context (e.g., concurrent workers importing simultaneously), there's a race condition on `_loaded` and the side effects in `_load_vendor_isolated` (sys.path manipulation, sys.modules mutation). The guard `if f\"{_VENDOR_PREFIX}.app\" in sys.modules` helps but isn't fully thread-safe without a lock.",
+      "existing_code": "_loaded = _load_vendor_isolated()",
+      "start_line": 149,
+      "end_line": 149,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "Lines 76-92: The `_normalize_cors_origins` function mutates the `env` dict parameter directly. While this works because `os.environ` is passed, the function signature suggests it operates on a generic dict. If called elsewhere with a different dict, this mutation could have unintended side effects. Consider using a clearer pattern like returning the normalized value instead of mutating in-place.",
+      "existing_code": "def _normalize_cors_origins(env: dict) -\u003e bool:\n    \"\"\"若 env 里 CORS_ORIGINS 是逗号分隔串（非 JSON 列表），改成 JSON 列表串。\n\n    返回是否发生改动。单元素 / 已 JSON / 空值均不动（无歧义）。\n    \"\"\"\n    raw = (env.get(\"CORS_ORIGINS\") or \"\").strip()\n    if not raw:\n        return False\n    if raw.startswith(\"[\"):\n        return False  # 已是 JSON 列表格式\n    items = [x.strip() for x in raw.split(\",\") if x.strip()]\n    if len(items) \u003c= 1:\n        return False  # 单元素无歧义\n    import json\n\n    env[\"CORS_ORIGINS\"] = json.dumps(items)\n    return True",
+      "start_line": 85,
+      "end_line": 101,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/adapters/tradeai/__init__.py",
+      "content": "Line 190-206: The `make_context` function creates UUIDs without any collision guarantee beyond hex length. In a high-throughput scenario with many concurrent workflows, the probability of collision increases. Consider using UUID4 (which `uuid.uuid4()` already does) with proper randomness, or adding a tenant prefix to ensure cross-tenant uniqueness.",
+      "existing_code": "    ctx = ctx_cls(\n        workflow_id=workflow_id or f\"wf-{uuid.uuid4().hex[:12]}\",\n        execution_id=execution_id or f\"exec-{uuid.uuid4().hex[:12]}\",\n    )",
+      "start_line": 219,
+      "end_line": 222,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/goodjob/__init__.py",
+      "content": "The file is currently just a module stub with a copyright header and docstring. It appears incomplete for a service module named `goodjob/__init__.py`. If this is intentional (e.g., a placeholder), consider adding a clear comment or raising it with the team. If the module is supposed to expose API surface, those exports are missing.",
+      "existing_code": "# -*- coding: utf-8 -*-\n# Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.\n\"\"\"GoodJob 附属桥服务（批次 B：customer_pool 投影 + 单证委派）。\"\"\"",
+      "start_line": 1,
+      "end_line": 3,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "Undefined variable `count` in rate-limit fallback path causes UnboundLocalError on every non-Redis request. When Redis is unavailable or fails, the code falls through to lines 106-110 which reference `count` (defined only inside the `if _use_redis_rate_limit:` block at line 95). This makes the email code sending endpoint crash with a 500 error whenever Redis is not configured or fails. Fix: use a local variable like `email_count = len(_email_code_store[email])` for the in-memory check.",
+      "suggestion_code": "    now = time.time()\n    window = _email_code_store[email]\n    _email_code_store[email] = [t for t in window if now - t \u003c _EMAIL_CODE_WINDOW]\n    email_count = len(_email_code_store[email])\n    if email_count \u003e _EMAIL_CODE_LIMIT:\n        raise HTTPException(429, \"验证码发送过于频繁，请 1 小时后再试\")",
+      "existing_code": "    now = time.time()\n    window = _email_code_store[email]\n    _email_code_store[email] = [t for t in window if now - t \u003c _EMAIL_CODE_WINDOW]\n    if count \u003e _EMAIL_CODE_LIMIT:\n        raise HTTPException(429, \"验证码发送过于频繁，请 1 小时后再试\")",
+      "start_line": 106,
+      "end_line": 110,
+      "category": "bug",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "Race condition in email verification: the check-then-act pattern between querying for an unused verification code (with `.first()`) and then setting `verification.used = True` is not atomic across concurrent requests. Two simultaneous login attempts with the same valid code could both pass the query, and both would succeed in logging in. While `.with_for_update()` is present (line 304), this requires database-level row locking support (e.g., PostgreSQL with transaction isolation). With SQLite or misconfigured transactions, this race persists. Consider using an atomic UPDATE ... RETURNING or SELECT ... FOR UPDATE with proper transaction semantics.",
+      "suggestion_code": "    verification = (\n        db.query(EmailVerification)\n        .filter(\n            EmailVerification.email == request.email,\n            EmailVerification.code == input_code_hash,\n            EmailVerification.used == False,\n            EmailVerification.expires_at \u003e datetime.now(timezone.utc),\n        )\n        .with_for_update()\n        .first()\n    )\n    if not verification:\n        return error_response(401, \"验证码无效或已过期\")\n\n    # Atomically mark as used to prevent replay from concurrent requests\n    affected = (\n        db.query(EmailVerification)\n        .filter(\n            EmailVerification.id == verification.id,\n            EmailVerification.used == False,\n        )\n        .update({\"used\": True})\n    )\n    db.commit()\n    if affected == 0:\n        # Another concurrent request already consumed this code\n        return error_response(401, \"验证码无效或已过期\")",
+      "existing_code": "    verification = (\n        db.query(EmailVerification)\n        .filter(\n            EmailVerification.email == request.email,\n            EmailVerification.code == input_code_hash,\n            EmailVerification.used == False,\n            EmailVerification.expires_at \u003e datetime.now(timezone.utc),\n        )\n        .with_for_update()\n        .first()\n    )\n    if not verification:\n        return error_response(401, \"验证码无效或已过期\")\n\n    verification.used = True\n    db.commit()",
+      "start_line": 351,
+      "end_line": 366,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "Broad exception handling catches `Exception` alongside `jwt.InvalidTokenError`, which swallows system exceptions like `KeyboardInterrupt` and `SystemExit` that should propagate. The tuple `(jwt.InvalidTokenError, Exception)` is redundant since `Exception` covers all standard exceptions — this should just be `except Exception`. At minimum, it should not be a tuple with `Exception` as it gives a false impression of specificity while still being over-broad.",
+      "existing_code": "        except (jwt.InvalidTokenError, Exception) as exc:\n            logger = logging.getLogger(__name__)\n            logger.warning(\"JWT 处理失败（可能是无效令牌）: %s\", exc)",
+      "start_line": 279,
+      "end_line": 281,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "Dev auto-bind bypasses authentication controls by allowing any `dev_`-prefixed OAuth identity to directly bind to the admin account without any password verification or 2FA. If `OAUTH_DEV_BYPASS=True` leaks into production (or if `is_production` incorrectly reports False), this creates an unrestricted privileged access path. The check at line 575 (`not settings.is_production`) is the only defense, but `is_production` is an application-level setting that can be misconfigured. Consider adding a separate, explicit feature flag that is harder to accidentally enable in production, and logging an alert when dev auto-bind is triggered.",
+      "suggestion_code": "    # TODO: Ensure is_production is reliably set; consider adding an explicit\n    # OAUTH_DEV_AUTO_BIND_ENABLED flag that is OFF by default and documented\n    # as requiring deliberate enablement even in development.\n    admin_link = db.query(User).filter(User.username == \"admin\").first()\n    if (\n        admin_link\n        and admin_link.is_active\n        and provider_id.startswith(\"dev_\")\n        and not settings.is_production\n        and (\n            settings.OAUTH_DEV_BYPASS\n            or settings.ENVIRONMENT == \"development\"\n        )\n    ):",
+      "existing_code": "    admin_link = db.query(User).filter(User.username == \"admin\").first()\n    if (\n        admin_link\n        and admin_link.is_active\n        and provider_id.startswith(\"dev_\")\n        and not settings.is_production\n        and (\n            settings.OAUTH_DEV_BYPASS\n            or settings.ENVIRONMENT == \"development\"\n        )\n    ):",
+      "start_line": 570,
+      "end_line": 580,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "Line 101: `except (ConnectionError, TimeoutError, Exception)` — catching bare `Exception` here is problematic. It will also catch `HTTPException` raised by the `raise HTTPException(429, ...)` on line 99 if Redis returns count \u003e limit, causing the rate limit to silently fail open (allowing the request through). The rate limit check should happen BEFORE the except block, or the except clause should be narrowed to only the Redis operations. As written, if `incr()` returns a count \u003e 3, the exception is caught and the code falls through to the unguarded in-memory path which then crashes on `count` being undefined.",
+      "suggestion_code": "        except (ConnectionError, TimeoutError):\n            logger.warning(\"Redis 限流故障，降级到内存计数: %s\", email)",
+      "existing_code": "        except (ConnectionError, TimeoutError, Exception):\n            import logging\n            logger = logging.getLogger(__name__)\n            logger.warning(\"Redis 限流故障，降级到内存计数: %s\", email)",
+      "start_line": 101,
+      "end_line": 104,
+      "category": "security",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "The module-level mutable globals `_email_code_store` (dict[str, list[float]]) and `_email_code_ttl_store` (dict[str, float]) retain state across requests and are not thread-safe. Under multi-worker or async concurrency, these dicts can be corrupted or cause race conditions on the in-memory rate-limit fallback path. Consider using a thread-safe structure or ensuring the application runs single-process.",
+      "existing_code": "_email_code_store: dict[str, list[float]] = defaultdict(list)\n_email_code_ttl_store: dict[str, float] = {}",
+      "start_line": 65,
+      "end_line": 66,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "Variable `_email_code_ttl_store` is declared but never read or written anywhere in this file. It appears to be dead code left over from an earlier implementation attempt.",
+      "existing_code": "_email_code_ttl_store: dict[str, float] = {}",
+      "start_line": 66,
+      "end_line": 66,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/auth.py",
+      "content": "In `_check_email_code_rate`, when Redis is unavailable and the fallback path executes, the `count` variable from line 95 is out of scope, causing an UnboundLocalError. Additionally, the in-memory path only checks the count after filtering the window but uses `count` (undefined) instead of the length of the filtered list. This means email code sending always fails with a 500 error in non-Redis environments.",
+      "existing_code": "    now = time.time()\n    window = _email_code_store[email]\n    _email_code_store[email] = [t for t in window if now - t \u003c _EMAIL_CODE_WINDOW]\n    if count \u003e _EMAIL_CODE_LIMIT:\n        raise HTTPException(429, \"验证码发送过于频繁，请 1 小时后再试\")\n    _email_code_store[email].append(now)",
+      "start_line": 106,
+      "end_line": 111,
+      "category": "bug",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/services/goodjob/customer_pool_projection.py",
+      "content": "The projection payload contains raw PII fields (email, phone, name, message_excerpt) without any masking or sensitivity handling. These values will be stored in task queues, potentially logged by the worker infrastructure, and may violate data protection requirements. Consider masking sensitive fields (e.g., partial email masking, phone number truncation) or documenting the PII handling expectations with downstream consumers.",
+      "existing_code": "        \"customer\": {\n            \"name\": _attr_str(row, \"name\"),\n            \"email\": _attr_str(row, \"email\"),\n            \"phone\": _attr_str(row, \"phone\"),\n            \"product\": _attr_str(row, \"product\"),\n            \"message_excerpt\": _excerpt(getattr(row, \"message\", \"\")),\n            \"status\": _attr_str(row, \"status\"),\n            \"source_channel\": _attr_str(row, \"source_channel\"),\n            \"attribution_channel\": _attr_str(row, \"attribution_channel\"),\n        },",
+      "start_line": 69,
+      "end_line": 78,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/goodjob/customer_pool_projection.py",
+      "content": "Tenant ID validation only rejects empty strings, but whitespace-only values (e.g., '   ') pass through. This can break downstream tenant isolation assumptions. Use `.strip()` on the tenant_id and reject if the stripped result is empty, not just the original.",
+      "existing_code": "    tenant_id = _attr_str(row, \"tenant_id\").strip()\n    if not tenant_id:\n        raise ValueError(\"询盘缺 tenant_id，拒绝投影（多租户隔离红线）\")",
+      "start_line": 57,
+      "end_line": 59,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/goodjob/customer_pool_projection.py",
+      "content": "The idempotency key is truncated to 128 characters using simple slicing, which can cause collisions between different (inquiry_id, status, updated_at) combinations. This may lead to missed updates or duplicate suppression. Consider using a hash (e.g., base64-encoded SHA-256) instead of truncation to ensure uniqueness within the length constraint.",
+      "existing_code": "def projection_idempotency_key(row: Any) -\u003e str:\n    \"\"\"确定性幂等键：同询盘同状态同更新时间重放自动去重。\"\"\"\n    key = (\n        f\"gj-pool:{_attr_str(row, 'id')}:{_attr_str(row, 'status')}:\"\n        f\"{_attr_iso(row, 'updated_at') or _attr_iso(row, 'created_at')}\"\n    )\n    return key[:_KEY_MAX_LEN]",
+      "start_line": 83,
+      "end_line": 89,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/goodjob/customer_pool_projection.py",
+      "content": "The function docstring claims fail-safe behavior, but there's no try/except around `build_projection()` or `executor.submit()`. If either raises an exception, it will propagate to the caller and break the inquiry main flow, violating the documented contract. Add appropriate exception handling with logging to ensure silent failure on errors.",
+      "existing_code": "def sync_inquiry_to_pool(executor: GoodJobExecutor, row: Any) -\u003e str | None:\n    \"\"\"把询盘投影推送到 GoodJob 客户池；桥禁用时返回 None 静默跳过。\"\"\"\n    if not executor.enabled:\n        return None\n    projection = build_projection(row)\n    package = TaskPackage(\n        tenant_id=projection[\"tenant_id\"],\n        idempotency_key=projection_idempotency_key(row),\n        lease_ttl=_LEASE_TTL_SECONDS,\n        checkpoint=\"v1\",\n        budget={\"max_retries\": 2},\n    )\n    return executor.submit(\n        package, task_type=TASK_TYPE_CUSTOMER_POOL, payload=projection\n    )",
+      "start_line": 92,
+      "end_line": 106,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/goodjob/customer_pool_projection.py",
+      "content": "The idempotency key falls back to `created_at` when `updated_at` is None, but the module's design assumes `updated_at` is the authoritative change timestamp. This fallback changes key semantics and may cause unnecessary re-projections or missed deduplication. Since the code requires `updated_at` to be present for proper operation (as indicated by the type hints and design), consider failing loudly or handling this as a data integrity issue rather than silently falling back.",
+      "existing_code": "def projection_idempotency_key(row: Any) -\u003e str:\n    \"\"\"确定性幂等键：同询盘同状态同更新时间重放自动去重。\"\"\"\n    key = (\n        f\"gj-pool:{_attr_str(row, 'id')}:{_attr_str(row, 'status')}:\"\n        f\"{_attr_iso(row, 'updated_at') or _attr_iso(row, 'created_at')}\"\n    )\n    return key[:_KEY_MAX_LEN]",
+      "start_line": 83,
+      "end_line": 89,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "The module-level `_register_rate` dict is mutated without any lock or synchronization. In multi-worker (gunicorn) or threaded deployments, concurrent registration requests from the same IP will race on the read-modify-write sequence (lines 33-37), causing the rate limit to be ineffective — multiple registrations can slip through the check before either worker appends its timestamp. Fix: move rate-limit state into Redis or use a process-safe lock (e.g., `threading.Lock`) if single-process is guaranteed.",
+      "existing_code": "now = time.time()\n    _register_rate[ip] = [t for t in _register_rate[ip] if now - t \u003c _REGISTER_WINDOW]\n    if len(_register_rate[ip]) \u003e= _REGISTER_LIMIT:\n        raise HTTPException(429, \"注册过于频繁，请 1 小时后再试\")\n    _register_rate[ip].append(now)",
+      "start_line": 33,
+      "end_line": 37,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "The `update_current_tenant_settings` endpoint (line 285) accepts `body.settings` and merges it directly into the tenant's JSON settings blob via `existing.update(parsed)`. There is no schema validation on the contents of `parsed` — a malicious or erroneous client can write arbitrary keys into the settings dict, potentially overwriting critical fields like `brand`, `onboarding`, or `white_label`. The endpoint should validate that only known-permitted keys are merged, or at minimum deeply-validate the incoming structure before mutating the tenant record.",
+      "existing_code": "parsed = json.loads(body.settings) if isinstance(body.settings, str) else body.settings\n        existing = _safe_json_loads(tenant.settings)\n        existing.update(parsed)",
+      "start_line": 285,
+      "end_line": 287,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "In `_create_register_entities` (lines 1346-1347), the tenant domain is generated using Python string `.replace()` with raw regex patterns instead of `re.sub()`:\n\n    tenant_domain = body.company_name.lower().replace(r\"\\s+\", \"-\").replace(r\"[^a-z0-9-]\", \"\")\n\nThe `.replace()` calls treat the pattern strings as literal text, so `r\"\\s+\"` is replaced literally (not whitespace), and `r\"[^a-z0-9-]\"` is also a literal string. This means non-alphanumeric characters are never actually stripped — e.g., a company name like `My Company!` would produce `my-company!` instead of `my-company`. Fix: use `re.sub(r\"\\s+\", \"-\", ...)` and `re.sub(r\"[^a-z0-9-]\", \"\", ...)`. Additionally, this means duplicate domain collisions are possible since two companies with similar names could produce identical slugs.",
+      "existing_code": "tenant_domain = body.company_name.lower().replace(\n        r\"\\s+\", \"-\").replace(r\"[^a-z0-9-]\", \"\")[:50]",
+      "start_line": 1346,
+      "end_line": 1347,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "In `register_tenant` (lines 1528-1531), entities are created with `db.flush()` inside `_create_register_entities` but only committed after `_apply_register_extras` completes. If `_apply_register_extras` raises an exception (e.g., from `bind_guest_media_to_tenant`, `ReferralService.apply_referral`, or `provision_tenant_onboarding`), the partially-written rows (user, tenant, subscription, user_tenant) remain in the database as orphaned records because there is no rollback. Fix: wrap the entire creation sequence in a try/except with `db.rollback()` on failure, or use a transaction block.",
+      "existing_code": "now = datetime.now(timezone.utc)\n    user, tenant, trial_end = _create_register_entities(db, body, plan, now)\n    guest_bound, onboarding = _apply_register_extras(db, body, tenant, user, plan, trial_end, verification)\n    db.commit()",
+      "start_line": 1528,
+      "end_line": 1531,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "In `_run_register_autopilot` (lines 1439-1448), a bare `except Exception: pass` silently swallows any failure from `build_and_persist_product_profile`. This means if the product profile build fails (e.g., due to an API error, network issue, or model misconfiguration), the error is completely invisible — no log, no alert, no user-facing signal. The caller has no way to know the autopilot step failed. Fix: at minimum log the exception (`logging.exception`) or re-raise with context.",
+      "existing_code": "try:\n        build_and_persist_product_profile(\n            db,\n            tenant,\n            product_hint=product_for_autopilot,\n            location_hint=body.location_hint,\n            run_web_research=True,\n        )\n    except Exception:\n        pass",
+      "start_line": 1439,
+      "end_line": 1448,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "In `get_tenant_domains` (line 1066) and `add_tenant_domain` (line 1090), when the current user has no active `UserTenant` link (`ut` is None), the code falls back to `db.query(Tenant).first()` — returning the first tenant in the database regardless of which user is logged in. This is an authorization bypass: any authenticated user without an active tenant association can read or modify the domain list of an arbitrary tenant (the first one in DB order). Fix: return 403 when `ut` is None rather than falling back to an arbitrary tenant.",
+      "existing_code": "ut = db.query(UserTenant).filter(UserTenant.user_id == current_user.id, UserTenant.is_active.is_(True)).first()\n    tenant = db.query(Tenant).filter(Tenant.id == ut.tenant_id).first() if ut else db.query(Tenant).first()",
+      "start_line": 1065,
+      "end_line": 1066,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "The `/domains` GET endpoint (line 1078) and `/domains` POST endpoint (lines 1103-1106) mark all custom domains with hardcoded `verifyStatus: \"verified\"` and `sslStatus: \"active\"` without any actual verification. This misleads the frontend into treating unverified domains as fully operational, which could cause broken links or SSL errors for customers who haven't completed DNS/SSL setup. Fix: remove the false status indicators or set them to `pending`/`unverified` until actual verification is performed.",
+      "existing_code": "domain_list = [{\"id\": d, \"domain\": d, \"verifyStatus\": \"verified\", \"sslStatus\": \"active\"} for d in custom_domains]",
+      "start_line": 1078,
+      "end_line": 1078,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "In `_resolve_register_client_ip` (lines 1322-1325), the `x-forwarded-for` header is trusting the first entry without validation. While this is common practice, in environments where the proxy layer does not strip or validate XFF headers, a client can send `X-Forwarded-For: \u003cattacker-ip\u003e, \u003creal-ip\u003e` and the rate limiter will track the attacker's IP instead of the real client IP, allowing them to bypass the rate limit by rotating the first XFF entry. This is a minor concern since it requires proxy misconfiguration but worth noting.",
+      "existing_code": "fwd = request.headers.get(\"x-forwarded-for\")\n    if fwd:\n        client_ip = fwd.split(\",\")[0].strip()",
+      "start_line": 1323,
+      "end_line": 1325,
+      "category": "security",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "The async route `generate_tenant_site_content` (line 342) awaits `run_ai_site_builder_v1` which likely performs synchronous HTTP calls to AI services and/or database queries. If that function is a regular `def` (not `async def`), calling it with `await` will raise a `TypeError` because regular functions are not awaitable. If it is `async def` but contains blocking I/O (e.g., `requests.get`, synchronous SQLAlchemy queries), it will block the asyncio event loop, degrading concurrency for all other tenants. Confirm the signature of `run_ai_site_builder_v1` and whether it uses async-safe I/O throughout.",
+      "existing_code": "result = await run_ai_site_builder_v1(\n            db,\n            tenant_id=tenant_id or \"anonymous\",\n            product_name=product_name,\n            company_name=company_name,\n            auto_save=bool(body.auto_save and tenant),\n            use_ai=use_ai,\n            persist_fn=persist_tenant_site_content if tenant else None,\n            product_images=body.product_images or None,\n            skip_i18n_ai=bool(body.skip_i18n_ai),\n        )",
+      "start_line": 389,
+      "end_line": 399,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/tenants.py",
+      "content": "The `generate_tenant_site_content` route (line 388) and `onboarding_autopilot_run` route (line 725) perform CPU-intensive or long-running AI service calls inside an async handler. Even if those functions are properly async, they may still perform significant work that blocks the event loop. Consider offloading to a task queue (Celery, ARQ, or asyncio.to_thread) for operations that are not purely I/O-bound, to avoid starving other requests.",
+      "existing_code": "async def onboarding_autopilot_run(\n    body: OnboardingAutopilotRequest,\n    db: Session = Depends(get_db),\n    current_user: User = Depends(get_current_user),\n):",
+      "start_line": 708,
+      "end_line": 712,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/goodjob/trade_document_bridge.py",
+      "content": "The idempotency key truncation at 128 chars can cause collisions. Two different payloads with different tenant_id, inquiry_id, doc_type, or content hashes could produce identical keys if the differing segments fall after position 128 in the concatenated string. Consider using a hash prefix (e.g., first 8-16 chars of sha256) instead of raw string truncation to minimize collision risk.",
+      "suggestion_code": "    raw_key = f\"gj-doc:{tenant_id}:{inquiry_id}:{doc_type}:{_content_hash(items, options)}\"\n    # Use hash-based shortening instead of truncation to avoid collision\n    short_hash = hashlib.sha256(raw_key.encode('utf-8')).hexdigest()[:16]\n    return f\"gj-doc:{tenant_id}:{inquiry_id}:{doc_type}:{short_hash}\"",
+      "existing_code": "    return (\n        f\"gj-doc:{tenant_id}:{inquiry_id}:{doc_type}:{_content_hash(items, options)}\"\n    )[:_KEY_MAX_LEN]",
+      "start_line": 53,
+      "end_line": 55,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/goodjob/trade_document_bridge.py",
+      "content": "The step_number parameter is cast to int but not validated for non-positive values. A step_number of 0 or negative could represent an invalid lifecycle step. Consider adding validation such as: if step_number \u003c 1: raise ValueError(...)",
+      "suggestion_code": "    stage = str(stage or \"\").strip()\n    try:\n        step_number_int = int(step_number)\n    except (TypeError, ValueError):\n        raise ValueError(f\"Invalid step_number: {step_number!r}\")\n    if step_number_int \u003c 1:\n        raise ValueError(f\"step_number must be \u003e= 1, got {step_number_int}\")\n    sync_payload = {\n        \"order_id\": order_id,\n        \"stage\": stage,\n        \"step_number\": step_number_int,",
+      "existing_code": "    stage = str(stage or \"\").strip()\n    sync_payload = {\n        \"order_id\": order_id,\n        \"stage\": stage,\n        \"step_number\": int(step_number),",
+      "start_line": 128,
+      "end_line": 132,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/goodjob/trade_document_bridge.py",
+      "content": "int(step_number) can raise ValueError or TypeError if step_number is a non-numeric string. This exception is not caught and will propagate unhelpfully. Consider wrapping in a try/except with a clear error message.",
+      "suggestion_code": "        \"step_number\": step_number_int,",
+      "existing_code": "        \"step_number\": int(step_number),",
+      "start_line": 132,
+      "end_line": 132,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "The recursive `dfs` in `_validate_dag_topology` can hit Python's default recursion limit (typically 1000) on DAGs with deep chains approaching the MAX_DAG_NODES=100 boundary. A recursion error here would surface as an unhandled exception rather than a clean validation failure. Consider rewriting as an iterative DFS or increasing the recursion limit with a explicit guard.",
+      "existing_code": "    def dfs(u: str) -\u003e None:\n        visited[u] = 1\n        for v in graph_adj.get(u, []):\n            if visited.get(v) == 1:\n                raise ValueError(f\"DAG Governor: 检测到拓扑死循环环路: '{u}' -\u003e '{v}'\")\n            if visited.get(v) == 0:\n                dfs(v)\n        visited[u] = 2\n\n    for n in nodes:\n        if visited[n.id] == 0:\n            dfs(n.id)",
+      "start_line": 51,
+      "end_line": 62,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "When `on_fail=abort` triggers `compensate_plan`, only nodes with `compensation_action` in their input get status set to `cancelled`. Nodes that completed successfully *after* a skipped node (i.e., dependents of the skipped node) are left as `done` without their `compensation_action` being executed or status reset. This violates Saga rollback semantics — the plan is marked failed but downstream completed work is not compensated.",
+      "existing_code": "        # 2. If node was 'done' or 'executing', and has a compensation action, execute it.\n        if task.status in [\"done\", \"executing\"] and comp_action:",
+      "start_line": 428,
+      "end_line": 429,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "If any child task has a non-numeric `budget_used` value, the `float()` conversion raises `ValueError` which is caught by the broad `except Exception`, silently resetting `budget_used` to 0.0. This disables the budget gate for the entire plan and could allow unbounded spending. Additionally, the error is not logged, making diagnosis impossible.",
+      "existing_code": "    try:\n        budget_used = sum(float(t.budget_used or 0) for t in child_tasks)\n    except Exception:  # noqa: BLE001\n        budget_used = 0.0",
+      "start_line": 282,
+      "end_line": 285,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "After committing to release row locks, the function re-queries child tasks. Newly dispatched tasks from the current cycle may still be in `running` status, which would cause `all_terminal` to remain False and the plan stays in `executing` even though the current batch completed. While this may be intentional for streaming progress, it can also prevent the plan from being marked `done` in single-node DAGs if the Celery task hasn't updated status yet at requery time.",
+      "existing_code": "    # 6. 重新检查全计划是否全部完成\n    child_tasks = db.query(AiTask).filter(AiTask.parent_task_id == plan_task.id).all()\n    all_terminal = True\n    all_succeeded = True\n    for task in child_tasks:\n        if task.status not in (\"done\", \"skipped\", \"failed\", \"cancelled\"):\n            all_terminal = False\n            break\n        if task.status in (\"failed\", \"cancelled\"):\n            all_succeeded = False",
+      "start_line": 382,
+      "end_line": 391,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "Multiple locations use bare `except Exception` with only logging, which can hide real configuration or data errors. Specifically: line 138-144 (policies parsing), line 213-214 (budget_used sum), line 257-258 (Paperclip approval), line 282-283 (compensation), and line 324-325 (requery). The budget_used case is particularly concerning as it silently disables a security gate. Consider narrowing exception types and adding more specific error handling.",
+      "existing_code": "    try:\n        policies = (json.loads(plan_task.input_json or \"{}\") or {}).get(\"policies\") or {}\n    except Exception:  # noqa: BLE001 — 策略解析失败不阻断调度\n        policies = {}",
+      "start_line": 266,
+      "end_line": 269,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "In `_resolve_input_from`, when `src_data` is found via `node_tasks` but `json.loads` fails, an empty dict `{}` is used. This silently suppresses data integrity errors and could lead to incorrect input resolution without any warning. Consider logging a warning when JSON parsing fails for upstream node outputs.",
+      "existing_code": "        if src_data is None and src_node in node_tasks:\n            try:\n                src_data = json.loads(node_tasks[src_node].output_json or \"{}\")\n            except Exception:\n                src_data = {}",
+      "start_line": 135,
+      "end_line": 139,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/hermes/task_control_supervisor.py",
+      "content": "The `advance_plan` function has a check-check-act race condition: it reads `running_now` and then dispatches tasks, but between these operations another process could dispatch additional tasks. The comment about committing to release row locks (line 335) acknowledges this but doesn't fully prevent it. Consider using database-level constraints or distributed locks for the concurrency gate.",
+      "existing_code": "    running_now = sum(1 for t in child_tasks if t.status == \"running\")",
+      "start_line": 281,
+      "end_line": 281,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Logging raw_input without sanitization: Line 61 stores `raw_text` in the event's payload dict under \"raw_input\". If this IntentEvent is logged (e.g., in decompose or downstream services), sensitive user input could leak into log files or external monitoring systems. Consider whether raw_input should be included in persisted/logged event data.",
+      "existing_code": "event = IntentEvent(\n            # uuid 而非 hash()：保证跨进程稳定且唯一（原实现用 hash 是 bug）\n            event_id=f\"evt_{uuid.uuid4().hex[:12]}\",\n            tenant_id=str(tenant_id),\n            channel=channel or \"web\",\n            intent=(intent or text),\n            payload={**(payload or {}), \"raw_input\": text},\n            context=context or {},\n        )",
+      "start_line": 55,
+      "end_line": 63,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Double payload.get('context') call: Lines 113 and 115 call payload.get() twice for the same key, which is inefficient. While minor, this pattern reduces readability and could cause confusion if the dict changes between calls in a non-deterministic context.",
+      "existing_code": "context=payload.get(\"context\") if isinstance(payload.get(\"context\"), dict) else None,\n        intent=str(intent) if intent else None,\n        payload=payload.get(\"payload\") if isinstance(payload.get(\"payload\"), dict) else None,",
+      "start_line": 113,
+      "end_line": 115,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "verify_wechat_signature reads settings.FEISHU_VERIFICATION_TOKEN instead of a WeChat-specific signature token. This means the function will either always return False (wrong token) or use the wrong credential entirely. For Feishu events, a separate function should use FEISHU_VERIFICATION_TOKEN. For WeChat, the wechat signature uses a different algorithm (simple sort-and-sha1) but still requires a WeChat-configured token, not Feishu's.",
+      "existing_code": "def verify_wechat_signature(signature: str, timestamp: str, nonce: str) -\u003e bool:\n    \"\"\"验证微信服务器推送的签名（用于事件回调）。\"\"\"\n    token = settings.FEISHU_VERIFICATION_TOKEN.strip()\n    if not token:\n        return False\n\n    parts = sorted([token, timestamp, nonce])\n    expected = hashlib.sha1(\"\".join(parts).encode(\"utf-8\")).hexdigest()\n    return signature == expected",
+      "start_line": 667,
+      "end_line": 675,
+      "category": "security",
+      "severity": "critical"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "The QQ OAuth token exchange uses a GET request with client_secret as a query parameter. Per OAuth 2.0 best practices and the QQ OpenAPI documentation, the token endpoint should receive credentials via POST with the body, not GET with query params. GET leaks the client_secret in server access logs, browser history, and Referer headers. Consider changing to client.post() with form data.",
+      "existing_code": "        tr = client.get(\n            \"https://graph.qq.com/oauth2.0/token\",\n            params={\n                \"grant_type\": \"authorization_code\",\n                \"client_id\": app_id,\n                \"client_secret\": key,\n                \"code\": code,\n                \"redirect_uri\": _redirect_uri(),\n                \"fmt\": \"json\",\n            },\n        )",
+      "start_line": 400,
+      "end_line": 410,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Dev mode authorize URL encodes provider and code directly in query parameters without any signature or encryption. While low-risk in development, this allows trivial state forgery and code replay. If this pattern is ever replicated in production code, it would be a serious vulnerability. Consider at least signing the state parameter even in dev mode to establish the correct pattern.",
+      "existing_code": "def _dev_authorize_url(provider: str, state: str) -\u003e str:\n    q = urllib.parse.urlencode(\n        {\n            \"provider\": provider,\n            \"code\": f\"dev:{provider}\",\n            \"state\": state,\n        }\n    )\n    return f\"{_redirect_uri()}?{q}\"",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "WeChat provider ID generation prioritizes unionid over openid, but if unionid is unavailable in subsequent logins (e.g., due to scope changes), the same user will get a different provider_id (wechat_\u003copenid\u003e vs wechat_\u003cunionid\u003e). This can cause duplicate account creation. The provider ID should be deterministic for the same user regardless of which identifier is available.",
+      "existing_code": "    # 优先使用 unionid（多应用统一标识），其次 openid\n    pid = unionid or openid\n    return f\"wechat_{pid}\", nickname",
+      "start_line": 578,
+      "end_line": 580,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "_parse_qq_response's fallback for non-JSON responses blindly splits on '\u0026' and assumes all '=' containing text is query-style. If the response is a malformed JSON string containing '=' characters (e.g., a base64-encoded value), this could produce incorrect results. Additionally, the fallback doesn't validate that the parsed result is a dict with expected keys before returning it.",
+      "existing_code": "        if \"=\" in text and not text.startswith(\"{\"):\n            result = {}\n            for part in text.split(\"\u0026\"):\n                if \"=\" in part:\n                    k, v = part.split(\"=\", 1)\n                    result[k.strip()] = urllib.parse.unquote(v.strip())\n            if result:\n                return result",
+      "start_line": 473,
+      "end_line": 480,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "The comment references lines 393-402 but verify_wechat_signature is actually around line 387-396. The actual issue is correct - using FEISHU_VERIFICATION_TOKEN for WeChat signature verification. This is a critical bug that causes the function to always fail or verify with the wrong credential.",
+      "existing_code": "def verify_wechat_signature(signature: str, timestamp: str, nonce: str) -\u003e bool:\n    token = settings.FEISHU_VERIFICATION_TOKEN.strip()",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "security",
+      "severity": "critical"
+    }
+  ],
+  "warnings": [
+    {
+      "file": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "message": "stopped in batch #0: used 480799 tokens + next-file estimate exceeds budget 500000",
+      "type": "token_budget_reached"
+    },
+    {
+      "file": "backend/app/services/oauth_login.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/services/hermes/harness_gateway.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1.  **Payment Webhook Security \u0026 Integrity Failures** (`backend/app/api/v1/routes/payment.py`)\n    *   The Stripe webhook handler accepts `checkout.session.completed` events without verifying the actual `payment_status`, allowing potential spoofing.\n    *   A broad `try/except Exception` swallows signature verification failures and metadata errors, returning 500s that trigger aggressive Stripe retries instead of appropriate 403/400 responses.\n    *   Balance payment logic lacks compensation guarantees: if provisioning fails after wallet debit, the refund path itself may fail, leaving the wallet debited without service provisioned.\n\n2.  **Authentication Bypass \u0026 Token Revocation Failure** (`backend/app/core/admin_auth.py`, `backend/app/api/v1/routes/auth.py`)\n    *   `jwt.decode` is called with `verify_exp=False`, meaning revoked/expired tokens bypass blacklist checks indefinitely if leaked.\n    *   Dev auto-bind logic allows any `dev_`-prefixed OAuth identity to bind to admin accounts without password/2FA; leakage of this flag into production is a critical risk.\n    *   Bare `except` blocks in `_get_token_jti` and auth routes swallow `JWTDecodeError` and other authentication errors, making it impossible to distinguish between valid tokens without JTI and malformed tokens.\n\n3.  **Tenant Data Integrity \u0026 Validation Gaps** (`backend/app/api/v1/routes/tenants.py`)\n    *   Domain verification is faked: GET/POST endpoints hardcode `verifyStatus: \"verified\"` and `sslStatus: \"active\"` without actual DNS/SSL checks, misleading the frontend.\n    *   Tenant settings updates accept arbitrary JSON without schema validation, allowing clients to inject malicious or corrupt configuration blobs.\n    *   IP resolution trusts the first entry in `X-Forwarded-For` without validation, vulnerable to header injection in non-trusted proxy environments.\n    *   Fallback query when no active `UserTenant` link exists returns the first tenant in the DB (`db.query(Tenant).first()`), breaking multi-tenant isolation.\n\n4.  **Hermes Task Supervisor Concurrency \u0026 State Bugs** (`backend/app/services/hermes/task_control_supervisor.py`)\n    *   Recursive DAG validation (`dfs`) can hit Python’s recursion limit on deep graphs, causing unhandled crashes instead of clean validation failures.\n    *   Compensation logic leaves dependent nodes (completed after a skipped node) in `done` status without triggering their `compensation_action`, resulting in inconsistent system state.\n    *   Broad `except Exception` blocks silently reset `budget_used` to 0.0 on parse errors, disabling budget gates and allowing unbounded spending.\n    *   Race condition in `advance_plan`: between reading `running_now` and dispatching tasks, another process may dispatch additional tasks, violating batch isolation.\n\n5.  **TradeAI Adapter Global State \u0026 Isolation Risks** (`backend/app/services/adapters/tradeai/__init__.py`)\n    *   Module-level mutable global `_tenant_orchestrators` is accessed without thread synchronization, causing race conditions in multi-threaded worker environments.\n    *   Import-time execution (`_loaded = _load_vendor_isolated()`) creates a race condition if the module is imported concurrently by multiple workers.\n    *   `SECRET_KEY` fallback logic is broken: if `SECRET_KEY` is already set in the parent environment, the dedicated `TRADEAI_SECRET_KEY` is ignored, potentially weakening isolation.\n    *   Bare `except Exception` in `_load_vendor_isolated` masks errors during module restore in the `finally` block, potentially leaving the application in a partially corrupted state.\n\n6.  **Auth Route Race Conditions \u0026 Undefined Variables** (`backend/app/api/v1/routes/auth.py`)\n    *   Undefined variable `count` in the rate-limit fallback path causes an `UnboundLocalError` whenever Redis is unavailable, breaking authentication entirely during outages.\n    *   In-memory email code storage (`_email_code_store`, `_email_code_ttl_store`) uses mutable globals without thread safety, leading to data corruption under concurrent requests.\n    *   Check-then-act race condition in email verification: concurrent requests with the same valid code can bypass the `used=True` check, allowing multiple logins.\n\n7.  **PII Leakage in Job Projections** (`backend/app/services/goodjob/customer_pool_projection.py`)\n    *   Projection payloads contain raw PII (email, phone, name) without masking, which will be stored in task queues and potentially logged by worker infrastructure, violating data protection requirements.\n\n8.  **OAuth Implementation Flaws** (`backend/app/services/oauth_login.py`)\n    *   `verify_wechat_signature` incorrectly reads `FEISHU_VERIFICATION_TOKEN` instead of a WeChat-specific token, causing signature verification to always fail or use wrong credentials.\n    *   QQ OAuth token exchange uses GET with `client_secret` in query parameters, leaking secrets in server logs and browser history; should use POST with body credentials.\n    *   WeChat provider ID generation prioritizes `unionid` over `openid`; if `unionid` becomes unavailable, the same user gets a different provider ID, causing duplicate accounts.\n\n---\n\n### Module Hotspots\n\n*   **`backend/app/api/v1/routes/payment.py`**: High severity issues集中在 webhook security, idempotency, and error handling. 9 distinct comments covering security, concurrency, and correctness.\n*   **`backend/app/core/admin_auth.py`**: Critical security flaws in JWT verification and token revocation. 6 comments highlighting authentication bypass risks.\n*   **`backend/app/services/adapters/tradeai/__init__.py`**: Concurrency and isolation vulnerabilities in a core adapter module. 7 comments focusing on thread safety and error handling.\n*   **`backend/app/api/v1/routes/auth.py`**: Race conditions and undefined variables in authentication flows. 6 comments highlighting availability and correctness issues.\n*   **`backend/app/api/v1/routes/tenants.py`**: Data integrity and validation gaps in tenant management. 7 comments covering security, validation, and multi-tenant isolation.\n*   **`backend/app/services/hermes/task_control_supervisor.py`**: Concurrency bugs and state management issues in task orchestration. 7 comments focusing on race conditions and error swallowing.\n\n---\n\n### Cross-Cutting Concerns\n\n*   **Bare `except Exception` Swallowing Critical Errors**\n    *   Patterns found in: `payment.py`, `admin_auth.py`, `tradeai/__init__.py`, `auth.py`, `tenants.py`, `task_control_supervisor.py`\n    *   Consistently masks configuration errors, data integrity issues, and security failures, making debugging difficult and hiding real problems.\n\n*   **Missing Thread Synchronization for Shared State**\n    *   Affected: `tradeai/__init__.py` (_tenant_orchestrators), `auth.py` (_email_code_store), `tenants.py` (_register_rate), `admin_auth.py` (Redis cache)\n    *   Multiple modules use mutable globals or check-then-act patterns without locks, leading to race conditions in multi-worker deployments.\n\n*   **Inconsistent Error Handling \u0026 Response Codes**\n    *   Affected: `payment.py`, `auth.py`, `task_control_supervisor.py`\n    *   Signature failures return 500 instead of 403; validation errors are swallowed; API response models are inconsistently declared, breaking OpenAPI schemas.\n\n*   **Insufficient Input Validation**\n    *   Affected: `tenants.py` (tenant settings, XFF headers), `customer_pool_projection.py` (tenant_id whitespace), `trade_document_bridge.py` (step_number)\n    *   Missing schema validation, trust of proxied headers without verification, and lack of boundary checks on numeric inputs.\n\n*   **Idempotency Key Collisions**\n    *   Affected: `customer_pool_projection.py`, `trade_document_bridge.py`\n    *   Both modules truncate idempotency keys to 128 characters using simple slicing, risking collisions between distinct payloads.\n\n---\n\n### Quick Wins\n\n1.  **Fix `verify_wechat_signature` token mismatch** (`backend/app/services/oauth_login.py`): Change to use WeChat-specific verification token instead of `FEISHU_VERIFICATION_TOKEN`.\n2.  **Define `count` in auth rate-limit fallback** (`backend/app/api/v1/routes/auth.py`): Ensure `count` is initialized before the fallback path to prevent `UnboundLocalError` when Redis is unavailable.\n3.  **Add thread lock to `_register_rate`** (`backend/app/api/v1/routes/tenants.py`): Wrap the read-modify-write sequence in a lock to prevent race conditions during concurrent registrations.\n4.  **Validate `step_number` in trade document bridge** (`backend/app/services/goodjob/trade_document_bridge.py`): Add check for `step_number \u003c 1` and raise `ValueError` with clear message.\n5.  **Sanitize raw input in harness gateway** (`backend/app/services/hermes/harness_gateway.py`): Replace `raw_text` in event payload with sanitized/redacted version to prevent PII leakage in logs.\n6.  **Standardize Stripe webhook error handling** (`backend/app/api/v1/routes/payment.py`): Return 403 for signature failures, 400 for missing metadata, and only 500 for unexpected internal errors to stop aggressive retry loops.\n7.  **Add tenant_id whitespace stripping** (`backend/app/services/goodjob/customer_pool_projection.py`): Apply `.strip()` to tenant_id and reject if empty after stripping to prevent isolation bypasses.\n8.  **Fix OAuth token exchange method** (`backend/app/services/oauth_login.py`): Change QQ token exchange from GET with query params to POST with credentials in request body.",
+  "session_id": "9aa6c376-19f4-440b-8f4b-d7207f944361"
+}

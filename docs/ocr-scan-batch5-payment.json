@@ -1,0 +1,146 @@
+{
+  "status": "success",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 2,
+    "comments": 13,
+    "total_tokens": 84731,
+    "input_tokens": 78721,
+    "output_tokens": 6010,
+    "cache_read_tokens": 52480,
+    "elapsed": "4m34s"
+  },
+  "tool_calls": {
+    "total": 2,
+    "by_tool": {
+      "code_comment": 2
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/services/payment_service.py",
+      "content": "Bug: `_schedule_compensation` references an undefined variable `data` at line 360, which will raise a `NameError` whenever compensation scheduling is attempted, causing the exception handler to fail. Additionally, `sync_b2b_from_payment_notify(self.db, data or {})` at the end of the method is dead/unreachable code because the method either returns after the try/except block or raises an exception before reaching it. The call should either be moved inside the `try` block alongside provisioning calls (if intended) or removed entirely.",
+      "existing_code": "        except Exception as exc:\n            logger.error(\n                \"WeChat provision failed, scheduled compensation | order_no=%s err=%s\",\n                order_no,\n                exc_info=True,\n            )\n            self._schedule_compensation(order, source=\"wechat_notify\")\n        return order\n\n    # ------------------------------------------------------------------\n    # 处理支付宝回调\n    # ------------------------------------------------------------------\n    def process_alipay_notify(self, data: dict) -\u003e Optional[PaymentOrder]:",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/payment_service.py",
+      "content": "Security: Weak webhook signature verification. The HMAC-SHA256 payload format `f\"{order_no}:{amount}\"` uses a colon separator that could be ambiguous if field values contain colons (e.g., order_no = 'A:B' vs 'A:B:100'). This could allow signature confusion attacks. Additionally, there's no timestamp or nonce to prevent replay attacks. The `PAYMENT_WEBHOOK_SECRET` fallback for non-strict mode also allows unverified callbacks in non-production environments without clear security boundaries.",
+      "existing_code": "        payload = f\"{order_no}:{amount}\"\n        expected = hmac.new(\n            secret.encode(\"utf-8\"),\n            payload.encode(\"utf-8\"),\n            hashlib.sha256,\n        ).hexdigest()",
+      "start_line": 154,
+      "end_line": 159,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/payment_service.py",
+      "content": "Race condition: `process_wechat_notify` and `process_alipay_notify` perform check-then-act without database locking. Concurrent webhook deliveries (common with payment gateways retrying failed notifications) could cause duplicate provisioning, revenue recording, and subscription updates. Consider using SELECT FOR UPDATE or a unique constraint on order_no with idempotency checks at the database level.",
+      "existing_code": "        order = self.db.query(PaymentOrder).filter(\n            PaymentOrder.order_no == order_no\n        ).first()\n        if not order or order.status != \"pending\":\n            return None\n\n        order.status = \"paid\"",
+      "start_line": 587,
+      "end_line": 593,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/payment_service.py",
+      "content": "Inconsistent error handling: The Alipay notify handler logs an amount mismatch but returns None (line ~508), silently dropping the notification. This prevents the payment gateway from retrying and may cause the order to remain pending indefinitely. Consider returning success to the gateway and handling the mismatch asynchronously, or at minimum logging at ERROR level and continuing to provision.",
+      "existing_code": "                if paid_cents != int(order.amount):\n                    logger.warning(\n                        \"alipay amount mismatch order=%s expected=%s got=%s\",\n                        order_no,\n                        order.amount,\n                        paid_cents,\n                    )\n                    return None",
+      "start_line": 636,
+      "end_line": 643,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/payment_service.py",
+      "content": "Potential inconsistency in subscription handling: `create_native_payment` creates or updates a subscription record before creating the payment order. If the payment order creation fails (e.g., database error), the subscription is already in an inconsistent state. The rollback in the except block should handle this, but the logic assumes atomicity that may not hold across all database backends.",
+      "existing_code": "        # 3. 创建或更新订阅记录\n        subscription = self.db.query(TenantSubscription).filter(\n            TenantSubscription.tenant_id == tenant_id,\n            TenantSubscription.plan_id == plan_id,\n            TenantSubscription.status == \"active\",\n        ).first()\n        if not subscription:\n            subscription = TenantSubscription(...)\n            self.db.add(subscription)\n            self.db.flush()\n        else:\n            subscription.billing_cycle = billing_cycle\n            subscription.amount = amount\n            self.db.flush()\n\n        # 4. 创建支付订单",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/payment_service.py",
+      "content": "Unnecessary re-imports: `hashlib`, `hmac`, and `os` are imported at the module level but also imported again inside methods (e.g., `verify_notify`). This is redundant and misleading, suggesting these are local or conditional imports. Remove the redundant inline imports and rely on the top-level declarations.",
+      "existing_code": "import hashlib\nimport json\nimport logging\nimport time\nimport uuid\nfrom datetime import datetime, timezone\nfrom typing import Optional\n\nimport requests\nfrom sqlalchemy.orm import Session",
+      "start_line": 5,
+      "end_line": 14,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "TOCTOU race: `_mark_paid_and_provision` uses `SELECT-UPDATE` then proceeds to async provisioning. Under concurrent webhook delivery (channel retries), two requests can both read `status=pending`, pass the `updated == 0` guard, and proceed to provision — causing duplicate benefit issuance. The rollback-to-pending path only protects the sender of the second request, but the first request may have already provisioned. Recommend using a DB-level atomic update with a returning/affected-row check plus a distributed lock or idempotency key, and rejecting the second webhook with a definitive \"already processed\" status rather than retryable failure.",
+      "existing_code": "        updated = (\n            self.db.query(PaymentOrder)\n            .filter(PaymentOrder.order_no == order_no, PaymentOrder.status == \"pending\")\n            .update({PaymentOrder.status: \"paid\", PaymentOrder.paid_at: datetime.now(timezone.utc)})\n        )\n        self.db.commit()\n        if updated == 0:\n            return None\n        order = self.db.query(PaymentOrder).filter(\n            PaymentOrder.order_no == order_no\n        ).first()",
+      "start_line": 431,
+      "end_line": 441,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "Inconsistent error handling across native payment flows: each factory (`create_native_payment`, `create_egress_addon_native`, `create_token_pack_native`) calls `self.db.rollback()` manually in production error branches. If the caller's outer transaction also expects to commit, the manual rollback can leave the session in an inconsistent state. Consider either wrapping all DB mutations in a single transaction scope or documenting that callers must not hold an outer transaction while invoking these methods. Also, the non-production mock fallback path calls `self.db.commit()` after potentially having already flushed subscription changes — if the channel call fails later, partial DB state can remain.",
+      "existing_code": "        except Exception as exc:\n            if settings.ENVIRONMENT == \"production\":\n                self.db.rollback()\n                raise RuntimeError(\n                    f\"{pay_channel} 支付下单失败（生产环境不降级 mock）：{exc}\"\n                ) from exc\n            logger.warning(\"%s 支付 API 调用失败，降级为 mock 模式: %s\", pay_channel, exc)",
+      "start_line": 313,
+      "end_line": 319,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "Missing `raise` after `self.db.commit()` in `_mark_paid_and_provision`'s exception handler can mask errors if a subsequent call implicitly depends on an exception being raised. More critically, if `self.db.rollback()` fails (e.g. due to a stale connection), the exception would be lost and the method could return `order` inconsistently. Add an explicit `raise` after rollback/revert logging to preserve error visibility.",
+      "existing_code": "            self.db.rollback()\n            logger.exception(\n                \"[BUG-02 fix] 发放权益失败，订单回滚 pending 等待渠道重试: order=%s\",\n                order_no,\n            )\n            reverted = (",
+      "start_line": 448,
+      "end_line": 453,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "Secret exposure risk: `PAYMENT_WEBHOOK_SECRET` is used to compute an HMAC digest. Ensure this value is never logged, returned in responses, or included in stack traces. Confirm that `verify_notify` is only called from trusted webhook endpoints and that the signature comparison path does not inadvertently log `sig` or `secret`. Consider rotating the secret on a regular schedule and storing it in a secrets manager rather than a plain env var.",
+      "existing_code": "        secret = (os.getenv(\"PAYMENT_WEBHOOK_SECRET\") or \"\").strip()\n        sig = (signature or \"\").strip()",
+      "start_line": 145,
+      "end_line": 146,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "Amount parsing edge case in `_verify_notify_amount_guard`: when `paid_raw` is a dict (e.g. nested amount object), it falls back to `order.amount`. However, `int(round(float(paid_raw) * 100))` can produce incorrect results for string values containing commas, whitespace, or non-numeric characters. Add validation or try/except around the float conversion, and prefer explicit numeric fields from the payload over implicit coercion.",
+      "existing_code": "        try:\n            paid = int(round(float(paid_raw) * 100)) if isinstance(paid_raw, str) and \".\" in str(paid_raw) else int(paid_raw)\n        except (TypeError, ValueError):\n            paid = int(order.amount or 0)",
+      "start_line": 134,
+      "end_line": 137,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "Silent failure in `_record_revenue`: while the method re-raises after rollback, the broad `except Exception` may mask transaction state issues (e.g., `PendingRollbackError`). If the revenue entry is partially written before the exception, the rollback leaves the session in a dirty state. Consider using a separate transaction or explicit savepoint to isolate revenue ledgering from the main payment flow, ensuring idempotency checks are not bypassed by a failed rollback.",
+      "existing_code": "        except Exception:\n            # BUG-09 修复：财务台账写入失败时回滚并重新抛出，不静默吞异常\n            self.db.rollback()\n            logger.exception(\"FinanceLedgerEntry 写入失败 order=%s\", order.order_no)\n            raise",
+      "start_line": 368,
+      "end_line": 372,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/payment_pkg/payment_service_impl.py",
+      "content": "Inconsistent channel validation: some methods check `pay_channel not in (\"wechat\", \"alipay\")` while others default to `\"wechat\"` without validation. Ensure all entry points enforce the same whitelist to prevent injection of unsupported channel strings into downstream methods.",
+      "existing_code": "        ch = (channel or \"wechat\").lower()",
+      "start_line": 101,
+      "end_line": 101,
+      "category": "maintainability",
+      "severity": "low"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1.  **Duplicate Subscriptions and Revenue via TOCTOU Races**\n    *Root Cause*: Both `process_wechat_notify`/`process_alipay_notify` and `_mark_paid_and_provision` perform check-then-act operations without database locks.\n    *Impact*: Concurrent webhook retries from payment gateways can pass the `status=pending` guard multiple times, leading to duplicate benefit provisioning, double revenue recording, and corrupted subscription states.\n    *Paths*: `backend/app/services/payment_service.py`, `backend/app/services/payment_pkg/payment_service_impl.py`\n\n2.  **Webhook Signature Confusion Attack**\n    *Root Cause*: HMAC-SHA256 payload format uses a colon separator (`f\"{order_no}:{amount}\"`).\n    *Impact*: If `order_no` contains a colon (e.g., `A:B`), an attacker could craft a payload where the intended amount shifts into the order_no field, potentially bypassing signature verification or altering the interpreted amount.\n    *Path*: `backend/app/services/payment_service.py`\n\n3.  **Indefinite Order Pending State (Silent Failure)**\n    *Root Cause*: The Alipay notify handler logs an amount mismatch but returns `None` instead of success or an explicit error code.\n    *Impact*: The payment gateway interprets the lack of success response as a failure and may not retry appropriately, or the order remains stuck in a `pending` state indefinitely because the system neither acknowledges nor explicitly rejects the notification.\n    *Path*: `backend/app/services/payment_service.py`\n\n4.  **Cascading Failure in Compensation Scheduling**\n    *Root Cause*: `_schedule_compensation` references an undefined variable `data`.\n    *Impact*: Any attempt to schedule compensation raises a `NameError`, which is caught by an exception handler that likely fails due to the same missing context, resulting in silent loss of compensation logic and potential data inconsistency.\n    *Path*: `backend/app/services/payment_service.py`\n\n5.  **Subscription-Order Transactional Inconsistency**\n    *Root Cause*: `create_native_payment` creates/updates a subscription record *before* creating the payment order.\n    *Impact*: If the payment order creation fails (e.g., DB error), the subscription is left in an inconsistent state (created but no payment order exists), requiring complex manual rollback logic that may not cover all edge cases.\n    *Path*: `backend/app/services/payment_service.py`\n\n### Module Hotspots\n\n*   **`backend/app/services/payment_pkg/payment_service_impl.py`**: High density of critical issues including race conditions, manual transaction management errors, and input validation gaps.\n*   **`backend/app/services/payment_service.py`**: Central hub for security vulnerabilities (webhook verification) and critical bugs (undefined variables, silent failures).\n\n### Cross-Cutting Concerns\n\n*   **Inconsistent Error Handling in Payment Flows**:\n    Multiple methods (`create_native_payment`, `create_egress_addon_native`, `create_token_pack_native`) manually call `self.db.rollback()` in error branches. If the caller’s outer transaction expects to commit, this creates conflicting transaction states. Additionally, broad `except Exception` blocks (e.g., in `_record_revenue`) may mask `PendingRollbackError` or other session-level issues.\n    *Paths*: `backend/app/services/payment_pkg/payment_service_impl.py`\n\n*   **Lack of Atomicity in Critical Operations**:\n    Both the old (`payment_service.py`) and new (`payment_pkg/payment_service_impl.py`) implementations fail to use database-level locking or atomic updates for state transitions (pending -\u003e paid), making them vulnerable to race conditions under concurrent webhook delivery.\n    *Paths*: `backend/app/services/payment_service.py`, `backend/app/services/payment_pkg/payment_service_impl.py`\n\n*   **Inconsistent Input/Channel Validation**:\n    Some methods enforce a whitelist for `pay_channel` (`wechat`, `alipay`), while others default silently to `\"wechat\"` without validation, creating injection vectors or unexpected behavior.\n    *Paths*: `backend/app/services/payment_pkg/payment_service_impl.py`\n\n*   **Secret Exposure Risk**:\n    The `PAYMENT_WEBHOOK_SECRET` is used in HMAC computation. There are concerns about it being logged or included in stack traces, especially given the inconsistent error handling that might expose internal state.\n    *Path*: `backend/app/services/payment_pkg/payment_service_impl.py`\n\n### Quick Wins\n\n1.  **Remove Redundant Imports**: Eliminate inline imports of `hashlib`, `hmac`, and `os` in `verify_notify` and other methods, as they are already imported at the module level. This improves code clarity.\n    *Path*: `backend/app/services/payment_service.py`\n\n2.  **Fix Alipay Handler Return Value**: Change the Alipay notify handler to return a success response (as per Alipay docs) even on amount mismatch, or explicitly return an error code that triggers gateway retry, rather than returning `None` which leaves orders pending.\n    *Path*: `backend/app/services/payment_service.py`\n\n3.  **Repair Undefined Variable**: Define or pass the `data` variable correctly in `_schedule_compensation` to prevent `NameError`.\n    *Path*: `backend/app/services/payment_service.py`\n\n4.  **Standardize Channel Validation**: Enforce a consistent whitelist check for `pay_channel` at all entry points, removing silent defaults.\n    *Path*: `backend/app/services/payment_pkg/payment_service_impl.py`\n\n5.  **Secure Webhook Signature Format**: Replace the colon-separated HMAC payload with a more robust format (e.g., JSON serialization or length-prefixed fields) to prevent signature confusion attacks.\n    *Path*: `backend/app/services/payment_service.py`",
+  "session_id": "d7b9bb0d-9ac4-4745-9618-d99793a018b9"
+}

@@ -1,0 +1,129 @@
+{
+  "status": "success",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 1,
+    "comments": 10,
+    "total_tokens": 170400,
+    "input_tokens": 166167,
+    "output_tokens": 4233,
+    "cache_read_tokens": 92672,
+    "elapsed": "2m11s"
+  },
+  "tool_calls": {
+    "total": 10,
+    "by_tool": {
+      "code_comment": 1,
+      "file_read": 9
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "CRITICAL: Duplicate route definition for `/ops/reconcile`. Lines 1218-1233 and 1286-1294 both define the same GET endpoint. FastAPI will register the second one, making the first one unreachable. This creates inconsistent behavior: the first version uses read-session fallback logic, while the second directly calls billing_reconcile without fallback.",
+      "suggestion_code": "# Remove the duplicate at line 1286-1294 and keep only one version. The first version with read-session fallback is preferred.",
+      "existing_code": "@router.get(\"/ops/reconcile\")\ndef acquisition_billing_reconcile(\n    tenant_id: str = \"demo\",\n    window_hours: int = 24,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db),\n):\n    \"\"\"E-5 meter vs ledger 对账（只读）。优先只读会话。\"\"\"\n    session = _resolve_db(db)\n    if session is None:\n        try:\n            with get_read_session() as rs:\n                return billing_reconcile(rs, tenant_id=tenant_id, window_hours=window_hours)\n        except Exception:\n            pass\n    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)",
+      "start_line": 1218,
+      "end_line": 1233,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "DUPLICATE IMPORT: `get_read_session` is imported twice (lines 51 and 61). Also `claim_inquiry` is imported twice (lines 46 and 60 as `_claim_fn`). This is redundant and confusing.",
+      "suggestion_code": "from app.core.db_sessions import db_topology, get_read_session\nfrom app.services.acquisition.quote_guard import leadtime_gate, quote_validity_view\nfrom app.services.acquisition.suppression_list import suppression_store\nfrom app.services.acquisition.payment_risk import payment_risk_gate\nfrom app.services.acquisition.knowledge_queue import knowledge_queue_store\nfrom app.services.acquisition.risk_rescan import risk_rescan_store\nfrom app.services.acquisition.ops_observability import acq_rate_limiter, billing_reconcile\nfrom app.services.acquisition.queue_monitor import queue_monitor_report\nfrom app.services.acquisition.baseline_bench import run_dispatch_baseline, run_claim_collision_baseline\nfrom app.services.acquisition.sales_collision import claim_inquiry as _claim_fn",
+      "existing_code": "from app.core.db_sessions import get_read_session\nfrom app.services.acquisition.quote_guard import leadtime_gate, quote_validity_view\nfrom app.services.acquisition.suppression_list import suppression_store\nfrom app.services.acquisition.payment_risk import payment_risk_gate\nfrom app.services.acquisition.knowledge_queue import knowledge_queue_store\nfrom app.services.acquisition.risk_rescan import risk_rescan_store\nfrom app.services.acquisition.ops_observability import acq_rate_limiter, billing_reconcile\nfrom app.services.acquisition.queue_monitor import queue_monitor_report\nfrom app.services.acquisition.baseline_bench import run_dispatch_baseline, run_claim_collision_baseline\nfrom app.services.acquisition.sales_collision import claim_inquiry as _claim_fn\nfrom app.core.db_sessions import db_topology, get_read_session",
+      "start_line": 51,
+      "end_line": 61,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "UNUSED VARIABLE: `last` is assigned in the loop but the loop result overwrites it each iteration. The variable serves no purpose since only the final value matters.",
+      "suggestion_code": "for _ in range(max(1, min(20, int(body.times)))):\n        verdict = acq_rate_limiter.check(tenant_id=body.tenant_id, action=body.action)\n    return verdict or {\"allowed\": True, \"code\": \"ok\"}",
+      "existing_code": "last = None\n    for _ in range(max(1, min(20, int(body.times)))):\n        last = acq_rate_limiter.check(tenant_id=body.tenant_id, action=body.action)\n    return last or {\"allowed\": True, \"code\": \"ok\"}",
+      "start_line": 1274,
+      "end_line": 1277,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "DEAD CODE: Lines 1182-1184 contain a condition check that does nothing (just `pass`). The comment says '同步跟单卡备注' but no code follows. This is unreachable logic.",
+      "suggestion_code": "out = tender_engine.advance(body.tender_id, body.to_stage, note=body.note)\n    return out",
+      "existing_code": "out = tender_engine.advance(body.tender_id, body.to_stage, note=body.note)\n    # 同步跟单卡备注\n    if out.get(\"ok\") and body.inquiry_id if hasattr(body, \"inquiry_id\") else False:\n        pass\n    return out",
+      "start_line": 1181,
+      "end_line": 1185,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "MISSING TENANT ISOLATION: Multiple endpoints accept `tenant_id` from request body or query params without validating it belongs to the current user. For example, `/reply-ingest`, `/dispatch`, `/buyers/upsert`, `/suppression/add` all trust user-supplied tenant_id. An authenticated user could potentially access or modify another tenant's data.",
+      "suggestion_code": "# Add tenant validation:\n# if current_user.tenant_id != body.tenant_id:\n#     raise HTTPException(status_code=403, detail=\"tenant_mismatch\")\n# Or derive tenant_id from current_user instead of trusting request body",
+      "existing_code": "@router.post(\"/reply-ingest\")\ndef reply_ingest(\n    body: ReplyIngestRequest,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db),\n):\n    \"\"\"客户回复进线（E-3：限流）。\"\"\"\n    _rate_limit_or_raise(body.tenant_id or \"demo\", action=\"reply_ingest\")",
+      "start_line": 1472,
+      "end_line": 1479,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "NONE SAFETY: `_ops_card_payload` is called after operations that might return None (e.g., `ops_card_store.update_sample`, `ops_card_store.record_touch`). If these return None, calling `.to_dict()`, `.summary_lines()`, etc. will raise AttributeError.",
+      "suggestion_code": "card = ops_card_store.update_sample(inquiry_id, **kwargs)\n    if card is None:\n        raise HTTPException(status_code=500, detail=\"Failed to update sample\")\n    out = _ops_card_payload(card)\n    out[\"sample\"] = sample_view(card.sample)\n    return out",
+      "existing_code": "card = ops_card_store.update_sample(inquiry_id, **kwargs)\n    out = _ops_card_payload(card)\n    out[\"sample\"] = sample_view(card.sample)\n    return out",
+      "start_line": 620,
+      "end_line": 623,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "LOGIC ERROR: In the sample endpoint, `body.qty` and `body.fee_amount` are already added to kwargs in the loop (lines 608-615), then redundantly checked again (lines 616-619). This is not harmful but indicates unclear logic about when these fields should be included.",
+      "suggestion_code": "# Remove the redundant checks at lines 616-619 since they're already handled in the loop",
+      "existing_code": "kwargs: dict[str, Any] = {}\n    for field_name in (\n        \"status\", \"product\", \"spec\", \"qty\", \"unit\",\n        \"fee_amount\", \"fee_currency\", \"fee_status\",\n        \"courier\", \"tracking_no\", \"shipped_at\", \"note\",\n    ):\n        val = getattr(body, field_name, None)\n        if val is not None and val != \"\":\n            kwargs[field_name] = val\n    if body.qty:\n        kwargs[\"qty\"] = body.qty\n    if body.fee_amount:\n        kwargs[\"fee_amount\"] = body.fee_amount",
+      "start_line": 607,
+      "end_line": 619,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "NULL POINTER RISK: In `ops_card_sample`, `card.sample` is accessed at line 600 without null check. If `card` exists but `card.sample` is None, this will raise AttributeError.",
+      "suggestion_code": "# This line is actually safe due to the ternary, but later at line 622:\n# out[\"sample\"] = sample_view(card.sample)\n# card.sample could still be None here. Add null check or ensure sample_view handles None.",
+      "existing_code": "current_status = (card.sample.status if card and card.sample else \"none\") or \"none\"",
+      "start_line": 600,
+      "end_line": 600,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "INEFFICIENT LIST CONVERSION: Multiple places convert to list unnecessarily, e.g., `list(body.reasons or [])` when `body.reasons` is already a List[str] from Pydantic validation. This creates unnecessary allocations.",
+      "suggestion_code": "exp = record_ops_loss(\n        _resolve_db(db),\n        tenant_id=card.tenant_id,\n        inquiry_id=inquiry_id,\n        reasons=body.reasons or [],\n        note=body.note or \"\",\n    )",
+      "existing_code": "exp = record_ops_loss(\n        _resolve_db(db),\n        tenant_id=card.tenant_id,\n        inquiry_id=inquiry_id,\n        reasons=list(body.reasons or []),\n        note=body.note or \"\",\n    )",
+      "start_line": 499,
+      "end_line": 505,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "INCONSISTENT ERROR HANDLING: `intent_preview` catches exceptions and raises HTTPException with 400, but other endpoints like `ops_card_touch`, `ops_card_loss`, `ops_card_win` don't handle potential exceptions from store operations. If `record_touch` or similar fails, it will raise unhandled exceptions.",
+      "suggestion_code": "# Consider adding consistent error handling across all mutation endpoints",
+      "existing_code": "try:\n        import asyncio\n        graph, source = await ps.decompose(ev, db=None)  # type: ignore[arg-type]\n    except Exception as exc:  # noqa: BLE001\n        raise HTTPException(status_code=400, detail=f\"拆解失败: {exc}\") from exc",
+      "start_line": 339,
+      "end_line": 343,
+      "category": "bug",
+      "severity": "medium"
+    }
+  ],
+  "session_id": "a8181451-c52c-4f51-b485-6e4e0b7a64b2"
+}

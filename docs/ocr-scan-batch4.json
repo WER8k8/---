@@ -1,0 +1,137 @@
+{
+  "status": "success",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 2,
+    "comments": 12,
+    "total_tokens": 38593,
+    "input_tokens": 33105,
+    "output_tokens": 5488,
+    "cache_read_tokens": 8192,
+    "elapsed": "1m1s"
+  },
+  "tool_calls": {
+    "total": 7,
+    "by_tool": {
+      "code_comment": 7
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Bug: `verify_wechat_signature` reads `settings.FEISHU_VERIFICATION_TOKEN` instead of a WeChat-specific token setting (e.g. `WECHAT_OPEN_VERIFICATION_TOKEN` or similar). This is almost certainly a copy-paste from the Feishu signature verification pattern. If no Feishu verification token is configured, WeChat event callback signature verification will always fail, breaking WeChat webhook processing. Either add a dedicated WeChat verification token config and reference it here, or remove this function if WeChat server events are not supported.",
+      "existing_code": "def verify_wechat_signature(signature: str, timestamp: str, nonce: str) -\u003e bool:\n    \"\"\"验证微信服务器推送的签名（用于事件回调）。\"\"\"\n    token = settings.FEISHU_VERIFICATION_TOKEN.strip()",
+      "start_line": 667,
+      "end_line": 669,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Security: Dev mode bypass exposes `code` in the redirect URL query string via `_dev_authorize_url`. Although this only applies in non-production environments, the callback URL (`/login/oauth-callback?provider=...\u0026code=dev:...\u0026state=...`) may be logged in server access logs, browser history, or Referer headers. For WeChat dev mode, the callback can also resolve to an actual founder account ID (`expected_founder_wechat_provider_id()`), potentially leaking real internal account identifiers through the URL. Consider hashing or opaque encoding the dev code rather than embedding it in the query string, and ensure dev callback endpoints do not log the full URL.",
+      "existing_code": "def _dev_authorize_url(provider: str, state: str) -\u003e str:\n    \"\"\"_dev_authorize_url。\n\n    参数说明：\n    :param provider: 参数 provider\n    :param state: 参数 state\n    :return: 返回处理结果。\n    \"\"\"\n    q = urllib.parse.urlencode(\n        {\n            \"provider\": provider,\n            \"code\": f\"dev:{provider}\",\n            \"state\": state,\n        }\n    )\n    return f\"{_redirect_uri()}?{q}\"",
+      "start_line": 113,
+      "end_line": 128,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Bug: The QQ response parser regex `^\\s*\\w+\\s*\\(\\s*(.+)\\s*\\)\\s*;?\\s*$` with `re.DOTALL` uses a greedy `.+` that can over-match when the JSON body itself contains balanced parentheses. For example, a response like `callback({\"data\": {\"nested\": \"(val)\"}});` would capture `{\"data\": {\"nested\": \"(val)\"}});` including the trailing `);`, causing `json.loads` to fail. A more robust approach is to either: (1) find the matching closing parenthesis by counting depth, or (2) use a simpler heuristic — strip known prefixes like `callback(` and suffixes like `);` with `str.removeprefix`/`str.removesuffix` after confirming the format. This is a real risk because QQ's API can return nested JSON with parentheses in string values.",
+      "existing_code": "    m = re.match(r\"^\\s*\\w+\\s*\\(\\s*(.+)\\s*\\)\\s*;?\\s*$\", text, re.DOTALL)\n    if m:\n        text = m.group(1).strip()",
+      "start_line": 465,
+      "end_line": 467,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Security/Logging: PII (openid prefixes) leaked into logs. Lines 297, 327, 368, and ~413 all log `openid[:8]` which leaks the first 8 characters of a user's OpenID — a persistent, globally unique identifier tied to a real person (QQ and WeChat OAuth paths). While not a secret token, it is PII and could be used for user tracking across services. Mask or hash the identifier before logging (e.g. `hashlib.sha256(openid.encode()).hexdigest()[:8]`), or omit it entirely.",
+      "existing_code": "        logger.info(\n            \"[QQ OAuth] Token 获取成功 (expires_in=%ss)\",\n            token_body.get(\"expires_in\", \"?\"),\n        )\n        # ── Step 2: access_token → openid ──\n        logger.info(\"[QQ OAuth] Fetching openid...\")\n        openid_r = client.get(\n            \"https://graph.qq.com/oauth2.0/me\",\n            params={\"access_token\": access, \"fmt\": \"json\"},\n        )\n        openid_r.raise_for_status()\n        openid_body = _parse_qq_response(openid_r.text)\n        if \"error\" in openid_body:\n            err_code = openid_body.get(\"error\")\n            err_desc = openid_body.get(\"error_description\", \"\")\n            logger.error(\"[QQ OAuth] OpenID 获取失败: code=%s desc=%s\", err_code, err_desc)\n            raise ValueError(f\"qq_openid_failed: {err_desc or err_code}\")\n\n        openid = openid_body.get(\"openid\")\n        if not openid:\n            logger.error(\"[QQ OAuth] OpenID 响应缺少 openid: %s\", _mask_body(openid_body))\n            raise ValueError(\"qq_openid_missing\")\n\n        logger.info(\"[QQ OAuth] OpenID: %s...\", openid[:8])",
+      "start_line": 426,
+      "end_line": 449,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Dead code: The `_SENSITIVE_BODY_KEYS` constant includes `\"token\"` as a sensitive key. However, `_mask_body` is only called in error/log paths for QQ and WeChat token responses. In those contexts the key is typically `\"access_token\"` or `\"refresh_token\"`, which are already covered. The standalone key `\"token\"` is unlikely to appear in any OAuth response body, making this entry effectively dead coverage. More importantly, if any future response *does* contain a top-level `\"token\"` key, it would be masked — so this is a minor coverage gap concern rather than a bug. I flag it because it suggests the set was assembled without verifying actual response shapes.",
+      "existing_code": "_SENSITIVE_BODY_KEYS = frozenset(\n    {\"access_token\", \"accessToken\", \"refresh_token\", \"openid\", \"unionid\", \"token\", \"secret\", \"app_secret\"}\n)",
+      "start_line": 78,
+      "end_line": 80,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/oauth_login.py",
+      "content": "Style/Documentation: Several functions have empty or useless docstrings with the pattern `\"\"\"_function_name。\"\"\"` followed by `参数说明：:param ... :return: 返回处理结果。` which is boilerplate generated by a tool and adds no information. Examples: `_redirect_uri`, `_dev_authorize_url`, `_provider_configured`, `_exchange_feishu`, `_exchange_dingtalk`. These should either have meaningful docstrings describing behavior, or be removed entirely since the function names are self-explanatory. This also clutters the file and makes genuine documentation harder to find.",
+      "existing_code": "def _redirect_uri() -\u003e str:\n    \"\"\"_redirect_uri。\n    :return: 返回处理结果。\n    \"\"\"",
+      "start_line": 92,
+      "end_line": 95,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "The docstring describes `process_inbound_webhook` as a 'synchronous entry-point wrapper', but it's defined as an async function. If called from a sync context without `await` or `asyncio.run()`, this will raise `TypeError: object dict can't be used in 'await'`. The docstring is misleading and should be corrected to reflect the async nature, or a sync wrapper provided if true sync support is intended.",
+      "existing_code": "async def process_inbound_webhook(db: Session, payload: Dict[str, Any]) -\u003e Dict[str, Any]:\n    \"\"\"n8n / 外部 webhook 入站入口。\n\n    期望 payload 至少含：tenant_id、text（或 intent）。\n    返回真实拆解结果；缺少必填字段即**明确抛错**，不再返回硬编码字符串。\n    \"\"\"",
+      "start_line": 94,
+      "end_line": 99,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Line 95: `intent=str(intent) if intent else None` - if `intent` is a non-string truthy value (e.g., int, bool), it's silently coerced to string. This could produce unexpected results like `'1'` or `'True'`. Since the upstream type contract is `Optional[str]`, consider either: (a) validating intent is already a string, or (b) raising ValueError if intent is not a string. Current silent coercion violates type safety.",
+      "existing_code": "        intent=str(intent) if intent else None,",
+      "start_line": 114,
+      "end_line": 114,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Lines 56-60: While raw_text is not directly logged, the `payload` dict passed to IntentEvent includes `raw_input` which contains the user's raw text. If the IntentEvent is ever serialized and logged (e.g., in exception tracebacks or debug output), PII could be exposed. Consider whether raw user input should be included in the event payload or sanitized before storage/serialization.",
+      "existing_code": "            payload={**(payload or {}), \"raw_input\": text},",
+      "start_line": 61,
+      "end_line": 61,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Lines 46-47: `event_id=f\"evt_{uuid.uuid4().hex[:12]}\"` truncates the UUID to 12 hex characters (48 bits). In a multi-worker deployment with high throughput, the collision probability increases significantly. With 2^48 possible values, at 1 million events you have ~0.03% collision probability; at 10 million events, ~30% collision probability. For an event_id that should be globally unique and stable for idempotency, this truncation is risky. Consider using the full 32-char hex UUID instead.",
+      "existing_code": "            event_id=f\"evt_{uuid.uuid4().hex[:12]}\",",
+      "start_line": 57,
+      "end_line": 57,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Lines 92-94: The webhook handler validates that context and payload are dicts via isinstance checks, but doesn't validate nested values. Downstream `decompose()` or DB writes may expect specific types for nested fields. Consider adding schema validation or type checking for nested dict values to catch data integrity issues early at this boundary.",
+      "existing_code": "        context=payload.get(\"context\") if isinstance(payload.get(\"context\"), dict) else None,\n        intent=str(intent) if intent else None,\n        payload=payload.get(\"payload\") if isinstance(payload.get(\"payload\"), dict) else None,",
+      "start_line": 113,
+      "end_line": 115,
+      "category": "test",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/hermes/harness_gateway.py",
+      "content": "Line 33: The import `from typing import Any, Dict, Optional` uses the older typing module style. In Python 3.9+, these can be imported from builtins or used directly (dict, list, etc.). Not a bug, but worth noting for consistency with modern Python style.",
+      "existing_code": "from typing import Any, Dict, Optional",
+      "start_line": 19,
+      "end_line": 19,
+      "category": "maintainability",
+      "severity": "low"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1.  **WeChat Signature Verification Uses Feishu Token** (`backend/app/services/oauth_login.py`)\n    `verify_wechat_signature` references `settings.FEISHU_VERIFICATION_TOKEN` instead of a WeChat-specific setting. This is likely a copy-paste error that would cause WeChat signature verification to fail or accept invalid signatures if tokens overlap.\n\n2.  **QQ Response Parser Regex Greedy Over-match** (`backend/app/services/oauth_login.py`)\n    The regex `^\\s*\\w+\\s*\\(\\s*(.+)\\s*\\)\\s*;?\\s*$` with `re.DOTALL` uses a greedy `.+` that can over-match when JSON bodies contain balanced parentheses (e.g., nested values like `\"(val)\"`). This could corrupt response parsing.\n\n3.  **Short UUID Generation Risking Event ID Collisions** (`backend/app/services/hermes/harness_gateway.py`, lines 46-47)\n    `event_id` is generated by truncating a UUID to 12 hex characters (48 bits). In high-throughput, multi-worker deployments, collision probability becomes non-negligible (~0.03% at 1M events), potentially causing event deduplication failures or data corruption.\n\n4.  **PII Leakage via OpenID Prefix Logging** (`backend/app/services/oauth_login.py`, lines 297, 327, 368, ~413)\n    Logs emit `openid[:8]`, leaking the first 8 characters of users' persistent, globally unique OpenIDs (QQ and WeChat). While not a full secret, this constitutes PII exposure and violates privacy best practices.\n\n5.  **Dev Mode OAuth Code Exposure in URLs** (`backend/app/services/oauth_login.py`)\n    The `_dev_authorize_url` function exposes the OAuth `code` in the redirect URL query string. This code may be logged in server access logs or browser history, creating a security risk even in non-production environments.\n\n6.  **Async Docstring Misleading Sync Callers** (`backend/app/services/hermes/harness_gateway.py`)\n    `process_inbound_webhook` is documented as a \"synchronous entry-point wrapper\" but is defined as an async function. Calling it without `await` or `asyncio.run()` from a sync context will raise a `TypeError`.\n\n### Module Hotspots\n\n-   **`backend/app/services/oauth_login.py`**: Contains 6 comments covering critical bugs (signature verification, regex parsing), security issues (PII logging, dev mode exposure), dead code, and style problems. This is the highest-density hotspot.\n-   **`backend/app/services/hermes/harness_gateway.py`**: Contains 6 comments focusing on type safety, PII exposure risks, event ID generation quality, and documentation accuracy.\n\n### Cross-Cutting Concerns\n\n-   **PII/Privacy Exposure**: Both files exhibit patterns where sensitive user data (OpenID prefixes, raw user input in `IntentEvent`) is logged or exposed without adequate masking. Representative paths: `oauth_login.py` (lines 297, 327, 368, ~413) and `harness_gateway.py` (lines 56-60).\n-   **Inconsistent/Error-Prone OAuth Implementation**: The OAuth login service has multiple implementation flaws: incorrect token reference for WeChat, fragile regex parsing for QQ, and insecure dev-mode URL handling. Path: `backend/app/services/oauth_login.py`.\n-   **Type and Validation Gaps**: `harness_gateway.py` shows insufficient validation of nested payload types and silent coercion of non-string intent values to strings, risking downstream failures. Paths: `harness_gateway.py` (lines 46-47, 56-60, 92-94, 95).\n\n### Quick Wins\n\n-   **Fix WeChat Token Reference** (`oauth_login.py`): Replace `settings.FEISHU_VERIFICATION_TOKEN` with the correct WeChat verification token setting.\n-   **Fix QQ Regex Greediness** (`oauth_login.py`): Change the regex to use a non-greedy quantifier (`.+?`) or a more precise pattern that avoids over-matching on nested parentheses.\n-   **Remove/Mask OpenID Prefixes in Logs** (`oauth_login.py`): Stop logging `openid[:8]` or replace with a non-identifying hash/token.\n-   **Generate Full UUIDs for Event IDs** (`harness_gateway.py`, line 46-47): Use the full UUID hex string instead of truncating to 12 characters to eliminate collision risk.\n-   **Correct Async Docstring** (`harness_gateway.py`): Update the docstring for `process_inbound_webhook` to accurately reflect its async nature.\n-   **Add Nested Payload Validation** (`harness_gateway.py`, lines 92-94): Extend `isinstance` checks to validate nested dictionary values or add schema validation to catch type mismatches earlier.",
+  "session_id": "eb239c67-fa91-4240-8a66-d2db4e72f709"
+}

@@ -1,0 +1,220 @@
+{
+  "status": "completed_with_errors",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-3.0-flash"
+  },
+  "summary": {
+    "files_reviewed": 13,
+    "comments": 17,
+    "total_tokens": 700349,
+    "input_tokens": 686432,
+    "output_tokens": 13917,
+    "cache_read_tokens": 282112,
+    "elapsed": "8m1s",
+    "budget_exceeded": true
+  },
+  "tool_calls": {
+    "total": 38,
+    "by_tool": {
+      "code_comment": 5,
+      "code_search": 12,
+      "file_read": 21
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "Bug: when `nps_score` is a negative number (e.g. -3, which a caller could pass in despite the `Optional[int]` type hint), `s = max(0, min(10, int(nps_score)))` coerces it to 0, which is then misinterpreted as a collected NPS score of 0 (detractor bucket). The code's own docstring principle is \"无数据不编 NPS 分数\" — clamping negative input to 0 fabricates a score from invalid data. Consider returning the uncollected block when the value is outside [0, 10], or raising a `ValueError` to make the contract explicit.",
+      "suggestion_code": "        raw = int(nps_score)\n        if raw \u003c 0 or raw \u003e 10:\n            # Out of the valid NPS range — treat as uncollected rather than fabricating\n            nps_block = {\n                \"score\": None, \"collected\": False, \"label\": \"尚未收集\",\n                \"plain\": \"NPS 尚未收集；可在续费前或关键节点发一次满意度调查。\",\n                \"suggested_touch\": \"续费前 7 天 / 成交后 3 天 发一次 1 题 NPS（0–10）\",\n            }\n        else:\n            s = raw\n            # ... rest of the bucketing logic ...",
+      "existing_code": "        s = max(0, min(10, int(nps_score)))",
+      "start_line": 79,
+      "end_line": 79,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "Bug: the `or` in `getattr(c, \"stage\", \"\") == \"won\" or getattr(c, \"won_at\", \"\")` is not parenthesized, so the whole `sum(1 for ...)` expression actually becomes:\n\n    (sum(1 for c in cards if getattr(c, \"stage\", \"\") == \"won\")) or getattr(c, \"won_at\", \"\")\n\ni.e. Python's generator is consumed first, then the result is `or`-ed with the *last* iteration's `won_at` attribute. This means `won_n` will hold the `won_at` string of the final card instead of the count when the count is 0. The intended semantics is almost certainly that a card counts as \"won\" if either field is truthy:\n\n    won_n = sum(1 for c in cards if getattr(c, \"stage\", \"\") == \"won\" or bool(getattr(c, \"won_at\", \"\")))",
+      "suggestion_code": "            won_n = sum(1 for c in cards if getattr(c, \"stage\", \"\") == \"won\" or bool(getattr(c, \"won_at\", \"\")))",
+      "existing_code": "            won_n = sum(1 for c in cards if getattr(c, \"stage\", \"\") == \"won\" or getattr(c, \"won_at\", \"\"))",
+      "start_line": 41,
+      "end_line": 41,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "Silent `except Exception: pass` swallows every error from reading `_by_inquiry` and card enumeration, leaving counters and onboarding state at defaults with zero diagnostic information. This makes it impossible to distinguish \"no data\" from \"data failed to load\". At minimum log the exception or attach it to the returned structure so operators can detect silent data-load failures.",
+      "existing_code": "        except Exception:\n            pass",
+      "start_line": 43,
+      "end_line": 44,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "Ambiguous tenant filtering when `tenant_id` is empty or specific: the condition `if not tenant_id or getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)` includes empty string in the match tuple, treating unassigned/empty-tenant cards as valid matches for any specific tenant. This can leak cross-tenant or unassigned cards. If including unassigned is intentional, document it; otherwise remove `\"\"` from the tuple to match only explicit tenant IDs.",
+      "existing_code": "            if tenant_id:\n                cards = [c for c in cards if getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)]",
+      "start_line": 37,
+      "end_line": 38,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "`int(onboarding_view.get(\"done_count\") or 0)` and `int(onboarding_view.get(\"total\") or 5)` will raise `ValueError` / `TypeError` if the view holds a non-numeric string (e.g. `\"\"` or `\"abc\"`). Wrap these in a helper that defaults on parse failure, mirroring the same pattern already used for NPS.",
+      "existing_code": "    if onboarding_view:\n        onb_done = int(onboarding_view.get(\"done_count\") or 0)\n        onb_total = int(onboarding_view.get(\"total\") or 5)",
+      "start_line": 51,
+      "end_line": 53,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "The `db` parameter is never used in the function body. Callers already pass `None` (see `acquisition/__init__.py` line 612: `win_loss_summary(None, ...)`). Consider removing it, or if it's reserved for a future feature (e.g., falling back to DB queries when `cards` is not supplied), add a brief comment indicating the intent to avoid confusion.",
+      "suggestion_code": "def win_loss_summary(*, tenant_id: str = \"\", cards: list[Any] | None = None) -\u003e dict[str, Any]:",
+      "existing_code": "def win_loss_summary(db: Any, *, tenant_id: str = \"\", cards: list[Any] | None = None) -\u003e dict[str, Any]:",
+      "start_line": 123,
+      "end_line": 123,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "The `lost` filter includes any card with a truthy `loss_reasons` attribute regardless of its `stage`. If a card reaches `stage == \"won\"` but still carries a non-empty `loss_reasons` list (e.g., reasons were recorded early and never cleared), it will appear in both the `won` and `lost` lists, inflating `lost_count` and skewing the `loss_reasons` distribution. Exclude cards already in the `won` set:",
+      "suggestion_code": "    lost = [c for c in items if c not in won and (getattr(c, \"stage\", \"\") == \"lost\" or getattr(c, \"loss_reasons\", None))]",
+      "existing_code": "    lost = [c for c in items if getattr(c, \"stage\", \"\") == \"lost\" or getattr(c, \"loss_reasons\", None)]",
+      "start_line": 129,
+      "end_line": 129,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/onboarding.py",
+      "content": "**Module-level mutable list of mutable dicts**: `STEPS` is a module-level `list[dict]`. Although the current code only reads from it, any code that imports `STEPS` (e.g., `from ...onboarding import STEPS`) can mutate the shared list or its inner dicts in place, affecting every other importer. This is a well-known shared-state hazard. Consider freezing the structure (e.g., use `tuple` of namedtuples/frozensets, or at minimum document the intent and avoid reassigning via `.append`/`.sort` at call sites).",
+      "existing_code": "STEPS: list[dict[str, Any]] = [",
+      "start_line": 11,
+      "end_line": 11,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "Every call to save_ops_card re-executes the CREATE TABLE IF NOT EXISTS statement within the same transaction as the INSERT. Since patch_store_persistence already invokes ensure_table at startup, this is redundant on the normal path. It adds an extra round-trip to the database on every write and can mask the real error: if the DDL fails (e.g., permission denied on a read-only replica), the function falls into the except block and reports a misleading 'save_ops_card failed' message. Remove the DDL call here and rely on ensure_table for schema creation.",
+      "suggestion_code": "    try:\n        payload = card.to_dict() if hasattr(card, \"to_dict\") else {}",
+      "existing_code": "    try:\n        from sqlalchemy import text\n        session.execute(text(DDL))\n        payload = card.to_dict() if hasattr(card, \"to_dict\") else {}",
+      "start_line": 68,
+      "end_line": 71,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "The update wrapper silently swallows all exceptions from save_ops_card with a bare 'pass', contradicting the module's stated principle of 'failing honestly' (no pretending to have persisted). save_ops_card already logs and returns a structured result dict; discarding it makes persistence failures invisible at the call site and complicates debugging of data loss. At minimum, log the failure so operators can detect that the in-memory update succeeded but the PG write did not.",
+      "suggestion_code": "        try:\n            result = save_ops_card(out)\n            if not result.get(\"persisted\"):\n                logger.warning(\"ops_card persistence failed: %s\", result)\n        except Exception:\n            logger.warning(\"save_ops_card raised during store.update\", exc_info=True)\n        return out",
+      "existing_code": "        try:\n            save_ops_card(out)\n        except Exception:\n            pass\n        return out",
+      "start_line": 226,
+      "end_line": 230,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "When payment is an empty dict, the ternary creates a bare OpsCardPayment() instance, but when payment is a non-empty dict, the inner dict-comprehension {k: payment.get(k, getattr(OpsCardPayment(), k)) for k in payment} only iterates over the keys present in the serialized payment. Any OpsCardPayment field that was omitted (e.g., because it defaulted to None/empty and was stripped during serialization) will be set to its default via getattr, which is correct. However, the real defect is that getattr(OpsCardPayment(), k) creates a new throwaway OpsCardPayment instance for every key lookup — if OpsCardPayment is a dataclass with non-trivial __init__ defaults, this is expensive and, more importantly, if any default itself depends on other fields or raises (e.g., a field with a factory that returns a mutable object shared across instances), the default will be the shared factory result, not a fresh copy. Use a single reference instance for defaults.",
+      "suggestion_code": "        _payment_defaults = OpsCardPayment() if payment else None\n        card.payment = OpsCardPayment(**{k: payment.get(k, getattr(_payment_defaults or OpsCardPayment(), k)) for k in payment}) if payment else _payment_defaults",
+      "existing_code": "        card.payment = OpsCardPayment(**{k: payment.get(k, getattr(OpsCardPayment(), k)) for k in payment} if payment else OpsCardPayment())",
+      "start_line": 174,
+      "end_line": 174,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "Fragile dataclass construction from serialized dicts: passing raw keys from JSON/PG rows directly into `OpsCardLogistics`, `OpsCardSkuLine`, etc., via `**` unpacking will raise `TypeError` if stored rows contain fields that no longer exist on the dataclass (schema drift). This error is silently swallowed, causing data loss. Filter keys against the dataclass's actual `dataclasses.fields` before constructing.",
+      "suggestion_code": "        if logistics:\n            import dataclasses\n            valid_keys = {f.name for f in dataclasses.fields(OpsCardLogistics)}\n            try:\n                card.logistics = OpsCardLogistics(**{k: v for k, v in logistics.items() if k in valid_keys})\n            except Exception:\n                logger.debug(\"logistics restore failed, using default\")",
+      "existing_code": "        card.logistics = OpsCardLogistics(**logistics) if logistics else OpsCardLogistics()",
+      "start_line": 176,
+      "end_line": 176,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Unreachable logic due to duplicate route registration and silent error swallowing: `@router.get(\"/ops/reconcile\")` is defined twice. The first definition (lines 1218-1233) includes a `get_read_session` fallback but is overridden by the second definition (line 1286), making the first one dead code. Furthermore, inside the code, the `except Exception: pass` silently swallows errors from the read-session attempt and falls through to calling `billing_reconcile` with `session=None`, causing opaque failures. Remove the duplicate or merge the fallback logic, and ensure errors are logged or handled explicitly.",
+      "existing_code": "@router.get(\"/ops/reconcile\")\ndef acquisition_billing_reconcile(\n    tenant_id: str = \"demo\",\n    window_hours: int = 24,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db),\n):\n    \"\"\"E-5 meter vs ledger 对账（只读）。优先只读会话。\"\"\"\n    session = _resolve_db(db)\n    if session is None:\n        try:\n            with get_read_session() as rs:\n                return billing_reconcile(rs, tenant_id=tenant_id, window_hours=window_hours)\n        except Exception:\n            pass\n    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)",
+      "start_line": 1218,
+      "end_line": 1233,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Broken ternary expression and reference to a non-existent attribute. `TenderAdvanceRequest` does not have an `inquiry_id` field, so `hasattr(body, \"inquiry_id\")` is always `False`. Due to Python operator precedence, the expression parses as `if (out.get(\"ok\") and body.inquiry_id) if (hasattr(body, \"inquiry_id\")) else False`, which always evaluates to `False`. The entire `if` block is dead code (body is `pass`), so it should be removed. If the intent was to sync a tender note to the linked ops card, the logic needs to be implemented properly with the correct field.",
+      "existing_code": "    if out.get(\"ok\") and body.inquiry_id if hasattr(body, \"inquiry_id\") else False:\n        pass",
+      "start_line": 1183,
+      "end_line": 1184,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Data loss: `card.risk_flags = list(body.risk_flags or [])` overwrites all previously accumulated risk flags on the card with only the flags from the current request. If the card had prior flags (e.g., `sanctions_watch` added by the sanctions screening endpoint) and the current request omits them, those flags are silently lost. Consider merging instead of overwriting: `card.risk_flags = list(set(card.risk_flags) | set(body.risk_flags or []))`.",
+      "existing_code": "    card = ops_card_store.get_by_inquiry(body.inquiry_id.strip())\n    if card is not None:\n        card.risk_flags = list(body.risk_flags or [])\n        card = ops_card_store.update(card)",
+      "start_line": 1252,
+      "end_line": 1255,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Missing `tenant_id` when creating a new OpsCard: when the card does not exist, a bare `OpsCard(inquiry_id=inquiry_id)` is constructed without a `tenant_id`. If the `OpsCard` model or downstream logic (e.g., `ops_card_store.update`, `_ops_card_payload`) relies on `tenant_id` being set, this will produce a card with `tenant_id=None` or a default, causing incorrect tenant scoping in lists/stats and potential data leakage across tenants. The same issue exists in `ops_card_quote_validity` and `ops_card_leadtime` (lines ~1100-1115).",
+      "existing_code": "    card = ops_card_store.get_by_inquiry(inquiry_id)\n    if card is None:\n        from app.services.acquisition import OpsCard as _OC\n        card = _OC(inquiry_id=inquiry_id)",
+      "start_line": 573,
+      "end_line": 576,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "`card.sample` may be `None` after `ops_card_store.materialize` if the card was just created and no sample object was attached. Accessing `card.sample.status` in that case will raise `AttributeError: 'NoneType' object has no attribute 'status'`. Add a guard: `card.sample.status if card.sample else 'none'`.",
+      "existing_code": "    if intent_analysis.get(\"intent\") == \"request_sample\":\n        card = ops_card_store.update_sample(\n            body.inquiry_id,\n            status=\"requested\" if (card.sample.status in (\"none\", \"\", None)) else card.sample.status,\n        )",
+      "start_line": 1530,
+      "end_line": 1534,
+      "category": "bug",
+      "severity": "low"
+    }
+  ],
+  "warnings": [
+    {
+      "file": "backend/app/services/acquisition/experience_feed.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/services/acquisition/payment_risk.py",
+      "message": "stopped in batch #0: used 616193 tokens + next-file estimate exceeds budget 600000",
+      "type": "token_budget_reached"
+    },
+    {
+      "file": "backend/app/services/acquisition/onboarding.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/services/acquisition/ops_card_pg.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/api/v1/routes/acquisition.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1. **Silent Error Swallowing \u0026 Data Loss in `nps_rescue.py`**\n   - Critical bugs in `backend/app/services/acquisition/nps_rescue.py`:\n     - Negative NPS scores are coerced to `0` (detractor) instead of being handled gracefully or rejected.\n     - A missing parenthesis in a conditional expression (`sum(...) or getattr(...)`) breaks the logic flow, likely causing incorrect card enumeration or state updates.\n     - `except Exception: pass` blocks silently discard errors when loading `_by_inquiry` and card data, making it indistinguishable between \"no data\" and \"failed to load.\"\n   - **Impact:** High. Leads to incorrect rescue state, silent failures, and inability to debug production issues.\n\n2. **Broken Ternary Logic \u0026 Data Overwrite in `routes/acquisition.py`**\n   - `backend/app/api/v1/routes/acquisition.py`:\n     - The expression `if (out.get(\"ok\") and body.inquiry_id)` is parsed incorrectly due to operator precedence, and `body.inquiry_id` does not exist on `TenderAdvanceRequest`, rendering the logic broken.\n     - `card.risk_flags = list(body.risk_flags or [])` overwrites existing risk flags instead of merging, causing data loss (e.g., losing sanctions watch flags).\n     - Duplicate route registration for `@router.get(\"/ops/reconcile\")` means the first definition is unreachable.\n   - **Impact:** High. API endpoints behave incorrectly, potential security/compliance data loss, and maintenance confusion due to dead code.\n\n3. **Schema Drift \u0026 Fragile Dataclass Construction in `ops_card_pg.py`**\n   - `backend/app/services/acquisition/ops_card_pg.py`:\n     - Using `**` unpacking from JSON/DB rows into dataclasses (`OpsCardLogistics`, etc.) will raise `TypeError` if the schema drifts (old rows have new fields).\n     - Redundant `CREATE TABLE IF NOT EXISTS` on every save adds unnecessary DB round-trips.\n     - The update wrapper silently swallows exceptions from `save_ops_card`, contradicting the module's \"fail honestly\" principle.\n   - **Impact:** Medium-High. System fragility against schema changes, performance degradation, and silent persistence failures.\n\n4. **Ambiguous Tenant Filtering in `nps_rescue.py`**\n   - `backend/app/services/acquisition/nps_rescue.py`:\n     - The condition `getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)` treats unassigned cards (empty tenant) as valid matches for *any* specific tenant ID.\n   - **Impact:** High. Potential cross-tenant data leakage or incorrect aggregation in multi-tenant environments.\n\n5. **Mutable Global State in `onboarding.py`**\n   - `backend/app/services/acquisition/onboarding.py`:\n     - `STEPS` is a module-level mutable list of mutable dicts. Importing this allows external code to mutate shared state, affecting all other consumers.\n   - **Impact:** Medium. Subtle bugs and side effects across the application if any module modifies `STEPS`.\n\n### Module Hotspots\n\n*   **`backend/app/services/acquisition/`**: This module has the highest density of critical issues, including silent error handling, broken logic in `nps_rescue.py`, fragile persistence in `ops_card_pg.py`, and mutable global state in `onboarding.py`.\n*   **`backend/app/api/v1/routes/acquisition.py`**: Contains critical API logic errors, including unreachable routes, broken ternaries, and data loss due to overwriting collections.\n\n### Cross-Cutting Concerns\n\n*   **Silent Error Handling (`except: pass`)**: Appears in `nps_rescue.py` and `ops_card_pg.py`. This anti-pattern hides failures, making production debugging extremely difficult and leading to silent data corruption or missing state.\n*   **Unvalidated/Dangerous Data Coercion**: \n    - `nps_rescue.py`: Coerces negative NPS to 0; crashes on non-numeric onboarding view strings.\n    - `ops_card_pg.py`: Blindly unpacks DB/JSON data into dataclasses without schema validation.\n*   **Inconsistent State Mutation**: `routes/acquisition.py` overwrites `risk_flags` instead of merging; `experience_feed.py` includes cards in both \"won\" and \"lost\" categories if `loss_reasons` is not cleared on win.\n\n### Quick Wins\n\n1.  **Remove `except: pass` blocks**: In `nps_rescue.py` and `ops_card_pg.py`, replace with specific exception logging or re-raising to preserve diagnostic information.\n2.  **Fix Tenant Filtering**: In `nps_rescue.py`, exclude empty tenant IDs from the match tuple for specific tenants (e.g., `if tenant_id and getattr(c, \"tenant_id\", \"\") == tenant_id`).\n3.  **Correct API Logic**: In `routes/acquisition.py`, remove the duplicate `/ops/reconcile` route and fix the broken ternary for `inquiry_id` (which should likely be `body.get(\"inquiry_id\")` or similar, depending on the model).\n4.  **Prevent Data Loss**: In `routes/acquisition.py`, change `card.risk_flags = ...` to a merge operation (e.g., `card.risk_flags = list(set(card.risk_flags or []) | set(body.risk_flags or []))`).\n5.  **Immutability**: In `onboarding.py`, convert `STEPS` to a frozen dataclass structure or a tuple of tuples to prevent accidental mutation.",
+  "session_id": "8f6d36d7-62f7-4597-929d-b9aa07413c85"
+}

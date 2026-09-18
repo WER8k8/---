@@ -1,0 +1,446 @@
+{
+  "status": "success",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 10,
+    "comments": 47,
+    "total_tokens": 199919,
+    "input_tokens": 181353,
+    "output_tokens": 18566,
+    "cache_read_tokens": 63744,
+    "elapsed": "2m48s"
+  },
+  "tool_calls": {
+    "total": 21,
+    "by_tool": {
+      "code_comment": 19,
+      "file_read": 2
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/services/acquisition/onboarding.py",
+      "content": "Mutable default argument `ops_store: Any = None` is fine, but `tenant_id: str = \"demo\"` silently falls back to a hardcoded demo tenant when called without arguments. In production this could lead to filtering cards by the wrong tenant or returning unexpected results without any warning. Consider making this a required parameter or raising an error for the demo value.",
+      "existing_code": "def build_onboarding(\n    tenant_id: str = \"demo\",\n    *,\n    ops_store: Any = None,\n    has_dispatch: bool = False,\n) -\u003e dict[str, Any]:",
+      "start_line": 66,
+      "end_line": 71,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/onboarding.py",
+      "content": "The bare `except Exception:` with `pass` on line 56-64 silently swallows all errors during ops_store inspection — including KeyError, AttributeError, TypeError, or even KeyboardInterrupt if the interpreter is misconfigured. This makes debugging invalid store shapes impossible and hides real failures. At minimum use `except Exception as e:` and log the error. If the intent is truly best-effort, catch only the expected exceptions or use a narrower try block.",
+      "existing_code": "        try:\n            cards = [\n                c\n                for c in getattr(ops_store, \"_by_inquiry\", {}).values()\n                if not tenant_id or getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)\n            ]\n            has_card = len(cards) \u003e 0\n            has_inquiry = any(getattr(c, \"last_summary\", \"\") or getattr(c, \"buyer_display\", \"\") for c in cards)\n            has_touch = any(getattr(c, \"last_touch_at\", \"\") for c in cards)\n        except Exception:\n            pass",
+      "start_line": 77,
+      "end_line": 87,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/onboarding.py",
+      "content": "The truthiness check `getattr(c, 'last_touch_at', '')` on line 63 treats both `None` and empty string `''` as falsy (correct), but also treats any timestamp-like object that evaluates to False (e.g. `datetime(1970, 1, 1)` with epoch-zero semantics, or integer `0`) as untouched. If the data model uses epoch-zero sentinels or integer timestamps (0 = no touch), this is a correctness issue. Verify the actual type and sentinel used for `last_touch_at` in the ops card model before relying on truthiness.",
+      "existing_code": "            has_touch = any(getattr(c, \"last_touch_at\", \"\") for c in cards)",
+      "start_line": 85,
+      "end_line": 85,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/onboarding.py",
+      "content": "Module-level mutable `STEPS` list is never mutated in this file, but it's exported as part of the module API. Any caller (including tests or other services) that mutates it (e.g., appending, modifying `done` flags) will affect all subsequent calls. If immutability is intended, convert to a tuple: `STEPS: tuple[dict[str, Any], ...]`. Currently no evidence of mutation, so low severity.",
+      "existing_code": "STEPS: list[dict[str, Any]] = [",
+      "start_line": 11,
+      "end_line": 11,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/onboarding.py",
+      "content": "The condition `if not tenant_id` on line 59 combined with `getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)` means that when `tenant_id` is the empty string (or falsy), ALL cards are included regardless of their actual tenant_id. This could return a vastly oversized card set in the edge case where an empty string tenant_id is passed. Verify this is intentional and document the behavior.",
+      "existing_code": "                if not tenant_id or getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)",
+      "start_line": 81,
+      "end_line": 81,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Bare except with noqa suppression: The `except Exception` blocks here (lines 48-50 and 58-62) are intentionally broad with noqa: BLE001, but this is worth noting. The first catches any EvolutionEngine failure and falls back to terminal_hook. The second catches any terminal_hook failure and returns a failure record. While the fallback strategy is reasonable, the original exception details are lost in the first except (only logged at DEBUG level), making production debugging difficult if EvolutionEngine consistently fails.",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        logger.debug(\"EvolutionEngine 写入失败，尝试 terminal_hook: %s\", exc)",
+      "start_line": 55,
+      "end_line": 56,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "String truncation masking errors: Error messages are truncated to 500 characters via `detail[:500]` on lines 42 and 60. For multi-line stack traces or detailed error messages, this could lose critical debugging information. If `detail` contains structured error information, important context may be silently discarded.",
+      "existing_code": "            error_message=None if success else detail[:500],\n            input_summary=inquiry_id,\n            output_summary=detail[:500],",
+      "start_line": 47,
+      "end_line": 49,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Mutable default argument: The parameter `reasons: list[str]` in `record_ops_loss` (line 72) has no default value, requiring callers to always provide a list. If callers pass a mutable list object, modifications to it could have unintended side effects. Consider whether a copy is needed if the function mutates the list internally.",
+      "existing_code": "def record_ops_loss(db: Any, *, tenant_id: str, inquiry_id: str, reasons: list[str], note: str = \"\") -\u003e dict[str, Any]:\n    detail = \"; \".join(reasons or []) + (f\" | {note}\" if note else \"\")",
+      "start_line": 80,
+      "end_line": 81,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Performance - Lazy imports on every call: `EvolutionEngine` is imported inside the function on line 31, and `record_terminal_state` on line 54. These imports happen on every function call, adding overhead. While Python caches imports, repeated import statements still have lookup overhead. Consider moving these to module level if this is a hot path.",
+      "existing_code": "        from app.services.evolution.engine import EvolutionEngine\n        eng = EvolutionEngine(db)",
+      "start_line": 35,
+      "end_line": 36,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Potential infinite recursion in win_loss_summary: The function imports `REASON_HINTS` from `app.services.acquisition.loss_report` on line 98. If that module itself imports from this module (circular import), it could cause issues. This is a latent risk that depends on the import graph.",
+      "existing_code": "    from app.services.acquisition.loss_report import REASON_HINTS",
+      "start_line": 125,
+      "end_line": 125,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "Generic exception handling: The bare except Exception blocks catch all exceptions but only log warnings, making it difficult to diagnose serialization failures, constraint violations, or connection issues.",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        logger.warning(\"ensure ops_cards table: %s\", exc)",
+      "start_line": 45,
+      "end_line": 46,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "The patch_store_persistence function wraps orig_update and tries to save the returned value, but orig_update might return None or a different object type, causing save_ops_card to fail silently.",
+      "existing_code": "    def update(card):\n        out = orig_update(card)\n        try:\n            save_ops_card(out)\n        except Exception:\n            pass\n        return out",
+      "start_line": 224,
+      "end_line": 230,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "In restore_ops_card, the payment assignment uses a conditional expression that might not work correctly if payment dict is empty.",
+      "existing_code": "        card.payment = OpsCardPayment(**{k: payment.get(k, getattr(OpsCardPayment(), k)) for k in payment} if payment else OpsCardPayment())",
+      "start_line": 174,
+      "end_line": 174,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "Re-running DDL on every write: save_ops_card executes CREATE TABLE IF NOT EXISTS DDL before each upsert. This adds unnecessary database round-trips and latency on every save operation. The table should only be created once during initialization, not on every write.",
+      "existing_code": "    try:\n        from sqlalchemy import text\n        session.execute(text(DDL))\n        payload = card.to_dict()",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "No tenant isolation: The table stores tenant_id but load_ops_card doesn't filter by tenant. If inquiry_id collides across tenants, the wrong card could be loaded.",
+      "existing_code": "        row = session.execute(\n            text(\"SELECT payload FROM acquisition_ops_cards WHERE inquiry_id = :iid\"),\n            {\"iid\": inquiry_id},\n        ).scalar()",
+      "start_line": 111,
+      "end_line": 114,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/ops_card_pg.py",
+      "content": "restore_ops_card silently discards newer in-memory state: If a card is evicted from cache and restored from PG, there's no version check to ensure we're not overwriting newer in-memory changes with stale PG data.",
+      "existing_code": "        store._by_inquiry[inquiry_id] = card\n        store._by_id[card.card_id] = card\n        return card",
+      "start_line": 209,
+      "end_line": 211,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/quote_guard.py",
+      "content": "The `now` parameter accepts `Optional[datetime]` but is never asserted to be timezone-aware. When callers pass a naive datetime, `valid_until = start + timedelta(days=days)` produces a timezone-aware `valid_until` (since `start` comes from `_parse_ts`, presumably aware), and the comparison `now \u003e= valid_until` will raise `TypeError: can't compare offset-naive and offset-aware datetimes`. Callers should ensure `now` is UTC-aware, or the function should validate/normalize it.",
+      "suggestion_code": "def quote_validity_view(\n    *,\n    quote_at: str = \"\",\n    valid_days: Optional[int] = None,\n    fx_locked: bool = False,\n    fx_note: str = \"\",\n    now: Optional[datetime] = None,\n) -\u003e dict[str, Any]:\n    \"\"\"报价有效期视图（大白话）。\"\"\"\n    now = now or datetime.now(timezone.utc)\n    if now.tzinfo is None:\n        raise ValueError(\"now must be timezone-aware\")",
+      "existing_code": "def quote_validity_view(\n    *,\n    quote_at: str = \"\",\n    valid_days: Optional[int] = None,\n    fx_locked: bool = False,\n    fx_note: str = \"\",\n    now: Optional[datetime] = None,\n) -\u003e dict[str, Any]:\n    \"\"\"报价有效期视图（大白话）。\"\"\"\n    now = now or datetime.now(timezone.utc)",
+      "start_line": 21,
+      "end_line": 30,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/quote_guard.py",
+      "content": "When `expired=True`, the FX branch appends `\" 注意汇率可能已变。\"` regardless of `fx_note`. If `fx_note` contains useful context (e.g., lock expiry details), it is silently dropped on the expiry path, reducing diagnostic value for the caller.",
+      "suggestion_code": "    if fx_locked:\n        plain += \" 已锁汇率。\"\n    elif expired:\n        plain += \" 注意汇率可能已变。\"\n        if fx_note:\n            plain += f\" {fx_note}\"",
+      "existing_code": "    if fx_locked:\n        plain += \" 已锁汇率。\"\n    elif expired:\n        plain += \" 注意汇率可能已变。\"",
+      "start_line": 61,
+      "end_line": 64,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/payment_risk.py",
+      "content": "Line 34: `tenant_id` is declared as a parameter but never used anywhere in the function body. This is dead code that should be removed or documented if it's part of an interface contract.",
+      "existing_code": "    inquiry_id: str = \"\",\n    tenant_id: str = \"\",\n) -\u003e dict[str, Any]:",
+      "start_line": 33,
+      "end_line": 35,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/payment_risk.py",
+      "content": "Lines 82-83: The bare `except Exception: pass` silently swallows all errors from `ops_store` operations (AttributeError, TypeError, etc.). This makes debugging impossible when the ops_store API changes or fails. Consider logging the exception or re-raising with context.",
+      "existing_code": "        except Exception:\n            pass",
+      "start_line": 82,
+      "end_line": 83,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/payment_risk.py",
+      "content": "Line 71: String matching is case-sensitive for 'payment' (`r.lower()`) but case-insensitive for '付款' (uses `in` operator). If loss_reasons contains mixed-case 'Payment', it would be missed. Also, '付款' is a Chinese substring check that could match unintended strings (e.g., '不付款说明').",
+      "existing_code": "                if any(\"付款\" in r or \"payment\" in r.lower() for r in loss):",
+      "start_line": 71,
+      "end_line": 71,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/payment_risk.py",
+      "content": "Lines 88-97: The deposit_ratio reduction logic can create inconsistent behavior. When `r \u003e= 0.3`, score decreases by 1, but the threshold checks are ordered: `r \u003c= 0` (add 2), `r \u003c 0.2` (add 1), `r \u003e= 0.3` (subtract 1). The range 0.2 \u003c= r \u003c 0.3 receives no bonus/malus, which seems intentional but should be documented.",
+      "existing_code": "            if r \u003c= 0:\n                score_risk += 2\n                reasons.append(\"定金比例 0：高风险\")\n            elif r \u003c 0.2:\n                score_risk += 1\n                reasons.append(\"定金比例偏低（\u003c20%）\")\n            elif r \u003e= 0.3:\n                score_risk -= 1\n                if score_risk \u003c 0:\n                    score_risk = 0\n                reasons.append(\"定金比例较安全（≥30%）\")",
+      "start_line": 88,
+      "end_line": 98,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/payment_risk.py",
+      "content": "Line 109: `auto_pi_allowed = False if auto_pi else True` is logically equivalent to `auto_pi_allowed = not auto_pi`, but the conditional expression is unnecessarily complex. Consider simplifying for readability.",
+      "existing_code": "        level = \"medium\"\n        auto_pi_allowed = False if auto_pi else True",
+      "start_line": 108,
+      "end_line": 109,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/sample_flow.py",
+      "content": "The fee_status field is referenced in fee_hole logic but never defined in SAMPLE_STATUSES or _TRANSITIONS. The SAMPLE_STATUSES tuple only contains shipment statuses ('none' through 'rejected'), while fee_hole checks for 'unbilled' and 'billed' which are not valid sample statuses. This suggests the fee tracking state machine is incomplete or inconsistently modeled - the code assumes fee_status values exist but they're not part of the defined state transitions.",
+      "suggestion_code": "    # Fee status should be validated against known values or the logic clarified\n    # Consider adding fee_status to SAMPLE_STATUSES or handling it separately\n    fee_hole = False\n    if payload and payload.get(\"fee_status\") in (\"unbilled\", \"billed\"):\n        if payload.get(\"status\") in (\"shipped\", \"delivered\") and (payload.get(\"fee_amount\") or 0) \u003e 0:\n            fee_hole = True",
+      "existing_code": "    fee_hole = False\n    if payload:\n        if payload.get(\"status\") in (\"shipped\", \"delivered\") and payload.get(\"fee_status\") in (\n            \"unbilled\",\n            \"billed\",\n        ) and (payload.get(\"fee_amount\") or 0) \u003e 0:\n            fee_hole = True",
+      "start_line": 94,
+      "end_line": 100,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/sample_flow.py",
+      "content": "can_transition returns True for self-loops (from_status == to_status), which bypasses the _TRANSITIONS validation. This may allow unintended state changes where a sample transitions from status X to the same status X without being a valid transition. Consider whether this behavior is intentional or if it should reject same-status transitions.",
+      "existing_code": "def can_transition(from_status: str, to_status: str) -\u003e bool:\n    if from_status == to_status:\n        return True\n    if to_status not in SAMPLE_STATUSES:\n        return False\n    return to_status in _TRANSITIONS.get(from_status, set())",
+      "start_line": 64,
+      "end_line": 69,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/sample_flow.py",
+      "content": "The fallback status='none' when getattr returns None silently masks potential data issues. If a sample exists but has no status attribute or None status, it's treated as 'none' without any logging or warning, making debugging harder.",
+      "existing_code": "        status = getattr(sample, \"status\", None) or \"none\"",
+      "start_line": 77,
+      "end_line": 77,
+      "category": "style",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/template_weights.py",
+      "content": "Line 137: `max(loss_reason_counts.items(), key=lambda x: x[1])` will raise `ValueError: max() arg is an empty sequence` when there are zero loss records. The ternary conditional expression only provides a default for the result assignment but does not prevent the `max()` call from executing when `loss_reason_counts` is empty.",
+      "suggestion_code": "    top_loss = max(loss_reason_counts.items(), key=lambda x: x[1])[0] if loss_reason_counts else \"\"",
+      "existing_code": "    top_loss = max(loss_reason_counts.items(), key=lambda x: x[1])[0] if loss_reason_counts else \"\"",
+      "start_line": 154,
+      "end_line": 154,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/template_weights.py",
+      "content": "Lines 49-58: The broad `except Exception` on ops_store iteration silently swallows all errors including potential data corruption or interface contract violations. Consider narrowing to specific exceptions or at minimum logging the error with more context.",
+      "existing_code": "        except Exception as exc:  # noqa: BLE001\n            logger.debug(\"ops_store 统计失败: %s\", exc)",
+      "start_line": 71,
+      "end_line": 72,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/template_weights.py",
+      "content": "Lines 64-65: The `from sqlalchemy import or_` import is inside the try block but `or_` is never used in the query. More critically, if SQLAlchemy is not installed, this ImportError would bypass the `except Exception` and escape as an unhandled import failure.",
+      "existing_code": "            from sqlalchemy import or_",
+      "start_line": 78,
+      "end_line": 78,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/template_weights.py",
+      "content": "Lines 153-154: The module-level `_approved` dict is shared mutable state mutated by `approve_weight()` without any synchronization. In multi-threaded or multi-worker deployments, concurrent calls can corrupt the approval records.",
+      "suggestion_code": "# 内存中的「已批准权重」（生产应落 PG；当前先只读建议 + 可选批准记录）\nimport threading\n\n_approved: dict[str, dict[str, Any]] = {}\n_approved_lock = threading.Lock()",
+      "existing_code": "# 内存中的「已批准权重」（生产应落 PG；当前先只读建议 + 可选批准记录）\n_approved: dict[str, dict[str, Any]] = {}",
+      "start_line": 175,
+      "end_line": 176,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Permissive email validation: The check `not email_n or '@' not in email_n` only verifies the presence of an '@' character. This accepts malformed inputs like '@', 'a@b', or 'user@localhost', which are not valid RFC 5322 emails. While this is a suppression list and not a sending endpoint, invalid entries could clutter the store or be used to bypass suppression checks (e.g., adding 'user@localhost' to suppress 'USER@localhost.COM'). Consider using a proper email validation library or at least requiring a non-empty local part and domain with a TLD.",
+      "existing_code": "    def add(\n        self,\n        *,\n        email: str,\n        tenant_id: str = \"demo\",\n        reason: str = \"unsubscribe\",\n        source: str = \"\",\n        created_by: str = \"system\",\n    ) -\u003e dict[str, Any]:\n        email_n = self._norm(email)\n        if not email_n or \"@\" not in email_n:\n            return {\"ok\": False, \"code\": \"invalid_email\", \"message\": \"邮箱格式不合法\"}",
+      "start_line": 38,
+      "end_line": 49,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Missing input validation for `tenant_id`: Unlike `email` which has validation, `tenant_id` has no length limits or format checks. A tenant_id of None or empty string defaults to 'demo', but arbitrary strings including very long ones are accepted. This could lead to unexpected behavior in multi-tenant scenarios or consume excessive memory.",
+      "existing_code": "    def remove(\n        self,\n        *,\n        email: str,\n        tenant_id: str = \"demo\",\n        confirm: bool = False,\n        note: str = \"\",\n    ) -\u003e dict[str, Any]:\n        email_n = self._norm(email)\n        key = (tenant_id or \"demo\", email_n)",
+      "start_line": 69,
+      "end_line": 78,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Thread safety issue: The module-level `suppression_store` singleton is shared mutable state accessed by `add`, `remove`, and `check_outreach` without any locking. In multi-threaded or async deployments, concurrent calls can cause check-then-act races — e.g., two threads both calling `add` for the same email simultaneously could both pass the `if key in self._by_key` check and insert duplicate entries, or a `remove` could interleave with a `check_outreach` causing a suppressed contact to slip through. This directly violates the module's stated policy that suppression is additive and must prevent re-sending.",
+      "existing_code": "class SuppressionStore:\n    def __init__(self) -\u003e None:\n        self._by_key: dict[tuple[str, str], SuppressionEntry] = {}\n\n    @staticmethod\n    def _norm(email: str) -\u003e str:\n        return (email or \"\").strip().lower()",
+      "start_line": 30,
+      "end_line": 36,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Global mutable singleton limits testability: The module-level `suppression_store` is a global mutable object. Tests cannot isolate state between test cases without clearing or reinitializing this singleton. There is no cleanup method or context manager to reset the store. This makes unit testing difficult and risks test interference in multi-test scenarios. Consider adding a `reset()` class method or using dependency injection.",
+      "existing_code": "# 全局单例（生产可换 DB 表）\nsuppression_store = SuppressionStore()",
+      "start_line": 165,
+      "end_line": 166,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Inefficient string building in report(): The `plain` summary uses string concatenation with `+` operator and creates an unmaterialized generator expression inside `\"；\".join()`. While minor for small lists, if the suppression list grows large, this becomes O(n²) for concatenation and the generator creates unnecessary overhead. Pre-materialize the items into a list first: `parts = [f\"{k} {v}\" for k, v in by_reason.items()]; plain = \"抑制名单 \" + str(len(items)) + \" 人。\" + \"；\".join(parts) if parts else \"\"`",
+      "existing_code": "    def report(self, tenant_id: str = \"demo\") -\u003e dict[str, Any]:\n        items = self.list_all(tenant_id=tenant_id)\n        by_reason: dict[str, int] = {}\n        for i in items:\n            r = i.get(\"reason\") or \"unknown\"\n            by_reason[r] = by_reason.get(r, 0) + 1\n        plain = (\n            f\"抑制名单 {len(items)} 人。\"\n            + (\"；\".join(f\"{k} {v}\" for k, v in by_reason.items()) if by_reason else \"\")\n        ) if items else \"抑制名单为空。\"",
+      "start_line": 145,
+      "end_line": 154,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "No persistence guarantee: The comment states '生产可换 DB 表' (production can swap to DB), but the current in-memory implementation loses ALL suppression data on process restart. This violates the stated policy that '抑制只增不减' (suppression is additive and never decreases). If this file is used in production without immediate DB replacement, any server restart will wipe all suppression entries, allowing previously unsubscribed/complained contacts to receive unsolicited emails. A persistence layer or at minimum a restart-safe storage mechanism should be added before production use.",
+      "existing_code": "# 全局单例（生产可换 DB 表）\nsuppression_store = SuppressionStore()",
+      "start_line": 165,
+      "end_line": 166,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Inconsistent email validation in check_outreach(): The `check_outreach` method calls `self.is_suppressed(email_n, tenant_id)` with `email_n` (already normalized), but then reconstructs the key as `(tenant_id or \"demo\", email_n)`. However, if `email_n` is empty after normalization, the method returns early. The real issue is that `is_suppressed` doesn't validate the email - it trusts the caller already normalized it. This is a design inconsistency: `add` validates at entry time, but `check_outreach` relies on pre-validation. If a caller passes an invalid email that somehow gets past the `not email_n` check, `is_suppressed` will silently return False without validation.",
+      "existing_code": "    def is_suppressed(self, email: str, tenant_id: str = \"demo\") -\u003e bool:\n        return (tenant_id or \"demo\", self._norm(email)) in self._by_key\n\n    def check_outreach(\n        self,\n        *,\n        email: str,\n        tenant_id: str = \"demo\",\n        channel: str = \"email\",\n        mode: str = \"personalized\",\n    ) -\u003e dict[str, Any]:\n        \"\"\"外发前闸门。抑制中 → allowed=False。\"\"\"\n        email_n = self._norm(email)\n        if not email_n:\n            return {\n                \"allowed\": False,\n                \"code\": \"missing_email\",\n                \"message\": \"无邮箱，无法外发\",\n                \"channel\": channel,\n                \"mode\": mode,\n            }\n        if self.is_suppressed(email_n, tenant_id):\n            e = self._by_key[(tenant_id or \"demo\", email_n)]",
+      "start_line": 96,
+      "end_line": 118,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/suppression_list.py",
+      "content": "Missing bounds check in list_all(): The method returns all entries without pagination. In a multi-tenant production scenario with thousands of suppression entries, this could return very large result sets, causing memory issues or slow API responses. Consider adding optional `limit` and `offset` parameters for pagination.",
+      "existing_code": "    def list_all(self, tenant_id: str = \"\") -\u003e list[dict[str, Any]]:\n        out = []\n        for (tid, email), e in self._by_key.items():\n            if tenant_id and tid != tenant_id:\n                continue\n            out.append(e.__dict__)\n        out.sort(key=lambda x: x.get(\"created_at\") or \"\", reverse=True)\n        return out",
+      "start_line": 136,
+      "end_line": 143,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/tender_engine.py",
+      "content": "Concurrent check-then-act race: `advance()` calls `checklist()` and then later mutates `proj.stage` / appends to `proj.history`. The module-level singleton `tender_engine._by_id` is unprotected — concurrent calls for the same `tender_id` can interleave, causing lost updates, duplicate history entries, or inconsistent stage transitions. If this engine is used under any multi-threaded or async load (web server, Celery tasks, etc.), a `threading.Lock` or `asyncio.Lock` keyed by `tender_id` (or a single lock) should guard all read-modify-write sequences.",
+      "existing_code": "    def advance(self, tender_id: str, to_stage: str, note: str = \"\") -\u003e dict[str, Any]:\n        proj = self.upsert(tender_id=tender_id)\n        to_stage = (to_stage or \"\").strip().lower()\n        if to_stage not in STAGES:\n            return {\"ok\": False, \"message\": f\"非法阶段 {to_stage}\", \"stages\": list(STAGES)}\n        checklist = self.checklist(tender_id)",
+      "start_line": 176,
+      "end_line": 181
+    },
+    {
+      "path": "backend/app/services/acquisition/tender_engine.py",
+      "content": "Missing-key mutation risk in `view()`: returns `**self.checklist(tender_id)` (which unpacks a fresh dict) but then also passes `self.checklist(tender_id)` again when constructing the final dict. More importantly, callers who mutate `proj.docs_ready` in-place (e.g. via `mark_doc`) are mutating the instance's internal dict directly. If `checklist()` returned a shallow copy (`dict(proj.docs_ready)`), external mutations of the returned dict would not leak into the record — but here the docs dict is the real one. Consider copying mutable state on read or documenting the aliasing contract.",
+      "existing_code": "    def checklist(self, tender_id: str) -\u003e dict[str, Any]:\n        proj = self.upsert(tender_id=tender_id)\n        docs = dict(proj.docs_ready or {})",
+      "start_line": 117,
+      "end_line": 119
+    },
+    {
+      "path": "backend/app/services/acquisition/tender_engine.py",
+      "content": "Stage transition logic allows arbitrary jumps: `advance()` rejects non-STAGES names and guards `tender_submit` with the doc checklist, but `won` / `lost` can be set from *any* preceding stage (including `lead` or `qualify`), bypassing the qualification gate entirely. Line 188–189 `pass` silently permits this. Either enforce a strict transition table (e.g. only `evaluation -\u003e won|lost`) or at minimum require the checklist to be ready before reaching a terminal state.",
+      "existing_code": "        if to_stage in (\"won\", \"lost\") and proj.stage not in (\"evaluation\", \"tender_submit\", \"bid_prep\"):\n            # 允许从任意阶段结果登记，但提示\n            pass",
+      "start_line": 190,
+      "end_line": 192
+    },
+    {
+      "path": "backend/app/services/acquisition/tender_engine.py",
+      "content": "Invalid keyword argument in return value construction: in `advance()`, the dict literal contains the bare name `checklist` as a key (line 212). This raises `SyntaxError: keyword can't be an expression` because `checklist` is being used as a keyword argument name without a value assignment. The intent was likely `\"checklist\": self.checklist(tender_id)`. Fix to `\"checklist\": self.checklist(tender_id)`.",
+      "existing_code": "        return {\n            \"ok\": True,\n            \"tender_id\": proj.tender_id,\n            \"stage\": proj.stage,\n            \"stage_label\": STAGE_LABELS.get(proj.stage, proj.stage),\n            \"checklist\": self.checklist(tender_id),\n            \"plain\": f\"已进入阶段：{STAGE_LABELS.get(proj.stage, proj.stage)}\",\n        }",
+      "start_line": 198,
+      "end_line": 205
+    },
+    {
+      "path": "backend/app/services/acquisition/tender_engine.py",
+      "content": "Credit-risk heuristic is incomplete: `risky_terms` scans for a fixed set of keywords/numbers (`账期`, `credit`, `oa`, `lc`, `90`, `120`, `180`). Terms like `net60`, `DP`, `TT`, `30 days`, or other legitimate long-payment variants slip through and get classified as `auto_pi_allowed=True`, contradicting the module docstring rule '账期/风险未过人审禁止标可自动 PI'. Consider expanding the keyword set, normalizing term parsing, or explicitly rejecting any term not in a whitelist.",
+      "existing_code": "        # 长账期 + 未信用确认 → 禁自动 PI\n        risky_terms = any(x in (terms or \"\").lower() for x in (\"账期\", \"credit\", \"oa\", \"lc\", \"90\", \"120\", \"180\"))\n        proj.auto_pi_allowed = bool(credit_ok) and not risky_terms",
+      "start_line": 157,
+      "end_line": 159
+    },
+    {
+      "path": "backend/app/services/acquisition/tender_engine.py",
+      "content": "No validation on `amount`: `set_payment` and `upsert` accept arbitrary floats, including negative values and values indistinguishable from corrupt input. The `advance()` path and `view()` output display the amount without sanity checks. At minimum validate `amount \u003e= 0` and consider a currency-specific max. The docstring mentions `amount` but the rules do not enforce it.",
+      "existing_code": "        if amount:\n            proj.amount = float(amount)",
+      "start_line": 112,
+      "end_line": 113
+    },
+    {
+      "path": "backend/app/services/acquisition/sales_collision.py",
+      "content": "Race condition: The get/check/set sequence in claim_inquiry is not atomic. If two users call claim_inquiry concurrently for the same inquiry_id, both may see `card` as having no owner (or different owners) before either calls set_owner, leading to silent overwrites without proper collision handling. This is a data integrity issue for a collision-tracking system whose entire purpose is to detect and prevent exactly this scenario. Consider whether ops_store methods need to be called within a transaction or with distributed locking.",
+      "existing_code": "    card = ops_store.get_by_inquiry(inquiry_id)\n    if card is None:\n        card = ops_store.materialize(\n            tenant_id=tenant_id or \"demo\",\n            inquiry_id=inquiry_id,\n            owner_user_id=user_id,\n        )\n        return {\n            \"ok\": True,\n            \"code\": \"claimed_new\",\n            ...\n        }\n\n    current = (card.owner_user_id or \"\").strip()\n    if not current:\n        card = ops_store.set_owner(inquiry_id, user_id, note=note or \"认领无主询盘\")\n        return {\n            \"ok\": True,\n            \"code\": \"claimed_empty\",\n            ...\n        }",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/sales_collision.py",
+      "content": "Inconsistent audit record shape: claimed_new returns a dict with keys {type, from, to, at, note}, while claimed_empty and handed_off return entries from card.handoff_history which may have a different structure. Consumers of the audit field cannot rely on a consistent schema across code paths. The claimed_new audit entry uses `type` key but others may not. Consider normalizing all audit records to the same shape.",
+      "existing_code": "            \"audit\": [{\n                \"type\": \"claim_new\",\n                \"from\": \"\",\n                \"to\": user_id,\n                \"at\": _now(),\n                \"note\": note or \"新建认领\",\n            }],\n        }\n\n    current = (card.owner_user_id or \"\").strip()\n    if not current:\n        card = ops_store.set_owner(inquiry_id, user_id, note=note or \"认领无主询盘\")\n        return {\n            \"ok\": True,\n            \"code\": \"claimed_empty\",\n            ...\n            \"audit\": card.handoff_history[-1:],",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/sales_collision.py",
+      "content": "collision_report reads ops_store._by_inquiry (private attribute) directly instead of using a public API method. This couples the function to internal implementation details of ops_store. If the storage layer changes its internal structure (e.g., renames the dict, moves to a database query), this function will silently return empty results rather than raising an error. Consider adding a public method to ops_store for retrieving all cards or collision history.",
+      "existing_code": "def collision_report(ops_store: Any, tenant_id: str = \"\") -\u003e dict[str, Any]:\n    \"\"\"团队撞单/交接汇总（只读）。\"\"\"\n    items = []\n    for card in getattr(ops_store, \"_by_inquiry\", {}).values():",
+      "start_line": 109,
+      "end_line": 112,
+      "category": "maintainability",
+      "severity": "medium"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1.  **Data Integrity \u0026 Concurrency Races**\n    Critical race conditions in `tender_engine.py` (check-then-act on stage transitions) and `sales_collision.py` (non-atomic claim/handoff). In `ops_card_pg.py`, concurrent cache restores risk overwriting newer in-memory state with stale persistence data due to missing version checks.\n    *   *Paths:* `backend/app/services/acquisition/tender_engine.py`, `backend/app/services/acquisition/sales_collision.py`, `backend/app/services/acquisition/ops_card_pg.py`\n\n2.  **Tenant Isolation Violations**\n    `ops_card_pg.py` loads cards without filtering by `tenant_id`, risking cross-tenant data leakage if `inquiry_id` collides. `onboarding.py` silently falls back to a hardcoded `\"demo\"` tenant when arguments are missing, potentially filtering cards against the wrong tenant context in production.\n    *   *Paths:* `backend/app/services/acquisition/ops_card_pg.py`, `backend/app/services/acquisition/onboarding.py`\n\n3.  **Silent Error Swallowing (Debugging Black Holes)**\n    Widespread use of bare `except Exception: pass` blocks prevents debugging of store failures, key errors, and type mismatches. This appears in `onboarding.py`, `payment_risk.py`, `template_weights.py`, and `ops_card_pg.py`. `experience_feed.py` also truncates stack traces to 500 chars, losing critical diagnostic context.\n    *   *Paths:* `backend/app/services/acquisition/onboarding.py`, `backend/app/services/acquisition/payment_risk.py`, `backend/app/services/acquisition/template_weights.py`\n\n4.  **State Corruption via Mutable Globals**\n    Several modules expose or mutate module-level singletons without synchronization: `STEPS` list in `onboarding.py`, `_approved` dict in `template_weights.py`, and `suppression_store` in `suppression_list.py`. These are vulnerable to concurrent corruption and make unit testing difficult due to lack of isolation/cleanup.\n    *   *Paths:* `backend/app/services/acquisition/onboarding.py`, `backend/app/services/acquisition/template_weights.py`, `backend/app/services/acquisition/suppression_list.py`\n\n5.  **Logic Errors in Core State Machines**\n    `sample_flow.py` contains invalid transition paths (self-loops bypassing validation) and references undefined status values (`unbilled`, `billed`) not present in `SAMPLE_STATUSES`. `tender_engine.py` allows arbitrary stage jumps to `won`/`lost` from initial stages, bypassing qualification gates.\n    *   *Paths:* `backend/app/services/acquisition/sample_flow.py`, `backend/app/services/acquisition/tender_engine.py`\n\n6.  **Incomplete Data Validation**\n    `quote_guard.py` fails to enforce timezone awareness on naive datetime inputs, leading to runtime errors. `tender_engine.py` accepts negative or unvalidated amounts. `suppression_list.py` uses permissive email validation (`'@'` check only) and lacks input bounds for `tenant_id`.\n    *   *Paths:* `backend/app/services/acquisition/quote_guard.py`, `backend/app/services/acquisition/tender_engine.py`, `backend/app/services/acquisition/suppression_list.py`\n\n7.  **Crash Risks on Empty Data**\n    `template_weights.py` calls `max()` on an empty sequence when there are zero loss records, causing an unhandled `ValueError`. The ternary default only affects the assignment, not the `max()` call itself.\n    *   *Paths:* `backend/app/services/acquisition/template_weights.py`\n\n### Module Hotspots\n\n*   **`backend/app/services/acquisition/`**\n    This directory contains all reviewed files and exhibits high density of concurrency issues, silent error handling, and state management flaws. Specific concentration in:\n    *   `onboarding.py`: Tenant fallback and mutable global risks.\n    *   `tender_engine.py`: Race conditions and logic bypasses.\n    *   `template_weights.py`: Empty sequence crashes and unprotected globals.\n    *   `suppression_list.py`: Thread-safety and persistence gaps.\n\n### Cross-Cutting Concerns\n\n*   **Unsafe Exception Handling**: Consistent pattern of `except Exception: pass` or overly broad catches in `onboarding.py`, `payment_risk.py`, `template_weights.py`, and `ops_card_pg.py`.\n*   **Thread-Safety Neglect**: Multiple modules (`tender_engine.py`, `suppression_list.py`, `template_weights.py`, `sales_collision.py`) operate on shared mutable state without locks, posing significant risks in async or multi-worker deployments.\n*   **Missing Tenant Context Enforcement**: Aside from the explicit bug in `ops_card_pg.py`, `onboarding.py` has implicit fallbacks that compromise tenant isolation.\n*   **Inconsistent Audit/History Schemas**: `sales_collision.py` returns inconsistently shaped audit records (`claimed_new` vs. `handoff_history`), making downstream consumption fragile.\n\n### Quick Wins\n\n1.  **Fix `template_weights.py` Empty Sequence Crash**: Add a guard clause before `max(loss_reason_counts.items(), ...)` to return a default or empty dict when the list is empty.\n2.  **Replace Bare `except` Blocks**: Add logging or re-raise specific exceptions in `onboarding.py` (line 56-64), `payment_risk.py` (lines 82-83), and `template_weights.py` (lines 49-58).\n3.  **Add Tenant Filter to `ops_card_pg.py`**: Ensure `load_ops_card` includes `WHERE tenant_id = :tenant_id` to prevent cross-tenant data exposure.\n4.  **Simplify `payment_risk.py` Logic**: Replace the complex conditional `auto_pi_allowed = False if auto_pi else True` with `not auto_pi`.\n5.  **Validate `tender_engine.py` Stage Transitions**: Restrict `won`/`lost` assignments to only come from valid preceding stages (e.g., `negotiation`) rather than allowing arbitrary jumps.\n6.  **Add Locking or Atomic Operations**: Implement simple locking in `suppression_list.py` and `sales_collision.py` for check-then-act sequences.",
+  "session_id": "7b746850-37cd-4fa4-a797-3b496284877e"
+}

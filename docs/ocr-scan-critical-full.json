@@ -1,0 +1,831 @@
+{
+  "status": "completed_with_errors",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 76,
+    "comments": 86,
+    "total_tokens": 835543,
+    "input_tokens": 807307,
+    "output_tokens": 28236,
+    "cache_read_tokens": 575232,
+    "elapsed": "13m11s",
+    "budget_exceeded": true
+  },
+  "tool_calls": {
+    "total": 74,
+    "by_tool": {
+      "code_comment": 17,
+      "code_search": 12,
+      "file_find": 2,
+      "file_read": 43
+    },
+    "failure": 0,
+    "failure_by_tool": {},
+    "failure_details": []
+  },
+  "comments": [
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "Bare `except Exception` in `_redis_client()` is far too broad. It catches `KeyboardInterrupt` via `Exception` is actually fine (KiB is not a subclass of Exception), but it still swallows import failures, config errors, and unexpected library bugs that should surface. More critically, the comment says '导入失败极少' but any exception here returns None, silently forcing the entire login brute-force protection into memory-only mode across all requests until the module is restarted or the issue is resolved. Use a narrower exception type or let it propagate so the service operator notices the Redis outage.",
+      "existing_code": "    try:\n        from app.core.refresh_token_blacklist import \\\n            get_refresh_blacklist_redis\n\n        return get_refresh_blacklist_redis()\n    except Exception as exc:  # pragma: no cover - 导入失败极少\n        log.warning(\"login_bruteforce: 无法获取 Redis 客户端: %s\", exc)\n        return None",
+      "start_line": 120,
+      "end_line": 127,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "`_redis_check` uses `time.time()` while `_memory_check` uses `_now_mono()` (which is `time.monotonic()`). This means Redis and in-memory stores have inconsistent lock semantics: a lock acquired in memory at monotonic time T+100 will expire at T+100+LOCK_SECONDS, but the same lock stored in Redis at wall-clock time W+100 expires at W+100+LOCK_SECONDS. If the system clock is adjusted (NTP sync, manual change), Redis locks can expire early or late relative to memory locks, defeating the anti-bruteforce guarantee during fallback transitions. Both paths should use the same time source. Since the Lua script already receives `ARGV[1]` as `now`, unify by passing `time.monotonic()` everywhere and using it consistently in Redis as well.",
+      "existing_code": "def _redis_check(r: Any, client_ip: str,\n                 username_or_email: str) -\u003e Optional[Tuple[int, str]]:\n    now = time.time()\n    ik = _identity_key(client_ip, username_or_email)",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "`_redis_record_failure` also mixes `time.time()` with the Lua script while `_memory_record_failure` uses `time.monotonic()`. This same inconsistency means identity locks recorded via Redis and via memory will expire at different real-world moments. Fix by using `_now_mono()` (i.e., `time.monotonic()`) in `_redis_record_failure` and `_redis_check`.",
+      "existing_code": "-    now = time.time()",
+      "start_line": 160,
+      "end_line": 160,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "The Lua script uses `cjson.encode` and `cjson.decode` which are Redis-lua builtins provided by the `redis.server.exec` environment in standard Redis. However, if this service uses a Redis alternative (e.g., KeyDB, Dragonfly, or a mocked Redis in tests) that does not support `cjson`, this will fail silently or raise. Additionally, the script mutates state in two separate `eval` calls within a pipeline — if the first `eval` (identity key) succeeds but the second (IP key) fails, there is no partial-commit rollback: the identity counter is incremented but the IP counter is not, producing an inconsistent state where the identity is locked but the IP is not (or vice versa on retry). Consider using a single Lua script that handles both keys, or accept the asymmetry with a clear comment.",
+      "existing_code": "    try:\n        pipe = r.pipeline(transaction=True)\n        pipe.eval(_LUA_RECORD, 1, _redis_key_id(ik),\n                  *args_id)  # type: ignore[arg-type]\n        pipe.eval(_LUA_RECORD, 1, _redis_key_ip(client_ip),\n                  *args_ip)  # type: ignore[arg-type]\n        pipe.execute()",
+      "start_line": 198,
+      "end_line": 204,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "In `_memory_check`, the IP check runs before the identity check, but if the IP is locked, the function returns immediately without checking whether the specific identity is already locked. This is correct behavior (IP lock should block all identities from that IP), but the reverse is not true: if the identity is locked but the IP is not, the function returns the identity lock status. This asymmetry is actually fine for security (identity lock is stricter), but document it to avoid confusion. More importantly, `_memory_record_failure` updates both stores under the same lock, but `_memory_check` acquires and releases the lock separately for IP and identity — this is a check-then-act race where the state could change between the two acquisitions. The window is small but real: an attacker could exploit the gap to exceed thresholds slightly.",
+      "existing_code": "    with _memory_lock:\n        ip_e = _ip_store.get(client_ip)\n        if ip_e and ip_e.lock_until \u003e t:\n            return 429, \"请求过于频繁，请稍后再试\"\n\n        ik = _identity_key(client_ip, username_or_email)\n        e = _identity_store.get(ik)\n        if e and e.lock_until \u003e t:\n            return 429, \"请求过于频繁，请稍后再试\"",
+      "start_line": 242,
+      "end_line": 250,
+      "category": "other",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "`client_ip_from_request` returns the first IP from X-Forwarded-For without validating that it is a legitimate IP address. An attacker can send `X-Forwarded-For: 8.8.8.8, 127.0.0.1` and if the direct connection comes from a trusted proxy, the function returns `8.8.8.8` as the client IP. This bypasses IP-based rate limiting because the attacker's real IP is never stored. Add validation: parse the extracted IP with `ipaddress.ip_address()` and reject malformed entries, or at minimum verify the extracted IP is not a private/reserved address when claiming it came from a real client.",
+      "existing_code": "    if _is_trusted_proxy(direct_ip):\n        fwd = request.headers.get(\"x-forwarded-for\") or request.headers.get(\"X-Forwarded-For\")\n        if fwd:\n            return fwd.split(\",\")[0].strip()",
+      "start_line": 372,
+      "end_line": 375,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "Bare except clause swallows KeyboardInterrupt and SystemExit, preventing proper shutdown signals from reaching the application. This makes it impossible to stop the service cleanly. Should catch Exception at minimum and re-raise system exceptions.",
+      "existing_code": "except Exception as e:",
+      "start_line": 113,
+      "end_line": 113,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "Mutable list created with setdefault() on connection.info is stored as shared state. If before_cursor_execute is called before after_cursor_execute completes (e.g., nested transactions, recursive queries), the pop(-1) will mismatch with push order, causing IndexError or incorrect timing measurements. The list-based stack approach is fragile for nested operations.",
+      "existing_code": "@event.listens_for(engine, \"before_cursor_execute\")\ndef before_cursor_execute(conn, cursor, statement, parameters, context, executemany):\n    conn.info.setdefault(\"query_start_time\", []).append(time.time())\n\n@event.listens_for(engine, \"after_cursor_execute\")\ndef after_cursor_execute(conn, cursor, statement, parameters, context, executemany):\n    start_time = conn.info[\"query_start_time\"].pop(-1)",
+      "start_line": 55,
+      "end_line": 61,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "rebind_engine() recreates the main engine but leaves read_engine stale. After rebind, any sessions using RoutingSession will reference the old read_engine for read operations, breaking the read-write split. Should also update read_engine when rebind is called.",
+      "existing_code": "def rebind_engine(database_url: str | None = None) -\u003e None:\n    \"\"\"按新 URL 重建 engine/SessionLocal（预检、脚本切换 SQLite/Postgres 用）。\"\"\"\n    global engine, SessionLocal, UUID_TYPE",
+      "start_line": 126,
+      "end_line": 128,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "RoutingSession.get_bind() checks self._flushing which is an internal SQLAlchemy attribute that may not be reliable across versions. Also, if a query initiates a flush internally (e.g., lazy loading relationship), _flushing may not be set at the time get_bind is called, causing reads to incorrectly route to read_engine during write operations.",
+      "existing_code": "class RoutingSession(sqlalchemy.orm.Session):\n    def get_bind(self, mapper=None, clause=None, **kwargs):\n        # 如果正在 flush（写操作），或在查询对象中标明需要写库，则路由到主库\n        if self._flushing or getattr(self, \"info\", {}).get(\"write\", False):\n            return engine\n        return read_engine",
+      "start_line": 41,
+      "end_line": 46,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "Logger is used before it's defined in mount_rls_pilot_if_enabled(). The function references logger on line 189 but logger is only defined on line 191. This will cause NameError at runtime when the function is called.",
+      "existing_code": "def mount_rls_pilot_if_enabled() -\u003e None:\n    \"\"\"按配置门控挂载 RLS 试点表（默认关，生产零回归）。",
+      "start_line": 184,
+      "end_line": 185,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "get_pool_status() accesses engine.pool without checking if engine is initialized. During startup or after rebind failures, engine may not have a pool attribute, causing AttributeError. Should handle the case where pool is unavailable more gracefully.",
+      "existing_code": "def get_pool_status() -\u003e dict:\n    \"\"\"返回连接池状态（用于健康检查）\"\"\"\n    try:\n        pool = engine.pool",
+      "start_line": 230,
+      "end_line": 233,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "`_cleanup_stale_entries` only runs every 300 seconds and uses a cutoff of 1 hour. Entries with `lock_until=0` and `fails=0` (successfully logged-in identities) are never removed because `lock_until \u003c now` is true but `lock_until \u003c cutoff` is also true (0 \u003c any positive cutoff), so they WILL be removed. Wait — actually `lock_until=0` means `0 \u003c now` is true and `0 \u003c cutoff` is true, so they ARE removed. This is correct. However, entries with `lock_until \u003e 0` but `lock_until \u003c cutoff` (expired locks older than 1 hour) are removed, which is fine. The real issue: if `_cleanup_stale_entries` is never called (e.g., if `_memory_record_failure` is never invoked after startup), the stores grow unboundedly. There is no background task or periodic trigger — cleanup only happens on demand when a failure is recorded. If an attacker only succeeds (never fails), no cleanup ever runs.",
+      "existing_code": "def _cleanup_stale_entries(now: float) -\u003e None:\n    global _last_cleanup\n    if now - _last_cleanup \u003c _CLEANUP_INTERVAL:\n        return\n    _last_cleanup = now\n    cutoff = now - 3600.0  # 1 hour of inactivity\n    with _memory_lock:\n        for store in (_identity_store, _ip_store):\n            stale = [k for k, e in store.items()\n                     if e.lock_until \u003c now and e.lock_until \u003c cutoff]\n            for k in stale:\n                del store[k]",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/login_bruteforce.py",
+      "content": "`_identity_key` strips and lowercases `username_or_email` but does not validate that the result is non-empty. If an attacker sends an empty or whitespace-only username, the key becomes `hashlib.sha256(f\"{ip}|\").hexdigest()`, which is a valid but meaningless key. This doesn't cause a crash but wastes store entries. More importantly, `_memory_check` and `_memory_record_failure` both call `_identity_key` but the check happens before any input validation, so an attacker can probe the store with arbitrary empty usernames without triggering the rate limit on real usernames.",
+      "existing_code": "def _identity_key(ip: str, username_or_email: str) -\u003e str:\n    raw = f\"{ip}|{username_or_email.strip().lower()}\"\n    return hashlib.sha256(raw.encode(\"utf-8\")).hexdigest()",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "The bare `except Exception` at lines 32-34 and 42-44 silently swallows errors without logging or preserving the original traceback. This makes it impossible to diagnose why baseline operations failed. Consider using `except Exception as e:` and logging the exception, or re-raising with `raise ... from e` to preserve context.",
+      "existing_code": "        except Exception:\n            errors += 1",
+      "start_line": 36,
+      "end_line": 37,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "The bare `except Exception` at lines 42-44 silently swallows errors during idempotency checks without logging. This hides failures that should be reported in the baseline results.",
+      "existing_code": "        except Exception:\n            idem_err += 1",
+      "start_line": 44,
+      "end_line": 45,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "Line 58 uses `is False` for identity comparison. While this works for bool singletons, it is semantically incorrect for checking return values. Use `== False` or better yet `not r2.get('ok')` to check truthiness.",
+      "existing_code": "    blocked = (r2.get(\"ok\") is False) or (r2.get(\"code\") in (\"collision\", \"already_owner\"))",
+      "start_line": 73,
+      "end_line": 73,
+      "category": "style",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "Lines 52-53: The P95 index calculation `int(len(lat_ms) * 0.95) - 1` can produce negative indices for small lists. For example, with len=1, this gives index 0 (correct), but with len=2 and the formula, it could produce -1 which wraps to the last element. Consider using `max(0, int(len * 0.95) - 1)` or a different percentile calculation approach.",
+      "existing_code": "    p95 = lat_ms[int(len(lat_ms) * 0.95) - 1] if len(lat_ms) \u003e= 2 else (lat_ms[0] if lat_ms else 0)",
+      "start_line": 49,
+      "end_line": 49,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "The docstring mentions '并发诚实率' (concurrency honesty rate) but both benchmark functions run sequentially. This is misleading documentation. Either implement actual concurrent testing or update the docstring to reflect sequential execution.",
+      "existing_code": "\"\"\"E-6 混沌/压测基线：dispatch 幂等与并发诚实率（不依赖外部负载工具）。",
+      "start_line": 3,
+      "end_line": 3,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "SECRET_KEY and JWT_SECRET_KEY share the same persistence file (logs/auto-secret-dev.txt). If this file is compromised or accidentally committed, both the application signing key and all JWT tokens are exposed. Consider separating them into distinct files or adding stricter OS-level access controls beyond chmod 0600.",
+      "existing_code": "self._persist_dev_secret(\"secret\", generated)\n                warnings.warn(\n                    \"[DEV] SECRET_KEY 为占位符,已生成强随机密钥并写入 logs/auto-secret-dev.txt\"\n                    \"(跨重启复用,JWT 不会失效)\", stacklevel=2)",
+      "start_line": 921,
+      "end_line": 924,
+      "category": "security"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The dev secret persistence relies on .gitignore to prevent leakage, but the security comment claims '文件已在 .gitignore 中,不会泄露到版本库'. If .gitignore is missing this entry or someone commits the file anyway, secrets are exposed. Additionally, os.chmod(f, 0o600) silently fails on Windows (caught by broad except), weakening the security claim in mixed environments.",
+      "existing_code": "try:\n                import os\n                os.chmod(f, 0o600)\n            except (OSError, NotImplementedError):  # noqa: BLE001\n                # Windows 或受限环境:忽略,文件安全由 NTFS ACL / .gitignore 保护\n                pass",
+      "start_line": 1101,
+      "end_line": 1106,
+      "category": "security"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "_init_production_key_validation() only checks a small subset of keys (JWT_SECRET_KEY, REDIS_PASSWORD, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, SMTP_PASSWORD, DATABASE_URL). It misses many sensitive fields like AI_OPENAI_API_KEY, AI_ANTHROPIC_API_KEY, and other provider API keys that could be left as empty strings or weak values in production. This creates a false sense of security.",
+      "existing_code": "for key_name in [\"JWT_SECRET_KEY\", \"REDIS_PASSWORD\",\n                             \"MINIO_ACCESS_KEY\", \"MINIO_SECRET_KEY\",\n                             \"SMTP_PASSWORD\"]:",
+      "start_line": 967,
+      "end_line": 969,
+      "category": "security"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "CORS_ORIGINS property does not validate that parsed origins are well-formed URLs. Malformed entries (e.g., 'http://', 'localhost', non-URL strings) will be passed through, potentially causing runtime errors in FastAPI's CORS middleware or allowing invalid origins.",
+      "existing_code": "return [origin.strip() for origin in raw.split(\",\") if origin.strip()]",
+      "start_line": 113,
+      "end_line": 113,
+      "category": "bug"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The _parse_bool_with_strip function handles string booleans but is only applied to REDIS_ENABLED and LOGIN_BF_USE_REDIS via field_validator. Other boolean fields like MODEL_GATEWAY_ENABLED, RLS_PILOT_ENABLED, etc. use Pydantic's default bool parsing, creating inconsistent environment variable handling across the config.",
+      "existing_code": "@field_validator(\"REDIS_ENABLED\", \"LOGIN_BF_USE_REDIS\", mode=\"before\")\n    @classmethod\n    def validate_bool_settings(cls, v: Any) -\u003e bool:\n        return _parse_bool_with_strip(v)",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The Settings class has 10+ properties with duplicated pattern logic (checking Optional[bool] flag, falling back to ENVIRONMENT == 'production'). This repetitive boilerplate is error-prone and hard to maintain. Consider extracting a helper method like `_scheduler_active(flag, default_env='production')` to reduce duplication.",
+      "existing_code": "@property\n    def nvidia_customer_probe_scheduler_active(self) -\u003e bool:\n        flag = self.NVIDIA_CUSTOMER_PROBE_SCHEDULER_ENABLED\n        if flag is not None:\n            return bool(flag)\n        return (self.ENVIRONMENT or \"\").strip().lower() == \"production\"",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "maintainability"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The class contains ~150+ configuration fields spanning multiple domains (AI providers, database, Redis, scheduling, browser runtime, media storage, etc.) with no clear modular organization. This monolithic structure makes the file difficult to navigate, test, and maintain. Consider splitting into domain-specific settings classes.",
+      "existing_code": "class Settings(BaseSettings):\n    model_config = ConfigDict(env_file=_env_file, env_file_encoding=\"utf-8\", extra=\"allow\")",
+      "start_line": 40,
+      "end_line": 41,
+      "category": "maintainability"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The _env_file list comprehension filters out None values but doesn't validate that remaining path strings point to existing files. If ENV_FILE is set to a non-existent path, pydantic-settings will silently ignore it rather than raising an error, making debugging difficult.",
+      "existing_code": "_env_file = [p for p in _env_candidates if p]",
+      "start_line": 38,
+      "end_line": 38,
+      "category": "performance"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The comment claims '文件已在 .gitignore 中,不会泄露' but there's no verification that this file is actually in .gitignore. If the gitignore entry is missing, secrets will be committed. Consider adding an explicit check or using environment variables exclusively for secrets.",
+      "existing_code": "# Unix: 限制文件权限为 0600(仅所有者读写)\n            # Windows: chmod 无效,但 NTFS 继承自父目录权限;\n            # 无论如何,文件已在 .gitignore 中,不会泄露到版本库",
+      "start_line": 1098,
+      "end_line": 1100,
+      "category": "documentation"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The acquisition events query filters by task_type pattern but does NOT filter by tenant_id/tid. This means it returns acquisition events from ALL tenants, not just the requested tenant. This is a security and correctness issue - users could see other tenants' acquisition activity. Fix: add `.filter(EvolutionTaskRecord.tenant_id == tid)` to the query on line 102.",
+      "existing_code": "        acq = (\n            session.query(EvolutionTaskRecord)\n            .filter(EvolutionTaskRecord.task_type.like(\"acquisition.%\"))\n            .order_by(EvolutionTaskRecord.created_at.desc())\n            .limit(limit)\n            .all()\n        )",
+      "start_line": 119,
+      "end_line": 125,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The `except Exception:` on line 88-89 silently swallows all exceptions from the meter query block without logging. If MeterEvent model doesn't exist or the query fails, the error is invisible. At minimum, add a warning log like the token_ledger block does (line 73).",
+      "existing_code": "    except Exception:\n        pass",
+      "start_line": 114,
+      "end_line": 115,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The `except Exception:` on lines 107-108 silently swallows all exceptions from the acquisition query block without logging. If EvolutionTaskRecord model doesn't exist or the query fails, the error is invisible. Add a warning log for consistency with the token_ledger block.",
+      "existing_code": "    except Exception:\n        pass",
+      "start_line": 114,
+      "end_line": 115,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The `_reason_plain` function uses substring matching with `in` operator on lowercase strings (lines 28-34). The check `if \"dispatch\" in r` will match unintended reasons containing 'dispatch' (e.g., 'redispatch', 'unexpected_dispatch_action'). Consider using more specific prefixes or exact pattern matching to avoid false matches.",
+      "existing_code": "    if \"ops_dispatch\" in r or \"dispatch\" in r:\n        return \"获客智能派发\"\n    if \"ops_win\" in r:\n        return \"成交经验入环\"\n    if \"ops_loss\" in r:\n        return \"流失经验入环\"\n    if \"reply_ingest\" in r:\n        return \"询盘进线建档\"",
+      "start_line": 32,
+      "end_line": 39,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The `success` attribute access on line 109 uses `getattr(r, 'success', True)` which defaults to True when the attribute doesn't exist. This means if the model schema changes or the field is missing, failed tasks will be displayed as '成功' (success), which is misleading. Consider defaulting to False or handling missing attributes explicitly.",
+      "existing_code": "            \"plain\": f\"获客动作 · {_reason_plain(t)} · {'成功' if getattr(r, 'success', True) else '失败/诚实降级'}\",",
+      "start_line": 134,
+      "end_line": 134,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "The variable `currency` is passed into the function but only used inside `record_ops_win`. However, in line 103-104, when `amount` is truthy and `currency` is falsy/empty, the fallback uses `'USD'`. This is inconsistent because the parameter default is `'USD'` — but if a caller explicitly passes `currency=''`, it falls back to `'USD'` via the `or 'USD'` expression, which silently overrides an explicit empty value. More importantly, `currency` is not passed to `record_acquisition_event`, so any non-default currency is silently discarded. Consider whether currency should be included in the detail string or persisted separately.",
+      "existing_code": "def record_ops_win(\n    db: Any,\n    *,\n    tenant_id: str,\n    inquiry_id: str,\n    amount: float = 0,\n    currency: str = \"USD\",\n    note: str = \"\",\n    won_reasons: list[str] | None = None,\n) -\u003e dict[str, Any]:\n    \"\"\"P2-2 成交入经验环（Win）。\"\"\"\n    parts = []\n    if amount:\n        parts.append(f\"amount={amount}{currency or 'USD'}\")",
+      "start_line": 93,
+      "end_line": 106,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Lines 123-124: `max(loss_reasons.items(), ...)` and `max(win_reasons.items(), ...)` will raise `ValueError: max() arg is an empty sequence` when there are no lost/won items respectively. Although the code has a guard (`if loss_reasons`), the `win_loss_summary` function at lines 123-124 directly calls `max()` without first checking whether the dict is empty — wait, actually it does check. Let me re-read... Actually the guard is present. However, the `top_loss` line 124 and `top_win` line 125 use conditional expressions correctly. The actual issue is: there is no bug here — the empty-case guards are correct. This finding is a false alarm; removing.",
+      "existing_code": "    top_loss = max(loss_reasons.items(), key=lambda x: x[1])[0] if loss_reasons else \"\"\n    top_win = max(win_reasons.items(), key=lambda x: x[1])[0] if win_reasons else \"\"",
+      "start_line": 138,
+      "end_line": 139,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "The except block on lines 36-41 silently swallows ALL exceptions from resolve_tenant_uuid without logging, making it impossible to diagnose tenant resolution failures. This could hide critical security issues like invalid tenant IDs being accepted. Consider logging the exception at least at DEBUG level, or re-raising with context if the failure is unrecoverable.",
+      "suggestion_code": "        try:\n            from app.services.acquisition.repo import resolve_tenant_uuid\n            tid = resolve_tenant_uuid(session, tenant_id)\n            if tid:\n                resolved_tenant = tid\n        except Exception as exc:\n            logger.warning(\"Failed to resolve tenant UUID: %s\", exc)\n            # resolved_tenant remains as fallback",
+      "existing_code": "        try:\n            from app.services.acquisition.repo import resolve_tenant_uuid\n            tid = resolve_tenant_uuid(session, tenant_id)\n            if tid:\n                resolved_tenant = tid\n        except Exception:\n            pass",
+      "start_line": 41,
+      "end_line": 47,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Line 95: `node_tasks[0]` indexing will raise IndexError if `parse_graph_to_tasks` returns an empty list. The conditional only guards `getattr` but doesn't check if node_tasks is non-empty before indexing.",
+      "suggestion_code": "        node_tasks = parse_graph_to_tasks(session, resolved_tenant, graph)\n        plan_task_id = str(getattr(node_tasks[0], \"parent_task_id\", \"\")) if node_tasks else \"\"",
+      "existing_code": "        node_tasks = parse_graph_to_tasks(session, resolved_tenant, graph)\n        plan_task_id = str(getattr(node_tasks[0], \"parent_task_id\", \"\")) if node_tasks else \"\"",
+      "start_line": 95,
+      "end_line": 96,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "The broad except on lines 105-112 catches all exceptions from parse_graph_to_tasks but only records a truncated message. The original traceback is lost (no `raise ... from exc`), making postmortems difficult. Also, no logger.exception call preserves the full traceback for debugging.",
+      "suggestion_code": "    except Exception as exc:  # noqa: BLE001\n        logger.exception(\"dispatch_acquisition 落库失败\")\n        result[\"dispatch_error\"] = f\"{type(exc).__name__}: {str(exc)[:180]}\"\n        result[\"persistence_note\"] = \"任务图落库失败\"",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        logger.exception(\"dispatch_acquisition 落库失败\")\n        result[\"dispatch_error\"] = str(exc)[:200]\n        result[\"persistence_note\"] = \"任务图落库失败\"",
+      "start_line": 110,
+      "end_line": 113,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "The session check on line 88-93 returns early with dispatch_error='db_unavailable', but this is inconsistent with the behavior when auto_dispatch=False (line 75-77). When auto_dispatch=True and session is None, the function still marks dispatched=False but provides no useful error context beyond 'db_unavailable'. Consider whether this should raise an exception or return a more descriptive error.",
+      "suggestion_code": "    if session is None:\n        result[\"dispatch_error\"] = \"db_unavailable\"\n        result[\"persistence_note\"] = \"无数据库会话，跳过任务落库/派发（诚实失败）\"\n        logger.warning(\"Dispatch requested but no database session available for tenant=%s\", resolved_tenant)\n        return result",
+      "existing_code": "    if session is None:\n        result[\"dispatch_error\"] = \"db_unavailable\"\n        result[\"persistence_note\"] = \"无数据库会话，跳过任务落库/派发（诚实失败）\"\n        return result",
+      "start_line": 86,
+      "end_line": 89,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Late imports on lines 46-47 and 54-57 reduce code readability and make it harder to track dependencies. While this is a common pattern in FastAPI apps to avoid circular imports, consider whether these could be moved to module level with proper ordering, or at minimum document why they're deferred.",
+      "suggestion_code": "# Consider moving these imports to module level if circular dependency allows:\n# from app.schemas.hermes_orchestration import IntentEvent\n# from app.services.hermes import planner_service as ps",
+      "existing_code": "    from app.schemas.hermes_orchestration import IntentEvent\n    from app.services.hermes import planner_service as ps\n\n    event = IntentEvent(",
+      "start_line": 49,
+      "end_line": 52,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Line 75: The list comprehension builds the full `nodes` list eagerly even when auto_dispatch=False and the function returns early on line 78. For large graphs, this is wasted work. Consider deferring node construction or checking auto_dispatch first.",
+      "suggestion_code": "    result: dict[str, Any] = {\n        \"plan_id\": graph.plan_id,\n        \"graph_source\": source,\n        \"node_count\": len(graph.nodes),\n        \"nodes\": [],  # Will be populated if needed\n        \"approval_required\": list(graph.policies.approval_required or []),\n        \"dispatched\": False,\n        \"task_ids\": [],\n        \"plan_task_id\": \"\",\n        \"dispatch_error\": \"\",\n        \"persistence_note\": \"\",\n        \"tenant_id\": resolved_tenant,\n        \"tenant_id_raw\": tenant_id,\n    }\n    if not auto_dispatch:\n        result[\"persistence_note\"] = \"仅拆解预览，未派发（auto_dispatch=false）\"\n        return result\n    \n    nodes = [",
+      "existing_code": "    nodes = [\n        {\n            \"id\": n.id,\n            \"executor\": n.executor,\n            \"capability\": n.capability,\n            \"depends_on\": list(n.depends_on or []),\n        }\n        for n in graph.nodes\n    ]\n    result: dict[str, Any] = {\n        \"plan_id\": graph.plan_id,\n        \"graph_source\": source,\n        \"node_count\": len(graph.nodes),\n        \"nodes\": nodes,",
+      "start_line": 60,
+      "end_line": 73,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Line 92: `getattr(node_tasks[0], \"parent_task_id\", \"\")` returns an empty string if the attribute doesn't exist, then line 93 checks `if plan_task_id:` which will be falsy for empty string. However, the error handling path on lines 100-103 sets dispatch_error='no_plan_task_id' but doesn't mark the plan as failed - it just returns with dispatched=False. This might be acceptable but worth confirming the intended behavior.",
+      "existing_code": "        plan_task_id = str(getattr(node_tasks[0], \"parent_task_id\", \"\")) if node_tasks else \"\"\n        result[\"task_ids\"] = [str(getattr(t, \"id\", \"\")) for t in node_tasks]\n        result[\"plan_task_id\"] = plan_task_id\n        if plan_task_id:",
+      "start_line": 96,
+      "end_line": 99,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "The `reasons: list[str]` parameter in `record_ops_loss` has no default value, making it a required positional-or-keyword argument. Callers must always provide it. This is not a bug per se, but it is worth noting: if a caller passes an empty list `[]`, `detail` becomes `\"\"` (since `\"; \".join([])` returns `\"\"`) and then `detail or \"loss\"` correctly falls back to `\"loss\"`. However, the `\" | {note}\"` suffix is appended only when `note` is truthy — if both `reasons=[]` and `note=\"\"`, detail is `\"\"` and falls back to `\"loss\"`. This edge case is handled correctly. No issue here.",
+      "existing_code": "def record_ops_loss(db: Any, *, tenant_id: str, inquiry_id: str, reasons: list[str], note: str = \"\") -\u003e dict[str, Any]:",
+      "start_line": 80,
+      "end_line": 80,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Lines 46-47 and 70: Both `error_message` and `output_summary` truncate `detail` to 500 characters (`detail[:500]`). While this prevents excessively long strings from being stored, it silently discards relevant failure context that the evolution engine and terminal hook need to learn from. If a real error message exceeds 500 chars, the evolution feedback loop will receive incomplete data. Consider logging the full detail when truncation occurs, or using a larger limit with a hard ceiling (e.g., 2000 chars).",
+      "existing_code": "            error_message=None if success else detail[:500],\n            input_summary=inquiry_id,\n            output_summary=detail[:500],",
+      "start_line": 47,
+      "end_line": 49,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Line 125: `from app.services.acquisition.loss_report import REASON_HINTS` is imported inside the function body on every call. While this avoids circular import issues, it means the import happens repeatedly. More importantly, both `experience_feed.py` and `loss_report.py` appear to be in the same package (`app.services.acquisition`). If `loss_report.py` imports anything from `experience_feed.py` at module level, this creates a circular dependency that could fail at runtime. Verify that `loss_report.py` does not transitively import from `experience_feed.py`.",
+      "existing_code": "    from app.services.acquisition.loss_report import REASON_HINTS\n\n    items = list(cards or [])",
+      "start_line": 125,
+      "end_line": 127,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Lines 55 and 75: Both `except Exception` blocks use `# noqa: BLE001` to suppress the bare-except linting warning. While catching `Exception` (not bare `except:`) is better than swallowing `KeyboardInterrupt` and `SystemExit`, these are very broad catches. The first block (line 55) catches any exception from `EvolutionEngine` instantiation or `record_task_execution` call — including programming errors, import failures, etc. — and silently falls through to the fallback. If the fallback also fails, the original exception from the primary path is lost (only `exc2` is logged on line 76). Consider logging the primary exception at a higher level or including it in the returned reason for better observability.",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        logger.debug(\"EvolutionEngine 写入失败，尝试 terminal_hook: %s\", exc)\n\n    # 2) terminal_hook\n    try:",
+      "start_line": 55,
+      "end_line": 59,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/fulfillment_nodes.py",
+      "content": "When deposit is paid, the code unconditionally overwrites status to \"done\", even if the deposit node was already marked \"overdue\". This loses overdue information and will suppress overdue reminders. Fix: skip the payment-led update when status is \"overdue\" or \"skipped\", e.g. `if status not in (\"done\", \"skipped\", \"overdue\"):`.",
+      "existing_code": "            elif key == \"deposit\" and deposit_paid:\n                status = \"done\" if not status or status in (\"pending\", \"active\") else status",
+      "start_line": 68,
+      "end_line": 69,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/fulfillment_nodes.py",
+      "content": "The balance_status guard uses `not in (\"paid\",)` which silently allows None (missing balance_status attribute) into the reminder path as non-paid. Because `\"\" or \"\"` earlier normalizes missing balance_status to `\"\"`, this is reachable. The comparison should explicitly handle None/missing rather than relying on normalization.",
+      "existing_code": "                or (key == \"balance\" and deposit_paid and balance_status not in (\"paid\",))",
+      "start_line": 108,
+      "end_line": 108,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/fulfillment_nodes.py",
+      "content": "The outer reminder condition tests `pi_no is not None` but since pi_no is always a str (defaulting to `\"\"`), this is always true. The inner elif then checks `not pi_no` (truthy for empty string). The structure misleads: the guard does not prevent entry, and the branch reads as though it guards against None when it actually tests emptiness. Simplify to only `key in (\"pi\", \"deposit\")`.",
+      "existing_code": "        if status == \"overdue\" or (status in (\"pending\", \"active\") and key in (\"pi\", \"deposit\") and pi_no is not None):",
+      "start_line": 97,
+      "end_line": 97,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/fulfillment_nodes.py",
+      "content": "Missing `stage` in reminder key check: the earlier loop considers `stage` for quote done, but the reminder logic checks `key in (\"pi\", \"deposit\")` and then inside has a pi branch. If stage is something like `\"won\"` the PI may be done while deposit reminder still fires. Consider whether `stage` should gate the deposit reminder condition.",
+      "existing_code": "                or (key == \"pi\" and not pi_no and stage not in (\"new\", \"lost\"))",
+      "start_line": 109,
+      "end_line": 109,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/growth_ops.py",
+      "content": "Module-level mutable singletons (content_attr_store and ip_slot_catalog) have no thread safety. Concurrent requests from different tenants can interleave mutations on shared dicts/lists, causing data corruption or inconsistent reads. No locks are used around dict operations or list iterations.",
+      "suggestion_code": "Add threading.Lock to each store class and acquire it during all read/write operations, or use a request-scoped store pattern instead of module-level globals.",
+      "existing_code": "content_attr_store = ContentAttributionStore()\nip_slot_catalog = IpSlotCatalog()",
+      "start_line": 173,
+      "end_line": 174,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/growth_ops.py",
+      "content": "Id generation uses hex[:10] from uuid4, producing only 40 bits of entropy. If these IDs are exposed in URLs or APIs, an attacker could enumerate all content_ids and slot_ids by brute-force guessing.",
+      "suggestion_code": "Use the full uuid4 string (36 chars including hyphens, 122 bits of entropy) instead of slicing the hex prefix. Or use secrets.token_hex() for non-UUID IDs.",
+      "existing_code": "cid = content_id or f\"cnt-{uuid4().hex[:10]}\"\nand:\nslot_id: str = field(default_factory=lambda: f\"ip-{uuid4().hex[:8]}\")",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/growth_ops.py",
+      "content": "link_inquiry calls upsert_content before any validation of the inquiry_id, which means a phantom ContentTouch entry is created even when linking fails (e.g., if content_id doesn't exist or inquiry_id is invalid). The early return on missing ids happens after the mutation.",
+      "suggestion_code": "Move the validation before the upsert_content call, or check if the content exists before creating a phantom entry.",
+      "existing_code": "def link_inquiry(self, *, content_id: str, inquiry_id: str, tenant_id: str = \"\") -\u003e dict[str, Any]:\n    if not content_id or not inquiry_id:\n        return {\"linked\": False, \"reason\": \"content_id/inquiry_id required\"}\n    item = self.upsert_content(content_id=content_id, tenant_id=tenant_id)",
+      "start_line": 60,
+      "end_line": 63,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/growth_ops.py",
+      "content": "upsert_content uses a silent fallback pattern: tenant_id parameter is optional with empty string default, but the code does `tenant_id or item.tenant_id` which means updates without tenant_id will preserve the old value. This makes tenant isolation unreliable - callers may not realize they're updating a record with a different tenant_id than expected.",
+      "suggestion_code": "Either require tenant_id on upsert_content or document that it's optional for identity preservation. Consider adding tenant_id to the method signature without a default to enforce explicit tenant context.",
+      "existing_code": "item.tenant_id = tenant_id or item.tenant_id",
+      "start_line": 56,
+      "end_line": 56,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/growth_ops.py",
+      "content": "list_contents iterates all items and builds a new list, then sorts by inquiry_count. For large catalogs this is O(n log n) and creates unnecessary dict copies. The sort is also unstable and could reorder items with equal inquiry counts unpredictably.",
+      "suggestion_code": "Consider using heapq.nlargest if only top-K results are needed, or add pagination to limit the result set size.",
+      "existing_code": "out.sort(key=lambda x: x[\"inquiry_count\"], reverse=True)\n    return out",
+      "start_line": 91,
+      "end_line": 92,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/intent_classifier.py",
+      "content": "The 't/t' keyword in payment_discuss has no trailing space, while 'tt ' and 'lc ' use trailing-space padding to avoid substring matches. Since the input is lowercased, 't/t' will match inside strings like 'what's the t/t amount' — which is likely intended. However, this inconsistency in pattern design suggests a risk: similar keywords like 'saso' (no padding) vs 'ce ' (padded) may produce unintended partial matches. Consider unifying the matching strategy across all keywords.",
+      "existing_code": "        [\"付款\", \"定金\", \"t/t\", \"tt \", \"信用证\", \"l/c\", \"lc \", \"payment\", \"deposit\", \"账期\", \"全款\"],",
+      "start_line": 26,
+      "end_line": 26,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/intent_classifier.py",
+      "content": "The 'competitor' keyword in reject_competitor can cause false positives in neutral or positive contexts where the word appears without rejection intent (e.g., 'We also work with competitor brands'). This keyword is broad and should either be qualified with negative terms or removed in favor of more specific language.",
+      "existing_code": "        [\"别家\", \"已订\", \"已采购\", \"不要了\", \"不需要\", \"competitor\", \"already ordered\", \"not interested\"],",
+      "start_line": 19,
+      "end_line": 19,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/intent_classifier.py",
+      "content": "The `country` parameter in `classify_reply(text: str, country: str = \"\")` is never referenced in the function body. This suggests either incomplete implementation or that the classifier was designed to handle geo-specific intents but lacks that logic. At minimum, document why it's unused or remove it to avoid confusion.",
+      "existing_code": "def classify_reply(text: str, country: str = \"\") -\u003e dict[str, Any]:",
+      "start_line": 73,
+      "end_line": 73,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/intent_classifier.py",
+      "content": "When multiple intents have the same keyword hit count, only the first matched intent (in rule order) is selected. This means rule ordering silently determines outcomes without documentation. For example, if both `generic_interest` and `request_quote` match equally, `generic_interest` wins simply because it appears first. Consider adding tie-breaking logic or logging the ambiguity.",
+      "existing_code": "        elif len(hits) == best_hits and hits and best is None:",
+      "start_line": 96,
+      "end_line": 96,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/intent_classifier.py",
+      "content": "The confidence score uses a linear formula: min(0.95, 0.45 + 0.15 * best_hits). There is no documentation of downstream thresholds (e.g., is 0.2 vs 0.6 treated differently?). If this value drives automated decisions, the formula and thresholds should be documented or extracted as named constants for clarity and maintainability.",
+      "existing_code": "    conf = min(0.95, 0.45 + 0.15 * best_hits)",
+      "start_line": 111,
+      "end_line": 111,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Lines 34-56 and 59-77: The fallback chain silently discards the primary exception. If `EvolutionEngine` raises an exception (e.g., database constraint violation, connection error), it is logged at DEBUG level and the code falls through to `terminal_hook`. If `terminal_hook` also fails, only `exc2` is captured in the returned reason — the original `Exc` is completely lost. This makes debugging production failures nearly impossible when both paths fail. At minimum, log both exceptions at WARNING or ERROR level, and include the primary exception in the returned reason dict so operators can see the full failure chain.",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        logger.debug(\"EvolutionEngine 写入失败，尝试 terminal_hook: %s\", exc)\n\n    # 2) terminal_hook\n    try:\n        from app.services.trace.terminal_hook import record_terminal_state\n        out = record_terminal_state(\n            db,\n            task_type=task_type,\n            executor_type=\"workflow\",\n            executor_id=executor_id,\n            success=success,\n            tenant_id=tenant_id or None,\n            duration_ms=duration_ms,\n            input_summary=inquiry_id,\n            output_summary=detail[:500],\n            metadata={\"event\": event},\n        )\n        return {\"recorded\": True, \"engine\": \"terminal_hook\", \"id\": out.get(\"record_id\") if isinstance(out, dict) else None,\n                \"task_type\": task_type}\n    except Exception as exc2:  # noqa: BLE001\n        logger.warning(\"经验写入全部失败 event=%s: %s\", event, exc2)\n        return {\"recorded\": False, \"reason\": str(exc2)[:200], \"task_type\": task_type}",
+      "start_line": 55,
+      "end_line": 77,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Line 30-31: `if db is None` returns early with `{recorded: False, reason: 'db_unavailable'}`. However, `db` could be a falsy value other than `None` (e.g., an empty string `\"\"`, or a SQLAlchemy session that failed to initialize). A falsy-but-non-None `db` would pass this check and then likely raise an exception inside the `try` blocks, which gets caught and logged. This is not incorrect per se, but the check is too narrow — it only guards against `None`, not other invalid states of `db`.",
+      "existing_code": "    if db is None:\n        return {\"recorded\": False, \"reason\": \"db_unavailable\", \"task_type\": task_type}",
+      "start_line": 30,
+      "end_line": 31,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Line 80: `reasons: list[str]` is a required parameter with no default. If this signature is later changed to have a default (e.g., `reasons: list[str] = None`), it would become a mutable default argument bug. As-is, it is safe but rigid — callers must always provide a list. Consider whether an optional `reasons=None` with internal `reasons or []` handling (as done on line 81) would be more caller-friendly without introducing the mutable-default risk.",
+      "existing_code": "def record_ops_loss(db: Any, *, tenant_id: str, inquiry_id: str, reasons: list[str], note: str = \"\") -\u003e dict[str, Any]:",
+      "start_line": 80,
+      "end_line": 80,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/experience_feed.py",
+      "content": "Lines 105-106: When `amount` is truthy but `currency` is an empty string `''`, the expression `currency or 'USD'` correctly falls back to `'USD'`. However, `currency` is never passed through to `record_acquisition_event`, so any non-default currency information is silently dropped from the evolution record. If multi-currency support is intended, `currency` should be included in the `metadata` dict or the `detail` string explicitly. As written, the detail line `f\"amount={amount}{currency or 'USD'}\"` does include the currency in the text, but structurally it is buried in a free-text `detail` field rather than being stored as a proper field.",
+      "existing_code": "    if amount:\n        parts.append(f\"amount={amount}{currency or 'USD'}\")",
+      "start_line": 105,
+      "end_line": 106,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/knowledge_queue.py",
+      "content": "The pre-scan correctly identified a critical shared mutable seed issue. `_SEED` is a module-level list of dicts, and the `KnowledgeQueueStore.__init__` unpacks them directly with `KnowledgeItem(**s)`. While this creates new `KnowledgeItem` instances, subsequent mutations to `done`, `done_at`, or `done_by` do not affect the seed dicts themselves (dataclass fields are distinct), so this specific concern is mitigated for new instances. However, if the seed dicts were mutated elsewhere or if the dataclass was configured differently, this could be a risk. As-is, it's acceptable.",
+      "existing_code": "_SEED: list[dict[str, Any]] = [\n    {\n        \"id\": \"know-cert-official\",\n        \"title\": \"认证官方清单怎么查\",\n        \"category\": \"认证合规\",",
+      "start_line": 33,
+      "end_line": 37,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/knowledge_queue.py",
+      "content": "The `tenant_id` parameter in `list()` and `report()` is unused. The method signatures imply multi-tenancy support, but there is no filtering or isolation by tenant. If this is intended to support multiple tenants, the implementation is incomplete and leaks state. If not, the parameter should be removed to avoid misleading API contracts.",
+      "existing_code": "def list(self, *, tenant_id: str = \"\", category: str = \"\", only_pending: bool = False) -\u003e list[dict[str, Any]]:",
+      "start_line": 180,
+      "end_line": 180,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/knowledge_queue.py",
+      "content": "The module-level singleton `knowledge_queue_store` holds mutable state (the `_items` dict). In a multi-tenant, multi-threaded environment (common for SaaS applications), concurrent calls to `mark_done`, `mark_pending`, or `list` can cause race conditions. The check-then-act pattern in `mark_done` (reading `it.done`, then setting it) is not atomic. Use a lock or thread-safe data structure to protect shared state.",
+      "existing_code": "knowledge_queue_store = KnowledgeQueueStore()",
+      "start_line": 237,
+      "end_line": 237,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/knowledge_queue.py",
+      "content": "Error response shapes are inconsistent: `not_found` returns `{ok: False, ...}` while `already_done` returns `{ok: True, ...}` with the item. This forces clients to check both `ok` and `code` to distinguish between missing and already-processed items. Consider a uniform error shape or explicit success wrapping for all cases.",
+      "existing_code": "if it is None:\n            return {\"ok\": False, \"code\": \"not_found\", \"message\": f\"无此知识条目 {item_id}\"}\n        if it.done:\n            return {\"ok\": True, \"code\": \"already_done\", \"message\": f\"「{it.title}」已读过\", \"item\": it.__dict__}",
+      "start_line": 193,
+      "end_line": 196,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/knowledge_queue.py",
+      "content": "The `report()` method returns all items via `self.list(tenant_id=tenant_id)` which ignores the `tenant_id` parameter. If multi-tenancy is intended, this is a data leak. If not, the parameter should be removed.",
+      "existing_code": "def report(self, *, tenant_id: str = \"\") -\u003e dict[str, Any]:\n        items = self.list(tenant_id=tenant_id)",
+      "start_line": 211,
+      "end_line": 212,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The duplicate `if key[1]:` check on line 140 is redundant — it's already inside the `if key[1]:` block opened on line 107. This dead branch will never execute (the inner assignment on line 141 is unreachable because if we reach it, we've already returned at line 139). Remove the outer wrapping and the inner duplicate guard.",
+      "existing_code": "if key[1]:\n                self._by_email[key] = buyer.buyer_id",
+      "start_line": 140,
+      "end_line": 141,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "When buyer.email is empty, key becomes (tenant_id, '') which has truthy second element '', causing `if key[1]:` to be True and enter the conflict branch — but the code then calls `.lower()` on an already-lowercased empty string which is fine, however the logic is confusing and could mask bugs. More importantly, the code creates a `self._by_email` entry with empty email as key (line 141), which pollutes the index with unresolvable lookups. Consider guarding the index update with a non-empty email check.",
+      "existing_code": "        key = (buyer.tenant_id, (buyer.email or \"\").lower())\n        if key[1]:\n            existing_id = self._by_email.get(key)\n            if existing_id and existing_id != buyer.buyer_id:",
+      "start_line": 106,
+      "end_line": 109,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The sample status auto-transition on line 629 only checks for 'shipped', 'delivered', 'confirmed', 'preparing' but not 'requested'. If a sample goes through 'requested -\u003e fee_paid' it should probably also transition. This is a business-logic gap — the state machine may leave samples stuck in 'requested' even after fee collection.",
+      "existing_code": "        # 收款成功可自动推进样品阶段\n        if kwargs.get(\"fee_status\") == \"paid\" and s.status in (\"shipped\", \"delivered\", \"confirmed\", \"preparing\"):\n            s.status = \"fee_collected\"",
+      "start_line": 628,
+      "end_line": 630,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The `score_display` method mutates `self.buyer_grade_reason` when computing on-the-fly — this is a side effect that persists back to the in-memory card object. This may be intended, but it means calling `score_display()` twice with no grade set will only set the reason once (the first call), then on subsequent calls `grade` is still empty (since buyer_score might change) causing repeated grade computation. The method should either explicitly document this mutation or avoid it by using a local variable.",
+      "existing_code": "        grade = self.buyer_grade or \"\"\n        if not grade and self.buyer_score:\n            grade, reason = score_grade(self.buyer_score)\n            if not self.buyer_grade_reason:\n                self.buyer_grade_reason = reason",
+      "start_line": 374,
+      "end_line": 378,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The `add_note` method silently creates a new OpsCard when inquiry_id doesn't exist (lines 516-518). This masks data integrity issues — callers expecting an existing card will get a phantom card with no tenant or buyer context. Same pattern appears in `set_owner`, `record_touch`, `record_loss`, `update_sample`, `update_fulfillment_node`, `set_research_level`, `update_payment`, `update_logistics`. These methods should either raise an exception or return None to signal the card wasn't found.",
+      "existing_code": "    def add_note(self, inquiry_id: str, author: str, body: str, pinned: bool = False) -\u003e OpsCard:\n        card = self._by_inquiry.get(inquiry_id)\n        if card is None:\n            card = OpsCard(inquiry_id=inquiry_id)",
+      "start_line": 515,
+      "end_line": 518,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The bare `except Exception: pass` on lines 912-916 silently swallows any import failure from the persistence patch. This means if `ops_card_pg` is missing, misconfigured, or raises any exception during initialization, the system will continue running without the Postgres backend — but the developer has no visibility into this. At minimum, log the exception. Also, this swallows exceptions during module import time, which could hide critical setup errors.",
+      "existing_code": "try:\n    from app.services.acquisition.ops_card_pg import patch_store_persistence\n    patch_store_persistence(ops_card_store)\nexcept Exception:\n    pass",
+      "start_line": 912,
+      "end_line": 916,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The module-level singleton stores (`buyer_store`, `ops_card_store`, `playbook_store`) are mutable shared state with no synchronization. In a multi-threaded ASGI server (like uvicorn with multiple workers), concurrent requests can race on dict mutations. While Python's GIL protects dict operations from corruption, logical races (check-then-act) are possible — especially in `BuyerMasterStore.upsert()` where two threads could both see `existing_id` as None and both insert, creating duplicate identities.",
+      "existing_code": "buyer_store = BuyerMasterStore()\nops_card_store = OpsCardStore()\nplaybook_store = PlaybookStore()",
+      "start_line": 907,
+      "end_line": 909,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "The `_now_iso()` function uses `datetime.now(timezone.utc)` but should use `datetime.utcnow()` or `datetime.now(timezone.utc)` consistently. The current implementation is correct, but `datetime.now(timezone.utc)` is preferred over the deprecated `datetime.utcnow()`. No issue here — this is fine. However, the function is called repeatedly and could be simplified to a module-level constant if the ISO string doesn't need to change within a request.",
+      "existing_code": "def _now_iso() -\u003e str:\n    return datetime.now(timezone.utc).isoformat()",
+      "start_line": 37,
+      "end_line": 38,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "The broad `except Exception: pass` at lines 33-42 silently swallows all errors from ops_store processing (e.g., AttributeError, TypeError, configuration failures). This makes it impossible to diagnose why card/touch/won/lost counts might unexpectedly be zero. Consider logging the exception or at least narrowing the catch to specific expected exceptions.",
+      "existing_code": "    if ops_store is not None:\n        try:\n            cards = list(getattr(ops_store, \"_by_inquiry\", {}).values())\n            if tenant_id:\n                cards = [c for c in cards if getattr(c, \"tenant_id\", \"\") in (\"\", tenant_id)]\n            card_n = len(cards)\n            touch_n = sum(1 for c in cards if getattr(c, \"last_touch_at\", \"\"))\n            won_n = sum(1 for c in cards if getattr(c, \"stage\", \"\") == \"won\" or getattr(c, \"won_at\", \"\"))\n            lost_n = sum(1 for c in cards if getattr(c, \"stage\", \"\") == \"lost\")\n        except Exception:\n            pass",
+      "start_line": 34,
+      "end_line": 44,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "The won_n count logic uses `or` which means a card with both stage=='won' AND won_at truthy will still only be counted once (correct). However, the condition `getattr(c, 'stage', '') == 'won' or getattr(c, 'won_at', '')` could double-count if there's a bug in data where both are present but distinct. More importantly, the won_n value from ops_store can be overridden by win_loss_view data (line 46-47: `won_n = won_n or int(...)`), which means if ops_store has valid won_n \u003e 0, the win_loss_view count is ignored entirely. This is potentially surprising behavior.",
+      "existing_code": "    if win_loss_view:\n        won_n = won_n or int(win_loss_view.get(\"won_count\") or 0)\n        lost_n = lost_n or int(win_loss_view.get(\"lost_count\") or 0)",
+      "start_line": 45,
+      "end_line": 47,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "The billing_view check only appends a rescue action when balance is None, but doesn't validate that the billing integration is actually configured. If billing_view exists but has other required fields missing, this check alone may miss critical integration gaps. Consider checking for more comprehensive billing configuration validity.",
+      "existing_code": "    if billing_view and (billing_view.get(\"balance\") is None):\n        rescue_actions.append(\"计费账本未接入时余额不可见，可先完成联调配置\")",
+      "start_line": 65,
+      "end_line": 66,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "The NPS score normalization uses `int()` which truncates rather than rounds non-integer scores. A score of 8.9 would become 8 instead of 9, potentially misclassifying a promoter as a passive. Also, values outside 0-10 are clamped silently without warning, which may hide data quality issues. Consider using round() and logging out-of-range values.",
+      "existing_code": "        s = max(0, min(10, int(nps_score)))",
+      "start_line": 79,
+      "end_line": 79,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/loss_report.py",
+      "content": "Inquiry-level substring match in _normalize_reason is too broad. Any reason containing '无回复' (e.g. '客户说无回复意向', '暂无回复计划') is collapsed into the canonical '无回复' bucket, distorting both counts and hints. If the intent is to normalize only exact known values, use an exact equality check. If substring matching is intentional, document that behavior explicitly and consider whether it leads to misleading reports.",
+      "existing_code": "    if \"无回复\" in r or r == \"原因未知\":\n        return \"无回复\"",
+      "start_line": 26,
+      "end_line": 27,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/loss_report.py",
+      "content": "When total_lost is 0 (empty cards or no lost-stage items), counter is empty so sum(counter.values()) is 0, but `or 1` forces total_marks to 1. As a result, distribution will be [] (no items), top_reason='', but total_reason_marks=1 and every returned consumer sees a non-zero denominator with no backing data. This silently masks the zero-state and could mislead downstream consumers that trust total_reason_marks as an accuracy indicator.",
+      "existing_code": "    total_marks = sum(counter.values()) or 1\n    distribution = [\n        {\n            \"reason\": reason,\n            \"count\": count,\n            \"percent\": round(count * 100.0 / total_marks, 1),\n            \"hint\": REASON_HINTS.get(reason, \"结合个案复盘话术与报价结构\"),\n        }\n        for reason, count in counter.most_common()\n    ]\n    top = distribution[0][\"reason\"] if distribution else \"\"",
+      "start_line": 54,
+      "end_line": 64,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/loss_report.py",
+      "content": "A bare `continue` inside a loop without an outer try/except leaves no traceback information. If getattr(card, 'loss_reasons', None) raises (e.g. on a poorly behaved custom object), the exception propagates but it's unclear whether the caller can distinguish normal missing attributes from unexpected broken ones. Recommend wrapping card iteration in `try/except Exception` and logging/attaching the error to the item rather than letting unknown failures surface inconsistently.",
+      "existing_code": "    for card in cards:\n        reasons = list(getattr(card, \"loss_reasons\", None) or [])\n        if not reasons and getattr(card, \"stage\", \"\") != \"lost\":\n            continue",
+      "start_line": 35,
+      "end_line": 38,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/loss_report.py",
+      "content": "The function silently accepts any iterable of objects without validating their shape. If `cards` contains items missing expected fields, AttributeError or NoneType errors can appear downstream when consumers assume `inquiry_id`, `buyer_display`, etc. are strings. Consider adding a lightweight validation layer (or explicit type guard) early in the function so malformed inputs raise with a clear message rather than producing confusing downstream failures.",
+      "existing_code": "    for card in cards:\n        reasons = list(getattr(card, \"loss_reasons\", None) or [])\n        if not reasons and getattr(card, \"stage\", \"\") != \"lost\":\n            continue\n        total_lost += 1\n        norm = [_normalize_reason(r) for r in (reasons or [\"其他\"])]",
+      "start_line": 35,
+      "end_line": 40,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/nps_rescue.py",
+      "content": "The should_notify logic uses `bucket == 'detractor'` which depends on the potentially truncated score. If nps_score is float (e.g., 6.9), truncation to 6 creates a detractor bucket, but rounding would give 7 (passive). This could cause unexpected notifications. The same issue affects the plain text description which uses the truncated value.",
+      "existing_code": "        should_notify: bool = usage_low or (nps_block.get(\"collected\") and nps_block.get(\"bucket\") == \"detractor\"),",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "medium"
+    }
+  ],
+  "warnings": [
+    {
+      "file": "backend/app/services/acquisition/onboarding.py",
+      "message": "stopped in batch #0: used 789196 tokens + next-file estimate exceeds budget 800000",
+      "type": "token_budget_reached"
+    },
+    {
+      "file": "backend/app/services/acquisition/loss_report.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/services/acquisition/nps_rescue.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/api/v1/routes/acquisition.py",
+      "message": "LLM completion error: context deadline exceeded",
+      "type": "scan_subtask_error"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1.  **Silent Error Swallowing Across Acquisition Services**\n    Broad `except Exception: pass` or silent `except Exception:` blocks appear in `dispatch_service.py`, `nps_rescue.py`, `__init__.py`, `billing_explain.py`, and `baseline_bench.py`. These hide configuration failures, missing dependencies (e.g., `ops_card_pg`), and data integrity errors, making production diagnosis nearly impossible.\n\n2.  **Inconsistent Time Semantics in Bruteforce Protection**\n    `login_bruteforce.py` mixes `time.time()` (wall-clock) and `time.monotonic()` (clock-speed). This causes Redis-backed and memory-backed locks to expire at different real-world moments, leading to unpredictable lock durations and potential race conditions during failover.\n\n3.  **IP Extraction Vulnerability via X-Forwarded-For**\n    `client_ip_from_request` trusts the first IP in `X-Forwarded-For` without validating proxy chain legitimacy. Attackers can spoof client IPs (e.g., `8.8.8.8`), bypassing IP-based bruteforce locks and identity restrictions.\n\n4.  **Cross-Tenant Data Leak in Billing/Acquisition Queries**\n    `billing_explain.py` queries acquisition events without filtering by `tenant_id`/`tid`. This exposes all tenants' activity to any user, constituting a critical security and compliance violation in multi-tenancy contexts.\n\n5.  **Broken Read-Write Split After Engine Rebind**\n    `database.py`'s `rebind_engine()` recreates the main engine but leaves `read_engine` stale. Subsequent read operations will hit the old, potentially disconnected or outdated database instance, breaking data consistency.\n\n6.  **Shared Mutable State in Multi-Threaded Acquisition Modules**\n    `growth_ops.py`, `knowledge_queue.py`, and `__init__.py` rely on module-level singletons (`content_attr_store`, `knowledge_queue_store`, `buyer_store`) without synchronization. In ASGI environments with multiple workers/threads, this leads to data corruption, race conditions, and lost updates.\n\n7.  **Missing Tenant Isolation in Knowledge Queue**\n    `knowledge_queue.py` accepts `tenant_id` parameters in `list()` and `report()` but ignores them, returning all items. This is a latent data leak if multi-tenancy is ever enabled.\n\n8.  **Incomplete Production Key Validation**\n    `config.py`'s `_init_production_key_validation()` checks only a subset of secrets (JWT, Redis, DB) while missing AI provider keys (OpenAI, Anthropic). Compromised env vars for these missing keys go undetected.\n\n### Module Hotspots\n\n*   **`backend/app/services/acquisition/`**: High density of issues across 8+ files. Dominated by silent error handling, missing tenant filters, race conditions on shared state, and business logic gaps (e.g., `loss_report.py`, `dispatch_service.py`, `nps_rescue.py`).\n*   **`backend/app/core/database.py`**: Critical concurrency and lifecycle bugs (stale engines, unsafe stack assumptions, logger usage before definition).\n*   **`backend/app/core/login_bruteforce.py`**: Security-relevant time inconsistency and IP spoofing vulnerabilities.\n*   **`backend/app/core/config.py`**: Structural maintainability issues and incomplete security validation.\n\n### Cross-Cutting Concerns\n\n*   **Bare/ Silent Exception Handling**: Found in `database.py`, `login_bruteforce.py` (Lua fallbacks), `baseline_bench.py`, `billing_explain.py`, `dispatch_service.py`, `nps_rescue.py`, and `__init__.py`. The pattern is consistent: broad catches with no logging or re-raising, obscuring root causes.\n*   **Missing Tenant Context Propagation**: `billing_explain.py` and `knowledge_queue.py` fail to enforce tenant boundaries in queries or method signatures, risking data leakage.\n*   **Inconsistent Input Validation**: `intent_classifier.py` has inconsistent keyword padding ('t/t' vs 'tt '), `experience_feed.py` has inconsistent currency fallbacks, and `login_bruteforce.py` doesn't validate empty usernames in key generation.\n*   **Mutable Default Arguments / Side Effects**: `experience_feed.py` warns about potential mutable default list risks; `__init__.py` mutates `buyer_grade_reason` during read operations (`score_display`), causing persistent side effects.\n\n### Quick Wins\n\n1.  **Add Logging to Silent Catches**: In `billing_explain.py` (lines 88, 107) and `dispatch_service.py` (lines 36, 105), replace silent `except` blocks with `logger.warning` or `logger.exception` to surface failures.\n2.  **Standardize Time Sources**: Refactor `login_bruteforce.py` to use `_now_mono()` (`time.monotonic()`) exclusively for all lock expiration calculations to ensure consistent semantics across Redis and memory stores.\n3.  **Validate X-Forwarded-For Chain**: Update `client_ip_from_request` in `login_bruteforce.py` to validate that forwarded IPs belong to trusted proxy ranges before trusting them.\n4.  **Fix Tenant Filter in Billing**: Add `WHERE tid = :tenant_id` to the acquisition events query in `billing_explain.py`.\n5.  **Update Read Engine on Rebind**: In `database.py`, ensure `rebind_engine()` also updates `read_engine` to prevent stale database connections.\n6.  **Remove Dead Code**: Delete the redundant `if key[1]:` check in `acquisition/__init__.py` (line 140) which is unreachable.\n7.  **Validate Config File Existence**: In `config.py`, add a check to ensure files in `_env_file` actually exist before passing them to pydantic-settings, preventing silent ignore of misconfigured paths.",
+  "session_id": "7e9bbc4c-98b6-4df0-95f0-1da87e04004e"
+}
