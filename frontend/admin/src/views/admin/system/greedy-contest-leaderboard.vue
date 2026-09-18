@@ -113,7 +113,7 @@
                     :percent="Math.min(100, Number(record.completion_pct))"
                     :status="completionStatus(record.completion_pct)"
                     size="small"
-                    :format="(p) => formatProgressPct(p as number)"
+                    :format="(p: number) => formatProgressPct(p)"
                   />
                   <span class="completion-src">{{ completionSourceLabel(record.completion_source) }}</span>
                 </template>

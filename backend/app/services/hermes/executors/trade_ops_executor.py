@@ -249,7 +249,34 @@ class TradeOpsExecutor(BaseExecutor):
                 )
                 out["card_logistics"] = card.summary_lines().get("物流")
             out["executor"] = self.get_executor_name()
-            return ExecutorResult(node_id=node.id, status="succeeded", output=out)
+            # P0-1 写路径：发运单落库 logistics_shipments（失败不阻断主链，如实标注）
+            try:
+                from app.core.database import SessionLocal
+                from app.services.trade_fulfillment_store import persist_logistics_shipment
+
+                db = SessionLocal()
+                try:
+                    persist = persist_logistics_shipment(
+                        db,
+                        tenant_id=str(p.get("tenant_id") or "") or None,
+                        tracking_no=tn,
+                        carrier=str(p.get("carrier") or out.get("carrier") or "") or None,
+                        status=str(out.get("status") or out.get("milestone") or "in_transit"),
+                        order_id=str(p.get("order_id") or "") or None,
+                        payload=out,
+                        simulated=bool(out.get("simulated")),
+                    )
+                    out["shipment_persisted"] = persist
+                finally:
+                    try:
+                        db.close()
+                    except Exception:  # noqa: BLE001
+                        pass
+            except Exception as persist_exc:  # noqa: BLE001
+                out["shipment_persisted"] = {"persisted": False, "error": str(persist_exc)}
+            # 统一口径：物流源为 demo/simulated 属模拟交付 → 顶层如实 degraded，不伪装 succeeded
+            status = "degraded" if out.get("simulated") else "succeeded"
+            return ExecutorResult(node_id=node.id, status=status, output=out)
         except Exception as exc:  # noqa: BLE001
             return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc))
 

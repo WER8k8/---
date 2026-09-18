@@ -54,11 +54,43 @@ def update_order_payment_status(
                 order.status = "final_payment_received"
     db.commit()
     db.refresh(order)
+    # P0-1 写路径：业务收款落库 payments（与平台 payment_orders 分账）
+    payment_persist = {"persisted": False, "reason": "skipped"}
+    try:
+        from app.services.trade_fulfillment_store import persist_business_payment
+
+        pay_status = {
+            "unpaid": "pending",
+            "partial": "received",
+            "paid": "confirmed",
+            "refunded": "refunded",
+        }.get(status, "pending")
+        amount = 0.0
+        try:
+            amount = float(getattr(order, "deposit_amount", 0) or 0) if status == "partial" else float(
+                getattr(order, "total_amount", 0) or 0
+            )
+        except (TypeError, ValueError):
+            amount = 0.0
+        payment_persist = persist_business_payment(
+            db,
+            amount=amount,
+            tenant_id=str(getattr(order, "tenant_id", "") or "") or None,
+            order_id=str(order.id),
+            currency=str(getattr(order, "currency", "USD") or "USD"),
+            method="platform",
+            status=pay_status,
+            reference_no=order.order_number,
+            notes=f"order_payment_status={status}",
+        )
+    except Exception as exc:  # noqa: BLE001
+        payment_persist = {"persisted": False, "error": str(exc)}
     return {
         "id": str(order.id),
         "order_number": order.order_number,
         "status": order.status,
         "payment_status": order.payment_status,
+        "payment_persisted": payment_persist,
     }
 
 

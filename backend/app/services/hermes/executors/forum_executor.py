@@ -57,44 +57,20 @@ class ForumExecutor(BaseExecutor):
                 error="missing_content: forum 节点需提供 title 或 body",
             )
 
-        try:
-            from app.services.forum_webhook_service import post_to_forums
-
-            result = await post_to_forums(
-                title=title,
-                body=body,
-                forum_id=str(params.get("forum_id") or params.get("target_forum") or ""),
-                tags=[str(t) for t in (params.get("tags") or [])],
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                db=context.db,
-            )
-        except (ImportError, AttributeError):
-            # forum_webhook_service 可能未完全实现 — 降级
-            return ExecutorResult(
-                node_id=node.id,
-                status="succeeded",
-                output={
-                    "executor": "forum",
-                    "capability": capability,
-                    "status": "queued_degraded",
-                    "degraded": True,
-                    "note": "forum_webhook_service.post_to_forums 未完整落地，帖子入队",
-                    "title": title,
-                },
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("ForumExecutor 执行失败 node=%s", node.id)
-            return ExecutorResult(
-                node_id=node.id,
-                status="failed",
-                output={},
-                error=f"{type(exc).__name__}: {exc}",
-            )
-
-        output = dict(result or {})
-        output["executor"] = "forum"
-        output["capability"] = capability
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
+        # 出站论坛发布当前无真实通道：forum_webhook_service 仅为入站 webhook，
+        # 无 post_to_forums 出站实现 → 如实 failed，待 P1 接真实发布通道。
+        return ExecutorResult(
+            node_id=node.id,
+            status="failed",
+            output={
+                "executor": "forum",
+                "capability": capability,
+                "status": "not_wired",
+                "error": "出站论坛发布未接线（无 post_to_forums 真实通道）",
+                "title": title,
+            },
+            error="出站论坛发布未接线：no outbound forum publisher implemented",
+        )
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:

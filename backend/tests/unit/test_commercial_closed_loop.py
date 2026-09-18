@@ -32,7 +32,7 @@ QUOTE_ID = uuid.UUID("00000000-0000-0000-0000-000000000004")
 ORDER_ID = uuid.UUID("00000000-0000-0000-0000-000000000005")
 
 
-def _make_user(uid=USER_ID, role="tenant_admin", tid=TENANT_ID):
+def _make_user(uid=USER_ID, role="admin", tid=TENANT_ID):
     u = MagicMock()
     u.id = uid
     u.role = role

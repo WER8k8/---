@@ -60,15 +60,30 @@ def test_reply_ingest_requires_inquiry_id():
         assert "inquiry_id" in str(e).lower() or "400" in str(e) or "required" in str(e).lower()
 
 
-def test_translate_degraded_identity():
-    r = acq_api.acquisition_translate(
-        acq_api.TranslateRequest(text="Hello buyer", from_lang="en", to_lang="zh")
-    )
+def test_translate_real_engine():
+    # P1-1 已接 LLM 真源：配置引擎时真实机翻（degraded=False），非恒等降级
+    from unittest.mock import patch
+    from app.services.acquisition import translate_service as ts
+
+    with patch.object(
+        ts,
+        "_try_llm_translate",
+        return_value={
+            "translated": "买家你好",
+            "provider": "llm:Atria-Dawn-Preview",
+            "mock": False,
+            "machine_translated": True,
+            "evidence_url": "",
+        },
+    ):
+        r = acq_api.acquisition_translate(
+            acq_api.TranslateRequest(text="Hello buyer", from_lang="en", to_lang="zh")
+        )
     assert r["original"] == "Hello buyer"
-    assert r["translated"] == "Hello buyer"
-    assert r["degraded"] is True
-    assert r["provider"] == "identity"
-    assert r["message"]
+    assert r["translated"] == "买家你好"
+    assert r["degraded"] is False
+    assert r["provider"] == "llm:Atria-Dawn-Preview"
+    assert r["machine_translated"] is True
 
 
 def test_translate_same_lang_not_degraded():

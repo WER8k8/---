@@ -106,9 +106,12 @@ class SiteBuilderExecutor(BaseExecutor):
         output = dict(result or {})
         output["executor"] = self.get_executor_name()
         output["product_name"] = product_name
+        output["url"] = output.get("url") or output.get("site_url") or f"/site/{product_name}"
         # 透出降级/来源标记，供上层判定是否"真交付"（不篡改）
         output.setdefault("simulated", bool(output.get("source") in ("mock", "fallback")))
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
+        # 统一口径：源为 mock/fallback 属模拟交付 → 顶层如实 degraded，不伪装 succeeded
+        status = "degraded" if output.get("simulated") else "succeeded"
+        return ExecutorResult(node_id=node.id, status=status, output=output)
 
     # ── 内部工具 ────────────────────────────────────────────
     def _resolve_company_name(self, context: ExecutorContext) -> str:
@@ -153,7 +156,7 @@ class SiteBuilderExecutor(BaseExecutor):
             "site.generate": {
                 "desc": "产品图 + 需求 → 多语独立站（含 ECC 设计技能与 i18n）",
                 "input": ["product_name", "product_images", "company_name", "auto_save"],
-                "output": ["site_content", "reply", "source", "saved"],
+                "output": ["site_content", "reply", "source", "saved", "product_name", "url"],
                 "cost": {"tokens": 50000, "seconds": 600},
                 "needs_approval": False,
             },

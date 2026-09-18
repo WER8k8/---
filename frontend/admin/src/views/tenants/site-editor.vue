@@ -915,10 +915,8 @@ const productPreviewItems = computed(() => {
 })
 
 const productItemsEditable = computed(() => {
-  if (!Array.isArray(pageContents.products.productItems)) {
-    pageContents.products.productItems = []
-  }
-  return pageContents.products.productItems
+  const items = pageContents.products?.productItems
+  return Array.isArray(items) ? items : []
 })
 
 const siteSnapshot = computed(() =>

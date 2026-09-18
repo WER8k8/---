@@ -57,31 +57,29 @@ class EngagementExecutor(BaseExecutor):
             )
 
         try:
-            from app.services.aitoearn_engage_send_service import (
-                send_engagement_message,
+            # 真源当前仅支持「既有已批准互动上发送」(approve_and_send_via_aitoearn_sync)，
+            # 与本节点「直发 message 给 target_id」契约不对齐。
+            from app.services.aitoearn_engage_send_service import (  # noqa: F401
+                approve_and_send_via_aitoearn_sync,
             )
 
-            result = await send_engagement_message(
-                channel=str(params.get("channel") or params.get("platform") or "whatsapp"),
-                target_id=str(params.get("target_id") or params.get("contact_id") or ""),
-                message=message,
-                action=capability,
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                db=context.db,
+            raise NotImplementedError(
+                "engagement 直发契约未落地：真源需既有已批准互动（interaction_id），"
+                "本节点为 channel/target_id 直发，待 P1 接真源统一"
             )
-        except ImportError:
-            # service 未完全落地 — 降级标记
-            logger.warning("EngagementExecutor: send_engagement_message 不可用，降级为 queued")
+        except (ImportError, NotImplementedError, AttributeError) as exc:
+            # 未接线 → 如实 failed，绝不伪装 queued/succeeded
+            logger.warning("EngagementExecutor: 直发未接线，如实失败 %s", type(exc).__name__)
             return ExecutorResult(
                 node_id=node.id,
-                status="succeeded",
+                status="failed",
                 output={
                     "executor": "engagement",
                     "capability": capability,
-                    "status": "queued_degraded",
-                    "degraded": True,
-                    "note": "aitoearn_engage_send_service.send_engagement_message 未实现，消息标记为排队",
+                    "status": "not_wired",
+                    "error": f"engagement 直发未接线: {type(exc).__name__}",
                 },
+                error=f"engagement 直发未接线: {exc}",
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("EngagementExecutor 执行失败 node=%s", node.id)
@@ -91,11 +89,6 @@ class EngagementExecutor(BaseExecutor):
                 output={},
                 error=f"{type(exc).__name__}: {exc}",
             )
-
-        output = dict(result or {})
-        output["executor"] = "engagement"
-        output["capability"] = capability
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:

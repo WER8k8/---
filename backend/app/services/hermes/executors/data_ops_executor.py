@@ -17,6 +17,18 @@ from .base import BaseExecutor, ExecutorContext, ExecutorRegistry
 
 logger = logging.getLogger(__name__)
 
+# 落库不可用时的草稿内存落点（degraded 兜底，非持久化真相源）
+_DRAFT_MEMO: dict[str, dict[str, Any]] = {}
+_DRAFT_MEMO_SEQ = 0
+
+
+def _memoize_draft(title: str, body: str, tenant_id: str) -> str:
+    global _DRAFT_MEMO_SEQ
+    _DRAFT_MEMO_SEQ += 1
+    memo_id = f"draft-memo-{_DRAFT_MEMO_SEQ:06d}"
+    _DRAFT_MEMO[memo_id] = {"title": title, "body": body, "tenant_id": tenant_id, "persisted": False}
+    return memo_id
+
 _CAPS = {
     "data_ops.content_stats": {
         "desc": "内容/询盘基础统计",
@@ -94,8 +106,9 @@ class DataOpsExecutor(BaseExecutor):
         body = str(p.get("body") or "").strip()
         if not title or not body:
             return ExecutorResult(node_id=node.id, status="failed", output={}, error="missing_title_or_body")
-        # 尝试真库草稿；失败则只返回 draft 结构不假装已发送
+        # 优先真库草稿；落库不可用/失败则如实 degraded（草稿进内存，绝不假报已保存）
         draft_id = None
+        persist_error = None
         if context.db is not None:
             try:
                 from app.models.notification import Notification  # type: ignore
@@ -114,21 +127,40 @@ class DataOpsExecutor(BaseExecutor):
                 context.db.add(n)
                 context.db.commit()
                 draft_id = str(getattr(n, "id", "") or "")
-            except Exception:
+            except Exception as exc:  # noqa: BLE001
                 try:
                     context.db.rollback()
                 except Exception:
                     pass
+                persist_error = f"{type(exc).__name__}: {exc}"
+        else:
+            persist_error = "db_unavailable"
+
+        if draft_id:
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={
+                    "status": "draft_saved",
+                    "draft_id": draft_id,
+                    "title": title,
+                    "note": "通知草稿已入库，未自动推送（须人审）",
+                    "executor": self.get_executor_name(),
+                },
+            )
+        # 落库不可用/失败 → 草稿仅存内存，如实 degraded，绝不伪装已保存
+        memo_id = _memoize_draft(title, body, str(p.get("tenant_id") or ""))
         return ExecutorResult(
             node_id=node.id,
-            status="succeeded",
+            status="degraded",
             output={
-                "status": "draft_saved" if draft_id else "draft_memory_only",
-                "draft_id": draft_id,
+                "status": "draft_memory_only",
+                "draft_id": memo_id,
                 "title": title,
-                "note": "通知草稿已生成，未自动推送（须人审）",
+                "note": "通知草稿入库失败，仅存内存（未自动推送，须人审）",
                 "executor": self.get_executor_name(),
             },
+            error=f"通知草稿未入库: {persist_error}",
         )
 
     def _domain(self, node, context, p) -> ExecutorResult:

@@ -58,7 +58,7 @@ async function fetchData(){
   }catch{ tracker.value={running:true,check_count:5,last_version:'v7.8.0',new_versions_pending:0,errors_recent:0}; releases.value=[{tag_name:'v7.8.0',name:'v2rayN v7.8.0',published_at:'2026-05-18',prerelease:false,html_url:'https://github.com/2dust/v2rayN/releases/tag/7.8.0',assets:[{name:'v2rayN-windows-64.zip',size:45678900}]},{tag_name:'v7.7.2',name:'v2rayN v7.7.2',published_at:'2026-05-10',prerelease:false,html_url:'https://github.com/2dust/v2rayN/releases/tag/7.7.2',assets:[{name:'v2rayN-windows-64.zip',size:45123000}]}] }
 }
 
-async function checkNow(){ checking.value=true; try{ await fetch('/api/v1/super-admin/v2ray-tracker/check-now',{method:'POST',headers:{Authorization:`Bearer ${getAuthToken()||''}`}}); fetchData(); message.success('检查完成') }catch(e:any){ message.error(e.message||'检查失败') }; checking.value=false }
+async function checkNow(){ checking.value=true; try{ await fetch('/api/v1/super-admin/v2ray-tracker/check-now',{method:'POST',headers:{Authorization:`Bearer ${getAuthToken()||''}`}}); fetchData(); message.success('检查完成') }catch(e:any){ message.error(e.message||'检查失败') } checking.value=false }
 async function startTracker(){ await fetch('/api/v1/super-admin/v2ray-tracker/start',{method:'POST',headers:{Authorization:`Bearer ${getAuthToken()||''}`}}); fetchData() }
 
 onMounted(fetchData)

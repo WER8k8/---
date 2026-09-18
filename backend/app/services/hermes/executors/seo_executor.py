@@ -74,58 +74,32 @@ class SeoExecutor(BaseExecutor):
                 error="missing_keyword: seo.rank 节点需提供 keyword",
             )
 
+        # 排名检查无同步实现（seo_rank_service 未落地），走真实 Celery 异步任务。
+        # check_single_keyword_ranking 契约参数为 keyword_id，以节点提供的 keyword 传入。
         try:
-            from app.services.seo.seo_rank_service import SeoRankService
+            from app.tasks.seo_tasks import check_single_keyword_ranking
 
-            svc = SeoRankService(context.db)
-            result = svc.check_ranking(
-                keyword=keyword,
-                domain=domain or None,
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
+            task_result = check_single_keyword_ranking.delay(keyword_id=keyword)
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={
+                    "executor": "seo",
+                    "capability": "seo.rank",
+                    "keyword": keyword,
+                    "ranking_task_id": str(getattr(task_result, "id", "")),
+                    "degraded": True,
+                    "note": "排名检查已入队为 Celery 异步任务（非即时，结果异步回填）",
+                },
             )
-        except ImportError:
-            # Fallback: use the existing ranking check from seo_tasks
-            try:
-                from app.tasks.seo_tasks import check_single_keyword_ranking
-                result = check_single_keyword_ranking.delay(
-                    keyword=keyword,
-                    domain=domain,
-                    tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                )
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="succeeded",
-                    output={
-                        "executor": "seo",
-                        "capability": "seo.rank",
-                        "keyword": keyword,
-                        "ranking_task_id": str(getattr(result, "id", "")),
-                        "degraded": True,
-                        "note": "排名检查已入队为 Celery 异步任务（非即时）",
-                    },
-                )
-            except Exception as exc:
-                logger.exception("SeoExecutor seo.rank Celery fallback failed node=%s", node.id)
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="failed",
-                    output={},
-                    error=f"{type(exc).__name__}: {exc}",
-                )
         except Exception as exc:  # noqa: BLE001
-            logger.exception("SeoExecutor seo.rank 执行失败 node=%s", node.id)
+            logger.exception("SeoExecutor seo.rank Celery 执行失败 node=%s", node.id)
             return ExecutorResult(
                 node_id=node.id,
                 status="failed",
                 output={},
                 error=f"{type(exc).__name__}: {exc}",
             )
-
-        output = dict(result or {})
-        output["executor"] = "seo"
-        output["capability"] = "seo.rank"
-        output["keyword"] = keyword
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
     async def _exec_site_audit(
         self, node: TaskNode, params: dict[str, Any], context: ExecutorContext
@@ -133,55 +107,32 @@ class SeoExecutor(BaseExecutor):
         """Run a site audit for the tenant's domain."""
         domain = str(params.get("domain") or params.get("site_domain") or "").strip()
 
+        # 站点审计无同步实现（seo_audit_service 未落地），走真实 Celery 异步任务。
+        # run_site_audit 契约参数为 url，以节点提供的 domain 传入。
         try:
-            from app.services.seo.seo_audit_service import run_site_audit_sync
+            from app.tasks.seo_tasks import run_site_audit
 
-            result = run_site_audit_sync(
-                domain=domain or None,
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                db=context.db,
+            task_result = run_site_audit.delay(url=domain)
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={
+                    "executor": "seo",
+                    "capability": "seo.audit",
+                    "domain": domain,
+                    "audit_task_id": str(getattr(task_result, "id", "")),
+                    "degraded": True,
+                    "note": "站点审计已入队为 Celery 异步任务（非即时，结果异步回填）",
+                },
             )
-        except ImportError:
-            # Fallback: enqueue as Celery task
-            try:
-                from app.tasks.seo_tasks import run_site_audit
-                task_result = run_site_audit.delay(
-                    domain=domain,
-                    tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                )
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="succeeded",
-                    output={
-                        "executor": "seo",
-                        "capability": "seo.audit",
-                        "domain": domain,
-                        "audit_task_id": str(getattr(task_result, "id", "")),
-                        "degraded": True,
-                        "note": "站点审计已入队为 Celery 异步任务（非即时）",
-                    },
-                )
-            except Exception as exc:
-                logger.exception("SeoExecutor seo.audit Celery fallback failed node=%s", node.id)
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="failed",
-                    output={},
-                    error=f"{type(exc).__name__}: {exc}",
-                )
         except Exception as exc:  # noqa: BLE001
-            logger.exception("SeoExecutor seo.audit 执行失败 node=%s", node.id)
+            logger.exception("SeoExecutor seo.audit Celery 执行失败 node=%s", node.id)
             return ExecutorResult(
                 node_id=node.id,
                 status="failed",
                 output={},
                 error=f"{type(exc).__name__}: {exc}",
             )
-
-        output = dict(result or {})
-        output["executor"] = "seo"
-        output["capability"] = "seo.audit"
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
     async def _exec_inclusion_check(
         self, node: TaskNode, params: dict[str, Any], context: ExecutorContext

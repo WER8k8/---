@@ -441,46 +441,135 @@ def _verify_whatsapp_number_mock(phone_number: str) -> dict[str, Any]:
     }
 
 
+def _persist_wa(
+    *,
+    to: str,
+    message: str,
+    status: str,
+    simulated: bool,
+    degraded: bool,
+    external_msg_id: str | None = None,
+    error: str | None = None,
+    tenant_id: str | None = None,
+    template_id: str | None = None,
+    inquiry_id: str | None = None,
+    lead_id: str | None = None,
+) -> dict[str, Any]:
+    from app.core.database import SessionLocal
+    from app.services.trade_fulfillment_store import persist_whatsapp_message
+
+    try:
+        db = SessionLocal()
+    except Exception as exc:  # noqa: BLE001
+        return {"persisted": False, "error": f"session:{exc}"}
+    try:
+        return persist_whatsapp_message(
+            db,
+            tenant_id=tenant_id,
+            phone_e164=to,
+            message_body=message,
+            direction="outbound",
+            status=status,
+            inquiry_id=inquiry_id,
+            lead_id=lead_id,
+            template_id=template_id,
+            external_msg_id=external_msg_id,
+            simulated=simulated,
+            degraded=degraded,
+            error=error,
+        )
+    finally:
+        try:
+            db.close()
+        except Exception:  # noqa: BLE001
+            pass
+
+
 async def send_whatsapp_message(
     to: str,
     *,
     message: str,
     template_name: str | None = None,
     language_code: str = "en_US",
+    tenant_id: str | None = None,
+    inquiry_id: str | None = None,
+    lead_id: str | None = None,
 ) -> dict[str, Any]:
-    """发送 WhatsApp 消息
+    """发送 WhatsApp 消息（未配置真源时如实 failed/degraded，禁止假成功）。
 
-    Args:
-        to: 接收方电话号码（带 + 国际区号）
-        message: 消息文本内容
-        template_name: 模板名称（可选，使用模板消息时填）
-        language_code: 模板语言代码
-
-    Returns:
-        发送结果
+    无论真发/未配置，均尝试落库 `whatsapp_messages`（P0-1 写路径）。
     """
     if not _whatsapp_api_available():
-        logger.info(f"[Mock WhatsApp] 发送给 {to}: {message[:50]}...")
+        err = "WHATSAPP_ACCESS_TOKEN/WHATSAPP_PHONE_NUMBER_ID 未配置 — 不假报发送成功"
+        logger.warning("[WhatsApp not_configured] to=%s: %s", to, err)
+        persist = _persist_wa(
+            to=to,
+            message=message,
+            status="failed",
+            simulated=True,
+            degraded=True,
+            external_msg_id=None,
+            error=err,
+            tenant_id=tenant_id,
+            template_id=template_name,
+            inquiry_id=inquiry_id,
+            lead_id=lead_id,
+        )
         return {
-            "success": True,
+            "success": False,
             "mock": True,
-            "message_id": f"mock_{uuid.uuid4().hex[:12]}",
+            "degraded": True,
+            "simulated": True,
+            "status": "not_configured",
+            "message_id": None,
             "to": to,
+            "error": err,
+            "persisted": persist.get("persisted"),
         }
 
     try:
-        return await _send_whatsapp_message_real(
+        result = await _send_whatsapp_message_real(
             to=to,
             message=message,
             template_name=template_name,
             language_code=language_code,
         )
+        persist = _persist_wa(
+            to=to,
+            message=message,
+            status="sent" if result.get("success") else "failed",
+            simulated=False,
+            degraded=False,
+            external_msg_id=result.get("message_id"),
+            error=None if result.get("success") else result.get("error"),
+            tenant_id=tenant_id,
+            template_id=template_name,
+            inquiry_id=inquiry_id,
+            lead_id=lead_id,
+        )
+        result["persisted"] = persist.get("persisted")
+        return result
     except Exception as e:
         logger.error(f"WhatsApp 消息发送失败: {e}")
+        persist = _persist_wa(
+            to=to,
+            message=message,
+            status="failed",
+            simulated=False,
+            degraded=False,
+            error=str(e),
+            tenant_id=tenant_id,
+            template_id=template_name,
+            inquiry_id=inquiry_id,
+            lead_id=lead_id,
+        )
         return {
             "success": False,
+            "mock": False,
+            "degraded": False,
             "error": str(e),
             "to": to,
+            "persisted": persist.get("persisted"),
         }
 
 

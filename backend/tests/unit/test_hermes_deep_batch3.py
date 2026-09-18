@@ -106,10 +106,13 @@ def test_seo_meta_degraded_flag():
         input={"product_name": "Rockwool Board", "industry": "building materials"},
     )
     res = asyncio.run(ex.run(node, _ctx(None)))
-    # 成功或失败均可，但不得假装 AI 真生成
-    if res.status == "succeeded":
-        assert "degraded" in res.output
+    # 诚实契约：凡能产出 meta 的路径，output 标 degraded 时顶层 status 不得伪装 succeeded；
+    # AiSiteEngine 不可导入等失败路径 → 如实 failed（空 output），同样可接受。
+    if res.output.get("executor"):
         assert res.output.get("executor") == "content_deep"
+        assert "degraded" in res.output
+        if res.output.get("degraded"):
+            assert res.status == "degraded", "seo_meta 为模板/降级却报 succeeded = 假成功"
 
 
 def test_outreach_gate_blocks_without_research():

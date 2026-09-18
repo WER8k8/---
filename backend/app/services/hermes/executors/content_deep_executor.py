@@ -77,7 +77,7 @@ class ContentDeepExecutor(BaseExecutor):
                     degraded = False
             return ExecutorResult(
                 node_id=node.id,
-                status="succeeded",
+                status="degraded" if degraded else "succeeded",
                 output={
                     "meta": meta if isinstance(meta, dict) else {"raw": meta},
                     "degraded": degraded,

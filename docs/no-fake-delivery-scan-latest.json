@@ -2,9 +2,9 @@
   "ok": true,
   "task": "NO-FAKE-DELIVERY-DEEP",
   "scanned": {
-    "backend_py": 1231,
-    "frontend_vue": 416,
-    "frontend_ts": 154
+    "backend_py": 1292,
+    "frontend_vue": 417,
+    "frontend_ts": 155
   },
   "p0_count": 0,
   "p1_count": 0,
@@ -12,56 +12,56 @@
   "findings": [
     {
       "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-      "line": 78,
+      "line": 80,
       "label": "注释承认模拟实现但未门控",
       "severity": "P2",
       "snippet": "# 返回模拟余额（后续接入真实积分表）"
     },
     {
       "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-      "line": 105,
+      "line": 107,
       "label": "注释承认模拟实现但未门控",
       "severity": "P2",
       "snippet": "\"\"\"购买积分包（模拟接口，后续接入真实支付）。\"\"\""
     },
     {
       "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-      "line": 136,
+      "line": 138,
       "label": "注释承认模拟实现但未门控",
       "severity": "P2",
       "snippet": "\"total_earned\": 0,  # 后续接入真实数据"
     },
     {
       "file": "backend\\app\\api\\v1\\routes\\super_agent.py",
-      "line": 732,
+      "line": 734,
       "label": "桥接层返回演示客户",
       "severity": "P2",
       "snippet": "- \"mock\": 尚未实现，返回演示数据（前端应标注\"演示\"或隐藏）"
     },
     {
       "file": "backend\\app\\services\\ubrain\\channel_status.py",
-      "line": 90,
+      "line": 92,
       "label": "桥接层返回演示客户",
       "severity": "P2",
       "snippet": "return ChannelInfo(\"tiktok\", \"TikTok\", \"mock\", \"TikTok 渠道尚在开发中，当前返回演示数据\")"
     },
     {
       "file": "backend\\app\\services\\ubrain\\channel_status.py",
-      "line": 97,
+      "line": 99,
       "label": "桥接层返回演示客户",
       "severity": "P2",
       "snippet": "return ChannelInfo(\"quora\", \"Quora\", \"mock\", \"Quora 渠道尚在开发中，当前返回演示数据\")"
     },
     {
       "file": "backend\\app\\services\\ubrain\\channel_status.py",
-      "line": 104,
+      "line": 106,
       "label": "桥接层返回演示客户",
       "severity": "P2",
       "snippet": "return ChannelInfo(\"reddit\", \"Reddit\", \"mock\", \"Reddit 渠道尚在开发中，当前返回演示数据\")"
     },
     {
       "file": "backend\\app\\services\\ubrain\\whatsapp_prospect_service.py",
-      "line": 464,
+      "line": 466,
       "label": "响应体含 mock:true（须确认生产门控）",
       "severity": "P2",
       "snippet": "\"mock\": True,"

@@ -115,6 +115,8 @@ class ProductExecutor(BaseExecutor):
                 "product_id": str(product.id),
                 "slug": product.slug,
                 "name": product.name,
+                "title": product.name,
+                "url": f"/products/{product.slug}",
                 "status": "created",
             },
         )
@@ -140,7 +142,7 @@ class ProductExecutor(BaseExecutor):
             "product.create": {
                 "desc": "产品创建 → 真实入库（slug 唯一校验）",
                 "input": ["title", "slug", "category_id", "images"],
-                "output": ["product_id", "slug", "status"],
+                "output": ["product_id", "slug", "name", "title", "url", "status"],
                 "cost": {"tokens": 200, "seconds": 3},
                 "needs_approval": False,
             },

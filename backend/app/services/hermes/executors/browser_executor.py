@@ -53,37 +53,63 @@ class BrowserExecutor(BaseExecutor):
             )
 
         try:
-            from app.services.browser_runtime.executor import run_browser_task
+            from app.services.browser_runtime.runtime import execute as _browser_execute
 
-            result = run_browser_task(
+            # capability → runtime action 映射（runtime 用 extract/screenshot 等裸动作）
+            _action = {
+                "browser.scrape": "extract",
+                "browser.screenshot": "screenshot",
+            }.get(capability, str(capability).split(".")[-1])
+
+            rec = await _browser_execute(
+                tenant_id=str(context.tenant_id) if context.tenant_id else "hermes",
+                actor="hermes:browser",
+                action=_action,
                 url=url,
-                action=capability,
-                selector=str(params.get("selector") or ""),
-                wait_ms=int(params.get("wait_ms") or 3000),
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
+                click_target=str(params.get("selector") or "") or None,
+                fill_selector=str(params.get("selector") or "") or None,
                 db=context.db,
             )
-        except (ImportError, AttributeError) as exc:
+            status = rec.status or "failed"
+            if status == "success":
+                return ExecutorResult(
+                    node_id=node.id,
+                    status="succeeded",
+                    output={
+                        "executor": "browser",
+                        "capability": capability,
+                        "url": url,
+                        "status": "success",
+                        "output_summary": rec.output_summary,
+                        "output_ref": rec.output_ref,
+                        "screenshot_path": rec.screenshot_path,
+                        "evidence": {
+                            "status": status,
+                            "policy_verdict": rec.policy_verdict,
+                            "screenshot_size_bytes": rec.screenshot_size_bytes,
+                        },
+                    },
+                )
+            # runtime 如实返回 degraded/failed/blocked → 节点如实上报，绝不伪装成功
+            _node_status = "degraded" if status == "degraded" else "failed"
+            _err = f"{rec.error_code}: {rec.error_message}" if rec.error_code else (rec.error_message or status)
             return ExecutorResult(
                 node_id=node.id,
-                status="succeeded",
+                status=_node_status,
                 output={
                     "executor": "browser",
                     "capability": capability,
                     "url": url,
-                    "status": "queued_degraded",
-                    "degraded": True,
-                    "note": f"browser_runtime 未完整落地: {type(exc).__name__}",
+                    "status": status,
+                    "error_code": rec.error_code,
+                    "error_message": rec.error_message,
+                    "policy_verdict": rec.policy_verdict,
                 },
+                error=_err,
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("BrowserExecutor 执行失败 node=%s", node.id)
             return ExecutorResult(node_id=node.id, status="failed", output={}, error=f"{type(exc).__name__}: {exc}")
-
-        output = dict(result or {})
-        output["executor"] = "browser"
-        output["capability"] = capability
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:

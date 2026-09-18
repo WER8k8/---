@@ -154,7 +154,7 @@
 
         <a-divider>待办事项</a-divider>
         <a-list v-if="inspectionData.next_actions?.length" size="small" bordered :data-source="inspectionData.next_actions">
-          <template #renderItem="{ item, index }">
+          <template #renderItem="{ item }">
             <a-list-item>
               <a-list-item-meta>
                 <a-tag :color="getPriorityColor(item)">

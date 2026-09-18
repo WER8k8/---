@@ -39,10 +39,14 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 _VENDOR_PREFIX = "tradeai_vendor"
+# 核心三件套 + app.skills（导入即触发各 skill 的 @register_skill 注册；
+# 若只载入三件套，SkillRegistry 恒为空，tenant_orchestrator 的
+# list_skills()/list_workflows() 全空，能力调用一律 workflow_not_registered）。
 _VENDOR_CORE_MODULES = (
     "app.core.skill_base",
     "app.core.workflow_engine",
     "app.core.agent",
+    "app.skills",
 )
 
 
@@ -191,14 +195,34 @@ def __getattr__(name: str) -> Any:
 _tenant_orchestrators: Dict[str, Any] = {}
 
 
+def _populate_orchestrator(orch: Any) -> None:
+    """把 vendor SkillRegistry 中已注册的 8 个 skill 类实例化并挂载到 orchestrator。
+
+    vendor 的 AgentOrchestrator 原生为「裸单例」（skills/_workflows 恒空，
+    总纲 §5.2.3-④ 改造项）。这里按租户实例补挂注册表里的 skill 类，
+    使 list_skills() 非空、能力调用可命中真实可执行 skill。
+    注册表为空时保持不改动（如实失败，不编造）。
+    """
+    skill_reg_cls = getattr(importlib.import_module(_EXPORTS["SkillRegistry"]), "SkillRegistry")
+    for name, skill_cls in list(skill_reg_cls.list_all().items()):
+        inst = skill_reg_cls.create_instance(name)
+        if inst is not None:
+            orch.register_skill(inst)
+
+
 def tenant_orchestrator(tenant_id: str) -> Any:
     """按租户返回隔离的 AgentOrchestrator 实例（其原生为全局单例，总纲 §5.2.3-④ 改造项）。"""
     if not tenant_id:
         raise ValueError("tenant_id 必填（冻结原则 §1.2-3 租户隔离优先）")
     if tenant_id not in _tenant_orchestrators:
         orch_cls = getattr(importlib.import_module(_EXPORTS["AgentOrchestrator"]), "AgentOrchestrator")
-        _tenant_orchestrators[tenant_id] = orch_cls()
-        logger.info("tradeai adapter: created orchestrator for tenant=%s", tenant_id)
+        orch = orch_cls()
+        _populate_orchestrator(orch)
+        _tenant_orchestrators[tenant_id] = orch
+        logger.info(
+            "tradeai adapter: created orchestrator for tenant=%s (%d skills)",
+            tenant_id, len(orch.list_skills()),
+        )
     return _tenant_orchestrators[tenant_id]
 
 

@@ -82,7 +82,9 @@ class LogisticsExecutor(BaseExecutor):
         output["executor"] = self.get_executor_name()
         # 透出 provider / demo 标记，供上层判定是否"真交付"（不篡改）
         output.setdefault("simulated", bool(output.get("demo")))
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
+        # 统一口径：物流源为 demo/simulated 属模拟交付 → 顶层如实 degraded，不伪装 succeeded
+        status = "degraded" if output.get("simulated") else "succeeded"
+        return ExecutorResult(node_id=node.id, status=status, output=output)
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:

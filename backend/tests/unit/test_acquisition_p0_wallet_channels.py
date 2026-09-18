@@ -8,7 +8,11 @@ from unittest.mock import MagicMock
 
 from app.api.v1.routes import acquisition as acq_api
 from app.services.acquisition.translate_service import translate_text
-from app.services.acquisition.wallet_guard import check_wallet_status
+from app.services.acquisition.wallet_guard import (
+    WalletBlockedError,
+    check_wallet_status,
+    enforce_wallet_gate,
+)
 
 
 def test_wallet_unknown_without_db():
@@ -67,10 +71,18 @@ def test_wallet_hard_block_when_zero(monkeypatch):
 
 
 def test_translate_still_degrades_without_engine(monkeypatch):
+    # P1-1 后引擎经 settings.TRANSLATE_* 接入：禁用 LLM 与 sidecar 后才走 identity 降级
+    from app.core.config import settings
+    from app.services.cross_border import libretranslate_sidecar as lts
+
     monkeypatch.delenv("LIBRETRANSLATE_URL", raising=False)
+    monkeypatch.setattr(settings, "TRANSLATE_API_BASE_URL", "")
+    monkeypatch.setattr(settings, "TRANSLATE_API_KEY", "")
+    monkeypatch.setattr(lts, "sidecar_base_url", lambda: "")
     r = translate_text("Hello buyer", "en", "zh")
     assert r["degraded"] is True
     assert r["translated"] == "Hello buyer"
+    assert r["provider"] == "identity"
 
 
 def test_channels_api_returns_shape():
@@ -85,3 +97,61 @@ def test_channels_api_returns_shape():
 def test_wallet_status_route_with_db_none():
     r = acq_api.acquisition_wallet_status(tenant_id="demo", current_user=None, db=None)
     assert r["status"] in ("unknown", "ok", "empty", "blocked")
+
+
+# ---- P2-1b：真实硬拦（enforce_wallet_gate）----
+
+
+def _mk_db(balance):
+    db = MagicMock()
+
+    class _Q:
+        def filter(self, *a, **k):
+            return self
+
+        def all(self):
+            return [SimpleNamespace(balance_after=balance, created_at="2026-09-18T00:00:00+00:00")]
+
+        def first(self):
+            return SimpleNamespace(balance_after=balance, created_at="2026-09-18T00:00:00+00:00")
+
+        def order_by(self, *a, **k):
+            return self
+
+    db.query = MagicMock(return_value=_Q())
+    return db
+
+
+def _seed_ledger_model(monkeypatch):
+    import sys
+    monkeypatch.setitem(
+        sys.modules,
+        "app.models.token_ledger",
+        SimpleNamespace(TokenLedgerEntry=SimpleNamespace(tenant_id="x", balance_after=1, created_at="t")),
+    )
+
+
+def test_enforce_gate_passes_when_balance_positive(monkeypatch):
+    monkeypatch.setenv("ACQ_HARD_BLOCK_TOKEN", "true")
+    _seed_ledger_model(monkeypatch)
+    enforce_wallet_gate("t1", db=_mk_db(1200))  # 不应抛
+
+
+def test_enforce_gate_blocks_when_zero(monkeypatch):
+    monkeypatch.setenv("ACQ_HARD_BLOCK_TOKEN", "true")
+    _seed_ledger_model(monkeypatch)
+    try:
+        enforce_wallet_gate("t0", db=_mk_db(0))
+        assert False, "余额 0 且硬拦开启应抛 WalletBlockedError"
+    except WalletBlockedError:
+        pass
+
+
+def test_enforce_gate_passes_when_hard_block_off(monkeypatch):
+    monkeypatch.setenv("ACQ_HARD_BLOCK_TOKEN", "false")
+    _seed_ledger_model(monkeypatch)
+    enforce_wallet_gate("t0", db=_mk_db(0))  # 硬拦关：影子态，放行
+
+
+def test_enforce_gate_passes_when_unknown_no_db():
+    enforce_wallet_gate("t-unknown", db=None)  # 无账本：诚实放行不误拦

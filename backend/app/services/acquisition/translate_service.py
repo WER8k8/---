@@ -15,8 +15,67 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
+def _try_llm_translate(text: str, from_lang: str, to_lang: str) -> Optional[dict[str, Any]]:
+    """OpenAI 兼容 LLM 机翻真源（P1-1 接线）。未配置返回 None。"""
+    from app.core.config import settings
+
+    base = (settings.TRANSLATE_API_BASE_URL or "").rstrip("/")
+    if not base:
+        return None
+    key = (settings.TRANSLATE_API_KEY or "").strip()
+    if not key:
+        return None
+    model = (settings.TRANSLATE_MODEL or "").strip() or "Atria-Dawn-Preview"
+    import httpx
+
+    src = "auto" if from_lang in ("", "auto") else from_lang
+    sys_prompt = (
+        "You are a professional B2B trade translator. Translate the user's text from "
+        f"'{src}' into '{to_lang}'. Preserve trade terms, units and numbers exactly. "
+        "Return ONLY the translation, no explanations, no quotes, no extra text."
+    )
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": text},
+        ],
+        "temperature": 0,
+    }
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {key}"}
+    try:
+        # Atria-Dawn-Preview 为推理型模型（含 reasoning_content），耗时偏长；给足超时避免误判失败
+        with httpx.Client(timeout=60.0) as client:
+            resp = client.post(f"{base}/chat/completions", json=payload, headers=headers)
+        if resp.status_code >= 300:
+            logger.warning("translate LLM HTTP %s: %s", resp.status_code, resp.text[:200])
+            return None
+        data = resp.json()
+        choice = (data.get("choices") or [{}])[0]
+        translated = ((choice.get("message") or {}).get("content") or "").strip()
+        # 去掉 LLM 可能带的多余引号壳
+        if len(translated) >= 2 and translated[0] == translated[-1] and translated[0] in "\"'“”":
+            translated = translated[1:-1].strip()
+        if translated and translated != text:
+            return {
+                "translated": translated,
+                "provider": f"llm:{model}",
+                "mock": False,
+                "machine_translated": True,
+                "evidence_url": "",
+            }
+    except Exception:  # noqa: BLE001
+        logger.exception("translate LLM 调用失败")
+        return None
+    return None
+
+
 def _try_external_translate(text: str, from_lang: str, to_lang: str) -> Optional[dict[str, Any]]:
     """尝试外部翻译引擎；未配置返回 None。禁止 stub 假译当真译。"""
+    # 0) OpenAI 兼容 LLM 真源（P1-1）：已配置即真机翻，去 degraded
+    llm = _try_llm_translate(text, from_lang, to_lang)
+    if llm:
+        return llm
     # 1) LibreTranslate sidecar（跨境文案机翻，须标注 machine）
     try:
         from app.services.cross_border.libretranslate_sidecar import (

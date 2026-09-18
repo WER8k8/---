@@ -64,16 +64,18 @@ class BillingExecutor(BaseExecutor):
                     amount=int(params.get("amount") or 0),
                 )
         except (ImportError, AttributeError) as exc:
+            # billing service 未接线 → 如实 degraded，绝不伪装已计量 succeeded
             return ExecutorResult(
                 node_id=node.id,
-                status="succeeded",
+                status="degraded",
                 output={
                     "executor": "billing",
                     "capability": capability,
-                    "status": "metered_degraded",
+                    "status": "metering_not_wired",
                     "degraded": True,
-                    "note": f"billing service 未完整落地: {type(exc).__name__}",
+                    "note": f"billing service 未接线，未计量: {type(exc).__name__}",
                 },
+                error=f"billing service 未接线: {type(exc).__name__}",
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("BillingExecutor 执行失败 node=%s", node.id)

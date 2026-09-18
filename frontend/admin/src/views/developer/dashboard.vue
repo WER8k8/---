@@ -17,7 +17,7 @@
       </template>
     </a-table></a-card>
     <a-card title="API Key管理"><a-table :columns="kc" :data-source="keys" size="small" row-key="id">
-      <template #bodyCell="{column,record}"><template v-if="column.key==='action'"><a-popconfirm title="确定吊销？"><a-button size="small" type="link" danger>吊销</a-button></a-popconfirm></template></template>
+      <template #bodyCell="{column}"><template v-if="column.key==='action'"><a-popconfirm title="确定吊销？"><a-button size="small" type="link" danger>吊销</a-button></a-popconfirm></template></template>
     </a-table>    </a-card>
   </div>
   </YdPage>

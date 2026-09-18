@@ -28,6 +28,16 @@ logger = logging.getLogger(__name__)
 _SUPPORTED_CAPABILITIES = frozenset({"media.render", "media.video", "default"})
 
 
+def _media_mock_render() -> bool:
+    """如实反映媒体引擎是否处于 mock 渲染态（有真实外部引擎依赖但未配置真源）。"""
+    try:
+        from app.core.config import settings  # type: ignore
+
+        return bool(getattr(settings, "MEDIA_FACTORY_MOCK_RENDER", False))
+    except Exception:  # noqa: BLE001
+        return True
+
+
 class MediaExecutor(BaseExecutor):
     """媒体渲染执行器：图文/视频素材生成。
 
@@ -99,9 +109,13 @@ class MediaExecutor(BaseExecutor):
             "render_task_id": str(task.id),
             "content_type": content_type,
             "status": task.status,
-            "degraded": False,
+            "degraded": _media_mock_render(),
         }
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
+        return ExecutorResult(
+            node_id=node.id,
+            status="degraded" if _media_mock_render() else "succeeded",
+            output=output,
+        )
 
     def _exec_media_video(
         self, node: TaskNode, params: dict[str, Any], context: ExecutorContext
@@ -145,9 +159,13 @@ class MediaExecutor(BaseExecutor):
             "content_type": "video",
             "status": task.status,
             "duration": int(params.get("duration") or 30),
-            "degraded": False,
+            "degraded": _media_mock_render(),
         }
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
+        return ExecutorResult(
+            node_id=node.id,
+            status="degraded" if _media_mock_render() else "succeeded",
+            output=output,
+        )
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:

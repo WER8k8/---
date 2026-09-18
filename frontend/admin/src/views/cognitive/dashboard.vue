@@ -29,7 +29,7 @@ const sq=ref(''); const sl=ref(false); const sr=ref(''); const showImport=ref(fa
 const qc=[{title:'查询',dataIndex:'q'},{title:'命中',dataIndex:'h'},{title:'结果',key:'s'},{title:'时间',dataIndex:'t'}]
 const queries = ref<any[]>([])
 async function api(p:string,m='GET',b?:any){const h:any={Authorization:`Bearer ${getAuthToken()}`};if(b)h['Content-Type']='application/json';const r=await fetch(`/api/v1/super-admin${p}`,{method:m,headers:h,body:b?JSON.stringify(b):undefined});if(!r.ok)throw new Error(`HTTP ${r.status}`);const d=await r.json();return d.data||d}
-async function doSearch(){if(!sq.value)return;sl.value=true;try{const r=await api('/langchain/rag/query','POST',{query:sq.value});sr.value=r.answer||'未找到相关知识'}catch{sr.value='检索失败，请稍后重试'};sl.value=false}
+async function doSearch(){if(!sq.value)return;sl.value=true;try{const r=await api('/langchain/rag/query','POST',{query:sq.value});sr.value=r.answer||'未找到相关知识'}catch{sr.value='检索失败，请稍后重试'}sl.value=false}
 function doImport(){message.success(`已提交导入: ${it.value}`);showImport.value=false}
 async function fetchData(){
   try {

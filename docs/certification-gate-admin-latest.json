@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-14T23:24:55.029Z",
+  "generatedAt": "2026-09-18T11:36:30.696Z",
   "target": "省级软件评测 — 管理端功能门禁",
   "ready": true,
   "blocked": false,
@@ -58,7 +58,7 @@
         "ok": true,
         "decision_id": "CONSOLE-REGRESSION-LOCK-01",
         "checked": {
-          "vue_files": 416,
+          "vue_files": 417,
           "formily": "frontend/admin/src/components/youding/YdFormilyForm.vue",
           "billing": "frontend/admin/src/views/tenants/billing.vue"
         }
@@ -71,7 +71,7 @@
       "exitCode": 0,
       "summary": "P0=0 P1=0 P2=0",
       "raw": {
-        "totalVue": 321,
+        "totalVue": 322,
         "flagged": 0,
         "P0": 0,
         "P1": 0,
@@ -150,9 +150,9 @@
         "ok": true,
         "task": "NO-FAKE-DELIVERY-DEEP",
         "scanned": {
-          "backend_py": 1231,
-          "frontend_vue": 416,
-          "frontend_ts": 154
+          "backend_py": 1292,
+          "frontend_vue": 417,
+          "frontend_ts": 155
         },
         "p0_count": 0,
         "p1_count": 0,
@@ -160,57 +160,57 @@
         "findings": [
           {
             "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-            "line": 78,
-            "label": "ע�ͳ���ģ��ʵ�ֵ�δ�ſ�",
+            "line": 80,
+            "label": "注释承认模拟实现但未门控",
             "severity": "P2",
-            "snippet": "# ����ģ��������������ʵ���ֱ���"
+            "snippet": "# 返回模拟余额（后续接入真实积分表）"
           },
           {
             "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-            "line": 105,
-            "label": "ע�ͳ���ģ��ʵ�ֵ�δ�ſ�",
+            "line": 107,
+            "label": "注释承认模拟实现但未门控",
             "severity": "P2",
-            "snippet": "\"\"\"������ְ���ģ��ӿڣ�����������ʵ֧������\"\"\""
+            "snippet": "\"\"\"购买积分包（模拟接口，后续接入真实支付）。\"\"\""
           },
           {
             "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-            "line": 136,
-            "label": "ע�ͳ���ģ��ʵ�ֵ�δ�ſ�",
+            "line": 138,
+            "label": "注释承认模拟实现但未门控",
             "severity": "P2",
-            "snippet": "\"total_earned\": 0,  # ����������ʵ����"
+            "snippet": "\"total_earned\": 0,  # 后续接入真实数据"
           },
           {
             "file": "backend\\app\\api\\v1\\routes\\super_agent.py",
-            "line": 732,
-            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "line": 734,
+            "label": "桥接层返回演示客户",
             "severity": "P2",
-            "snippet": "- \"mock\": ��δʵ�֣�������ʾ���ݣ�ǰ��Ӧ��ע\"��ʾ\"�����أ�"
+            "snippet": "- \"mock\": 尚未实现，返回演示数据（前端应标注\"演示\"或隐藏）"
           },
           {
             "file": "backend\\app\\services\\ubrain\\channel_status.py",
-            "line": 90,
-            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "line": 92,
+            "label": "桥接层返回演示客户",
             "severity": "P2",
-            "snippet": "return ChannelInfo(\"tiktok\", \"TikTok\", \"mock\", \"TikTok �������ڿ����У���ǰ������ʾ����\")"
+            "snippet": "return ChannelInfo(\"tiktok\", \"TikTok\", \"mock\", \"TikTok 渠道尚在开发中，当前返回演示数据\")"
           },
           {
             "file": "backend\\app\\services\\ubrain\\channel_status.py",
-            "line": 97,
-            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "line": 99,
+            "label": "桥接层返回演示客户",
             "severity": "P2",
-            "snippet": "return ChannelInfo(\"quora\", \"Quora\", \"mock\", \"Quora �������ڿ����У���ǰ������ʾ����\")"
+            "snippet": "return ChannelInfo(\"quora\", \"Quora\", \"mock\", \"Quora 渠道尚在开发中，当前返回演示数据\")"
           },
           {
             "file": "backend\\app\\services\\ubrain\\channel_status.py",
-            "line": 104,
-            "label": "�ŽӲ㷵����ʾ�ͻ�",
+            "line": 106,
+            "label": "桥接层返回演示客户",
             "severity": "P2",
-            "snippet": "return ChannelInfo(\"reddit\", \"Reddit\", \"mock\", \"Reddit �������ڿ����У���ǰ������ʾ����\")"
+            "snippet": "return ChannelInfo(\"reddit\", \"Reddit\", \"mock\", \"Reddit 渠道尚在开发中，当前返回演示数据\")"
           },
           {
             "file": "backend\\app\\services\\ubrain\\whatsapp_prospect_service.py",
-            "line": 464,
-            "label": "��Ӧ�庬 mock:true����ȷ�������ſأ�",
+            "line": 466,
+            "label": "响应体含 mock:true（须确认生产门控）",
             "severity": "P2",
             "snippet": "\"mock\": True,"
           }

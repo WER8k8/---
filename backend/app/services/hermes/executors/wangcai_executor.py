@@ -86,10 +86,12 @@ class WangcaiExecutor(BaseExecutor):
                 error=f"ask_wangcai_for_tenant 返回类型异常: {type(data).__name__}",
             )
 
+        out_data = dict(data)
+        out_data.setdefault("answer", out_data.get("reply", ""))
         return ExecutorResult(
             node_id=node.id,
             status="succeeded",
-            output=dict(data),
+            output=out_data,
         )
 
     @classmethod
@@ -101,6 +103,7 @@ class WangcaiExecutor(BaseExecutor):
                 "output": [
                     "intent",
                     "reply",
+                    "answer",
                     "category_key",
                     "tool_result",
                     "disclaimer",

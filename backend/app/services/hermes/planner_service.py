@@ -435,7 +435,7 @@ def _browser_evidence_graph(plan_id: str, event_id: str, payload: dict[str, Any]
             TaskNode(id="n1", executor="browser", capability="browser.scrape",
                      depends_on=[], input={"url": url}, on_fail="abort"),
             TaskNode(id="n2", executor="forum", capability="forum.post",
-                     depends_on=["n1"], input_from={"evidence": "n1.output.extract"}, on_fail="skip"),
+                     depends_on=["n1"], input_from={"evidence": "n1.output.content"}, on_fail="skip"),
         ],
     )
 
@@ -451,7 +451,7 @@ def _ubrain_assistant_graph(plan_id: str, event_id: str, payload: dict[str, Any]
             TaskNode(id="n1", executor="ubrain", capability="ubrain.chat",
                      depends_on=[], input={"message": msg}, on_fail="abort"),
             TaskNode(id="n2", executor="ai_engine", capability="ai.chat",
-                     depends_on=["n1"], input_from={"context": "n1.output.answer"}, on_fail="skip"),
+                     depends_on=["n1"], input_from={"context": "n1.output.reply"}, on_fail="skip"),
         ],
     )
 

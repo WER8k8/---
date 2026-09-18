@@ -54,6 +54,22 @@ class ModelGateway:
         """
         from app.services.ai_engine import get_ai_engine  # noqa: PLC0415
 
+        # 真实硬拦：租户 Token 耗尽且硬拦开启时，在调用 LLM 前拦截（不再影子计量）。
+        # 仅传播 WalletBlockedError；护栏模块在运行环境不可用（如 shim 测试/依赖缺失）
+        # 或账本读取失败时诚实放行，绝不因护栏故障阻断主链路。
+        if tenant_id:
+            _WBE = None
+            try:
+                from app.services.acquisition.wallet_guard import (  # noqa: PLC0415
+                    WalletBlockedError as _WBE,
+                    enforce_wallet_gate,
+                )
+
+                enforce_wallet_gate(tenant_id)
+            except Exception as exc:  # noqa: BLE001
+                if _WBE is not None and isinstance(exc, _WBE):
+                    raise
+
         tier = model or resolve_tier(
             required_capabilities,
             budget,

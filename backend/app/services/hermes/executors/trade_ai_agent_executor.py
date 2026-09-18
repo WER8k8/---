@@ -33,19 +33,23 @@ from .base import BaseExecutor, ExecutorContext, ExecutorRegistry
 
 logger = logging.getLogger(__name__)
 
-# capability → 候选 workflow/skill 名（按序尝试）
+# capability → 候选 workflow/skill 名（按序尝试）。
+# 说明：vendor 的 AgentOrchestrator 原生不注册任何 workflow，故真实可命中项
+# 落在 vendor SkillRegistry 的 8 个 skill 类（social_scraper / auto_sender /
+# intent_analysis …）。此处保留原始 workflow 名（未来注册后可命中）并追加
+# 对应的可执行 skill 名作为兜底，使能力调用不再一律 workflow_not_registered。
 _CAP_TO_TARGETS: dict[str, tuple[str, ...]] = {
-    "prospect.scrape": ("prospect_search", "scrape_prospects", "lead_finder"),
-    "prospect_search": ("prospect_search", "scrape_prospects", "lead_finder"),
-    "scrape_prospects": ("prospect_search", "scrape_prospects", "lead_finder"),
-    "prospect.enrich": ("prospect_enrich", "lead_finder"),
-    "outreach.whatsapp": ("whatsapp_outreach", "whatsapp_send"),
-    "whatsapp_send": ("whatsapp_outreach", "whatsapp_send"),
-    "outreach.email": ("email_campaign", "cold_email"),
-    "email_campaign": ("email_campaign", "cold_email"),
-    "cold_email": ("email_campaign", "cold_email"),
-    "inbox.classify": ("inbox_classify", "intent_classify"),
-    "intent_classify": ("inbox_classify", "intent_classify"),
+    "prospect.scrape": ("prospect_search", "scrape_prospects", "lead_finder", "social_scraper", "excel_reader"),
+    "prospect_search": ("prospect_search", "scrape_prospects", "lead_finder", "social_scraper", "excel_reader"),
+    "scrape_prospects": ("prospect_search", "scrape_prospects", "lead_finder", "social_scraper", "excel_reader"),
+    "prospect.enrich": ("prospect_enrich", "lead_finder", "data_cleaner"),
+    "outreach.whatsapp": ("whatsapp_outreach", "whatsapp_send", "auto_sender", "schedule_outreach", "message_generator"),
+    "whatsapp_send": ("whatsapp_outreach", "whatsapp_send", "auto_sender", "schedule_outreach", "message_generator"),
+    "outreach.email": ("email_campaign", "cold_email", "message_generator", "bulk_message_generator", "auto_sender"),
+    "email_campaign": ("email_campaign", "cold_email", "message_generator", "bulk_message_generator", "auto_sender"),
+    "cold_email": ("email_campaign", "cold_email", "message_generator", "bulk_message_generator", "auto_sender"),
+    "inbox.classify": ("inbox_classify", "intent_classify", "intent_analysis", "ai_reply"),
+    "intent_classify": ("inbox_classify", "intent_classify", "intent_analysis", "ai_reply"),
 }
 
 
@@ -105,7 +109,8 @@ class TradeAiAgentExecutor(BaseExecutor):
         try:
             orch = taa.tenant_orchestrator(context.tenant_id)
             wf_names = {getattr(w, "name", "") for w in orch.list_workflows()}
-            skill_names = {getattr(s, "name", "") for s in orch.list_skills()}
+            skills = {getattr(s, "name", ""): s for s in orch.list_skills()}
+            skill_names = set(skills)
         except Exception as exc:  # noqa: BLE001
             logger.exception("TradeAiAgent: 取 orchestrator 失败")
             return ExecutorResult(
@@ -113,9 +118,12 @@ class TradeAiAgentExecutor(BaseExecutor):
                 error=f"orchestrator_init_failed: {type(exc).__name__}: {exc}",
             )
 
-        hit = next((t for t in targets if t in wf_names), None)
-        if hit is None:
-            # 真实适配器在线，但该能力对应的 workflow 尚未注册 —— 如实失败，不编造
+        # 优先命中已注册 workflow；未命中则回退到可执行 skill（vendor 默认不注册
+        # workflow，真实能力落在 8 个 skill 类上）。
+        wf_hit = next((t for t in targets if t in wf_names), None)
+        skill_hit = next((t for t in targets if t in skill_names), None) if wf_hit is None else None
+        if wf_hit is None and skill_hit is None:
+            # 真实适配器在线，但该能力对应的 workflow/skill 均不可执行 —— 如实失败，不编造
             return ExecutorResult(
                 node_id=node.id,
                 status="failed",
@@ -125,44 +133,70 @@ class TradeAiAgentExecutor(BaseExecutor):
                     "available_skills": sorted(skill_names),
                 },
                 error=(
-                    f"workflow_not_registered: 未找到 {targets} 中的任何一个。"
+                    f"capability_not_executable: 未找到 {targets} 中任何可执行 workflow/skill。"
                     f"当前已注册 workflows={sorted(wf_names)} skills={sorted(skill_names)}；"
-                    "需先在 tradeai 侧注册对应 workflow（不返回假数据）"
+                    "需先在 tradeai 侧注册对应 workflow 或 skill（不返回假数据）"
                 ),
             )
 
-        # ③ 真执行：execute_workflow 是异步生成器，收集全部产出
+        target_name = wf_hit or skill_hit
+        # ③ 真执行
         try:
-            collected: list[dict[str, Any]] = []
-            async for chunk in orch.execute_workflow(hit, params):
-                if isinstance(chunk, dict):
-                    collected.append(chunk)
-                    if chunk.get("type") == "error":
-                        return ExecutorResult(
-                            node_id=node.id,
-                            status="failed",
-                            output={"workflow": hit, "steps": collected},
-                            error=str(chunk.get("error") or "workflow error"),
-                        )
+            if wf_hit is not None:
+                # workflow 路径：execute_workflow 是异步生成器，收集全部产出
+                collected: list[dict[str, Any]] = []
+                async for chunk in orch.execute_workflow(wf_hit, params):
+                    if isinstance(chunk, dict):
+                        collected.append(chunk)
+                        if chunk.get("type") == "error":
+                            return ExecutorResult(
+                                node_id=node.id, status="failed",
+                                output={"workflow": wf_hit, "steps": collected},
+                                error=str(chunk.get("error") or "workflow error"),
+                            )
+                return ExecutorResult(
+                    node_id=node.id,
+                    status="succeeded",
+                    output={
+                        "executor": self.get_executor_name(),
+                        "capability": capability,
+                        "workflow": wf_hit,
+                        "steps": collected,
+                        "step_count": len(collected),
+                        "prospects": collected,
+                    },
+                )
+
+            # skill 路径：BaseSkill.run(ExecutionContext) 是异步，返回 dict 产出
+            from app.services.adapters.tradeai import make_context
+            exec_ctx = make_context(
+                context.tenant_id,
+                task_id=getattr(node, "id", None),
+                **params,
+            )
+            skill = skills[skill_hit]
+            result = await skill.run(exec_ctx)
+            prospect_items = []
+            if isinstance(result, dict):
+                prospect_items = result.get("leads") or result.get("prospects") or result.get("items") or []
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={
+                    "executor": self.get_executor_name(),
+                    "capability": capability,
+                    "skill": skill_hit,
+                    "result": result,
+                    "prospects": prospect_items,
+                },
+            )
         except Exception as exc:  # noqa: BLE001
-            logger.exception("TradeAiAgent: 执行 workflow %s 失败", hit)
+            logger.exception("TradeAiAgent: 执行 %s 失败", target_name)
             return ExecutorResult(
                 node_id=node.id, status="failed",
-                output={"workflow": hit},
+                output={"target": target_name},
                 error=f"{type(exc).__name__}: {exc}",
             )
-
-        return ExecutorResult(
-            node_id=node.id,
-            status="succeeded",
-            output={
-                "executor": self.get_executor_name(),
-                "capability": capability,
-                "workflow": hit,
-                "steps": collected,
-                "step_count": len(collected),
-            },
-        )
 
 
     @classmethod
@@ -171,7 +205,7 @@ class TradeAiAgentExecutor(BaseExecutor):
             "prospect.scrape": {
                 "desc": "社媒/地图潜客挖掘（走真实 tradeai 适配器；未注册 workflow 即失败）",
                 "input": ["keyword", "country", "limit"],
-                "output": ["workflow", "steps", "step_count"],
+                "output": ["workflow", "steps", "step_count", "prospects"],
                 "cost": {"tokens": 10000, "seconds": 180},
                 "needs_approval": False,
             },

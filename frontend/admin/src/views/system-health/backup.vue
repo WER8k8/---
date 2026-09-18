@@ -119,7 +119,7 @@ async function runManualBackup() {
 function restoreBackup(r: any) { restoreModal.open = true; restoreModal.backupId = r.id; restoreModal.backupName = r.name }
 
 function confirmRestore() {
-  message.loading('正在恢复...', 2).then(() => { message.success('恢复成功'); ;(stats[3].value as number)++; restoreModal.open = false })
+  message.loading('正在恢复...', 2).then(() => { message.success('恢复成功'); (stats[3].value as number)++; restoreModal.open = false })
 }
 
 function deleteBackup(id: number) { backups.value = backups.value.filter(b => b.id !== id); message.success('已删除') }

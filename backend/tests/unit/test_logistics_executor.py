@@ -37,10 +37,29 @@ def test_success_returns_real_payload():
         result = asyncio.run(LogisticsExecutor().run(
             _node(tracking_number="SF123456789", carrier="sf"), _ctx()))
 
-    assert result.status == "succeeded"
+    # demo/simulated=True → 统一口径：顶层如实 degraded，不伪装 succeeded
+    assert result.status == "degraded"
     assert result.output["status"] == "in_transit"
     assert isinstance(result.output["events"], list)
     assert result.output["simulated"] is True
+
+
+def test_real_payload_succeeds():
+    """真实物流（demo=False）→ succeeded。"""
+    fake_payload = {
+        "tracking_number": "SF123456789",
+        "carrier": "sf",
+        "status": "in_transit",
+        "events": [{"description": "揽收", "timestamp": "2024-01-01T00:00:00Z"}],
+        "demo": False,
+        "provider": "kuaidi100",
+    }
+    with patch("app.services.logistics_tracking_service.fetch_tracking_payload") as mock_fn:
+        mock_fn.return_value = fake_payload
+        result = asyncio.run(LogisticsExecutor().run(
+            _node(tracking_number="SF123456789", carrier="sf"), _ctx()))
+    assert result.status == "succeeded"
+    assert result.output["simulated"] is False
 
 
 def test_missing_tracking_number_fails():

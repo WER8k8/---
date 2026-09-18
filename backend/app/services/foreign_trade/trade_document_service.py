@@ -30,8 +30,15 @@ def build_proforma_invoice(
     notes: str = "",
     pi_no: Optional[str] = None,
     bank_details: Optional[dict[str, Any]] = None,
+    db: Optional[Any] = None,
+    tenant_id: Optional[str] = None,
+    order_id: Optional[str] = None,
 ) -> dict[str, Any]:
-    """生成 PI 结构化包与 Markdown 文档。"""
+    """生成 PI 结构化包与 Markdown 文档。
+
+    `db` 可选：调用方已持有 Session 时传入以落库 invoices；
+    **禁止**在请求内再 SessionLocal() 开新连接（会拖死连接池导致 TestClient 挂死）。
+    """
     subtotal = 0.0
     normalized_lines: list[dict[str, Any]] = []
     for i, row in enumerate(lines, start=1):
@@ -75,7 +82,7 @@ def build_proforma_invoice(
         notes=notes,
         bank_details=default_bank,
     )
-    return {
+    package = {
         "document_type": "proforma_invoice",
         "pi_no": final_pi_no,
         "issued_date": issued,
@@ -92,6 +99,28 @@ def build_proforma_invoice(
         "gw_task": "trade_doc_pi_contract",
         "source": "smart-trade-ai document playbook (enhanced)",
     }
+    # P0-1：仅在调用方显式传入 db 时落库；无 db 时如实 skipped（不新开连接）
+    if db is None:
+        package["invoice_persisted"] = {"persisted": False, "reason": "no_db"}
+    else:
+        try:
+            from app.services.trade_fulfillment_store import persist_invoice
+
+            package["invoice_persisted"] = persist_invoice(
+                db,
+                invoice_no=final_pi_no,
+                invoice_type="pi",
+                tenant_id=tenant_id,
+                order_id=order_id,
+                buyer_name=str(buyer.get("name") or buyer.get("company") or "") or None,
+                amount=package["subtotal"],
+                currency=currency,
+                status="draft",
+                notes=payment_terms,
+            )
+        except Exception as exc:  # noqa: BLE001
+            package["invoice_persisted"] = {"persisted": False, "error": str(exc)}
+    return package
 
 
 def _render_pi_markdown(**kwargs: Any) -> str:

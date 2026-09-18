@@ -49,7 +49,7 @@
       </div>
 
       <div class="hierarchy-tree-visual">
-        <div class="level-column" v-for="(level, levelIdx) in hierarchyLevels" :key="level.code">
+        <div class="level-column" v-for="(level) in hierarchyLevels" :key="level.code">
           <div class="level-header-card">
             <div class="level-icon" :style="{ backgroundColor: level.color }">
               <component :is="level.icon" />

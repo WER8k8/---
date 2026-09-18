@@ -83,14 +83,15 @@ class NegotiationRules:
         # 获取本轮允许的最大自动折扣
         allowed_discount = self.round_discounts.get(round_no, self.max_auto_discount_pct)
 
-        # MOQ 联动：在买家请求折扣基础上叠加批量折扣（取更有利的）
+        # MOQ 联动：与买家请求折扣取更优（对买家更有利），不叠加双计
+        # （「取更有利的」= max；若相加会把 4% 请求打成 7% 误触审批，与 Round-2 授权 5% 口径冲突）
         moq_bonus = 0.0
         for entry in sorted(self.moq_discount_table, key=lambda e: e["min_qty"], reverse=True):
             if quantity >= float(entry["min_qty"]):
                 moq_bonus = float(entry.get("discount_pct", 0.0))
                 break
 
-        effective_requested = min(requested_discount + moq_bonus, 100.0)
+        effective_requested = max(float(requested_discount or 0.0), moq_bonus)
 
         # 决策逻辑（与原有 hardcode 行为对齐）
         if round_no == 1:

@@ -39,8 +39,9 @@ def test_notify_draft_memory_only_honest():
         input={"title": "续费提醒", "body": "请关注续费"},
     )
     res = asyncio.run(ex.run(node, _ctx(None)))
-    assert res.status == "succeeded"
-    assert res.output["status"] in ("draft_memory_only", "draft_saved")
+    # 无 db → 如实 degraded（草稿未入库），绝不伪装 succeeded
+    assert res.status == "degraded"
+    assert res.output["status"] == "draft_memory_only"
     assert "未自动推送" in res.output.get("note", "")
 
 

@@ -133,7 +133,65 @@ def purge_by_tenant_ids(
         except Exception as exc:  # 单表失败不影响其余清理
             errors[key] = f"{type(exc).__name__}: {str(exc)[:160]}"
 
-    # 0. 先清无 tenant_id 或引用 quotes 的订单明细与订单
+    # 0. 先清 P0-1 履约/触点表（外键指向 orders/invoices），再清订单
+    for table, sql, params in (
+        (
+            "payments",
+            "delete from payments where tenant_id::text = any(:ids) or order_id in ("
+            "select id from orders where tenant_id::text = any(:ids)"
+            " or merchant_id::text = any(:uids) or buyer_id::text = any(:uids))",
+            {"ids": tenant_ids, "uids": user_ids},
+        ),
+        (
+            "invoices",
+            "delete from invoices where tenant_id::text = any(:ids) or order_id in ("
+            "select id from orders where tenant_id::text = any(:ids)"
+            " or merchant_id::text = any(:uids) or buyer_id::text = any(:uids))",
+            {"ids": tenant_ids, "uids": user_ids},
+        ),
+        (
+            "logistics_shipments",
+            "delete from logistics_shipments where tenant_id::text = any(:ids) or order_id in ("
+            "select id from orders where tenant_id::text = any(:ids)"
+            " or merchant_id::text = any(:uids) or buyer_id::text = any(:uids))",
+            {"ids": tenant_ids, "uids": user_ids},
+        ),
+        (
+            "purchase_orders",
+            "delete from purchase_orders where tenant_id::text = any(:ids) or order_id in ("
+            "select id from orders where tenant_id::text = any(:ids)"
+            " or merchant_id::text = any(:uids) or buyer_id::text = any(:uids))",
+            {"ids": tenant_ids, "uids": user_ids},
+        ),
+        (
+            "whatsapp_messages",
+            "delete from whatsapp_messages where tenant_id::text = any(:ids)",
+            {"ids": tenant_ids},
+        ),
+        (
+            "experience_records",
+            "delete from experience_records where tenant_id::text = any(:ids)",
+            {"ids": tenant_ids},
+        ),
+        (
+            "contact_events",
+            "delete from contact_events where tenant_id::text = any(:ids)",
+            {"ids": tenant_ids},
+        ),
+        (
+            "pipelines",
+            "delete from pipelines where tenant_id::text = any(:ids)",
+            {"ids": tenant_ids},
+        ),
+        (
+            "knowledge_bases",
+            "delete from knowledge_bases where tenant_id::text = any(:ids)",
+            {"ids": tenant_ids},
+        ),
+    ):
+        _delete(sql, params, table)
+
+    # 0b. 再清无 tenant_id 或引用 quotes 的订单明细与订单
     _delete(
         """
         delete from order_items where order_id in (

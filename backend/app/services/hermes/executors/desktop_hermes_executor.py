@@ -97,15 +97,24 @@ class DesktopHermesExecutor(BaseExecutor):
                     out = await aeos_invoke_subsystem(sid, db=context.db, tenant_id=tid)
                 else:
                     out = await aeos_full_invoke(db=context.db, tenant_id=tid)
-                status = "succeeded" if out.get("ok") or out.get("invoke_ok", 0) > 0 else "failed"
-                # 全量体检即使部分失败也 succeeded（结果里如实标注），避免把部分真结果当整体失败
-                if not sid:
-                    status = "succeeded"
+                if sid:
+                    # 单子系统：真成功才 succeeded，否则如实 failed/degraded
+                    status = "succeeded" if out.get("ok") else "failed"
+                else:
+                    # 全量体检：顶层状态随真实接入数定级，绝不全部未接却报 succeeded
+                    invoke_ok = int(out.get("invoke_ok") or 0)
+                    invoke_total = int(out.get("invoke_total") or 8)
+                    if invoke_ok >= invoke_total:
+                        status = "succeeded"
+                    elif invoke_ok > 0:
+                        status = "degraded"
+                    else:
+                        status = "failed"
                 return ExecutorResult(
                     node_id=node.id,
                     status=status,
                     output={**out, "executor": self.get_executor_name()},
-                    error=None if status == "succeeded" else str(out.get("error") or "aeos invoke failed"),
+                    error=None if status == "succeeded" else str(out.get("error") or "aeos invoke 未全部成功（部分未接线，如实降级）"),
                 )
             if cap == "desktop_hermes.scenes":
                 return ExecutorResult(

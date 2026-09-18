@@ -501,4 +501,35 @@ class InquiriesUnifiedService:
             pass
         # 批次 B 首调用方：询盘落地即投影至 GoodJob customer_pool（master=uj）。
         self._push_goodjob_pool_projection(row)
+        # P0-1 写路径：询盘触点落库 contact_events（失败不阻断询盘主链）
+        try:
+            from app.services.trade_fulfillment_store import (
+                ensure_default_pipeline,
+                persist_contact_event,
+            )
+
+            channel = str(source_channel or "web")
+            if "whatsapp" in channel.lower():
+                channel = "whatsapp"
+            elif "email" in channel.lower() or "imap" in channel.lower():
+                channel = "email"
+            persist_contact_event(
+                self.db,
+                tenant_id=tid,
+                channel=channel,
+                event_type="inquiry",
+                direction="inbound",
+                summary=(message or "")[:500],
+                inquiry_id=str(getattr(row, "id", "") or "") or None,
+                payload={
+                    "name": name,
+                    "email": email,
+                    "phone": phone,
+                    "product": product,
+                    "source_channel": source_channel,
+                },
+            )
+            ensure_default_pipeline(self.db, tenant_id=tid)
+        except Exception:
+            pass
         return self._enrich_public_lead_row(row)

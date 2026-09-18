@@ -386,7 +386,7 @@
               v-model:target-keys="campaignForm.customerIds"
               :data-source="transferData"
               :titles="['可选客户', '已选客户']"
-              :render="item => item.title"
+              :render="transferRender"
               show-search
             />
           </a-form-item>
@@ -598,6 +598,9 @@ const transferData = computed(() => {
     title: opt.label,
   }));
 });
+
+type TransferItem = { key: string; title: string };
+const transferRender = (item: TransferItem) => item.title;
 
 // 计算属性
 const filteredEmails = computed(() => {

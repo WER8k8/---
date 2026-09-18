@@ -11,6 +11,12 @@ from __future__ import annotations
 
 import sys
 from typing import Any
+import io
+
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
 def main() -> int:
@@ -40,18 +46,12 @@ def main() -> int:
     print(f"  {sorted(registered)}")
 
     # ② 收集所有 L1 模板使用的执行器
-    templates = [
-        ("建站分发", _site_launch_graph),
-        ("深度研究", _research_graph),
-        ("拓客开发信", _outreach_graph),
-        ("外贸履约", _fulfillment_graph),
-        ("社媒拓客", _social_outreach_graph),
-        ("产品上架", _product_launch_graph),
-        ("市场研析", _research_analysis_graph),
-        ("Geo拓客", _lead_generation_graph),
-        ("网页取证", _browser_evidence_graph),
-        ("UBrain助手", _ubrain_assistant_graph),
-    ]
+    seen_builders = set()
+    templates = []
+    for keywords, builder in _TEMPLATES:
+        if builder not in seen_builders:
+            seen_builders.add(builder)
+            templates.append((builder.__name__, builder))
 
     driven_executors: set[str] = set()
     all_nodes: list[Any] = []

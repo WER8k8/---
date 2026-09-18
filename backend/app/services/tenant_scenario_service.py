@@ -8,6 +8,7 @@ import json
 import logging
 from typing import Any
 
+from sqlalchemy import case
 from sqlalchemy.orm import Session
 
 from app.models.tenant import Tenant, UserTenant
@@ -151,9 +152,24 @@ def resolve_tenant_id_for_user(
         return explicit_tenant_id
     if user.role in ("super_admin", "admin"):
         return None
+    # ADR-002 单一真源：本函数是用户→租户归属的唯一解析入口，
+    # UserTenant 无 primary/is_default 列，故在解析器内加稳定排序键保证确定性：
+    #   1) 租户内 role='admin' 的绑定优先于成员/运营类角色（主账号优先）
+    #   2) 同角色按 created_at 早者优先（最早加入的租户）
+    #   3) 同 created_at 按 tenant_id 字典序兜底（消除同秒插入并列）
+    # 不引入 users.tenant_id 第二真源，避免与 user_tenants 关联表双源漂移。
+    admin_role_key = case(
+        (UserTenant.role == "admin", 0),
+        else_=1,
+    )
     link = (
         db.query(UserTenant)
         .filter(UserTenant.user_id == user.id, UserTenant.is_active.is_(True))
+        .order_by(
+            admin_role_key.asc(),
+            UserTenant.created_at.asc(),
+            UserTenant.tenant_id.asc(),
+        )
         .first()
     )
     return str(link.tenant_id) if link else None

@@ -71,7 +71,7 @@ onMounted(() => {
 }
 
 .today-strip--done {
-  border-left: 3px solid #2563eb;
+  border-left: 3px solid var(--color-primary, #4a9b8c);
 }
 
 .today-strip__badge {
@@ -115,7 +115,7 @@ onMounted(() => {
 .today-strip__fill {
   height: 100%;
   border-radius: 999px;
-  background: #2563eb;
+  background: var(--color-primary, #4a9b8c);
   transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -144,18 +144,18 @@ onMounted(() => {
 .today-strip__actions :deep(.ant-btn-primary) {
   font-weight: 600;
   border-radius: 8px !important;
-  background: #2563eb !important;
-  border-color: #2563eb !important;
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+  background: var(--color-primary, #4a9b8c) !important;
+  border-color: var(--color-primary, #4a9b8c) !important;
+  box-shadow: 0 1px 2px rgba(74, 155, 140, 0.2);
 }
 
 .today-strip__actions :deep(.ant-btn-primary:hover) {
-  background: #1d4ed8 !important;
-  border-color: #1d4ed8 !important;
+  background: var(--color-primary-dark, #2a6b60) !important;
+  border-color: var(--color-primary-dark, #2a6b60) !important;
 }
 
 .today-strip__actions :deep(.ant-btn-link) {
-  color: #2563eb !important;
+  color: var(--color-primary, #4a9b8c) !important;
   padding-right: 0;
 }
 

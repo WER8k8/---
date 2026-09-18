@@ -218,11 +218,11 @@
               stroke-width="14"
               stroke-linecap="round"
             />
-            <!-- 高光主蓝弧 (电光蓝 #2563EB) -->
+            <!-- 高光主弧（平台薄荷 #4a9b8c） -->
             <path
               d="M 25 105 A 75 75 0 0 1 175 105"
               fill="none"
-              stroke="#2563eb"
+              stroke="#4a9b8c"
               stroke-width="14"
               stroke-linecap="round"
               stroke-dasharray="235.6"
@@ -244,7 +244,7 @@
               <span class="market-item__pct">42% · $119,500</span>
             </div>
             <div class="market-item__bar">
-              <div class="market-item__fill" style="width: 42%; background-color: #2563eb;" />
+              <div class="market-item__fill" style="width: 42%; background-color: #4a9b8c;" />
             </div>
           </div>
 
@@ -254,7 +254,7 @@
               <span class="market-item__pct">35% · $99,500</span>
             </div>
             <div class="market-item__bar">
-              <div class="market-item__fill" style="width: 35%; background-color: #3b82f6;" />
+              <div class="market-item__fill" style="width: 35%; background-color: #5eb8a8;" />
             </div>
           </div>
 
@@ -530,15 +530,15 @@ onActivated(() => {
 <style scoped lang="scss">
 /* ==========================================================================
    UniStore + Ramp 顶流现代高质感视觉体系
-   单一主强调色：电光蓝 (#2563EB)
+   单一主强调色：平台薄荷 (#4a9b8c，DESIGN-TOKEN-LOCK 单真源)
    排版底色：Mercury/Apple 白底 (#FFFFFF) + 极简发丝细边 (#E2E8F0)
    零粗暴大阴影 · 零脏毛玻璃 · 零渐变大字
    ========================================================================== */
 
-$brand-blue: #2563eb;
-$brand-blue-hover: #1d4ed8;
-$brand-blue-light: #eff6ff;
-$brand-blue-border: #dbeafe;
+$brand-blue: var(--color-primary, #4a9b8c);
+$brand-blue-hover: var(--color-primary-dark, #2a6b60);
+$brand-blue-light: var(--color-primary-light, #e8faf4);
+$brand-blue-border: #d3ede6;
 
 $accent-orange: #ea580c;
 $accent-orange-light: #fff7ed;

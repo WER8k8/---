@@ -68,27 +68,13 @@ class ResearchExecutor(BaseExecutor):
             )
 
         try:
-            from app.services.hermes.research_brief_service import generate_brief
-
-            result = generate_brief(
-                topic=topic,
-                depth=int(params.get("depth") or 3),
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                db=context.db,
+            from app.services.hermes.research_brief_service import (
+                compose_research_brief,
             )
-        except (ImportError, AttributeError):
-            # 降级：生成空简报骨架（非假成功，明确标记）
-            return ExecutorResult(
-                node_id=node.id,
-                status="succeeded",
-                output={
-                    "executor": "research",
-                    "capability": "research.brief",
-                    "topic": topic,
-                    "status": "brief_pending",
-                    "degraded": True,
-                    "note": "research_brief_service.generate_brief 未完整实现，返回空骨架",
-                },
+
+            result = compose_research_brief(
+                context.db,
+                topic={"key": topic, "label": topic},
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("ResearchExecutor research.brief 执行失败 node=%s", node.id)
@@ -102,6 +88,8 @@ class ResearchExecutor(BaseExecutor):
         output = dict(result or {})
         output["executor"] = "research"
         output["capability"] = "research.brief"
+        output["topic"] = topic
+        output["depth"] = int(params.get("depth") or 3)
         return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
     def _exec_prospect_research(
@@ -117,40 +105,20 @@ class ResearchExecutor(BaseExecutor):
                 error="missing_company: research.prospect 节点需提供 company/target_company",
             )
 
-        try:
-            from app.services.foreign_trade.customer_research_skill import research_customer
-
-            result = research_customer(
-                company_name=company,
-                industry=str(params.get("industry") or "").strip() or None,
-                db=context.db,
-            )
-        except (ImportError, AttributeError):
-            return ExecutorResult(
-                node_id=node.id,
-                status="succeeded",
-                output={
-                    "executor": "research",
-                    "capability": "research.prospect",
-                    "company": company,
-                    "status": "research_pending",
-                    "degraded": True,
-                    "note": "customer_research_skill.research_customer 未完整落地",
-                },
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("ResearchExecutor research.prospect 执行失败 node=%s", node.id)
-            return ExecutorResult(
-                node_id=node.id,
-                status="failed",
-                output={},
-                error=f"{type(exc).__name__}: {exc}",
-            )
-
-        output = dict(result or {})
-        output["executor"] = "research"
-        output["capability"] = "research.prospect"
-        return ExecutorResult(node_id=node.id, status="succeeded", output=output)
+        # customer_research_skill 仅为 SKILL 提示模板（registry），无 research_customer
+        # Python 执行函数；prospect 调研需 LLM 真源执行技能 → 未接线时如实 failed。
+        return ExecutorResult(
+            node_id=node.id,
+            status="failed",
+            output={
+                "executor": "research",
+                "capability": "research.prospect",
+                "company": company,
+                "status": "not_wired",
+                "error": "prospect 调研需 LLM 真源执行 customer_research 技能，未接线",
+            },
+            error="research.prospect 未接线：customer_research_skill 为提示模板，无执行函数，待 P1 接 LLM 真源",
+        )
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:

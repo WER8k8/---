@@ -119,6 +119,17 @@ from app.models.trace import AgentScorecard, SkillPerformance, TaskTrace
 from app.models.meter import MeterEvent
 from app.models.ai_task import AiTask
 from app.models.wallet import WalletAccount, WalletTransaction
+from app.models.trade_fulfillment import (
+    BusinessPayment,
+    ContactEvent,
+    ExperienceRecord,
+    Invoice,
+    KnowledgeBase,
+    LogisticsShipment,
+    Pipeline,
+    PurchaseOrder,
+    WhatsappMessage,
+)
 
 __all__ = [
     "Base", "AgentNode",
@@ -295,4 +306,13 @@ __all__ = [
     "AiTask",
     "SkillPerformance",
     "AgentScorecard",
+    "PurchaseOrder",
+    "LogisticsShipment",
+    "WhatsappMessage",
+    "ExperienceRecord",
+    "ContactEvent",
+    "KnowledgeBase",
+    "Invoice",
+    "BusinessPayment",
+    "Pipeline",
 ]

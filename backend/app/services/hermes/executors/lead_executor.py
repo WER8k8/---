@@ -122,6 +122,7 @@ class LeadExecutor(BaseExecutor):
         # Ensure count is in output for downstream nodes
         leads = output.get("leads") or output.get("items") or []
         output["lead_count"] = len(leads) if isinstance(leads, list) else 0
+        output["keyword"] = str(params.get("keywords") or params.get("keyword") or "")
         return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
     async def _exec_lead_scoring(
@@ -172,6 +173,8 @@ class LeadExecutor(BaseExecutor):
             "scored_count": len(scored),
             "scored_leads": scored[:50],
             "top_lead": scored[0] if scored else None,
+            "qualified": [s for s in scored if s.get("score", 0) >= 40],
+            "prospects": scored[:50],
         }
         return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 
@@ -181,14 +184,14 @@ class LeadExecutor(BaseExecutor):
             "lead.search": {
                 "desc": "Geo 拓客搜索（按行业/国家/关键词找潜在客户）",
                 "input": ["industry", "country", "keywords", "limit"],
-                "output": ["lead_count", "leads", "top_lead"],
+                "output": ["lead_count", "leads", "top_lead", "keyword"],
                 "cost": {"tokens": 200, "seconds": 10},
                 "needs_approval": False,
             },
             "lead.score": {
                 "desc": "已有线索评分（批量 lead_ids 按转化率打分）",
                 "input": ["lead_ids"],
-                "output": ["scored_count", "top_lead"],
+                "output": ["scored_count", "top_lead", "scored_leads", "qualified", "prospects"],
                 "cost": {"tokens": 100, "seconds": 5},
                 "needs_approval": False,
             },

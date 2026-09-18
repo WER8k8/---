@@ -55,11 +55,23 @@ CELERY_CONFIG = {
     },
     # 定时任务调度 (改造 5: APScheduler 向 Celery Beat 迁移预留点)
     "beat_schedule": {
-        # 示例：每天凌晨执行日志清理
+        # 每天凌晨执行日志清理
         "daily-cleanup": {
             "task": "app.core.celery_app.cleanup_logs",
             "schedule": 86400.0,  # 每天一次
             "options": {"queue": "cleanup"}
+        },
+        # 计量周期汇总（采购点：轮22）
+        "aggregate-meter-events": {
+            "task": "app.tasks.billing_tasks.aggregate_meter_events",
+            "schedule": 1800.0,  # 每半小时
+            "options": {"queue": "default"}
+        },
+        # 对账巡检（P2-1d：计量 vs 账本误差 0 门禁）
+        "billing-reconcile-patrol": {
+            "task": "app.tasks.billing_tasks.billing_reconcile_patrol",
+            "schedule": 3600.0,  # 每小时
+            "options": {"queue": "default"}
         },
     }
 }

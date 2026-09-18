@@ -101,6 +101,30 @@ class OrderExecutor(BaseExecutor):
                 )
                 context.db.commit()
                 result = {"order_id": str(order.id), "order_number": order.order_number, "status": "pending", "access_token": order.access_token}
+                # P0-1 写路径：订单落地同步采购跟单草稿 + 默认履约管线
+                try:
+                    from app.services.trade_fulfillment_store import (
+                        ensure_default_pipeline,
+                        persist_purchase_order,
+                    )
+
+                    po = persist_purchase_order(
+                        context.db,
+                        po_number=f"PO-{order.order_number}",
+                        tenant_id=str(context.tenant_id or "") or None,
+                        order_id=str(order.id),
+                        product_desc=str(params.get("product_desc") or product.name or product_id),
+                        quantity=float(quantity),
+                        unit_price=price,
+                        currency=str(params.get("currency") or "USD"),
+                        status="draft",
+                        notes="auto-created from order.create",
+                    )
+                    pipe = ensure_default_pipeline(context.db, tenant_id=str(context.tenant_id or "") or None)
+                    result["purchase_order_persisted"] = po
+                    result["pipeline_persisted"] = pipe
+                except Exception as po_exc:  # noqa: BLE001
+                    result["purchase_order_persisted"] = {"persisted": False, "error": str(po_exc)}
         except (ImportError, AttributeError) as exc:
             return ExecutorResult(
                 node_id=node.id,

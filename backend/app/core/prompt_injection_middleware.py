@@ -89,6 +89,15 @@ class PromptInjectionMiddleware:
             more_body = message.get("more_body", False)
         body_bytes = b"".join(body_parts)
 
+        # 无论是否命中，都必须把 body 回放给下游——
+        # 否则空 body / 非字符串 JSON 在已抽干 receive 后，带 Body 参数的路由会永久挂起。
+        async def _replay_receive() -> dict:
+            return {
+                "type": "http.request",
+                "body": body_bytes,
+                "more_body": False,
+            }
+
         # 解析内容
         text_to_scan: str = ""
         try:
@@ -104,7 +113,7 @@ class PromptInjectionMiddleware:
             text_to_scan = body_bytes.decode("utf-8", errors="replace")
 
         if not text_to_scan:
-            await self.app(scope, receive, send)
+            await self.app(scope, _replay_receive, send)
             return
 
         # 扫描注入模式（复用对外纯函数 detect_injection，避免逻辑散落）
@@ -147,12 +156,4 @@ class PromptInjectionMiddleware:
             })
             return
 
-        # 无命中：把 body 放回让下游继续处理
-        async def _new_receive() -> dict:
-            return {
-                "type": "http.request",
-                "body": body_bytes,
-                "more_body": False,
-            }
-
-        await self.app(scope, _new_receive, send)
+        await self.app(scope, _replay_receive, send)

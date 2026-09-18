@@ -66,6 +66,11 @@ class Settings(BaseSettings):
     # 影响；开启后副作用故障仍不阻断主链路。注意：gateway 计量经 meter_events 汇总
     # 进 token_ledger，与 model_call_ledger 聚合路径二选一启用，避免双重扣减。
     TASK_CONTROL_ENABLED: bool = False
+    # 记账号门（wallet_guard / acquisition）：硬拦开关显式声明为 Settings 字段，使
+    # pydantic 能从 env_file 解析为 bool 并在 settings 内可读（此前仅靠 os.getenv，
+    # 而 env_file 不注入 os.environ → 硬拦在真实运行时从未生效，P2-1b 修正）。
+    ACQ_HARD_BLOCK_TOKEN: bool = False
+    TOKEN_WALLET_HARD_BLOCK: bool = False
     # 轮24 双记账防护：model_call_ledger→token_ledger 聚合闸门（默认关）。
     # 与 TASK_CONTROL_ENABLED（meter_events 计量路径）互斥启用，防止 token_ledger
     # 双重扣减；切换记账主路径时先关 TASK_CONTROL_ENABLED 再开本开关。
@@ -282,6 +287,12 @@ class Settings(BaseSettings):
         "chinese": "deepseek-chat",
         "vision": "deepseek-chat",
     }
+    # ========================================
+    # 翻译引擎（OpenAI 兼容 LLM 机翻真源，P1-1 接线）
+    # 接入后 translate_service 不再 identity 降级；仅当未配置时才 degraded=True
+    TRANSLATE_API_BASE_URL: str = ""
+    TRANSLATE_API_KEY: Optional[str] = None
+    TRANSLATE_MODEL: str = "Atria-Dawn-Preview"
     # NVIDIA NIM（integrate.api.nvidia.com）
     # Key 本身不过期；免费额度/计费以 NVIDIA 控制台政策为准，需自行关注用量。
     AI_NVIDIA_API_KEY: Optional[str] = None

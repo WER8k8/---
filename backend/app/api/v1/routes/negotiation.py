@@ -50,6 +50,12 @@ _PROMPT_INJECTION_PATTERNS = [
 ]
 
 
+class GeneratePIBody(BaseModel):
+    """generate-pi 可选覆盖参数。"""
+    seller_override: Optional[Dict[str, Any]] = None
+    buyer_override: Optional[Dict[str, Any]] = None
+
+
 def detect_prompt_injection(text: str) -> bool:
     """检测输入是否存在 Prompt 注入或越权套取底价攻击。"""
     if not text:
@@ -466,12 +472,13 @@ def send_negotiation_message(
 @router.post("/{negotiation_id}/generate-pi")
 def generate_pi_document(
     negotiation_id: str,
-    seller_override: Optional[Dict[str, Any]] = None,
-    buyer_override: Optional[Dict[str, Any]] = None,
+    body: Optional[GeneratePIBody] = None,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """谈妥后一键生成标准形式发票 (Proforma Invoice PI)。（外贸7步闭环核心契约）。"""
+    seller_override = body.seller_override if body else None
+    buyer_override = body.buyer_override if body else None
     quote = _store.get_quote(current_user, negotiation_id) or {}
     approval = _store.get_approval(current_user, negotiation_id)
 
@@ -513,6 +520,23 @@ def generate_pi_document(
         delivery_terms="FOB Shenzhen",
         validity_days=15,
         notes="Generated via YouDing AI Negotiator Contract Suite",
+        db=db,
+        tenant_id=str(getattr(current_user, "tenant_id", "") or "") or None,
     )
 
     return success_response(data=pi_payload, message="Proforma Invoice 已成功生成")
+
+
+# 注：谈价、询盘等其余动作已按契约归位
+# 1. [P1-3] AI 智能谈判（谈价 + 谈判 + PI）已在上方内联实现（/quote /messages /generate-pi），
+#    无需再委托 trade_ai_agent 路由。
+# 2. [P1-1] 汇率服务 (FX) 已在上方 build_proforma_invoice 内通过 load_rates 内联实现，
+#    并带有 _RATE_FALLBACK 常量兜底。
+# 3. 合同管理 (contract) 与 报关单 (customs_declaration) 属于「单证」范畴，
+#    由 GoodJob 单证套打与 trade_document_service 的 build_contract/build_customs_declaration
+#    承接，非本路由（询盘核价）职责。
+# 4. 物流轨迹 (logistics_tracking) 与尾款核销 (final_payment) 属于履约后段（步骤5/7），
+#    由 goodjob_fulfillment / logistics_service 承接，非本路由职责。
+
+
+

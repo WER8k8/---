@@ -152,18 +152,72 @@ class PlatformOpsExecutor(BaseExecutor):
         body = str(p.get("body") or "").strip()
         if not title or not body:
             return ExecutorResult(node_id=node.id, status="failed", output={}, error="missing_title_or_body")
-        # 只起草：内存/日志留痕，不自动推送
-        return ExecutorResult(
-            node_id=node.id,
-            status="succeeded",
-            output={
-                "draft_id": f"notify-draft-{abs(hash((title, body))) % 10**8:08d}",
-                "status": "draft",
-                "title": title,
-                "note": "草稿已生成，未自动推送（人审后发送）",
-                "executor": self.get_executor_name(),
-            },
-        )
+        if context.db is None:
+            return ExecutorResult(
+                node_id=node.id,
+                status="degraded",
+                output={
+                    "status": "draft_memory_only",
+                    "title": title,
+                    "note": "db 不可用，草稿未落库（不自动推送，待人审）",
+                    "executor": self.get_executor_name(),
+                },
+                error="db_unavailable: 通知草稿未入库",
+            )
+        try:
+            from app.models.notification import Notification  # type: ignore
+
+            user_id = _resolve_notification_user(context.db, str(p.get("user_id") or ""))
+            if not user_id:
+                return ExecutorResult(
+                    node_id=node.id,
+                    status="degraded",
+                    output={
+                        "status": "draft_memory_only",
+                        "title": title,
+                        "note": "无法解析通知接收人，草稿未入库（不自动推送）",
+                        "executor": self.get_executor_name(),
+                    },
+                    error="no_recipient_user: 未指定 user_id 且无可解析的默认接收人",
+                )
+            n = Notification(
+                user_id=user_id,
+                title=title,
+                content=body,
+                type="system",
+                is_read=False,
+            )
+            context.db.add(n)
+            context.db.commit()
+            draft_id = str(getattr(n, "id", "") or "")
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={
+                    "draft_id": draft_id,
+                    "status": "draft_saved",
+                    "title": title,
+                    "note": "通知草稿已入库，未自动推送（人审后发送）",
+                    "executor": self.get_executor_name(),
+                },
+            )
+        except Exception as exc:  # noqa: BLE001
+            try:
+                context.db.rollback()
+            except Exception:
+                pass
+            logger.warning("platform_ops.notify_draft 入库失败 %s", type(exc).__name__)
+            return ExecutorResult(
+                node_id=node.id,
+                status="degraded",
+                output={
+                    "status": "draft_memory_only",
+                    "title": title,
+                    "note": "通知草稿入库失败，未持久化（不自动推送）",
+                    "executor": self.get_executor_name(),
+                },
+                error=f"{type(exc).__name__}: 通知草稿未入库",
+            )
 
 
 ExecutorRegistry.register(PlatformOpsExecutor())

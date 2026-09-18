@@ -99,7 +99,7 @@ async function loadOverview() {
   }
 }
 function addLang(){ if(!nl.code||!nl.name)return; langs.value.push({code:nl.code,name:nl.name,flag:'',coverage:0}); showAddLang.value=false; nl.code='';nl.name=''; message.success('已添加') }
-function delLang(l:any){ if(l.code==='zh-CN'){message.warning('不能删除默认语言');return}; langs.value=langs.value.filter(x=>x.code!==l.code); message.success('已删除') }
+function delLang(l:any){ if(l.code==='zh-CN'){message.warning('不能删除默认语言');return} langs.value=langs.value.filter(x=>x.code!==l.code); message.success('已删除') }
 function startTranslate(l:any){ tasks.value.unshift({id:Date.now(),n:`${l.name}全量翻译`,d:`zh→${l.code.split('-')[0]}`,p:'0/—',s:'queued'}); message.success(`已启动 ${l.name} 翻译任务`) }
 function fullTranslate(){ batching.value=true; setTimeout(()=>{ tasks.value.unshift({id:Date.now(),n:'全站批量翻译',d:'zh→en/ja/ko/ar/th/vi',p:'0/—',s:'queued'}); batching.value=false; message.success('全量翻译任务已创建') },800) }
 function retry(r:any){ tasks.value=tasks.value.map(t=>t.id===r.id?{...t,s:'queued'}:t); message.success('已重新排队') }

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
-﻿﻿﻿﻿<template>
+<template>
   <YdPage title="模型管理" subtitle="管理35大AI模型平台 — 配置API Key即可启用对应模型" surface="elevated">
     <template #actions>
       <a-button type="primary" @click="showAddModal = true">

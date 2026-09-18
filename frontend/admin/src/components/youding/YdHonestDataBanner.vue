@@ -12,10 +12,10 @@
     @close="dismissed = true"
   >
     <template #message>
-      <span class="yd-honest-banner__title">{{ title }}</span>
+      <span class="yd-honest-banner__title">{{ bannerTitle }}</span>
     </template>
     <template #description>
-      <p class="yd-honest-banner__desc">{{ description }}</p>
+      <p class="yd-honest-banner__desc">{{ bannerDescription }}</p>
       <a-button
         v-if="actionLabel && actionRoute"
         type="link"
@@ -98,8 +98,8 @@ const preset = computed(() => {
 });
 
 const alertType = computed(() => preset.value.type);
-const title = computed(() => preset.value.title);
-const description = computed(() => preset.value.description);
+const bannerTitle = computed(() => preset.value.title);
+const bannerDescription = computed(() => preset.value.description);
 
 const visible = computed(() => props.level !== 'real' && !dismissed.value);
 

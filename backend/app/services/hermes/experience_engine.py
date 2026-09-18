@@ -79,11 +79,42 @@ class ExperienceEngine:
         if len(self._records) > _MAX_RECORDS:
             self._records = self._records[-_MAX_RECORDS:]
         self._save()
+        pg_persist = {"persisted": False, "reason": "skipped"}
+        try:
+            # 仅在可快速拿到连接时双写；禁止在请求/执行热路径上无限等连接池
+            from sqlalchemy import text
+
+            from app.core.database import SessionLocal
+            from app.services.trade_fulfillment_store import persist_experience_record
+
+            db = SessionLocal()
+            try:
+                db.execute(text("SELECT 1"))
+                pg_persist = persist_experience_record(
+                    db,
+                    title=f"{task_type}:{'ok' if success else 'fail'}",
+                    content=solution or error_type,
+                    source_type="task",
+                    source_id=task_type,
+                    experience_type="success_pattern" if success else "failure_pattern",
+                    score=1.0 if success else 0.0,
+                    status="raw",
+                    metadata={
+                        "duration": duration,
+                        "error_type": error_type,
+                        "engine": "hermes_experience_engine",
+                    },
+                )
+            finally:
+                db.close()
+        except Exception as pg_exc:  # noqa: BLE001
+            pg_persist = {"persisted": False, "error": str(pg_exc)}
         return {
             "recorded": True,
             "engine": "hermes_json_fallback",
             "source_of_truth": "evolution_pg",
-            "note": "JSON 经验非主真源；请确认 Evolution PG 已写入",
+            "pg_experience_records": pg_persist,
+            "note": "JSON 经验非主真源；PG experience_records 为业务侧双写",
         }
 
     def query(self, task_type: str, top_k: int = 5) -> List[Dict[str, Any]]:

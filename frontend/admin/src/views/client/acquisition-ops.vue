@@ -1407,9 +1407,6 @@ async function onDispatch() {
 }
 
 onMounted(async () => {
-  // 预置演示数据，降低空态焦虑（傻子都行）
-  if (!form.inquiry_id) form.inquiry_id = 'INQ-DEMO-001'
-  if (!form.country) form.country = 'SA'
   try {
     const tid = await resolveTenantId()
     wallet.value = await getWalletStatus(tid)
