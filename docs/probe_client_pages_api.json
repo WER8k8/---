@@ -1,0 +1,107 @@
+[
+  {
+    "file": "frontend/admin/src/views/client/foreign-trade-team.vue",
+    "exists": true,
+    "hits": [
+      {
+        "line": 46,
+        "text": "import { fetchB2bExperts, type B2bExpert } from '@/api/foreign-trade'"
+      }
+    ],
+    "api_paths": [],
+    "imports": [
+      "@/api/foreign-trade"
+    ]
+  },
+  {
+    "file": "frontend/admin/src/views/client/chuhaiji-app.vue",
+    "exists": true,
+    "hits": [
+      {
+        "line": 53,
+        "text": "<button type=\"button\" class=\"chj-action\" @click=\"openPath('/client/content')\">内容发布中心</button>"
+      },
+      {
+        "line": 54,
+        "text": "<button type=\"button\" class=\"chj-action secondary\" @click=\"openPath('/client/products')\">管理产品</button>"
+      },
+      {
+        "line": 140,
+        "text": "const res = await fetch(path, { headers: authHeaders() })"
+      },
+      {
+        "line": 147,
+        "text": "const res = await fetch('/client/branding', { headers: authHeaders() })"
+      },
+      {
+        "line": 191,
+        "text": "await fetch('/app/v1/devices/register', {"
+      },
+      {
+        "line": 218,
+        "text": "const d = await fetch('/app/v1/push/test', {"
+      },
+      {
+        "line": 250,
+        "text": "const res = await fetch('/app/v1/voice/transcribe', {"
+      },
+      {
+        "line": 300,
+        "text": "const res = await fetch('/app/v1/assistant/chat', {"
+      }
+    ],
+    "api_paths": [],
+    "imports": []
+  },
+  {
+    "file": "frontend/admin/src/views/client/aitoearn-engage.vue",
+    "exists": true,
+    "hits": [
+      {
+        "line": 152,
+        "text": "import { unwrapFetchedJson } from '@/api'"
+      },
+      {
+        "line": 290,
+        "text": "const res = await fetch('/api/v1/client/douyin-comments/pull', {"
+      }
+    ],
+    "api_paths": [
+      "api/v1/client/douyin-comments/pull"
+    ],
+    "imports": []
+  },
+  {
+    "file": "frontend/admin/src/views/client/templates-explore.vue",
+    "exists": true,
+    "hits": [
+      {
+        "line": 174,
+        "text": "{ label: '补全产品资料', description: '让产品更容易被发现', path: '/client/products', icon: DatabaseOutlined },"
+      }
+    ],
+    "api_paths": [],
+    "imports": []
+  },
+  {
+    "file": "frontend/admin/src/views/client/trade-tools.vue",
+    "exists": true,
+    "hits": [],
+    "api_paths": [],
+    "imports": []
+  },
+  {
+    "file": "frontend/admin/src/views/client/site-editor-lab.vue",
+    "exists": true,
+    "hits": [
+      {
+        "line": 111,
+        "text": "import { bffSiteEditorDraftGet } from '@/api/admin-bff';"
+      }
+    ],
+    "api_paths": [],
+    "imports": [
+      "@/api/admin-bff"
+    ]
+  }
+]

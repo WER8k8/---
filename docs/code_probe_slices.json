@@ -1,0 +1,6794 @@
+{
+  "source": "code/runtime probe only",
+  "cwd_note": "run with process cwd=backend for PG slice",
+  "slice_executors": {
+    "registered_count": 37,
+    "executors": [
+      {
+        "executor": "accio",
+        "path": "backend/app/services/hermes/executors/accio_executor.py",
+        "capability_count": 4,
+        "capabilities": [
+          {
+            "name": "negotiation.draft",
+            "desc": "多轮谈单话术",
+            "needs_approval": null,
+            "input": [
+              "message"
+            ]
+          },
+          {
+            "name": "outreach.letter",
+            "desc": "开发信草稿（**需人工确认后方可外发**）",
+            "needs_approval": true,
+            "input": [
+              "message",
+              "prospect_ids"
+            ]
+          },
+          {
+            "name": "prospect.enrich",
+            "desc": "采购商候选（公开 B2B 画像模板，**待人工核实**）",
+            "needs_approval": false,
+            "input": [
+              "message",
+              "category",
+              "region"
+            ]
+          },
+          {
+            "name": "prospect.match",
+            "desc": "同 prospect.enrich（别名）",
+            "needs_approval": null,
+            "input": [
+              "message"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "agent_ops",
+        "path": "backend/app/services/hermes/executors/agent_ops_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "agent_ops.knowledge_q",
+            "desc": "知识库检索",
+            "needs_approval": null,
+            "input": [
+              "query",
+              "limit?"
+            ]
+          },
+          {
+            "name": "agent_ops.performance",
+            "desc": "代理/业务员业绩摘要",
+            "needs_approval": null,
+            "input": [
+              "agent_id?",
+              "tenant_id?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "ai_engine",
+        "path": "backend/app/services/hermes/executors/ai_engine_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "ai.chat",
+            "desc": "LLM 对话推理（统一入口，路由到 ubrain/deerflow）",
+            "needs_approval": false,
+            "input": [
+              "prompt",
+              "model",
+              "temperature"
+            ]
+          },
+          {
+            "name": "ai.reason",
+            "desc": "多步推理（规划/分析/决策）",
+            "needs_approval": false,
+            "input": [
+              "prompt",
+              "reasoning_depth"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "billing",
+        "path": "backend/app/services/hermes/executors/billing_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "billing.invoice",
+            "desc": "生成计费发票（订阅/用量/加购）",
+            "needs_approval": false,
+            "input": [
+              "amount",
+              "product",
+              "tenant_id"
+            ]
+          },
+          {
+            "name": "billing.meter",
+            "desc": "计量事件记录（AI调用/静态IP/指纹槽位消耗）",
+            "needs_approval": false,
+            "input": [
+              "event_type",
+              "amount",
+              "tenant_id"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "biz_bot",
+        "path": "backend/app/services/hermes/executors/biz_bot_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "biz_bot.coverage",
+            "desc": "业务机器人覆盖率（相对真实路由模块）",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "biz_bot.list_actions",
+            "desc": "列出已注册业务动作模块",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "biz_bot.run",
+            "desc": "全模块业务机器人：优先真业务动作，否则能力面+下一步",
+            "needs_approval": false,
+            "input": [
+              "module",
+              "action?",
+              "payload?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "browser",
+        "path": "backend/app/services/hermes/executors/browser_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "browser.scrape",
+            "desc": "网页取证（抓取 DOM/文本）",
+            "needs_approval": false,
+            "input": [
+              "url",
+              "selector",
+              "wait_ms"
+            ]
+          },
+          {
+            "name": "browser.screenshot",
+            "desc": "网页截图（全页/viewport）",
+            "needs_approval": false,
+            "input": [
+              "url",
+              "viewport",
+              "full_page"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "commerce_ops",
+        "path": "backend/app/services/hermes/executors/commerce_ops_executor.py",
+        "capability_count": 6,
+        "capabilities": [
+          {
+            "name": "commerce_ops.acquisition_card",
+            "desc": "获客跟单卡摘要/建卡",
+            "needs_approval": false,
+            "input": [
+              "inquiry_id",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "commerce_ops.crm_pipeline",
+            "desc": "CRM 商机统计（按阶段）",
+            "needs_approval": false,
+            "input": [
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "commerce_ops.email_enqueue",
+            "desc": "把开发信写入邮件队列（不等于已发送）",
+            "needs_approval": true,
+            "input": [
+              "to_email",
+              "subject",
+              "body",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "commerce_ops.followup_sequence",
+            "desc": "为线索构建跟进序列",
+            "needs_approval": false,
+            "input": [
+              "lead_id",
+              "lead_email?",
+              "lead_name?"
+            ]
+          },
+          {
+            "name": "commerce_ops.outreach_scan",
+            "desc": "扫描到期 draft outreach → queued",
+            "needs_approval": false,
+            "input": [
+              "limit?"
+            ]
+          },
+          {
+            "name": "commerce_ops.wallet_token",
+            "desc": "Token/钱包余额查询",
+            "needs_approval": false,
+            "input": [
+              "tenant_id?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "compliance_ops",
+        "path": "backend/app/services/hermes/executors/compliance_ops_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "compliance_ops.alerts",
+            "desc": "安全告警",
+            "needs_approval": null,
+            "input": [
+              "limit?"
+            ]
+          },
+          {
+            "name": "compliance_ops.hash",
+            "desc": "内容哈希（SHA256，可审计）",
+            "needs_approval": null,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "name": "compliance_ops.overview",
+            "desc": "合规总览",
+            "needs_approval": null,
+            "input": [
+              "tenant_id?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "content",
+        "path": "backend/app/services/hermes/executors/content_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "content.create",
+            "desc": "创建内容页（title/slug 必填，slug 全局唯一）",
+            "needs_approval": false,
+            "input": [
+              "title",
+              "slug",
+              "content",
+              "summary",
+              "page_type",
+              "status"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "content_deep",
+        "path": "backend/app/services/hermes/executors/content_deep_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "content_deep.acquisition",
+            "desc": "内容 ID 挂询盘归因",
+            "needs_approval": null,
+            "input": [
+              "content_id",
+              "inquiry_id",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "content_deep.knowledge",
+            "desc": "合规知识待读摘要",
+            "needs_approval": null,
+            "input": [
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "content_deep.seo_meta",
+            "desc": "SEO 元数据（degraded 如实标记）",
+            "needs_approval": null,
+            "input": [
+              "product_name",
+              "industry?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "data_ops",
+        "path": "backend/app/services/hermes/executors/data_ops_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "data_ops.content_stats",
+            "desc": "内容/询盘基础统计",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "data_ops.domain_resolve",
+            "desc": "按域名解析租户",
+            "needs_approval": null,
+            "input": [
+              "host"
+            ]
+          },
+          {
+            "name": "data_ops.notify_draft",
+            "desc": "站内通知草稿（人审后发送）",
+            "needs_approval": true,
+            "input": [
+              "user_id?",
+              "title",
+              "body",
+              "tenant_id?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "deerflow",
+        "path": "backend/app/services/hermes/executors/deerflow_executor.py",
+        "capability_count": 4,
+        "capabilities": [
+          {
+            "name": "research.deep_run",
+            "desc": "深度研究（DeerFlow 9 意图之一）",
+            "needs_approval": null,
+            "input": [
+              "topic",
+              "depth"
+            ]
+          },
+          {
+            "name": "research.market_insight",
+            "desc": "目标市场洞察（需求驱动/价格带/准入壁垒/买家画像/动作清单）",
+            "needs_approval": false,
+            "input": [
+              "category",
+              "target_market"
+            ]
+          },
+          {
+            "name": "research.supplier_compare",
+            "desc": "供应商/同行横向比较排序卡（候选主体须由调用方给定）",
+            "needs_approval": false,
+            "input": [
+              "category",
+              "target_market",
+              "candidates"
+            ]
+          },
+          {
+            "name": "seo.optimize",
+            "desc": "SEO/GEO 优化",
+            "needs_approval": null,
+            "input": [
+              "site_url",
+              "product_name"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "desktop_hermes",
+        "path": "backend/app/services/hermes/executors/desktop_hermes_executor.py",
+        "capability_count": 6,
+        "capabilities": [
+          {
+            "name": "desktop_hermes.aeos",
+            "desc": "AEOS 八大子系统状态",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "desktop_hermes.aeos_invoke",
+            "desc": "AEOS 子系统业务调用（全量或单系统）",
+            "needs_approval": false,
+            "input": [
+              "subsystem_id?",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "desktop_hermes.assemble",
+            "desc": "DSH 外层组装：意图+技能 → Hermes 任务图",
+            "needs_approval": false,
+            "input": [
+              "intent",
+              "payload?",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "desktop_hermes.feedback",
+            "desc": "莫比乌斯经验环标记",
+            "needs_approval": false,
+            "input": [
+              "intent",
+              "success",
+              "note?"
+            ]
+          },
+          {
+            "name": "desktop_hermes.scenes",
+            "desc": "四航道 + AEOS/机器人场景库",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "desktop_hermes.status",
+            "desc": "DSH 与蓝图里程碑状态",
+            "needs_approval": null,
+            "input": []
+          }
+        ]
+      },
+      {
+        "executor": "egress",
+        "path": "backend/app/services/hermes/executors/egress_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "egress.assign",
+            "desc": "分配独立静态 IP / 指纹环境槽位（第三条计费轨）",
+            "needs_approval": false,
+            "input": [
+              "count"
+            ]
+          },
+          {
+            "name": "egress.provision",
+            "desc": "同 egress.assign（别名）",
+            "needs_approval": null,
+            "input": [
+              "count"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "engagement",
+        "path": "backend/app/services/hermes/executors/engagement_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "engagement.reply",
+            "desc": "回复已有会话线索",
+            "needs_approval": false,
+            "input": [
+              "channel",
+              "target_id",
+              "message",
+              "thread_id"
+            ]
+          },
+          {
+            "name": "engagement.send",
+            "desc": "社媒触达发送（WhatsApp/LinkedIn 主动消息）",
+            "needs_approval": false,
+            "input": [
+              "channel",
+              "target_id",
+              "message"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "forum",
+        "path": "backend/app/services/hermes/executors/forum_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "forum.post",
+            "desc": "论坛/社区发帖（多目标分发）",
+            "needs_approval": false,
+            "input": [
+              "forum_id",
+              "title",
+              "body",
+              "tags"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "goodjob_crm",
+        "path": "backend/app/services/hermes/executors/goodjob_crm_executor.py",
+        "capability_count": 6,
+        "capabilities": [
+          {
+            "name": "crm.sync_lead",
+            "desc": "线索同步到 GoodJob CRM（走真实 HTTP 桥；未配置即明确失败）",
+            "needs_approval": false,
+            "input": [
+              "company_name",
+              "contact_name",
+              "email",
+              "phone",
+              "country",
+              "source"
+            ]
+          },
+          {
+            "name": "crm.sync_stage",
+            "desc": "外贸 7 步履约·商机建档同步（GoodJob 漏斗阶段归档；走真实单证工作室桥校验，未配置即失败）",
+            "needs_approval": false,
+            "input": [
+              "stage",
+              "lead_id"
+            ]
+          },
+          {
+            "name": "crm.update_opportunity",
+            "desc": "更新 GoodJob CRM 商机状态（new/contacted/qualified/negotiated/won/lost）",
+            "needs_approval": false,
+            "input": [
+              "opportunity_id",
+              "status"
+            ]
+          },
+          {
+            "name": "document.generate_pi",
+            "desc": "形式发票 PI 生成（走真实 GoodJob 单证工作室桥；未配置即明确失败，不造单证）",
+            "needs_approval": true,
+            "input": [
+              "product_name",
+              "quantity",
+              "unit_price",
+              "buyer_name",
+              "country"
+            ]
+          },
+          {
+            "name": "document.generate_trade_docs",
+            "desc": "发运单证 CI/PL 生成（走真实 GoodJob 单证工作室桥；未配置即明确失败，不造单证）",
+            "needs_approval": true,
+            "input": [
+              "doc_type",
+              "items",
+              "inquiry_id",
+              "bl_number",
+              "container_no"
+            ]
+          },
+          {
+            "name": "trade.docs",
+            "desc": "外贸单证提交（PI/CI/PL，走真实 HTTP 桥；未配置即失败）",
+            "needs_approval": true,
+            "input": [
+              "doc_type",
+              "items",
+              "inquiry_id",
+              "options"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "growth_probe",
+        "path": "backend/app/services/hermes/executors/growth_probe_executor.py",
+        "capability_count": 4,
+        "capabilities": [
+          {
+            "name": "growth_probe.channels",
+            "desc": "获客渠道可用性（real/mock 红标）",
+            "needs_approval": false,
+            "input": []
+          },
+          {
+            "name": "growth_probe.mcp_health",
+            "desc": "MCP 服务健康",
+            "needs_approval": false,
+            "input": [
+              "name?"
+            ]
+          },
+          {
+            "name": "growth_probe.payment",
+            "desc": "支付通道沙箱探活",
+            "needs_approval": false,
+            "input": [
+              "provider?"
+            ]
+          },
+          {
+            "name": "growth_probe.seo_include",
+            "desc": "URL 是否被搜索引擎收录",
+            "needs_approval": false,
+            "input": [
+              "url",
+              "engine?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "inquiry",
+        "path": "backend/app/services/hermes/executors/inquiry_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "inquiry.capture",
+            "desc": "公开询盘线索 → 真实入库（含发现问句注入）",
+            "needs_approval": false,
+            "input": [
+              "name",
+              "message",
+              "email",
+              "phone",
+              "product",
+              "source_channel"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "lead",
+        "path": "backend/app/services/hermes/executors/lead_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "lead.score",
+            "desc": "已有线索评分（批量 lead_ids 按转化率打分）",
+            "needs_approval": false,
+            "input": [
+              "lead_ids"
+            ]
+          },
+          {
+            "name": "lead.search",
+            "desc": "Geo 拓客搜索（按行业/国家/关键词找潜在客户）",
+            "needs_approval": false,
+            "input": [
+              "industry",
+              "country",
+              "keywords",
+              "limit"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "logistics",
+        "path": "backend/app/services/hermes/executors/logistics_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "logistics.track",
+            "desc": "物流轨迹查询（kuaidi100 / demo 降级）",
+            "needs_approval": false,
+            "input": [
+              "tracking_number",
+              "carrier"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "media",
+        "path": "backend/app/services/hermes/executors/media_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "media.render",
+            "desc": "媒体素材渲染（图文/短视频生成任务入队）",
+            "needs_approval": false,
+            "input": [
+              "content_type",
+              "prompt",
+              "article_text",
+              "tenant_id"
+            ]
+          },
+          {
+            "name": "media.video",
+            "desc": "文章转视频（article to script to video render task）",
+            "needs_approval": false,
+            "input": [
+              "article_text",
+              "duration",
+              "tenant_id"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "module_matrix",
+        "path": "backend/app/services/hermes/executors/module_matrix_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "matrix.health",
+            "desc": "矩阵健康：模块是否可 import",
+            "needs_approval": false,
+            "input": [
+              "module?"
+            ]
+          },
+          {
+            "name": "matrix.inspect",
+            "desc": "检查某路由模块的能力面（端点数/样例），供编排盘点",
+            "needs_approval": false,
+            "input": [
+              "module"
+            ]
+          },
+          {
+            "name": "matrix.invoke",
+            "desc": "对路由模块做受控调用（优先只读 helper）",
+            "needs_approval": false,
+            "input": [
+              "module",
+              "action"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "nurture",
+        "path": "backend/app/services/hermes/executors/nurture_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "nurture.advance",
+            "desc": "推进既有养号周期",
+            "needs_approval": null,
+            "input": [
+              "cycle_id"
+            ]
+          },
+          {
+            "name": "nurture.create",
+            "desc": "为某平台账号建养号周期（业务链第 7 环）",
+            "needs_approval": false,
+            "input": [
+              "platform",
+              "account_label",
+              "platform_account_id",
+              "rules"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "order",
+        "path": "backend/app/services/hermes/executors/order_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "order.create",
+            "desc": "创建订单/加购（product_id + quantity）",
+            "needs_approval": false,
+            "input": [
+              "product_id",
+              "quantity",
+              "tenant_id"
+            ]
+          },
+          {
+            "name": "order.sync",
+            "desc": "订单支付状态同步",
+            "needs_approval": false,
+            "input": [
+              "order_id"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "outreach_loop",
+        "path": "backend/app/services/hermes/executors/outreach_loop_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "outreach_loop.gate",
+            "desc": "外发前综合闸门（背调+抑制+审批）",
+            "needs_approval": true,
+            "input": [
+              "email?",
+              "inquiry_id?",
+              "research_level?",
+              "mode?",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "outreach_loop.research",
+            "desc": "登记背调深度",
+            "needs_approval": false,
+            "input": [
+              "inquiry_id",
+              "research_level",
+              "note?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "platform_ops",
+        "path": "backend/app/services/hermes/executors/platform_ops_executor.py",
+        "capability_count": 5,
+        "capabilities": [
+          {
+            "name": "platform_ops.notify_draft",
+            "desc": "起草通知（入库草稿，不自动推送）",
+            "needs_approval": true,
+            "input": [
+              "title",
+              "body",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "platform_ops.product_catalog",
+            "desc": "产品分类摘要",
+            "needs_approval": null,
+            "input": [
+              "limit?"
+            ]
+          },
+          {
+            "name": "platform_ops.seo_health",
+            "desc": "SEO 关键词/审计可读",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "platform_ops.system_health",
+            "desc": "系统健康",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "platform_ops.tenant_list",
+            "desc": "列出租户",
+            "needs_approval": null,
+            "input": [
+              "limit?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "portal_ops",
+        "path": "backend/app/services/hermes/executors/portal_ops_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "portal_ops.agent_summary",
+            "desc": "代理门户业绩摘要",
+            "needs_approval": null,
+            "input": [
+              "agent_id?",
+              "tenant_id?"
+            ]
+          },
+          {
+            "name": "portal_ops.media_status",
+            "desc": "媒体/剪辑服务可用性",
+            "needs_approval": null,
+            "input": []
+          },
+          {
+            "name": "portal_ops.moss_version",
+            "desc": "Moss VL 版本状态",
+            "needs_approval": null,
+            "input": []
+          }
+        ]
+      },
+      {
+        "executor": "product",
+        "path": "backend/app/services/hermes/executors/product_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "product.create",
+            "desc": "产品创建 → 真实入库（slug 唯一校验）",
+            "needs_approval": false,
+            "input": [
+              "title",
+              "slug",
+              "category_id",
+              "images"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "publish",
+        "path": "backend/app/services/hermes/executors/publish_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "publish.multi",
+            "desc": "多平台分发（走真发布器；8 个平台已接入，其余按「未接入」记 skipped）",
+            "needs_approval": true,
+            "input": [
+              "channels",
+              "title",
+              "body",
+              "media_urls",
+              "url"
+            ]
+          },
+          {
+            "name": "publish.single",
+            "desc": "单平台分发",
+            "needs_approval": null,
+            "input": [
+              "platform",
+              "title",
+              "body"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "research",
+        "path": "backend/app/services/hermes/executors/research_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "research.brief",
+            "desc": "市场研析简报（行业趋势/竞品/关键词机会）",
+            "needs_approval": false,
+            "input": [
+              "topic",
+              "industry",
+              "depth"
+            ]
+          },
+          {
+            "name": "research.prospect",
+            "desc": "拓客深研（目标公司尽调/市场定位/联系策略）",
+            "needs_approval": false,
+            "input": [
+              "company",
+              "industry",
+              "country"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "seo",
+        "path": "backend/app/services/hermes/executors/seo_executor.py",
+        "capability_count": 3,
+        "capabilities": [
+          {
+            "name": "seo.audit",
+            "desc": "站点 SEO 全量审计（meta/links/速度/schema）",
+            "needs_approval": false,
+            "input": [
+              "domain",
+              "tenant_id"
+            ]
+          },
+          {
+            "name": "seo.inclusion",
+            "desc": "收录状态探测（已发布内容是否在搜索引擎索引中）",
+            "needs_approval": false,
+            "input": []
+          },
+          {
+            "name": "seo.rank",
+            "desc": "关键词排名追踪（租户 domain 在 Google/Bing 的 SERP 位次）",
+            "needs_approval": false,
+            "input": [
+              "keyword",
+              "domain",
+              "tenant_id"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "site_builder",
+        "path": "backend/app/services/hermes/executors/site_builder_executor.py",
+        "capability_count": 2,
+        "capabilities": [
+          {
+            "name": "site.build",
+            "desc": "同 site.generate（别名）",
+            "needs_approval": null,
+            "input": [
+              "product_name"
+            ]
+          },
+          {
+            "name": "site.generate",
+            "desc": "产品图 + 需求 → 多语独立站（含 ECC 设计技能与 i18n）",
+            "needs_approval": false,
+            "input": [
+              "product_name",
+              "product_images",
+              "company_name",
+              "auto_save"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "trade_ai_agent",
+        "path": "backend/app/services/hermes/executors/trade_ai_agent_executor.py",
+        "capability_count": 4,
+        "capabilities": [
+          {
+            "name": "inbox.classify",
+            "desc": "收件箱意图分类",
+            "needs_approval": null,
+            "input": [
+              "message"
+            ]
+          },
+          {
+            "name": "outreach.email",
+            "desc": "冷邮件序列",
+            "needs_approval": null,
+            "input": [
+              "email",
+              "subject",
+              "body"
+            ]
+          },
+          {
+            "name": "outreach.whatsapp",
+            "desc": "WhatsApp 触达（真实桥；未接通即失败，不伪造 sent）",
+            "needs_approval": true,
+            "input": [
+              "whatsapp",
+              "message",
+              "template_id"
+            ]
+          },
+          {
+            "name": "prospect.scrape",
+            "desc": "社媒/地图潜客挖掘（走真实 tradeai 适配器；未注册 workflow 即失败）",
+            "needs_approval": false,
+            "input": [
+              "keyword",
+              "country",
+              "limit"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "trade_ops",
+        "path": "backend/app/services/hermes/executors/trade_ops_executor.py",
+        "capability_count": 6,
+        "capabilities": [
+          {
+            "name": "trade_ops.fulfillment_node",
+            "desc": "更新跟单卡报价/PI/定金/尾款节点",
+            "needs_approval": false,
+            "input": [
+              "inquiry_id",
+              "key",
+              "status?",
+              "ref?"
+            ]
+          },
+          {
+            "name": "trade_ops.goodjob_pi",
+            "desc": "GoodJob 生成 PI（未接桥诚实失败）",
+            "needs_approval": true,
+            "input": [
+              "inquiry_id",
+              "buyer?",
+              "amount?",
+              "currency?"
+            ]
+          },
+          {
+            "name": "trade_ops.logistics_write",
+            "desc": "物流查询并回写跟单卡",
+            "needs_approval": false,
+            "input": [
+              "inquiry_id?",
+              "tracking_number",
+              "carrier?"
+            ]
+          },
+          {
+            "name": "trade_ops.pi_precheck",
+            "desc": "PI 前付款风险与 Playbook 核验",
+            "needs_approval": true,
+            "input": [
+              "country?",
+              "buyer_type?",
+              "inquiry_id?",
+              "auto_pi?",
+              "deposit_ratio?"
+            ]
+          },
+          {
+            "name": "trade_ops.sanctions_screen",
+            "desc": "制裁名单筛查（真源/诚实未配置）",
+            "needs_approval": false,
+            "input": [
+              "name?",
+              "email?",
+              "company?",
+              "inquiry_id?"
+            ]
+          },
+          {
+            "name": "trade_ops.tender_advance",
+            "desc": "招投标阶段推进（资质门禁）",
+            "needs_approval": true,
+            "input": [
+              "tender_id",
+              "to_stage",
+              "inquiry_id?",
+              "payment_terms?",
+              "credit_ok?"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "ubrain",
+        "path": "backend/app/services/hermes/executors/ubrain_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "ubrain.chat",
+            "desc": "UBrain 统一助手：意图检测与内部工具执行",
+            "needs_approval": false,
+            "input": [
+              "message",
+              "prompt",
+              "context"
+            ]
+          }
+        ]
+      },
+      {
+        "executor": "wangcai",
+        "path": "backend/app/services/hermes/executors/wangcai_executor.py",
+        "capability_count": 1,
+        "capabilities": [
+          {
+            "name": "wangcai.ask",
+            "desc": "旺财贸易问答：海关数据 / 出口可行性 / 蓝海市场 / HS 章节",
+            "needs_approval": false,
+            "input": [
+              "message",
+              "prompt",
+              "product_hint",
+              "language",
+              "source"
+            ]
+          }
+        ]
+      }
+    ],
+    "biz_bot_module_binding_counts": {
+      "platform_ops": 41,
+      "commerce_ops": 25,
+      "content_deep": 13,
+      "desktop_hermes": 13,
+      "growth_probe": 12,
+      "trade_ops": 12,
+      "compliance_ops": 10,
+      "outreach_loop": 10,
+      "data_ops": 7,
+      "agent_ops": 5,
+      "portal_ops": 5,
+      "ai_engine": 3,
+      "module_matrix": 1
+    }
+  },
+  "slice_acquisition": {
+    "file": "backend/app/api/v1/routes/acquisition.py",
+    "router_prefix": "/acquisition",
+    "count": 67,
+    "endpoints": [
+      {
+        "method": "POST",
+        "path": "/intent/preview",
+        "function": "intent_preview",
+        "full": "POST /api/v1/acquisition/intent/preview"
+      },
+      {
+        "method": "POST",
+        "path": "/buyers/upsert",
+        "function": "buyers_upsert",
+        "full": "POST /api/v1/acquisition/buyers/upsert"
+      },
+      {
+        "method": "GET",
+        "path": "/buyers/{buyer_id}",
+        "function": "buyers_get",
+        "full": "GET /api/v1/acquisition/buyers/{buyer_id}"
+      },
+      {
+        "method": "GET",
+        "path": "/buyers/by-email/{tenant_id}/{email}",
+        "function": "buyers_by_email",
+        "full": "GET /api/v1/acquisition/buyers/by-email/{tenant_id}/{email}"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/materialize",
+        "function": "ops_card_materialize",
+        "full": "POST /api/v1/acquisition/ops-card/materialize"
+      },
+      {
+        "method": "GET",
+        "path": "/ops-card/{inquiry_id}",
+        "function": "ops_card_get",
+        "full": "GET /api/v1/acquisition/ops-card/{inquiry_id}"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/touch",
+        "function": "ops_card_touch",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/touch"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/note",
+        "function": "ops_card_note",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/note"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/loss",
+        "function": "ops_card_loss",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/loss"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/payment",
+        "function": "ops_card_payment",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/payment"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/logistics",
+        "function": "ops_card_logistics",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/logistics"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/goods",
+        "function": "ops_card_goods",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/goods"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/sample",
+        "function": "ops_card_sample",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/sample"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/fulfillment",
+        "function": "ops_card_fulfillment",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/fulfillment"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/research",
+        "function": "ops_card_research",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/research"
+      },
+      {
+        "method": "GET",
+        "path": "/loss-report",
+        "function": "acquisition_loss_report",
+        "full": "GET /api/v1/acquisition/loss-report"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/win",
+        "function": "ops_card_win",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/win"
+      },
+      {
+        "method": "GET",
+        "path": "/win-loss",
+        "function": "acquisition_win_loss",
+        "full": "GET /api/v1/acquisition/win-loss"
+      },
+      {
+        "method": "GET",
+        "path": "/onboarding",
+        "function": "acquisition_onboarding",
+        "full": "GET /api/v1/acquisition/onboarding"
+      },
+      {
+        "method": "GET",
+        "path": "/template-weights",
+        "function": "acquisition_template_weights",
+        "full": "GET /api/v1/acquisition/template-weights"
+      },
+      {
+        "method": "POST",
+        "path": "/template-weights/approve",
+        "function": "acquisition_template_weights_approve",
+        "full": "POST /api/v1/acquisition/template-weights/approve"
+      },
+      {
+        "method": "GET",
+        "path": "/experience-source",
+        "function": "acquisition_experience_source",
+        "full": "GET /api/v1/acquisition/experience-source"
+      },
+      {
+        "method": "GET",
+        "path": "/billing-explain",
+        "function": "acquisition_billing_explain",
+        "full": "GET /api/v1/acquisition/billing-explain"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/claim",
+        "function": "ops_card_claim",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/claim"
+      },
+      {
+        "method": "GET",
+        "path": "/collision-report",
+        "function": "acquisition_collision_report",
+        "full": "GET /api/v1/acquisition/collision-report"
+      },
+      {
+        "method": "GET",
+        "path": "/wangcai-rescue",
+        "function": "acquisition_wangcai_rescue",
+        "full": "GET /api/v1/acquisition/wangcai-rescue"
+      },
+      {
+        "method": "GET",
+        "path": "/nps-rescue",
+        "function": "acquisition_nps_rescue",
+        "full": "GET /api/v1/acquisition/nps-rescue"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/quote-validity",
+        "function": "ops_card_quote_validity",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/quote-validity"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/leadtime",
+        "function": "ops_card_leadtime",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/leadtime"
+      },
+      {
+        "method": "GET",
+        "path": "/suppression",
+        "function": "acquisition_suppression_list",
+        "full": "GET /api/v1/acquisition/suppression"
+      },
+      {
+        "method": "POST",
+        "path": "/suppression/add",
+        "function": "acquisition_suppression_add",
+        "full": "POST /api/v1/acquisition/suppression/add"
+      },
+      {
+        "method": "POST",
+        "path": "/suppression/remove",
+        "function": "acquisition_suppression_remove",
+        "full": "POST /api/v1/acquisition/suppression/remove"
+      },
+      {
+        "method": "POST",
+        "path": "/outreach/allow-check",
+        "function": "acquisition_outreach_allow",
+        "full": "POST /api/v1/acquisition/outreach/allow-check"
+      },
+      {
+        "method": "POST",
+        "path": "/payment-risk",
+        "function": "acquisition_payment_risk",
+        "full": "POST /api/v1/acquisition/payment-risk"
+      },
+      {
+        "method": "GET",
+        "path": "/knowledge-queue",
+        "function": "acquisition_knowledge_queue",
+        "full": "GET /api/v1/acquisition/knowledge-queue"
+      },
+      {
+        "method": "POST",
+        "path": "/knowledge-queue/mark",
+        "function": "acquisition_knowledge_mark",
+        "full": "POST /api/v1/acquisition/knowledge-queue/mark"
+      },
+      {
+        "method": "GET",
+        "path": "/risk-rescan",
+        "function": "acquisition_risk_rescan",
+        "full": "GET /api/v1/acquisition/risk-rescan"
+      },
+      {
+        "method": "GET",
+        "path": "/sanctions/source",
+        "function": "acquisition_sanctions_source",
+        "full": "GET /api/v1/acquisition/sanctions/source"
+      },
+      {
+        "method": "POST",
+        "path": "/sanctions/screen",
+        "function": "acquisition_sanctions_screen",
+        "full": "POST /api/v1/acquisition/sanctions/screen"
+      },
+      {
+        "method": "GET",
+        "path": "/tender/{tender_id}",
+        "function": "acquisition_tender_view",
+        "full": "GET /api/v1/acquisition/tender/{tender_id}"
+      },
+      {
+        "method": "POST",
+        "path": "/tender/upsert",
+        "function": "acquisition_tender_upsert",
+        "full": "POST /api/v1/acquisition/tender/upsert"
+      },
+      {
+        "method": "POST",
+        "path": "/tender/doc",
+        "function": "acquisition_tender_doc",
+        "full": "POST /api/v1/acquisition/tender/doc"
+      },
+      {
+        "method": "POST",
+        "path": "/tender/advance",
+        "function": "acquisition_tender_advance",
+        "full": "POST /api/v1/acquisition/tender/advance"
+      },
+      {
+        "method": "POST",
+        "path": "/ops-card/{inquiry_id}/tender",
+        "function": "ops_card_tender_bind",
+        "full": "POST /api/v1/acquisition/ops-card/{inquiry_id}/tender"
+      },
+      {
+        "method": "GET",
+        "path": "/ops/reconcile",
+        "function": "acquisition_billing_reconcile",
+        "full": "GET /api/v1/acquisition/ops/reconcile"
+      },
+      {
+        "method": "POST",
+        "path": "/risk-rescan/mark",
+        "function": "acquisition_risk_rescan_mark",
+        "full": "POST /api/v1/acquisition/risk-rescan/mark"
+      },
+      {
+        "method": "POST",
+        "path": "/rate-limit/probe",
+        "function": "acquisition_rate_limit_probe",
+        "full": "POST /api/v1/acquisition/rate-limit/probe"
+      },
+      {
+        "method": "GET",
+        "path": "/rate-limit/stats",
+        "function": "acquisition_rate_limit_stats",
+        "full": "GET /api/v1/acquisition/rate-limit/stats"
+      },
+      {
+        "method": "GET",
+        "path": "/ops/reconcile",
+        "function": "acquisition_billing_reconcile",
+        "full": "GET /api/v1/acquisition/ops/reconcile"
+      },
+      {
+        "method": "GET",
+        "path": "/ops/queues",
+        "function": "acquisition_queue_monitor",
+        "full": "GET /api/v1/acquisition/ops/queues"
+      },
+      {
+        "method": "GET",
+        "path": "/ops/db-topology",
+        "function": "acquisition_db_topology",
+        "full": "GET /api/v1/acquisition/ops/db-topology"
+      },
+      {
+        "method": "GET",
+        "path": "/ops/read-session-probe",
+        "function": "acquisition_read_session_probe",
+        "full": "GET /api/v1/acquisition/ops/read-session-probe"
+      },
+      {
+        "method": "POST",
+        "path": "/ops/baseline",
+        "function": "acquisition_baseline",
+        "full": "POST /api/v1/acquisition/ops/baseline"
+      },
+      {
+        "method": "GET",
+        "path": "/orchestration-dictionary",
+        "function": "acquisition_orchestration_dictionary",
+        "full": "GET /api/v1/acquisition/orchestration-dictionary"
+      },
+      {
+        "method": "GET",
+        "path": "/outreach-gate",
+        "function": "acquisition_outreach_gate",
+        "full": "GET /api/v1/acquisition/outreach-gate"
+      },
+      {
+        "method": "GET",
+        "path": "/attribution/content",
+        "function": "acquisition_content_attribution",
+        "full": "GET /api/v1/acquisition/attribution/content"
+      },
+      {
+        "method": "POST",
+        "path": "/attribution/content/register",
+        "function": "acquisition_content_attr_register",
+        "full": "POST /api/v1/acquisition/attribution/content/register"
+      },
+      {
+        "method": "POST",
+        "path": "/attribution/content/link",
+        "function": "acquisition_content_attr_link",
+        "full": "POST /api/v1/acquisition/attribution/content/link"
+      },
+      {
+        "method": "GET",
+        "path": "/ip-slots",
+        "function": "acquisition_ip_slots",
+        "full": "GET /api/v1/acquisition/ip-slots"
+      },
+      {
+        "method": "GET",
+        "path": "/playbooks",
+        "function": "playbooks_list",
+        "full": "GET /api/v1/acquisition/playbooks"
+      },
+      {
+        "method": "GET",
+        "path": "/playbooks/tips",
+        "function": "playbooks_tips",
+        "full": "GET /api/v1/acquisition/playbooks/tips"
+      },
+      {
+        "method": "POST",
+        "path": "/reply-ingest",
+        "function": "reply_ingest",
+        "full": "POST /api/v1/acquisition/reply-ingest"
+      },
+      {
+        "method": "GET",
+        "path": "/followups",
+        "function": "acquisition_followups",
+        "full": "GET /api/v1/acquisition/followups"
+      },
+      {
+        "method": "POST",
+        "path": "/translate",
+        "function": "acquisition_translate",
+        "full": "POST /api/v1/acquisition/translate"
+      },
+      {
+        "method": "GET",
+        "path": "/wallet-status",
+        "function": "acquisition_wallet_status",
+        "full": "GET /api/v1/acquisition/wallet-status"
+      },
+      {
+        "method": "GET",
+        "path": "/channels",
+        "function": "acquisition_channels",
+        "full": "GET /api/v1/acquisition/channels"
+      },
+      {
+        "method": "POST",
+        "path": "/dispatch",
+        "function": "acquisition_dispatch",
+        "full": "POST /api/v1/acquisition/dispatch"
+      }
+    ]
+  },
+  "slice_pg": {
+    "engine": "postgresql://youding:***@localhost:5433/youding_dev",
+    "dialect": "postgresql",
+    "settings_db_type": "postgresql",
+    "settings_database_url": "postgresql://youding:youding@localhost:5433/youding_dev",
+    "model_declared_tables": [
+      "ab_test_conversions",
+      "ab_test_events",
+      "ab_test_variants",
+      "ab_tests",
+      "ad_law_keywords",
+      "admin_menus",
+      "admin_permissions",
+      "admin_roles",
+      "agent_commission_rules",
+      "agent_commission_settlements",
+      "agent_nodes",
+      "agent_scorecards",
+      "ai_chat_messages",
+      "ai_chat_sessions",
+      "ai_citations",
+      "ai_generation_configs",
+      "ai_knowledge_base",
+      "ai_mentions",
+      "ai_model_configs",
+      "ai_model_providers",
+      "ai_optimization_logs",
+      "ai_queries",
+      "ai_query_runs",
+      "ai_recommendations",
+      "ai_tasks",
+      "ai_templates",
+      "ai_usage_logs",
+      "alert_events",
+      "alert_rules",
+      "analytics_events",
+      "app_devices",
+      "browser_profiles",
+      "building_material_specs",
+      "buyer_prospect_leads",
+      "campaign_events",
+      "campaign_recipients",
+      "campaign_steps",
+      "campaigns",
+      "case_images",
+      "case_studies",
+      "categories",
+      "cc_switch_configs",
+      "chat_messages",
+      "chat_sessions",
+      "cities",
+      "combinatorial_rules",
+      "companies",
+      "company_contacts",
+      "company_signals",
+      "competitor_mentions",
+      "compliance_rules",
+      "compliance_scan_results",
+      "compliance_violations",
+      "content_chunks",
+      "content_feedback_checks",
+      "content_masters",
+      "content_pages",
+      "content_templates",
+      "content_versions",
+      "credential_grants",
+      "credentials",
+      "data_source_providers",
+      "deerflow_jobs",
+      "device_fingerprints",
+      "districts",
+      "eeat_article_authors",
+      "eeat_author_certifications",
+      "eeat_authors",
+      "eeat_scores",
+      "eeat_trust_signals",
+      "egress_cost_records",
+      "egress_endpoints",
+      "egress_pool_replenish_jobs",
+      "egress_provision_jobs",
+      "egress_suppliers",
+      "email_outreachs",
+      "email_tracking_events",
+      "email_verifications",
+      "engagement_records",
+      "evolution_approvals",
+      "evolution_canary_routes",
+      "evolution_experiences",
+      "evolution_skill_versions",
+      "evolution_sop_versions",
+      "evolution_task_records",
+      "feishu_bindings",
+      "feishu_message_logs",
+      "finance_ledger_entries",
+      "generated_contents",
+      "generated_keywords",
+      "geo_alert_histories",
+      "geo_alert_rules",
+      "geo_alerts",
+      "glossary_terms",
+      "group_keywords",
+      "growth_agent_runs",
+      "growth_keyword_entries",
+      "hermes_plugin_installs",
+      "im_messages",
+      "im_sessions",
+      "inclusion_status",
+      "industry_keywords",
+      "industry_patterns",
+      "inquiries",
+      "inquiry_extended",
+      "intent_engine_runs",
+      "international_crawl_logs",
+      "international_inquiries",
+      "international_target_sites",
+      "invoice_applications",
+      "keyword_groups",
+      "keyword_rankings",
+      "keywords",
+      "lead_inquiries",
+      "license_codes",
+      "license_orders",
+      "licenses",
+      "llms_config",
+      "material_specs",
+      "mcp_servers",
+      "mcp_tools",
+      "media_render_tasks",
+      "merchant_im_routing",
+      "merchant_profiles",
+      "meter_events",
+      "n8n_workflows",
+      "news_articles",
+      "news_categories",
+      "notifications",
+      "nurture_cycles",
+      "operation_logs",
+      "opportunities",
+      "opportunity_stages",
+      "order_items",
+      "orders",
+      "paperclip_agents",
+      "paperclip_approvals",
+      "paperclip_companies",
+      "paperclip_goals",
+      "paperclip_heartbeats",
+      "paperclip_tasks",
+      "payment_channels",
+      "payment_compensation_tasks",
+      "payment_ops_audit",
+      "payment_orders",
+      "platform_accounts",
+      "platform_configs",
+      "platform_invoice_configs",
+      "platform_survival_ledger_entries",
+      "platform_tenant_origins",
+      "platforms",
+      "plugin_versions",
+      "plugins",
+      "product_categories",
+      "product_documents",
+      "product_faqs",
+      "product_images",
+      "products",
+      "project_signals",
+      "projects",
+      "prospect_leads",
+      "provinces",
+      "publish_logs",
+      "publish_tasks",
+      "push_events",
+      "quote_items",
+      "quotes",
+      "referral_codes",
+      "referral_records",
+      "release_guards",
+      "reviews",
+      "rfq_documents",
+      "rfq_items",
+      "rfq_requirements",
+      "rfqs",
+      "risk_control_configs",
+      "role_permissions",
+      "sales_tasks",
+      "scheduled_publishes",
+      "schema_markups",
+      "schema_templates",
+      "seo_metadata",
+      "serp_snapshots",
+      "shipping_timeline",
+      "site_analytics_events",
+      "site_audits",
+      "skill_performance",
+      "skill_versions",
+      "skills",
+      "social_interactions",
+      "ssl_certificates",
+      "super_admin_login_logs",
+      "system_config",
+      "system_settings",
+      "task_traces",
+      "tenant_ai_provider_configs",
+      "tenant_capability_toggles",
+      "tenant_invoice_profiles",
+      "tenant_invoices",
+      "tenant_plans",
+      "tenant_subscriptions",
+      "tenant_wecom_push_configs",
+      "tenants",
+      "third_party_logins",
+      "token_ledger_entries",
+      "trade_country_category",
+      "translation_records",
+      "translation_tasks",
+      "ubrain_action_audits",
+      "ubrain_decision_records",
+      "ubrain_execution_records",
+      "ubrain_feedback_records",
+      "ubrain_feedback_snapshots",
+      "ubrain_pipeline_runs",
+      "ubrain_research_insights",
+      "ubrain_tenant_memory",
+      "user_status",
+      "user_tenants",
+      "users",
+      "visibility_scores",
+      "wallet_accounts",
+      "wallet_transactions",
+      "wangcai_qa_log",
+      "wangcai_sessions"
+    ],
+    "model_declared_count": 224,
+    "pg_public_tables": 239,
+    "pg_table_names": [
+      "ab_test_conversions",
+      "ab_test_events",
+      "ab_test_variants",
+      "ab_tests",
+      "acquisition_ops_cards",
+      "ad_law_keywords",
+      "admin_menus",
+      "admin_permissions",
+      "admin_roles",
+      "agent_commission_rules",
+      "agent_commission_settlements",
+      "agent_nodes",
+      "agent_scorecards",
+      "ai_chat_messages",
+      "ai_chat_sessions",
+      "ai_citations",
+      "ai_generation_configs",
+      "ai_knowledge_base",
+      "ai_mentions",
+      "ai_model_configs",
+      "ai_model_providers",
+      "ai_optimization_logs",
+      "ai_queries",
+      "ai_query_runs",
+      "ai_recommendations",
+      "ai_tasks",
+      "ai_templates",
+      "ai_usage_logs",
+      "alembic_version",
+      "alert_events",
+      "alert_rules",
+      "analytics_events",
+      "app_devices",
+      "browser_profiles",
+      "building_material_specs",
+      "buyer_prospect_leads",
+      "campaign_events",
+      "campaign_recipients",
+      "campaign_steps",
+      "campaigns",
+      "case_images",
+      "case_studies",
+      "categories",
+      "cc_switch_configs",
+      "chat_messages",
+      "chat_sessions",
+      "cities",
+      "combinatorial_rules",
+      "companies",
+      "company_contacts",
+      "company_signals",
+      "competitor_mentions",
+      "compliance_rules",
+      "compliance_scan_results",
+      "compliance_violations",
+      "content_chunks",
+      "content_feedback_checks",
+      "content_masters",
+      "content_pages",
+      "content_templates",
+      "content_versions",
+      "credential_grants",
+      "credentials",
+      "customs_declarations",
+      "data_source_providers",
+      "deerflow_jobs",
+      "device_fingerprints",
+      "districts",
+      "eeat_article_authors",
+      "eeat_author_certifications",
+      "eeat_authors",
+      "eeat_scores",
+      "eeat_trust_signals",
+      "egress_cost_records",
+      "egress_endpoints",
+      "egress_pool_replenish_jobs",
+      "egress_provision_jobs",
+      "egress_suppliers",
+      "email_outreachs",
+      "email_tracking_events",
+      "email_verifications",
+      "engagement_records",
+      "evolution_approvals",
+      "evolution_canary_routes",
+      "evolution_experiences",
+      "evolution_skill_versions",
+      "evolution_sop_versions",
+      "evolution_task_records",
+      "exchange_rate_logs",
+      "feishu_bindings",
+      "feishu_message_logs",
+      "finance_ledger_entries",
+      "generated_contents",
+      "generated_keywords",
+      "geo_alert_histories",
+      "geo_alert_rules",
+      "geo_alerts",
+      "glossary_terms",
+      "group_keywords",
+      "growth_agent_runs",
+      "growth_keyword_entries",
+      "hermes_plugin_installs",
+      "hs_code_mappings",
+      "im_messages",
+      "im_sessions",
+      "inclusion_status",
+      "industry_insights",
+      "industry_keywords",
+      "industry_patterns",
+      "inquiries",
+      "inquiry_extended",
+      "intent_engine_runs",
+      "international_crawl_logs",
+      "international_inquiries",
+      "international_target_sites",
+      "invoice_applications",
+      "keyword_groups",
+      "keyword_ranking_history",
+      "keyword_rankings",
+      "keywords",
+      "lead_inquiries",
+      "license_codes",
+      "license_orders",
+      "licenses",
+      "llms_config",
+      "material_specs",
+      "mcp_servers",
+      "mcp_tools",
+      "media_render_tasks",
+      "merchant_im_routing",
+      "merchant_profiles",
+      "meter_events",
+      "model_call_ledger",
+      "model_capabilities",
+      "n8n_workflows",
+      "news_articles",
+      "news_categories",
+      "notifications",
+      "nurture_cycles",
+      "operation_logs",
+      "opportunities",
+      "opportunity_stages",
+      "order_items",
+      "orders",
+      "paperclip_agents",
+      "paperclip_approvals",
+      "paperclip_companies",
+      "paperclip_goals",
+      "paperclip_heartbeats",
+      "paperclip_tasks",
+      "payment_channels",
+      "payment_compensation_tasks",
+      "payment_ops_audit",
+      "payment_orders",
+      "pipeline_runs",
+      "pipeline_steps",
+      "platform_accounts",
+      "platform_configs",
+      "platform_invoice_configs",
+      "platform_survival_ledger_entries",
+      "platform_tenant_origins",
+      "platforms",
+      "plugin_versions",
+      "plugins",
+      "product_boq_profiles",
+      "product_categories",
+      "product_documents",
+      "product_faqs",
+      "product_images",
+      "products",
+      "project_signals",
+      "projects",
+      "prospect_leads",
+      "provinces",
+      "publish_logs",
+      "publish_tasks",
+      "push_events",
+      "quote_items",
+      "quotes",
+      "referral_codes",
+      "referral_records",
+      "release_guards",
+      "review_tasks",
+      "reviews",
+      "rfq_documents",
+      "rfq_items",
+      "rfq_requirements",
+      "rfqs",
+      "risk_control_configs",
+      "role_permissions",
+      "sales_tasks",
+      "scheduled_publishes",
+      "schema_markups",
+      "schema_templates",
+      "seo_competitors",
+      "seo_metadata",
+      "serp_snapshots",
+      "shipping_timeline",
+      "site_analytics_events",
+      "site_audits",
+      "skill_performance",
+      "skill_versions",
+      "skills",
+      "social_interactions",
+      "ssl_certificates",
+      "step_evidence",
+      "super_admin_login_logs",
+      "system_config",
+      "system_settings",
+      "task_traces",
+      "tenant_ai_provider_configs",
+      "tenant_capability_toggles",
+      "tenant_invoice_profiles",
+      "tenant_invoices",
+      "tenant_plans",
+      "tenant_subscriptions",
+      "tenant_wecom_push_configs",
+      "tenants",
+      "third_party_logins",
+      "token_ledger_entries",
+      "trade_country_category",
+      "translation_records",
+      "translation_tasks",
+      "ubrain_action_audits",
+      "ubrain_decision_records",
+      "ubrain_execution_records",
+      "ubrain_feedback_records",
+      "ubrain_feedback_snapshots",
+      "ubrain_pipeline_runs",
+      "ubrain_research_insights",
+      "ubrain_tenant_memory",
+      "user_status",
+      "user_tenants",
+      "users",
+      "visibility_scores",
+      "wallet_accounts",
+      "wallet_transactions",
+      "wangcai_qa_log",
+      "wangcai_sessions"
+    ],
+    "density": [
+      {
+        "table": "ab_test_conversions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ab_test_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ab_test_variants",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ab_tests",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "acquisition_ops_cards",
+        "rows": 56,
+        "error": null
+      },
+      {
+        "table": "ad_law_keywords",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "admin_menus",
+        "rows": 31,
+        "error": null
+      },
+      {
+        "table": "admin_permissions",
+        "rows": 30,
+        "error": null
+      },
+      {
+        "table": "admin_roles",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "agent_commission_rules",
+        "rows": 30,
+        "error": null
+      },
+      {
+        "table": "agent_commission_settlements",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "agent_nodes",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "agent_scorecards",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_chat_messages",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_chat_sessions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_citations",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_generation_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_knowledge_base",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_mentions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_model_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_model_providers",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_optimization_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_queries",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_query_runs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_recommendations",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_tasks",
+        "rows": 539,
+        "error": null
+      },
+      {
+        "table": "ai_templates",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ai_usage_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "alembic_version",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "alert_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "alert_rules",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "analytics_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "app_devices",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "browser_profiles",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "building_material_specs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "buyer_prospect_leads",
+        "rows": 72,
+        "error": null
+      },
+      {
+        "table": "campaign_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "campaign_recipients",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "campaign_steps",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "campaigns",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "case_images",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "case_studies",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "categories",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "cc_switch_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "chat_messages",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "chat_sessions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "cities",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "combinatorial_rules",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "companies",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "company_contacts",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "company_signals",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "competitor_mentions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "compliance_rules",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "compliance_scan_results",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "compliance_violations",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "content_chunks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "content_feedback_checks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "content_masters",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "content_pages",
+        "rows": 27,
+        "error": null
+      },
+      {
+        "table": "content_templates",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "content_versions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "credential_grants",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "credentials",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "customs_declarations",
+        "rows": 24,
+        "error": null
+      },
+      {
+        "table": "data_source_providers",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "deerflow_jobs",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "device_fingerprints",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "districts",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "eeat_article_authors",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "eeat_author_certifications",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "eeat_authors",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "eeat_scores",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "eeat_trust_signals",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "egress_cost_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "egress_endpoints",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "egress_pool_replenish_jobs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "egress_provision_jobs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "egress_suppliers",
+        "rows": 3,
+        "error": null
+      },
+      {
+        "table": "email_outreachs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "email_tracking_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "email_verifications",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "engagement_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "evolution_approvals",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "evolution_canary_routes",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "evolution_experiences",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "evolution_skill_versions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "evolution_sop_versions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "evolution_task_records",
+        "rows": 111,
+        "error": null
+      },
+      {
+        "table": "exchange_rate_logs",
+        "rows": 25,
+        "error": null
+      },
+      {
+        "table": "feishu_bindings",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "feishu_message_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "finance_ledger_entries",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "generated_contents",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "generated_keywords",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "geo_alert_histories",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "geo_alert_rules",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "geo_alerts",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "glossary_terms",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "group_keywords",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "growth_agent_runs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "growth_keyword_entries",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "hermes_plugin_installs",
+        "rows": 12,
+        "error": null
+      },
+      {
+        "table": "hs_code_mappings",
+        "rows": 100,
+        "error": null
+      },
+      {
+        "table": "im_messages",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "im_sessions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "inclusion_status",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "industry_insights",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "industry_keywords",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "industry_patterns",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "inquiries",
+        "rows": 15,
+        "error": null
+      },
+      {
+        "table": "inquiry_extended",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "intent_engine_runs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "international_crawl_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "international_inquiries",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "international_target_sites",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "invoice_applications",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "keyword_groups",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "keyword_ranking_history",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "keyword_rankings",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "keywords",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "lead_inquiries",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "license_codes",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "license_orders",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "licenses",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "llms_config",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "material_specs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "mcp_servers",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "mcp_tools",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "media_render_tasks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "merchant_im_routing",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "merchant_profiles",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "meter_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "model_call_ledger",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "model_capabilities",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "n8n_workflows",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "news_articles",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "news_categories",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "notifications",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "nurture_cycles",
+        "rows": 13,
+        "error": null
+      },
+      {
+        "table": "operation_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "opportunities",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "opportunity_stages",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "order_items",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "orders",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "paperclip_agents",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "paperclip_approvals",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "paperclip_companies",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "paperclip_goals",
+        "rows": 13,
+        "error": null
+      },
+      {
+        "table": "paperclip_heartbeats",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "paperclip_tasks",
+        "rows": 8,
+        "error": null
+      },
+      {
+        "table": "payment_channels",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "payment_compensation_tasks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "payment_ops_audit",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "payment_orders",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "pipeline_runs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "pipeline_steps",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "platform_accounts",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "platform_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "platform_invoice_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "platform_survival_ledger_entries",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "platform_tenant_origins",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "platforms",
+        "rows": 50,
+        "error": null
+      },
+      {
+        "table": "plugin_versions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "plugins",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "product_boq_profiles",
+        "rows": 20,
+        "error": null
+      },
+      {
+        "table": "product_categories",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "product_documents",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "product_faqs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "product_images",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "products",
+        "rows": 9,
+        "error": null
+      },
+      {
+        "table": "project_signals",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "projects",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "prospect_leads",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "provinces",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "publish_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "publish_tasks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "push_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "quote_items",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "quotes",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "referral_codes",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "referral_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "release_guards",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "review_tasks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "reviews",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "rfq_documents",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "rfq_items",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "rfq_requirements",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "rfqs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "risk_control_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "role_permissions",
+        "rows": 44,
+        "error": null
+      },
+      {
+        "table": "sales_tasks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "scheduled_publishes",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "schema_markups",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "schema_templates",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "seo_competitors",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "seo_metadata",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "serp_snapshots",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "shipping_timeline",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "site_analytics_events",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "site_audits",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "skill_performance",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "skill_versions",
+        "rows": 77,
+        "error": null
+      },
+      {
+        "table": "skills",
+        "rows": 77,
+        "error": null
+      },
+      {
+        "table": "social_interactions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ssl_certificates",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "step_evidence",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "super_admin_login_logs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "system_config",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "system_settings",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "task_traces",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "tenant_ai_provider_configs",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "tenant_capability_toggles",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "tenant_invoice_profiles",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "tenant_invoices",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "tenant_plans",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "tenant_subscriptions",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "tenant_wecom_push_configs",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "tenants",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "third_party_logins",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "token_ledger_entries",
+        "rows": 201,
+        "error": null
+      },
+      {
+        "table": "trade_country_category",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "translation_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "translation_tasks",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ubrain_action_audits",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "ubrain_decision_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ubrain_execution_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ubrain_feedback_records",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ubrain_feedback_snapshots",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "ubrain_pipeline_runs",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "ubrain_research_insights",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "ubrain_tenant_memory",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "user_status",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "user_tenants",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "users",
+        "rows": 9,
+        "error": null
+      },
+      {
+        "table": "visibility_scores",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "wallet_accounts",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "wallet_transactions",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "wangcai_qa_log",
+        "rows": 0,
+        "error": null
+      },
+      {
+        "table": "wangcai_sessions",
+        "rows": 0,
+        "error": null
+      }
+    ],
+    "empty_tables": [
+      "ab_test_conversions",
+      "ab_test_events",
+      "ab_test_variants",
+      "ab_tests",
+      "ad_law_keywords",
+      "agent_commission_settlements",
+      "agent_nodes",
+      "agent_scorecards",
+      "ai_chat_messages",
+      "ai_chat_sessions",
+      "ai_citations",
+      "ai_generation_configs",
+      "ai_knowledge_base",
+      "ai_mentions",
+      "ai_model_configs",
+      "ai_model_providers",
+      "ai_optimization_logs",
+      "ai_queries",
+      "ai_query_runs",
+      "ai_recommendations",
+      "ai_templates",
+      "ai_usage_logs",
+      "alert_events",
+      "alert_rules",
+      "analytics_events",
+      "app_devices",
+      "browser_profiles",
+      "building_material_specs",
+      "campaign_events",
+      "campaign_recipients",
+      "campaign_steps",
+      "campaigns",
+      "case_images",
+      "case_studies",
+      "cc_switch_configs",
+      "chat_messages",
+      "chat_sessions",
+      "cities",
+      "combinatorial_rules",
+      "companies",
+      "company_contacts",
+      "company_signals",
+      "competitor_mentions",
+      "compliance_rules",
+      "compliance_scan_results",
+      "compliance_violations",
+      "content_chunks",
+      "content_feedback_checks",
+      "content_templates",
+      "content_versions",
+      "credential_grants",
+      "credentials",
+      "data_source_providers",
+      "device_fingerprints",
+      "districts",
+      "eeat_article_authors",
+      "eeat_author_certifications",
+      "eeat_authors",
+      "eeat_scores",
+      "eeat_trust_signals",
+      "egress_cost_records",
+      "egress_endpoints",
+      "egress_pool_replenish_jobs",
+      "egress_provision_jobs",
+      "email_outreachs",
+      "email_tracking_events",
+      "email_verifications",
+      "engagement_records",
+      "evolution_approvals",
+      "evolution_canary_routes",
+      "evolution_experiences",
+      "evolution_skill_versions",
+      "evolution_sop_versions",
+      "feishu_bindings",
+      "feishu_message_logs",
+      "finance_ledger_entries",
+      "generated_contents",
+      "generated_keywords",
+      "geo_alert_histories",
+      "geo_alert_rules",
+      "geo_alerts",
+      "glossary_terms",
+      "group_keywords",
+      "growth_agent_runs",
+      "growth_keyword_entries",
+      "im_messages",
+      "im_sessions",
+      "inclusion_status",
+      "industry_insights",
+      "industry_keywords",
+      "industry_patterns",
+      "inquiry_extended",
+      "intent_engine_runs",
+      "international_crawl_logs",
+      "international_inquiries",
+      "international_target_sites",
+      "invoice_applications",
+      "keyword_groups",
+      "keyword_ranking_history",
+      "keyword_rankings",
+      "lead_inquiries",
+      "license_codes",
+      "license_orders",
+      "licenses",
+      "llms_config",
+      "material_specs",
+      "mcp_servers",
+      "mcp_tools",
+      "media_render_tasks",
+      "merchant_im_routing",
+      "merchant_profiles",
+      "meter_events",
+      "model_call_ledger",
+      "model_capabilities",
+      "n8n_workflows",
+      "news_articles",
+      "news_categories",
+      "notifications",
+      "operation_logs",
+      "opportunities",
+      "opportunity_stages",
+      "order_items",
+      "orders",
+      "paperclip_agents",
+      "paperclip_heartbeats",
+      "payment_channels",
+      "payment_compensation_tasks",
+      "payment_ops_audit",
+      "payment_orders",
+      "pipeline_runs",
+      "pipeline_steps",
+      "platform_configs",
+      "platform_invoice_configs",
+      "platform_survival_ledger_entries",
+      "platform_tenant_origins",
+      "plugin_versions",
+      "plugins",
+      "product_categories",
+      "product_documents",
+      "product_faqs",
+      "product_images",
+      "project_signals",
+      "projects",
+      "provinces",
+      "publish_logs",
+      "publish_tasks",
+      "push_events",
+      "quote_items",
+      "quotes",
+      "referral_records",
+      "release_guards",
+      "review_tasks",
+      "reviews",
+      "rfq_documents",
+      "rfq_items",
+      "rfq_requirements",
+      "rfqs",
+      "risk_control_configs",
+      "sales_tasks",
+      "scheduled_publishes",
+      "schema_markups",
+      "schema_templates",
+      "seo_competitors",
+      "seo_metadata",
+      "serp_snapshots",
+      "shipping_timeline",
+      "site_analytics_events",
+      "site_audits",
+      "skill_performance",
+      "social_interactions",
+      "ssl_certificates",
+      "step_evidence",
+      "super_admin_login_logs",
+      "system_config",
+      "task_traces",
+      "tenant_ai_provider_configs",
+      "tenant_capability_toggles",
+      "tenant_invoice_profiles",
+      "tenant_invoices",
+      "third_party_logins",
+      "trade_country_category",
+      "translation_records",
+      "translation_tasks",
+      "ubrain_decision_records",
+      "ubrain_execution_records",
+      "ubrain_feedback_records",
+      "ubrain_feedback_snapshots",
+      "user_status",
+      "visibility_scores",
+      "wallet_accounts",
+      "wallet_transactions",
+      "wangcai_qa_log",
+      "wangcai_sessions"
+    ],
+    "empty_count": 193,
+    "nonempty_top": [
+      {
+        "table": "ai_tasks",
+        "rows": 539,
+        "error": null
+      },
+      {
+        "table": "token_ledger_entries",
+        "rows": 201,
+        "error": null
+      },
+      {
+        "table": "evolution_task_records",
+        "rows": 111,
+        "error": null
+      },
+      {
+        "table": "hs_code_mappings",
+        "rows": 100,
+        "error": null
+      },
+      {
+        "table": "skill_versions",
+        "rows": 77,
+        "error": null
+      },
+      {
+        "table": "skills",
+        "rows": 77,
+        "error": null
+      },
+      {
+        "table": "buyer_prospect_leads",
+        "rows": 72,
+        "error": null
+      },
+      {
+        "table": "acquisition_ops_cards",
+        "rows": 56,
+        "error": null
+      },
+      {
+        "table": "platforms",
+        "rows": 50,
+        "error": null
+      },
+      {
+        "table": "role_permissions",
+        "rows": 44,
+        "error": null
+      },
+      {
+        "table": "admin_menus",
+        "rows": 31,
+        "error": null
+      },
+      {
+        "table": "admin_permissions",
+        "rows": 30,
+        "error": null
+      },
+      {
+        "table": "agent_commission_rules",
+        "rows": 30,
+        "error": null
+      },
+      {
+        "table": "content_pages",
+        "rows": 27,
+        "error": null
+      },
+      {
+        "table": "exchange_rate_logs",
+        "rows": 25,
+        "error": null
+      },
+      {
+        "table": "customs_declarations",
+        "rows": 24,
+        "error": null
+      },
+      {
+        "table": "product_boq_profiles",
+        "rows": 20,
+        "error": null
+      },
+      {
+        "table": "inquiries",
+        "rows": 15,
+        "error": null
+      },
+      {
+        "table": "nurture_cycles",
+        "rows": 13,
+        "error": null
+      },
+      {
+        "table": "paperclip_goals",
+        "rows": 13,
+        "error": null
+      },
+      {
+        "table": "hermes_plugin_installs",
+        "rows": 12,
+        "error": null
+      },
+      {
+        "table": "products",
+        "rows": 9,
+        "error": null
+      },
+      {
+        "table": "users",
+        "rows": 9,
+        "error": null
+      },
+      {
+        "table": "paperclip_tasks",
+        "rows": 8,
+        "error": null
+      },
+      {
+        "table": "keywords",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "paperclip_approvals",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "tenant_plans",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "user_tenants",
+        "rows": 7,
+        "error": null
+      },
+      {
+        "table": "admin_roles",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "categories",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "content_masters",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "platform_accounts",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "ubrain_action_audits",
+        "rows": 4,
+        "error": null
+      },
+      {
+        "table": "egress_suppliers",
+        "rows": 3,
+        "error": null
+      },
+      {
+        "table": "deerflow_jobs",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "paperclip_companies",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "prospect_leads",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "tenants",
+        "rows": 2,
+        "error": null
+      },
+      {
+        "table": "alembic_version",
+        "rows": 1,
+        "error": null
+      },
+      {
+        "table": "referral_codes",
+        "rows": 1,
+        "error": null
+      }
+    ],
+    "nonempty_count": 46,
+    "in_models_not_in_pg": [],
+    "in_pg_not_in_models": [
+      "acquisition_ops_cards",
+      "alembic_version",
+      "customs_declarations",
+      "exchange_rate_logs",
+      "hs_code_mappings",
+      "industry_insights",
+      "keyword_ranking_history",
+      "model_call_ledger",
+      "model_capabilities",
+      "pipeline_runs",
+      "pipeline_steps",
+      "product_boq_profiles",
+      "review_tasks",
+      "seo_competitors",
+      "step_evidence"
+    ]
+  },
+  "slice_admin_routes": {
+    "router_file": "frontend/admin/src/router/index.ts",
+    "path_entries_index_ts": 333,
+    "path_entries_generated_crud": 12,
+    "by_shell_counts": {
+      "admin": 4,
+      "agent": 1,
+      "client": 6,
+      "login": 7,
+      "partner": 1,
+      "public": 314
+    },
+    "by_shell_paths": {
+      "admin": [
+        "/admin",
+        "/admin/seo-matrix",
+        "/admin/seo-matrix/:pathMatch(.*)*",
+        "/tenants/register"
+      ],
+      "agent": [
+        "/agent"
+      ],
+      "client": [
+        "/client",
+        "/client/login",
+        "/client/onboarding",
+        "/client/plan-gate",
+        "/client/today"
+      ],
+      "login": [
+        "/login",
+        "/login/admin",
+        "/login/agent",
+        "/login/oauth-callback",
+        "/login/partner",
+        "/login/platform"
+      ],
+      "partner": [
+        "/partner"
+      ],
+      "public": [
+        "/",
+        "/:pathMatch(.*)*",
+        "/access-denied",
+        "/conversation",
+        "/home",
+        "/invitation",
+        "/landing",
+        "/skill-center",
+        "ab-test",
+        "account-bindings",
+        "account-opening",
+        "acquisition-ops",
+        "admin",
+        "admin/dashboard",
+        "admin/tenants",
+        "agent-capabilities",
+        "agent-hub",
+        "aggregation",
+        "ai-center",
+        "ai-config",
+        "ai-engine",
+        "ai-learning",
+        "ai-scenarios",
+        "analytics",
+        "annex/goodjob",
+        "annex/goodjob/customers",
+        "annex/goodjob/tickets",
+        "annex/trade-ai",
+        "app",
+        "article-generator",
+        "article-to-video",
+        "assistant",
+        "attribution",
+        "audit",
+        "auto-ab-test",
+        "auto-negotiator",
+        "automation",
+        "backup",
+        "behavior",
+        "billing",
+        "browser-companion",
+        "bug-fix",
+        "capability-hub",
+        "cases",
+        "cases/edit/:id",
+        "charts",
+        "churn-warning",
+        "code-tools",
+        "cognitive",
+        "command-center",
+        "commission",
+        "company-360",
+        "compliance",
+        "config",
+        "content",
+        "content/edit/:id",
+        "conversion-funnel",
+        "copilot",
+        "cross-platform",
+        "culture-adapt",
+        "customer-finder",
+        "daily-report",
+        "dashboard",
+        "debug",
+        "deerflow-monitor",
+        "demo-rehearsal",
+        "developer",
+        "distribute",
+        "domain",
+        "drag-module",
+        "ecc-hangar",
+        "edge-cdn",
+        "editor",
+        "effects",
+        "egress",
+        "email-automation",
+        "email-campaigns",
+        "engage",
+        "execution-review",
+        "expert-system",
+        "explore",
+        "feishu",
+        "file-manager",
+        "finance",
+        "finance/commission-rules",
+        "finance/commissions",
+        "finance/invoices",
+        "finance/ip-pool",
+        "finance/payment-ops",
+        "finance/payment-orders",
+        "foreign-trade-team",
+        "format",
+        "founder-diagnostics",
+        "freight-calc",
+        "generate",
+        "generator",
+        "geo-engine",
+        "geo-visibility",
+        "globalization",
+        "glossary",
+        "greedy-contest-leaderboard",
+        "greedy-cumulative",
+        "greedy-expert-memory",
+        "greedy-hub",
+        "greedy-publish-queue",
+        "growth-tools",
+        "hierarchy",
+        "history",
+        "hub",
+        "image-space",
+        "inclusion",
+        "inquiries",
+        "inquiries/im-routing",
+        "integrations-stack",
+        "international",
+        "invoices",
+        "keywords",
+        "knowledge",
+        "lbs-routing",
+        "license",
+        "logistics",
+        "logs",
+        "low-code",
+        "mcp-bridge",
+        "media-factory",
+        "media-library",
+        "models",
+        "news",
+        "nodes",
+        "onboarding",
+        "operations/traffic",
+        "opportunities",
+        "ops-wrap",
+        "orders-track",
+        "paperclip-approvals",
+        "paperclip-dashboard",
+        "paperclip-goals",
+        "paperclip-heartbeats",
+        "paperclip-org-chart",
+        "performance",
+        "permissions",
+        "plan-gate",
+        "plans",
+        "plans/manage",
+        "platform-credentials",
+        "platform-registry",
+        "platform-zones",
+        "plugin-market",
+        "plugins",
+        "preheat",
+        "pricing",
+        "product-candidates",
+        "product-images",
+        "product-showcase",
+        "products",
+        "products/categories",
+        "products/edit/:id",
+        "progress-board",
+        "projects",
+        "prompts",
+        "protocol",
+        "provider-setup",
+        "publish",
+        "publish-history",
+        "publish/unified",
+        "qa-engine",
+        "queues/fulfillment",
+        "queues/inquiries",
+        "queues/publish",
+        "quotation",
+        "quotes",
+        "rank-scheduler",
+        "recycle-bin",
+        "redemption",
+        "refactor",
+        "referral",
+        "regions",
+        "render-queue",
+        "resource-monitor",
+        "review",
+        "rfqs",
+        "rules",
+        "runtime",
+        "sales",
+        "scan",
+        "scanner",
+        "scenario-models",
+        "scheduler",
+        "scheduler-hub",
+        "scripts",
+        "sdk",
+        "search",
+        "security",
+        "semantic-index",
+        "seo",
+        "seo-matrix",
+        "seo-publish",
+        "seo/baidu-tools",
+        "seo/batch-seo",
+        "seo/building-wiki",
+        "seo/compliance",
+        "seo/content-optimizer",
+        "seo/eeat",
+        "seo/keyword-ranking",
+        "seo/llms-txt",
+        "seo/performance",
+        "seo/schema-markup",
+        "seo/site-audit",
+        "servers",
+        "settings",
+        "site-editor",
+        "site-editor-lab",
+        "sites",
+        "skill-store",
+        "skills",
+        "storage-provision",
+        "stress-test",
+        "survival-dashboard",
+        "system",
+        "system-health",
+        "task-graph",
+        "task-orchestrator",
+        "tasks",
+        "tech-radar",
+        "templates",
+        "templates/data-cockpit",
+        "templates/data-screen",
+        "templates/enterprise",
+        "templates/saas",
+        "templates/tencent",
+        "tenants",
+        "today",
+        "tokens",
+        "trade-intel",
+        "trade-tools",
+        "traffic",
+        "traffic-board",
+        "translate",
+        "translator",
+        "tts",
+        "usage",
+        "users",
+        "v2ray",
+        "v2ray-legacy",
+        "video-bind",
+        "video-editor/fly-cut",
+        "video-editor/opencut",
+        "video-library",
+        "video-overseas",
+        "video-space",
+        "video-studio",
+        "videos",
+        "vulnerability",
+        "white-label",
+        "workflows",
+        "workspace/outreach",
+        "workspace/prospecting",
+        "workspace/skills"
+      ]
+    },
+    "login_lock": {
+      "login_component": "frontend/admin/src/views/login/index.vue",
+      "exists": true,
+      "client_login_vue_exists": false,
+      "redirects_to_LOGIN_PATH": [
+        "/client/login",
+        "/login/agent",
+        "/login/partner",
+        "/login/platform",
+        "/login/admin"
+      ]
+    },
+    "all_routes": [
+      {
+        "path": "/login/admin",
+        "name": "Login",
+        "title": "登录",
+        "component": "@/views/login/index.vue",
+        "redirect": "'/login'",
+        "shell": "login"
+      },
+      {
+        "path": "/login",
+        "name": "Login",
+        "title": "登录",
+        "component": "@/views/login/index.vue",
+        "redirect": "",
+        "shell": "login"
+      },
+      {
+        "path": "/login/oauth-callback",
+        "name": "OAuthCallback",
+        "title": "第三方登录",
+        "component": "@/views/login/oauth-callback.vue",
+        "redirect": "",
+        "shell": "login"
+      },
+      {
+        "path": "/tenants/register",
+        "name": "TenantRegister",
+        "title": "注册开通",
+        "component": "@/views/tenants/register.vue",
+        "redirect": "",
+        "shell": "admin"
+      },
+      {
+        "path": "/landing",
+        "name": "Landing",
+        "title": "官网首页",
+        "component": "@/views/landing/index.vue",
+        "redirect": "'/agent-hub/das",
+        "shell": "public"
+      },
+      {
+        "path": "/access-denied",
+        "name": "AccessDenied",
+        "title": "无权访问",
+        "component": "@/views/access-denied.vue",
+        "redirect": "'/agent-hub/dashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "/skill-center",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "'/agent-hub/dashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "/invitation",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "'/referral' }",
+        "shell": "public"
+      },
+      {
+        "path": "/conversation",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "'/client/assistant' }",
+        "shell": "public"
+      },
+      {
+        "path": "/home",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "'/landing' }",
+        "shell": "public"
+      },
+      {
+        "path": "/admin/seo-matrix",
+        "name": "ClientLayout",
+        "title": "",
+        "component": "@/layout/ClientShellLayout.vue",
+        "redirect": "'/seo-matrix/dashboard' }",
+        "shell": "admin"
+      },
+      {
+        "path": "/admin/seo-matrix/:pathMatch(.*)*",
+        "name": "ClientLayout",
+        "title": "",
+        "component": "@/layout/ClientShellLayout.vue",
+        "redirect": "(to) => {",
+        "shell": "admin"
+      },
+      {
+        "path": "/client",
+        "name": "ClientLayout",
+        "title": "今日三步",
+        "component": "@/layout/ClientShellLayout.vue",
+        "redirect": "'/client/today'",
+        "shell": "client"
+      },
+      {
+        "path": "today",
+        "name": "ClientToday",
+        "title": "今日三步",
+        "component": "@/views/client/today-three.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "ClientDashboard",
+        "title": "工作台",
+        "component": "@/views/client/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/trade-ai",
+        "name": "ClientAnnexTradeAi",
+        "title": "TradeAI 执行台",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/goodjob",
+        "name": "ClientAnnexGoodjob",
+        "title": "GoodJob 执行台",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/goodjob/tickets",
+        "name": "ClientAnnexGoodjobTickets",
+        "title": "GoodJob CRM · 票据中心管理",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/goodjob/customers",
+        "name": "ClientAnnexGoodjobCustomers",
+        "title": "GoodJob CRM · 客户管理",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "traffic",
+        "name": "ClientTrafficBoard",
+        "title": "流量看板",
+        "component": "@/views/client/traffic-board.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "assistant",
+        "name": "ClientAssistant",
+        "title": "卖货智能助手",
+        "component": "@/views/client/assistant.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "copilot",
+        "name": "ClientCopilot",
+        "title": "卖货飞轮",
+        "component": "@/views/client/copilot.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "foreign-trade-team",
+        "name": "ClientForeignTradeTeam",
+        "title": "AI 外贸团队",
+        "component": "@/views/client/foreign-trade-team.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "plugin-market",
+        "name": "ClientPluginMarket",
+        "title": "旺财插件市场",
+        "component": "@/views/client/wangcai-plugin-market.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "app",
+        "name": "ChuhaijiApp",
+        "title": "出海计",
+        "component": "@/views/client/chuhaiji-app.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "onboarding",
+        "name": "ClientOnboarding",
+        "title": "开通向导",
+        "component": "@/views/client/onboarding.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "site-editor",
+        "name": "ClientSiteEditor",
+        "title": "可视化建站",
+        "component": "@/views/admin/file-manager/overview.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "product-images",
+        "name": "ClientProductImages",
+        "title": "产品图片空间",
+        "component": "@/views/admin/file-manager/overview.vue",
+        "redirect": "'/client/product-images' }",
+        "shell": "public"
+      },
+      {
+        "path": "video-space",
+        "name": "ClientVideoSpace",
+        "title": "视频空间",
+        "component": "@/views/admin/file-manager/overview.vue",
+        "redirect": "'/client/product-images' }",
+        "shell": "public"
+      },
+      {
+        "path": "image-space",
+        "name": "ClientProducts",
+        "title": "产品管理",
+        "component": "@/views/products/index.vue",
+        "redirect": "'/client/product-images' }",
+        "shell": "public"
+      },
+      {
+        "path": "videos",
+        "name": "ClientProducts",
+        "title": "产品管理",
+        "component": "@/views/products/index.vue",
+        "redirect": "'/client/video-space' }",
+        "shell": "public"
+      },
+      {
+        "path": "products",
+        "name": "ClientProducts",
+        "title": "产品管理",
+        "component": "@/views/products/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "products/edit/:id",
+        "name": "ClientProductEdit",
+        "title": "编辑产品",
+        "component": "@/views/products/edit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "products/categories",
+        "name": "ClientProductCategories",
+        "title": "分类管理",
+        "component": "@/views/products/categories.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "inquiries",
+        "name": "ClientInquiries",
+        "title": "询盘管理",
+        "component": "@/views/inquiries/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "egress",
+        "name": "ClientEgress",
+        "title": "IP 槽位",
+        "component": "@/views/client/egress.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "referral",
+        "name": "ClientReferral",
+        "title": "邀请好友",
+        "component": "@/views/client/referral.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "content",
+        "name": "ClientContent",
+        "title": "内容管理",
+        "component": "@/views/content/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo",
+        "name": "ClientSEO",
+        "title": "SEO优化",
+        "component": "@/views/seo/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "invoices",
+        "name": "ClientInvoices",
+        "title": "开票申请",
+        "component": "@/views/client/invoices.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "tokens",
+        "name": "ClientTokens",
+        "title": "AI 流量充值",
+        "component": "@/views/client/tokens.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "distribute",
+        "name": "ClientContentDistribute",
+        "title": "内容分发中心",
+        "component": "@/views/client/content-distribute.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "cross-platform",
+        "name": "ClientCrossPlatformDashboard",
+        "title": "跨平台数据看板",
+        "component": "@/views/cross-platform/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "engage",
+        "name": "ClientAitoearnEngage",
+        "title": "评论互动",
+        "component": "@/views/client/aitoearn-engage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "video-overseas",
+        "name": "ClientVideoOverseas",
+        "title": "中文片出海",
+        "component": "@/views/client/video-overseas.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "video-studio",
+        "name": "ClientVideoStudio",
+        "title": "全媒体剪辑台",
+        "component": "@/views/client/video-studio.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "video-editor/fly-cut",
+        "name": "ClientVideoEditorFlyCut",
+        "title": "Fly-Cut 剪辑",
+        "component": "@/views/client/video-editor-embed.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "video-editor/opencut",
+        "name": "ClientVideoEditorOpenCut",
+        "title": "OpenCut 剪辑",
+        "component": "@/views/client/video-editor-embed.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "product-candidates",
+        "name": "ClientProductCandidates",
+        "title": "产业带产品候选",
+        "component": "@/views/client/product-candidates.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "publish",
+        "name": "ClientUnifiedPublish",
+        "title": "GEO 统一发布台",
+        "component": "@/views/publish/unified.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ai-scenarios",
+        "name": "ClientAiScenarios",
+        "title": "AI 场景模型",
+        "component": "@/views/client/ai-scenarios.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "workspace/prospecting",
+        "name": "ProspectingWorkspace",
+        "title": "搜客执行台",
+        "component": "@/views/workspace/ProspectingWorkspace.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "workspace/outreach",
+        "name": "OutreachEditor",
+        "title": "写信工作台",
+        "component": "@/views/workspace/OutreachEditor.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "email-campaigns",
+        "name": "ClientEmailCampaigns",
+        "title": "邮件营销",
+        "component": "@/views/sales/EmailAutomation.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "workspace/skills",
+        "name": "SkillConsole",
+        "title": "AI 技能台",
+        "component": "@/views/workspace/SkillConsole.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "skills",
+        "name": "ClientSkillsMarket",
+        "title": "Meoo专属技能",
+        "component": "@/views/client/skills-market.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "explore",
+        "name": "ClientTemplatesExplore",
+        "title": "创意社区与模板",
+        "component": "@/views/client/templates-explore.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ai-config",
+        "name": "ClientAiConfig",
+        "title": "AI 配置",
+        "component": "@/views/client/ai-config.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "trade-tools",
+        "name": "ClientTradeTools",
+        "title": "外贸工具指南",
+        "component": "@/views/client/trade-tools.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "billing",
+        "name": "ClientBilling",
+        "title": "套餐续费",
+        "component": "@/views/client/billing.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "acquisition-ops",
+        "name": "ClientAcquisitionOps",
+        "title": "获客作战台",
+        "component": "@/views/client/acquisition-ops.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "plan-gate",
+        "name": "ClientPlanGate",
+        "title": "升级套餐",
+        "component": "@/views/client/plan-gate.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "queues/inquiries",
+        "name": "ClientInquiryQueue",
+        "title": "询盘队列",
+        "component": "@/views/client/queues/inquiries.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "geo-visibility",
+        "name": "ClientGeoVisibility",
+        "title": "GEO 可见性",
+        "component": "@/views/client/geo-visibility.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "queues/publish",
+        "name": "ClientPublishQueue",
+        "title": "发布队列",
+        "component": "@/views/client/queues/publish.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "queues/fulfillment",
+        "name": "ClientFulfillmentQueue",
+        "title": "履约队列",
+        "component": "@/views/client/queues/fulfillment.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "site-editor-lab",
+        "name": "ClientSiteEditorLab",
+        "title": "站点编辑器试点",
+        "component": "@/views/client/site-editor-lab.vue",
+        "redirect": "{ path: 'distribute'",
+        "shell": "public"
+      },
+      {
+        "path": "seo-publish",
+        "name": "ClientSeoPublish",
+        "title": "平台绑定与发布",
+        "component": "@/views/seo-matrix/publish.vue",
+        "redirect": "{ path: 'distribute'",
+        "shell": "public"
+      },
+      {
+        "path": "video-bind",
+        "name": "ClientMediaFactory",
+        "title": "视频工厂",
+        "component": "@/views/media-factory/dashboard.vue",
+        "redirect": "{ path: 'distribute'",
+        "shell": "public"
+      },
+      {
+        "path": "distribute",
+        "name": "ClientMediaFactory",
+        "title": "视频工厂",
+        "component": "@/views/media-factory/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "media-factory",
+        "name": "ClientMediaFactory",
+        "title": "视频工厂",
+        "component": "@/views/media-factory/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "article-to-video",
+        "name": "ClientArticleToVideo",
+        "title": "文章转视频",
+        "component": "@/views/admin/ai-center/article-to-video.vue",
+        "redirect": "LOGIN_PATH",
+        "shell": "public"
+      },
+      {
+        "path": "settings",
+        "name": "ClientSettings",
+        "title": "系统设置",
+        "component": "@/views/system/settings.vue",
+        "redirect": "LOGIN_PATH",
+        "shell": "public"
+      },
+      {
+        "path": "/client/login",
+        "name": "PartnerShellLayout",
+        "title": "",
+        "component": "@/layout/index.vue",
+        "redirect": "LOGIN_PATH",
+        "shell": "client"
+      },
+      {
+        "path": "/login/agent",
+        "name": "PartnerShellLayout",
+        "title": "",
+        "component": "@/layout/index.vue",
+        "redirect": "LOGIN_PATH",
+        "shell": "login"
+      },
+      {
+        "path": "/login/partner",
+        "name": "PartnerShellLayout",
+        "title": "",
+        "component": "@/layout/index.vue",
+        "redirect": "LOGIN_PATH",
+        "shell": "login"
+      },
+      {
+        "path": "/login/platform",
+        "name": "PartnerShellLayout",
+        "title": "省代看板",
+        "component": "@/layout/index.vue",
+        "redirect": "LOGIN_PATH",
+        "shell": "login"
+      },
+      {
+        "path": "/partner",
+        "name": "PartnerShellLayout",
+        "title": "省代看板",
+        "component": "@/layout/index.vue",
+        "redirect": "'/partner/performance'",
+        "shell": "partner"
+      },
+      {
+        "path": "performance",
+        "name": "PartnerPerformance",
+        "title": "省代看板",
+        "component": "@/views/partner/performance.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "traffic",
+        "name": "PartnerTrafficBoard",
+        "title": "流量看板",
+        "component": "@/views/agent/traffic-board.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "commission",
+        "name": "PartnerCommission",
+        "title": "佣金管理",
+        "component": "@/views/agent/commission.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "account-opening",
+        "name": "PartnerAccountOpening",
+        "title": "客户开户",
+        "component": "@/views/agent/account-opening.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "daily-report",
+        "name": "PartnerDailyReport",
+        "title": "经营日报",
+        "component": "@/views/agent/daily-report.vue",
+        "redirect": "'/agent/p",
+        "shell": "public"
+      },
+      {
+        "path": "churn-warning",
+        "name": "PartnerChurnWarning",
+        "title": "流失预警",
+        "component": "@/views/agent/churn-warning.vue",
+        "redirect": "'/agent/performance'",
+        "shell": "public"
+      },
+      {
+        "path": "/agent",
+        "name": "AgentShellLayout",
+        "title": "业绩看板",
+        "component": "@/layout/index.vue",
+        "redirect": "'/agent/performance'",
+        "shell": "agent"
+      },
+      {
+        "path": "performance",
+        "name": "AgentPerformance",
+        "title": "业绩看板",
+        "component": "@/views/agent/performance.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "traffic",
+        "name": "AgentTrafficBoard",
+        "title": "流量看板",
+        "component": "@/views/agent/traffic-board.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "commission",
+        "name": "AgentCommission",
+        "title": "佣金管理",
+        "component": "@/views/agent/commission.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "account-opening",
+        "name": "AgentAccountOpening",
+        "title": "客户开户",
+        "component": "@/views/agent/account-opening.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "daily-report",
+        "name": "AgentDailyReport",
+        "title": "经营日报",
+        "component": "@/views/agent/daily-report.vue",
+        "redirect": "'/admin'",
+        "shell": "public"
+      },
+      {
+        "path": "churn-warning",
+        "name": "AgentChurnWarning",
+        "title": "流失预警",
+        "component": "@/views/agent/churn-warning.vue",
+        "redirect": "'/admin'",
+        "shell": "public"
+      },
+      {
+        "path": "/",
+        "name": "Layout",
+        "title": "数据概览",
+        "component": "@/layout/index.vue",
+        "redirect": "'/admin'",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "Dashboard",
+        "title": "数据概览",
+        "component": "@/views/dashboard/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "templates",
+        "name": "TemplateGallery",
+        "title": "仪表盘模板",
+        "component": "@/views/templates/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "templates/data-cockpit",
+        "name": "TemplateDataCockpit",
+        "title": "数据驾驶舱",
+        "component": "@/views/templates/dashboard-data-cockpit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "templates/enterprise",
+        "name": "TemplateEnterprise",
+        "title": "企业后台实战",
+        "component": "@/views/templates/dashboard-enterprise.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "templates/tencent",
+        "name": "TemplateTencent",
+        "title": "大厂极简风",
+        "component": "@/views/templates/dashboard-tencent.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "templates/saas",
+        "name": "TemplateSaaS",
+        "title": "SaaS系统风",
+        "component": "@/views/templates/dashboard-saas.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "templates/data-screen",
+        "name": "TemplateDataScreen",
+        "title": "数据大屏",
+        "component": "@/views/templates/dashboard-data-screen.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "admin/dashboard",
+        "name": "AdminDashboardPage",
+        "title": "运营看板",
+        "component": "@/views/admin/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "admin/tenants",
+        "name": "AdminTenantsPage",
+        "title": "租户管理",
+        "component": "@/views/tenants/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "admin",
+        "name": "Admin",
+        "title": "超级管理员",
+        "component": "@/views/admin/layout.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "platform-zones",
+        "name": "AdminPlatformZones",
+        "title": "三区治理",
+        "component": "@/views/admin/platform-zones.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "platform-registry",
+        "name": "AdminPlatformRegistry",
+        "title": "平台来源审计",
+        "component": "@/views/admin/platform-registry.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "platform-credentials",
+        "name": "AdminPlatformCredentials",
+        "title": "平台凭证",
+        "component": "@/views/admin/platform-credentials.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/trade-ai",
+        "name": "AnnexTradeAi",
+        "title": "TradeAI 执行台",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/goodjob",
+        "name": "AnnexGoodjob",
+        "title": "GoodJob 执行台",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/goodjob/tickets",
+        "name": "AnnexGoodjobTickets",
+        "title": "GoodJob CRM · 票据中心管理",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "annex/goodjob/customers",
+        "name": "AnnexGoodjobCustomers",
+        "title": "GoodJob CRM · 客户管理",
+        "component": "@/views/annex/AnnexEmbedPage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "demo-rehearsal",
+        "name": "AdminDemoRehearsal",
+        "title": "七步彩排",
+        "component": "@/views/admin/demo-rehearsal.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "capability-hub",
+        "name": "AdminCapabilityHub",
+        "title": "能力导航",
+        "component": "@/views/admin/capability-hub.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "aggregation",
+        "name": "AdminAggregation",
+        "title": "数据中心",
+        "component": "@/views/admin/aggregation.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "traffic-board",
+        "name": "AdminTrafficBoard",
+        "title": "流量看板",
+        "component": "@/views/admin/traffic-board.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "founder-diagnostics",
+        "name": "AdminFounderDiagnostics",
+        "title": "创始人诊断",
+        "component": "@/views/admin/founder-diagnostics.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "attribution",
+        "name": "AdminAttribution",
+        "title": "全链路归因",
+        "component": "@/views/admin/attribution/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance",
+        "name": "AdminFinance",
+        "title": "财务中台",
+        "component": "@/views/admin/finance/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance/invoices",
+        "name": "AdminFinanceInvoices",
+        "title": "开票审核",
+        "component": "@/views/admin/finance/invoice-applications.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance/commissions",
+        "name": "AdminFinanceCommissions",
+        "title": "分润结算",
+        "component": "@/views/admin/finance/commissions.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance/commission-rules",
+        "name": "AdminFinanceCommissionRules",
+        "title": "分润规则",
+        "component": "@/views/admin/finance/commission-rules.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance/payment-ops",
+        "name": "AdminFinancePaymentOps",
+        "title": "支付码与接口",
+        "component": "@/views/admin/finance/payment-ops.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance/payment-orders",
+        "name": "AdminFinancePaymentOrders",
+        "title": "租户支付订单",
+        "component": "@/views/admin/finance/payment-orders.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "finance/ip-pool",
+        "name": "AdminFinanceIpPool",
+        "title": "静态 IP 池",
+        "component": "@/views/admin/finance/ip-pool.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "hierarchy",
+        "name": "AdminHierarchy",
+        "title": "层级管理",
+        "component": "@/views/admin/hierarchy/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "recycle-bin",
+        "name": "AdminRecycleBin",
+        "title": "回收站",
+        "component": "@/views/admin/recycle-bin/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "tech-radar",
+        "name": "AdminTechRadar",
+        "title": "GEO 技术雷达",
+        "component": "@/views/admin/tech-radar/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "onboarding",
+        "name": "AdminOnboarding",
+        "title": "入驻引导",
+        "component": "@/views/admin/onboarding/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "system",
+        "name": "AdminSystem",
+        "title": "系统管理",
+        "component": "@/views/admin/system/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "users",
+        "name": "SystemUsers",
+        "title": "用户管理",
+        "component": "@/views/admin/system/users.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "permissions",
+        "name": "SystemPermissions",
+        "title": "权限管理",
+        "component": "@/views/admin/system/permissions.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "agent-capabilities",
+        "name": "SystemAgentCapabilities",
+        "title": "代理能力划拨",
+        "component": "@/views/admin/system/agent-capabilities.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "logs",
+        "name": "SystemLogs",
+        "title": "系统日志",
+        "component": "@/views/admin/system/logs.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "config",
+        "name": "SystemConfig",
+        "title": "系统配置",
+        "component": "@/views/admin/system/config.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "account-bindings",
+        "name": "SystemAccountBindings",
+        "title": "账号绑定",
+        "component": "@/views/admin/system/account-bindings.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "integrations-stack",
+        "name": "SystemIntegrationsStack",
+        "title": "集成栈",
+        "component": "@/views/admin/system/integrations-stack.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "license",
+        "name": "SystemLicense",
+        "title": "许可证管理",
+        "component": "@/views/admin/system/license.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "storage-provision",
+        "name": "SystemStorageProvision",
+        "title": "存储开通",
+        "component": "@/views/admin/system/storage-provision.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "progress-board",
+        "name": "SystemProgressBoard",
+        "title": "开发进度",
+        "component": "@/views/admin/system/progress-board.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "command-center",
+        "name": "SystemCommandCenter",
+        "title": "超管司令部",
+        "component": "@/views/admin/system/command-center.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ecc-hangar",
+        "name": "SystemEccHangar",
+        "title": "ECC 专家机库",
+        "component": "@/views/admin/system/ecc-hangar.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "deerflow-monitor",
+        "name": "SystemDeerflowMonitor",
+        "title": "DeerFlow 队列",
+        "component": "@/views/admin/system/deerflow-monitor.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "publish-history",
+        "name": "SystemPublishHistory",
+        "title": "统一发布历史",
+        "component": "@/views/admin/system/publish-history.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "rank-scheduler",
+        "name": "SystemRankScheduler",
+        "title": "Rank Scheduler",
+        "component": "@/views/admin/system/rank-scheduler.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "greedy-hub",
+        "name": "SystemGreedyHub",
+        "title": "摸金校尉总控",
+        "component": "@/views/admin/system/greedy-hub.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "greedy-cumulative",
+        "name": "SystemGreedyCumulative",
+        "title": "摸金累计看板",
+        "component": "@/views/admin/system/greedy-cumulative.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "greedy-contest-leaderboard",
+        "name": "SystemGreedyContestLeaderboard",
+        "title": "挣钱大赛",
+        "component": "@/views/admin/system/greedy-contest-leaderboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "greedy-publish-queue",
+        "name": "SystemGreedyPublishQueue",
+        "title": "L4 发布队列",
+        "component": "@/views/admin/system/greedy-publish-queue.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "survival-dashboard",
+        "name": "SystemSurvivalDashboard",
+        "title": "Survival 台账",
+        "component": "@/views/admin/system/survival-dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "greedy-expert-memory",
+        "name": "SystemGreedyExpertMemory",
+        "title": "专家记忆",
+        "component": "@/views/admin/system/greedy-expert-memory.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "paperclip-dashboard",
+        "name": "PaperclipDashboard",
+        "title": "Agent 编排总控",
+        "component": "@/views/admin/paperclip/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "paperclip-org-chart",
+        "name": "PaperclipOrgChart",
+        "title": "组织架构",
+        "component": "@/views/admin/paperclip/org-chart.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "paperclip-goals",
+        "name": "PaperclipGoals",
+        "title": "目标管理",
+        "component": "@/views/admin/paperclip/goals.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "paperclip-heartbeats",
+        "name": "PaperclipHeartbeats",
+        "title": "心跳监控",
+        "component": "@/views/admin/paperclip/heartbeats.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "paperclip-approvals",
+        "name": "PaperclipApprovals",
+        "title": "审批管理",
+        "component": "@/views/admin/paperclip/approvals.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ops-wrap",
+        "name": "SystemOpsWrap",
+        "title": "运维批处理",
+        "component": "@/views/admin/system/ops-wrap.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ai-center",
+        "name": "AdminAICenter",
+        "title": "AI中心",
+        "component": "@/views/admin/ai-center/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "models",
+        "name": "AICenterModels",
+        "title": "模型管理",
+        "component": "@/views/admin/ai-center/models.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "content",
+        "name": "AICenterContent",
+        "title": "AI内容助手",
+        "component": "@/views/admin/ai-center/content.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "analytics",
+        "name": "AICenterAnalytics",
+        "title": "智能分析",
+        "component": "@/views/admin/ai-center/analytics.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "logs",
+        "name": "AICenterLogs",
+        "title": "调用日志",
+        "component": "@/views/admin/ai-center/logs.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "provider-setup",
+        "name": "AICenterProviderSetup",
+        "title": "模型配置",
+        "component": "@/views/admin/ai-center/provider-setup.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "scenario-models",
+        "name": "AICenterScenarioModels",
+        "title": "场景模型切换",
+        "component": "@/views/admin/ai-center/scenario-models.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "usage",
+        "name": "AICenterUsage",
+        "title": "用量监控",
+        "component": "@/views/admin/ai-center/usage.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "knowledge",
+        "name": "AICenterKnowledge",
+        "title": "知识库",
+        "component": "@/views/admin/ai-center/knowledge.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "article-generator",
+        "name": "AICenterArticleGenerator",
+        "title": "文章生成器",
+        "component": "@/views/admin/ai-center/article-generator.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "article-to-video",
+        "name": "AICenterArticleToVideo",
+        "title": "文章转视频",
+        "component": "@/views/admin/ai-center/article-to-video.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "browser-companion",
+        "name": "AICenterBrowserCompanion",
+        "title": "浏览器伴侣工作台",
+        "component": "@/views/admin/ai-center/browser-companion-bridge.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "skill-store",
+        "name": "AICenterSkillStore",
+        "title": "技能商店",
+        "component": "@/views/ai-center/skill-store.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ai-engine",
+        "name": "AdminAIEngine",
+        "title": "AI引擎",
+        "component": "@/views/admin/ai-engine/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "analytics",
+        "name": "AIEngineAnalytics",
+        "title": "AI分析",
+        "component": "@/views/admin/ai-engine/analytics.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "tasks",
+        "name": "AIEngineTasks",
+        "title": "任务看板",
+        "component": "@/views/admin/ai-engine/tasks.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "prompts",
+        "name": "AIEnginePrompts",
+        "title": "提示词",
+        "component": "@/views/admin/ai-engine/prompts.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "models",
+        "name": "AIEngineModels",
+        "title": "模型",
+        "component": "@/views/admin/ai-engine/models.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "trade-intel",
+        "name": "AIEngineTradeIntel",
+        "title": "出海参谋",
+        "component": "@/views/admin/ai-engine/trade-intel.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "geo-engine",
+        "name": "AdminGEOEngine",
+        "title": "GEO引擎模型收录",
+        "component": "@/views/admin/geo-engine/index.vue",
+        "redirect": "'/admin/finance/ip-pool'",
+        "shell": "public"
+      },
+      {
+        "path": "v2ray",
+        "name": "AdminV2RayLegacy",
+        "title": "V2Ray运维(内部)",
+        "component": "@/views/admin/v2ray/index.vue",
+        "redirect": "'/admin/finance/ip-pool'",
+        "shell": "public"
+      },
+      {
+        "path": "egress",
+        "name": "AdminV2RayLegacy",
+        "title": "V2Ray运维(内部)",
+        "component": "@/views/admin/v2ray/index.vue",
+        "redirect": "'/admin/finance/ip-pool'",
+        "shell": "public"
+      },
+      {
+        "path": "v2ray-legacy",
+        "name": "AdminV2RayLegacy",
+        "title": "V2Ray运维(内部)",
+        "component": "@/views/admin/v2ray/index.vue",
+        "redirect": "'/admin/v2ray-legacy/servers' }",
+        "shell": "public"
+      },
+      {
+        "path": "servers",
+        "name": "V2RayServers",
+        "title": "服务器配置",
+        "component": "@/views/admin/v2ray/servers.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "code-tools",
+        "name": "AdminCodeTools",
+        "title": "代码工具",
+        "component": "@/views/admin/code-tools/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generator",
+        "name": "CodeGenerator",
+        "title": "代码生成",
+        "component": "@/views/admin/code-tools/generator.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "refactor",
+        "name": "CodeRefactor",
+        "title": "代码重构",
+        "component": "@/views/admin/code-tools/refactor.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "debug",
+        "name": "CodeDebug",
+        "title": "代码调试",
+        "component": "@/views/admin/code-tools/debug.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "format",
+        "name": "CodeFormat",
+        "title": "代码格式化",
+        "component": "@/views/admin/code-tools/format.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "scanner",
+        "name": "CodeScanner",
+        "title": "代码扫描",
+        "component": "@/views/admin/code-tools/scanner.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "review",
+        "name": "CodeReview",
+        "title": "代码审查",
+        "component": "@/views/admin/code-tools/review.vue",
+        "redirect": "'/admin/code-tools/format' }",
+        "shell": "public"
+      },
+      {
+        "path": "editor",
+        "name": "AdminFileManager",
+        "title": "",
+        "component": "",
+        "redirect": "'/admin/code-tools/format' }",
+        "shell": "public"
+      },
+      {
+        "path": "bug-fix",
+        "name": "AdminFileManager",
+        "title": "产品图片空间",
+        "component": "@/views/admin/file-manager/index.vue",
+        "redirect": "'/admin/code-tools/debug' }",
+        "shell": "public"
+      },
+      {
+        "path": "translate",
+        "name": "AdminFileManager",
+        "title": "产品图片空间",
+        "component": "@/views/admin/file-manager/index.vue",
+        "redirect": "'/admin/code-tools/refactor' }",
+        "shell": "public"
+      },
+      {
+        "path": "generate",
+        "name": "AdminFileManager",
+        "title": "产品图片空间",
+        "component": "@/views/admin/file-manager/index.vue",
+        "redirect": "'/admin/code-tools/generator' }",
+        "shell": "public"
+      },
+      {
+        "path": "file-manager",
+        "name": "AdminFileManager",
+        "title": "产品图片空间",
+        "component": "@/views/admin/file-manager/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "scan",
+        "name": "FileScan",
+        "title": "文件扫描",
+        "component": "@/views/admin/file-manager/scan.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "search",
+        "name": "FileSearch",
+        "title": "全局检索",
+        "component": "@/views/admin/file-manager/search.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "history",
+        "name": "FileHistory",
+        "title": "历史记录",
+        "component": "@/views/admin/file-manager/history.vue",
+        "redirect": "'/admin/file-manager' }",
+        "shell": "public"
+      },
+      {
+        "path": "media-library",
+        "name": "AdminVideoSpace",
+        "title": "视频空间",
+        "component": "@/views/admin/file-manager/overview.vue",
+        "redirect": "'/admin/file-manager' }",
+        "shell": "public"
+      },
+      {
+        "path": "image-space",
+        "name": "AdminVideoSpace",
+        "title": "视频空间",
+        "component": "@/views/admin/file-manager/overview.vue",
+        "redirect": "'/admin/file-manager' }",
+        "shell": "public"
+      },
+      {
+        "path": "video-space",
+        "name": "AdminVideoSpace",
+        "title": "视频空间",
+        "component": "@/views/admin/file-manager/overview.vue",
+        "redirect": "'/admin/video-space' }",
+        "shell": "public"
+      },
+      {
+        "path": "video-library",
+        "name": "AdminSecurity",
+        "title": "安全合规",
+        "component": "@/views/admin/security/index.vue",
+        "redirect": "'/admin/video-space' }",
+        "shell": "public"
+      },
+      {
+        "path": "security",
+        "name": "AdminSecurity",
+        "title": "安全合规",
+        "component": "@/views/admin/security/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "vulnerability",
+        "name": "SecurityVulnerability",
+        "title": "漏洞扫描",
+        "component": "@/views/admin/security/vulnerability.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "audit",
+        "name": "SecurityAudit",
+        "title": "安全审计",
+        "component": "@/views/admin/security/audit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "compliance",
+        "name": "SecurityCompliance",
+        "title": "合规检查",
+        "component": "@/views/admin/security/compliance.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "automation",
+        "name": "AdminAutomation",
+        "title": "自动化",
+        "component": "@/views/admin/automation/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "scripts",
+        "name": "AutomationScripts",
+        "title": "脚本管理",
+        "component": "@/views/admin/automation/scripts.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "scheduler",
+        "name": "AutomationScheduler",
+        "title": "任务调度",
+        "component": "@/views/admin/automation/scheduler.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "workflows",
+        "name": "AutomationWorkflows",
+        "title": "工作流",
+        "component": "@/views/admin/automation/workflows.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "projects",
+        "name": "AdminProjects",
+        "title": "项目中心",
+        "component": "@/views/admin/projects/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "runtime",
+        "name": "AdminRuntime",
+        "title": "运行时",
+        "component": "@/views/admin/runtime/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "scheduler-hub",
+        "name": "AdminSchedulerHub",
+        "title": "调度中心",
+        "component": "@/views/admin/scheduler/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo-matrix",
+        "name": "SEOMatrix",
+        "title": "SEO矩阵系统",
+        "component": "@/views/seo-matrix/index.vue",
+        "redirect": "{ name: 'SEOMatrixDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "SEOMatrixDashboard",
+        "title": "数据看板",
+        "component": "@/views/seo-matrix/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "settings",
+        "name": "SEOMatrixSettings",
+        "title": "系统设置",
+        "component": "@/views/seo-matrix/settings.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "regions",
+        "name": "SEOMatrixRegions",
+        "title": "地域词库",
+        "component": "@/views/seo-matrix/regions.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "keywords",
+        "name": "SEOMatrixKeywords",
+        "title": "关键词管理",
+        "component": "@/views/seo-matrix/keywords.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "content",
+        "name": "SEOMatrixContent",
+        "title": "文案生成",
+        "component": "@/views/seo-matrix/content.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "publish",
+        "name": "SEOMatrixPublish",
+        "title": "多平台分发",
+        "component": "@/views/seo-matrix/publish.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "inclusion",
+        "name": "SEOMatrixInclusion",
+        "title": "收录监控",
+        "component": "@/views/seo-matrix/inclusion.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "growth-tools",
+        "name": "SEOMatrixGrowthTools",
+        "title": "增长工具",
+        "component": "@/views/seo-matrix/growth-tools.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "products",
+        "name": "Products",
+        "title": "产品管理",
+        "component": "@/views/products/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "products/edit/:id",
+        "name": "ProductEdit",
+        "title": "编辑产品",
+        "component": "@/views/products/edit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "products/categories",
+        "name": "Categories",
+        "title": "分类管理",
+        "component": "@/views/products/categories.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo",
+        "name": "SEO",
+        "title": "SEO概览",
+        "component": "@/views/seo/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/llms-txt",
+        "name": "LLMSTxt",
+        "title": "LLMs.txt生成",
+        "component": "@/views/seo/llms-txt.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/content-optimizer",
+        "name": "ContentOptimizer",
+        "title": "AI内容优化",
+        "component": "@/views/seo/content-optimizer.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/site-audit",
+        "name": "SiteAudit",
+        "title": "站点审计",
+        "component": "@/views/seo/site-audit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/batch-seo",
+        "name": "BatchSEO",
+        "title": "批量SEO管理",
+        "component": "@/views/seo/batch-seo.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/schema-markup",
+        "name": "SchemaMarkup",
+        "title": "Schema标记管理",
+        "component": "@/views/seo/schema-markup.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/eeat",
+        "name": "EEAT",
+        "title": "EEAT评分管理",
+        "component": "@/views/seo/eeat.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/compliance",
+        "name": "Compliance",
+        "title": "广告法合规审查",
+        "component": "@/views/seo/compliance.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/keyword-ranking",
+        "name": "KeywordRanking",
+        "title": "关键词排名追踪",
+        "component": "@/views/seo/keyword-ranking.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/baidu-tools",
+        "name": "BaiduTools",
+        "title": "百度站长工具",
+        "component": "@/views/seo/baidu-tools.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/building-wiki",
+        "name": "BuildingWiki",
+        "title": "AI建材百科",
+        "component": "@/views/seo/building-wiki.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "seo/performance",
+        "name": "SEOPerformance",
+        "title": "性能与安全监控",
+        "component": "@/views/seo/performance.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "publish/unified",
+        "name": "UnifiedPublish",
+        "title": "统一发布台",
+        "component": "@/views/publish/unified.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "hub",
+        "name": "ContentHub",
+        "title": "总站枢纽",
+        "component": "@/views/admin/hub/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "content",
+        "name": "Content",
+        "title": "内容管理",
+        "component": "@/views/content/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "content/edit/:id",
+        "name": "ContentEdit",
+        "title": "编辑内容",
+        "component": "@/views/content/edit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "cases",
+        "name": "Cases",
+        "title": "案例管理",
+        "component": "@/views/cases/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "cases/edit/:id",
+        "name": "CaseEdit",
+        "title": "编辑案例",
+        "component": "@/views/cases/edit.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "inquiries",
+        "name": "Inquiries",
+        "title": "询盘管理",
+        "component": "@/views/inquiries/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "inquiries/im-routing",
+        "name": "InquiriesIMRouting",
+        "title": "IM 全渠道",
+        "component": "@/views/inquiries/im-routing.vue",
+        "redirect": "{ name: 'SalesDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "sales",
+        "name": "Sales",
+        "title": "销售中心",
+        "component": "@/views/sales/index.vue",
+        "redirect": "{ name: 'SalesDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "SalesDashboard",
+        "title": "销售工作台",
+        "component": "@/views/sales/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "customer-finder",
+        "name": "CustomerFinder",
+        "title": "客户开发",
+        "component": "@/views/sales/CustomerFinder.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "auto-negotiator",
+        "name": "AutoNegotiator",
+        "title": "自动谈单",
+        "component": "@/views/sales/AutoNegotiator.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "email-automation",
+        "name": "EmailAutomation",
+        "title": "开发信管理",
+        "component": "@/views/sales/EmailAutomation.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "opportunities",
+        "name": "OpportunityBoard",
+        "title": "销售管道看板",
+        "component": "@/views/sales/OpportunityBoard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "rfqs",
+        "name": "RfqPanel",
+        "title": "RFQ 需求单",
+        "component": "@/views/sales/RfqPanel.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "company-360",
+        "name": "CompanyAccount360",
+        "title": "Company 360",
+        "component": "@/views/sales/CompanyAccount360.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "quotes",
+        "name": "QuotesPanel",
+        "title": "报价管理",
+        "component": "@/views/sales/QuotesPanel.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "tasks",
+        "name": "SalesTaskCenter",
+        "title": "销售任务中心",
+        "component": "@/views/sales/SalesTaskCenter.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "news",
+        "name": "News",
+        "title": "新闻管理",
+        "component": "@/views/news/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "compliance",
+        "name": "ComplianceHub",
+        "title": "合规治理",
+        "component": "@/views/compliance/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ai-config",
+        "name": "AiConfig",
+        "title": "AI配置",
+        "component": "@/views/integrations/AiConfig.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "feishu",
+        "name": "Feishu",
+        "title": "飞书集成",
+        "component": "@/views/integrations/Feishu.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "ab-test",
+        "name": "AbTest",
+        "title": "A/B测试",
+        "component": "@/views/experiments/AbTest.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "users",
+        "name": "Users",
+        "title": "用户管理",
+        "component": "@/views/system/users.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "analytics",
+        "name": "Analytics",
+        "title": "数据分析",
+        "component": "@/views/system/analytics.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "operations/traffic",
+        "name": "OperationsTrafficBoard",
+        "title": "流量看板",
+        "component": "@/views/operations/traffic-board.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "settings",
+        "name": "Settings",
+        "title": "系统设置",
+        "component": "@/views/system/settings.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "drag-module",
+        "name": "DragModule",
+        "title": "自定义拖拽模块",
+        "component": "@/views/system/drag-module.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "effects",
+        "name": "Effects",
+        "title": "自定义特效组件",
+        "component": "@/views/system/effects.vue",
+        "redirect": "{ name: 'AgentHubDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "agent-hub",
+        "name": "AgentHub",
+        "title": "智能体协同",
+        "component": "@/views/agent-hub/index.vue",
+        "redirect": "{ name: 'AgentHubDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "AgentHubDashboard",
+        "title": "协同看板",
+        "component": "@/views/agent-hub/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "mcp-bridge",
+        "name": "MCPBridge",
+        "title": "MCP桥接",
+        "component": "@/views/agent-hub/mcp-bridge.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "task-orchestrator",
+        "name": "TaskOrchestrator",
+        "title": "任务调度",
+        "component": "@/views/agent-hub/task-orchestrator.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "task-graph",
+        "name": "TaskGraph",
+        "title": "任务图",
+        "component": "@/views/agent-hub/task-graph.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "execution-review",
+        "name": "ExecutionReview",
+        "title": "执行复盘",
+        "component": "@/views/agent-hub/execution-review.vue",
+        "redirect": "{ name: 'MediaFactoryDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "media-factory",
+        "name": "MediaFactory",
+        "title": "多媒体工厂",
+        "component": "@/views/media-factory/index.vue",
+        "redirect": "{ name: 'MediaFactoryDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "MediaFactoryDashboard",
+        "title": "视频生成",
+        "component": "@/views/media-factory/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "tts",
+        "name": "TTSStudio",
+        "title": "TTS配音",
+        "component": "@/views/media-factory/tts.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "charts",
+        "name": "ChartEngine",
+        "title": "动态图表",
+        "component": "@/views/media-factory/charts.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "render-queue",
+        "name": "RenderQueue",
+        "title": "渲染队列",
+        "component": "@/views/media-factory/render-queue.vue",
+        "redirect": "{ name: 'GlobalizationDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "globalization",
+        "name": "Globalization",
+        "title": "全球化多语言",
+        "component": "@/views/globalization/index.vue",
+        "redirect": "{ name: 'GlobalizationDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "GlobalizationDashboard",
+        "title": "多语言管理",
+        "component": "@/views/globalization/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "glossary",
+        "name": "Glossary",
+        "title": "术语库",
+        "component": "@/views/globalization/glossary.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "translator",
+        "name": "Translator",
+        "title": "翻译引擎",
+        "component": "@/views/globalization/translator.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "culture-adapt",
+        "name": "CultureAdapt",
+        "title": "文化适配",
+        "component": "@/views/globalization/culture-adapt.vue",
+        "redirect": "{ name: 'LogisticsDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "logistics",
+        "name": "Logistics",
+        "title": "智能物流定价",
+        "component": "@/views/logistics/index.vue",
+        "redirect": "{ name: 'LogisticsDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "LogisticsDashboard",
+        "title": "物流看板",
+        "component": "@/views/logistics/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "lbs-routing",
+        "name": "LBSRouting",
+        "title": "LBS测距",
+        "component": "@/views/logistics/lbs-routing.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "freight-calc",
+        "name": "FreightCalc",
+        "title": "运费精算",
+        "component": "@/views/logistics/freight-calc.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "quotation",
+        "name": "Quotation",
+        "title": "报价单生成",
+        "component": "@/views/logistics/quotation.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "orders-track",
+        "name": "LogisticsOrdersTrack",
+        "title": "订单运单回填",
+        "component": "@/views/logistics/orders-track.vue",
+        "redirect": "{ name: 'SystemHealthDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "system-health",
+        "name": "SystemHealth",
+        "title": "系统健康压测",
+        "component": "@/views/system-health/index.vue",
+        "redirect": "{ name: 'SystemHealthDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "SystemHealthDashboard",
+        "title": "健康看板",
+        "component": "@/views/system-health/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "stress-test",
+        "name": "StressTest",
+        "title": "压测管理",
+        "component": "@/views/system-health/stress-test.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "resource-monitor",
+        "name": "ResourceMonitor",
+        "title": "资源监控",
+        "component": "@/views/system-health/resource-monitor.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "backup",
+        "name": "BackupRestore",
+        "title": "备份回滚",
+        "component": "@/views/system-health/backup.vue",
+        "redirect": "{ name: 'AILearningDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "ai-learning",
+        "name": "AILearning",
+        "title": "AI深度学习",
+        "component": "@/views/ai-learning/index.vue",
+        "redirect": "{ name: 'AILearningDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "AILearningDashboard",
+        "title": "学习看板",
+        "component": "@/views/ai-learning/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "behavior",
+        "name": "BehaviorAnalysis",
+        "title": "行为分析",
+        "component": "@/views/ai-learning/behavior.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "conversion-funnel",
+        "name": "ConversionFunnel",
+        "title": "转化漏斗",
+        "component": "@/views/ai-learning/conversion-funnel.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "auto-ab-test",
+        "name": "AutoABTest",
+        "title": "A/B自动化",
+        "component": "@/views/ai-learning/auto-ab-test.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "referral",
+        "name": "Referral",
+        "title": "呼朋唤友",
+        "component": "@/views/referral/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "rules",
+        "name": "ReferralRules",
+        "title": "活动规则",
+        "component": "@/views/referral/rules.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "redemption",
+        "name": "ReferralRedemption",
+        "title": "现金券核销",
+        "component": "@/views/referral/redemption-admin.vue",
+        "redirect": "{ name: 'TenantsDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "tenants",
+        "name": "Tenants",
+        "title": "SaaS租户",
+        "component": "@/views/tenants/index.vue",
+        "redirect": "{ name: 'TenantsDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "TenantsDashboard",
+        "title": "租户管理",
+        "component": "@/views/tenants/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "product-showcase",
+        "name": "TenantProductShowcase",
+        "title": "产品展示",
+        "component": "@/views/tenants/product-showcase.vue",
+        "redirect": "{ name: 'TenantPlans' }",
+        "shell": "public"
+      },
+      {
+        "path": "pricing",
+        "name": "TenantPlans",
+        "title": "套餐配置",
+        "component": "@/views/tenants/pricing.vue",
+        "redirect": "{ name: 'TenantPlans' }",
+        "shell": "public"
+      },
+      {
+        "path": "plans",
+        "name": "TenantPlans",
+        "title": "套餐配置",
+        "component": "@/views/tenants/pricing.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "plans/manage",
+        "name": "TenantPlansManage",
+        "title": "套餐配额编辑",
+        "component": "@/views/tenants/plans.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "billing",
+        "name": "TenantBilling",
+        "title": "计费结算",
+        "component": "@/views/tenants/billing.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "white-label",
+        "name": "WhiteLabel",
+        "title": "白标品牌",
+        "component": "@/views/tenants/white-label.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "domain",
+        "name": "TenantDomain",
+        "title": "域名管理",
+        "component": "@/views/tenants/domain.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "site-editor",
+        "name": "SiteEditor",
+        "title": "AI智能建站",
+        "component": "@/views/cognitive/index.vue",
+        "redirect": "{ name: 'CognitiveDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "cognitive",
+        "name": "Cognitive",
+        "title": "认知智能",
+        "component": "@/views/cognitive/index.vue",
+        "redirect": "{ name: 'CognitiveDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "CognitiveDashboard",
+        "title": "知识图谱",
+        "component": "@/views/cognitive/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "qa-engine",
+        "name": "QAEngine",
+        "title": "智能问答",
+        "component": "@/views/cognitive/qa-engine.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "expert-system",
+        "name": "ExpertSystem",
+        "title": "专家系统",
+        "component": "@/views/cognitive/expert-system.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "semantic-index",
+        "name": "SemanticIndex",
+        "title": "语义索引",
+        "component": "@/views/cognitive/semantic-index.vue",
+        "redirect": "{ name: 'EdgeCDNDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "edge-cdn",
+        "name": "EdgeCDN",
+        "title": "边缘计算CDN",
+        "component": "@/views/edge-cdn/index.vue",
+        "redirect": "{ name: 'EdgeCDNDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "EdgeCDNDashboard",
+        "title": "CDN管理",
+        "component": "@/views/edge-cdn/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "nodes",
+        "name": "EdgeNodes",
+        "title": "边缘节点",
+        "component": "@/views/edge-cdn/nodes.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "preheat",
+        "name": "ContentPreheat",
+        "title": "内容预热",
+        "component": "@/views/edge-cdn/preheat.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "protocol",
+        "name": "ProtocolOpt",
+        "title": "协议优化",
+        "component": "@/views/edge-cdn/protocol.vue",
+        "redirect": "{ name: 'DeveloperDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "developer",
+        "name": "Developer",
+        "title": "开发者生态",
+        "component": "@/views/developer/index.vue",
+        "redirect": "{ name: 'DeveloperDashboard' }",
+        "shell": "public"
+      },
+      {
+        "path": "dashboard",
+        "name": "DeveloperDashboard",
+        "title": "API网关",
+        "component": "@/views/developer/dashboard.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "sdk",
+        "name": "SDKManager",
+        "title": "SDK管理",
+        "component": "@/views/developer/sdk.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "low-code",
+        "name": "LowCode",
+        "title": "低代码平台",
+        "component": "@/views/developer/low-code.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "plugins",
+        "name": "PluginMarket",
+        "title": "插件市场",
+        "component": "@/views/developer/plugins.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "international",
+        "name": "International",
+        "title": "国际订单采集",
+        "component": "@/views/international/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "inquiries",
+        "name": "InternationalInquiries",
+        "title": "海外询盘",
+        "component": "@/views/inquiries/index.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "sites",
+        "name": "InternationalSites",
+        "title": "目标网站",
+        "component": "@/views/international/sites.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "/:pathMatch(.*)*",
+        "name": "NotFound",
+        "title": "页面不存在",
+        "component": "@/views/NotFound.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "/login",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "to.fullPath }",
+        "shell": "login"
+      },
+      {
+        "path": "/access-denied",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "/admin",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "admin"
+      },
+      {
+        "path": "/client/today",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "client"
+      },
+      {
+        "path": "/client/onboarding",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "client"
+      },
+      {
+        "path": "/client/plan-gate",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "client"
+      },
+      {
+        "path": "/client/plan-gate",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "client"
+      },
+      {
+        "path": "/access-denied",
+        "name": "",
+        "title": "",
+        "component": "",
+        "redirect": "",
+        "shell": "public"
+      }
+    ],
+    "generated_crud_routes": [
+      {
+        "path": "generated/inquiries",
+        "name": "GeneratedInquiriesList",
+        "title": "询盘管理（生成）",
+        "component": "@/views/_generated/InquiriesList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/products",
+        "name": "GeneratedProductsList",
+        "title": "产品管理（生成）",
+        "component": "@/views/_generated/ProductsList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/content",
+        "name": "GeneratedContentList",
+        "title": "内容管理（生成）",
+        "component": "@/views/_generated/ContentList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/news",
+        "name": "GeneratedNewsList",
+        "title": "新闻管理（生成）",
+        "component": "@/views/_generated/NewsList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/payment",
+        "name": "GeneratedPaymentList",
+        "title": "支付管理（生成）",
+        "component": "@/views/_generated/PaymentList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/users",
+        "name": "GeneratedUsersList",
+        "title": "用户管理（生成）",
+        "component": "@/views/_generated/UsersList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/analytics",
+        "name": "GeneratedAnalyticsList",
+        "title": "数据分析（生成）",
+        "component": "@/views/_generated/AnalyticsList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/settings",
+        "name": "GeneratedSettingsList",
+        "title": "系统设置（生成）",
+        "component": "@/views/_generated/SettingsList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/seo",
+        "name": "GeneratedSeoList",
+        "title": "SEO优化（生成）",
+        "component": "@/views/_generated/SeoList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/compliance",
+        "name": "GeneratedComplianceList",
+        "title": "合规审计（生成）",
+        "component": "@/views/_generated/ComplianceList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/agent-hub",
+        "name": "GeneratedAgentHubList",
+        "title": "智能体协同（生成）",
+        "component": "@/views/_generated/AgentHubList.vue",
+        "redirect": "",
+        "shell": "public"
+      },
+      {
+        "path": "generated/ab-test",
+        "name": "GeneratedAbTestList",
+        "title": "A/B测试（生成）",
+        "component": "@/views/_generated/AbTestList.vue",
+        "redirect": "",
+        "shell": "public"
+      }
+    ]
+  }
+}

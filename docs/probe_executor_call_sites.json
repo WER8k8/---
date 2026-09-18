@@ -1,0 +1,945 @@
+{
+  "count": 37,
+  "registered_count": 37,
+  "by_depth": {
+    "B_db_or_model": [
+      "agent_ops",
+      "billing",
+      "biz_bot",
+      "browser",
+      "commerce_ops",
+      "compliance_ops",
+      "content",
+      "data_ops",
+      "deerflow",
+      "desktop_hermes",
+      "egress",
+      "engagement",
+      "forum",
+      "inquiry",
+      "lead",
+      "media",
+      "module_matrix",
+      "nurture",
+      "order",
+      "platform_ops",
+      "product",
+      "publish",
+      "research",
+      "seo",
+      "site_builder",
+      "ubrain",
+      "wangcai"
+    ],
+    "B_service_call": [
+      "accio",
+      "ai_engine",
+      "content_deep",
+      "growth_probe",
+      "logistics",
+      "outreach_loop",
+      "portal_ops",
+      "trade_ai_agent",
+      "trade_ops"
+    ],
+    "C_http+local": [
+      "goodjob_crm"
+    ]
+  },
+  "by_depth_counts": {
+    "B_db_or_model": 27,
+    "B_service_call": 9,
+    "C_http+local": 1
+  },
+  "executors": [
+    {
+      "executor": "accio",
+      "file": "backend/app/services/hermes/executors/accio_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "ubrain.accio_sales_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_service_call",
+      "loc": 167,
+      "registered": true
+    },
+    {
+      "executor": "agent_ops",
+      "file": "backend/app/services/hermes/executors/agent_ops_executor.py",
+      "capability_count": 2,
+      "capabilities": [
+        "agent_ops.performance",
+        "agent_ops.knowledge_q"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "acquisition",
+        "acquisition.knowledge_queue",
+        "vector_search_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_db_or_model",
+      "loc": 144,
+      "registered": true
+    },
+    {
+      "executor": "ai_engine",
+      "file": "backend/app/services/hermes/executors/ai_engine_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "hermes.executors.ubrain_executor"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_service_call",
+      "loc": 92,
+      "registered": true
+    },
+    {
+      "executor": "billing",
+      "file": "backend/app/services/hermes/executors/billing_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "billing.meter_event"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 108,
+      "registered": true
+    },
+    {
+      "executor": "biz_bot",
+      "file": "backend/app/services/hermes/executors/biz_bot_executor.py",
+      "capability_count": 3,
+      "capabilities": [
+        "biz_bot.run",
+        "biz_bot.list_actions",
+        "biz_bot.coverage"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "hermes.biz_bot_actions"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 149,
+      "registered": true
+    },
+    {
+      "executor": "browser",
+      "file": "backend/app/services/hermes/executors/browser_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "browser_runtime.executor"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 109,
+      "registered": true
+    },
+    {
+      "executor": "commerce_ops",
+      "file": "backend/app/services/hermes/executors/commerce_ops_executor.py",
+      "capability_count": 6,
+      "capabilities": [
+        "commerce_ops.email_enqueue",
+        "commerce_ops.followup_sequence",
+        "commerce_ops.outreach_scan",
+        "commerce_ops.crm_pipeline",
+        "commerce_ops.wallet_token",
+        "commerce_ops.acquisition_card"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "acquisition",
+        "acquisition.suppression_list",
+        "acquisition.wallet_guard",
+        "acquisition_outreach_service",
+        "ubrain.email_queue_service",
+        "ubrain.follow_up_engine"
+      ],
+      "model_refs": [
+        "crm_opportunity"
+      ],
+      "service_import_lines": 6,
+      "depth": "B_db_or_model",
+      "loc": 286,
+      "registered": true
+    },
+    {
+      "executor": "compliance_ops",
+      "file": "backend/app/services/hermes/executors/compliance_ops_executor.py",
+      "capability_count": 3,
+      "capabilities": [
+        "compliance_ops.overview",
+        "compliance_ops.alerts",
+        "compliance_ops.hash"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": false,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [],
+      "model_refs": [],
+      "service_import_lines": 0,
+      "depth": "B_db_or_model",
+      "loc": 124,
+      "registered": true
+    },
+    {
+      "executor": "content_deep",
+      "file": "backend/app/services/hermes/executors/content_deep_executor.py",
+      "capability_count": 3,
+      "capabilities": [
+        "content_deep.seo_meta",
+        "content_deep.acquisition",
+        "content_deep.knowledge"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "acquisition.growth_ops",
+        "acquisition.knowledge_queue",
+        "ai_site_engine"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_service_call",
+      "loc": 132,
+      "registered": true
+    },
+    {
+      "executor": "content",
+      "file": "backend/app/services/hermes/executors/content_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "content_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 130,
+      "registered": true
+    },
+    {
+      "executor": "data_ops",
+      "file": "backend/app/services/hermes/executors/data_ops_executor.py",
+      "capability_count": 3,
+      "capabilities": [
+        "data_ops.content_stats",
+        "data_ops.notify_draft",
+        "data_ops.domain_resolve"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "acquisition",
+        "acquisition.repo"
+      ],
+      "model_refs": [
+        "notification"
+      ],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 172,
+      "registered": true
+    },
+    {
+      "executor": "deerflow",
+      "file": "backend/app/services/hermes/executors/deerflow_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "deerflow.executor",
+        "deerflow.planner"
+      ],
+      "model_refs": [
+        "deerflow_job"
+      ],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 134,
+      "registered": true
+    },
+    {
+      "executor": "desktop_hermes",
+      "file": "backend/app/services/hermes/executors/desktop_hermes_executor.py",
+      "capability_count": 6,
+      "capabilities": [
+        "desktop_hermes.assemble",
+        "desktop_hermes.aeos",
+        "desktop_hermes.aeos_invoke",
+        "desktop_hermes.feedback",
+        "desktop_hermes.scenes",
+        "desktop_hermes.status"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "aeos_registry",
+        "desktop_hermes"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 162,
+      "registered": true
+    },
+    {
+      "executor": "egress",
+      "file": "backend/app/services/hermes/executors/egress_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "egress_quota_service"
+      ],
+      "model_refs": [
+        "tenant"
+      ],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 115,
+      "registered": true
+    },
+    {
+      "executor": "engagement",
+      "file": "backend/app/services/hermes/executors/engagement_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "aitoearn_engage_send_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 121,
+      "registered": true
+    },
+    {
+      "executor": "forum",
+      "file": "backend/app/services/hermes/executors/forum_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "forum_webhook_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 113,
+      "registered": true
+    },
+    {
+      "executor": "goodjob_crm",
+      "file": "backend/app/services/hermes/executors/goodjob_crm_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": true,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": true
+      },
+      "service_refs": [
+        "goodjob.trade_document_bridge"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "C_http+local",
+      "loc": 358,
+      "registered": true
+    },
+    {
+      "executor": "growth_probe",
+      "file": "backend/app/services/hermes/executors/growth_probe_executor.py",
+      "capability_count": 4,
+      "capabilities": [
+        "growth_probe.channels",
+        "growth_probe.payment",
+        "growth_probe.seo_include",
+        "growth_probe.mcp_health"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "agent_hub_service",
+        "seo.inclusion_probe",
+        "ubrain.channel_status"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_service_call",
+      "loc": 188,
+      "registered": true
+    },
+    {
+      "executor": "inquiry",
+      "file": "backend/app/services/hermes/executors/inquiry_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "acquisition.repo",
+        "inquiries_unified_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 127,
+      "registered": true
+    },
+    {
+      "executor": "lead",
+      "file": "backend/app/services/hermes/executors/lead_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "geo_lead_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_db_or_model",
+      "loc": 199,
+      "registered": true
+    },
+    {
+      "executor": "logistics",
+      "file": "backend/app/services/hermes/executors/logistics_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "logistics_tracking_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_service_call",
+      "loc": 101,
+      "registered": true
+    },
+    {
+      "executor": "media",
+      "file": "backend/app/services/hermes/executors/media_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "media_factory_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 173,
+      "registered": true
+    },
+    {
+      "executor": "module_matrix",
+      "file": "backend/app/services/hermes/executors/module_matrix_executor.py",
+      "capability_count": 3,
+      "capabilities": [
+        "matrix.inspect",
+        "matrix.invoke",
+        "matrix.health"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": false,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [],
+      "model_refs": [],
+      "service_import_lines": 0,
+      "depth": "B_db_or_model",
+      "loc": 177,
+      "registered": true
+    },
+    {
+      "executor": "nurture",
+      "file": "backend/app/services/hermes/executors/nurture_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": false,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [],
+      "model_refs": [],
+      "service_import_lines": 0,
+      "depth": "B_db_or_model",
+      "loc": 137,
+      "registered": true
+    },
+    {
+      "executor": "order",
+      "file": "backend/app/services/hermes/executors/order_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "order_payment_sync_service"
+      ],
+      "model_refs": [
+        "enums",
+        "order",
+        "product"
+      ],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 141,
+      "registered": true
+    },
+    {
+      "executor": "outreach_loop",
+      "file": "backend/app/services/hermes/executors/outreach_loop_executor.py",
+      "capability_count": 2,
+      "capabilities": [
+        "outreach_loop.gate",
+        "outreach_loop.research"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "acquisition",
+        "acquisition.outreach_gate",
+        "acquisition.suppression_list"
+      ],
+      "model_refs": [],
+      "service_import_lines": 4,
+      "depth": "B_service_call",
+      "loc": 123,
+      "registered": true
+    },
+    {
+      "executor": "platform_ops",
+      "file": "backend/app/services/hermes/executors/platform_ops_executor.py",
+      "capability_count": 5,
+      "capabilities": [
+        "platform_ops.tenant_list",
+        "platform_ops.product_catalog",
+        "platform_ops.seo_health",
+        "platform_ops.system_health",
+        "platform_ops.notify_draft"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": false,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [],
+      "model_refs": [
+        "product",
+        "seo",
+        "tenant"
+      ],
+      "service_import_lines": 0,
+      "depth": "B_db_or_model",
+      "loc": 170,
+      "registered": true
+    },
+    {
+      "executor": "portal_ops",
+      "file": "backend/app/services/hermes/executors/portal_ops_executor.py",
+      "capability_count": 3,
+      "capabilities": [
+        "portal_ops.agent_summary",
+        "portal_ops.media_status",
+        "portal_ops.moss_version"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": true
+      },
+      "service_refs": [
+        "acquisition",
+        "moss_vl_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_service_call",
+      "loc": 139,
+      "registered": true
+    },
+    {
+      "executor": "product",
+      "file": "backend/app/services/hermes/executors/product_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "product_service"
+      ],
+      "model_refs": [
+        "product"
+      ],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 151,
+      "registered": true
+    },
+    {
+      "executor": "publish",
+      "file": "backend/app/services/hermes/executors/publish_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "publish_capability_registry",
+        "publish_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_db_or_model",
+      "loc": 292,
+      "registered": true
+    },
+    {
+      "executor": "research",
+      "file": "backend/app/services/hermes/executors/research_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "foreign_trade.customer_research_skill",
+        "hermes.research_brief_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 176,
+      "registered": true
+    },
+    {
+      "executor": "seo",
+      "file": "backend/app/services/hermes/executors/seo_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "seo.inclusion_check_service",
+        "seo.seo_audit_service",
+        "seo.seo_rank_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 3,
+      "depth": "B_db_or_model",
+      "loc": 236,
+      "registered": true
+    },
+    {
+      "executor": "site_builder",
+      "file": "backend/app/services/hermes/executors/site_builder_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "hermes.site_build_workflow",
+        "tenant_site_persistence"
+      ],
+      "model_refs": [
+        "tenant"
+      ],
+      "service_import_lines": 2,
+      "depth": "B_db_or_model",
+      "loc": 165,
+      "registered": true
+    },
+    {
+      "executor": "trade_ai_agent",
+      "file": "backend/app/services/hermes/executors/trade_ai_agent_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "adapters"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_service_call",
+      "loc": 189,
+      "registered": true
+    },
+    {
+      "executor": "trade_ops",
+      "file": "backend/app/services/hermes/executors/trade_ops_executor.py",
+      "capability_count": 6,
+      "capabilities": [
+        "trade_ops.pi_precheck",
+        "trade_ops.fulfillment_node",
+        "trade_ops.logistics_write",
+        "trade_ops.goodjob_pi",
+        "trade_ops.sanctions_screen",
+        "trade_ops.tender_advance"
+      ],
+      "evidence": {
+        "http_client": false,
+        "db_session": false,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": true
+      },
+      "service_refs": [
+        "acquisition",
+        "acquisition.payment_risk",
+        "acquisition.sanctions_source",
+        "acquisition.tender_engine",
+        "goodjob.trade_document_bridge",
+        "logistics_tracking_service"
+      ],
+      "model_refs": [],
+      "service_import_lines": 10,
+      "depth": "B_service_call",
+      "loc": 290,
+      "registered": true
+    },
+    {
+      "executor": "ubrain",
+      "file": "backend/app/services/hermes/executors/ubrain_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": false,
+        "reads_env": false
+      },
+      "service_refs": [
+        "ubrain.orchestrator"
+      ],
+      "model_refs": [],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 88,
+      "registered": true
+    },
+    {
+      "executor": "wangcai",
+      "file": "backend/app/services/hermes/executors/wangcai_executor.py",
+      "capability_count": 0,
+      "capabilities": [],
+      "evidence": {
+        "http_client": false,
+        "db_session": true,
+        "imports_app_services": true,
+        "imports_models": true,
+        "reads_env": false
+      },
+      "service_refs": [
+        "tenant_wangcai_service"
+      ],
+      "model_refs": [
+        "tenant"
+      ],
+      "service_import_lines": 1,
+      "depth": "B_db_or_model",
+      "loc": 116,
+      "registered": true
+    }
+  ],
+  "legend": {
+    "A_declaration_only": "源码几乎无 app.services/models/http/db 痕迹（可能极薄或纯注册）",
+    "B_service_call": "有 app.services 调用/懒加载（本地业务逻辑）",
+    "B_db_or_model": "有 Session/db.query 或 models import",
+    "B_route_import": "module_matrix：真 import 路由模块",
+    "C_http": "有 httpx/requests 等外呼",
+    "C_http+local": "外呼 + 本地 DB/service"
+  }
+}

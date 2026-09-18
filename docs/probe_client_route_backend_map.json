@@ -1,0 +1,1432 @@
+{
+  "client_route_count": 59,
+  "with_backend_candidate_existing": 53,
+  "without_backend_candidate": 6,
+  "routes": [
+    {
+      "path": "/client/today",
+      "raw": "today",
+      "title": "今日三步",
+      "name": "ClientToday",
+      "component": "@/views/client/today-three.vue",
+      "candidate_modules": [
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/dashboard",
+      "raw": "dashboard",
+      "title": "工作台",
+      "name": "ClientDashboard",
+      "component": "@/views/client/dashboard.vue",
+      "candidate_modules": [
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/annex/trade-ai",
+      "raw": "annex/trade-ai",
+      "title": "TradeAI 执行台",
+      "name": "ClientAnnexTradeAi",
+      "component": "@/views/annex/AnnexEmbedPage.vue",
+      "candidate_modules": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_exist": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/annex/goodjob",
+      "raw": "annex/goodjob",
+      "title": "GoodJob 执行台",
+      "name": "ClientAnnexGoodjob",
+      "component": "@/views/annex/AnnexEmbedPage.vue",
+      "candidate_modules": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_exist": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/annex/goodjob/tickets",
+      "raw": "annex/goodjob/tickets",
+      "title": "GoodJob CRM · 票据中心管理",
+      "name": "ClientAnnexGoodjobTickets",
+      "component": "@/views/annex/AnnexEmbedPage.vue",
+      "candidate_modules": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_exist": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/annex/goodjob/customers",
+      "raw": "annex/goodjob/customers",
+      "title": "GoodJob CRM · 客户管理",
+      "name": "ClientAnnexGoodjobCustomers",
+      "component": "@/views/annex/AnnexEmbedPage.vue",
+      "candidate_modules": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_exist": [
+        "foreign_trade",
+        "cross_border",
+        "invoice_applications",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/traffic",
+      "raw": "traffic",
+      "title": "流量看板",
+      "name": "ClientTrafficBoard",
+      "component": "@/views/client/traffic-board.vue",
+      "candidate_modules": [
+        "analytics",
+        "metrics",
+        "site_ai_generator"
+      ],
+      "modules_exist": [
+        "analytics",
+        "metrics",
+        "site_ai_generator"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/assistant",
+      "raw": "assistant",
+      "title": "卖货智能助手",
+      "name": "ClientAssistant",
+      "component": "@/views/client/assistant.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/copilot",
+      "raw": "copilot",
+      "title": "卖货飞轮",
+      "name": "ClientCopilot",
+      "component": "@/views/client/copilot.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/foreign-trade-team",
+      "raw": "foreign-trade-team",
+      "title": "AI 外贸团队",
+      "name": "ClientForeignTradeTeam",
+      "component": "@/views/client/foreign-trade-team.vue",
+      "candidate_modules": [],
+      "modules_exist": [],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/plugin-market",
+      "raw": "plugin-market",
+      "title": "旺财插件市场",
+      "name": "ClientPluginMarket",
+      "component": "@/views/client/wangcai-plugin-market.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/app",
+      "raw": "app",
+      "title": "出海计",
+      "name": "ChuhaijiApp",
+      "component": "@/views/client/chuhaiji-app.vue",
+      "candidate_modules": [],
+      "modules_exist": [],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/onboarding",
+      "raw": "onboarding",
+      "title": "开通向导",
+      "name": "ClientOnboarding",
+      "component": "@/views/client/onboarding.vue",
+      "candidate_modules": [
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/site-editor",
+      "raw": "site-editor",
+      "title": "可视化建站",
+      "name": "ClientSiteEditor",
+      "component": "@/views/admin/file-manager/overview.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/product-images",
+      "raw": "product-images",
+      "title": "产品图片空间",
+      "name": "ClientProductImages",
+      "component": "@/views/admin/file-manager/overview.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/video-space",
+      "raw": "video-space",
+      "title": "视频空间",
+      "name": "ClientVideoSpace",
+      "component": "@/views/admin/file-manager/overview.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/image-space",
+      "raw": "image-space",
+      "title": "产品管理",
+      "name": "ClientProducts",
+      "component": "@/views/products/index.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/videos",
+      "raw": "videos",
+      "title": "产品管理",
+      "name": "ClientProducts",
+      "component": "@/views/products/index.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/products",
+      "raw": "products",
+      "title": "产品管理",
+      "name": "ClientProducts",
+      "component": "@/views/products/index.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/products/edit/:id",
+      "raw": "products/edit/:id",
+      "title": "编辑产品",
+      "name": "ClientProductEdit",
+      "component": "@/views/products/edit.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/products/categories",
+      "raw": "products/categories",
+      "title": "分类管理",
+      "name": "ClientProductCategories",
+      "component": "@/views/products/categories.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/inquiries",
+      "raw": "inquiries",
+      "title": "询盘管理",
+      "name": "ClientInquiries",
+      "component": "@/views/inquiries/index.vue",
+      "candidate_modules": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "inquiry_channels"
+      ],
+      "modules_exist": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "inquiry_channels"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/egress",
+      "raw": "egress",
+      "title": "IP 槽位",
+      "name": "ClientEgress",
+      "component": "@/views/client/egress.vue",
+      "candidate_modules": [
+        "egress"
+      ],
+      "modules_exist": [
+        "egress"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/referral",
+      "raw": "referral",
+      "title": "邀请好友",
+      "name": "ClientReferral",
+      "component": "@/views/client/referral.vue",
+      "candidate_modules": [
+        "referral"
+      ],
+      "modules_exist": [
+        "referral"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/content",
+      "raw": "content",
+      "title": "内容管理",
+      "name": "ClientContent",
+      "component": "@/views/content/index.vue",
+      "candidate_modules": [
+        "content",
+        "content_master",
+        "knowledge"
+      ],
+      "modules_exist": [
+        "content",
+        "content_master",
+        "knowledge"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/seo",
+      "raw": "seo",
+      "title": "SEO优化",
+      "name": "ClientSEO",
+      "component": "@/views/seo/index.vue",
+      "candidate_modules": [
+        "seo_matrix",
+        "seo_diagnosis",
+        "rank_check"
+      ],
+      "modules_exist": [
+        "seo_matrix",
+        "seo_diagnosis",
+        "rank_check"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/invoices",
+      "raw": "invoices",
+      "title": "开票申请",
+      "name": "ClientInvoices",
+      "component": "@/views/client/invoices.vue",
+      "candidate_modules": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_exist": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/tokens",
+      "raw": "tokens",
+      "title": "AI 流量充值",
+      "name": "ClientTokens",
+      "component": "@/views/client/tokens.vue",
+      "candidate_modules": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_exist": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/distribute",
+      "raw": "distribute",
+      "title": "内容分发中心",
+      "name": "ClientContentDistribute",
+      "component": "@/views/client/content-distribute.vue",
+      "candidate_modules": [
+        "content",
+        "content_master",
+        "knowledge",
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard"
+      ],
+      "modules_exist": [
+        "content",
+        "content_master",
+        "knowledge",
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/cross-platform",
+      "raw": "cross-platform",
+      "title": "跨平台数据看板",
+      "name": "ClientCrossPlatformDashboard",
+      "component": "@/views/cross-platform/dashboard.vue",
+      "candidate_modules": [
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard",
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard",
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/engage",
+      "raw": "engage",
+      "title": "评论互动",
+      "name": "ClientAitoearnEngage",
+      "component": "@/views/client/aitoearn-engage.vue",
+      "candidate_modules": [],
+      "modules_exist": [],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/video-overseas",
+      "raw": "video-overseas",
+      "title": "中文片出海",
+      "name": "ClientVideoOverseas",
+      "component": "@/views/client/video-overseas.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/video-studio",
+      "raw": "video-studio",
+      "title": "全媒体剪辑台",
+      "name": "ClientVideoStudio",
+      "component": "@/views/client/video-studio.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/video-editor/fly-cut",
+      "raw": "video-editor/fly-cut",
+      "title": "Fly-Cut 剪辑",
+      "name": "ClientVideoEditorFlyCut",
+      "component": "@/views/client/video-editor-embed.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/video-editor/opencut",
+      "raw": "video-editor/opencut",
+      "title": "OpenCut 剪辑",
+      "name": "ClientVideoEditorOpenCut",
+      "component": "@/views/client/video-editor-embed.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/product-candidates",
+      "raw": "product-candidates",
+      "title": "产业带产品候选",
+      "name": "ClientProductCandidates",
+      "component": "@/views/client/product-candidates.vue",
+      "candidate_modules": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_exist": [
+        "products",
+        "product_commerce",
+        "product_commercial",
+        "product_faqs"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/publish",
+      "raw": "publish",
+      "title": "GEO 统一发布台",
+      "name": "ClientUnifiedPublish",
+      "component": "@/views/publish/unified.vue",
+      "candidate_modules": [
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard",
+        "public_tenant_geo",
+        "seo_matrix"
+      ],
+      "modules_exist": [
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard",
+        "public_tenant_geo",
+        "seo_matrix"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/ai-scenarios",
+      "raw": "ai-scenarios",
+      "title": "AI 场景模型",
+      "name": "ClientAiScenarios",
+      "component": "@/views/client/ai-scenarios.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/workspace/prospecting",
+      "raw": "workspace/prospecting",
+      "title": "搜客执行台",
+      "name": "ProspectingWorkspace",
+      "component": "@/views/workspace/ProspectingWorkspace.vue",
+      "candidate_modules": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/workspace/outreach",
+      "raw": "workspace/outreach",
+      "title": "写信工作台",
+      "name": "OutreachEditor",
+      "component": "@/views/workspace/OutreachEditor.vue",
+      "candidate_modules": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/email-campaigns",
+      "raw": "email-campaigns",
+      "title": "邮件营销",
+      "name": "ClientEmailCampaigns",
+      "component": "@/views/sales/EmailAutomation.vue",
+      "candidate_modules": [
+        "email_campaigns",
+        "email_queue",
+        "email_tracking"
+      ],
+      "modules_exist": [
+        "email_campaigns",
+        "email_queue",
+        "email_tracking"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/workspace/skills",
+      "raw": "workspace/skills",
+      "title": "AI 技能台",
+      "name": "SkillConsole",
+      "component": "@/views/workspace/SkillConsole.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/skills",
+      "raw": "skills",
+      "title": "Meoo专属技能",
+      "name": "ClientSkillsMarket",
+      "component": "@/views/client/skills-market.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/explore",
+      "raw": "explore",
+      "title": "创意社区与模板",
+      "name": "ClientTemplatesExplore",
+      "component": "@/views/client/templates-explore.vue",
+      "candidate_modules": [],
+      "modules_exist": [],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/ai-config",
+      "raw": "ai-config",
+      "title": "AI 配置",
+      "name": "ClientAiConfig",
+      "component": "@/views/client/ai-config.vue",
+      "candidate_modules": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/trade-tools",
+      "raw": "trade-tools",
+      "title": "外贸工具指南",
+      "name": "ClientTradeTools",
+      "component": "@/views/client/trade-tools.vue",
+      "candidate_modules": [],
+      "modules_exist": [],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/billing",
+      "raw": "billing",
+      "title": "套餐续费",
+      "name": "ClientBilling",
+      "component": "@/views/client/billing.vue",
+      "candidate_modules": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_exist": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/acquisition-ops",
+      "raw": "acquisition-ops",
+      "title": "获客作战台",
+      "name": "ClientAcquisitionOps",
+      "component": "@/views/client/acquisition-ops.vue",
+      "candidate_modules": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity"
+      ],
+      "modules_exist": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/plan-gate",
+      "raw": "plan-gate",
+      "title": "升级套餐",
+      "name": "ClientPlanGate",
+      "component": "@/views/client/plan-gate.vue",
+      "candidate_modules": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_exist": [
+        "token_ledger",
+        "wallet",
+        "payment",
+        "license"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/queues/inquiries",
+      "raw": "queues/inquiries",
+      "title": "询盘队列",
+      "name": "ClientInquiryQueue",
+      "component": "@/views/client/queues/inquiries.vue",
+      "candidate_modules": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "inquiry_channels",
+        "publish_tasks"
+      ],
+      "modules_exist": [
+        "acquisition",
+        "inquiries",
+        "crm_pipeline",
+        "follow_up",
+        "opportunity",
+        "inquiry_channels",
+        "publish_tasks"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/geo-visibility",
+      "raw": "geo-visibility",
+      "title": "GEO 可见性",
+      "name": "ClientGeoVisibility",
+      "component": "@/views/client/geo-visibility.vue",
+      "candidate_modules": [
+        "public_tenant_geo",
+        "seo_matrix"
+      ],
+      "modules_exist": [
+        "public_tenant_geo",
+        "seo_matrix"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/queues/publish",
+      "raw": "queues/publish",
+      "title": "发布队列",
+      "name": "ClientPublishQueue",
+      "component": "@/views/client/queues/publish.vue",
+      "candidate_modules": [
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard",
+        "inquiries",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard",
+        "inquiries",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/queues/fulfillment",
+      "raw": "queues/fulfillment",
+      "title": "履约队列",
+      "name": "ClientFulfillmentQueue",
+      "component": "@/views/client/queues/fulfillment.vue",
+      "candidate_modules": [
+        "inquiries",
+        "publish_tasks",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "inquiries",
+        "publish_tasks",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/site-editor-lab",
+      "raw": "site-editor-lab",
+      "title": "站点编辑器试点",
+      "name": "ClientSiteEditorLab",
+      "component": "@/views/client/site-editor-lab.vue",
+      "candidate_modules": [],
+      "modules_exist": [],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/seo-publish",
+      "raw": "seo-publish",
+      "title": "平台绑定与发布",
+      "name": "ClientSeoPublish",
+      "component": "@/views/seo-matrix/publish.vue",
+      "candidate_modules": [
+        "seo_matrix",
+        "seo_diagnosis",
+        "rank_check",
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard"
+      ],
+      "modules_exist": [
+        "seo_matrix",
+        "seo_diagnosis",
+        "rank_check",
+        "unified_publish",
+        "publish_tasks",
+        "cross_platform_dashboard"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/video-bind",
+      "raw": "video-bind",
+      "title": "视频工厂",
+      "name": "ClientMediaFactory",
+      "component": "@/views/media-factory/dashboard.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex",
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex",
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/media-factory",
+      "raw": "media-factory",
+      "title": "视频工厂",
+      "name": "ClientMediaFactory",
+      "component": "@/views/media-factory/dashboard.vue",
+      "candidate_modules": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex",
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_exist": [
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex",
+        "onboarding",
+        "system_health",
+        "acquisition"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/article-to-video",
+      "raw": "article-to-video",
+      "title": "文章转视频",
+      "name": "ClientArticleToVideo",
+      "component": "@/views/admin/ai-center/article-to-video.vue",
+      "candidate_modules": [
+        "content",
+        "content_master",
+        "knowledge",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex",
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_exist": [
+        "content",
+        "content_master",
+        "knowledge",
+        "media_factory",
+        "moss_vl_clip_publish",
+        "multimodal_studio",
+        "files",
+        "annex",
+        "skill_store",
+        "ai_generate",
+        "ai_config",
+        "ai_templates",
+        "ubrain"
+      ],
+      "modules_missing": []
+    },
+    {
+      "path": "/client/settings",
+      "raw": "settings",
+      "title": "系统设置",
+      "name": "ClientSettings",
+      "component": "@/views/system/settings.vue",
+      "candidate_modules": [
+        "settings"
+      ],
+      "modules_exist": [
+        "settings"
+      ],
+      "modules_missing": []
+    }
+  ],
+  "routes_without_backend": [
+    {
+      "path": "/client/foreign-trade-team",
+      "title": "AI 外贸团队",
+      "component": "@/views/client/foreign-trade-team.vue"
+    },
+    {
+      "path": "/client/app",
+      "title": "出海计",
+      "component": "@/views/client/chuhaiji-app.vue"
+    },
+    {
+      "path": "/client/engage",
+      "title": "评论互动",
+      "component": "@/views/client/aitoearn-engage.vue"
+    },
+    {
+      "path": "/client/explore",
+      "title": "创意社区与模板",
+      "component": "@/views/client/templates-explore.vue"
+    },
+    {
+      "path": "/client/trade-tools",
+      "title": "外贸工具指南",
+      "component": "@/views/client/trade-tools.vue"
+    },
+    {
+      "path": "/client/site-editor-lab",
+      "title": "站点编辑器试点",
+      "component": "@/views/client/site-editor-lab.vue"
+    }
+  ],
+  "backend_modules_total": 157,
+  "backend_modules_not_hinted_by_client_routes": [
+    "ab_test",
+    "agent_bff",
+    "agent_hub",
+    "agent_portal",
+    "agent_tree",
+    "ai_learning",
+    "ai_usage",
+    "ai_visibility",
+    "aitoearn_hub",
+    "app_bff",
+    "attribution",
+    "auth",
+    "auto_discovery",
+    "baidu_webmaster",
+    "building_wiki",
+    "calculator",
+    "campaign",
+    "case_studies",
+    "churn",
+    "client",
+    "client_bff",
+    "code_quality",
+    "cognitive",
+    "company",
+    "compliance",
+    "component_versions",
+    "customer_support",
+    "daily_report",
+    "deepseek_harness",
+    "developer",
+    "domain",
+    "domain_registry",
+    "edge_cdn",
+    "feishu",
+    "finance",
+    "foreign_trade_skills",
+    "forum",
+    "founder_ops",
+    "gdpr",
+    "gdpr_compliance",
+    "global_search",
+    "globalization",
+    "google_search_console",
+    "growth_loop",
+    "growth_tools",
+    "health",
+    "hermes",
+    "hub",
+    "integrations",
+    "international",
+    "knowledge_graph",
+    "knowledge_ingestion",
+    "lead_enrichment",
+    "lead_generation",
+    "lead_pipeline",
+    "lead_search",
+    "lead_tools",
+    "linkedin_sales",
+    "logistics",
+    "matching",
+    "mcp_sse",
+    "mobile_public",
+    "negotiation",
+    "news",
+    "notifications",
+    "ops_jobs",
+    "orchestration",
+    "outreach_quality",
+    "p2_enhancement",
+    "paperclip",
+    "payment_international",
+    "performance",
+    "platform",
+    "platform_bff",
+    "project",
+    "prospect_research",
+    "public_agent_storefront",
+    "public_forum",
+    "public_tenant_media",
+    "public_visitor_context",
+    "public_wangcai",
+    "recycle_bin",
+    "reviews",
+    "rfq",
+    "sales_ext",
+    "sales_task",
+    "search_strategy",
+    "security_advanced",
+    "social_interactions",
+    "social_nurture",
+    "ssl_certificates",
+    "super_agent",
+    "system",
+    "talking_stick",
+    "task_control_admin",
+    "tech_radar",
+    "technical_qna",
+    "tenant_ai_config",
+    "tenants",
+    "trade_intel",
+    "ubrain_analytics",
+    "ubrain_commercial_os",
+    "users",
+    "vector_search",
+    "video_publish",
+    "wangcai_marketplace",
+    "whatsapp_business",
+    "workflow_canvas",
+    "workspace"
+  ],
+  "admin_api_ts_paths": {
+    "frontend/admin/src/api/__tests__/platformAccountBody.test.ts": [],
+    "frontend/admin/src/api/acquisition.ts": [],
+    "frontend/admin/src/api/admin-bff.ts": [],
+    "frontend/admin/src/api/admin-bff.types.ts": [
+      "/api/v1/admin-bff"
+    ],
+    "frontend/admin/src/api/analytics.ts": [],
+    "frontend/admin/src/api/authPaths.ts": [],
+    "frontend/admin/src/api/authRefresh.ts": [],
+    "frontend/admin/src/api/cross-border.ts": [
+      "/api/v1/cross-border/video-dub/jobs/${encodeURIComponent(jobId)}/events",
+      "/api/v1/cross-border/video-dub/upload"
+    ],
+    "frontend/admin/src/api/emailAuth.ts": [],
+    "frontend/admin/src/api/fetchWrapper.ts": [],
+    "frontend/admin/src/api/foreign-trade.ts": [],
+    "frontend/admin/src/api/forum.ts": [],
+    "frontend/admin/src/api/founderOps.ts": [],
+    "frontend/admin/src/api/hermesGreedy.ts": [],
+    "frontend/admin/src/api/index.ts": [
+      "/api/v1/ab-test",
+      "/api/v1/agent-hub/*",
+      "/api/v1/ai-config",
+      "/api/v1/ai-learning/*",
+      "/api/v1/ai/*",
+      "/api/v1/analytics",
+      "/api/v1/cognitive/*",
+      "/api/v1/compliance",
+      "/api/v1/developer/*",
+      "/api/v1/edge-cdn/*",
+      "/api/v1/feishu",
+      "/api/v1/files/*",
+      "/api/v1/globalization/*",
+      "/api/v1/growth-tools/*",
+      "/api/v1/logistics/*",
+      "/api/v1/media-factory/*",
+      "/api/v1/news",
+      "/api/v1/seo-matrix/*",
+      "/api/v1/settings",
+      "/api/v1/super-admin/v2ray/*",
+      "/api/v1/system-health/*",
+      "/api/v1/tenants/*"
+    ],
+    "frontend/admin/src/api/oauth.ts": [],
+    "frontend/admin/src/api/oauthBindings.ts": [],
+    "frontend/admin/src/api/orchestration.ts": [],
+    "frontend/admin/src/api/paperclip.ts": [],
+    "frontend/admin/src/api/response.ts": [],
+    "frontend/admin/src/api/system.ts": [],
+    "frontend/admin/src/api/ubrain/conversation.ts": [],
+    "frontend/admin/src/api/ubrain/invitation.ts": [],
+    "frontend/admin/src/api/ubrain/sales.ts": [],
+    "frontend/admin/src/api/ubrain/skill.ts": [],
+    "frontend/admin/src/api/ubrain/task.ts": []
+  },
+  "note": "映射为路径启发式，不是运行时调用追踪；存在≠页面一定真调"
+}
