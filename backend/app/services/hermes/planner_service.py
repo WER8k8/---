@@ -44,7 +44,7 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "outreach.letter", "prospect.enrich", "prospect.match",
     "negotiation.draft", "prospect.scrape", "outreach.whatsapp", "outreach.email",
     "trade_ops.pi_precheck", "trade_ops.fulfillment_node", "trade_ops.logistics_write",
-    "trade_ops.goodjob_pi", "content_deep.seo_meta", "content_deep.acquisition",
+    "trade_ops.goodjob_pi", "trade_ops.sanctions_screen", "trade_ops.tender_advance", "content_deep.seo_meta", "content_deep.acquisition",
     "content_deep.knowledge", "outreach_loop.gate", "outreach_loop.research",
     "commerce_ops.email_enqueue", "commerce_ops.followup_sequence",
     "commerce_ops.outreach_scan", "commerce_ops.crm_pipeline",
@@ -379,6 +379,14 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
             TaskNode(id="n13", executor="data_ops", capability="data_ops.content_stats",
                      depends_on=["n3"],
                      input={},
+                     on_fail="skip"),
+            TaskNode(id="n14", executor="trade_ops", capability="trade_ops.sanctions_screen",
+                     depends_on=["n3"],
+                     input={
+                         "name": str(payload.get("topic") or payload.get("name") or ""),
+                         "company": str(payload.get("company") or payload.get("topic") or ""),
+                         "inquiry_id": str(payload.get("inquiry_id") or ""),
+                     },
                      on_fail="skip"),
         ],
     )

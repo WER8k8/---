@@ -44,6 +44,18 @@ _CAPS = {
         "output": ["pi_no?", "status"],
         "needs_approval": True,
     },
+    "trade_ops.sanctions_screen": {
+        "desc": "制裁名单筛查（真源/诚实未配置）",
+        "input": ["name?", "email?", "company?", "inquiry_id?"],
+        "output": ["result", "plain", "source"],
+        "needs_approval": False,
+    },
+    "trade_ops.tender_advance": {
+        "desc": "招投标阶段推进（资质门禁）",
+        "input": ["tender_id", "to_stage", "inquiry_id?", "payment_terms?", "credit_ok?"],
+        "output": ["ok", "stage", "checklist"],
+        "needs_approval": True,
+    },
 }
 
 
@@ -68,10 +80,79 @@ class TradeOpsExecutor(BaseExecutor):
                 return self._logistics_write(node, context, p)
             if cap == "trade_ops.goodjob_pi":
                 return self._goodjob_pi(node, context, p)
+            if cap == "trade_ops.sanctions_screen":
+                return self._sanctions(node, p)
+            if cap == "trade_ops.tender_advance":
+                return self._tender_advance(node, p)
             return ExecutorResult(node_id=node.id, status="skipped", output={}, error=f"unsupported {cap}")
         except Exception as exc:  # noqa: BLE001
             logger.exception("trade_ops failed %s", cap)
             return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc)[:300])
+
+    def _sanctions(self, node, p) -> ExecutorResult:
+        try:
+            from app.services.acquisition.sanctions_source import screen_subject
+
+            out = screen_subject(
+                name=str(p.get("name") or ""),
+                email=str(p.get("email") or ""),
+                company=str(p.get("company") or ""),
+                domain=str(p.get("domain") or ""),
+            )
+            iid = str(p.get("inquiry_id") or "")
+            if iid and out.get("result") in ("blocked", "watch"):
+                try:
+                    from app.services.acquisition import ops_card_store
+
+                    card = ops_card_store.get_by_inquiry(iid)
+                    if card is not None:
+                        card.risk_flags = list(set(card.risk_flags + [f"sanctions_{out['result']}"]))
+                        ops_card_store.update(card)
+                except Exception:
+                    pass
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={**out, "executor": self.get_executor_name()},
+            )
+        except Exception as exc:  # noqa: BLE001
+            return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc)[:200])
+
+    def _tender_advance(self, node, p) -> ExecutorResult:
+        tid = str(p.get("tender_id") or "").strip()
+        if not tid:
+            return ExecutorResult(node_id=node.id, status="failed", output={}, error="missing_tender_id")
+        try:
+            from app.services.acquisition.tender_engine import tender_engine
+
+            if p.get("payment_terms") or p.get("credit_ok") is not None:
+                tender_engine.set_payment(tid, str(p.get("payment_terms") or ""), bool(p.get("credit_ok")))
+            out = tender_engine.advance(tid, str(p.get("to_stage") or ""), note=str(p.get("note") or ""))
+            if not out.get("ok"):
+                return ExecutorResult(
+                    node_id=node.id,
+                    status="failed",
+                    output=out,
+                    error=str(out.get("message") or "tender_advance rejected"),
+                )
+            iid = str(p.get("inquiry_id") or "")
+            if iid:
+                try:
+                    from app.services.acquisition import ops_card_store
+
+                    card = ops_card_store.get_by_inquiry(iid)
+                    if card is None:
+                        card = ops_card_store.materialize(tenant_id=str(p.get("tenant_id") or "demo"), inquiry_id=iid)
+                    ops_card_store.add_note(iid, author="tender_engine", body=out.get("plain") or "", pinned=True)
+                except Exception:
+                    pass
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded",
+                output={**out, "executor": self.get_executor_name()},
+            )
+        except Exception as exc:  # noqa: BLE001
+            return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc)[:200])
 
     def _pi_precheck(self, node, context, p) -> ExecutorResult:
         try:

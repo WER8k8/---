@@ -143,7 +143,8 @@ class RiskRescanStore:
         ops_store: Any = None,
         tenant_id: str = "",
         rescan_days: int = DEFAULT_RESCAN_DAYS,
-        external_list_configured: bool = False,
+        external_list_configured: Optional[bool] = None,
+        auto_screen: bool = True,
     ) -> dict[str, Any]:
         # 从跟单卡同步
         if ops_store is not None:
@@ -156,17 +157,56 @@ class RiskRescanStore:
                     self.upsert_from_card(card)
             except Exception:
                 pass
+        # P3-4：真名单源探测 + 可选自动筛查
+        from app.services.acquisition.sanctions_source import list_source_status, screen_subject
+
+        src = list_source_status()
+        if external_list_configured is None:
+            external_list_configured = bool(src.get("configured"))
+        screen_results = []
+        if auto_screen:
+            for iid, rec in list(self._by_inquiry.items()):
+                try:
+                    screen = screen_subject(
+                        name=rec.buyer_display or "",
+                        company=rec.buyer_display or "",
+                        email="",
+                    )
+                    screen_results.append({
+                        "inquiry_id": iid,
+                        "buyer_display": rec.buyer_display,
+                        "result": screen.get("result"),
+                        "plain": screen.get("plain"),
+                    })
+                    # 命中 blocked/watch 时同步记录
+                    if screen.get("result") in ("blocked", "watch"):
+                        rec.last_scan_at = rec.last_scan_at or _now()
+                        rec.last_scan_result = screen["result"]
+                        rec.last_scan_source = str(screen.get("source") or "sanctions_list")
+                        rec.risk_flags = list(set(rec.risk_flags + [f"sanctions_{screen['result']}"]))
+                except Exception:
+                    continue
         items = [self.evaluate_one(r, rescan_days=rescan_days) for r in self._by_inquiry.values()]
-        # 未接外部名单源时统一提示
+        # 附带筛查结论
+        screen_by_id = {s["inquiry_id"]: s for s in screen_results}
+        for it in items:
+            sc = screen_by_id.get(it.get("inquiry_id"))
+            if sc:
+                it["screen"] = sc
         due_list = [i for i in items if i.get("due")]
         never = sum(1 for i in items if i.get("status") == "never_scanned")
         overdue = sum(1 for i in items if i.get("status") == "overdue")
+        blocked_n = sum(1 for s in screen_results if s.get("result") == "blocked")
+        watch_n = sum(1 for s in screen_results if s.get("result") == "watch")
         if not external_list_configured:
-            source_plain = "外部制裁名单源未接入 — 结果以人工/Playbook 核对为准，系统不编造「已合规」。"
+            source_plain = (
+                f"制裁名单源：{src.get('source')} — {src.get('note') or '未配置真实源，结果不可当作已合规'}"
+            )
         else:
-            source_plain = "已配置外部名单源（以引擎返回为准）。"
+            source_plain = f"已配置名单源：{src.get('source')}（条目 {src.get('count')}）"
         plain = (
-            f"跟踪 {len(items)} 个在跟客户：待重扫 {len(due_list)}（从未扫 {never} / 逾期 {overdue}）。{source_plain}"
+            f"跟踪 {len(items)} 个在跟客户：待重扫 {len(due_list)}"
+            f"（从未扫 {never} / 逾期 {overdue}）；名单命中 blocked={blocked_n} watch={watch_n}。{source_plain}"
         )
         return {
             "tenant_id": tenant_id,
@@ -176,10 +216,14 @@ class RiskRescanStore:
             "never_scanned": never,
             "overdue": overdue,
             "external_list_configured": external_list_configured,
+            "source_status": src,
             "source_plain": source_plain,
+            "screen_results": screen_results,
+            "blocked_count": blocked_n,
+            "watch_count": watch_n,
             "items": sorted(items, key=lambda x: (not x.get("due"), x.get("days_overdue") is None, -(x.get("days_overdue") or 0))),
             "plain_summary": plain,
-            "hint": "重扫只更新记录；未接名单 API 时不自动判定 clear/blocked。",
+            "hint": "真源未配置时禁止宣称合规；命中 blocked 禁自动 PI/发送。",
         }
 
 

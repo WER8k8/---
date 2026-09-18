@@ -4,7 +4,7 @@
  */
 import { apiGet, apiPost } from '@/utils/api'
 
-function unwrap<T>(resp: any): T {
+function unwrap<T = any>(resp: any): T {
   if (resp && typeof resp === 'object' && 'data' in resp && 'code' in resp) {
     return resp.data as T
   }
@@ -105,7 +105,7 @@ export interface OpsCardResponse {
     reminders: Array<{ node: string; label: string; status: string; display: string; priority?: number }>
     summary?: string
     hint?: string
-  }
+  } | null
   sample?: SampleView
   research_gate?: ResearchGateView
   sla?: { sla: string; due_at?: string; overdue?: boolean; display?: string }
@@ -693,6 +693,79 @@ export function getMobileFollowupBrief(tenantId = 'demo'): Promise<{
       hint: '六格+今日待办手机可跟；点开即可记跟进。',
     }
   })
+}
+
+/** P3-4 制裁名单 */
+export function getSanctionsSource(): Promise<{
+  configured: boolean
+  source: string
+  count?: number
+  plain_summary: string
+  note?: string
+}> {
+  return apiGet<any>('/acquisition/sanctions/source').then(unwrap)
+}
+
+export function screenSanctions(body: {
+  name?: string
+  email?: string
+  company?: string
+  domain?: string
+  inquiry_id?: string
+}): Promise<{
+  result: string
+  level?: string
+  plain: string
+  source?: string
+  hits?: Array<Record<string, unknown>>
+  inquiry_id?: string
+}> {
+  return apiPost<any>('/acquisition/sanctions/screen', body).then(unwrap)
+}
+
+/** P3-7 招投标 */
+export function getTender(tenderId: string): Promise<{
+  tender_id: string
+  inquiry_id?: string
+  stage: string
+  stage_label?: string
+  qualify_ready: boolean
+  missing_docs?: string[]
+  auto_pi_allowed?: boolean
+  plain: string
+  next_action?: string
+}> {
+  return apiGet<any>(`/acquisition/tender/${encodeURIComponent(tenderId)}`).then(unwrap)
+}
+
+export function upsertTender(body: {
+  tender_id?: string
+  inquiry_id?: string
+  tenant_id?: string
+  buyer_name?: string
+  project_name?: string
+  amount?: number
+  currency?: string
+}): Promise<{ tender_id: string; plain?: string; inquiry_id?: string }> {
+  return apiPost<any>('/acquisition/tender/upsert', body).then(unwrap)
+}
+
+export function advanceTender(body: {
+  tender_id: string
+  to_stage: string
+  note?: string
+  payment_terms?: string
+  credit_ok?: boolean
+  inquiry_id?: string
+}): Promise<{ ok: boolean; message?: string; stage?: string; plain?: string }> {
+  return apiPost<any>('/acquisition/tender/advance', body).then(unwrap)
+}
+
+export function bindTenderToCard(
+  inquiryId: string,
+  body: Record<string, unknown>,
+): Promise<OpsCardResponse & { tender?: Record<string, unknown> }> {
+  return apiPost<any>(`/acquisition/ops-card/${encodeURIComponent(inquiryId)}/tender`, body).then(unwrap)
 }
 
 /** P2-5 NPS / 低使用挽回 */

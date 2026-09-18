@@ -1421,7 +1421,7 @@ onMounted(async () => {
       hard_block_enabled: false,
       status: 'unknown',
       message: '后端未启动或计费未接入',
-    }
+    } as Awaited<ReturnType<typeof getWalletStatus>>
   }
   await loadFollowups()
   void loadChannels()

@@ -46,6 +46,9 @@ from app.services.acquisition.billing_explain import billing_explain
 from app.services.acquisition.sales_collision import claim_inquiry, collision_report
 from app.services.acquisition.wangcai_line_b import rescue_plan
 from app.services.acquisition.nps_rescue import nps_and_rescue_brief
+from app.services.acquisition.sanctions_source import list_source_status, screen_subject
+from app.services.acquisition.tender_engine import tender_engine
+from app.core.db_sessions import get_read_session
 from app.services.acquisition.quote_guard import leadtime_gate, quote_validity_view
 from app.services.acquisition.suppression_list import suppression_store
 from app.services.acquisition.payment_risk import payment_risk_gate
@@ -1054,13 +1057,180 @@ def acquisition_risk_rescan(
     rescan_days: int = 90,
     current_user: User = Depends(get_current_user),
 ):
-    """P3-4 制裁/风险名单重扫提醒（无名单源诚实提示）。"""
+    """P3-4 制裁/风险名单重扫 + 真名单源筛查。"""
     return risk_rescan_store.report(
         ops_store=ops_card_store,
         tenant_id=tenant_id,
         rescan_days=max(1, min(365, rescan_days)),
-        external_list_configured=False,
+        external_list_configured=None,
+        auto_screen=True,
     )
+
+
+class SanctionsScreenRequest(BaseModel):
+    name: str = ""
+    email: str = ""
+    company: str = ""
+    domain: str = ""
+    inquiry_id: str = ""
+
+
+@router.get("/sanctions/source")
+def acquisition_sanctions_source(current_user: User = Depends(get_current_user)):
+    """P3-4 名单源状态（是否已配置真源）。"""
+    return list_source_status()
+
+
+@router.post("/sanctions/screen")
+def acquisition_sanctions_screen(
+    body: SanctionsScreenRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """P3-4 对公司/邮箱做名单筛查。"""
+    out = screen_subject(
+        name=body.name,
+        email=body.email,
+        company=body.company,
+        domain=body.domain,
+    )
+    if body.inquiry_id:
+        result = str(out.get("result") or "unknown")
+        if result in ("blocked", "watch"):
+            risk_rescan_store.mark_scanned(
+                body.inquiry_id,
+                result=result,
+                source=str(out.get("source") or "sanctions_list"),
+                note=str(out.get("plain") or "")[:200],
+            )
+            card = ops_card_store.get_by_inquiry(body.inquiry_id)
+            if card is not None:
+                card.risk_flags = list(set(card.risk_flags + [f"sanctions_{result}"]))
+                ops_card_store.update(card)
+    out["inquiry_id"] = body.inquiry_id
+    return out
+
+
+class TenderUpsertRequest(BaseModel):
+    tender_id: str = ""
+    inquiry_id: str = ""
+    tenant_id: str = "demo"
+    buyer_name: str = ""
+    project_name: str = ""
+    amount: float = 0
+    currency: str = "USD"
+
+
+class TenderDocRequest(BaseModel):
+    tender_id: str
+    doc_key: str
+    ready: bool = True
+
+
+class TenderAdvanceRequest(BaseModel):
+    tender_id: str
+    to_stage: str
+    note: str = ""
+    payment_terms: str = ""
+    credit_ok: bool = False
+
+
+@router.get("/tender/{tender_id}")
+def acquisition_tender_view(
+    tender_id: str,
+    current_user: User = Depends(get_current_user),
+):
+    """P3-7 招投标/经销商项目视图。"""
+    return tender_engine.view(tender_id)
+
+
+@router.post("/tender/upsert")
+def acquisition_tender_upsert(
+    body: TenderUpsertRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """P3-7 创建/更新大单项目。"""
+    proj = tender_engine.upsert(
+        tender_id=body.tender_id,
+        inquiry_id=body.inquiry_id,
+        tenant_id=body.tenant_id,
+        buyer_name=body.buyer_name,
+        project_name=body.project_name,
+        amount=body.amount,
+        currency=body.currency,
+    )
+    return tender_engine.view(proj.tender_id)
+
+
+@router.post("/tender/doc")
+def acquisition_tender_doc(
+    body: TenderDocRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """P3-7 资质包勾选。"""
+    return tender_engine.mark_doc(body.tender_id, body.doc_key, body.ready)
+
+
+@router.post("/tender/advance")
+def acquisition_tender_advance(
+    body: TenderAdvanceRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """P3-7 阶段推进（资质不齐禁止投标提交）。"""
+    if body.payment_terms or body.credit_ok:
+        tender_engine.set_payment(body.tender_id, body.payment_terms, body.credit_ok)
+    out = tender_engine.advance(body.tender_id, body.to_stage, note=body.note)
+    # 同步跟单卡备注
+    if out.get("ok") and body.inquiry_id if hasattr(body, "inquiry_id") else False:
+        pass
+    return out
+
+
+@router.post("/ops-card/{inquiry_id}/tender")
+def ops_card_tender_bind(
+    inquiry_id: str,
+    body: TenderUpsertRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """P3-7 跟单卡绑定大单项目 + 备注。"""
+    proj = tender_engine.upsert(
+        tender_id=body.tender_id or f"TDR-{inquiry_id}",
+        inquiry_id=inquiry_id,
+        tenant_id=body.tenant_id or "demo",
+        buyer_name=body.buyer_name,
+        project_name=body.project_name,
+        amount=body.amount,
+        currency=body.currency,
+    )
+    card = ops_card_store.get_by_inquiry(inquiry_id)
+    if card is None:
+        card = ops_card_store.materialize(tenant_id=proj.tenant_id, inquiry_id=inquiry_id)
+    card = ops_card_store.add_note(
+        inquiry_id,
+        author="tender_engine",
+        body=f"绑定大单 {proj.tender_id}：{proj.project_name}；阶段={proj.stage}",
+        pinned=True,
+    )
+    out = _ops_card_payload(card)
+    out["tender"] = tender_engine.view(proj.tender_id)
+    return out
+
+
+@router.get("/ops/reconcile")
+def acquisition_billing_reconcile(
+    tenant_id: str = "demo",
+    window_hours: int = 24,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """E-5 meter vs ledger 对账（只读）。优先只读会话。"""
+    session = _resolve_db(db)
+    if session is None:
+        try:
+            with get_read_session() as rs:
+                return billing_reconcile(rs, tenant_id=tenant_id, window_hours=window_hours)
+        except Exception:
+            pass
+    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)
 
 
 @router.post("/risk-rescan/mark")

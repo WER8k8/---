@@ -61,7 +61,7 @@ def test_risk_rescan_never_and_overdue():
     rep = store.report(ops_store=ops_card_store, tenant_id="demo", rescan_days=90, external_list_configured=False)
     assert rep["total_tracked"] >= 1
     assert rep["never_scanned"] >= 1
-    assert "未接入" in rep["source_plain"] or "人工" in rep["source_plain"]
+    assert "未接入" in rep["source_plain"] or "人工" in rep["source_plain"] or "种子" in rep["source_plain"] or "未配置" in rep["source_plain"]
     assert "不编造" in rep["source_plain"] or "为准" in rep["source_plain"]
 
     # 标记已扫
