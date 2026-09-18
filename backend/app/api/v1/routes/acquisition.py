@@ -55,6 +55,7 @@ from app.services.acquisition.ops_observability import acq_rate_limiter, billing
 from app.services.acquisition.queue_monitor import queue_monitor_report
 from app.services.acquisition.baseline_bench import run_dispatch_baseline, run_claim_collision_baseline
 from app.services.acquisition.sales_collision import claim_inquiry as _claim_fn
+from app.core.db_sessions import db_topology, get_read_session
 from app.services.acquisition.template_weights import (
     approve_weight,
     approved_weights,
@@ -1132,6 +1133,36 @@ def acquisition_queue_monitor(
 ):
     """E-1 队列拆分监控（outreach/content/ops）。"""
     return queue_monitor_report(_resolve_db(db), tenant_id=tenant_id, limit=max(1, min(500, limit)))
+
+
+@router.get("/ops/db-topology")
+def acquisition_db_topology(current_user: User = Depends(get_current_user)):
+    """E-2 读写分离拓扑体检（未配置读库诚实说明）。"""
+    return db_topology()
+
+
+@router.get("/ops/read-session-probe")
+def acquisition_read_session_probe(
+    current_user: User = Depends(get_current_user),
+):
+    """E-2 只读会话探活：证明读库/回落主库可用。"""
+    try:
+        with get_read_session() as session:
+            from sqlalchemy import text
+            db_name = session.execute(text("select current_database()")).scalar()
+        topo = db_topology()
+        return {
+            "ok": True,
+            "database": str(db_name or ""),
+            "topology": topo,
+            "plain_summary": f"只读会话可用，连接库 {db_name}。{topo.get('plain_summary', '')}",
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "ok": False,
+            "error": str(exc)[:200],
+            "plain_summary": f"只读会话探活失败：{str(exc)[:120]}",
+        }
 
 
 @router.post("/ops/baseline")
