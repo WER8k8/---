@@ -69,11 +69,22 @@ class ExperienceEngine:
 
     def record(self, task_type: str, success: bool, duration: float,
                error_type: Optional[str] = None, solution: Optional[str] = None):
+        """本地 JSON 记录（P2-1：非生产真源）。
+
+        唯一真源 = Evolution PG（EvolutionEngine / ExperienceStore）。
+        本方法仅作无库兜底；生产链路应走 acquisition.experience_feed / evolution.engine。
+        """
         rec = ExperienceRecord(task_type=task_type, success=success, duration=duration, error_type=error_type, solution_summary=solution)
         self._records.append(rec)
         if len(self._records) > _MAX_RECORDS:
             self._records = self._records[-_MAX_RECORDS:]
         self._save()
+        return {
+            "recorded": True,
+            "engine": "hermes_json_fallback",
+            "source_of_truth": "evolution_pg",
+            "note": "JSON 经验非主真源；请确认 Evolution PG 已写入",
+        }
 
     def query(self, task_type: str, top_k: int = 5) -> List[Dict[str, Any]]:
         matched = [r for r in self._records if r.task_type == task_type]

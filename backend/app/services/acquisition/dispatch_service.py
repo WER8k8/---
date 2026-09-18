@@ -35,13 +35,23 @@ async def dispatch_acquisition(
     """
     session = _as_session(db)
     payload = dict(payload or {})
+    # PG 下 ai_tasks.tenant_id 为 UUID：业务串 demo 先解析，失败则诚实拒派
+    resolved_tenant = tenant_id or "unknown"
+    if session is not None:
+        try:
+            from app.services.acquisition.repo import resolve_tenant_uuid
+            tid = resolve_tenant_uuid(session, tenant_id)
+            if tid:
+                resolved_tenant = tid
+        except Exception:
+            pass
     event_id = f"acq_{uuid.uuid4().hex[:12]}"
     from app.schemas.hermes_orchestration import IntentEvent
     from app.services.hermes import planner_service as ps
 
     event = IntentEvent(
         event_id=event_id,
-        tenant_id=tenant_id or "unknown",
+        tenant_id=resolved_tenant,
         channel=channel,
         intent=intent,
         payload=payload,
@@ -67,6 +77,8 @@ async def dispatch_acquisition(
         "plan_task_id": "",
         "dispatch_error": "",
         "persistence_note": "",
+        "tenant_id": resolved_tenant,
+        "tenant_id_raw": tenant_id,
     }
     if not auto_dispatch:
         result["persistence_note"] = "仅拆解预览，未派发（auto_dispatch=false）"
@@ -80,7 +92,7 @@ async def dispatch_acquisition(
             advance_plan,
             parse_graph_to_tasks,
         )
-        node_tasks = parse_graph_to_tasks(session, tenant_id, graph)
+        node_tasks = parse_graph_to_tasks(session, resolved_tenant, graph)
         plan_task_id = str(getattr(node_tasks[0], "parent_task_id", "")) if node_tasks else ""
         result["task_ids"] = [str(getattr(t, "id", "")) for t in node_tasks]
         result["plan_task_id"] = plan_task_id

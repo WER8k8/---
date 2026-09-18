@@ -16,10 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 def _try_external_translate(text: str, from_lang: str, to_lang: str) -> Optional[dict[str, Any]]:
-    """尝试外部翻译引擎；未配置返回 None。禁止 stub 假译。"""
+    """尝试外部翻译引擎；未配置返回 None。禁止 stub 假译当真译。"""
     # 1) LibreTranslate sidecar（跨境文案机翻，须标注 machine）
     try:
-        from app.services.cross_border.libretranslate_sidecar import sidecar_base_url
+        from app.services.cross_border.libretranslate_sidecar import (
+            sidecar_base_url,
+            sidecar_token,
+        )
         import httpx
 
         base = (sidecar_base_url() or "").rstrip("/")
@@ -30,15 +33,30 @@ def _try_external_translate(text: str, from_lang: str, to_lang: str) -> Optional
                 "target": to_lang or "zh",
                 "format": "text",
             }
+            headers = {"Content-Type": "application/json"}
+            token = (sidecar_token() or "").strip()
+            if token:
+                headers["Authorization"] = f"Bearer {token}"
             with httpx.Client(timeout=8.0) as client:
-                resp = client.post(f"{base}/translate", json=payload)
+                resp = client.post(f"{base}/translate", json=payload, headers=headers)
             if resp.status_code < 300:
                 data = resp.json() if resp.content else {}
                 translated = ""
+                provider = "libretranslate"
+                mock = False
                 if isinstance(data, dict):
                     translated = str(data.get("translatedText") or data.get("translated") or "")
+                    if str(data.get("mode") or "") == "mock" or data.get("probe_mode") == "stub":
+                        mock = True
+                        provider = "libretranslate-mock"
                 if translated and translated != text:
-                    return {"translated": translated, "provider": "libretranslate"}
+                    return {
+                        "translated": translated,
+                        "provider": provider,
+                        "mock": mock,
+                        "machine_translated": True,
+                        "evidence_url": str(data.get("evidence_url") or "") if isinstance(data, dict) else "",
+                    }
     except Exception:  # noqa: BLE001
         pass
     return None
@@ -73,14 +91,22 @@ def translate_text(
         }
     ext = _try_external_translate(original, from_lang, to_lang)
     if ext:
+        mock = bool(ext.get("mock"))
         return {
             "original": original,
             "translated": ext.get("translated") or original,
             "from_lang": from_lang,
             "to_lang": to_lang,
             "provider": str(ext.get("provider") or "external"),
+            # 引擎已接通：degraded=false；dev stub 标注 mock 但仍算接通
             "degraded": False,
-            "message": "",
+            "machine_translated": True,
+            "mock": mock,
+            "message": (
+                "开发桩机翻（mock），仅供联调；上线须接真 LibreTranslate/人工校对"
+                if mock
+                else "机翻仅供参考，对外发送前须人工校对"
+            ),
         }
     return {
         "original": original,

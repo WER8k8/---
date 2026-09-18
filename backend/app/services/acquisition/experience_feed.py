@@ -88,3 +88,77 @@ def record_ops_loss(db: Any, *, tenant_id: str, inquiry_id: str, reasons: list[s
         detail=detail or "loss",
         executor_id="ops_card",
     )
+
+
+def record_ops_win(
+    db: Any,
+    *,
+    tenant_id: str,
+    inquiry_id: str,
+    amount: float = 0,
+    currency: str = "USD",
+    note: str = "",
+    won_reasons: list[str] | None = None,
+) -> dict[str, Any]:
+    """P2-2 成交入经验环（Win）。"""
+    parts = []
+    if amount:
+        parts.append(f"amount={amount}{currency or 'USD'}")
+    if won_reasons:
+        parts.append("reasons=" + ";".join(won_reasons))
+    if note:
+        parts.append(note)
+    detail = " | ".join(parts) or "won"
+    return record_acquisition_event(
+        db,
+        tenant_id=tenant_id,
+        event="ops_win",
+        inquiry_id=inquiry_id,
+        success=True,
+        detail=detail,
+        executor_id="ops_card",
+    )
+
+
+def win_loss_summary(db: Any, *, tenant_id: str = "", cards: list[Any] | None = None) -> dict[str, Any]:
+    """P2-2 Win/Loss 汇总（大白话）：成交几单、丢单几单、原因分布。"""
+    from app.services.acquisition.loss_report import REASON_HINTS
+
+    items = list(cards or [])
+    won = [c for c in items if getattr(c, "stage", "") == "won"]
+    lost = [c for c in items if getattr(c, "stage", "") == "lost" or getattr(c, "loss_reasons", None)]
+    win_reasons: dict[str, int] = {}
+    loss_reasons: dict[str, int] = {}
+    for c in won:
+        for r in getattr(c, "win_reasons", None) or []:
+            win_reasons[r] = win_reasons.get(r, 0) + 1
+    for c in lost:
+        for r in getattr(c, "loss_reasons", None) or ["其他"]:
+            loss_reasons[r] = loss_reasons.get(r, 0) + 1
+    top_loss = max(loss_reasons.items(), key=lambda x: x[1])[0] if loss_reasons else ""
+    top_win = max(win_reasons.items(), key=lambda x: x[1])[0] if win_reasons else ""
+    plain = (
+        f"成交 {len(won)} 单，流失 {len(lost)} 单。"
+        + (f"赢在「{top_win}」。" if top_win else "")
+        + (f"丢在「{top_loss}」——{REASON_HINTS.get(top_loss, '结合个案复盘')}。" if top_loss else "")
+    )
+    return {
+        "tenant_id": tenant_id,
+        "won_count": len(won),
+        "lost_count": len(lost),
+        "win_reasons": win_reasons,
+        "loss_reasons": loss_reasons,
+        "top_win_reason": top_win,
+        "top_loss_reason": top_loss,
+        "plain_summary": plain,
+        "won_items": [
+            {
+                "inquiry_id": getattr(c, "inquiry_id", ""),
+                "buyer_display": getattr(c, "buyer_display", ""),
+                "amount": getattr(c, "won_amount", 0) or 0,
+                "note": getattr(c, "won_note", ""),
+            }
+            for c in won
+        ],
+        "experience_hint": "成交与流失都会写入经验环；下次编排/话术可参考原因分布。",
+    }

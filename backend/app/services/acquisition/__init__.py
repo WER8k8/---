@@ -21,6 +21,16 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 from uuid import uuid4
 
+# re-export for tests / API convenience
+from app.services.acquisition.sample_flow import SAMPLE_STATUSES, sample_view  # noqa: F401
+from app.services.acquisition.loss_report import build_loss_report  # noqa: F401
+from app.services.acquisition.outreach_gate import evaluate_research_gate  # noqa: F401
+from app.services.acquisition.orchestration_dictionary import (  # noqa: F401
+    DICTIONARY as ORCHESTRATION_DICTIONARY,
+    dictionary_plain_summary,
+    list_dictionary,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -191,6 +201,48 @@ class OpsCardPayment:
 
 
 @dataclass
+class OpsCardSample:
+    """样品寄样状态机（P1-5）— 防样品黑洞。"""
+
+    status: str = "none"
+    # none/requested/confirmed/preparing/shipped/delivered/fee_collected/waived/rejected
+    product: str = ""
+    spec: str = ""
+    qty: float = 0.0
+    unit: str = ""
+    fee_amount: float = 0.0
+    fee_currency: str = "USD"
+    fee_status: str = "unbilled"  # unbilled/billed/paid/waived
+    courier: str = ""
+    tracking_no: str = ""
+    shipped_at: str = ""
+    note: str = ""
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class OpsCardFulfillmentNode:
+    """履约图节点（报价/PI/定金/尾款）进跟单卡（P1-2）。"""
+
+    key: str = ""
+    label: str = ""
+    status: str = "pending"  # pending/active/done/overdue/skipped
+    due_at: str = ""
+    done_at: str = ""
+    note: str = ""
+    ref: str = ""
+
+
+def default_fulfillment_nodes() -> list[OpsCardFulfillmentNode]:
+    return [
+        OpsCardFulfillmentNode(key="quote", label="报价", status="pending"),
+        OpsCardFulfillmentNode(key="pi", label="形式发票PI", status="pending"),
+        OpsCardFulfillmentNode(key="deposit", label="定金", status="pending"),
+        OpsCardFulfillmentNode(key="balance", label="尾款", status="pending"),
+    ]
+
+
+@dataclass
 class OpsCard:
     """客户跟单作战卡 — 租户每天要看的一页。"""
 
@@ -218,14 +270,40 @@ class OpsCard:
     notes: list[OpsCardNote] = field(default_factory=list)
     # 收款
     payment: OpsCardPayment = field(default_factory=OpsCardPayment)
+    # 报价有效期（P3-2）
+    quote_at: str = ""
+    quote_valid_days: int = 14
+    quote_fx_locked: bool = False
+    quote_fx_note: str = ""
+    # 交期承诺（P3-3）
+    leadtime_days: Optional[int] = None
+    leadtime_inventory_evidence: bool = False
+    leadtime_capacity_evidence: bool = False
+    # 付款风险（P3-6）
+    risk_flags: list[str] = field(default_factory=list)
+    # 样品（P1-5）
+    sample: OpsCardSample = field(default_factory=OpsCardSample)
+    # 履约节点（P1-2）
+    fulfillment_nodes: list[OpsCardFulfillmentNode] = field(default_factory=default_fulfillment_nodes)
     # 买家快照
     buyer_display: str = ""
     buyer_grade: str = ""
     buyer_grade_reason: str = ""
+    buyer_score: int = 0
     playbook_tips: list[str] = field(default_factory=list)
+    # 千人千面背调深度（P1-6）：none/basic/osint/full
+    research_level: str = "none"
+    research_note: str = ""
     # 流失
     loss_reasons: list[str] = field(default_factory=list)
     loss_note: str = ""
+    lost_at: str = ""
+    # 成交（P2-2 Win）
+    won_at: str = ""
+    won_amount: float = 0.0
+    won_currency: str = "USD"
+    won_note: str = ""
+    win_reasons: list[str] = field(default_factory=list)
     updated_at: str = field(default_factory=_now_iso)
 
     def to_dict(self) -> dict[str, Any]:
@@ -233,9 +311,9 @@ class OpsCard:
         return d
 
     def summary_lines(self) -> dict[str, str]:
-        """傻子都行：六组一句话。"""
+        """傻子都行：六组+样品/节点 一句话。"""
         last = self.last_touch_at or "未联系"
-        return {
+        out = {
             "负责人": self.owner_user_id or "未分配",
             "货": self._sku_text() or "未填货物",
             "物流": self._logistics_text() or "未发货",
@@ -243,6 +321,117 @@ class OpsCard:
             "交代": self.notes[0].body if self.notes else "无",
             "付款": self._payment_text() or "未收款",
         }
+        sample_text = self._sample_text()
+        if sample_text:
+            out["样品"] = sample_text
+        node_text = self._fulfillment_text()
+        if node_text:
+            out["节点"] = node_text
+        return out
+
+    def _sample_text(self) -> str:
+        s = self.sample
+        if not s or (s.status or "none") == "none":
+            return ""
+        label = {
+            "requested": "客户要样品",
+            "confirmed": "样品已确认",
+            "preparing": "备样中",
+            "shipped": "已寄出",
+            "delivered": "已签收",
+            "fee_collected": "样品费已收",
+            "waived": "免费寄样",
+            "rejected": "样品取消",
+        }.get(s.status, s.status)
+        fee = ""
+        if s.fee_status == "paid":
+            fee = " 费已收"
+        elif s.fee_status == "waived":
+            fee = " 免费"
+        elif s.fee_amount:
+            fee = f" 费{s.fee_amount}{s.fee_currency or ''}"
+        track = f" {s.tracking_no}" if s.tracking_no else ""
+        return f"{label}{fee}{track}".strip()
+
+    def _fulfillment_text(self) -> str:
+        nodes = self.fulfillment_nodes or []
+        if not nodes:
+            return ""
+        parts = []
+        for n in nodes:
+            mark = {
+                "done": "✓",
+                "active": "…",
+                "overdue": "!",
+                "skipped": "-",
+                "pending": "·",
+            }.get(n.status, "·")
+            parts.append(f"{n.label}{mark}")
+        return " ".join(parts)
+
+    def score_display(self) -> dict[str, Any]:
+        """P1-4：评分大字数据（前端卡片头常驻）。"""
+        grade = self.buyer_grade or ""
+        if not grade and self.buyer_score:
+            grade, reason = score_grade(self.buyer_score)
+            if not self.buyer_grade_reason:
+                self.buyer_grade_reason = reason
+        reason = self.buyer_grade_reason or (
+            "尚未评分" if not grade else ""
+        )
+        action = {
+            "A": "深跟：24h 内推进报价/样品",
+            "B": "标准跟：补齐资格四问",
+            "C": "低成本触达：勿过早深报价",
+            "D": "谨慎：先核风险再投入",
+        }.get(grade, "先观察或补信息")
+        return {
+            "grade": grade or "-",
+            "reason": reason or "—",
+            "score": self.buyer_score or None,
+            "action": action,
+            "large": bool(grade),
+        }
+
+    def fulfillment_view(self, now: Optional[datetime] = None) -> dict[str, Any]:
+        """履约节点 + 到期提醒（大白话）。"""
+        from app.services.acquisition.fulfillment_nodes import fulfillment_view as _fv
+        return _fv(self, now=now)
+
+    def research_gate_view(self) -> dict[str, Any]:
+        """千人千面强制序（P1-6）：无背调禁止个性化开发信。"""
+        from app.services.acquisition.outreach_gate import evaluate_research_gate
+        return evaluate_research_gate(self.research_level, note=self.research_note)
+
+    def quote_validity_view(self) -> dict[str, Any]:
+        from app.services.acquisition.quote_guard import quote_validity_view as _qv
+        return _qv(
+            quote_at=self.quote_at,
+            valid_days=self.quote_valid_days or 14,
+            fx_locked=self.quote_fx_locked,
+            fx_note=self.quote_fx_note,
+        )
+
+    def leadtime_gate_view(self) -> dict[str, Any]:
+        from app.services.acquisition.quote_guard import leadtime_gate
+        return leadtime_gate(
+            has_inventory_evidence=self.leadtime_inventory_evidence,
+            has_capacity_evidence=self.leadtime_capacity_evidence,
+            promised_days=self.leadtime_days,
+        )
+
+    def payment_risk_view(self, country: str = "", buyer_type: str = "new") -> dict[str, Any]:
+        from app.services.acquisition.payment_risk import payment_risk_gate
+        return payment_risk_gate(
+            country=country or "",
+            buyer_type=buyer_type or "unknown",
+            buyer_grade=self.buyer_grade,
+            risk_flags=list(self.risk_flags or []),
+            stage=self.stage,
+            auto_pi=False,
+            ops_store=None,
+            inquiry_id=self.inquiry_id,
+        )
 
     def _sku_text(self) -> str:
         if not self.sku_lines:
@@ -285,6 +474,7 @@ class OpsCardStore:
         grade_reason: str = "",
         playbook_tips: Optional[list[str]] = None,
         stage: str = "new",
+        score: int = 0,
     ) -> OpsCard:
         card = self._by_inquiry.get(inquiry_id)
         if card is None:
@@ -294,12 +484,16 @@ class OpsCardStore:
         card.stage = stage or card.stage
         if buyer:
             card.buyer_display = buyer.display_identity()
+        if score:
+            card.buyer_score = score
         if grade:
             card.buyer_grade = grade
         if grade_reason:
             card.buyer_grade_reason = grade_reason
         if playbook_tips is not None:
             card.playbook_tips = list(playbook_tips)
+        if not card.fulfillment_nodes:
+            card.fulfillment_nodes = default_fulfillment_nodes()
         card.updated_at = _now_iso()
         self._by_inquiry[inquiry_id] = card
         self._by_id[card.card_id] = card
@@ -367,10 +561,147 @@ class OpsCardStore:
         card = self._by_inquiry.get(inquiry_id)
         if card is None:
             card = OpsCard(inquiry_id=inquiry_id)
-        card.loss_reasons = reasons
+        card.loss_reasons = list(reasons or [])
         card.loss_note = note
         card.stage = "lost"
+        card.lost_at = card.lost_at or _now_iso()
         return self.update(card)
+
+    def record_win(
+        self,
+        inquiry_id: str,
+        *,
+        amount: float = 0,
+        currency: str = "USD",
+        note: str = "",
+        reasons: Optional[list[str]] = None,
+    ) -> OpsCard:
+        """P2-2 成交：won 阶段 + 金额/原因（供经验环）。"""
+        card = self._by_inquiry.get(inquiry_id)
+        if card is None:
+            card = OpsCard(inquiry_id=inquiry_id)
+        card.stage = "won"
+        card.won_at = card.won_at or _now_iso()
+        if amount:
+            card.won_amount = float(amount)
+        if currency:
+            card.won_currency = currency
+        if note:
+            card.won_note = note
+        if reasons:
+            card.win_reasons = list(reasons)
+        # 尾款节点默认勾完成（成交后）
+        for n in card.fulfillment_nodes or []:
+            if n.key == "balance" and n.status not in ("done", "skipped"):
+                n.status = "done"
+                n.done_at = n.done_at or _now_iso()
+        if card.payment.balance_status != "paid":
+            card.payment.balance_status = "paid"
+        return self.update(card)
+
+    def win_loss_stats(self, tenant_id: str = "") -> dict[str, Any]:
+        """P2-2：Win/Loss 汇总。"""
+        from app.services.acquisition.experience_feed import win_loss_summary
+
+        cards = [
+            c
+            for c in self._by_inquiry.values()
+            if (not tenant_id or c.tenant_id == tenant_id)
+            and (c.stage in ("won", "lost") or c.loss_reasons or c.won_at)
+        ]
+        return win_loss_summary(None, tenant_id=tenant_id, cards=cards)
+
+    def update_sample(self, inquiry_id: str, **kwargs: Any) -> OpsCard:
+        card = self._by_inquiry.get(inquiry_id)
+        if card is None:
+            card = OpsCard(inquiry_id=inquiry_id)
+        s = card.sample
+        if s is None:
+            s = OpsCardSample()
+            card.sample = s
+        for k, v in kwargs.items():
+            if v is None:
+                continue
+            if hasattr(s, k):
+                setattr(s, k, v)
+        s.updated_at = _now_iso()
+        # 收款成功可自动推进样品阶段
+        if kwargs.get("fee_status") == "paid" and s.status in ("shipped", "delivered", "confirmed", "preparing"):
+            s.status = "fee_collected"
+        return self.update(card)
+
+    def update_fulfillment_node(
+        self,
+        inquiry_id: str,
+        *,
+        key: str,
+        status: str = "",
+        due_at: str = "",
+        done_at: str = "",
+        note: str = "",
+        ref: str = "",
+    ) -> OpsCard:
+        card = self._by_inquiry.get(inquiry_id)
+        if card is None:
+            card = OpsCard(inquiry_id=inquiry_id)
+        if not card.fulfillment_nodes:
+            card.fulfillment_nodes = default_fulfillment_nodes()
+        target = None
+        for n in card.fulfillment_nodes:
+            if n.key == key:
+                target = n
+                break
+        if target is None:
+            target = OpsCardFulfillmentNode(key=key, label=key)
+            card.fulfillment_nodes.append(target)
+        if status:
+            target.status = status
+        if due_at:
+            target.due_at = due_at
+        if done_at:
+            target.done_at = done_at
+        if note:
+            target.note = note
+        if ref:
+            target.ref = ref
+        # 联动付款字段
+        if key == "pi" and ref:
+            card.payment.pi_no = ref
+        if key == "pi" and status == "done" and not card.payment.pi_no and ref:
+            card.payment.pi_no = ref
+        if key == "deposit" and status == "done" and not card.payment.deposit_paid_at:
+            card.payment.deposit_paid_at = _now_iso()[:10]
+        if key == "balance" and status == "done":
+            card.payment.balance_status = "paid"
+        if key == "quote" and status == "done" and card.stage in ("new", "engaged", "qualifying"):
+            card.stage = "quoted"
+        return self.update(card)
+
+    def set_research_level(
+        self, inquiry_id: str, research_level: str, note: str = ""
+    ) -> OpsCard:
+        card = self._by_inquiry.get(inquiry_id)
+        if card is None:
+            card = OpsCard(inquiry_id=inquiry_id)
+        allowed = {"none", "basic", "osint", "full"}
+        card.research_level = research_level if research_level in allowed else "none"
+        if note:
+            card.research_note = note
+        return self.update(card)
+
+    def list_lost(self, tenant_id: str = "") -> list[OpsCard]:
+        out = []
+        for card in self._by_inquiry.values():
+            if tenant_id and card.tenant_id != tenant_id:
+                continue
+            if card.stage == "lost" or card.loss_reasons:
+                out.append(card)
+        return out
+
+    def loss_stats(self, tenant_id: str = "") -> dict[str, Any]:
+        """P1-3：流失原因分布 — 傻子能看懂。"""
+        from app.services.acquisition.loss_report import build_loss_report
+        return build_loss_report(self.list_lost(tenant_id=tenant_id), tenant_id=tenant_id)
 
     def update_payment(self, inquiry_id: str, **kwargs: Any) -> OpsCard:
         card = self._by_inquiry.get(inquiry_id)
@@ -479,6 +810,30 @@ _SEED_PLAYBOOKS: list[dict[str, Any]] = [
         "warnings": ["谨慎赊销；核实付款账户。"],
         "talk_tracks": ["付款方案前置，再谈定制规格。"],
     },
+    {
+        "country": "GLOBAL",
+        "buyer_type": "distributor",
+        "payment_bias": "dealer_terms_review",
+        "tips": [
+            "经销商大单：先要公司资质、销售渠道与年采购量区间。",
+            "账期/铺货要求必须进风险闸人审，禁止业务口头承诺账期。",
+            "准备案例包：认证、项目照片、交期能力、质保条款。",
+        ],
+        "warnings": ["招投标时间紧也勿跳过资质与付款核验。"],
+        "talk_tracks": ["请问贵司主营渠道与年采购量？是否需要独家/区域授权条款？"],
+    },
+    {
+        "country": "GLOBAL",
+        "buyer_type": "tender",
+        "payment_bias": "tender_formal_docs",
+        "tips": [
+            "招投标：资质文件清单先对齐（营业执照、认证、检测报告、业绩）。",
+            "标书交期/质保条款写清；汇率与有效期单独列明。",
+            "定金与验收款节点写进 PI/合同附件，勿口头默认。",
+        ],
+        "warnings": ["无资质包勿盲目应标；账期过长须财务会签。"],
+        "talk_tracks": ["我们可按标书要求准备资质包，请提供招标文件关键条款页。"],
+    },
 ]
 
 
@@ -502,8 +857,15 @@ class PlaybookStore:
         buyer_type: str = "",
         stage: str = "",
     ) -> list[PlaybookEntry]:
-        """返回匹配的 Playbook（空 country/type 可放宽）。"""
-        country = (country or "").upper()[:2]
+        """返回匹配的 Playbook（空 country/type 可放宽）。
+
+        country 支持二字码，以及 GLOBAL/ALL/INTL 全局别名（经销商/招投标等）。
+        """
+        raw_c = (country or "").upper().strip()
+        if raw_c in ("GLOBAL", "ALL", "INTL", "WORLDWIDE"):
+            country = "GLOBAL"
+        else:
+            country = raw_c[:2]
         buyer_type = (buyer_type or "").lower()
         out = []
         for p in self._items:
@@ -523,11 +885,15 @@ class PlaybookStore:
         return out
 
     def tips_for(self, country: str, buyer_type: str = "new") -> list[str]:
-        """作战提示：先按 国家×类型 精确；无命中则放宽到该国任意类型。"""
+        """作战提示：先按 国家×类型 精确；无命中则放宽（国别任意类型 → GLOBAL×类型 → GLOBAL）。"""
         tips: list[str] = []
         matched = self.match(country=country, buyer_type=buyer_type)
         if not matched and country:
             matched = self.match(country=country, buyer_type="")
+        if not matched and buyer_type:
+            matched = self.match(country="GLOBAL", buyer_type=buyer_type)
+        if not matched:
+            matched = self.match(country="", buyer_type=buyer_type) or self.match(country="", buyer_type="")
         for p in matched:
             tips.extend(p.tips)
             tips.extend(p.warnings)

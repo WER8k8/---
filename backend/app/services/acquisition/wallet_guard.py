@@ -26,8 +26,11 @@ def _read_latest_balance(db: Any, tenant_id: str) -> Optional[int]:
         return None
     try:
         from app.models.token_ledger import TokenLedgerEntry
+        from app.services.acquisition.repo import resolve_tenant_uuid
 
-        q = db.query(TokenLedgerEntry).filter(TokenLedgerEntry.tenant_id == tenant_id)
+        # PG 下 tenant_id 是 UUID 列：业务串（demo）先解析
+        tid = resolve_tenant_uuid(db, tenant_id) or tenant_id
+        q = db.query(TokenLedgerEntry).filter(TokenLedgerEntry.tenant_id == tid)
         # 兼容 mock/真实 session：优先 all() 后排序，避免 desc 绑定失败
         try:
             rows = list(q.all())

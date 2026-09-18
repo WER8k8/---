@@ -737,27 +737,34 @@ def _extract_json(text: str) -> Optional[dict[str, Any]]:
 
 
 def _enrich_with_experience(intent_event: IntentEvent, db: Session) -> dict:
-    """经验注入 + 技能包召回 → payload._experience_hints / _skill_refs。"""
+    """经验注入 + 技能包召回 → payload._experience_hints / _skill_refs。
+
+    P2-1：唯一真源 = Evolution PG（unified_experience）；JSON 仅兜底且标注。
+    """
     payload = dict(intent_event.payload or {})
     try:
-        from app.services.evolution.experience_store import ExperienceStore
-        store = ExperienceStore(db)
+        from app.services.evolution.unified_experience import fetch_experience_hints
+
         scene = intent_event.scene_type or intent_event.intent or ""
-        experiences = store.find_applicable(
-            tenant_id=str(payload.get("tenant_id") or ""),
+        experiences = fetch_experience_hints(
+            db,
+            tenant_id=str(payload.get("tenant_id") or intent_event.tenant_id or ""),
             scene_type=scene,
             limit=3,
+            allow_json_fallback=True,
         )
         if experiences:
             payload["_experience_hints"] = [
                 {
                     "id": e.get("id"),
-                    "type": e.get("experience_type"),
-                    "summary": e.get("summary") or e.get("description") or "",
-                    "score": e.get("success_score", 0),
+                    "type": e.get("type") or e.get("experience_type"),
+                    "summary": e.get("summary") or "",
+                    "score": e.get("score", 0),
+                    "source": e.get("source", "evolution_pg"),
                 }
                 for e in experiences[:3]
             ]
+            payload["_experience_source"] = experiences[0].get("source") or "evolution_pg"
     except Exception:  # noqa: BLE001
         pass
     # DSH 技能召回进 payload，供 L1 Hybrid / L2 使用

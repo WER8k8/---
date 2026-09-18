@@ -112,17 +112,89 @@
           还没有卡片。请在上方填询盘编号，点「客户回复 → 建卡」或「打开跟单卡」。
         </div>
         <template v-else>
-          <div class="mb-3 flex flex-wrap items-center gap-2">
-            <a-tag color="processing">{{ card.stage || '-' }}</a-tag>
-            <a-tag v-if="card.buyer_grade" :color="gradeColor">{{ card.buyer_grade }}级</a-tag>
-            <span v-if="card.buyer_display" class="text-gray-700 font-medium">{{ card.buyer_display }}</span>
-            <span v-if="card.buyer_grade_reason" class="text-gray-500 text-sm">{{ card.buyer_grade_reason }}</span>
+          <!-- P1-4 评分大字常驻 -->
+          <div class="acq-score-bar">
+            <div class="acq-score-letter" :class="`g-${(scoreDisplay.grade || '-').toLowerCase()}`">
+              {{ scoreDisplay.grade || '-' }}
+            </div>
+            <div class="acq-score-meta">
+              <div class="acq-score-reason">{{ scoreDisplay.reason }}</div>
+              <div class="acq-score-action">{{ scoreDisplay.action }}</div>
+              <div v-if="card.buyer_display" class="text-gray-700 text-sm mt-1">{{ card.buyer_display }}</div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <a-tag color="processing">{{ card.stage || '-' }}</a-tag>
+              <a-tag v-if="card.buyer_grade" :color="gradeColor">{{ card.buyer_grade }}级</a-tag>
+            </div>
           </div>
 
-          <div class="acq-grid">
+          <!-- P1-2 履约节点 + 提醒 -->
+          <div v-if="fulfillment && fulfillment.nodes && fulfillment.nodes.length" class="mt-3">
+            <div class="font-semibold mb-1">报价 / PI / 收款节点</div>
+            <div class="acq-nodes">
+              <div
+                v-for="n in fulfillment.nodes"
+                :key="n.key"
+                class="acq-node"
+                :class="`st-${n.status}`"
+              >
+                <div class="acq-node-label">{{ n.label }}</div>
+                <div class="acq-node-status">{{ n.status_label }}</div>
+                <div v-if="n.ref" class="acq-node-ref">{{ n.ref }}</div>
+              </div>
+            </div>
+            <div v-if="fulfillment.reminders && fulfillment.reminders.length" class="mt-2 space-y-1">
+              <a-alert
+                v-for="(r, i) in fulfillment.reminders.slice(0, 4)"
+                :key="i"
+                :type="r.status === 'overdue' ? 'error' : 'warning'"
+                show-icon
+                :message="r.display"
+              />
+            </div>
+            <div class="mt-2 grid gap-2 md:grid-cols-4">
+              <a-select v-model:value="fulForm.key" size="small" style="width: 100%">
+                <a-select-option value="quote">报价</a-select-option>
+                <a-select-option value="pi">形式发票PI</a-select-option>
+                <a-select-option value="deposit">定金</a-select-option>
+                <a-select-option value="balance">尾款</a-select-option>
+              </a-select>
+              <a-select v-model:value="fulForm.status" size="small" style="width: 100%">
+                <a-select-option value="pending">未开始</a-select-option>
+                <a-select-option value="active">进行中</a-select-option>
+                <a-select-option value="done">已完成</a-select-option>
+                <a-select-option value="overdue">已逾期</a-select-option>
+                <a-select-option value="skipped">已跳过</a-select-option>
+              </a-select>
+              <a-input v-model:value="fulForm.ref" size="small" placeholder="PI号等（可空）" />
+              <a-button size="small" type="primary" :loading="loading" @click="onFulfillment">保存节点</a-button>
+            </div>
+          </div>
+
+          <div class="acq-grid mt-3">
             <div v-for="(val, key) in summary" :key="key" class="acq-cell">
               <div class="acq-label">{{ key }}</div>
               <div class="acq-value">{{ val || '—' }}</div>
+            </div>
+          </div>
+
+          <!-- P1-6 千人千面背调闸 -->
+          <div v-if="researchGate" class="mt-3">
+            <a-alert
+              :type="researchGate.personalized_allowed ? 'success' : 'warning'"
+              show-icon
+              :message="`开发信个性化：${researchGate.personalized_allowed ? '允许' : '禁止（先背调）'} · ${researchGate.research_level_label}`"
+              :description="researchGate.reason"
+            />
+            <div class="mt-2 flex flex-wrap gap-2 items-center">
+              <a-select v-model:value="researchForm.level" size="small" style="width: 180px">
+                <a-select-option value="none">未背调</a-select-option>
+                <a-select-option value="basic">基础信息</a-select-option>
+                <a-select-option value="osint">OSINT背调</a-select-option>
+                <a-select-option value="full">完整背调</a-select-option>
+              </a-select>
+              <a-button size="small" :loading="loading" @click="onResearch">登记背调深度</a-button>
+              <span class="text-xs text-gray-500">{{ researchGate.next_step }}</span>
             </div>
           </div>
 
@@ -161,6 +233,53 @@
               />
               <a-input v-model:value="loss.note" class="mt-2" placeholder="补充说明（可空）" />
               <a-button class="mt-2" danger :loading="loading" @click="onLoss">登记流失</a-button>
+              <div class="mt-3 font-semibold mb-1">成交（赢单）</div>
+              <a-input v-model:value="win.amount" size="small" placeholder="成交金额" />
+              <a-input v-model:value="win.note" size="small" class="mt-1" placeholder="赢的原因/备注" />
+              <a-button class="mt-2" type="primary" :loading="loading" @click="onWin">登记成交</a-button>
+            </div>
+          </div>
+
+          <!-- P1-5 样品流程 -->
+          <div class="mt-4">
+            <div class="font-semibold mb-1">样品寄样（防黑洞）</div>
+            <div v-if="sampleView" class="text-sm text-gray-700 mb-2">
+              当前：<b>{{ sampleView.label }}</b>
+              <span v-if="sampleView.fee_status"> · 费用{{ sampleView.fee_status }}</span>
+              <span v-if="sampleView.tracking_no"> · 单号 {{ sampleView.tracking_no }}</span>
+              <div class="text-xs text-gray-500 mt-1">{{ sampleView.next_action }}</div>
+              <a-alert
+                v-if="sampleView.fee_hole_risk"
+                class="mt-2"
+                type="error"
+                show-icon
+                message="样品已寄但费用未结，请催收或改为免费并备注"
+              />
+            </div>
+            <div class="grid gap-2 md:grid-cols-4">
+              <a-select v-model:value="sampleForm.status" size="small" style="width: 100%">
+                <a-select-option value="requested">客户要样品</a-select-option>
+                <a-select-option value="confirmed">规格/费用确认</a-select-option>
+                <a-select-option value="preparing">备样中</a-select-option>
+                <a-select-option value="shipped">已寄出</a-select-option>
+                <a-select-option value="delivered">已签收</a-select-option>
+                <a-select-option value="fee_collected">样品费已收</a-select-option>
+                <a-select-option value="waived">免费寄样</a-select-option>
+                <a-select-option value="rejected">已取消</a-select-option>
+              </a-select>
+              <a-input v-model:value="sampleForm.product" size="small" placeholder="样品品名" />
+              <a-input v-model:value="sampleForm.tracking_no" size="small" placeholder="快递单号" />
+              <a-button size="small" type="primary" :loading="loading" @click="onSample">保存样品</a-button>
+            </div>
+            <div class="grid gap-2 md:grid-cols-3 mt-2">
+              <a-input v-model:value="sampleForm.fee_amount" size="small" placeholder="样品费金额" />
+              <a-select v-model:value="sampleForm.fee_status" size="small" style="width: 100%">
+                <a-select-option value="unbilled">未开费</a-select-option>
+                <a-select-option value="billed">已告知费用</a-select-option>
+                <a-select-option value="paid">费用已收</a-select-option>
+                <a-select-option value="waived">免费</a-select-option>
+              </a-select>
+              <a-input v-model:value="sampleForm.note" size="small" placeholder="备注（运费谁出等）" />
             </div>
           </div>
 
@@ -201,6 +320,230 @@
             </div>
           </div>
         </template>
+      </a-card>
+
+      <!-- P1-3 流失原因报表 -->
+      <a-card size="small" title="4. 流失原因报表（为什么聊跑了）">
+        <div class="flex items-center gap-2 mb-2">
+          <a-tag v-if="lossReport" color="error">流失 {{ lossReport.total_lost }} 单</a-tag>
+          <a-button size="small" :loading="lossLoading" @click="loadLossReport">刷新报表</a-button>
+          <a-button size="small" @click="showDict = true">编排词典</a-button>
+        </div>
+        <div v-if="!lossReport || !lossReport.distribution.length" class="text-gray-400 text-sm py-2">
+          {{ lossReport?.plain_summary || '暂无流失记录。登记流失后这里会出分布。' }}
+        </div>
+        <template v-else>
+          <div class="text-sm text-gray-700 mb-2">{{ lossReport.plain_summary }}</div>
+          <div v-for="d in lossReport.distribution" :key="d.reason" class="acq-loss-row">
+            <div class="acq-loss-reason">
+              <b>{{ d.reason }}</b>
+              <span class="text-gray-500">· {{ d.count }} 次（{{ d.percent }}%）</span>
+            </div>
+            <div class="acq-loss-bar">
+              <div class="acq-loss-fill" :style="{ width: `${Math.min(100, d.percent)}%` }" />
+            </div>
+            <div class="text-xs text-gray-500">{{ d.hint }}</div>
+          </div>
+        </template>
+      </a-card>
+
+      <!-- P1-7/P1-8 内容归因 + IP 槽位 -->
+      <a-card size="small" title="5. 内容归因 / IP槽位（只读）">
+        <div class="grid gap-3 md:grid-cols-2">
+          <div>
+            <div class="font-semibold mb-1">内容带来多少询盘</div>
+            <div class="text-sm text-gray-700 mb-2">{{ attrReport?.plain_summary || '暂无数据' }}</div>
+            <div v-if="attrReport && attrReport.items.length">
+              <div v-for="it in attrReport.items.slice(0, 5)" :key="it.content_id" class="text-xs text-gray-600 mb-1">
+                {{ it.content_title || it.content_id }} · 询盘 {{ it.inquiry_count }}
+              </div>
+            </div>
+            <div class="mt-2 flex gap-2">
+              <a-input v-model:value="attrForm.content_id" size="small" placeholder="内容ID" />
+              <a-input v-model:value="attrForm.inquiry_id" size="small" placeholder="询盘号" />
+              <a-button size="small" @click="onLinkContent">挂来源</a-button>
+            </div>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">IP / 指纹槽位</div>
+            <div class="text-sm text-gray-700 mb-2">{{ ipSlots?.plain_summary || '暂无数据' }}</div>
+            <div v-if="ipSlots">
+              <div v-for="s in ipSlots.slots" :key="s.slot_id" class="text-xs text-gray-600 mb-1">
+                {{ s.label }} · <a-tag :color="s.status === 'unknown' ? 'default' : 'success'" class="ml-1">{{ s.status_label }}</a-tag>
+              </div>
+              <div class="text-xs text-gray-400 mt-1">{{ ipSlots.hint }}</div>
+            </div>
+          </div>
+        </div>
+      </a-card>
+
+      <!-- P2 Win/Loss + Onboarding -->
+      <a-card size="small" title="6. 成交/流失 · 开通五步">
+        <div class="grid gap-3 md:grid-cols-2">
+          <div>
+            <div class="font-semibold mb-1">成交 vs 流失</div>
+            <div class="text-sm text-gray-700 mb-2">{{ winLoss?.plain_summary || '暂无数据' }}</div>
+            <div class="flex gap-2 flex-wrap text-xs text-gray-600">
+              <a-tag v-if="winLoss" color="success">成交 {{ winLoss.won_count }}</a-tag>
+              <a-tag v-if="winLoss" color="error">流失 {{ winLoss.lost_count }}</a-tag>
+            </div>
+            <a-button size="small" class="mt-2" :loading="p2Loading" @click="loadP2">刷新</a-button>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">开通引导 {{ onboarding?.done_count || 0 }}/{{ onboarding?.total || 5 }}</div>
+            <div class="text-sm text-gray-700 mb-2">{{ onboarding?.plain_summary || '暂无' }}</div>
+            <div v-if="onboarding">
+              <div v-for="s in onboarding.steps" :key="s.id" class="text-xs mb-1">
+                <a-tag :color="s.done ? 'success' : 'default'">{{ s.status_label }}</a-tag>
+                {{ s.title }} — {{ s.plain }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </a-card>
+
+      <!-- P2-1/3 经验真源 + 权重建议 -->
+      <a-card size="small" title="7. 经验真源 · 航道权重建议（人审）">
+        <div class="grid gap-3 md:grid-cols-2">
+          <div>
+            <div class="font-semibold mb-1">经验真源</div>
+            <div class="text-sm text-gray-700">{{ expSource?.plain_summary || '—' }}</div>
+            <div class="text-xs text-gray-500 mt-1">
+              主源：{{ expSource?.primary_source || 'evolution_pg' }}
+              <a-tag v-if="expSource?.json_fallback_used" color="warning" class="ml-1">JSON兜底</a-tag>
+            </div>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">航道权重建议 {{ weightView?.plain_summary || '' }}</div>
+            <div v-if="weightView && weightView.suggestions">
+              <div v-for="s in weightView.suggestions.slice(0, 6)" :key="s.intent" class="text-xs mb-1">
+                {{ s.label }}：{{ s.base_weight }} → <b>{{ s.suggested_weight }}</b>
+                <a-tag v-if="s.status === 'insufficient'" class="ml-1">样本不足</a-tag>
+                <a-tag v-else-if="s.delta !== 0" :color="s.delta > 0 ? 'success' : 'warning'" class="ml-1">
+                  {{ s.delta > 0 ? '建议上调' : '建议下调' }}
+                </a-tag>
+                <div class="text-gray-400" v-if="s.reasons && s.reasons[0]">{{ s.reasons[0] }}</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-400 mt-1">只出建议，不自动改调度。</div>
+          </div>
+        </div>
+      </a-card>
+
+      <!-- P2-6/7/8/10 账单 · 撞单 · 手机待办 · 旺财补救 -->
+      <a-card size="small" title="8. 账单说明 · 撞单 · 手机待办 · 建站卡壳补救">
+        <div class="grid gap-3 md:grid-cols-2">
+          <div>
+            <div class="font-semibold mb-1">账单（大白话）</div>
+            <div class="text-sm text-gray-700 mb-1">{{ billing?.plain_summary || '—' }}</div>
+            <div v-if="billing && billing.items.length" class="acq-bill-list">
+              <div v-for="(b, i) in billing.items.slice(0, 6)" :key="i" class="text-xs text-gray-600">
+                {{ b.plain }}
+              </div>
+            </div>
+            <div class="font-semibold mt-3 mb-1">撞单规则</div>
+            <div class="text-xs text-gray-600">{{ collision?.rule || '无主可认领；有主须确认交接并留痕。' }}</div>
+            <div class="text-xs text-gray-500">{{ collision?.plain_summary || '' }}</div>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">手机今日待办</div>
+            <div class="text-sm text-gray-700">{{ mobileBrief?.brief || '—' }}</div>
+            <div v-if="mobileBrief && mobileBrief.top.length" class="text-xs text-gray-600 mt-1">
+              <div v-for="m in mobileBrief.top" :key="m.inquiry_id" class="acq-mobile-item">
+                <b>{{ m.display }}</b> · {{ m.next }} · {{ m.sla }}
+              </div>
+            </div>
+            <div class="font-semibold mt-3 mb-1">建站卡壳 → 补救</div>
+            <div class="text-sm text-gray-700">{{ rescue?.plain_summary || '—' }}</div>
+            <div v-if="rescue?.blocked && rescue.next_steps?.length" class="text-xs text-gray-600 mt-1">
+              <div v-for="(s, i) in rescue.next_steps" :key="i">· {{ s }}</div>
+              <div class="text-gray-400 mt-1" v-if="rescue.repeated">已抑制重复派发</div>
+              <div v-else-if="rescue.allow_dispatch" class="mt-1">
+                建议意图：<b>{{ rescue.suggested_intent }}</b>（可回上方智能拆解派发）
+              </div>
+            </div>
+            <div class="font-semibold mt-3 mb-1">NPS / 挽回</div>
+            <div class="text-sm text-gray-700">{{ npsView?.plain_summary || '—' }}</div>
+            <div v-if="npsView?.rescue_actions?.length" class="text-xs text-gray-600 mt-1">
+              <div v-for="(a, i) in npsView.rescue_actions" :key="i">· {{ a }}</div>
+            </div>
+          </div>
+        </div>
+      </a-card>
+
+      <!-- P3 合规闸门 -->
+      <a-card size="small" title="9. 报价有效期 · 交期门禁 · 退订 · 付款风险">
+        <div class="grid gap-3 md:grid-cols-2">
+          <div>
+            <div class="font-semibold mb-1">报价有效期</div>
+            <div class="text-sm text-gray-700">{{ cardQuote?.plain || '打开跟单卡后显示' }}</div>
+            <div class="flex gap-2 mt-2">
+              <a-input v-model:value="p3Form.quote_at" size="small" placeholder="报价日 YYYY-MM-DD" />
+              <a-input v-model:value="p3Form.valid_days" size="small" placeholder="有效天数" style="width:90px" />
+              <a-button size="small" @click="onQuoteValidity">登记报价</a-button>
+            </div>
+            <div class="font-semibold mt-3 mb-1">交期门禁</div>
+            <div class="text-sm text-gray-700">{{ cardLead?.plain || '无证据不得保证交期' }}</div>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <a-input v-model:value="p3Form.leadtime_days" size="small" placeholder="承诺天数" style="width:90px" />
+              <a-checkbox v-model:checked="p3Form.has_inv">有现货</a-checkbox>
+              <a-checkbox v-model:checked="p3Form.has_cap">有产能</a-checkbox>
+              <a-button size="small" @click="onLeadtime">检查交期</a-button>
+            </div>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">退订 / 抑制</div>
+            <div class="text-sm text-gray-700">{{ suppression?.plain_summary || '—' }}</div>
+            <div class="flex gap-2 mt-2">
+              <a-input v-model:value="p3Form.sup_email" size="small" placeholder="邮箱" />
+              <a-button size="small" danger @click="onSuppress">加入抑制</a-button>
+            </div>
+            <div class="font-semibold mt-3 mb-1">付款风险（自动 PI 闸）</div>
+            <div class="text-sm text-gray-700">{{ payRisk?.plain || '—' }}</div>
+            <div class="text-xs text-gray-500" v-if="payRisk">
+              等级 {{ payRisk.level }} · 自动PI {{ payRisk.auto_pi_allowed ? '允许' : '禁止' }}
+              <div v-if="payRisk.reasons?.length">· {{ payRisk.reasons[0] }}</div>
+            </div>
+            <div class="flex gap-2 mt-2">
+              <a-input v-model:value="p3Form.risk_country" size="small" placeholder="国家" style="width:80px" />
+              <a-button size="small" @click="onPayRisk(true)">检查自动PI</a-button>
+            </div>
+          </div>
+        </div>
+      </a-card>
+
+      <!-- P3-4/8 知识队列 + 制裁重扫 -->
+      <a-card size="small" title="10. 必读知识 · 名单重扫">
+        <div class="grid gap-3 md:grid-cols-2">
+          <div>
+            <div class="font-semibold mb-1">合规/知识待读</div>
+            <div class="text-sm text-gray-700 mb-2">{{ know?.plain_summary || '—' }}</div>
+            <div v-if="know?.next_item" class="text-xs text-gray-600 mb-2">
+              下一题：<b>{{ know.next_item.title }}</b>
+              <div class="text-gray-500">{{ know.next_item.plain }}</div>
+            </div>
+            <div v-if="know?.items?.length" class="acq-know-list">
+              <div v-for="k in know.items" :key="k.id" class="acq-know-item">
+                <a-tag :color="k.done ? 'success' : 'default'">{{ k.done ? '已读' : '待读' }}</a-tag>
+                <span class="text-xs">{{ k.title }}</span>
+                <a-button v-if="!k.done" size="small" type="link" @click="onKnowDone(k.id)">标记已读</a-button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">名单重扫（制裁/风险）</div>
+            <div class="text-sm text-gray-700">{{ riskRescan?.plain_summary || '—' }}</div>
+            <div class="text-xs text-gray-500 mt-1">{{ riskRescan?.source_plain }}</div>
+            <div v-if="riskRescan?.items?.length" class="mt-2">
+              <div v-for="r in riskRescan.items.slice(0, 5)" :key="r.inquiry_id" class="acq-know-item">
+                <a-tag :color="r.due ? 'warning' : 'success'">{{ r.status_label }}</a-tag>
+                <span class="text-xs">{{ r.plain }}</span>
+                <a-button v-if="r.due && form.inquiry_id === r.inquiry_id" size="small" type="link" @click="onMarkRisk">已重扫</a-button>
+              </div>
+            </div>
+            <a-button size="small" class="mt-2" :loading="p2Loading" @click="loadP2">刷新</a-button>
+          </div>
+        </div>
       </a-card>
     </div>
 
@@ -252,6 +595,22 @@
         </div>
       </div>
     </a-modal>
+
+    <!-- P1-9 编排词典 -->
+    <a-modal v-model:open="showDict" title="编排词典 v1（已验证航道）" width="760px" :footer="null">
+      <div class="space-y-3">
+        <a-alert type="info" show-icon :message="dictSummary || '已验证航道词典'" />
+        <div v-for="r in dictRoutes" :key="r.id" class="acq-dict-item">
+          <div class="font-semibold">{{ r.name }} <span class="text-gray-400 text-xs">{{ r.intent }}</span></div>
+          <div class="text-sm text-gray-700">{{ r.order_label }}</div>
+          <div class="text-xs text-gray-500">{{ r.plain }}</div>
+          <div class="text-xs text-gray-400 mt-1">
+            节点：{{ r.nodes.join(' → ') }}
+            <span v-if="r.human_review?.length"> ｜ 人审：{{ r.human_review.join('、') }}</span>
+          </div>
+        </div>
+      </div>
+    </a-modal>
   </YdPage>
 </template>
 
@@ -266,9 +625,34 @@ import YdPage from '@/components/youding/YdPage.vue'
 import {
   addOpsCardNote,
   dispatchAcquisition,
+  getLossReport,
   getOpsCard,
+  getOrchestrationDictionary,
+  getContentAttribution,
+  getExperienceSource,
+  getBillingExplain,
+  getCollisionReport,
+  getMobileFollowupBrief,
+  getNpsRescue,
+  getWangcaiRescue,
+  getIpSlots,
+  getOnboarding,
+  getSuppressionList,
+  getPaymentRisk,
+  getKnowledgeQueue,
+  getRiskRescan,
+  markKnowledge,
+  markRiskScan,
+  updateQuoteValidity,
+  updateLeadtime,
+  addSuppression,
+  getTemplateWeights,
   getWalletStatus,
+  getWinLoss,
+  claimOpsInquiry,
   ingestReply,
+  linkContentInquiry,
+  recordOpsCardWin,
   listPlaybooks,
   listAcquisitionChannels,
   listFollowups,
@@ -277,13 +661,21 @@ import {
   recordOpsCardLoss,
   touchOpsCard,
   translateAcquisition,
+  updateOpsCardFulfillment,
   updateOpsCardGoods,
   updateOpsCardLogistics,
   updateOpsCardPayment,
+  updateOpsCardResearch,
+  updateOpsCardSample,
   type IntentPreviewResponse,
+  type LossReportResponse,
   type OpsCardPayload,
   type OpsCardResponse,
   type OpsCardSummary,
+  type OrchestrationDictionaryResponse,
+  type ResearchGateView,
+  type SampleView,
+  type ScoreDisplay,
 } from '@/api/acquisition'
 import { apiGet } from '@/utils/api'
 
@@ -332,6 +724,177 @@ const pay = reactive({
 })
 const logi = reactive({ carrier: '', bl_no: '', etd: '', eta: '' })
 const goods = reactive({ name: '', spec: '', qty: '', unit: 'pcs' })
+
+// P1 批量状态
+const scoreDisplay = ref<ScoreDisplay>({ grade: '-', reason: '尚未评分', score: null, action: '先观察或补信息', large: false })
+const fulfillment = ref<OpsCardResponse['fulfillment']>(null)
+const sampleView = ref<SampleView | null>(null)
+const researchGate = ref<ResearchGateView | null>(null)
+const fulForm = reactive({ key: 'quote', status: 'pending', ref: '' })
+const sampleForm = reactive({
+  status: 'requested',
+  product: '',
+  tracking_no: '',
+  fee_amount: '',
+  fee_status: 'unbilled',
+  note: '',
+})
+const researchForm = reactive({ level: 'none' })
+const lossReport = ref<LossReportResponse | null>(null)
+const lossLoading = ref(false)
+const showDict = ref(false)
+const dictRoutes = ref<OrchestrationDictionaryResponse['routes']>([])
+const dictSummary = ref('')
+const attrReport = ref<Awaited<ReturnType<typeof getContentAttribution>> | null>(null)
+const ipSlots = ref<Awaited<ReturnType<typeof getIpSlots>> | null>(null)
+const attrForm = reactive({ content_id: '', inquiry_id: '' })
+
+async function loadGrowthOps() {
+  try {
+    const tenant = await resolveTenantId()
+    attrReport.value = await getContentAttribution(tenant)
+  } catch { attrReport.value = null }
+  try {
+    const tenant = await resolveTenantId()
+    ipSlots.value = await getIpSlots(tenant)
+  } catch { ipSlots.value = null }
+}
+
+async function onLinkContent() {
+  if (!attrForm.content_id || !attrForm.inquiry_id) {
+    message.warning('请填内容ID和询盘号')
+    return
+  }
+  try {
+    const tenant = await resolveTenantId()
+    await linkContentInquiry({
+      content_id: attrForm.content_id,
+      inquiry_id: attrForm.inquiry_id,
+      tenant_id: tenant,
+    })
+    setAlert('已把询盘挂到该内容来源。', 'success')
+    void loadGrowthOps()
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+function applyCard(resp: OpsCardResponse | null) {
+  if (!resp) return
+  card.value = resp.card || null
+  summary.value = resp.summary || {}
+  if ((resp as any).quote_validity) cardQuote.value = (resp as any).quote_validity
+  if ((resp as any).leadtime_gate) cardLead.value = (resp as any).leadtime_gate
+  if ((resp as any).payment_risk) payRisk.value = (resp as any).payment_risk
+  if (resp.score_display) {
+    scoreDisplay.value = resp.score_display
+  } else if (resp.card) {
+    scoreDisplay.value = {
+      grade: resp.card.buyer_grade || '-',
+      reason: resp.card.buyer_grade_reason || '尚未评分',
+      score: (resp.card.buyer_score as number) || null,
+      action: '先观察或补信息',
+      large: !!resp.card.buyer_grade,
+    }
+  }
+  fulfillment.value = resp.fulfillment || null
+  sampleView.value = resp.sample || null
+  researchGate.value = resp.research_gate || null
+  if (resp.sample) {
+    sampleForm.status = resp.sample.status && resp.sample.status !== 'none' ? resp.sample.status : 'requested'
+    sampleForm.product = resp.sample.product || sampleForm.product
+    sampleForm.tracking_no = resp.sample.tracking_no || sampleForm.tracking_no
+    sampleForm.fee_amount = String(resp.sample.fee_amount || sampleForm.fee_amount || '')
+    sampleForm.fee_status = resp.sample.fee_status || sampleForm.fee_status
+    sampleForm.note = resp.sample.note || sampleForm.note
+  }
+  if (resp.research_gate) {
+    researchForm.level = resp.research_gate.research_level || 'none'
+  }
+  if (resp.card) {
+    const payAny = resp.card.payment as Record<string, unknown> | undefined
+    if (payAny) {
+      pay.pi_no = String(payAny.pi_no || pay.pi_no || '')
+      pay.deposit_amount = String(payAny.deposit_amount || pay.deposit_amount || '')
+      pay.deposit_paid_at = String(payAny.deposit_paid_at || pay.deposit_paid_at || '')
+      pay.balance_status = String(payAny.balance_status || pay.balance_status || 'pending')
+    }
+  }
+}
+
+async function onFulfillment() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await updateOpsCardFulfillment(form.inquiry_id, {
+      key: fulForm.key,
+      status: fulForm.status,
+      ref: fulForm.ref,
+    })
+    applyCard(resp)
+    setAlert('节点状态已保存。', 'success')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  } finally { loading.value = false }
+}
+
+async function onSample() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await updateOpsCardSample(form.inquiry_id, {
+      status: sampleForm.status,
+      product: sampleForm.product,
+      tracking_no: sampleForm.tracking_no,
+      fee_amount: Number(sampleForm.fee_amount) || 0,
+      fee_status: sampleForm.fee_status,
+      note: sampleForm.note,
+    })
+    applyCard(resp)
+    setAlert('样品状态已保存。', 'success')
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e)
+    setAlert(`样品保存失败：${msg}`, 'error')
+  } finally { loading.value = false }
+}
+
+async function onResearch() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await updateOpsCardResearch(form.inquiry_id, {
+      research_level: researchForm.level,
+      note: '',
+    })
+    applyCard(resp)
+    setAlert('背调深度已登记。无背调禁止个性化开发信。', researchForm.level === 'none' ? 'warning' : 'success')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  } finally { loading.value = false }
+}
+
+async function loadLossReport() {
+  lossLoading.value = true
+  try {
+    const tenant = await resolveTenantId()
+    lossReport.value = await getLossReport(tenant)
+  } catch {
+    lossReport.value = null
+  } finally {
+    lossLoading.value = false
+  }
+}
+
+async function loadDictionary() {
+  try {
+    const d = await getOrchestrationDictionary()
+    dictRoutes.value = d.routes || []
+    dictSummary.value = d.plain_summary || ''
+  } catch {
+    dictRoutes.value = []
+    dictSummary.value = ''
+  }
+}
 
 async function onPay() {
   if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
@@ -430,6 +993,160 @@ const form = reactive({
 const touch = reactive({ summary: '', next_action: '' })
 const note = reactive({ body: '' })
 const loss = reactive({ reasons: [] as string[], note: '' })
+const win = reactive({ amount: '', note: '' })
+const winLoss = ref<Awaited<ReturnType<typeof getWinLoss>> | null>(null)
+const onboarding = ref<Awaited<ReturnType<typeof getOnboarding>> | null>(null)
+const p2Loading = ref(false)
+const expSource = ref<Awaited<ReturnType<typeof getExperienceSource>> | null>(null)
+const weightView = ref<Awaited<ReturnType<typeof getTemplateWeights>> | null>(null)
+const billing = ref<Awaited<ReturnType<typeof getBillingExplain>> | null>(null)
+const collision = ref<Awaited<ReturnType<typeof getCollisionReport>> | null>(null)
+const mobileBrief = ref<Awaited<ReturnType<typeof getMobileFollowupBrief>> | null>(null)
+const rescue = ref<Awaited<ReturnType<typeof getWangcaiRescue>> | null>(null)
+const npsView = ref<Awaited<ReturnType<typeof getNpsRescue>> | null>(null)
+const suppression = ref<Awaited<ReturnType<typeof getSuppressionList>> | null>(null)
+const payRisk = ref<Awaited<ReturnType<typeof getPaymentRisk>> | null>(null)
+const cardQuote = ref<Record<string, any> | null>(null)
+const cardLead = ref<Record<string, any> | null>(null)
+const know = ref<Awaited<ReturnType<typeof getKnowledgeQueue>> | null>(null)
+const riskRescan = ref<Awaited<ReturnType<typeof getRiskRescan>> | null>(null)
+const p3Form = reactive({
+  quote_at: '',
+  valid_days: '14',
+  leadtime_days: '',
+  has_inv: false,
+  has_cap: false,
+  sup_email: '',
+  risk_country: 'IN',
+})
+
+async function onQuoteValidity() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  try {
+    const resp = await updateQuoteValidity(form.inquiry_id, {
+      quote_at: p3Form.quote_at,
+      valid_days: Number(p3Form.valid_days) || 14,
+    })
+    applyCard(resp)
+    cardQuote.value = (resp as any).quote_validity || null
+    setAlert(cardQuote.value?.plain || '报价有效期已登记', 'info')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+async function onLeadtime() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  try {
+    const resp = await updateLeadtime(form.inquiry_id, {
+      promised_days: p3Form.leadtime_days ? Number(p3Form.leadtime_days) : undefined,
+      has_inventory_evidence: p3Form.has_inv,
+      has_capacity_evidence: p3Form.has_cap,
+    })
+    applyCard(resp)
+    cardLead.value = (resp as any).leadtime_gate || null
+    setAlert(cardLead.value?.plain || '交期检查完成', cardLead.value?.allowed ? 'success' : 'warning')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+async function onSuppress() {
+  if (!p3Form.sup_email) { message.warning('请填邮箱'); return }
+  try {
+    const r = await addSuppression({ email: p3Form.sup_email, tenant_id: tenantId.value, reason: 'unsubscribe' })
+    setAlert(r.message || '已加入抑制', 'warning')
+    const tenant = await resolveTenantId()
+    suppression.value = await getSuppressionList(tenant)
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+async function onPayRisk(auto = true) {
+  try {
+    payRisk.value = await getPaymentRisk({
+      country: p3Form.risk_country,
+      buyer_type: 'new',
+      inquiry_id: form.inquiry_id,
+      auto_pi: auto,
+      deposit_ratio: 0,
+    })
+    setAlert(payRisk.value?.plain || '风险检查完成', payRisk.value?.auto_pi_allowed ? 'success' : 'warning')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+async function onKnowDone(id: string) {
+  try {
+    const r = await markKnowledge({ item_id: id, action: 'done', tenant_id: tenantId.value })
+    setAlert(r.message || '已标记', 'success')
+    const tenant = await resolveTenantId()
+    know.value = await getKnowledgeQueue(tenant)
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+async function onMarkRisk() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  try {
+    const r = await markRiskScan({
+      inquiry_id: form.inquiry_id,
+      result: 'unknown',
+      source: 'manual',
+      note: '人工复核（未接外部名单源）',
+    })
+    setAlert(r.message || '已登记重扫', 'success')
+    const tenant = await resolveTenantId()
+    riskRescan.value = await getRiskRescan(tenant)
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  }
+}
+
+async function loadP2() {
+  p2Loading.value = true
+  try {
+    const tenant = await resolveTenantId()
+    winLoss.value = await getWinLoss(tenant)
+    onboarding.value = await getOnboarding(tenant, !!dispatchResult.value?.dispatched)
+    expSource.value = await getExperienceSource(tenant)
+    weightView.value = await getTemplateWeights(tenant)
+    billing.value = await getBillingExplain(tenant)
+    collision.value = await getCollisionReport(tenant)
+    mobileBrief.value = await getMobileFollowupBrief(tenant)
+    rescue.value = await getWangcaiRescue(tenant)
+    npsView.value = await getNpsRescue(tenant)
+    suppression.value = await getSuppressionList(tenant)
+    know.value = await getKnowledgeQueue(tenant)
+    riskRescan.value = await getRiskRescan(tenant)
+  } catch {
+    winLoss.value = null
+  } finally {
+    p2Loading.value = false
+  }
+}
+
+async function onWin() {
+  if (!form.inquiry_id) { message.warning('请先填写询盘编号'); return }
+  loading.value = true
+  try {
+    const resp = await recordOpsCardWin(form.inquiry_id, {
+      amount: Number(win.amount) || 0,
+      currency: 'USD',
+      note: win.note,
+      reasons: win.note ? [win.note] : [],
+    })
+    applyCard(resp)
+    if (resp.win_loss) winLoss.value = resp.win_loss
+    setAlert('成交已登记，会写入经验环。', 'success')
+  } catch (e: unknown) {
+    setAlert(e instanceof Error ? e.message : String(e), 'error')
+  } finally { loading.value = false }
+}
+
 const lossOptions = [
   { label: '价格高', value: '价格高' },
   { label: '认证不够', value: '认证不够' },
@@ -473,12 +1190,6 @@ const gradeColor = computed(() => {
   if (g === 'D') return 'error'
   return 'default'
 })
-
-function applyCard(resp: OpsCardResponse | null) {
-  if (!resp) return
-  card.value = resp.card || null
-  summary.value = resp.summary || {}
-}
 
 function setAlert(text: string, type: typeof alertType.value = 'info') {
   alert.value = text
@@ -538,6 +1249,7 @@ async function onIngestReply() {
       setAlert('已建卡并记录跟进。请看下方六格信息。', 'success')
     }
     void loadFollowups()
+    void loadLossReport()
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e)
     setAlert(`保存失败：${msg}。请确认后端已启动，或稍后重试。`, 'error')
@@ -713,6 +1425,10 @@ onMounted(async () => {
   }
   await loadFollowups()
   void loadChannels()
+  void loadLossReport()
+  void loadDictionary()
+  void loadGrowthOps()
+  void loadP2()
 })
 
 const wallet = ref<{
@@ -805,5 +1521,105 @@ const translateResult = ref<{
   gap: 6px;
   align-items: center;
   margin-bottom: 4px;
+}
+.acq-score-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+  margin-bottom: 8px;
+}
+.acq-score-letter {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  background: #9ca3af;
+  flex-shrink: 0;
+}
+.acq-score-letter.g-a { background: #10b981; }
+.acq-score-letter.g-b { background: #4a9b8c; }
+.acq-score-letter.g-c { background: #f59e0b; }
+.acq-score-letter.g-d { background: #ef4444; }
+.acq-score-meta { flex: 1; min-width: 180px; }
+.acq-score-reason { font-weight: 600; color: #111827; }
+.acq-score-action { font-size: 12px; color: #6b7280; margin-top: 2px; }
+.acq-nodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+.acq-node {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px;
+  background: #fff;
+  text-align: center;
+}
+.acq-node.st-done { border-color: #10b981; background: #ecfdf5; }
+.acq-node.st-active { border-color: #4a9b8c; background: #f0faf7; }
+.acq-node.st-overdue { border-color: #ef4444; background: #fef2f2; }
+.acq-node-label { font-size: 13px; font-weight: 600; color: #111827; }
+.acq-node-status { font-size: 12px; color: #6b7280; margin-top: 2px; }
+.acq-node-ref { font-size: 11px; color: #4a9b8c; margin-top: 2px; word-break: break-all; }
+.acq-loss-row { margin-bottom: 10px; }
+.acq-loss-reason { font-size: 13px; margin-bottom: 4px; }
+.acq-loss-bar {
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+.acq-loss-fill {
+  height: 100%;
+  background: #ef4444;
+  border-radius: 4px;
+}
+.acq-dict-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fafafa;
+}
+.acq-bill-list { max-height: 120px; overflow: auto; }
+.acq-mobile-item { padding: 4px 0; border-bottom: 1px dashed #e5e7eb; }
+
+/* P2-8 移动端跟单：六格/待办在手机上单列可点 */
+@media (max-width: 640px) {
+  .acq-ops { max-width: 100%; padding: 0 4px; }
+  .acq-grid { grid-template-columns: 1fr 1fr; }
+  .acq-score-bar { gap: 8px; padding: 10px; }
+  .acq-score-letter { width: 48px; height: 48px; font-size: 26px; }
+  .acq-nodes { grid-template-columns: 1fr 1fr; }
+  .acq-cell { min-height: 72px; padding: 10px; }
+  .acq-value { font-size: 14px; }
+  .acq-mobile-item {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e5e7eb;
+    font-size: 13px;
+  }
+  .acq-bill-list { max-height: 140px; overflow: auto; }
+  .acq-know-list { max-height: 160px; overflow: auto; }
+  .acq-know-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+}
+  .acq-nodes { grid-template-columns: 1fr 1fr; }
+  .acq-follow { padding: 10px; }
 }
 </style>
