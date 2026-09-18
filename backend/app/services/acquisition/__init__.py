@@ -908,6 +908,13 @@ buyer_store = BuyerMasterStore()
 ops_card_store = OpsCardStore()
 playbook_store = PlaybookStore()
 
+# 本地/生产：跟单卡 PG 真源（重启不丢；无库时诚实内存降级）
+try:
+    from app.services.acquisition.ops_card_pg import patch_store_persistence
+    patch_store_persistence(ops_card_store)
+except Exception:
+    pass
+
 
 def score_grade(score: int) -> tuple[str, str]:
     """0-100 → (A/B/C/D, 大白话理由)。"""
