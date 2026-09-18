@@ -49,6 +49,9 @@ from . import agent_ops_executor  # noqa: F401
 from . import compliance_ops_executor  # noqa: F401
 from . import portal_ops_executor  # noqa: F401
 from . import data_ops_executor  # noqa: F401
+# 全模块业务机器人 + Desktop Hermes 外层（AEOS/DSH 蓝图落地）
+from . import biz_bot_executor  # noqa: F401
+from . import desktop_hermes_executor  # noqa: F401
 
 __all__ = [
     "BaseExecutor",

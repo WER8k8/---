@@ -52,6 +52,14 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "platform_ops.tenant_list", "platform_ops.product_catalog",
     "platform_ops.seo_health", "platform_ops.system_health", "platform_ops.notify_draft",
     "module_matrix.matrix.inspect", "module_matrix.matrix.invoke", "module_matrix.matrix.health",
+    "biz_bot.run", "biz_bot.list_actions", "biz_bot.coverage",
+    "desktop_hermes.assemble", "desktop_hermes.aeos", "desktop_hermes.aeos_invoke",
+    "desktop_hermes.feedback", "desktop_hermes.scenes", "desktop_hermes.status",
+    "agent_ops.performance", "agent_ops.knowledge_q",
+    "growth_probe.channels", "growth_probe.payment", "growth_probe.seo_include", "growth_probe.mcp_health",
+    "compliance_ops.overview", "compliance_ops.alerts", "compliance_ops.hash",
+    "portal_ops.agent_summary", "portal_ops.media_status", "portal_ops.moss_version",
+    "data_ops.content_stats", "data_ops.notify_draft", "data_ops.domain_resolve",
     "inbox.classify",
     "lead.search", "lead.score",
     "inquiry.capture",
@@ -62,6 +70,10 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "publish.multi", "publish.single",
     "nurture.create", "nurture.advance",
     "egress.assign", "egress.provision",
+    "research.brief", "research.deep_run",
+    "product.create", "media.render", "engagement.send", "forum.post",
+    "browser.scrape", "ubrain.chat", "ai.chat", "ai.reason", "wangcai.ask",
+    "site.generate", "site.build", "content.create", "seo.optimize", "seo.audit",
     "default",
 })
 
@@ -564,6 +576,282 @@ def _fulfillment_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> 
     )
 
 
+def _composite_super_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """航道D 复合超导：调研 → 找客 → 背调 → 评分 → PI 风险闸 → 计量。
+
+    对齐 DesktopHermes 蓝图阶段 4-D：只使用已注册执行器。
+    """
+    keyword = str(payload.get("keyword") or payload.get("message") or payload.get("topic") or "").strip()
+    country = str(payload.get("country") or "Global").strip()
+    skill_refs = payload.get("_skill_refs") or []
+    return TaskGraph(
+        plan_id=plan_id,
+        event_id=event_id,
+        strategy=str(payload.get("strategy") or "composite"),
+        policies=GraphPolicies(
+            max_parallel=2,
+            budget_cap={"max_tokens_total": 120000},
+            approval_required=["outreach.letter", "document.generate_pi"],
+            degradation="skip",
+        ),
+        nodes=[
+            TaskNode(
+                id="n1", executor="deerflow", capability="research.deep_run",
+                depends_on=[],
+                input={"topic": keyword or "composite market", "depth": "standard"},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n2", executor="lead", capability="lead.search",
+                depends_on=[],
+                input={"keyword": keyword, "country": country, "limit": int(payload.get("limit") or 15)},
+                on_fail="abort",
+            ),
+            TaskNode(
+                id="n3", executor="accio", capability="prospect.enrich",
+                depends_on=["n2"],
+                input_from={"prospects": "n2.output.leads"},
+                input={"country": country, "research_depth": "standard"},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n4", executor="lead", capability="lead.score",
+                depends_on=["n3"],
+                input_from={"prospects": "n3.output.prospects"},
+                input={"min_score": int(payload.get("min_score") or 40)},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n5", executor="trade_ops", capability="trade_ops.pi_precheck",
+                depends_on=["n4"],
+                input={
+                    "country": country,
+                    "buyer_type": str(payload.get("buyer_type") or "new"),
+                    "auto_pi": False,
+                    "skill_refs": skill_refs[:3] if isinstance(skill_refs, list) else [],
+                },
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n6", executor="accio", capability="outreach.letter",
+                depends_on=["n4", "n5"],
+                input_from={"prospects": "n4.output.qualified"},
+                input={
+                    "keyword": keyword,
+                    "country": country,
+                    "human_send_required": True,
+                    "mode": "composite_followup",
+                },
+                on_fail="skip",
+                budget={"max_tokens": 20000},
+            ),
+            TaskNode(
+                id="n7", executor="billing", capability="billing.meter",
+                depends_on=["n6"],
+                input={"event_type": "composite_super_run", "scene": "lane_d_composite", "keyword": keyword},
+                on_fail="skip",
+            ),
+        ],
+    )
+
+
+def _billing_ops_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """计费/钱包/套餐大白话体检。"""
+    tid = str(payload.get("tenant_id") or "demo")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id, strategy="fast",
+        policies=GraphPolicies(max_parallel=2, degradation="skip"),
+        nodes=[
+            TaskNode(
+                id="n1", executor="commerce_ops", capability="commerce_ops.wallet_token",
+                depends_on=[], input={"tenant_id": tid}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n2", executor="biz_bot", capability="biz_bot.run",
+                depends_on=[], input={"module": "wallet", "tenant_id": tid}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n3", executor="billing", capability="billing.meter",
+                depends_on=["n1"],
+                input={"event_type": "billing_ops_probe", "scene": "billing_ops", "tenant_id": tid},
+                on_fail="skip",
+            ),
+        ],
+    )
+
+
+def _tender_dealer_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """经销商/招投标：制裁筛查 → 风险闸 → 招投标推进（人审）。"""
+    name = str(payload.get("name") or payload.get("company") or payload.get("message") or "")
+    tender_id = str(payload.get("tender_id") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id, strategy="standard",
+        policies=GraphPolicies(
+            max_parallel=2,
+            approval_required=["trade_ops.tender_advance", "document.generate_pi"],
+            degradation="skip",
+        ),
+        nodes=[
+            TaskNode(
+                id="n1", executor="trade_ops", capability="trade_ops.sanctions_screen",
+                depends_on=[],
+                input={"name": name, "company": name, "inquiry_id": str(payload.get("inquiry_id") or "")},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n2", executor="trade_ops", capability="trade_ops.pi_precheck",
+                depends_on=["n1"],
+                input={
+                    "country": str(payload.get("country") or ""),
+                    "buyer_type": str(payload.get("buyer_type") or "dealer"),
+                    "auto_pi": False,
+                },
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n3", executor="trade_ops", capability="trade_ops.tender_advance",
+                depends_on=["n1", "n2"],
+                input={
+                    "tender_id": tender_id or f"TDR-{name[:12] or 'NEW'}",
+                    "to_stage": str(payload.get("to_stage") or "qualify"),
+                    "payment_terms": str(payload.get("payment_terms") or ""),
+                    "credit_ok": payload.get("credit_ok"),
+                },
+                on_fail="skip",
+            ),
+        ],
+    )
+
+
+def _risk_compliance_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """合规风险闸：制裁 → 外发抑制 → 合规哈希/告警。"""
+    subject = str(payload.get("company") or payload.get("name") or payload.get("message") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id, strategy="fast",
+        policies=GraphPolicies(max_parallel=2, degradation="skip"),
+        nodes=[
+            TaskNode(
+                id="n1", executor="trade_ops", capability="trade_ops.sanctions_screen",
+                depends_on=[],
+                input={"name": subject, "company": subject, "email": str(payload.get("email") or "")},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n2", executor="outreach_loop", capability="outreach_loop.gate",
+                depends_on=["n1"],
+                input={
+                    "inquiry_id": str(payload.get("inquiry_id") or ""),
+                    "research_level": str(payload.get("research_level") or "standard"),
+                },
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n3", executor="compliance_ops", capability="compliance_ops.hash",
+                depends_on=["n1"],
+                input={"text": subject[:200]},
+                on_fail="skip",
+            ),
+        ],
+    )
+
+
+def _knowledge_seo_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """知识 + SEO + 内容归因。"""
+    tid = str(payload.get("tenant_id") or "demo")
+    topic = str(payload.get("topic") or payload.get("message") or "")
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id, strategy="standard",
+        policies=GraphPolicies(max_parallel=2, degradation="skip"),
+        nodes=[
+            TaskNode(
+                id="n1", executor="content_deep", capability="content_deep.knowledge",
+                depends_on=[], input={"tenant_id": tid}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n2", executor="content_deep", capability="content_deep.seo_meta",
+                depends_on=[], input={"title": topic, "tenant_id": tid}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n3", executor="content_deep", capability="content_deep.acquisition",
+                depends_on=["n2"],
+                input={"tenant_id": tid, "inquiry_id": str(payload.get("inquiry_id") or "")},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n4", executor="platform_ops", capability="platform_ops.seo_health",
+                depends_on=["n2"], input={}, on_fail="skip",
+            ),
+        ],
+    )
+
+
+def _module_robot_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """全模块业务机器人批量体检（蓝图：每个模块都业务机器人）。"""
+    modules = payload.get("modules")
+    if not isinstance(modules, list) or not modules:
+        modules = ["acquisition", "crm_pipeline", "wallet", "tenants", "orchestration", "skill_store"]
+    nodes = [
+        TaskNode(
+            id="n0", executor="biz_bot", capability="biz_bot.coverage",
+            depends_on=[], input={}, on_fail="abort",
+        )
+    ]
+    for i, m in enumerate(modules[:20], start=1):
+        nodes.append(
+            TaskNode(
+                id=f"n{i}", executor="biz_bot", capability="biz_bot.run",
+                depends_on=["n0"],
+                input={"module": str(m), "tenant_id": str(payload.get("tenant_id") or "demo")},
+                on_fail="skip",
+            )
+        )
+    nodes.append(
+        TaskNode(
+            id="n_matrix", executor="module_matrix", capability="matrix.health",
+            depends_on=["n0"],
+            input={"module": str(payload.get("health_module") or "acquisition")},
+            on_fail="skip",
+        )
+    )
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id, strategy="fast",
+        policies=GraphPolicies(max_parallel=4, degradation="skip"),
+        nodes=nodes,
+    )
+
+
+def _aeos_readiness_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """AEOS 八大子系统体检 + DSH 状态 + 业务机器人覆盖。"""
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id, strategy="standard",
+        policies=GraphPolicies(max_parallel=3, degradation="skip"),
+        nodes=[
+            TaskNode(
+                id="n1", executor="desktop_hermes", capability="desktop_hermes.aeos",
+                depends_on=[], input={}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n2", executor="desktop_hermes", capability="desktop_hermes.status",
+                depends_on=[], input={}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n3", executor="desktop_hermes", capability="desktop_hermes.aeos_invoke",
+                depends_on=["n1"],
+                input={"tenant_id": str(payload.get("tenant_id") or "demo")},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n4", executor="biz_bot", capability="biz_bot.coverage",
+                depends_on=[], input={}, on_fail="skip",
+            ),
+            TaskNode(
+                id="n5", executor="desktop_hermes", capability="desktop_hermes.scenes",
+                depends_on=["n2"], input={}, on_fail="skip",
+            ),
+        ],
+    )
+
+
 def _inquiry_convert_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
     """询盘转化轻量图：捕获 → 背调评分 → 开发/报价信草稿(人审)。"""
     raw = str(payload.get("message") or payload.get("raw_text") or "").strip()
@@ -635,6 +923,27 @@ _TEMPLATES: list[tuple[tuple[str, ...], IntentBuilder]] = [
     # UBrain 助手
     (("智能助手", "助手问答", "ubrain", "问答"),
      _ubrain_assistant_graph),
+    # AEOS / DesktopHermes 全域
+    (("aeos_readiness", "aeos", "八大子系统", "系统体检", "desktop_hermes"),
+     _aeos_readiness_graph),
+    # 全模块业务机器人
+    (("module_robot", "业务机器人", "module_batch", "全模块机器人"),
+     _module_robot_graph),
+    # 计费/钱包
+    (("billing_ops", "账单体检", "钱包余额", "套餐计费"),
+     _billing_ops_graph),
+    # 招投标/经销商
+    (("dealer_tender", "招投标", "经销商", "tender"),
+     _tender_dealer_graph),
+    # 合规风险
+    (("risk_compliance", "risk_scan", "合规筛查", "制裁筛查"),
+     _risk_compliance_graph),
+    # 知识+SEO
+    (("knowledge_seo", "内容获客", "content_acquisition", "知识SEO"),
+     _knowledge_seo_graph),
+    # 复合超导（航道D）
+    (("composite", "复合超导", "super_flow", "全链路获客"),
+     _composite_super_graph),
     # 建站
     (("generate_site", "site", "建站", "建官网", "落地页"),
      _site_launch_graph),
