@@ -1,0 +1,534 @@
+{
+  "status": "completed_with_errors",
+  "llm": {
+    "provider": "agnes",
+    "model": "agnes-2.5-flash"
+  },
+  "summary": {
+    "files_reviewed": 76,
+    "comments": 48,
+    "total_tokens": 319723,
+    "input_tokens": 301188,
+    "output_tokens": 18535,
+    "cache_read_tokens": 122112,
+    "elapsed": "7m24s",
+    "budget_exceeded": true
+  },
+  "tool_calls": {
+    "total": 29,
+    "by_tool": {
+      "code_comment": 29
+    },
+    "failure": 4,
+    "failure_by_tool": {
+      "code_comment": 4
+    },
+    "failure_details": [
+      {
+        "tool_call_number": 14,
+        "tool_name": "code_comment",
+        "file_path": "backend/app/api/v1/routes/acquisition.py",
+        "arguments": "{\"comments\": \"[{\\\"content\\\": \\\"Potential None dereference: `card.sample.status` is accessed in line 343 without null-check on `card.sample`. If `card.sample` is None, this will raise AttributeError.\\\", \\\"existing_code\\\": \\\"    current_status = (card.sample.status if card and card.sample else \\\\\\\"none\\\\\\\") or \\\\\\\"none\\\\\\\"\\\", \\\"category\\\": \\\"bug\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"    current_status = \\\\\\\"none\\\\\\\"\\\\n    if card and card.sample:\\\\n        current_status = card.sample.status or \\\\\\\"none\\\\\\\"\\\"}, {\\\"content\\\": \\\"Hardcoded tenant_id='demo' default across many endpoints allows unauthenticated/demo data leakage in production if AUTH isn't enforced. Consider making tenant_id required for write operations.\\\", \\\"existing_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\"\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = Field(..., description=\\\\\\\"租户ID\\\")}, {\\\"content\\\": \\\"Inconsistent use of `current_user` parameter: some endpoints accept it but don't use it for authorization checks. The `get_current_user` dependency should enforce authentication/authorization, but the code doesn't validate user-tenant matching.\\\", \\\"existing_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\\n    # Validate current_user.tenant_id matches requested tenant_id\\\\n    if current_user.tenant_id != tenant_id:\\\\n        raise HTTPException(status_code=403, detail=\\\\\\\"tenant_mismatch\\\\\\\")\\\"}]\"}",
+        "error": "Error: failed to parse 'comments' JSON string: invalid character ')' after object key:value pair"
+      },
+      {
+        "tool_call_number": 21,
+        "tool_name": "code_comment",
+        "file_path": "backend/app/api/v1/routes/acquisition.py",
+        "arguments": "{\"comments\": \"[{\\\"content\\\": \\\"Potential None dereference: card.sample.status is accessed without null-check on card.sample. If card.sample is None, this will raise AttributeError.\\\", \\\"existing_code\\\": \\\"    current_status = (card.sample.status if card and card.sample else \\\\\\\"none\\\\\\\") or \\\\\\\"none\\\\\\\"\\\", \\\"category\\\": \\\"bug\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"    current_status = \\\\\\\"none\\\\\\\"\\\\n    if card and card.sample:\\\\n        current_status = card.sample.status or \\\\\\\"none\\\\\\\"\\\"}, {\\\"content\\\": \\\"Hardcoded tenant_id='demo' default across many endpoints allows unauthenticated/demo data leakage in production if AUTH isn't enforced. Consider making tenant_id required for write operations.\\\", \\\"existing_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\"\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = Field(..., description=\\\\\\\"租户ID\\\")}, {\\\"content\\\": \\\"Inconsistent use of current_user parameter: some endpoints accept it but don't use it for authorization checks. The get_current_user dependency should enforce authentication/authorization, but the code doesn't validate user-tenant matching.\\\", \\\"existing_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\\n    # Validate current_user.tenant_id matches requested tenant_id\\\\n    if current_user.tenant_id != tenant_id:\\\\n        raise HTTPException(status_code=403, detail=\\\\\\\"tenant_mismatch\\\\\\\")\\\"}]\"}",
+        "error": "Error: failed to parse 'comments' JSON string: invalid character ')' after object key:value pair"
+      },
+      {
+        "tool_call_number": 25,
+        "tool_name": "code_comment",
+        "file_path": "backend/app/api/v1/routes/acquisition.py",
+        "arguments": "{\"comments\": \"[{\\\"content\\\": \\\"Hardcoded tenant_id='demo' default across many endpoints allows unauthenticated/demo data leakage in production if AUTH isn't enforced. Consider making tenant_id required for write operations.\\\", \\\"existing_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\"\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = Field(..., description=\\\\\\\"租户ID\\\")}, {\\\"content\\\": \\\"Inconsistent use of current_user parameter: some endpoints accept it but don't use it for authorization checks. The get_current_user dependency should enforce authentication/authorization, but the code doesn't validate user-tenant matching.\\\", \\\"existing_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\\n    # Validate current_user.tenant_id matches requested tenant_id\\\\n    if current_user.tenant_id != tenant_id:\\\\n        raise HTTPException(status_code=403, detail=\\\\\\\"tenant_mismatch\\\\\\\")\\\"}]\"}",
+        "error": "Error: failed to parse 'comments' JSON string: invalid character ')' after object key:value pair"
+      },
+      {
+        "tool_call_number": 27,
+        "tool_name": "code_comment",
+        "file_path": "backend/app/api/v1/routes/acquisition.py",
+        "arguments": "{\"comments\": \"[{\\\"content\\\": \\\"Hardcoded tenant_id='demo' default across many endpoints allows unauthenticated/demo data leakage in production if AUTH isn't enforced. Consider making tenant_id required for write operations.\\\", \\\"existing_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\"\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"class IntentPreviewRequest(BaseModel):\\\\n    intent: str = Field(..., description=\\\\\\\"如 find_leads / fulfillment / whatsapp\\\\\\\")\\\\n    tenant_id: str = Field(..., description=\\\\\\\"租户ID\\\")}, {\\\"content\\\": \\\"Inconsistent use of current_user parameter: some endpoints accept it but don't use it for authorization checks. The get_current_user dependency should enforce authentication/authorization, but the code doesn't validate user-tenant matching.\\\", \\\"existing_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\", \\\"category\\\": \\\"security\\\", \\\"path\\\": \\\"backend/app/api/v1/routes/acquisition.py\\\", \\\"severity\\\": \\\"medium\\\", \\\"suggestion_code\\\": \\\"def acquisition_loss_report(\\\\n    tenant_id: str = \\\\\\\"demo\\\\\\\",\\\\n    current_user: User = Depends(get_current_user),\\\\n):\\\\n    # Validate current_user.tenant_id matches requested tenant_id\\\\n    if current_user.tenant_id != tenant_id:\\\\n        raise HTTPException(status_code=403, detail=\\\\\\\"tenant_mismatch\\\\\\\")\\\"}]\"}",
+        "error": "Error: failed to parse 'comments' JSON string: invalid character ')' after object key:value pair"
+      }
+    ]
+  },
+  "comments": [
+    {
+      "path": "backend/app/core/config.py",
+      "content": "Weak secret literal check uses substring matching (`if pat in val`) which causes false positives. For example, a strong random secret containing 'password' (e.g., 'my-password-123-secure-key') or 'key' would incorrectly trigger the production validation failure. Similarly, 'notchangeme' would match 'changeme'. Consider using exact equality checks or a more robust pattern matching approach.",
+      "existing_code": "for pat in weak_patterns:\n                    if pat in val:",
+      "start_line": 971,
+      "end_line": 972,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "The dev secret file persistence has a race condition: multiple worker processes starting concurrently could both read the file, see it empty, and generate different secrets. This could cause JWT inconsistency across processes. Additionally, Windows ignores os.chmod(0o600), leaving auto-generated secrets in a potentially world-readable file. Consider using file locking (fcntl/fcntl) and a more secure temporary file approach.",
+      "existing_code": "@classmethod\n    def _persist_dev_secret(cls, kind: str, value: str) -\u003e None:\n        \"\"\"把自动生成的 dev 密钥写入 logs/auto-secret-dev.txt\n        供后续启动复用,JWT 不会因重启失效。\n        \"\"\"\n        try:\n            f = cls._dev_secret_file()\n            f.parent.mkdir(parents=True, exist_ok=True)",
+      "start_line": 1070,
+      "end_line": 1077,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "HERMES_SITE_PATROL_HTTP_SELF_URL is hardcoded to http://127.0.0.1:8001 which will likely be unreachable or incorrect in production environments. This causes Hermes site patrol health checks and alerting to silently fail in production. Consider making this configurable via environment variable with a sensible default or validation.",
+      "existing_code": "HERMES_SITE_PATROL_HTTP_SELF_URL: str = \"http://127.0.0.1:8001\"",
+      "start_line": 417,
+      "end_line": 417,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "Bare except clauses in _load_persisted_dev_secret and _persist_dev_secret swallow all exceptions including KeyboardInterrupt and SystemExit. This makes it impossible to diagnose why auto-generated keys fail silently (permission denied, disk full, etc.). Should use `except Exception as exc:` and log the error at minimum.",
+      "existing_code": "except Exception:  # noqa: BLE001\n            return None",
+      "start_line": 1066,
+      "end_line": 1067,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "content": "CORS_ORIGINS property accepts arbitrary JSON arrays from environment variables without validation. While currently safe, untrusted env input could contain complex JSON types (objects, nested arrays) that might cause unexpected behavior. Consider validating that parsed results are lists of strings only.",
+      "existing_code": "if raw.startswith(\"[\"):\n            import json\n            try:\n                parsed = json.loads(raw)\n                if isinstance(parsed, list):\n                    return parsed",
+      "start_line": 104,
+      "end_line": 109,
+      "category": "security",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "The bare `pass` in this except block silently swallows exceptions from `_setup_rls_event_listener()`, which means if RLS tenant injection fails to initialize, the error is logged but the exception is discarded. While there is a warning log, this makes it easier to miss that critical security functionality (RLS tenant isolation) never got registered. Consider re-raising the exception or at minimum using a more explicit handling pattern that doesn't use bare `pass`.",
+      "existing_code": "except Exception as e:\n    logger = logging.getLogger(__name__)\n    logger.warning(\"RLS事件监听器初始化失败，继续启动: %s\", e)\n    pass  # RLS事件监听器初始化失败不应阻塞数据库引擎创建",
+      "start_line": 120,
+      "end_line": 123,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "Inside the `before_cursor_execute` event listener, `logger` is referenced at line 51 but is only defined locally within the `if total_time \u003e= 0.2:` block at line 52. If a slow query triggers the logger warning and the function exits normally, subsequent calls to this callback will attempt to reference `logger` before it's defined in that execution context. This could cause a NameError during query execution.",
+      "existing_code": "def after_cursor_execute(conn, cursor, statement, parameters, context, executemany):\n    start_time = conn.info[\"query_start_time\"].pop(-1)\n    total_time = time.time() - start_time\n    if total_time \u003e= 0.2:  # 超过 200ms\n        logger = logging.getLogger(\"uj-admin.slow_query\")\n        logger.warning(\"慢查询 (%.2f ms): %s\", total_time * 1000, statement[:500])",
+      "start_line": 60,
+      "end_line": 65,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "The `rebind_engine()` function updates `engine`, `SessionLocal`, and `UUID_TYPE`, but it recreates `SessionLocal` without the `class_=RoutingSession` parameter. This means after rebinding, the session no longer supports read/write routing to the read replica, defeating the purpose of the routing session.",
+      "existing_code": "SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)",
+      "start_line": 145,
+      "end_line": 145,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "content": "The `get_redis()` function calls `_gr()` but doesn't yield or handle it as a context manager. If `app.core.cache.get_redis()` is a generator function (common for dependency injection), this will return a generator object instead of the actual Redis client, which will confuse callers expecting a client instance.",
+      "existing_code": "def get_redis():\n    \"\"\"兼容导出 Redis 依赖（转发 app.core.cache.get_redis）。\"\"\"\n    from app.core.cache import get_redis as _gr\n    return _gr()",
+      "start_line": 249,
+      "end_line": 252,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Async function calling blocking synchronous code: `dispatch_acquisition()` is called directly in an async context without `run_in_executor()`. If this function performs blocking I/O, it will stall the asyncio event loop.",
+      "suggestion_code": "    try:\n        import asyncio\n        result = await asyncio.get_event_loop().run_in_executor(\n            None,\n            lambda: dispatch_acquisition(\n                session,\n                tenant_id=body.tenant_id,\n                intent=body.intent,\n                payload=payload,\n                channel=body.channel,\n                auto_dispatch=bool(body.auto_dispatch),\n            ),\n        )\n    except Exception as exc:  # noqa: BLE001",
+      "existing_code": "    try:\n        result = await dispatch_acquisition(\n            session,\n            tenant_id=body.tenant_id,\n            intent=body.intent,\n            payload=payload,\n            channel=body.channel,\n            auto_dispatch=bool(body.auto_dispatch),\n        )\n    except Exception as exc:  # noqa: BLE001",
+      "start_line": 1704,
+      "end_line": 1713,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Duplicate route registration: the endpoint `/ops/reconcile` is registered twice. The first definition (lines 584-590) uses a read-only session fallback, while the second (lines 635-641) directly passes `_resolve_db(db)`. The second handler silently overrides the first, making the first decorator unreachable. The earlier implementation had better read-replica handling.",
+      "suggestion_code": "@router.get(\"/ops/reconcile\")\ndef acquisition_billing_reconcile(\n    tenant_id: str = \"demo\",\n    window_hours: int = 24,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db),\n):\n    \"\"\"E-5 meter vs ledger 对账（只读）。优先只读会话。\"\"\"\n    session = _resolve_db(db)\n    if session is None:\n        try:\n            with get_read_session() as rs:\n                return billing_reconcile(rs, tenant_id=tenant_id, window_hours=window_hours)\n        except Exception:\n            pass\n    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)",
+      "existing_code": "@router.get(\"/ops/reconcile\")\ndef acquisition_billing_reconcile(\n    tenant_id: str = \"demo\",\n    window_hours: int = 24,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db),\n):\n    \"\"\"E-5 meter vs ledger 对账（只读）。优先只读会话。\"\"\"\n    session = _resolve_db(db)\n    if session is None:\n        try:\n            with get_read_session() as rs:\n                return billing_reconcile(rs, tenant_id=tenant_id, window_hours=window_hours)\n        except Exception:\n            pass\n    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)",
+      "start_line": 1218,
+      "end_line": 1233,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Unused import: `from app.core.db_sessions import get_read_session` appears twice (lines 49 and 60), causing a redundant import. Remove the duplicate.",
+      "existing_code": "from app.core.db_sessions import get_read_session\nfrom app.services.acquisition.quote_guard import leadtime_gate, quote_validity_view\nfrom app.services.acquisition.suppression_list import suppression_store\nfrom app.services.acquisition.payment_risk import payment_risk_gate\nfrom app.services.acquisition.knowledge_queue import knowledge_queue_store\nfrom app.services.acquisition.risk_rescan import risk_rescan_store\nfrom app.services.acquisition.ops_observability import acq_rate_limiter, billing_reconcile\nfrom app.services.acquisition.queue_monitor import queue_monitor_report\nfrom app.services.acquisition.baseline_bench import run_dispatch_baseline, run_claim_collision_baseline\nfrom app.services.acquisition.sales_collision import claim_inquiry as _claim_fn\nfrom app.core.db_sessions import db_topology, get_read_session",
+      "start_line": 51,
+      "end_line": 61,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Unused import: `_claim_fn` is imported as alias for `claim_inquiry` but only used in baseline test setup (line ~690). While technically used, importing with an alias to avoid collision when `claim_inquiry` is already imported suggests unclear intent. Consider renaming or consolidating.",
+      "existing_code": "from app.services.acquisition.sales_collision import claim_inquiry as _claim_fn",
+      "start_line": 60,
+      "end_line": 60,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Unused variable: `ROUTE_PREFIX = \"\"` is defined but never referenced anywhere in the file. Remove it to avoid confusion.",
+      "existing_code": "ROUTE_PREFIX = \"\"",
+      "start_line": 71,
+      "end_line": 71,
+      "category": "other",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Tender advance conditional logic has operator precedence bug. The expression `out.get('ok') and body.inquiry_id if hasattr(body, 'inquiry_id') else False` evaluates as `out.get('ok') and (body.inquiry_id if hasattr(body, 'inquiry_id') else False)`, meaning when `body.inquiry_id` is a non-empty string like 'TDR-123', it's truthy and the condition passes — but when it's an empty string '', the condition is False. However, this logic is confusing and the `hasattr` check is unnecessary since `body` is a Pydantic model with `inquiry_id` field. The intended logic seems to be checking if the tender was advanced AND there's an inquiry_id to sync, but the expression is malformed.",
+      "suggestion_code": "    out = tender_engine.advance(body.tender_id, body.to_stage, note=body.note)\n    # 同步跟单卡备注\n    if out.get(\"ok\") and body.inquiry_id:\n        pass\n    return out",
+      "existing_code": "    out = tender_engine.advance(body.tender_id, body.to_stage, note=body.note)\n    # 同步跟单卡备注\n    if out.get(\"ok\") and body.inquiry_id if hasattr(body, \"inquiry_id\") else False:\n        pass\n    return out",
+      "start_line": 1181,
+      "end_line": 1185,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Async function calling blocking synchronous code: `ps.decompose()` is called directly in an async context without `run_in_executor()`. If this function performs blocking I/O (database queries, HTTP calls), it will stall the asyncio event loop.",
+      "suggestion_code": "    try:\n        import asyncio\n        graph, source = await asyncio.get_event_loop().run_in_executor(\n            None, lambda: ps.decompose(ev, db=None)\n        )  # type: ignore[arg-type]\n    except Exception as exc:  # noqa: BLE001",
+      "existing_code": "    try:\n        import asyncio\n        graph, source = await ps.decompose(ev, db=None)  # type: ignore[arg-type]\n    except Exception as exc:  # noqa: BLE001",
+      "start_line": 339,
+      "end_line": 342,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Potential None access: `card.buyer_grade` and `card.stage` are accessed without checking if `card` is None. The `if card is None:` check on line 524 should guard these accesses.",
+      "suggestion_code": "    card = ops_card_store.get_by_inquiry(body.inquiry_id) if body.inquiry_id else None\n    buyer_grade = card.buyer_grade if card else \"\"\n    stage = card.stage if card else \"\"\n    return payment_risk_gate(\n        country=body.country,\n        buyer_type=body.buyer_type,\n        buyer_grade=buyer_grade,\n        risk_flags=list(body.risk_flags or []),\n        deposit_ratio=body.deposit_ratio,\n        stage=stage,\n        auto_pi=bool(body.auto_pi),\n        ops_store=ops_card_store,\n        inquiry_id=body.inquiry_id,\n    )",
+      "existing_code": "    card = ops_card_store.get_by_inquiry(body.inquiry_id) if body.inquiry_id else None\n    return payment_risk_gate(\n        country=body.country,\n        buyer_type=body.buyer_type,\n        buyer_grade=card.buyer_grade if card else \"\",\n        risk_flags=list(body.risk_flags or []),\n        deposit_ratio=body.deposit_ratio,\n        stage=card.stage if card else \"\",\n        auto_pi=bool(body.auto_pi),\n        ops_store=ops_card_store,\n        inquiry_id=body.inquiry_id,\n    )",
+      "start_line": 996,
+      "end_line": 1007,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Silent exception swallowing in `except Exception` with bare `pass` in the read-session probe. If `get_read_session()` fails, the exception is caught but only the error is logged — the function continues and may return a connection error to the caller without clear indication that read-replica fallback failed.",
+      "suggestion_code": "    except Exception as exc:\n            logger.warning(\"read-session fallback failed\", exc_info=exc)\n    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)",
+      "existing_code": "    except Exception:\n            pass\n    return billing_reconcile(session, tenant_id=tenant_id, window_hours=window_hours)",
+      "start_line": 1231,
+      "end_line": 1233,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Inconsistent error handling: `intent_preview` raises HTTPException(400) for decomposition failures, while `acquisition_dispatch` raises HTTPException(422) for similar failures. This inconsistency in status codes for equivalent errors may confuse API consumers.",
+      "suggestion_code": "    except Exception as exc:  # noqa: BLE001\n        raise HTTPException(status_code=422, detail=f\"拆解失败: {exc}\") from exc",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        raise HTTPException(status_code=400, detail=f\"拆解失败: {exc}\") from exc",
+      "start_line": 342,
+      "end_line": 343,
+      "category": "style",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Type ignore comment suggests known type mismatch: `ps.decompose(ev, db=None)` passes None where a Session might be expected. The type annotation `# type: ignore[arg-type]` indicates the function signature expects a Session but None is being passed intentionally. This should be documented or handled more explicitly.",
+      "suggestion_code": "        # preview uses no DB — decompose must support None for read-only inspection\n        graph, source = await ps.decompose(ev, db=None)",
+      "existing_code": "        graph, source = await ps.decompose(ev, db=None)  # type: ignore[arg-type]",
+      "start_line": 341,
+      "end_line": 341,
+      "category": "documentation",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Potential unbounded list accumulation: `tips` list is extended in multiple places without size limits. If playbook tips and intent analysis produce many entries, this could grow unbounded.",
+      "suggestion_code": "    tips = list(tips)\n    if intent_analysis.get(\"talk_track\"):\n        tips.insert(0, str(intent_analysis[\"talk_track\"]))\n    # P1-2：样品意图自动点亮样品节点提示\n    if intent_analysis.get(\"intent\") == \"request_sample\":\n        tips.insert(0, \"客户要样品：确认规格/费用/运费后再寄，防样品黑洞\")\n    # Cap tips to prevent unbounded growth\n    tips = tips[:10]",
+      "existing_code": "    tips = list(tips)\n    if intent_analysis.get(\"talk_track\"):\n        tips.insert(0, str(intent_analysis[\"talk_track\"]))\n    # P1-2：样品意图自动点亮样品节点提示\n    if intent_analysis.get(\"intent\") == \"request_sample\":\n        tips.insert(0, \"客户要样品：确认规格/费用/运费后再寄，防样品黑洞\")",
+      "start_line": 1512,
+      "end_line": 1517,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "The `loss_stats` and `win_loss_stats` methods are called multiple times with `tenant_id=card.tenant_id` in different endpoints. If these methods perform expensive database queries, they could be cached or batched.",
+      "suggestion_code": "    # Consider caching loss_stats/win_loss_stats per tenant",
+      "existing_code": "    out[\"loss_report\"] = ops_card_store.loss_stats(tenant_id=card.tenant_id)",
+      "start_line": 508,
+      "end_line": 508,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Missing rate limit check on sensitive endpoints: `/ops-card/{inquiry_id}/claim`, `/sanctions/screen`, and `/risk-rescan/mark` modify critical business state but don't call `_rate_limit_or_raise()`. These should be rate-limited like `/reply-ingest` and `/dispatch`.",
+      "suggestion_code": "@router.post(\"/ops-card/{inquiry_id}/claim\")\ndef ops_card_claim(\n    inquiry_id: str,\n    body: InquiryClaimRequest,\n    current_user: User = Depends(get_current_user),\n):\n    \"\"\"P2-7 撞单规则：认领/交接审计。\"\"\"\n    _rate_limit_or_raise(body.tenant_id or \"demo\", action=\"claim_inquiry\")",
+      "existing_code": "@router.post(\"/ops-card/{inquiry_id}/claim\")\ndef ops_card_claim(",
+      "start_line": 790,
+      "end_line": 791,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "Bare `except:` on line 575 swallows KeyboardInterrupt, SystemExit, and all exceptions silently. If the persistence patch import fails (e.g., file missing, syntax error), the error is entirely hidden and the app continues without any warning that order follow-up data will not survive restarts. This violates the explicit hard lock: no fake success. Use `except Exception:` at minimum and log the failure so operators know persistence is degraded.",
+      "existing_code": "try:\n    from app.services.acquisition.ops_card_pg import patch_store_persistence\n    patch_store_persistence(ops_card_store)\nexcept Exception:\n    pass",
+      "start_line": 912,
+      "end_line": 916,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "`BuyerMasterStore.upsert()` performs a check-then-act race on `self._by_email` and `self._by_id` with no synchronization. In a multi-threaded or async context, two concurrent upserts for the same email can both pass the conflict check, resulting in duplicate buyer records or one overwriting the other despite `persona_locked=True`. This breaks the identity lock guarantee the module claims to enforce.",
+      "existing_code": "    def upsert(self, buyer: BuyerMaster) -\u003e tuple[BuyerMaster, bool, list[str]]:\n        \"\"\"返回 (buyer, is_new, alerts)。\"\"\"\n        alerts: list[str] = []\n        key = (buyer.tenant_id, (buyer.email or \"\").lower())\n        if key[1]:\n            existing_id = self._by_email.get(key)\n            if existing_id and existing_id != buyer.buyer_id:\n                # 身份冲突告警\n                existing = self._by_id.get(existing_id)\n                alert = {\n                    \"type\": \"identity_conflict\",\n                    \"existing_id\": existing_id,\n                    \"incoming_id\": buyer.buyer_id,\n                    \"email\": buyer.email,\n                    \"at\": _now_iso(),\n                }\n                self.conflict_alerts.append(alert)\n                alerts.append(\n                    f\"邮箱 {buyer.email} 已关联 buyer_id={existing_id}，\"\n                    f\"请人工合并（禁止同一邮箱多人设）\"\n                )\n                # persona_locked：保留旧档，不覆盖姓名/性别\n                if existing and existing.persona_locked:\n                    if existing.contact_name and buyer.contact_name and existing.contact_name != buyer.contact_name:\n                        alerts.append(\n                            f\"身份锁拒绝改名：{existing.contact_name} ≠ {buyer.contact_name}\"\n                        )\n                        buyer.contact_name = existing.contact_name\n                    if existing.contact_gender != buyer.contact_gender and existing.contact_gender != \"unknown\":\n                        buyer.contact_gender = existing.contact_gender\n                        alerts.append(\"身份锁拒绝改性别\")\n                buyer.buyer_id = existing_id\n                existing = existing or buyer\n                existing.updated_at = _now_iso()\n                self._by_id[existing_id] = existing\n                self._by_email[key] = existing_id\n                return existing, False, alerts\n            if key[1]:\n                self._by_email[key] = buyer.buyer_id",
+      "start_line": 103,
+      "end_line": 141,
+      "category": "other",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "`list_by_tenant()` iterates all buyer records to filter by tenant_id, making it O(n) per call. Under concurrent load or as the store grows, repeated calls will degrade performance. Consider maintaining an inverted index `_by_tenant: dict[str, list[str]]` for O(1) lookups.",
+      "existing_code": "    def list_by_tenant(self, tenant_id: str) -\u003e list[BuyerMaster]:\n        return [b for b in self._by_id.values() if b.tenant_id == tenant_id]",
+      "start_line": 154,
+      "end_line": 155,
+      "category": "performance",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "Module-level mutable globals `buyer_store`, `ops_card_store`, `playbook_store` are created once at import time. Across test runs or in multi-process deployments, these retain state with no isolation or cleanup mechanism. Tests may leak state into subsequent tests, and process-level state is shared unexpectedly.",
+      "existing_code": "# ── 全局单例（生产可替换为 DI）───────────────────────────────\nbuyer_store = BuyerMasterStore()\nops_card_store = OpsCardStore()\nplaybook_store = PlaybookStore()",
+      "start_line": 906,
+      "end_line": 909,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/__init__.py",
+      "content": "Deferred imports in methods like `fulfillment_view`, `research_gate_view`, `quote_validity_view`, `payment_risk_view`, `win_loss_stats`, `loss_stats`, and `list_followups` hide missing dependencies until runtime. If a submodule is misconfigured or missing, the error surfaces only when that method is called, making debugging harder and potentially masking production misconfiguration.",
+      "existing_code": "    def fulfillment_view(self, now: Optional[datetime] = None) -\u003e dict[str, Any]:\n        from app.services.acquisition.fulfillment_nodes import fulfillment_view as _fv\n        return _fv(self, now=now)",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "String concatenation in exception messages with f-strings could expose sensitive data in logs. Consider sanitizing the exception message before including it.",
+      "suggestion_code": "        import logging\n        logger = logging.getLogger(__name__)\n        logger.exception(\"dispatch failed\", exc_info=exc)\n        raise HTTPException(status_code=422, detail=\"派发失败，请联系管理员\") from exc",
+      "existing_code": "        raise HTTPException(status_code=422, detail=f\"拆解/派发失败: {exc}\") from exc",
+      "start_line": 1714,
+      "end_line": 1714,
+      "category": "security",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "The `reply_ingest` endpoint calls `_resolve_db(db)` which returns None in tests, then passes None to `persist_inquiry` and `persist_prospect_lead`. If these functions don't handle None gracefully, they'll crash.",
+      "suggestion_code": "    session = _resolve_db(db)\n    persistence = {}\n    if session is not None:\n        persistence = {\n            \"inquiry\": persist_inquiry(\n                session,\n                tenant_id=body.tenant_id,",
+      "existing_code": "    session = _resolve_db(db)\n    persistence = {\n        \"inquiry\": persist_inquiry(\n            session,\n            tenant_id=body.tenant_id,",
+      "start_line": 1554,
+      "end_line": 1558,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "claim_fn return value is assumed to be a dict but no validation exists. If claim_fn returns None or a non-dict type, `.get()` calls will raise AttributeError, crashing the benchmark silently. Add type checking or use getattr with defaults.",
+      "existing_code": "    r1 = claim_fn(inquiry_id=inquiry_id, user_id=\"alice\", tenant_id=\"demo\", confirm_force=False)\n    r2 = claim_fn(inquiry_id=inquiry_id, user_id=\"bob\", tenant_id=\"demo\", confirm_force=False)\n    blocked = (r2.get(\"ok\") is False) or (r2.get(\"code\") in (\"collision\", \"already_owner\"))",
+      "start_line": 71,
+      "end_line": 73,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "P95 percentile index calculation is incorrect. For n=20: int(20*0.95)-1 = 8, which gives p45 (index 8 of 20), not p95. The correct ceiling-based index should be `min(int(len(lat_ms) * 0.95), len(lat_ms) - 1)` or use `math.ceil`. This systematically underestimates p95 latency for small sample sizes.",
+      "existing_code": "    p95 = lat_ms[int(len(lat_ms) * 0.95) - 1] if len(lat_ms) \u003e= 2 else (lat_ms[0] if lat_ms else 0)",
+      "start_line": 49,
+      "end_line": 49,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "Bare `except Exception` silently swallows errors without logging. The error counter increments but no traceback or context is preserved, making it impossible to diagnose benchmark failures. Consider logging the exception or at minimum capturing the error type/message.",
+      "existing_code": "        except Exception:\n            errors += 1",
+      "start_line": 36,
+      "end_line": 37,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "Using `is False` for comparison with dict values is fragile. If the API returns `ok=False` (boolean False), this works, but if it returns `ok=0` or `ok=None`, the check fails silently. Use `== False` or better: `not r2.get('ok')` for truthiness check.",
+      "existing_code": "    blocked = (r2.get(\"ok\") is False) or (r2.get(\"code\") in (\"collision\", \"already_owner\"))",
+      "start_line": 73,
+      "end_line": 73,
+      "category": "style",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/baseline_bench.py",
+      "content": "The `make_card` callable parameter has no type validation or documentation about expected signature. If passed incorrectly, it will fail deep in the loop with unclear error messages. Consider adding a type hint or wrapper with precondition checks.",
+      "existing_code": "def run_dispatch_baseline(\n    *,\n    ops_store: Any,\n    n: int = 20,\n    make_card: Callable[[str], Any] | None = None,\n) -\u003e dict[str, Any]:",
+      "start_line": 16,
+      "end_line": 21,
+      "category": "maintainability",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "Bare `except:` (no exception type) swallows `KeyboardInterrupt` and `SystemExit` in addition to all exceptions. This blocks any ability to diagnose why meter events are missing from the output. Should at minimum use `except Exception:` and log the error.",
+      "existing_code": "    except Exception:\n        pass",
+      "start_line": 114,
+      "end_line": 115,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The fallback `success=True` silently treats a missing `success` column as a successful acquisition event. This contradicts the module's 'honest empty / no fake success' red-line ethos and masks incomplete or corrupt records. Use `success=False` as the default, or check for the attribute's presence more explicitly before presenting the event as '成功'.",
+      "existing_code": "\"plain\": f\"获客动作 · {_reason_plain(t)} · {'成功' if getattr(r, 'success', True) else '失败/诚实降级'}\"",
+      "start_line": 0,
+      "end_line": 0,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "Each of the three source queries applies `.limit(limit)` independently, then the merged list is again truncated to `items[:limit]`. This means at most 3×limit rows are fetched from the DB while only `limit` are returned — and because the merge discards ordering across sources, the final slice may arbitrarily drop later events from one source in favor of earlier ones from another. If the intent is a global limit, query each source with `limit // 3` (or similar) and document the truncation policy. If the intent is per-source limits, make that explicit in the docstring and return value.",
+      "existing_code": "        .limit(limit)\n        .all()\n        )\n        if rows:\n            balance = int(getattr(rows[0], \"balance_after\", 0) or 0)\n        for r in rows:",
+      "start_line": 73,
+      "end_line": 78,
+      "category": "performance",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The token_ledger try block catches all exceptions with only a warning log, which can conceal schema mismatches, `TypeError` from `_reason_plain`, or `ValueError` from `int()` conversion. Because `balance` is set before the loop iterates, a failure partway through leaves `balance` possibly set but `items` empty — a misleading half-result. Consider narrowing the catch to expected exception types (e.g., `OperationalError`, `AttributeError`) and logging more detail.",
+      "existing_code": "    except Exception as exc:  # noqa: BLE001\n        logger.warning(\"token_ledger 解释失败: %s\", exc)",
+      "start_line": 90,
+      "end_line": 91,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The module docstring declares a red-line '无账本/无明细诚实 empty，不编流水', yet the meter-events path silently swallows all exceptions and the acquisition path defaults missing `success` to `True`. Both contradict this stated contract — restore honesty by logging meter-query failures and defaulting missing success to `False` (or omitting the event entirely).",
+      "existing_code": "    except Exception:\n        pass",
+      "start_line": 114,
+      "end_line": 115,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "`_reason_plain` has an early return when `reason` is falsy (`reason or \"未知原因\"`), but the function also returns raw un-mapped strings unfiltered. If an attacker-controlled `reference_id` or `task_type` string is injected as `reason`/`t`, it flows directly into the f-string output without sanitization. While the current callers set these from DB rows (trusted to some degree), the mapping should be the authoritative source and unknown strings should either be labeled '未知原因' or escaped to prevent template injection or XSS when rendered client-side.",
+      "existing_code": "    return reason or \"未知原因\"",
+      "start_line": 40,
+      "end_line": 40,
+      "category": "security",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/services/acquisition/billing_explain.py",
+      "content": "The `tenant_uuid` variable `tid` is computed but only returned in the dict under key `tenant_uuid`; the callers (e.g., billing endpoints) may expect a `tenant_id` field and not the uuid, creating a mismatch in what the caller receives. Verify the API contract for this response shape.",
+      "existing_code": "    return {\n        \"tenant_id\": tenant_id,\n        \"tenant_uuid\": tid,",
+      "start_line": 147,
+      "end_line": 149,
+      "category": "bug",
+      "severity": "low"
+    },
+    {
+      "path": "backend/app/api/v1/routes/acquisition.py",
+      "content": "Potential None dereference: card.sample.status is accessed without null-check on card.sample. If card.sample is None, this will raise AttributeError.",
+      "suggestion_code": "    current_status = \"none\"\n    if card and card.sample:\n        current_status = card.sample.status or \"none\"",
+      "existing_code": "    current_status = (card.sample.status if card and card.sample else \"none\") or \"none\"",
+      "start_line": 600,
+      "end_line": 600,
+      "category": "bug",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Line 27: Bare except with `pass` silently swallows all exceptions from `resolve_tenant_uuid`, including DB failures, invalid tenant IDs, or connection errors. This masks critical failures and makes debugging impossible. Should at minimum log the exception: `logger.warning(f\"Failed to resolve tenant UUID: {exc}\", exc_info=True)` and/or re-raise if resolution is essential.",
+      "existing_code": "        try:\n            from app.services.acquisition.repo import resolve_tenant_uuid\n            tid = resolve_tenant_uuid(session, tenant_id)\n            if tid:\n                resolved_tenant = tid\n        except Exception:\n            pass",
+      "start_line": 41,
+      "end_line": 47,
+      "category": "security",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Lines 89, 102: Exception messages are truncated to 200 chars in the result dict, which may lose critical debugging context. While not a security issue, this hampers incident response. Consider logging the full exception (already done on line 104) but returning a reference or trace ID to the caller instead of truncated text.",
+      "existing_code": "                result[\"dispatch_error\"] = str(exc)[:200]",
+      "start_line": 105,
+      "end_line": 105,
+      "category": "maintainability",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Lines 75-108: The outer try/except wraps `parse_graph_to_tasks` AND `advance_plan` together, but the inner try only catches `advance_plan` errors. If `parse_graph_to_tasks` fails, it bubbles up to the outer handler and overwrites any partial state. This makes it unclear whether tasks were persisted when an error occurs. Consider separating concerns or documenting the transaction boundary.",
+      "existing_code": "    try:\n        from app.services.hermes.task_control_supervisor import (\n            advance_plan,\n            parse_graph_to_tasks,\n        )\n        node_tasks = parse_graph_to_tasks(session, resolved_tenant, graph)\n        plan_task_id = str(getattr(node_tasks[0], \"parent_task_id\", \"\")) if node_tasks else \"\"\n        result[\"task_ids\"] = [str(getattr(t, \"id\", \"\")) for t in node_tasks]\n        result[\"plan_task_id\"] = plan_task_id\n        if plan_task_id:\n            try:\n                advance_plan(session, plan_task_id)\n                result[\"dispatched\"] = True\n                result[\"persistence_note\"] = f\"任务图已入库 plan={plan_task_id}\"\n            except Exception as exc:  # noqa: BLE001\n                result[\"dispatch_error\"] = str(exc)[:200]\n                result[\"persistence_note\"] = \"任务图已入库，派发失败（诚实）\"\n        else:\n            result[\"dispatch_error\"] = \"no_plan_task_id\"\n            result[\"persistence_note\"] = \"落库未返回 plan_task_id\"\n    except Exception as exc:  # noqa: BLE001\n        logger.exception(\"dispatch_acquisition 落库失败\")\n        result[\"dispatch_error\"] = str(exc)[:200]\n        result[\"persistence_note\"] = \"任务图落库失败\"",
+      "start_line": 90,
+      "end_line": 113,
+      "category": "bug",
+      "severity": "high"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Lines 28-36: No validation on `intent` or `channel` parameters before constructing `IntentEvent`. Invalid or malformed inputs could produce downstream errors or malicious events. At minimum validate that `intent` is non-empty and `channel` matches expected values.",
+      "existing_code": "    event = IntentEvent(\n        event_id=event_id,\n        tenant_id=resolved_tenant,\n        channel=channel,\n        intent=intent,\n        payload=payload,\n    )",
+      "start_line": 52,
+      "end_line": 58,
+      "category": "security",
+      "severity": "medium"
+    },
+    {
+      "path": "backend/app/services/acquisition/dispatch_service.py",
+      "content": "Line 44: The comprehension `[str(getattr(t, \"id\", \"\")) for t in node_tasks]` will fail with IndexError if `node_tasks` is empty but `plan_task_id` was somehow set (defensive coding). The guard on line 87 checks `if node_tasks` but line 89's list comprehension assumes non-empty. Consider moving the comprehension inside the `if node_tasks` block for consistency.",
+      "existing_code": "        node_tasks = parse_graph_to_tasks(session, resolved_tenant, graph)\n        plan_task_id = str(getattr(node_tasks[0], \"parent_task_id\", \"\")) if node_tasks else \"\"\n        result[\"task_ids\"] = [str(getattr(t, \"id\", \"\")) for t in node_tasks]",
+      "start_line": 95,
+      "end_line": 97,
+      "category": "bug",
+      "severity": "low"
+    }
+  ],
+  "warnings": [
+    {
+      "file": "backend/app/api/v1/routes/acquisition.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/services/acquisition/experience_feed.py",
+      "message": "stopped in batch #0: used 281482 tokens + next-file estimate exceeds budget 250000",
+      "type": "token_budget_reached"
+    },
+    {
+      "file": "backend/app/services/acquisition/dispatch_service.py",
+      "message": "main_task did not complete before stopping: reached the aggregate token budget before finishing",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/core/login_bruteforce.py",
+      "message": "LLM completion error: context deadline exceeded",
+      "type": "scan_subtask_error"
+    },
+    {
+      "file": "backend/app/services/acquisition/billing_explain.py",
+      "message": "LLM completion error: context deadline exceeded",
+      "type": "scan_subtask_error"
+    }
+  ],
+  "project_summary": "### Top Issues\n\n1.  **Silent State Loss \u0026 Data Corruption in Acquisition Service (`backend/app/services/acquisition/__init__.py`)**\n    *   **Race Condition:** `BuyerMasterStore.upsert()` performs a check-then-act on internal dicts without synchronization, leading to duplicate buyer records or lost updates in concurrent environments.\n    *   **State Leaks:** Module-level mutable globals (`buyer_store`, `ops_card_store`) retain state across test runs and multi-process deployments with no isolation or cleanup.\n    *   **Silent Failure:** A bare `except:` on line 575 swallows `KeyboardInterrupt`, `SystemExit`, and all exceptions. If persistence patches fail, the app continues silently without warning that order follow-up data is not surviving.\n\n2.  **Database Routing \u0026 Session Integrity Failures (`backend/app/core/database.py`)**\n    *   **Lost Read/Write Splitting:** `rebind_engine()` recreates `SessionLocal` without the `class_=RoutingSession` parameter, defeating the purpose of read replica routing after rebinding.\n    *   **Generator Misuse:** `get_redis()` calls `_gr()` without yielding or using it as a context manager. If `_gr` is a generator (common in DI), this returns a generator object instead of the actual Redis client.\n    *   **Swallowed Critical Errors:** Bare `pass` in the `_setup_rls_event_listener` exception block discards RLS tenant injection failures. While logged, the silent discard makes it easy to miss that tenant isolation is broken.\n\n3.  **Async Event Loop Blocking (`backend/app/api/v1/routes/acquisition.py`)**\n    *   Blocking synchronous code (`dispatch_acquisition`, `ps.decompose`) is called directly in async contexts without `run_in_executor()`. This stalls the asyncio event loop during blocking I/O operations.\n\n4.  **Dev Secret Generation Race Condition \u0026 Weak Validation (`backend/app/core/config.py`)**\n    *   **Race Condition:** Multiple worker processes starting concurrently can both read an empty dev secret file and generate different secrets, causing JWT inconsistency across the cluster.\n    *   **False Positives:** The weak secret check uses substring matching (`if pat in val`), incorrectly flagging strong random secrets containing common words like 'password' or 'key'.\n    *   **OS Incompatibility:** `os.chmod(0o600)` is ignored on Windows, leaving dev secrets world-readable.\n\n5.  **Incorrect P95 Latency Calculation (`backend/app/services/acquisition/baseline_bench.py`)**\n    *   The P95 index calculation (`int(n * 0.95) - 1`) systematically underestimates latency (e.g., for n=20, it calculates P45 instead of P95). This masks performance regressions in benchmarking.\n\n6.  **Production URL Hardcoding (`backend/app/core/config.py`)**\n    *   `HERMES_SITE_PATROL_HTTP_SELF_URL` is hardcoded to `http://127.0.0.1:8001`. This causes Hermes site patrol health checks and alerting to silently fail in any non-local production environment.\n\n7.  **Duplicate Route Registration (`backend/app/api/v1/routes/acquisition.py`)**\n    *   `/ops/reconcile` is registered twice. The second handler silently overrides the first, meaning the read-only session fallback logic in the first definition is never used.\n\n8.  **Race Condition in Buyer Store (`backend/app/services/acquisition/__init__.py`)**\n    *   `list_by_tenant()` is O(n) per call, iterating all records. Under concurrent load or scale, this degrades performance significantly. An inverted index `_by_tenant` is needed.\n\n### Module Hotspots\n\n*   **`backend/app/api/v1/routes/acquisition.py`**: High density of issues including async blocking, duplicate routes, missing rate limits on sensitive endpoints (`/claim`, `/sanctions/screen`), potential None dereferences (`card.sample.status`), and inconsistent error handling (400 vs 422).\n*   **`backend/app/services/acquisition/__init__.py`**: Critical concurrency and state management issues (race conditions, global state leaks, silent exception swallowing).\n*   **`backend/app/core/config.py`**: Configuration validation weaknesses and race conditions in dev secret generation.\n*   **`backend/app/services/acquisition/billing_explain.py`**: Contradicts its own \"honest empty\" ethos by silently defaulting missing `success` columns to `True` and swallowing exceptions in meter events.\n*   **`backend/app/services/acquisition/dispatch_service.py`**: Bare except clauses masking DB failures, truncated error messages losing debugging context, and unvalidated input parameters.\n\n### Cross-Cutting Concerns\n\n*   **Bare `except:` / `except Exception` with `pass`**: Repeated across `config.py`, `database.py`, `acquisition/__init__.py`, `baseline_bench.py`, `billing_explain.py`, and `dispatch_service.py`. This pattern swallows critical errors (permissions, DB failures, keyboard interrupts) and makes debugging nearly impossible.\n    *   *Examples:* `backend/app/services/acquisition/__init__.py:575`, `backend/app/services/acquisition/billing_explain.py` (multiple), `backend/app/services/acquisition/dispatch_service.py:27`.\n*   **Missing Input Validation**: Parameters like `intent` and `channel` in `dispatch_service.py` are used without validation, risking downstream errors or malicious events.\n*   **Inconsistent Error Handling**: Mixed use of HTTP 400 and 422 for similar failures (`intent_preview` vs `acquisition_dispatch`) confuses API consumers.\n*   **Potential None Dereferences**: Multiple paths access attributes on objects that may be None without guards (e.g., `card.buyer_grade`, `card.sample.status`, `_resolve_db(db)` returning None in tests).\n    *   *Examples:* `backend/app/api/v1/routes/acquisition.py` (lines 524, sample status), `backend/app/api/v1/routes/acquisition.py` (`reply_ingest`).\n\n### Quick Wins\n\n1.  **Fix P95 Calculation:** Update `baseline_bench.py` to use `min(int(len(lat_ms) * 0.95), len(lat_ms) - 1)` or `math.ceil` for correct percentile indexing.\n2.  **Add Rate Limits:** Apply `_rate_limit_or_raise()` to sensitive endpoints `/ops-card/{inquiry_id}/claim`, `/sanctions/screen`, and `/risk-rescan/mark` in `acquisition.py`.\n3.  **Validate `intent`/`channel`:** Add basic non-empty and type checks for `IntentEvent` parameters in `dispatch_service.py`.\n4.  **Remove Duplicate Route:** Delete the redundant `/ops/reconcile` registration in `acquisition.py` to ensure the correct handler (with read-only session fallback) is used.\n5.  **Guard `card` and `sample` Access:** Add `None` checks for `card` and `card.sample` in `acquisition.py` before accessing `buyer_grade`, `stage`, or `status`.\n6.  **Make `HERMES_SITE_PATROL_HTTP_SELF_URL` Configurable:** Replace the hardcoded `127.0.0.1:8001` with an environment variable in `config.py`.\n7.  **Fix `rebind_engine()`:** Ensure `SessionLocal` is recreated with `class_=RoutingSession` in `database.py` to preserve read/write routing.\n8.  **Use `except Exception:` and Log:** Replace bare `except:` clauses in `acquisition/__init__.py`, `billing_explain.py`, and `dispatch_service.py` with `except Exception as e:` and add logging to preserve error context.",
+  "session_id": "b456c948-56a2-483c-afb8-52e390fccf02"
+}
