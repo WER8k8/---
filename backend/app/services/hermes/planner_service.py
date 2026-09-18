@@ -360,6 +360,14 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
                          "research_level": str(payload.get("research_level") or "none"),
                      },
                      on_fail="skip"),
+            TaskNode(id="n9", executor="growth_probe", capability="growth_probe.channels",
+                     depends_on=["n3"],
+                     input={},
+                     on_fail="skip"),
+            TaskNode(id="n10", executor="agent_ops", capability="agent_ops.performance",
+                     depends_on=["n3"],
+                     input={"tenant_id": str(payload.get("tenant_id") or "")},
+                     on_fail="skip"),
         ],
     )
 

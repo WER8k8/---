@@ -44,6 +44,8 @@ from . import platform_ops_executor  # noqa: F401
 from . import trade_ops_executor  # noqa: F401
 from . import content_deep_executor  # noqa: F401
 from . import outreach_loop_executor  # noqa: F401
+from . import growth_probe_executor  # noqa: F401
+from . import agent_ops_executor  # noqa: F401
 
 __all__ = [
     "BaseExecutor",

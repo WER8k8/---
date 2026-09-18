@@ -54,6 +54,8 @@ class TestResearchAnalysis:
             "platform_ops",
             "content_deep",
             "outreach_loop",
+            "growth_probe",
+            "agent_ops",
         }
 
     def test_research_analysis_passes_safety_valves(self):
