@@ -32,7 +32,7 @@ def test_fulfillment_cross_node_refs_are_real_outputs():
 
     g = _fulfillment_graph("p", "e", {})
     nodes = {n.id: n for n in g.nodes}
-    assert len(nodes) == 8  # 7步闭环完整覆盖：①询盘→②建单→③PI→④定金→⑤CRM→⑥CI/PL→⑦物流→⑧尾款
+    assert len(nodes) == 9  # 7步闭环 + PI前风控 trade_ops.pi_precheck
     for n in g.nodes:
         assert set(n.depends_on or []) <= set(nodes)  # depends_on 引用的节点必须存在
         for target, ref in (n.input_from or {}).items():
@@ -109,7 +109,7 @@ def test_fulfillment_graph_covers_all_7_steps():
     assert "crm.sync_stage" in caps  # ⑤CRM 阶段推进
     assert "document.generate_trade_docs" in caps  # ⑥发运单证 CI/PL
     assert "logistics.track" in caps  # ⑦物流可查
-    assert len(g.nodes) == 8  # 8 节点覆盖完整 7 步
+    assert len(g.nodes) == 9  # 8 业务节点 + PI 前风控 trade_ops.pi_precheck
 
 
 def test_order_status_machine_includes_deposit_and_final_payment():

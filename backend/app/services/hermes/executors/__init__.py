@@ -41,6 +41,9 @@ from . import module_matrix_executor  # noqa: F401
 # 商业链深接（2026-09-18）
 from . import commerce_ops_executor  # noqa: F401
 from . import platform_ops_executor  # noqa: F401
+from . import trade_ops_executor  # noqa: F401
+from . import content_deep_executor  # noqa: F401
+from . import outreach_loop_executor  # noqa: F401
 
 __all__ = [
     "BaseExecutor",

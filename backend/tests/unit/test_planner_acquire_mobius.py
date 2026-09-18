@@ -21,7 +21,10 @@ from app.services.hermes import planner_service as ps
 REGISTERED = {
     "site_builder", "content", "deerflow", "publish", "nurture", "egress",
     "accio", "lead", "trade_ai_agent", "inquiry", "order", "goodjob_crm",
-    "billing", "logistics",
+    "billing", "logistics", "trade_ops", "commerce_ops", "platform_ops",
+    "module_matrix", "content_deep", "outreach_loop", "ubrain", "wangcai",
+    "research", "ai_engine", "seo", "media", "engagement", "forum", "product",
+    "browser",
 }
 
 
@@ -43,6 +46,9 @@ def fake_registry(monkeypatch):
         "site.generate", "content.create", "seo.optimize",
         "publish.multi", "nurture.create", "egress.assign",
         "research.deep_run", "default",
+        "trade_ops.pi_precheck", "commerce_ops.crm_pipeline",
+        "platform_ops.system_health", "module_matrix.matrix.inspect",
+        "content_deep.knowledge", "outreach_loop.gate",
     })
     monkeypatch.setattr(ps, "known_capabilities", lambda: frozenset(caps))
     return monkeypatch

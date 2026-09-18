@@ -43,6 +43,15 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "research.deep_run", "seo.optimize",
     "outreach.letter", "prospect.enrich", "prospect.match",
     "negotiation.draft", "prospect.scrape", "outreach.whatsapp", "outreach.email",
+    "trade_ops.pi_precheck", "trade_ops.fulfillment_node", "trade_ops.logistics_write",
+    "trade_ops.goodjob_pi", "content_deep.seo_meta", "content_deep.acquisition",
+    "content_deep.knowledge", "outreach_loop.gate", "outreach_loop.research",
+    "commerce_ops.email_enqueue", "commerce_ops.followup_sequence",
+    "commerce_ops.outreach_scan", "commerce_ops.crm_pipeline",
+    "commerce_ops.wallet_token", "commerce_ops.acquisition_card",
+    "platform_ops.tenant_list", "platform_ops.product_catalog",
+    "platform_ops.seo_health", "platform_ops.system_health", "platform_ops.notify_draft",
+    "module_matrix.matrix.inspect", "module_matrix.matrix.invoke", "module_matrix.matrix.health",
     "inbox.classify",
     "lead.search", "lead.score",
     "inquiry.capture",
@@ -340,6 +349,17 @@ def _research_analysis_graph(plan_id: str, event_id: str, payload: dict[str, Any
                      depends_on=["n3"],
                      input={},
                      on_fail="skip"),
+            TaskNode(id="n7", executor="content_deep", capability="content_deep.knowledge",
+                     depends_on=["n3"],
+                     input={"tenant_id": str(payload.get("tenant_id") or "")},
+                     on_fail="skip"),
+            TaskNode(id="n8", executor="outreach_loop", capability="outreach_loop.gate",
+                     depends_on=["n3"],
+                     input={
+                         "inquiry_id": str(payload.get("inquiry_id") or ""),
+                         "research_level": str(payload.get("research_level") or "none"),
+                     },
+                     on_fail="skip"),
         ],
     )
 
@@ -440,6 +460,17 @@ def _fulfillment_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> 
                 on_fail="abort",
             ),
             # ③ PI 形式发票（人审闸）
+            TaskNode(
+                id="n2b", executor="trade_ops", capability="trade_ops.pi_precheck",
+                depends_on=["n1"],
+                input={
+                    "inquiry_id": inquiry_ref,
+                    "country": payload.get("country") or "",
+                    "auto_pi": True,
+                    "deposit_ratio": deposit_ratio,
+                },
+                on_fail="skip",
+            ),
             TaskNode(
                 id="n3", executor="goodjob_crm", capability="document.generate_pi",
                 depends_on=["n2"],
