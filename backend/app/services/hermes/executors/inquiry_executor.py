@@ -50,16 +50,19 @@ class InquiryExecutor(BaseExecutor):
             )
 
         params: dict[str, Any] = dict(node.input or {})
-        name = str(params.get("name") or "").strip()
+        # 兼容多种入参：name / raw_text / message
+        name = str(params.get("name") or params.get("contact_name") or "").strip()
+        message = str(params.get("message") or params.get("raw_text") or "").strip()
+        if not name and message:
+            name = "Hermes Inquiry"
         if not name:
             return ExecutorResult(
                 node_id=node.id,
                 status="failed",
                 output={},
-                error="missing_name: 询盘节点需提供 name",
+                error="missing_name: 询盘节点需提供 name（或 message/raw_text）",
             )
 
-        message = str(params.get("message") or "").strip()
         if not message:
             return ExecutorResult(
                 node_id=node.id,
@@ -67,6 +70,18 @@ class InquiryExecutor(BaseExecutor):
                 output={},
                 error="missing_message: 询盘节点需提供 message",
             )
+
+        # PG 下 tenant_id 可能需要 UUID
+        tenant_id = str(context.tenant_id) if context.tenant_id else ""
+        if tenant_id and context.db is not None:
+            try:
+                from app.services.acquisition.repo import resolve_tenant_uuid
+
+                resolved = resolve_tenant_uuid(context.db, tenant_id)
+                if resolved:
+                    tenant_id = resolved
+            except Exception:
+                pass
 
         try:
             from app.services.inquiries_unified_service import InquiriesUnifiedService
@@ -78,8 +93,8 @@ class InquiryExecutor(BaseExecutor):
                 email=params.get("email") or None,
                 phone=params.get("phone") or None,
                 product=params.get("product") or None,
-                source_channel=params.get("source_channel") or "hermes",
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
+                source_channel=params.get("source_channel") or params.get("source") or "hermes",
+                tenant_id=tenant_id or None,
             )
         except Exception as exc:  # noqa: BLE001 — 契约要求失败返回而非抛出
             logger.exception("InquiryExecutor 执行失败 node=%s", node.id)

@@ -444,6 +444,8 @@ def _fulfillment_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> 
     inquiry_ref = str(payload.get("inquiry_id") or payload.get("message") or "").strip()
     order_id = payload.get("order_id") or ""
     deposit_ratio = float(payload.get("deposit_ratio") or 0.3)
+    buyer_name = str(payload.get("name") or payload.get("contact_name") or payload.get("buyer_display") or inquiry_ref or "Hermes Lead").strip()
+    inquiry_message = str(payload.get("message") or payload.get("raw_text") or inquiry_ref or "来自任务图的询盘进线").strip()
 
     return TaskGraph(
         plan_id=plan_id, event_id=event_id,
@@ -459,10 +461,14 @@ def _fulfillment_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> 
                 id="n1", executor="inquiry", capability="inquiry.capture",
                 depends_on=[],
                 input={
-                    "source": payload.get("source") or "manual",
+                    "name": buyer_name,
+                    "message": inquiry_message,
+                    "email": payload.get("email") or "",
+                    "phone": payload.get("phone") or "",
+                    "product": payload.get("product") or "",
+                    "source_channel": payload.get("source") or "hermes",
                     "raw_text": payload.get("message") or inquiry_ref,
                     "country": payload.get("country") or "",
-                    "product": payload.get("product") or "",
                 },
                 on_fail="abort",
             ),

@@ -36,10 +36,22 @@ def test_success_returns_real_inquiry_id():
 
 
 def test_missing_name_fails():
-    """缺 name 必须返回 failed，不静默成功。"""
-    result = asyncio.run(InquiryExecutor().run(_node(message="询价"), _ctx()))
+    """完全无 name/message/raw_text 必须 failed；仅有 message 时履约图可用默认名。"""
+    result = asyncio.run(InquiryExecutor().run(_node(), _ctx()))
     assert result.status == "failed"
-    assert "missing_name" in (result.error or "")
+    assert "missing_name" in (result.error or "") or "missing_message" in (result.error or "")
+
+
+def test_message_only_allows_fulfillment_default_name():
+    """履约图常只带 message：允许默认姓名，禁止假成功失败。"""
+    fake_row = {"id": "inq-msg", "name": "x", "message": "need PI"}
+    with patch("app.services.inquiries_unified_service.InquiriesUnifiedService") as MockSvc:
+        MockSvc.return_value.create_public_lead.return_value = fake_row
+        result = asyncio.run(InquiryExecutor().run(_node(message="need PI"), _ctx()))
+    assert result.status == "succeeded"
+    called = MockSvc.return_value.create_public_lead.call_args.kwargs
+    assert called.get("name")
+    assert "need PI" in (called.get("message") or "")
 
 
 def test_missing_message_fails():
