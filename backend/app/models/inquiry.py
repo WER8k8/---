@@ -1,4 +1,3 @@
-from sqlalchemy import JSON
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
@@ -7,7 +6,7 @@ Inquiry Model - 询盘模型
 """
 import uuid as _uuid_lib
 
-from sqlalchemy import Column, String, Text, DateTime, Boolean
+from sqlalchemy import Column, String, Text, DateTime, Boolean, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
