@@ -253,15 +253,33 @@ def login(req: LoginRequest, request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("/contact", status_code=status.HTTP_201_CREATED)
-def submit_contact(req: InquiryCreate, db: Session = Depends(get_db)):
-    """提交联系表单"""
-    inquiry = Inquiry(
-        name=req.name,
-        phone=req.phone,
-        email=req.email,
-        product=req.product_interest or "",
-        message=req.message,
-    )
+def submit_contact(req: InquiryCreate, db: Session = Depends(get_db), request: Request = None):
+    """提交联系表单（官网/租户站访客 → 询盘）。"""
+    tenant_id = None
+    try:
+        # 租户独立站访客提交时带上域名归属（可选）
+        host = ""
+        if request is not None:
+            host = (request.headers.get("host") or "").split(":")[0].lower()
+        if host and host not in ("127.0.0.1", "localhost"):
+            from app.models.tenant import Tenant
+            t = db.query(Tenant).filter(Tenant.domain == host).first()
+            if t:
+                tenant_id = t.id
+    except Exception:
+        tenant_id = None
+    inquiry_kwargs = {
+        "name": req.name,
+        "phone": req.phone,
+        "email": req.email,
+        "product": req.product or getattr(req, "product_interest", None) or "",
+        "message": req.message,
+    }
+    # Inquiry 可能要求 tenant_id 列非空：优先显式列存在再写
+    cols = {c.name for c in Inquiry.__table__.columns}
+    if "tenant_id" in cols:
+        inquiry_kwargs["tenant_id"] = tenant_id
+    inquiry = Inquiry(**inquiry_kwargs)
     db.add(inquiry)
     db.commit()
     db.refresh(inquiry)

@@ -86,7 +86,10 @@ class ContentPageService:
         if self.page_repo.exists_by_slug(data.slug):
             raise ValueError("页面slug已存在")
 
-        page = self.page_repo.create(**data.model_dump())
+        payload = data.model_dump()
+        if created_by and "author_id" not in payload:
+            payload["author_id"] = created_by
+        page = self.page_repo.create(**payload)
         if created_by:
             self.log_repo.create_log(
                 user_id=created_by,
