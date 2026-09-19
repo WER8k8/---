@@ -66,27 +66,31 @@ def _order_token_of(request: Request) -> str:
 
 
 def _sync_order_stage_to_goodjob(order: Order, stage: str, step_number: int, details: dict = None) -> None:
-    """自动将订单履约流转阶段同步至 GoodJob CRM 桥（失败安全，不阻断主流程）。"""
-    try:
-        from app.orchestration.executors.goodjob_executor import build_goodjob_executor
-        from app.services.goodjob.trade_document_bridge import submit_stage_sync_task
+    """订单履约阶段写入**本项目 CRM**（优丁原生 PG；失败安全）。
 
-        executor = build_goodjob_executor()
-        if executor and getattr(executor, "enabled", False):
-            submit_stage_sync_task(
-                executor,
-                tenant_id=str(getattr(order, "tenant_id", None) or "default"),
+    goodjob_crm = 优丁 CRM，默认不走外桥。
+    """
+    try:
+        from app.core.database import SessionLocal
+        from app.services.goodjob.native_fulfillment import sync_fulfillment_stage
+
+        db = SessionLocal()
+        try:
+            sync_fulfillment_stage(
+                tenant_id=str(getattr(order, "tenant_id", None) or "") or None,
                 order_id=str(order.id),
                 stage=stage,
                 step_number=step_number,
-                status="synced",
-                payload={
+                params={
                     "order_number": getattr(order, "order_number", ""),
                     "total_amount": float(getattr(order, "total_amount", 0.0) or 0.0),
                     "currency": getattr(order, "currency", "USD"),
                     "details": details or {},
                 },
+                db=db,
             )
+        finally:
+            db.close()
     except Exception:
         pass
 

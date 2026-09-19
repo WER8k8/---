@@ -375,17 +375,24 @@ class InquiriesUnifiedService:
             pass
 
     def _push_goodjob_pool_projection(self, row: Inquiry) -> None:
-        """询盘投影推送 GoodJob customer_pool（批次 B 首调用方，失败静默）。"""
+        """询盘落地 → 本项目 CRM 原生建档（优丁 PG，无外桥投影）。"""
         try:
-            from app.orchestration.executors.goodjob_executor import (
-                build_goodjob_executor,
+            from app.services.goodjob.native_fulfillment import sync_lead
+
+            sync_lead(
+                tenant_id=str(getattr(row, "tenant_id", "") or "") or None,
+                lead_data={
+                    "company_name": str(getattr(row, "name", "") or "Unknown"),
+                    "contact_name": str(getattr(row, "name", "") or "Unknown"),
+                    "email": str(getattr(row, "email", "") or f"no-email-{row.id}@placeholder.local"),
+                    "phone": getattr(row, "phone", None),
+                    "source": "inquiry_public_lead",
+                    "inquiry_id": str(row.id),
+                    "product": getattr(row, "product", None),
+                    "message": (getattr(row, "message", "") or "")[:500],
+                },
+                db=self.db,
             )
-            from app.services.goodjob.customer_pool_projection import (
-                sync_inquiry_to_pool,
-            )
-            executor = build_goodjob_executor()
-            if executor is not None:
-                sync_inquiry_to_pool(executor, row)
         except Exception:
             pass
 

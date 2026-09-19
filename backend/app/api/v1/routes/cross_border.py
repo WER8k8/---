@@ -392,7 +392,7 @@ def post_export_quote(
         validity_days=body.validity_days,
         notes_zh=body.notes_zh,
     )
-    # 批次 B 首调用方：报价签发即向 GoodJob 委派 QUOTATION 单证任务（失败静默）。
+    # 本项目 CRM 原生归档（无外桥）
     doc_task_id = _dispatch_goodjob_quotation_task(tenant, body, data)
     if doc_task_id:
         data["goodjob_doc_task_id"] = doc_task_id
@@ -404,34 +404,37 @@ def _dispatch_goodjob_quotation_task(
     body: ExportQuoteBody,
     data: dict[str, Any],
 ) -> str | None:
+    """报价签发 → 本项目 CRM 原生单证归档（优丁 PG，无外桥）。"""
     if not body.inquiry_id or not data.get("ready"):
         return None
     try:
-        from app.orchestration.executors.goodjob_executor import (
-            build_goodjob_executor,
-        )
-        from app.services.goodjob.trade_document_bridge import (
-            submit_document_task,
-        )
-        executor = build_goodjob_executor()
-        if executor is None:
-            return None
+        from app.core.database import SessionLocal
+        from app.services.goodjob.native_fulfillment import generate_trade_document
+
         pi = data.get("pi") or {}
-        options = {
-            "currency": body.currency,
-            "delivery_terms": body.delivery_terms,
-            "payment_terms": body.payment_terms,
-            "validity_days": body.validity_days,
-            "human_confirm_required": True,
-        }
-        return submit_document_task(
-            executor,
-            tenant_id=str(tenant.id),
-            inquiry_id=body.inquiry_id,
-            doc_type="QUOTATION",
-            items=pi.get("lines") or [],
-            options=options,
-        )
+        db = SessionLocal()
+        try:
+            out = generate_trade_document(
+                doc_type="PI",
+                tenant_id=str(tenant.id) if tenant is not None else None,
+                params={
+                    "items": pi.get("lines") or [],
+                    "currency": body.currency,
+                    "payment_terms": body.payment_terms,
+                    "incoterms": body.delivery_terms,
+                    "notes": "export quotation",
+                    "buyer_name": getattr(body, "buyer_name", None),
+                },
+                db=db,
+                inquiry_id=str(body.inquiry_id),
+            )
+        finally:
+            db.close()
+        if out.get("success"):
+            data["crm_doc_no"] = out.get("doc_no")
+            data["crm_native"] = True
+            return str(out.get("doc_no") or "")
+        return None
     except Exception:
         return None
 

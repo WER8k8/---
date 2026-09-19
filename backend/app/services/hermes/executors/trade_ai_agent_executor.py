@@ -1,26 +1,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
-"""Trade AI Agent Executor — 接真实适配器（不再返回假数据）。
+"""trade_ai_agent 执行器 —— **本项目的拓客能力域**（爱马仕原生直驱，无外桥）。
 
-⚠️ 本文件此前是**纯 mock**：伪造格式类似 `buyerN@<keyword>-intl.com` 的假线索邮箱、
-   编造的电话号、以及在**未真实发送**的情况下直接返回 `message_status:"sent"`。
-   上述伪造已全部移除。
-
-现在的行为：
-    经 `services.adapters.tradeai`（**真实代码级嫁接**，MIT，命名空间隔离）
-    调用 vendor 的 `AgentOrchestrator.execute_workflow()`：
-      · 找到匹配的 workflow/skill → 真执行，返回真实产出
-      · 找不到 → **明确 failed**，并列出当前可用的 workflow/skill（绝不编造）
-
-能力映射（capability → vendor workflow/skill 名，按序匹配）：
-    prospect.scrape / prospect_search  → prospect_search / lead_finder
-    outreach.whatsapp                  → whatsapp_outreach / whatsapp_send
-    outreach.email / cold_email        → email_campaign / cold_email
-    inbox.classify                     → inbox_classify / intent_classify
-
-合规提醒（README 原文）：
-    「README 声明 MIT，但根目录无 LICENSE 文件——商用合入前必须向作者书面确认
-     （总纲 §9.4-1，未完成前不得对外分发含本适配器的版本）」
+  · TradeAI = 优丁拓客（检索 / 触达 / 分类），不是第二套系统
+  · 调度主权 Hermes；记录与真相写优丁 PG；**进程内直驱**
+  · 无 Key / 无 SMTP → 诚实 failed，不伪造 sent
 """
 from __future__ import annotations
 
@@ -33,37 +17,17 @@ from .base import BaseExecutor, ExecutorContext, ExecutorRegistry
 
 logger = logging.getLogger(__name__)
 
-# capability → 候选 workflow/skill 名（按序尝试）。
-# 说明：vendor 的 AgentOrchestrator 原生不注册任何 workflow，故真实可命中项
-# 落在 vendor SkillRegistry 的 8 个 skill 类（social_scraper / auto_sender /
-# intent_analysis …）。此处保留原始 workflow 名（未来注册后可命中）并追加
-# 对应的可执行 skill 名作为兜底，使能力调用不再一律 workflow_not_registered。
-_CAP_TO_TARGETS: dict[str, tuple[str, ...]] = {
-    "prospect.scrape": (
-        "prospect_search", "scrape_prospects", "lead_finder",
-        "social_scraper", "skill_social_scraper", "prospect", "search",
-    ),
-    "prospect_search": (
-        "prospect_search", "scrape_prospects", "lead_finder",
-        "social_scraper", "skill_social_scraper", "prospect", "search",
-    ),
-    "scrape_prospects": (
-        "prospect_search", "scrape_prospects", "lead_finder",
-        "social_scraper", "skill_social_scraper", "prospect", "search",
-    ),
-    "prospect.enrich": ("prospect_enrich", "lead_finder", "data_cleaner"),
-    "outreach.whatsapp": ("whatsapp_outreach", "whatsapp_send", "auto_sender", "schedule_outreach", "message_generator"),
-    "whatsapp_send": ("whatsapp_outreach", "whatsapp_send", "auto_sender", "schedule_outreach", "message_generator"),
-    "outreach.email": ("email_campaign", "cold_email", "message_generator", "bulk_message_generator", "auto_sender"),
-    "email_campaign": ("email_campaign", "cold_email", "message_generator", "bulk_message_generator", "auto_sender"),
-    "cold_email": ("email_campaign", "cold_email", "message_generator", "bulk_message_generator", "auto_sender"),
-    "inbox.classify": ("inbox_classify", "intent_classify", "intent_analysis", "ai_reply"),
-    "intent_classify": ("inbox_classify", "intent_classify", "intent_analysis", "ai_reply"),
-}
+_CAPS = frozenset({
+    "prospect.scrape", "prospect_search", "scrape_prospects",
+    "prospect.enrich",
+    "outreach.whatsapp", "whatsapp_send",
+    "outreach.email", "email_campaign", "cold_email",
+    "inbox.classify", "intent_classify",
+})
 
 
 class TradeAiAgentExecutor(BaseExecutor):
-    """Trade AI Agent 执行器（真实适配器，非 mock）。"""
+    """优丁拓客执行器：native_acquisition → 优丁 PG。"""
 
     @classmethod
     def get_executor_name(cls) -> str:
@@ -71,175 +35,118 @@ class TradeAiAgentExecutor(BaseExecutor):
 
     async def run(self, node: TaskNode, context: ExecutorContext) -> ExecutorResult:
         capability = (node.capability or "").lower().strip()
-        if capability.startswith("trade_ai."):
-            capability = capability.split(".", 1)[1]
+        for prefix in ("trade_ai.", "tradeai."):
+            if capability.startswith(prefix):
+                capability = capability.split(".", 1)[1]
         params: dict[str, Any] = dict(node.input or {})
 
-        try:
-            from app.services import adapters
-            from app.services.adapters import tradeai as taa
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("TradeAiAgent: 适配器导入失败")
+        if capability not in _CAPS:
             return ExecutorResult(
                 node_id=node.id,
-                status="failed",
-                output={},
-                error=f"adapter_import_failed: {type(exc).__name__}: {exc}",
-            )
-
-        # ① 可用性自检
-        try:
-            available = taa.is_available()
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("TradeAiAgent: is_available() 异常")
-            return ExecutorResult(
-                node_id=node.id, status="failed", output={},
-                error=f"adapter_unavailable: {exc}",
-            )
-        if not available:
-            return ExecutorResult(
-                node_id=node.id,
-                status="failed",
+                status="skipped",
                 output={"capability": capability},
-                error=(
-                    "tradeai_adapter_not_loaded: 真实适配器未加载（vendor 未隔离成功或 "
-                    "_external/trade-ai-agent 缺失）。**不返回假数据**。"
-                ),
+                error=f"trade_ai_agent 不支持 capability={capability!r}；能力集={sorted(_CAPS)}",
             )
 
-        # ② 找到匹配的 workflow/skill
-        targets = _CAP_TO_TARGETS.get(capability)
-        if not targets:
-            return ExecutorResult(
-                node_id=node.id, status="skipped", output={},
-                error=f"trade_ai_agent 不支持 capability={capability!r}",
-            )
+        from app.services.tradeai import native_acquisition as native
+        db = context.db
 
-        try:
-            orch = taa.tenant_orchestrator(context.tenant_id)
-            wf_names = {getattr(w, "name", "") for w in orch.list_workflows()}
-            skills = {getattr(s, "name", ""): s for s in orch.list_skills()}
-            skill_names = set(skills)
-            # 技能类名兜底（vendor 可能以类名而非注册名暴露）
-            for s in list(skills.values()) or []:
-                cn = getattr(s, "name", "") or getattr(type(s), "__name__", "")
-                if cn:
-                    skill_names.add(str(cn).lower())
-                    skill_names.add(str(cn).lower().replace("skill_", ""))
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("TradeAiAgent: 取 orchestrator 失败")
-            return ExecutorResult(
-                node_id=node.id, status="failed", output={},
-                error=f"orchestrator_init_failed: {type(exc).__name__}: {exc}",
+        if capability in ("prospect.scrape", "prospect_search", "scrape_prospects", "prospect.enrich"):
+            out = native.prospect_scrape(
+                tenant_id=context.tenant_id,
+                keyword=str(params.get("keyword") or params.get("q") or ""),
+                country=params.get("country"),
+                limit=int(params.get("limit") or 20),
+                db=db,
+                params=params,
             )
-
-        # 优先命中已注册 workflow；未命中则回退到可执行 skill（vendor 默认不注册
-        # workflow，真实能力落在 8 个 skill 类上）。
-        wf_hit = next((t for t in targets if t in wf_names), None)
-        skill_hit = None
-        if wf_hit is None:
-            lowered = {str(x).lower(): x for x in skill_names}
-            for t in targets:
-                if t in skills:
-                    skill_hit = t
-                    break
-                if t.lower() in lowered:
-                    skill_hit = lowered[t.lower()]
-                    break
-        if wf_hit is None and skill_hit is None:
-            # 真实适配器在线，但该能力对应的 workflow/skill 均不可执行 —— 如实失败，不编造
             return ExecutorResult(
                 node_id=node.id,
-                status="failed",
-                output={
-                    "capability": capability,
-                    "available_workflows": sorted(wf_names),
-                    "available_skills": sorted(skill_names),
-                },
-                error=(
-                    f"capability_not_executable: 未找到 {targets} 中任何可执行 workflow/skill。"
-                    f"当前已注册 workflows={sorted(wf_names)} skills={sorted(skill_names)}；"
-                    "需先在 tradeai 侧注册对应 workflow 或 skill（不返回假数据）"
-                ),
+                status="succeeded" if out.get("success") else "failed",
+                output={**out, "executor": self.get_executor_name(), "capability": capability},
+                error=None if out.get("success") else str(out.get("error") or "native_prospect_failed"),
             )
 
-        target_name = wf_hit or skill_hit
-        # ③ 真执行
-        try:
-            if wf_hit is not None:
-                # workflow 路径：execute_workflow 是异步生成器，收集全部产出
-                collected: list[dict[str, Any]] = []
-                async for chunk in orch.execute_workflow(wf_hit, params):
-                    if isinstance(chunk, dict):
-                        collected.append(chunk)
-                        if chunk.get("type") == "error":
-                            return ExecutorResult(
-                                node_id=node.id, status="failed",
-                                output={"workflow": wf_hit, "steps": collected},
-                                error=str(chunk.get("error") or "workflow error"),
-                            )
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="succeeded",
-                    output={
-                        "executor": self.get_executor_name(),
-                        "capability": capability,
-                        "workflow": wf_hit,
-                        "steps": collected,
-                        "step_count": len(collected),
-                        "prospects": collected,
-                    },
-                )
-
-            # skill 路径：BaseSkill.run(ExecutionContext) 是异步，返回 dict 产出
-            from app.services.adapters.tradeai import make_context
-            exec_ctx = make_context(
-                context.tenant_id,
-                task_id=getattr(node, "id", None),
-                **params,
+        if capability in ("outreach.whatsapp", "whatsapp_send"):
+            out = native.outreach_whatsapp(
+                tenant_id=context.tenant_id,
+                phone=str(params.get("whatsapp") or params.get("to") or params.get("phone") or ""),
+                message=str(params.get("message") or params.get("body") or ""),
+                template_id=params.get("template_id"),
+                inquiry_id=str(params.get("inquiry_id") or "") or None,
+                lead_id=str(params.get("lead_id") or "") or None,
+                db=db,
+                params=params,
             )
-            skill = skills[skill_hit]
-            result = await skill.run(exec_ctx)
-            prospect_items = []
-            if isinstance(result, dict):
-                prospect_items = result.get("leads") or result.get("prospects") or result.get("items") or []
             return ExecutorResult(
                 node_id=node.id,
-                status="succeeded",
-                output={
-                    "executor": self.get_executor_name(),
-                    "capability": capability,
-                    "skill": skill_hit,
-                    "result": result,
-                    "prospects": prospect_items,
-                },
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("TradeAiAgent: 执行 %s 失败", target_name)
-            return ExecutorResult(
-                node_id=node.id, status="failed",
-                output={"target": target_name},
-                error=f"{type(exc).__name__}: {exc}",
+                status="succeeded" if out.get("success") else "failed",
+                output={**out, "executor": self.get_executor_name(), "capability": capability},
+                error=None if out.get("success") else str(out.get("error") or "native_whatsapp_failed"),
             )
 
+        if capability in ("outreach.email", "email_campaign", "cold_email"):
+            out = native.outreach_email(
+                tenant_id=context.tenant_id,
+                to_email=str(params.get("email") or params.get("to") or ""),
+                subject=str(params.get("subject") or ""),
+                body=str(params.get("body") or params.get("message") or ""),
+                inquiry_id=str(params.get("inquiry_id") or "") or None,
+                lead_id=str(params.get("lead_id") or "") or None,
+                db=db,
+                params=params,
+            )
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded" if out.get("success") else "failed",
+                output={**out, "executor": self.get_executor_name(), "capability": capability},
+                error=None if out.get("success") else str(out.get("error") or "native_email_failed"),
+            )
+
+        out = native.classify_inbox(
+            tenant_id=context.tenant_id,
+            message=str(params.get("message") or params.get("content") or ""),
+            db=db,
+            params=params,
+        )
+        return ExecutorResult(
+            node_id=node.id,
+            status="succeeded" if out.get("success") else "failed",
+            output={**out, "executor": self.get_executor_name(), "capability": capability},
+            error=None if out.get("success") else str(out.get("error") or "native_classify_failed"),
+        )
 
     @classmethod
     def get_capabilities(cls) -> Dict[str, Dict[str, Any]]:
         return {
             "prospect.scrape": {
-                "desc": "社媒/地图潜客挖掘（走真实 tradeai 适配器；未注册 workflow 即失败）",
+                "desc": "拓客检索（优丁 prospect_leads/inquiries；外挖无引擎诚实失败）",
                 "input": ["keyword", "country", "limit"],
-                "output": ["workflow", "steps", "step_count", "prospects"],
-                "cost": {"tokens": 10000, "seconds": 180},
+                "output": ["prospects", "hit_count", "source"],
+                "cost": {"tokens": 0, "seconds": 3},
                 "needs_approval": False,
             },
             "outreach.whatsapp": {
-                "desc": "WhatsApp 触达（真实桥；未接通即失败，不伪造 sent）",
+                "desc": "WhatsApp 触达（优丁 WA + PG；无 Key 诚实 failed）",
                 "input": ["whatsapp", "message", "template_id"],
+                "output": ["success", "status", "persisted"],
+                "cost": {"tokens": 0, "seconds": 8},
                 "needs_approval": True,
             },
-            "outreach.email": {"desc": "冷邮件序列", "input": ["email", "subject", "body"]},
-            "inbox.classify": {"desc": "收件箱意图分类", "input": ["message"]},
+            "outreach.email": {
+                "desc": "邮件触达（优丁 SMTP + contact_events；无 SMTP 诚实 failed）",
+                "input": ["email", "subject", "body"],
+                "output": ["success", "email_status"],
+                "cost": {"tokens": 0, "seconds": 10},
+                "needs_approval": True,
+            },
+            "inbox.classify": {
+                "desc": "收件箱/询盘意图分类（优丁规则真源）",
+                "input": ["message"],
+                "output": ["detected_intent", "priority_tier"],
+                "cost": {"tokens": 0, "seconds": 1},
+                "needs_approval": False,
+            },
         }
 
 

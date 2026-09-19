@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
-"""附属工作模式契约 · 双平面 + Hermes 默认 L1 + 黄金路径.
+"""本项目能力域工作模式契约 · 双平面 + Hermes 原生直驱 + 黄金路径.
 
 设计出处：docs/GoodJob整仓融入施工总案-2026-09-19.md §3（优化版）。
-主理人拍板：TradeAI/GoodJob 由爱马仕 Hermes 编排驱动；交互走 UJ API；
+主理人拍板：TradeAI=本项目拓客、goodjob_crm=本项目 CRM；
+由爱马仕 Hermes **进程内直驱**（无外挂桥）；交互走 UJ API；
 DSH 非每单必经；SYSTEM-LOCK=能力域逻辑锁。
 """
 from __future__ import annotations
@@ -21,19 +22,20 @@ INTERACTIVE_PLANE_RULES: tuple[str, ...] = (
 )
 
 TASK_PLANE_RULES: tuple[str, ...] = (
-    "多步拓客/外发/PI·CI·PL/跨系统履约走 Hermes 编排",
+    "多步拓客/外发/PI·CI·PL/履约走 Hermes 编排",
     "默认 source=L1_template（DSH 非必经）",
     "DSH 仅用于模糊/复杂意图，失败降级 L1 或 L3_minimal",
-    "禁止 TradeAI/GoodJob 附属侧自主主控调度",
+    "TradeAI/GoodJob 已并入优丁能力域，禁止第二套调度面",
     "执行器诚实 failed/degraded，禁止假成功",
+    "执行路径=优丁原生服务层（native_fulfillment / native_acquisition），无外挂 HTTP 桥",
 )
 
 # ── 分层位置（法定，防设计漂移）────────────────────────
 LAYER_STACK: tuple[tuple[str, str], ...] = (
     ("user", "优丁唯一 UI + 唯一 /login"),
     ("dsh_optional", "外层 DSH① 认知/技能包（非每单必经）"),
-    ("hermes", "内层爱马仕② 调度主权（L1 默认）"),
-    ("executors_parallel", "并列插件：TradeAI⑤ · GoodJob⑥ · DeerFlow④ · Site③ · n8n⑧ · 资产⑦"),
+    ("hermes", "内层爱马仕② 调度主权（L1 默认，进程内直驱执行器）"),
+    ("executors_parallel", "并列能力域：本项目拓客⑤ · 本项目CRM⑥ · DeerFlow④ · Site③ · n8n⑧ · 资产⑦"),
     ("truth", "优丁 PG 真相 + 证据 + 经验反哺"),
 )
 
@@ -42,7 +44,7 @@ ANNEX_EXECUTORS: FrozenSet[str] = frozenset({"trade_ai_agent", "goodjob_crm"})
 # ── 黄金路径 ────────────────────────────────────────────
 GOLDEN_PATH_A = {
     "id": "GP-A",
-    "name": "履约 PI（GoodJob）",
+    "name": "履约 PI（本项目 CRM）",
     "priority": "P0",
     "plane": PLANE_TASK,
     "default_source": "L1_template",
@@ -55,15 +57,15 @@ GOLDEN_PATH_A = {
         "billing.meter",
     ),
     "acceptance": (
-        "仅从优丁发起，不打开 GoodJob 管理台",
-        "Hermes 可见节点/状态",
-        "PG 有订单/单证相关行，或未配置桥时诚实 failed",
+        "仅从优丁发起，Hermes 原生直驱（无外挂桥/无第二管理台）",
+        "Hermes 任务中心可见节点/状态",
+        "优丁 PG 有订单/单证行；收款账户未配置时单证 degraded，不编造银行号",
     ),
 }
 
 GOLDEN_PATH_B = {
     "id": "GP-B",
-    "name": "拓客触达（TradeAI）",
+    "name": "拓客触达（本项目拓客）",
     "priority": "P1",
     "plane": PLANE_TASK,
     "default_source": "L1_template",
@@ -75,9 +77,9 @@ GOLDEN_PATH_B = {
         "inbox.classify",
     ),
     "acceptance": (
-        "仅从优丁发起，不打开 TradeAI 管理台",
-        "无 Key/未配置 → 诚实 failed，禁止假 sent",
-        "线索/会话可回写优丁 PG",
+        "仅从优丁发起，Hermes 原生直驱（无外挂管理台）",
+        "无 WA Key/SMTP → 诚实 failed，禁止假 sent",
+        "线索/触达记录回写优丁 PG（prospect_leads/inquiries/contact_events）",
     ),
 }
 

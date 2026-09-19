@@ -60,26 +60,27 @@ def _probe_deerflow() -> dict[str, Any]:
 
 
 def _probe_tradeai() -> dict[str, Any]:
-    phys = Path(r"C:\Users\Administrator\Documents\上线网站开发完成\_external\trade-ai-agent")
-    ok = phys.exists() or _exists("services", "adapters", "tradeai")
-    url = (os.getenv("TRADEAI_BASE_URL") or "").strip()
+    """TradeAI = 本项目拓客能力域：探优丁原生模块，不探外挂 URL。"""
+    native = _exists("services", "tradeai", "native_acquisition.py")
+    executor = _exists("services", "hermes", "executors", "trade_ai_agent_executor.py")
     return {
-        "ok": ok,
-        "detail": f"物理目录={'有' if phys.exists() else '无'} adapter={'有' if _exists('services','adapters','tradeai') else '无'} url={'有' if url else '未配'}",
-        "runtime": "configured" if url else "not_configured",
-        "invoke": {"executor": "growth_probe", "capability": "growth_probe.channels"},
+        "ok": bool(native or executor),
+        "detail": f"native_acquisition={'有' if native else '无'} hermes_executor={'有' if executor else '无'}（爱马仕原生直驱）",
+        "runtime": "native_hermes",
+        "invoke": {"executor": "trade_ai_agent", "capability": "prospect.scrape"},
     }
 
 
 def _probe_goodjob() -> dict[str, Any]:
-    phys = Path(r"C:\Users\Administrator\Documents\上线网站开发完成\_external\goodjob-crm")
-    ok = phys.exists() or _exists("services", "goodjob")
-    url = (os.getenv("GOODJOB_BASE_URL") or "").strip()
+    """goodjob_crm = 本项目 CRM：探优丁原生模块，不探外挂桥。"""
+    native = _exists("services", "goodjob", "native_fulfillment.py")
+    slot = _exists("orchestration", "executors", "native_crm_executor.py")
+    executor = _exists("services", "hermes", "executors", "goodjob_crm_executor.py")
     return {
-        "ok": ok,
-        "detail": f"物理目录={'有' if phys.exists() else '无'} 桥={'有' if _exists('services','goodjob') else '无'} url={'有' if url else '未配'}",
-        "runtime": "configured" if url else "not_configured",
-        "invoke": {"executor": "trade_ops", "capability": "trade_ops.pi_precheck"},
+        "ok": bool(native and executor),
+        "detail": f"native_fulfillment={'有' if native else '无'} slot_adapter={'有' if slot else '无'} hermes_executor={'有' if executor else '无'}（无外桥）",
+        "runtime": "native_hermes",
+        "invoke": {"executor": "goodjob_crm", "capability": "document.generate_pi"},
     }
 
 
