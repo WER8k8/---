@@ -134,16 +134,19 @@
                 已核销
               </a-tag>
             </div>
-            <p class="text-xs text-gray-500 mb-2">核验买家支付定金流水，确认后转入生产排期。</p>
-            <a-button
-              type="primary"
-              size="small"
-              :loading="actionLoading === 'deposit'"
-              :disabled="['deposit_received', 'in_production', 'shipped', 'completed'].includes(String(activeOrder.status))"
-              @click="submitVerifyDeposit"
-            >
-              核销 30% 定金
-            </a-button>
+            <p class="text-xs text-gray-500 mb-2">核验买家支付定金银行水单 (T/T SWIFT MT103)，确认后转入生产排期。</p>
+            <div class="flex gap-2 items-center mb-2">
+              <a-input v-model:value="verifyForm.deposit_ref" placeholder="输入真实 SWIFT/银行流水号 (选填)" size="small" style="width: 260px" />
+              <a-button
+                type="primary"
+                size="small"
+                :loading="actionLoading === 'deposit'"
+                :disabled="['deposit_received', 'in_production', 'shipped', 'completed'].includes(String(activeOrder.status))"
+                @click="submitVerifyDeposit"
+              >
+                核销 30% 定金
+              </a-button>
+            </div>
           </div>
 
           <!-- 步骤 ⑤：工厂排产 -->
@@ -175,6 +178,10 @@
               </a-tag>
             </div>
             <p class="text-xs text-gray-500 mb-2">绑定集装箱柜号与正本海运提单 (B/L) 号码。</p>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+              <a-input v-model:value="verifyForm.bl_number" placeholder="海运提单号 (如 COSU632891)" size="small" />
+              <a-input v-model:value="verifyForm.container_no" placeholder="集装箱号 (如 CSXU882319)" size="small" />
+            </div>
             <a-button
               type="primary"
               size="small"
@@ -193,15 +200,18 @@
               <a-tag v-if="activeOrder.status === 'completed'" color="green">已结清完成</a-tag>
             </div>
             <p class="text-xs text-gray-500 mb-2">收回 70% 见提单副本尾款，全单履约交付完成。</p>
-            <a-button
-              type="primary"
-              size="small"
-              :loading="actionLoading === 'settle'"
-              :disabled="String(activeOrder.status) !== 'shipped'"
-              @click="submitSettleBalance"
-            >
-              核销尾款并结清全单
-            </a-button>
+            <div class="flex gap-2 items-center mb-2">
+              <a-input v-model:value="verifyForm.settle_ref" placeholder="尾款银行流水号 (选填)" size="small" style="width: 260px" />
+              <a-button
+                type="primary"
+                size="small"
+                :loading="actionLoading === 'settle'"
+                :disabled="String(activeOrder.status) !== 'shipped'"
+                @click="submitSettleBalance"
+              >
+                核销尾款并结清全单
+              </a-button>
+            </div>
           </div>
         </a-space>
 
@@ -258,6 +268,12 @@ const docLoading = ref('');
 const currentDocTitle = ref('');
 const currentDocResult = ref<Record<string, unknown> | null>(null);
 const currentDocType = ref('');
+const verifyForm = ref({
+  deposit_ref: '',
+  bl_number: '',
+  container_no: '',
+  settle_ref: '',
+});
 
 const baseColumns = [
   { key: 'order_number', title: '订单号', dataIndex: 'order_number', align: 'center' },
@@ -452,7 +468,7 @@ async function submitVerifyDeposit() {
   try {
     await apiPost(`/orders/${activeOrder.value.id}/verify-deposit`, {
       deposit_ratio: 30,
-      payment_reference: `TT-DEP-${Date.now()}`,
+      payment_reference: verifyForm.value.deposit_ref || `TT-DEP-${Date.now()}`,
     });
     message.success('定金核销成功，已更新为 deposit_received');
     await openOrderDetail(activeOrder.value);
@@ -488,8 +504,8 @@ async function submitDispatch() {
   actionLoading.value = 'dispatch';
   try {
     await apiPost(`/orders/${activeOrder.value.id}/dispatch`, {
-      bl_number: `COSCO-${Date.now().toString().slice(-8)}`,
-      container_no: `CSXU${Date.now().toString().slice(-7)}`,
+      bl_number: verifyForm.value.bl_number || `COSCO-${Date.now().toString().slice(-8)}`,
+      container_no: verifyForm.value.container_no || `CSXU${Date.now().toString().slice(-7)}`,
       carrier: 'COSCO SHIPPING',
       gross_weight: 18500.0,
       volume: 48.5,
@@ -509,7 +525,7 @@ async function submitSettleBalance() {
   actionLoading.value = 'settle';
   try {
     await apiPost(`/orders/${activeOrder.value.id}/settle-balance`, {
-      payment_reference: `TT-FINAL-${Date.now()}`,
+      payment_reference: verifyForm.value.settle_ref || `TT-FINAL-${Date.now()}`,
     });
     message.success('尾款核销结清，订单7步全链路履约完成！');
     await openOrderDetail(activeOrder.value);

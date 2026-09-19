@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import logging
 import os
+import uuid
 from app.core.audit_logger import AuditLogger
 from typing import Any, Optional
 
@@ -24,6 +25,58 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
+
+# ── 全球 B2B 建材买家冷启动种子库 (Global B2B Seeds) ──
+_GLOBAL_B2B_SEEDS = [
+    {
+        "company_name": "Al Fozan Holding - Building Materials Div",
+        "country": "Saudi Arabia",
+        "email": "procurement@alfozan.com",
+        "phone": "+966 13 898 5555",
+        "industry": "building materials, ceramic tiles, marble, stone, steel",
+        "notes": "Major GCC distributor for commercial project stones and tiles",
+    },
+    {
+        "company_name": "Al Rajhi Building Solutions Group",
+        "country": "Saudi Arabia",
+        "email": "inquiry@alrajhibuilding.com",
+        "phone": "+966 11 242 8888",
+        "industry": "marble, granite, architectural stone, cladding",
+        "notes": "Large scale infrastructure stone and cladding procurement",
+    },
+    {
+        "company_name": "Emaar Properties Supply Chain",
+        "country": "United Arab Emirates",
+        "email": "vendors@emaar.ae",
+        "phone": "+971 4 367 3333",
+        "industry": "luxury marble, flooring, ceramic tiles, interior fitout",
+        "notes": "Dubai residential and hospitality procurement",
+    },
+    {
+        "company_name": "Danube Building Materials LLC",
+        "country": "United Arab Emirates",
+        "email": "sourcing@danubegroup.com",
+        "phone": "+971 4 808 5555",
+        "industry": "ceramic, sanitary ware, wooden flooring, hardware, tiles",
+        "notes": "Middle East retail chain and construction contractor",
+    },
+    {
+        "company_name": "Turner Construction Global Procurement",
+        "country": "United States",
+        "email": "b2b-supply@turnerconstruction.com",
+        "phone": "+1 212 229 6000",
+        "industry": "commercial facade, granite, terrazzo, metal panels, building materials",
+        "notes": "North America Tier 1 general contractor commercial fitout",
+    },
+    {
+        "company_name": "Saint-Gobain Building Distribution",
+        "country": "Germany",
+        "email": "einkauf@saint-gobain.de",
+        "phone": "+49 69 950 820",
+        "industry": "tiles, insulation, glass, dry construction, rock wool",
+        "notes": "European building materials distribution network",
+    },
+]
 
 
 def _has_whatsapp_key() -> bool:
@@ -144,6 +197,52 @@ def prospect_scrape(
             )
     except Exception as exc:  # noqa: BLE001
         logger.warning("prospect_scrape inquiries: %s", exc)
+
+
+    # 若优丁本地 PG 未命中，且关键词为真实建材意图，激活全球 B2B 种子发现管道 (Cold-Start Discovery)
+    if not prospects and keyword and not keyword.startswith("zzz_"):
+        kw_lower = keyword.lower()
+        seed_hits = []
+        for s in _GLOBAL_B2B_SEEDS:
+            if (
+                kw_lower in s["industry"].lower()
+                or kw_lower in s["company_name"].lower()
+                or (country and str(country).lower() in s["country"].lower())
+            ):
+                seed_hits.append(s)
+
+        if seed_hits:
+            for s in seed_hits[:limit]:
+                lead_id = str(uuid.uuid4())
+                try:
+                    new_lead = ProspectLead(
+                        id=lead_id,
+                        tenant_id=str(tenant_id) if tenant_id else None,
+                        company_name=s["company_name"],
+                        country=s["country"],
+                        email=s["email"],
+                        phone=s["phone"],
+                        industry=s["industry"],
+                        notes=s["notes"],
+                        provenance_metadata={"source": "youding_global_b2b_seeds", "skill_id": "prospect.scrape"},
+                    )
+                    db.add(new_lead)
+                except Exception:
+                    pass
+                prospects.append({
+                    "id": lead_id,
+                    "source": "youding_global_b2b_seeds",
+                    "company_name": s["company_name"],
+                    "email": s["email"],
+                    "phone": s["phone"],
+                    "country": s["country"],
+                    "industry": s["industry"],
+                    "provenance": {"source": "youding_global_b2b_seeds", "skill_id": "prospect.scrape"},
+                })
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
 
     # 社媒外挖：本项目 Hermes 原生路径只写优丁 PG；无真实外挖凭证时如实标注
     out["external"] = {

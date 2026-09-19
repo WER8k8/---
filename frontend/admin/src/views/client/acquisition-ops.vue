@@ -2,7 +2,11 @@
   <YdPage title="获客作战台" subtitle="谁在跟 · 货 · 物流 · 联系 · 交代 · 付款" surface="elevated">
     <template #actions>
       <a-space>
-        <a-button type="primary" @click="showPreview = true">智能拆解预览</a-button>
+        <a-button type="primary" style="background-color: #4a9b8c; border-color: #4a9b8c;" @click="outreachDrawerOpen = true">
+          <template #icon><GlobalOutlined /></template>
+          全网外贸拓客 · Hermes GP-B
+        </a-button>
+        <a-button type="default" @click="showPreview = true">智能拆解预览</a-button>
         <a-button @click="reloadTips">刷新提醒</a-button>
       </a-space>
     </template>
@@ -611,6 +615,74 @@
         </div>
       </div>
     </a-modal>
+
+    <!-- 🌐 全网外贸主动拓客 (Hermes GP-B) 抽屉 -->
+    <a-drawer v-model:open="outreachDrawerOpen" title="全网外贸主动拓客 · Hermes GP-B 航道" width="680">
+      <div class="space-y-4">
+        <a-alert
+          type="info"
+          show-icon
+          message="Hermes GP-B 全域出站与冷启动探针"
+          description="输入建材品类关键词与目标采购国家，由 Hermes L1 自动编排拓客图：全球B2B买家探测 -> MEDDPICC意向打分 -> WhatsApp矩阵与邮件降级触达。"
+        />
+
+        <a-card size="small" title="1. 拓客任务参数">
+          <a-form layout="vertical">
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item label="建材品类/产品关键词 (Keyword)" required>
+                  <a-input v-model:value="outreachForm.keyword" placeholder="例如 ceramic tiles, marble slab, granite" />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item label="目标国家/市场 (Country)">
+                  <a-input v-model:value="outreachForm.country" placeholder="例如 Saudi Arabia, UAE, Germany" />
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-form-item label="触达策略通道">
+              <a-radio-group v-model:value="outreachForm.channel">
+                <a-radio value="omni">多通道融合 (WhatsApp 优先，失败自动降级 Email)</a-radio>
+                <a-radio value="whatsapp">仅 WhatsApp 矩阵触达</a-radio>
+                <a-radio value="email">仅 Cold Email 邮件外发</a-radio>
+              </a-radio-group>
+            </a-form-item>
+            <a-button type="primary" :loading="outreachLoading" @click="runGlobalOutreach">
+              🚀 启动 Hermes GP-B 拓客任务
+            </a-button>
+          </a-form>
+        </a-card>
+
+        <a-card v-if="outreachProspects.length" size="small" title="2. 发现的全球买家线索">
+          <div class="mb-3 flex justify-between items-center">
+            <span class="text-sm font-semibold">命中海外采购商: {{ outreachProspects.length }} 家</span>
+            <a-button size="small" @click="exportOutreachCsv">导出为 CSV</a-button>
+          </div>
+          <a-table
+            :data-source="outreachProspects"
+            :columns="outreachColumns"
+            size="small"
+            :pagination="{ pageSize: 5 }"
+            row-key="id"
+          >
+            <template #bodyCell="{ column, record }">
+              <template v-if="column.key === 'company_name'">
+                <div class="font-medium text-gray-800">{{ record.company_name }}</div>
+                <div class="text-xs text-gray-400">{{ record.industry }}</div>
+              </template>
+              <template v-else-if="column.key === 'provenance'">
+                <a-tag color="blue">{{ record.provenance?.source || record.source || 'youding_pg' }}</a-tag>
+              </template>
+              <template v-else-if="column.key === 'action'">
+                <a-button type="link" size="small" @click="quickContact(record)">
+                  直接跟单 →
+                </a-button>
+              </template>
+            </template>
+          </a-table>
+        </a-card>
+      </div>
+    </a-drawer>
   </YdPage>
 </template>
 
@@ -621,6 +693,8 @@
  */
 import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
+import { GlobalOutlined } from '@ant-design/icons-vue'
+import { apiPost } from '@/utils/api'
 import YdPage from '@/components/youding/YdPage.vue'
 import {
   addOpsCardNote,
@@ -1460,6 +1534,90 @@ const translateResult = ref<{
   degraded: boolean
   message: string
 } | null>(null)
+
+// ── 🌐 全网主动海外拓客 (Hermes GP-B) 状态 ──
+const outreachDrawerOpen = ref(false)
+const outreachLoading = ref(false)
+const outreachProspects = ref<any[]>([])
+const outreachForm = reactive({
+  keyword: 'ceramic tiles',
+  country: 'Saudi Arabia',
+  channel: 'omni',
+})
+
+const outreachColumns = [
+  { title: '采购商企业', key: 'company_name', dataIndex: 'company_name' },
+  { title: '国家', key: 'country', dataIndex: 'country', width: 110 },
+  { title: '联系方式', key: 'contact', customRender: ({ record }: any) => record.phone || record.email || '—' },
+  { title: '数据出处', key: 'provenance', width: 140 },
+  { title: '操作', key: 'action', width: 90 },
+]
+
+async function runGlobalOutreach() {
+  if (!outreachForm.keyword) {
+    message.warning('请输入建材品类关键词')
+    return
+  }
+  outreachLoading.value = true
+  try {
+    const res = await apiPost<any>('/orchestration/golden-path/outreach', {
+      intent: `社媒拓客 WhatsApp 私域触达 prospect social_outreach ${outreachForm.keyword}`,
+      payload: {
+        keyword: outreachForm.keyword,
+        country: outreachForm.country || 'Global',
+        channel: outreachForm.channel,
+      },
+      channel: 'web',
+      context: { golden_path: 'GP-B', plane: 'task' },
+      auto_dispatch: true,
+    })
+    message.success('Hermes GP-B 拓客任务已调度 · Plan ' + (res?.plan_id || ''))
+    // 同步获取候选
+    if (res?.prospects && res.prospects.length) {
+      outreachProspects.value = res.prospects
+    } else {
+      // 查询拓客检索结果
+      const qRes = await apiPost<any>('/orchestration/intents/resolve', {
+        intent: 'prospect_search',
+        payload: { keyword: outreachForm.keyword, country: outreachForm.country },
+      })
+      outreachProspects.value = qRes?.output?.prospects || []
+    }
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '拓客调度失败')
+  } finally {
+    outreachLoading.value = false
+  }
+}
+
+function quickContact(record: any) {
+  form.inquiry_id = record.id
+  form.country = record.country
+  form.message = `海外采购商: ${record.company_name} | 需求: ${record.industry || outreachForm.keyword}`
+  outreachDrawerOpen.value = false
+  message.info(`已带入采购商「${record.company_name}」，可在主界面跟进`)
+}
+
+function exportOutreachCsv() {
+  if (!outreachProspects.value.length) return
+  const headers = ['Company Name', 'Country', 'Email', 'Phone', 'Industry', 'Source']
+  const rows = outreachProspects.value.map(p => [
+    `"${p.company_name || ''}"`,
+    `"${p.country || ''}"`,
+    `"${p.email || ''}"`,
+    `"${p.phone || ''}"`,
+    `"${p.industry || ''}"`,
+    `"${p.provenance?.source || p.source || ''}"`,
+  ])
+  const csvContent = "﻿" + [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = `outreach_leads_${outreachForm.keyword}_${Date.now()}.csv`
+  link.click()
+  message.success('线索已导出为 CSV')
+}
+
 </script>
 
 <style scoped>

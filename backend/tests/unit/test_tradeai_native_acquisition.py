@@ -146,3 +146,16 @@ def test_executor_prospect_and_classify(db):
     res2 = asyncio.run(ex.run(node2, _Ctx(db, tid)))
     assert res2.status == "succeeded"
     assert res2.output.get("detected_intent") == "pricing"
+
+
+def test_cold_start_seed_discovery_success(db):
+    """当本地数据库为空时，通过全球 B2B 种子发现管道成功发现线索并自动入库。"""
+    fresh_tid = str(uuid.uuid4())
+    out = native.prospect_scrape(tenant_id=fresh_tid, keyword="ceramic tiles", country="Saudi Arabia", db=db)
+    assert out["success"] is True
+    assert out["hit_count"] >= 1
+    assert any("Al Fozan" in p["company_name"] for p in out["prospects"])
+    assert out["prospects"][0]["provenance"]["source"] == "youding_global_b2b_seeds"
+    # 验证线索已自动入库到本地 PG
+    assert db.query(ProspectLead).filter(ProspectLead.tenant_id == fresh_tid).count() >= 1
+
