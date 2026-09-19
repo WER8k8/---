@@ -928,3 +928,11 @@ def score_grade(score: int) -> tuple[str, str]:
     if score >= 40:
         return "C", "信息不足或匹配一般，保持低成本触达"
     return "D", "风险或低意向，不投入深度报价"
+
+
+# ── 外贸极智出海获客核心引擎导出 ──────────────────────────────
+from app.services.acquisition.buyer_360_enrichment import Buyer360EnrichmentEngine
+from app.services.acquisition.ai_pitch_studio import AIPitchStudio
+from app.services.acquisition.cadence_engine import OutboundCadenceEngine
+from app.services.acquisition.objection_copilot import ObjectionCopilot
+
