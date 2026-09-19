@@ -5,10 +5,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-# backend/tests/unit/ → backend → worktree root
+# backend/tests/unit → backend → worktree → 上线网站.worktrees → 上线网站开发完成
 _WT = Path(__file__).resolve().parents[3]
 ADMIN = _WT / "frontend" / "admin" / "src"
-WS = _WT.parent  # 上线网站开发完成
+WS = _WT.parent.parent
 EXTERNAL_GJ = WS / "_external" / "goodjob-crm"
 EXTERNAL_TA = WS / "_external" / "trade-ai-agent"
 

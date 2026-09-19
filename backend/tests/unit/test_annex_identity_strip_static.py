@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 _WT = Path(__file__).resolve().parents[3]
-WS = _WT.parent
+WS = _WT.parent.parent
 
 
 def test_goodjob_strip_markers():

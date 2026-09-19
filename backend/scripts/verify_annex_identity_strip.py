@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-# scripts/ → backend → worktree root
+# scripts/ → backend → worktree → 上线网站.worktrees → workspace
 WT = Path(__file__).resolve().parents[2]
-WS = WT.parent
+WS = WT.parent.parent
 GJ = WS / "_external" / "goodjob-crm" / "backend" / "src" / "server.ts"
 TA_CORE = WS / "_external" / "trade-ai-agent" / "backend" / "app" / "core" / "annex_identity.py"
 TA_AUTH = WS / "_external" / "trade-ai-agent" / "backend" / "app" / "api" / "v1" / "auth.py"
