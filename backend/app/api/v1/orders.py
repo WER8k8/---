@@ -259,7 +259,7 @@ def create_order(
         return success_response(data={
             "id": str(order.id),
             "order_number": order.order_number,
-            "status": order.status,
+            "status": _status_val(order.status),
             "access_token": order.access_token,
         })
     except Exception as e:
@@ -283,8 +283,8 @@ def get_order(
         "merchant_id": str(order.merchant_id),
         "total_amount": float(order.total_amount),
         "currency": order.currency,
-        "status": order.status,
-        "payment_status": order.payment_status,
+        "status": _status_val(order.status),
+        "payment_status": _status_val(order.payment_status),
         "shipping_address": order.shipping_address,
         "tracking_number": order.tracking_number,
         "created_at": order.created_at.isoformat() if order.created_at else None,
@@ -334,7 +334,9 @@ def update_order_status(
     token = _order_token_of(request)
     order = _load_order(db, order_id, user, token)
     validated_status = _validate_order_status(status)
-    if _is_buyer_scope(order, user, token) and not (str(order.status) == "pending" and validated_status == "cancelled"):
+    if _is_buyer_scope(order, user, token) and not (
+        _status_val(order.status) == "pending" and validated_status == "cancelled"
+    ):
         raise HTTPException(status_code=403, detail="买家仅可取消待处理订单")
     order.status = validated_status
     db.commit()
@@ -380,8 +382,8 @@ def list_orders(
         {
             "id": str(o.id),
             "order_number": o.order_number,
-            "status": o.status,
-            "payment_status": o.payment_status,
+            "status": _status_val(o.status),
+            "payment_status": _status_val(o.payment_status),
             "total_amount": float(o.total_amount),
             "currency": o.currency,
             "tracking_number": o.tracking_number,

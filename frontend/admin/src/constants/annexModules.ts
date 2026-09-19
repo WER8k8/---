@@ -2,15 +2,17 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 /**
- * 附属执行台（annex）模块注册表 · 标签与嵌入地址的单一真源
+ * 功能域模块注册表（原 annex）· 标签与嵌入地址的单一真源
  *
- * 背景：annex 页通过 iframe 挂载 _external 下的附属应用，握手走 POST /annex/ticket。
- * 关键约束：Vite 默认 envPrefix = 'VITE_'，**非 VITE_ 前缀的环境变量不会进入 import.meta.env**，
- * 因此 embed 地址必须写成 VITE_XXX_EMBED_URL（历史实现用 GOODJOB_EMBED_URL 导致永远读不到）。
+ * 主理人裁定（2026-09-19）：GoodJob / TradeAI 是优丁**功能域菜单**，**并无特权**。
+ * - 菜单与页头使用业务功能名，禁止「附属执行台 / 附属一 / 附属二」特权叙事
+ * - 权限与其它业务模块同级，走 UJ RBAC，无第二套超管壳
+ * - 技术上仍可经 iframe/票据挂引擎诊断（非主产品路径）
+ * 约束：embed 地址必须 VITE_ 前缀才能进 import.meta.env。
  */
 
 export interface AnnexModuleMeta {
-  /** 菜单与页头展示名 */
+  /** 菜单与页头展示名（业务功能域，无特权措辞） */
   label: string;
   /** 嵌入地址所在的 Vite 环境变量键 */
   envKey: string;
@@ -20,22 +22,30 @@ export interface AnnexModuleMeta {
   adminPath: string;
   /** 租户壳入口 */
   clientPath: string;
+  /** 所属功能域菜单分组（与其它业务模块同级） */
+  domain: string;
+  /** 是否特权入口：恒 false（功能域菜单无特权） */
+  privileged: false;
 }
 
 export const ANNEX_MODULES: Record<string, AnnexModuleMeta> = {
   'trade-ai': {
-    label: 'TradeAI 执行台',
+    label: '社媒拓客',
     envKey: 'VITE_TRADEAI_EMBED_URL',
-    desc: '附属一 · AI 营销执行台',
+    desc: '获客转化 · 社媒挖掘与智能触达',
     adminPath: '/admin/annex/trade-ai',
     clientPath: '/client/annex/trade-ai',
+    domain: '获客转化',
+    privileged: false,
   },
   goodjob: {
-    label: 'GoodJob 执行台',
+    label: '外贸履约',
     envKey: 'VITE_GOODJOB_EMBED_URL',
-    desc: '附属二 · 外贸 CRM 执行台',
+    desc: '履约与账户 · 外贸单证与客户跟进',
     adminPath: '/admin/annex/goodjob',
     clientPath: '/client/annex/goodjob',
+    domain: '履约与账户',
+    privileged: false,
   },
 };
 
@@ -43,7 +53,7 @@ export function annexMeta(key: string): AnnexModuleMeta | null {
   return ANNEX_MODULES[key] ?? null;
 }
 
-/** 从 Vite env 读取某个附属的嵌入地址；未配置返回空串 */
+/** 从 Vite env 读取某个功能域引擎的嵌入地址；未配置返回空串 */
 export function resolveAnnexEmbedUrl(
   key: string,
   env: Record<string, string | undefined> = import.meta.env as Record<string, string | undefined>,
@@ -53,35 +63,34 @@ export function resolveAnnexEmbedUrl(
   return String(env[meta.envKey] || '').trim();
 }
 
-/** GoodJob CRM 附属模块（挂载于 /client/annex/goodjob/<module>） */
+/** 外贸履约功能域子模块（挂载于 /client/annex/goodjob/<module>） */
 export interface GoodJobModuleMeta {
-  /** 路由段与 annexModule meta 值 */
   key: 'tickets' | 'customers';
-  /** 菜单与页头展示名 */
   label: string;
-  /** 页面副标题 */
   desc: string;
-  /** GoodJob 内部 data-view id，用作最佳努力直达参数 gj_view */
   view: string;
 }
 
-/** 独立、清晰可访问的 GoodJob CRM 功能模块清单 */
 export const GOODJOB_MODULES: GoodJobModuleMeta[] = [
   {
     key: 'tickets',
-    label: '票据中心管理',
-    desc: '外贸单证 · PI/CI/PL/CO 套打 · 报关资料平台',
+    label: '外贸单证',
+    desc: 'PI/CI/PL/CO 套打 · 报关资料',
     view: 'documents',
   },
   {
     key: 'customers',
-    label: '客户管理',
-    desc: '客户池 · 商机 · 跟进与线索管理',
+    label: '客户档案',
+    desc: '客户池 · 商机 · 跟进与线索',
     view: 'customers',
   },
 ];
 
-/** 按模块 key 查表 */
 export function goodjobModuleMeta(key: string): GoodJobModuleMeta | undefined {
   return GOODJOB_MODULES.find((m) => m.key === key);
+}
+
+/** 功能域菜单是否无特权（门禁用） */
+export function annexDomainsHaveNoPrivilege(): boolean {
+  return Object.values(ANNEX_MODULES).every((m) => m.privileged === false);
 }

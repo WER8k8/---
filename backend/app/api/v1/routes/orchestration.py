@@ -194,6 +194,65 @@ async def create_task_from_intent(
     )
 
 
+@router.post("/golden-path/fulfillment", response_model=OrchestrationFromIntentResponse)
+async def golden_path_fulfillment(
+    req: OrchestrationFromIntentRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> OrchestrationFromIntentResponse:
+    """GP-A 一键履约/PI：优丁功能域按钮 → Hermes L1（无附属特权路径）。
+
+    链路与 from-intent 相同，但强制业务意图锚点，便于前端/门禁验收：
+    intent 拼入 fulfillment 锚词 → planner L1 `_fulfillment_graph`。
+    未配置 GoodJob 桥时执行器诚实 failed，不造假单证。
+    """
+    base = (req.intent or "").strip()
+    if not base:
+        base = "履约推进与形式发票"
+    req.intent = f"{base} 履约 fulfillment PI 订单跟单"
+    req.channel = req.channel or "api"
+    ctx = dict(req.context or {})
+    ctx.setdefault("golden_path", "GP-A")
+    ctx.setdefault("plane", "task")
+    req.context = ctx
+    return await create_task_from_intent(req, db=db, current_user=current_user)
+
+
+class GoldenPathOutreachRequest(BaseModel):
+    payload: Dict[str, Any] = Field(default_factory=dict)
+    channel: str = Field("api")
+    context: Dict[str, Any] = Field(default_factory=dict)
+    tenant_id: Optional[str] = Field(None)
+    auto_dispatch: bool = Field(True)
+    intent: str = Field("社媒拓客 WhatsApp 私域触达 prospect social_outreach")
+
+
+@router.post("/golden-path/outreach", response_model=OrchestrationFromIntentResponse)
+async def golden_path_outreach(
+    req: GoldenPathOutreachRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> OrchestrationFromIntentResponse:
+    """GP-B 社媒拓客：功能域「社媒拓客」→ Hermes L1 trade_ai_agent（无特权）。"""
+    inner = OrchestrationFromIntentRequest(
+        intent=req.intent,
+        payload=req.payload,
+        channel=req.channel,
+        context={**(req.context or {}), "golden_path": "GP-B", "plane": "task"},
+        tenant_id=req.tenant_id,
+        auto_dispatch=req.auto_dispatch,
+    )
+    return await create_task_from_intent(inner, db=db, current_user=current_user)
+
+
+@router.get("/golden-path/work-mode")
+def golden_path_work_mode(current_user: User = Depends(get_current_user)) -> Dict[str, Any]:
+    """功能域工作模式契约快照（双平面 / 无特权菜单 / GP-A·B）供前端与门禁。"""
+    from app.services.hermes.annex_work_mode import work_mode_report
+
+    return work_mode_report()
+
+
 @router.get("/tasks/{task_id}", response_model=OrchestrationTaskResponse)
 def get_orchestration_task(
     task_id: str,

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """B2B Outreach and Lead Gen Scenario Template.
-Defines the TaskGraph for finding leads, profiling them, and sending personalized emails.
+
+【已弃用 / DEPRECATED】planner 不消费本模板；保留仅供历史对照。
+权威 L1 模板见 `app.services.hermes.planner_service`（勿在此扩展执行器）。
 """
 from typing import Dict, Any
 from app.schemas.hermes_orchestration import TaskGraph, TaskNode, GraphPolicies
@@ -9,6 +11,7 @@ from app.schemas.hermes_orchestration import TaskGraph, TaskNode, GraphPolicies
 def build_outreach_graph(plan_id: str, event_id: str, target_profile: Dict[str, Any]) -> TaskGraph:
     """
     Constructs the deterministic TaskGraph for Deep Research and B2B Outreach.
+    Deprecated: not consumed by planner_service; temporal_workflow executor does not exist.
     """
     return TaskGraph(
         plan_id=plan_id,

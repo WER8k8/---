@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """Site Build and Distribution Scenario Template.
-Defines the standard TaskGraph for taking product specs and generating a multi-language site.
+
+【已弃用 / DEPRECATED】planner 不消费本模板；seo_matrix/n8n_webhook/bullmq_seo_backend 等执行器未注册。
+权威 L1 模板见 `app.services.hermes.planner_service`（勿在此扩展执行器）。
 """
 from typing import Dict, Any
 from app.schemas.hermes_orchestration import TaskGraph, TaskNode, GraphPolicies
@@ -9,7 +11,7 @@ from app.schemas.hermes_orchestration import TaskGraph, TaskNode, GraphPolicies
 def build_site_generation_graph(plan_id: str, event_id: str, product_data: Dict[str, Any]) -> TaskGraph:
     """
     Constructs the deterministic TaskGraph for Site Building and Multi-channel Distribution.
-    This graph is executed by the L2/L3 orchestration layer.
+    Deprecated: not consumed by planner_service.
     """
     return TaskGraph(
         plan_id=plan_id,
