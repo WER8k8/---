@@ -104,7 +104,17 @@ class ContentDeepExecutor(BaseExecutor):
         cid = str(p.get("content_id") or "").strip()
         iid = str(p.get("inquiry_id") or "").strip()
         if not cid or not iid:
-            return ExecutorResult(node_id=node.id, status="failed", output={}, error="missing content_id/inquiry_id")
+            # 内容获客航道常无具体 content/inquiry 实体：诚实降级，不拖垮整图
+            return ExecutorResult(
+                node_id=node.id,
+                status="degraded",
+                output={
+                    "executor": self.get_executor_name(),
+                    "capability": "content_deep.acquisition",
+                    "linked": False,
+                    "note": "missing content_id/inquiry_id — attribution skipped (honest)",
+                },
+            )
         try:
             from app.services.acquisition.growth_ops import content_attr_store
 

@@ -793,7 +793,13 @@ def _knowledge_seo_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -
             TaskNode(
                 id="n3", executor="content_deep", capability="content_deep.acquisition",
                 depends_on=["n2"],
-                input={"tenant_id": tid, "inquiry_id": str(payload.get("inquiry_id") or "")},
+                input={
+                    "tenant_id": tid,
+                    "inquiry_id": str(payload.get("inquiry_id") or ""),
+                    "content_id": str(payload.get("content_id") or ""),
+                    "topic": topic,
+                    "title": topic,
+                },
                 on_fail="skip",
             ),
             TaskNode(
