@@ -124,10 +124,6 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '今日三步' },
       },
       { path: 'dashboard', name: 'ClientDashboard', component: () => import('@/views/client/dashboard.vue'), meta: { title: '工作台' } },
-      { path: 'annex/trade-ai', name: 'ClientAnnexTradeAi', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '社媒拓客', annexKey: 'trade-ai', domain: '获客转化', privileged: false } },
-      { path: 'annex/goodjob', name: 'ClientAnnexGoodjob', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '外贸履约', annexKey: 'goodjob', domain: '履约与账户', privileged: false } },
-      { path: 'annex/goodjob/tickets', name: 'ClientAnnexGoodjobTickets', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '外贸单证', annexKey: 'goodjob', annexModule: 'tickets', privileged: false } },
-      { path: 'annex/goodjob/customers', name: 'ClientAnnexGoodjobCustomers', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '客户档案', annexKey: 'goodjob', annexModule: 'customers', privileged: false } },
       { path: 'tasks', name: 'ClientHermesTasks', component: () => import('@/views/client/hermes-tasks.vue'), meta: { title: 'Hermes 任务', privileged: false } },
      { path: 'traffic', name: 'ClientTrafficBoard', component: () => import('@/views/client/traffic-board.vue'), meta: { title: '流量看板' } },
       { path: 'assistant', name: 'ClientAssistant', component: () => import('@/views/client/assistant.vue'), meta: { title: '卖货智能助手' } },
@@ -473,30 +469,6 @@ const routes: RouteRecordRaw[] = [
           // 即 /admin/annex/*。此前误挂在 system 子级下（实际解析成
           // /admin/system/annex/*），导致菜单点进去渲染 NotFound「无入口」。
           // 功能域菜单（无特权）：业务名，与其它 biz 模块同级
-          {
-            path: 'annex/trade-ai',
-            name: 'AnnexTradeAi',
-            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
-            meta: { title: '社媒拓客', group: 'biz', icon: 'ThunderboltOutlined', annexKey: 'trade-ai', privileged: false },
-          },
-          {
-            path: 'annex/goodjob',
-            name: 'AnnexGoodjob',
-            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
-            meta: { title: '外贸履约', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob', privileged: false },
-          },
-          {
-            path: 'annex/goodjob/tickets',
-            name: 'AnnexGoodjobTickets',
-            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
-            meta: { title: '外贸单证', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob', annexModule: 'tickets', privileged: false },
-          },
-          {
-            path: 'annex/goodjob/customers',
-            name: 'AnnexGoodjobCustomers',
-            component: () => import('@/views/annex/AnnexEmbedPage.vue'),
-            meta: { title: '客户档案', group: 'biz', icon: 'GlobalOutlined', annexKey: 'goodjob', annexModule: 'customers', privileged: false },
-          },
           {
             path: 'demo-rehearsal',
             name: 'AdminDemoRehearsal',

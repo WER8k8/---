@@ -313,7 +313,7 @@ function goInquiries() {
 }
 
 function goToGoodJobAnnex() {
-  router.push('/client/annex/goodjob');
+  router.push('/client/tasks');
 }
 
 /** GP-A：任务面走 Hermes（功能域无特权；交互列表仍走同步 API） */
