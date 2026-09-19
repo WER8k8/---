@@ -206,6 +206,7 @@ const categorizedNavGroups: CategorizedNavGroup[] = [
       { label: '履约工作台', path: '/client/annex/goodjob', icon: 'GlobalOutlined', highlight: true },
       { label: '外贸单证', path: '/client/annex/goodjob/tickets', icon: 'FileTextOutlined' },
       { label: '客户档案', path: '/client/annex/goodjob/customers', icon: 'TeamOutlined' },
+      { label: 'Hermes 任务', path: '/client/tasks', icon: 'NodeIndexOutlined' },
     ],
   },
 ];

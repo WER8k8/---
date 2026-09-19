@@ -78,6 +78,7 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
           { name: 'ClientAnnexGoodjobCustomers', path: '/client/annex/goodjob/customers', title: '客户档案', icon: 'TeamOutlined' },
         ],
       },
+      { name: 'ClientHermesTasks', path: '/client/tasks', title: 'Hermes 任务', icon: 'NodeIndexOutlined' },
       { name: 'ClientBilling', path: '/client/billing', title: '套餐续费', icon: 'AccountBookOutlined' },
       { name: 'ClientInvoices', path: '/client/invoices', title: '开票申请', icon: 'FileTextOutlined' },
       { name: 'ClientTokens', path: '/client/tokens', title: 'AI 流量充值', icon: 'ThunderboltOutlined' },

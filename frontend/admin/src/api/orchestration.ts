@@ -145,3 +145,57 @@ export async function cancelTask(taskId: string): Promise<unknown> {
 export async function retryTask(taskId: string): Promise<unknown> {
   return unwrap(await apiPost(`/task-control/${encodeURIComponent(taskId)}/retry`, {}))
 }
+
+/** SEAM-P0 Hermes 任务中心 */
+export interface HermesPlanItem {
+  plan_id: string
+  task_type?: string
+  status?: string
+  priority?: number
+  child_count?: number
+  node_statuses?: string[]
+  golden_path?: string | null
+  plane?: string
+  graph_source?: string | null
+  intent?: string
+  error_message?: string | null
+  source?: string | null
+  created_at?: string | null
+  started_at?: string | null
+  finished_at?: string | null
+}
+
+export interface HermesTaskDetail {
+  plan: HermesPlanItem
+  nodes: Array<{
+    id: string
+    task_type?: string
+    status?: string
+    capability?: string | null
+    executor?: string | null
+    error_message?: string | null
+    created_at?: string | null
+    finished_at?: string | null
+  }>
+}
+
+export async function listHermesTasks(params?: {
+  status?: string
+  golden_path?: string
+  limit?: number
+  tenant_id?: string
+}): Promise<{ total: number; items: HermesPlanItem[]; tenant_id?: string }> {
+  const qs = new URLSearchParams()
+  if (params?.status) qs.set('status', params.status)
+  if (params?.golden_path) qs.set('golden_path', params.golden_path)
+  qs.set('limit', String(params?.limit ?? 50))
+  if (params?.tenant_id) qs.set('tenant_id', params.tenant_id)
+  const raw = await apiGet<any>(`/orchestration/hermes/tasks?${qs.toString()}`)
+  return unwrap(raw)
+}
+
+export async function getHermesTaskDetail(planId: string, tenantId?: string): Promise<HermesTaskDetail> {
+  const qs = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : ''
+  const raw = await apiGet<any>(`/orchestration/hermes/tasks/${encodeURIComponent(planId)}${qs}`)
+  return unwrap(raw)
+}
