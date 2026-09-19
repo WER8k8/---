@@ -617,71 +617,169 @@
     </a-modal>
 
     <!-- 🌐 全网外贸主动拓客 (Hermes GP-B) 抽屉 -->
-    <a-drawer v-model:open="outreachDrawerOpen" title="全网外贸主动拓客 · Hermes GP-B 航道" width="680">
-      <div class="space-y-4">
-        <a-alert
-          type="info"
-          show-icon
-          message="Hermes GP-B 全域出站与冷启动探针"
-          description="输入建材品类关键词与目标采购国家，由 Hermes L1 自动编排拓客图：全球B2B买家探测 -> MEDDPICC意向打分 -> WhatsApp矩阵与邮件降级触达。"
-        />
+    <a-drawer v-model:open="outreachDrawerOpen" title="谷歌商机大数据与全球主动拓客 · Hermes GP-B" width="760">
+      <a-tabs v-model:activeKey="activeOutreachTab" type="card">
+        <!-- Tab 1: 全球直采商发现 -->
+        <a-tab-pane key="discovery" tab="1. 全球直采商发现 (Hermes GP-B)">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="Hermes GP-B 全域出站与冷启动探针"
+              description="输入建材品类关键词与目标采购国家，由 Hermes L1 自动编排拓客图：全球B2B买家探测 -> MEDDPICC意向打分 -> WhatsApp矩阵与邮件降级触达。"
+            />
 
-        <a-card size="small" title="1. 拓客任务参数">
-          <a-form layout="vertical">
-            <a-row :gutter="16">
-              <a-col :span="12">
-                <a-form-item label="建材品类/产品关键词 (Keyword)" required>
-                  <a-input v-model:value="outreachForm.keyword" placeholder="例如 ceramic tiles, marble slab, granite" />
+            <a-card size="small" title="拓客任务参数">
+              <a-form layout="vertical">
+                <a-row :gutter="16">
+                  <a-col :span="12">
+                    <a-form-item label="建材品类/产品关键词 (Keyword)" required>
+                      <a-input v-model:value="outreachForm.keyword" placeholder="例如 ceramic tiles, marble slab, granite" />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-form-item label="目标国家/市场 (Country)">
+                      <a-input v-model:value="outreachForm.country" placeholder="例如 Saudi Arabia, UAE, Germany" />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-form-item label="触达策略通道">
+                  <a-radio-group v-model:value="outreachForm.channel">
+                    <a-radio value="omni">多通道融合 (WhatsApp 优先，失败自动降级 Email)</a-radio>
+                    <a-radio value="whatsapp">仅 WhatsApp 矩阵触达</a-radio>
+                    <a-radio value="email">仅 Cold Email 邮件外发</a-radio>
+                  </a-radio-group>
                 </a-form-item>
-              </a-col>
-              <a-col :span="12">
-                <a-form-item label="目标国家/市场 (Country)">
-                  <a-input v-model:value="outreachForm.country" placeholder="例如 Saudi Arabia, UAE, Germany" />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-form-item label="触达策略通道">
-              <a-radio-group v-model:value="outreachForm.channel">
-                <a-radio value="omni">多通道融合 (WhatsApp 优先，失败自动降级 Email)</a-radio>
-                <a-radio value="whatsapp">仅 WhatsApp 矩阵触达</a-radio>
-                <a-radio value="email">仅 Cold Email 邮件外发</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <a-button type="primary" :loading="outreachLoading" @click="runGlobalOutreach">
-              🚀 启动 Hermes GP-B 拓客任务
-            </a-button>
-          </a-form>
-        </a-card>
-
-        <a-card v-if="outreachProspects.length" size="small" title="2. 发现的全球买家线索">
-          <div class="mb-3 flex justify-between items-center">
-            <span class="text-sm font-semibold">命中海外采购商: {{ outreachProspects.length }} 家</span>
-            <a-button size="small" @click="exportOutreachCsv">导出为 CSV</a-button>
-          </div>
-          <a-table
-            :data-source="outreachProspects"
-            :columns="outreachColumns"
-            size="small"
-            :pagination="{ pageSize: 5 }"
-            row-key="id"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'company_name'">
-                <div class="font-medium text-gray-800">{{ record.company_name }}</div>
-                <div class="text-xs text-gray-400">{{ record.industry }}</div>
-              </template>
-              <template v-else-if="column.key === 'provenance'">
-                <a-tag color="blue">{{ record.provenance?.source || record.source || 'youding_pg' }}</a-tag>
-              </template>
-              <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small" @click="quickContact(record)">
-                  直接跟单 →
+                <a-button type="primary" :loading="outreachLoading" @click="runGlobalOutreach">
+                  🚀 启动 Hermes GP-B 拓客任务
                 </a-button>
-              </template>
-            </template>
-          </a-table>
-        </a-card>
-      </div>
+              </a-form>
+            </a-card>
+
+            <a-card v-if="outreachProspects.length" size="small" title="发现的全球买家线索">
+              <div class="mb-3 flex justify-between items-center">
+                <span class="text-sm font-semibold">命中海外采购商: {{ outreachProspects.length }} 家</span>
+                <a-button size="small" @click="exportOutreachCsv">导出为 CSV</a-button>
+              </div>
+              <a-table
+                :data-source="outreachProspects"
+                :columns="outreachColumns"
+                size="small"
+                :pagination="{ pageSize: 5 }"
+                row-key="id"
+              >
+                <template #bodyCell="{ column, record }">
+                  <template v-if="column.key === 'company_name'">
+                    <div class="font-medium text-gray-800">{{ record.company_name }}</div>
+                    <div class="text-xs text-gray-400">{{ record.industry }}</div>
+                  </template>
+                  <template v-else-if="column.key === 'provenance'">
+                    <a-tag color="blue">{{ record.provenance?.source || record.source || 'youding_pg' }}</a-tag>
+                  </template>
+                  <template v-else-if="column.key === 'action'">
+                    <a-button type="link" size="small" @click="quickContact(record)">
+                      直接跟单 →
+                    </a-button>
+                  </template>
+                </template>
+              </a-table>
+            </a-card>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 2: 谷歌高阶 Dorking 穿透 -->
+        <a-tab-pane key="dorking" tab="2. 谷歌 Dorking 穿透搜索">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="谷歌顶级高阶搜索运算符 (Google Dorking Vectors)"
+              description="生成经过谷歌工程验证的高阶穿透语法，穿透公开互联网挖掘 LinkedIn 采购决策人、公开海关单证与招标书。"
+            />
+            <div class="flex gap-2 items-center">
+              <a-input v-model:value="outreachForm.keyword" placeholder="品类关键词" style="width: 220px" />
+              <a-input v-model:value="outreachForm.country" placeholder="国家" style="width: 150px" />
+              <a-button type="primary" :loading="dorkLoading" @click="loadGoogleDorks">生成谷歌 Dorking 向量</a-button>
+            </div>
+
+            <div v-if="dorkResult" class="space-y-3">
+              <a-card v-for="d in dorkResult.dorks" :key="d.id" size="small" :title="d.category">
+                <template #extra>
+                  <a :href="d.google_search_url" target="_blank" rel="noopener">
+                    <a-button size="small" type="primary">直达 Google 搜索 →</a-button>
+                  </a>
+                </template>
+                <p class="text-xs text-gray-500 mb-2">{{ d.purpose }}</p>
+                <pre class="bg-gray-50 p-2 rounded text-xs font-mono text-gray-800 break-all select-all">{{ d.query }}</pre>
+              </a-card>
+            </div>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 3: 海关 HS 编码进出口大盘雷达 -->
+        <a-tab-pane key="radar" tab="3. 海关贸易大盘雷达">
+          <div class="space-y-4 pt-2">
+            <div class="flex gap-2 items-center">
+              <a-input v-model:value="outreachForm.keyword" placeholder="品类关键词 (如 marble, ceramic, steel)" style="width: 260px" />
+              <a-button type="primary" :loading="tradeFlowLoading" @click="loadTradeFlow">查询海关贸易大盘</a-button>
+            </div>
+
+            <div v-if="tradeFlowResult" class="space-y-3">
+              <a-card size="small" :title="tradeFlowResult.intelligence?.category">
+                <a-descriptions bordered size="small" :column="2">
+                  <a-descriptions-item label="HS 编码">{{ tradeFlowResult.intelligence?.hs_code }}</a-descriptions-item>
+                  <a-descriptions-item label="全球大盘规模">${{ tradeFlowResult.intelligence?.global_market_size_usd }} (年增 {{ tradeFlowResult.intelligence?.annual_growth_rate }})</a-descriptions-item>
+                  <a-descriptions-item label="采购旺季" :span="2">{{ tradeFlowResult.intelligence?.procurement_peak_season }}</a-descriptions-item>
+                  <a-descriptions-item label="集装箱与装柜红线" :span="2">
+                    <span class="text-amber-700 font-medium">{{ tradeFlowResult.intelligence?.container_rules }}</span>
+                  </a-descriptions-item>
+                </a-descriptions>
+
+                <div class="mt-3 font-semibold text-xs text-gray-700">Top 5 买方国与目的港准入</div>
+                <div class="grid grid-cols-2 gap-2 mt-1">
+                  <div v-for="(r, idx) in tradeFlowResult.intelligence?.top_importing_regions" :key="idx" class="p-2 bg-gray-50 rounded border text-xs">
+                    <div class="font-medium text-gray-800">{{ r.country }} (份额 {{ r.share }})</div>
+                    <div class="text-gray-500">目的港: {{ r.top_port }} | 关税: {{ r.tariff }}</div>
+                  </div>
+                </div>
+              </a-card>
+            </div>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 4: 谷歌级邮箱连通性校验 -->
+        <a-tab-pane key="email" tab="4. 邮箱 DNS MX 预检">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="零垃圾邮件 · 纯协议层 DNS MX 握手嗅探"
+              description="在发送开发信前预检买家域名有效性、拦截临时一次性邮箱，确保租户企业发信域名信誉得分 (Sender Score ≥ 95)。"
+            />
+            <div class="flex gap-2 items-center">
+              <a-input v-model:value="verifyEmailInput" placeholder="输入待核验买家邮箱 (如 procurement@alfozan.com)" style="width: 340px" />
+              <a-button type="primary" :loading="verifyEmailLoading" @click="verifyBuyerEmail">执行 DNS 连通握手</a-button>
+            </div>
+
+            <a-card v-if="verifyEmailResult" size="small" title="校验报告">
+              <a-row :gutter="16">
+                <a-col :span="8">
+                  <a-statistic title="信誉得分" :value="verifyEmailResult.score" suffix="/ 100" :value-style="{ color: verifyEmailResult.deliverable ? '#4a9b8c' : '#ef4444' }" />
+                </a-col>
+                <a-col :span="8">
+                  <a-statistic title="域名属性" :value="verifyEmailResult.domain_type === 'corporate_buyer' ? '企业专属采购域' : '公共邮箱'" />
+                </a-col>
+                <a-col :span="8">
+                  <a-statistic title="建议动作" :value="verifyEmailResult.recommendation === 'safe_to_send' ? '安全可发' : '拦截阻断'" />
+                </a-col>
+              </a-row>
+              <div class="mt-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                结论: {{ verifyEmailResult.reason }}
+              </div>
+            </a-card>
+          </div>
+        </a-tab-pane>
+      </a-tabs>
     </a-drawer>
   </YdPage>
 </template>
@@ -1544,6 +1642,64 @@ const outreachForm = reactive({
   country: 'Saudi Arabia',
   channel: 'omni',
 })
+
+// ── 谷歌商机大数据扩展状态 ──
+const activeOutreachTab = ref('discovery')
+const dorkResult = ref<any>(null)
+const dorkLoading = ref(false)
+const tradeFlowResult = ref<any>(null)
+const tradeFlowLoading = ref(false)
+const verifyEmailInput = ref('')
+const verifyEmailResult = ref<any>(null)
+const verifyEmailLoading = ref(false)
+
+async function loadGoogleDorks() {
+  dorkLoading.value = true
+  try {
+    const res = await apiPost<any>('/google-radar/dork-matrix', {
+      keyword: outreachForm.keyword,
+      country: outreachForm.country || 'Global',
+    })
+    dorkResult.value = (res as any)?.data || res
+    message.success('谷歌高阶 Dorking 穿透语法已生成')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '生成失败')
+  } finally {
+    dorkLoading.value = false
+  }
+}
+
+async function loadTradeFlow() {
+  tradeFlowLoading.value = true
+  try {
+    const res = await apiGet<any>(`/google-radar/trade-flow?keyword=${encodeURIComponent(outreachForm.keyword)}`)
+    tradeFlowResult.value = (res as any)?.data || res
+    message.success('全球海关贸易流向雷达已更新')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '海关数据加载失败')
+  } finally {
+    tradeFlowLoading.value = false
+  }
+}
+
+async function verifyBuyerEmail() {
+  if (!verifyEmailInput.value) {
+    message.warning('请输入待核验的邮箱')
+    return
+  }
+  verifyEmailLoading.value = true
+  try {
+    const res = await apiPost<any>('/google-radar/verify-email', {
+      email: verifyEmailInput.value,
+    })
+    verifyEmailResult.value = (res as any)?.data || res
+    message.success('谷歌级 DNS MX 校验完成')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '校验失败')
+  } finally {
+    verifyEmailLoading.value = false
+  }
+}
 
 const outreachColumns = [
   { title: '采购商企业', key: 'company_name', dataIndex: 'company_name' },
