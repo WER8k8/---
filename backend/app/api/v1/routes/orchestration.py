@@ -289,7 +289,8 @@ def _hermes_plan_summary(task: AiTask, child_count: int = 0, node_statuses: Opti
     if not isinstance(ctx, dict):
         ctx = {}
     return {
-        "plan_id": str(task.id),
+        "plan_id": str(inp.get("plan_id") or task.id),
+        "task_row_id": str(task.id),
         "task_type": task.task_type,
         "status": task.status,
         "priority": task.priority,
@@ -363,15 +364,46 @@ def get_hermes_task_detail(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Dict[str, Any]:
-    """Hermes 计划详情：计划 + 全部子节点（执行器能力/状态/错误）。"""
+    """Hermes 计划详情：计划 + 全部子节点（执行器能力/状态/错误）。
+
+    plan_id 优先匹配 TaskGraph.plan_id（响应/前端所见），
+    否则回落 ai_tasks 主键或 idempotency_key=plan:{plan_id}。
+    """
     import json as _json
+    from sqlalchemy import or_ as _or
 
     tid = _resolve_tenant_id(db, current_user, tenant_id)
     plan = (
         db.query(AiTask)
-        .filter(AiTask.id == plan_id, AiTask.tenant_id == tid)
+        .filter(AiTask.tenant_id == tid)
+        .filter(
+            _or(
+                AiTask.id == plan_id,
+                AiTask.idempotency_key == f"plan:{plan_id}",
+            )
+        )
         .first()
     )
+    if not plan:
+        # 兜底：input_json 内 graph.plan_id（部分库 UUID 类型不等字符串时）
+        candidates = (
+            db.query(AiTask)
+            .filter(
+                AiTask.tenant_id == tid,
+                AiTask.task_type == "hermes_plan",
+            )
+            .order_by(AiTask.created_at.desc())
+            .limit(50)
+            .all()
+        )
+        for row in candidates:
+            try:
+                blob = _json.loads(row.input_json or "{}")
+            except Exception:  # noqa: BLE001
+                blob = {}
+            if isinstance(blob, dict) and str(blob.get("plan_id") or "") == str(plan_id):
+                plan = row
+                break
     if not plan:
         raise HTTPException(status_code=404, detail="hermes_plan_not_found")
     children = (
