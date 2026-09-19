@@ -159,13 +159,42 @@ def test_seo_meta_degraded_flag():
         input={"product_name": "Rockwool Board", "industry": "building materials"},
     )
     res = asyncio.run(ex.run(node, _ctx(None)))
-    # 诚实契约：凡能产出 meta 的路径，output 标 degraded 时顶层 status 不得伪装 succeeded；
-    # AiSiteEngine 不可导入等失败路径 → 如实 failed（空 output），同样可接受。
+    # 诚实契约：凡能产出 meta 的路径，output 标 degraded 时顶层 status 不得伪装 succeeded。
+    # 引擎不可用 → 模板 degraded（含 engine_error），不得伪装 AI 成功。
     if res.output.get("executor"):
         assert res.output.get("executor") == "content_deep"
         assert "degraded" in res.output
         if res.output.get("degraded"):
             assert res.status == "degraded", "seo_meta 为模板/降级却报 succeeded = 假成功"
+            assert res.output.get("ai_generated") is not True
+
+
+def test_seo_meta_engine_unavailable_degrades(monkeypatch):
+    """引擎导入/调用失败 → 模板 degraded + engine_error，不假成功不整节点裸崩。"""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "app.services.ai_site_engine" or name.endswith("ai_site_engine"):
+            raise ImportError("AiSiteEngine unavailable in test")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    ex = ExecutorRegistry.get("content_deep")
+    node = TaskNode(
+        id="c-eng",
+        executor="content_deep",
+        capability="content_deep.seo_meta",
+        input={"product_name": "Rockwool Board"},
+    )
+    res = asyncio.run(ex.run(node, _ctx(None)))
+    assert res.status == "degraded"
+    assert res.output.get("degraded") is True
+    assert res.output.get("meta", {}).get("ai_generated") is False
+    assert "engine_error" in res.output
+    assert res.output.get("executor") == "content_deep"
+
 
 
 def test_outreach_gate_blocks_without_research():

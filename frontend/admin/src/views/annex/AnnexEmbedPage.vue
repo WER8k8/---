@@ -252,8 +252,9 @@ function onIframeLoad() {
 }
 
 function goHermesTasks(planId?: string) {
+  // 任务中心唯一产品面在租户壳 /client/tasks（完整体；非附属第二任务台）
   void router.push({
-    path: isTenantShell.value ? '/client/tasks' : '/client/tasks',
+    path: '/client/tasks',
     query: planId ? { plan: planId } : {},
   });
 }
