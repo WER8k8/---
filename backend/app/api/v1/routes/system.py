@@ -257,13 +257,25 @@ def submit_contact(req: InquiryCreate, db: Session = Depends(get_db), request: R
     """提交联系表单（官网/租户站访客 → 询盘）。"""
     tenant_id = None
     try:
-        # 租户独立站访客提交时带上域名归属（可选）
+        from app.models.tenant import Tenant
         host = ""
+        q_domain = ""
         if request is not None:
             host = (request.headers.get("host") or "").split(":")[0].lower()
-        if host and host not in ("127.0.0.1", "localhost"):
-            from app.models.tenant import Tenant
-            t = db.query(Tenant).filter(Tenant.domain == host).first()
+            q_domain = (
+                request.query_params.get("__tenant")
+                or request.query_params.get("tenant")
+                or request.headers.get("x-tenant-domain")
+                or ""
+            ).strip().lower()
+        cand = q_domain or ("" if host in ("", "127.0.0.1", "localhost") else host)
+        if cand:
+            t = db.query(Tenant).filter(Tenant.domain == cand).first()
+            if t:
+                tenant_id = t.id
+        if not tenant_id:
+            # 本机/未标注域名时：默认归到 dev.local 开发租户，保证租户队列可见
+            t = db.query(Tenant).filter(Tenant.domain == "dev.local").first()
             if t:
                 tenant_id = t.id
     except Exception:
