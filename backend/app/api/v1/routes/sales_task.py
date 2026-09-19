@@ -23,10 +23,28 @@ ROUTE_TAGS = ["销售任务"]
 
 router = APIRouter()
 
-# 销售任务状态白名单（避免任意字符串落库，BUG-21 修复）
-_VALID_TASK_STATUSES = frozenset({
-    "pending", "in_progress", "completed", "cancelled", "archived",
-})
+# 销售任务状态：单一真相 = SalesTask 模型（open / done / cancelled）
+# 写入时接受历史别名并归一，避免前后端枚举分裂导致改状态 400
+_STATUS_ALIAS = {
+    "pending": "open",
+    "in_progress": "open",
+    "completed": "done",
+    "archived": "cancelled",
+}
+
+_CANONICAL_TASK_STATUSES = frozenset({"open", "done", "cancelled"})
+
+
+def _normalize_task_status(raw: str) -> str | None:
+    s = (raw or "").strip().lower()
+    if not s:
+        return None
+    if s in _STATUS_ALIAS:
+        return _STATUS_ALIAS[s]
+    if s in _CANONICAL_TASK_STATUSES:
+        return s
+    return None
+
 
 
 def _serialize(t: SalesTask) -> dict[str, Any]:
@@ -79,7 +97,10 @@ def list_tasks(
     if current_user.role == "sales":
         q = q.filter(SalesTask.assigned_to == str(current_user.id))
     if status:
-        q = q.filter(SalesTask.status == status)
+        normalized = _normalize_task_status(status)
+        if normalized is None:
+            return error_response(400, f"无效的任务状态 '{status}'，允许值: open, done, cancelled（及别名 pending/completed 等）")
+        q = q.filter(SalesTask.status == normalized)
     if task_type:
         q = q.filter(SalesTask.task_type == task_type)
     if assigned_to:
@@ -198,9 +219,9 @@ def update_task_status(
     t = db.query(SalesTask).filter(SalesTask.id == task_id, SalesTask.deleted_at.is_(None)).first()
     if not t:
         return error_response(404, "任务不存在")
-    new_status = body.status.strip().lower()
-    if new_status not in _VALID_TASK_STATUSES:
-        return error_response(400, f"无效的任务状态 '{body.status}'，允许值: {', '.join(sorted(_VALID_TASK_STATUSES))}")
+    new_status = _normalize_task_status(body.status)
+    if new_status is None:
+        return error_response(400, f"无效的任务状态 '{body.status}'，允许值: open, done, cancelled（及别名 pending/in_progress/completed/archived）")
     t.status = new_status
     db.commit()
     db.refresh(t)
