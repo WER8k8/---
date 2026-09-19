@@ -25,18 +25,14 @@ router = APIRouter()
 
 # 销售任务状态：单一真相 = SalesTask 模型（open / done / cancelled）
 # 写入时接受历史别名并归一，避免前后端枚举分裂导致改状态 400
-_VALID_TASK_STATUSES = frozenset({
-    "open", "done", "cancelled",
-    # aliases accepted on write, normalized before persist/filter
-    "pending", "in_progress", "completed", "archived",
-})
-
 _STATUS_ALIAS = {
     "pending": "open",
     "in_progress": "open",
     "completed": "done",
     "archived": "cancelled",
 }
+
+_CANONICAL_TASK_STATUSES = frozenset({"open", "done", "cancelled"})
 
 
 def _normalize_task_status(raw: str) -> str | None:
@@ -45,7 +41,7 @@ def _normalize_task_status(raw: str) -> str | None:
         return None
     if s in _STATUS_ALIAS:
         return _STATUS_ALIAS[s]
-    if s in ("open", "done", "cancelled"):
+    if s in _CANONICAL_TASK_STATUSES:
         return s
     return None
 
