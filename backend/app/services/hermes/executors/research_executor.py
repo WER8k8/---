@@ -74,7 +74,7 @@ class ResearchExecutor(BaseExecutor):
 
             result = compose_research_brief(
                 context.db,
-                topic={"key": topic, "label": topic},
+                topic={"key": topic, "label": topic, "lane": "GW-R"},
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("ResearchExecutor research.brief 执行失败 node=%s", node.id)

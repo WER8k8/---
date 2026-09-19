@@ -215,6 +215,8 @@ def _outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> Tas
                 depends_on=[],
                 input={
                     "keyword": keyword,
+                    "keywords": keyword,
+                    "search_terms": keyword,
                     "country": country,
                     "industry": payload.get("industry") or "building_materials",
                     "limit": int(payload.get("limit") or 20),
@@ -318,7 +320,8 @@ def _social_outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any])
 
 def _product_launch_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
     """产品上架：product → media → seo → engagement（人审）。"""
-    title = str(payload.get("title") or payload.get("message") or "product")
+    title = str(payload.get("title") or payload.get("product_name") or payload.get("message") or "product")
+    uniq = str(payload.get("sku") or payload.get("slug") or "").strip() or f"prod-{abs(hash(title)) % 10**8}"
     return TaskGraph(
         plan_id=plan_id, event_id=event_id,
         strategy="standard",
@@ -329,9 +332,15 @@ def _product_launch_graph(plan_id: str, event_id: str, payload: dict[str, Any]) 
         ),
         nodes=[
             TaskNode(id="n1", executor="product", capability="product.create",
-                     depends_on=[], input={"title": title}, on_fail="abort"),
+                     depends_on=[], input={"title": title, "product_name": title, "name": title, "slug": uniq}, on_fail="abort"),
             TaskNode(id="n2", executor="media", capability="media.render",
-                     depends_on=["n1"], input_from={"product_name": "n1.output.title"}, on_fail="skip"),
+                     depends_on=["n1"], input_from={"product_name": "n1.output.title"},
+                     input={
+                         "prompt": f"Product showcase for {title}",
+                         "script": f"Showcase video script for {title}: features, specs, B2B supply.",
+                         "product_name": title,
+                         "content_type": "image",
+                     }, on_fail="skip"),
             TaskNode(id="n3", executor="seo", capability="seo.audit",
                      depends_on=["n1"], input_from={"page_url": "n1.output.url"}, on_fail="skip"),
             TaskNode(id="n4", executor="engagement", capability="engagement.send",
@@ -458,7 +467,8 @@ def _ubrain_assistant_graph(plan_id: str, event_id: str, payload: dict[str, Any]
             TaskNode(id="n1", executor="ubrain", capability="ubrain.chat",
                      depends_on=[], input={"message": msg}, on_fail="abort"),
             TaskNode(id="n2", executor="ai_engine", capability="ai.chat",
-                     depends_on=["n1"], input_from={"context": "n1.output.reply"}, on_fail="skip"),
+                     depends_on=["n1"], input_from={"context": "n1.output.reply"},
+                     input={"prompt": msg or "请根据上下文总结要点", "message": msg}, on_fail="skip"),
         ],
     )
 
@@ -471,8 +481,10 @@ def _fulfillment_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> 
     inquiry_ref = str(payload.get("inquiry_id") or payload.get("message") or "").strip()
     order_id = payload.get("order_id") or ""
     deposit_ratio = float(payload.get("deposit_ratio") or 0.3)
-    buyer_name = str(payload.get("name") or payload.get("contact_name") or payload.get("buyer_display") or inquiry_ref or "Hermes Lead").strip()
+    buyer_name = str(payload.get("name") or payload.get("contact_name") or payload.get("buyer_display") or "").strip()
     inquiry_message = str(payload.get("message") or payload.get("raw_text") or inquiry_ref or "来自任务图的询盘进线").strip()
+    if not buyer_name:
+        buyer_name = (inquiry_message[:40] if inquiry_message else "Hermes Lead") or "Hermes Lead"
 
     return TaskGraph(
         plan_id=plan_id, event_id=event_id,
@@ -776,7 +788,7 @@ def _knowledge_seo_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -
             ),
             TaskNode(
                 id="n2", executor="content_deep", capability="content_deep.seo_meta",
-                depends_on=[], input={"title": topic, "tenant_id": tid}, on_fail="skip",
+                depends_on=[], input={"title": topic, "product_name": topic or "product", "tenant_id": tid}, on_fail="skip",
             ),
             TaskNode(
                 id="n3", executor="content_deep", capability="content_deep.acquisition",

@@ -39,9 +39,18 @@ logger = logging.getLogger(__name__)
 # intent_analysis …）。此处保留原始 workflow 名（未来注册后可命中）并追加
 # 对应的可执行 skill 名作为兜底，使能力调用不再一律 workflow_not_registered。
 _CAP_TO_TARGETS: dict[str, tuple[str, ...]] = {
-    "prospect.scrape": ("prospect_search", "scrape_prospects", "lead_finder", "social_scraper", "excel_reader"),
-    "prospect_search": ("prospect_search", "scrape_prospects", "lead_finder", "social_scraper", "excel_reader"),
-    "scrape_prospects": ("prospect_search", "scrape_prospects", "lead_finder", "social_scraper", "excel_reader"),
+    "prospect.scrape": (
+        "prospect_search", "scrape_prospects", "lead_finder",
+        "social_scraper", "skill_social_scraper", "prospect", "search",
+    ),
+    "prospect_search": (
+        "prospect_search", "scrape_prospects", "lead_finder",
+        "social_scraper", "skill_social_scraper", "prospect", "search",
+    ),
+    "scrape_prospects": (
+        "prospect_search", "scrape_prospects", "lead_finder",
+        "social_scraper", "skill_social_scraper", "prospect", "search",
+    ),
     "prospect.enrich": ("prospect_enrich", "lead_finder", "data_cleaner"),
     "outreach.whatsapp": ("whatsapp_outreach", "whatsapp_send", "auto_sender", "schedule_outreach", "message_generator"),
     "whatsapp_send": ("whatsapp_outreach", "whatsapp_send", "auto_sender", "schedule_outreach", "message_generator"),
@@ -111,6 +120,12 @@ class TradeAiAgentExecutor(BaseExecutor):
             wf_names = {getattr(w, "name", "") for w in orch.list_workflows()}
             skills = {getattr(s, "name", ""): s for s in orch.list_skills()}
             skill_names = set(skills)
+            # 技能类名兜底（vendor 可能以类名而非注册名暴露）
+            for s in list(skills.values()) or []:
+                cn = getattr(s, "name", "") or getattr(type(s), "__name__", "")
+                if cn:
+                    skill_names.add(str(cn).lower())
+                    skill_names.add(str(cn).lower().replace("skill_", ""))
         except Exception as exc:  # noqa: BLE001
             logger.exception("TradeAiAgent: 取 orchestrator 失败")
             return ExecutorResult(
@@ -121,7 +136,16 @@ class TradeAiAgentExecutor(BaseExecutor):
         # 优先命中已注册 workflow；未命中则回退到可执行 skill（vendor 默认不注册
         # workflow，真实能力落在 8 个 skill 类上）。
         wf_hit = next((t for t in targets if t in wf_names), None)
-        skill_hit = next((t for t in targets if t in skill_names), None) if wf_hit is None else None
+        skill_hit = None
+        if wf_hit is None:
+            lowered = {str(x).lower(): x for x in skill_names}
+            for t in targets:
+                if t in skills:
+                    skill_hit = t
+                    break
+                if t.lower() in lowered:
+                    skill_hit = lowered[t.lower()]
+                    break
         if wf_hit is None and skill_hit is None:
             # 真实适配器在线，但该能力对应的 workflow/skill 均不可执行 —— 如实失败，不编造
             return ExecutorResult(

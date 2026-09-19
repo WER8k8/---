@@ -80,33 +80,13 @@ class LeadExecutor(BaseExecutor):
             from app.services.geo_lead_service import GeoLeadService
 
             svc = GeoLeadService(context.db)
+            # GeoLeadService.search_leads(tenant_id, industry, market, limit) — 返回 list
             result = await svc.search_leads(
-                industry=str(params.get("industry") or "").strip() or None,
-                country=str(params.get("country") or params.get("target_country") or "").strip() or None,
-                keywords=(
-                    str(params.get("keywords") or params.get("search_terms") or "").strip() or None
-                ),
+                tenant_id=str(context.tenant_id) if context.tenant_id else "",
+                industry=str(params.get("industry") or "").strip(),
+                market=str(params.get("country") or params.get("target_country") or "").strip(),
                 limit=int(params.get("limit") or 10),
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
             )
-        except TypeError:
-            # GeoLeadService.search_leads signature may not accept all kwargs - fallback
-            try:
-                from app.services.geo_lead_service import GeoLeadService
-
-                svc = GeoLeadService(context.db)
-                result = await svc.search_leads(
-                    tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                    limit=int(params.get("limit") or 10),
-                )
-            except Exception as exc2:  # noqa: BLE001
-                logger.exception("LeadExecutor lead.search fallback failed node=%s", node.id)
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="failed",
-                    output={},
-                    error=f"{type(exc2).__name__}: {exc2}",
-                )
         except Exception as exc:  # noqa: BLE001
             logger.exception("LeadExecutor lead.search 执行失败 node=%s", node.id)
             return ExecutorResult(
@@ -116,12 +96,15 @@ class LeadExecutor(BaseExecutor):
                 error=f"{type(exc).__name__}: {exc}",
             )
 
-        output = dict(result or {})
+        if isinstance(result, list):
+            output = {"leads": result, "items": result}
+        else:
+            output = dict(result or {})
         output["executor"] = "lead"
         output["capability"] = "lead.search"
-        # Ensure count is in output for downstream nodes
         leads = output.get("leads") or output.get("items") or []
         output["lead_count"] = len(leads) if isinstance(leads, list) else 0
+        output["keyword"] = str(params.get("keyword") or params.get("keywords") or "")
         output["keyword"] = str(params.get("keywords") or params.get("keyword") or "")
         return ExecutorResult(node_id=node.id, status="succeeded", output=output)
 

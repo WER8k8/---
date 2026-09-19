@@ -89,7 +89,9 @@ class MediaExecutor(BaseExecutor):
             payload = {
                 "content_type": content_type,
                 "prompt": prompt,
-                "article_text": str(params.get("article_text") or params.get("source_text") or ""),
+                "script": prompt,
+                "title": str(params.get("product_name") or params.get("title") or "")[:80],
+                "article_text": str(params.get("article_text") or params.get("source_text") or prompt),
                 "tenant_id": str(context.tenant_id) if context.tenant_id else None,
                 "source": "hermes_orchestration",
             }

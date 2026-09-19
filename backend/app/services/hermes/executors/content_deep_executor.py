@@ -60,7 +60,7 @@ class ContentDeepExecutor(BaseExecutor):
             return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc)[:300])
 
     def _seo_meta(self, node, p) -> ExecutorResult:
-        name = str(p.get("product_name") or p.get("product") or "").strip()
+        name = str(p.get("product_name") or p.get("product") or p.get("title") or p.get("topic") or "").strip()
         if not name:
             return ExecutorResult(node_id=node.id, status="failed", output={}, error="missing_product_name")
         try:
@@ -68,11 +68,9 @@ class ContentDeepExecutor(BaseExecutor):
 
             eng = AiSiteEngine()
             meta = eng.generate_seo_metadata(name, str(p.get("industry") or ""))
-            # 诚实：静态模板/无 Key 时 degraded
             degraded = True
             if isinstance(meta, dict):
                 degraded = bool(meta.get("degraded", True))
-                # 若有 title/description 且非空，仍标记 degraded 可能为模板
                 if meta.get("ai_generated") is True:
                     degraded = False
             return ExecutorResult(
@@ -84,6 +82,20 @@ class ContentDeepExecutor(BaseExecutor):
                     "note": "SEO 元数据为模板/降级结果时请人工润色" if degraded else "AI 生成",
                     "executor": self.get_executor_name(),
                 },
+            )
+        except Exception:
+            # 引擎类名/接口漂移时：诚实降级为静态模板，不因 ImportError 整节点失败
+            meta = {
+                "title": name[:60],
+                "description": f"{name} - product information and B2B supply",
+                "keywords": name,
+                "ai_generated": False,
+                "degraded": True,
+            }
+            return ExecutorResult(
+                node_id=node.id,
+                status="degraded",
+                output={"meta": meta, "degraded": True, "note": "seo_meta template fallback", "executor": self.get_executor_name()},
             )
         except Exception as exc:  # noqa: BLE001
             return ExecutorResult(node_id=node.id, status="failed", output={}, error=f"seo_meta: {exc}")

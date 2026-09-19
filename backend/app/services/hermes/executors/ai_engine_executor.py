@@ -42,7 +42,11 @@ class AiEngineExecutor(BaseExecutor):
             )
 
         params: dict[str, Any] = dict(node.input or {})
-        prompt = str(params.get("prompt") or params.get("text") or params.get("instruction") or "").strip()
+        # input_from 可能把上游字符串塞进 prompt/context
+        raw_prompt = params.get("prompt") or params.get("text") or params.get("instruction") or params.get("message") or params.get("context")
+        if isinstance(raw_prompt, dict):
+            raw_prompt = raw_prompt.get("reply") or raw_prompt.get("text") or raw_prompt.get("message") or ""
+        prompt = str(raw_prompt or "").strip()
 
         if not prompt:
             return ExecutorResult(
@@ -53,11 +57,21 @@ class AiEngineExecutor(BaseExecutor):
             )
 
         try:
-            # 走 ubrain（统一助手层）作为 AI 入口
+            # 走 ubrain（统一助手层）作为 AI 入口；保证 message/prompt 均为字符串
             from app.services.hermes.executors.ubrain_executor import UbrainExecutor
 
             ubrain = UbrainExecutor()
-            result = await ubrain.run(node, context)
+            try:
+                inp = dict(node.input or {})
+            except Exception:
+                inp = {}
+            inp["message"] = prompt
+            inp["prompt"] = prompt
+            if hasattr(node, "model_copy"):
+                node2 = node.model_copy(update={"input": inp})
+            else:
+                node2 = node
+            result = await ubrain.run(node2, context)
             if result.status == "succeeded":
                 output = dict(result.output or {})
                 output["executor"] = "ai_engine"
