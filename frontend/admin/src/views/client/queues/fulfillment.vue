@@ -22,6 +22,9 @@
           <template #icon><ThunderboltOutlined /></template>
           一键履约 · Hermes
         </a-button>
+        <a-button type="default" @click="router.push('/client/tasks')">
+          Hermes 任务
+        </a-button>
         <a-button type="default" @click="goToGoodJobAnnex">
           <template #icon><LinkOutlined /></template>
           打开履约工作台
@@ -348,9 +351,15 @@ async function dispatchGoldenPathFulfillment(record?: Record<string, unknown>) {
       graph_source: res?.graph_source,
       node_count: res?.node_count,
     };
-    message.success(
-      `已提交 Hermes 履约任务（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${res?.plan_id || ''}`,
-    );
+    const planId = res?.plan_id || '';
+    message.success({
+      content: `已提交 Hermes 履约任务（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${planId}`,
+      duration: 6,
+    });
+    if (planId) {
+      // SEAM-P0：任务平面闭环 → 优丁 Hermes 任务中心（完整体，非附属台）
+      void router.push({ path: '/client/tasks', query: { plan: planId } });
+    }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     message.error(`Hermes 履约任务提交失败：${msg}`);

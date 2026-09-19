@@ -128,6 +128,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'annex/goodjob', name: 'ClientAnnexGoodjob', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '外贸履约', annexKey: 'goodjob', domain: '履约与账户', privileged: false } },
       { path: 'annex/goodjob/tickets', name: 'ClientAnnexGoodjobTickets', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '外贸单证', annexKey: 'goodjob', annexModule: 'tickets', privileged: false } },
       { path: 'annex/goodjob/customers', name: 'ClientAnnexGoodjobCustomers', component: () => import('@/views/annex/AnnexEmbedPage.vue'), meta: { title: '客户档案', annexKey: 'goodjob', annexModule: 'customers', privileged: false } },
+      { path: 'tasks', name: 'ClientHermesTasks', component: () => import('@/views/client/hermes-tasks.vue'), meta: { title: 'Hermes 任务', privileged: false } },
      { path: 'traffic', name: 'ClientTrafficBoard', component: () => import('@/views/client/traffic-board.vue'), meta: { title: '流量看板' } },
       { path: 'assistant', name: 'ClientAssistant', component: () => import('@/views/client/assistant.vue'), meta: { title: '卖货智能助手' } },
       { path: 'copilot', name: 'ClientCopilot', component: () => import('@/views/client/copilot.vue'), meta: { title: '卖货飞轮' } },

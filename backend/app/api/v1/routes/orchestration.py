@@ -14,13 +14,14 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.logging import get_logger
 from app.core.security import get_current_user
+from app.models.ai_task import AiTask
 from app.models.tenant import UserTenant
 from app.models.user import User
 from app.schemas.hermes_orchestration import IntentEvent
@@ -177,6 +178,27 @@ async def create_task_from_intent(
 
     plan_task_id = str(getattr(node_tasks[0], "parent_task_id", "")) if node_tasks else ""
 
+    # SEAM-P0：把 graph_source / golden_path 写回 plan 输入，供任务中心展示
+    if plan_task_id:
+        try:
+            plan_row = db.query(AiTask).filter(AiTask.id == plan_task_id).first()
+            if plan_row is not None:
+                import json as _json
+
+                try:
+                    pin = _json.loads(plan_row.input_json or "{}")
+                except Exception:  # noqa: BLE001
+                    pin = {}
+                if not isinstance(pin, dict):
+                    pin = {}
+                pin["graph_source"] = source
+                pin["intent"] = req.intent
+                pin["context"] = dict(req.context or {})
+                plan_row.input_json = _json.dumps(pin, ensure_ascii=False)
+                db.commit()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("from-intent: plan meta 回写失败 %s: %s", plan_task_id, exc)
+
     dispatched = False
     if req.auto_dispatch and plan_task_id:
         try:
@@ -251,6 +273,140 @@ def golden_path_work_mode(current_user: User = Depends(get_current_user)) -> Dic
     from app.services.hermes.annex_work_mode import work_mode_report
 
     return work_mode_report()
+
+
+def _hermes_plan_summary(task: AiTask, child_count: int = 0, node_statuses: Optional[list] = None) -> Dict[str, Any]:
+    import json as _json
+
+    raw_in = task.input_json or "{}"
+    try:
+        inp = _json.loads(raw_in) if isinstance(raw_in, str) else (raw_in or {})
+    except Exception:  # noqa: BLE001
+        inp = {}
+    if not isinstance(inp, dict):
+        inp = {}
+    ctx = inp.get("context") or {}
+    if not isinstance(ctx, dict):
+        ctx = {}
+    return {
+        "plan_id": str(task.id),
+        "task_type": task.task_type,
+        "status": task.status,
+        "priority": task.priority,
+        "child_count": child_count,
+        "node_statuses": node_statuses or [],
+        "golden_path": ctx.get("golden_path") or inp.get("golden_path"),
+        "plane": ctx.get("plane") or "task",
+        "graph_source": inp.get("graph_source") or ctx.get("graph_source"),
+        "intent": inp.get("intent") or inp.get("message") or "",
+        "error_message": task.error_message,
+        "source": task.source,
+        "created_at": task.created_at.isoformat() if task.created_at else None,
+        "started_at": task.started_at.isoformat() if task.started_at else None,
+        "finished_at": task.finished_at.isoformat() if task.finished_at else None,
+    }
+
+
+@router.get("/hermes/tasks")
+def list_hermes_tasks(
+    status: Optional[str] = Query(None, description="过滤计划状态"),
+    golden_path: Optional[str] = Query(None, description="GP-A / GP-B"),
+    limit: int = Query(50, ge=1, le=200),
+    tenant_id: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Dict[str, Any]:
+    """Hermes 任务中心：租户内计划级任务（含 GP 履约/拓客）+ 节点摘要。
+
+    SEAM-P0：交互平面读任务真相（ai_tasks），调度主权仍在 Hermes。
+    """
+    from sqlalchemy import or_
+
+    tid = _resolve_tenant_id(db, current_user, tenant_id)
+    q = db.query(AiTask).filter(AiTask.tenant_id == tid)
+    q = q.filter(
+        or_(
+            AiTask.parent_task_id.is_(None),
+            AiTask.parent_task_id == "",
+        )
+    )
+    # 计划真相优先 hermes_plan（parse_graph_to_tasks）
+    q = q.filter(
+        or_(
+            AiTask.task_type == "hermes_plan",
+            AiTask.source == "orchestration_api",
+            AiTask.task_type.like("hermes%"),
+        )
+    )
+    if status:
+        q = q.filter(AiTask.status == status)
+    plans = q.order_by(AiTask.created_at.desc()).limit(limit).all()
+
+    items: list[Dict[str, Any]] = []
+    for p in plans:
+        children = db.query(AiTask).filter(AiTask.parent_task_id == str(p.id)).all()
+        summary = _hermes_plan_summary(
+            p,
+            child_count=len(children),
+            node_statuses=[c.status for c in children],
+        )
+        if golden_path and str(summary.get("golden_path") or "") != golden_path:
+            continue
+        items.append(summary)
+    return {"total": len(items), "items": items, "tenant_id": tid}
+
+
+@router.get("/hermes/tasks/{plan_id}")
+def get_hermes_task_detail(
+    plan_id: str,
+    tenant_id: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Dict[str, Any]:
+    """Hermes 计划详情：计划 + 全部子节点（执行器能力/状态/错误）。"""
+    import json as _json
+
+    tid = _resolve_tenant_id(db, current_user, tenant_id)
+    plan = (
+        db.query(AiTask)
+        .filter(AiTask.id == plan_id, AiTask.tenant_id == tid)
+        .first()
+    )
+    if not plan:
+        raise HTTPException(status_code=404, detail="hermes_plan_not_found")
+    children = (
+        db.query(AiTask)
+        .filter(AiTask.parent_task_id == str(plan.id))
+        .order_by(AiTask.created_at.asc())
+        .all()
+    )
+    nodes = []
+    for c in children:
+        raw = c.input_json or "{}"
+        try:
+            cin = _json.loads(raw) if isinstance(raw, str) else (raw or {})
+        except Exception:  # noqa: BLE001
+            cin = {}
+        if not isinstance(cin, dict):
+            cin = {}
+        nodes.append(
+            {
+                "id": str(c.id),
+                "task_type": c.task_type,
+                "status": c.status,
+                "capability": cin.get("capability"),
+                "executor": cin.get("executor"),
+                "error_message": c.error_message,
+                "created_at": c.created_at.isoformat() if c.created_at else None,
+                "finished_at": c.finished_at.isoformat() if c.finished_at else None,
+            }
+        )
+    return {
+        "plan": _hermes_plan_summary(
+            plan, child_count=len(children), node_statuses=[n["status"] for n in nodes]
+        ),
+        "nodes": nodes,
+    }
 
 
 @router.get("/tasks/{task_id}", response_model=OrchestrationTaskResponse)

@@ -101,6 +101,7 @@ export const NAV_ROUTE_MAP: Record<string, string> = {
   'admin-v2ray': '/admin/v2ray',
   'admin-annex-trade-ai': '/admin/annex/trade-ai',
   'admin-annex-goodjob': '/admin/annex/goodjob',
+  'client-hermes-tasks': '/client/tasks',
   'admin-agent-hub': '/agent-hub/dashboard',
   'admin-media-factory': '/media-factory/dashboard',
   'admin-globalization': '/globalization/dashboard',
