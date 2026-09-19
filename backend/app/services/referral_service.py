@@ -55,9 +55,17 @@ class ReferralService:
             ReferralCode.is_active,
         ).first()
         if not code:
-            return {"total_invited": 0, "total_rewarded": 0, "pending_rewards": 0,
-                    "current_tier": 0, "next_tier_at": 1, "next_tier_reward": "15%月费折扣",
-                    "estimated_discount": 0}
+            return {
+                "total_invited": 0,
+                "total_rewarded": 0,
+                "pending_rewards": 0,
+                "current_tier": 0,
+                "next_tier_at": 1,
+                "next_tier_reward": "15%月费折扣",
+                "estimated_discount": 0,
+                "qualification_rule": "first_paid",
+                "leaderboard_metric": "registration_invites",
+            }
 
         total_invited = code.total_referred
         rewarded = self.db.query(ReferralRecord).filter(
@@ -87,7 +95,11 @@ class ReferralService:
             "current_tier": current_tier,
             "next_tier_at": next_tier_at,
             "next_tier_reward": next_reward,
+            # 诚实口径：折扣估算按注册邀请；有效邀请以 first_paid rewarded 为准
             "estimated_discount": total_invited * 15,
+            "estimated_discount_basis": "registration_invites",
+            "qualification_rule": "first_paid",
+            "leaderboard_metric": "registration_invites",
         }
 
     def get_my_records(self, tenant_id: str, page: int = 1, page_size: int = 20) -> tuple:
@@ -149,8 +161,66 @@ class ReferralService:
             "rewards_granted": rewards,
         }
 
+    def mark_invite_qualified(self, invited_tenant_id: str, *, reason: str = "first_paid") -> dict:
+        """支付成功后：将该租户的 pending 邀请标为有效（幂等）。
+
+        规则：qualification_rule=first_paid — 仅首次有效付费；已 rewarded 不重复。
+        调用方（支付事件）须吞异常，不阻断支付主流程。
+        """
+        from datetime import datetime, timezone
+
+        tid = str(invited_tenant_id or "").strip()
+        if not tid:
+            return {"qualified": False, "reason": "missing_tenant"}
+
+        rows = (
+            self.db.query(ReferralRecord)
+            .filter(
+                ReferralRecord.invited_tenant_id == tid,
+                ReferralRecord.status == "pending",
+            )
+            .all()
+        )
+        if not rows:
+            already = (
+                self.db.query(ReferralRecord)
+                .filter(
+                    ReferralRecord.invited_tenant_id == tid,
+                    ReferralRecord.status == "rewarded",
+                )
+                .count()
+            )
+            return {
+                "qualified": bool(already),
+                "updated": 0,
+                "reason": "already_rewarded" if already else "no_pending_invite",
+            }
+
+        now = datetime.now(timezone.utc)
+        updated = 0
+        for rec in rows:
+            rec.status = "rewarded"
+            rec.rewarded_at = now
+            rec.reward_type = rec.reward_type or reason
+            if not rec.reward_amount:
+                rec.reward_amount = 1
+            code = (
+                self.db.query(ReferralCode)
+                .filter(ReferralCode.id == rec.code_id)
+                .first()
+            )
+            if code:
+                code.total_earned = (code.total_earned or 0) + (rec.reward_amount or 1)
+            updated += 1
+        self.db.commit()
+        return {"qualified": True, "updated": updated, "reason": reason}
+
     def get_leaderboard(self, limit: int = 20) -> list:
-        """获取邀请排行榜"""
+        """邀请排行榜。
+
+        metric=registration_invites：按注册邀请数排序（诚实标注）；
+        rewarded_count = 首付费有效邀请数（first_paid）。
+        """
         rows = (
             self.db.query(
                 ReferralCode.tenant_id,
@@ -163,10 +233,21 @@ class ReferralService:
             .limit(limit)
             .all()
         )
-        return [
-            {"rank": i + 1, "company_name": r.name, "invite_count": r.total_referred}
-            for i, r in enumerate(rows)
-        ]
+        ranked = []
+        for i, r in enumerate(rows, 1):
+            tenant_id, total_referred, name = r[0], r[1], r[2]
+            rewarded = self.db.query(ReferralRecord).filter(
+                ReferralRecord.inviter_tenant_id == tenant_id,
+                ReferralRecord.status == "rewarded",
+            ).count()
+            ranked.append({
+                "rank": i,
+                "company_name": name,
+                "invite_count": total_referred,
+                "rewarded_count": rewarded,
+                "metric": "registration_invites",
+            })
+        return ranked
 
     def get_my_code(self, tenant_id: str) -> ReferralCode:
         """获取我的邀请码"""

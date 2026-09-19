@@ -55,12 +55,27 @@ export function resolveOAuthProvider(
   return null;
 }
 
+export type OAuthProviderDetail = {
+  enabled: boolean;
+  configured: boolean;
+  dev_mode?: boolean;
+  missing_env?: string[];
+  hint?: string;
+};
+
 export async function fetchOAuthProvidersStatus(): Promise<{
   providers: Record<OAuthProvider, boolean>;
+  detail?: Record<string, OAuthProviderDetail>;
   dev_bypass?: boolean;
+  checklist?: string;
 }> {
   const { data: raw } = await apiFetch('/auth/oauth/providers');
-  const data = unwrapFetchedJson<{ providers: Record<string, boolean>; dev_bypass?: boolean }>(raw);
+  const data = unwrapFetchedJson<{
+    providers: Record<string, boolean>;
+    detail?: Record<string, OAuthProviderDetail>;
+    dev_bypass?: boolean;
+    checklist?: string;
+  }>(raw);
   const providers = (data?.providers || {}) as Record<string, boolean>;
   return {
     providers: {
@@ -69,7 +84,9 @@ export async function fetchOAuthProvidersStatus(): Promise<{
       feishu: Boolean(providers.feishu),
       dingtalk: Boolean(providers.dingtalk),
     },
+    detail: data?.detail,
     dev_bypass: data?.dev_bypass ?? false,
+    checklist: data?.checklist,
   };
 }
 

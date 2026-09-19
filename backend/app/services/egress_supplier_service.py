@@ -461,8 +461,10 @@ def activate_supplier(db: Session, supplier_id: str) -> dict[str, Any]:
     row = db.query(EgressSupplier).filter(EgressSupplier.id == supplier_id).first()
     if not row or not row.enabled:
         raise ValueError("供应商不存在")
-    if row.adapter == "iproyal" and not _supplier_ready(row):
-        raise ValueError("IPRoyal 供应商未配置 API Token，请先编辑保存")
+    if row.adapter != "manual" and not _supplier_ready(row):
+        raise ValueError(
+            f"供应商 {row.code} 未配置上游凭证（Token/API Key），请先编辑保存后再启用自动采购"
+        )
     for other in db.query(EgressSupplier).filter(EgressSupplier.is_active.is_(True)).all():
         other.is_active = False
     row.is_active = True
@@ -481,12 +483,48 @@ def build_providers_page_payload(db: Session) -> dict[str, Any]:
     :return: 返回处理结果。
     """
     suppliers = list_suppliers(db)
+    # has_token 与 _supplier_ready 同源（settings 或行内 config）
+    for s in suppliers:
+        adapter = str(s.get("adapter") or "")
+        row = None
+        if s.get("id"):
+            row = db.query(EgressSupplier).filter(EgressSupplier.id == s.get("id")).first()
+        if row is not None and adapter != "manual":
+            has = _supplier_ready(row)
+        elif adapter == "iproyal":
+            has = bool((settings.IPROYAL_API_TOKEN or "").strip())
+        elif adapter == "asocks":
+            has = bool((settings.ASOCKS_API_KEY or "").strip() or (settings.ASOCKS_LIST_URL or "").strip())
+        else:
+            has = True
+        s["has_token"] = has
+        s["ready"] = True if adapter == "manual" else has
+        s["not_ready_reason"] = (
+            None
+            if s["ready"]
+            else (
+                "IPROYAL_API_TOKEN 未配置 — 仅可手工录入，自动采购未开通"
+                if adapter == "iproyal"
+                else "ASOCKS_API_KEY / ASOCKS_LIST_URL 未配置"
+                if adapter == "asocks"
+                else "上游凭证未配置"
+            )
+        )
+
     active = next((s for s in suppliers if s.get("is_active")), None)
+    auto_ready = any(s.get("adapter") in ("iproyal", "asocks") and s.get("has_token") and s.get("is_active") for s in suppliers)
     return {
         "active_provider": active.get("code") if active else None,
         "active_supplier_id": active.get("id") if active else None,
         "active_label": active.get("name") if active else None,
         "long_term_fixed": bool(active.get("long_term_fixed")) if active else False,
+        "auto_purchase_ready": auto_ready,
+        "mode_hint": (
+            "自动采购已开通"
+            if auto_ready
+            else "当前手工录入模式：IPROYAL/ASocks Token 未配置，自动采购未开通（非故障）"
+        ),
+        "checklist": "docs/ops/external-integration-keys-checklist.md",
         "providers": suppliers,
         "iproyal_config": {
             "plan_id": settings.IPROYAL_PLAN_ID,
@@ -495,5 +533,9 @@ def build_providers_page_payload(db: Session) -> dict[str, Any]:
             "pool_low_watermark": settings.IPROYAL_POOL_LOW_WATERMARK,
             "auto_renew_days": settings.IPROYAL_AUTO_RENEW_DAYS,
             "has_token": bool((settings.IPROYAL_API_TOKEN or "").strip()),
+        },
+        "asocks_config": {
+            "has_api_key": bool((settings.ASOCKS_API_KEY or "").strip()),
+            "has_list_url": bool((settings.ASOCKS_LIST_URL or "").strip()),
         },
     }

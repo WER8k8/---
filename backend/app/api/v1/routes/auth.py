@@ -418,14 +418,19 @@ def _token_response_for_user(user: User, new_user: bool = False):
 @router.get("/oauth/providers")
 def list_oauth_providers():
     """管理端登录页：展示各第三方登录是否已配置。"""
+    from app.services.oauth_login import oauth_providers_status_detail
+
+    detail = oauth_providers_status_detail()
     return success_response(
         data={
-            "providers": oauth_providers_status(),
+            "providers": {k: bool(v.get("enabled")) for k, v in detail.items()},
+            "detail": detail,
             "redirect_uri": (settings.OAUTH_REDIRECT_URI or "").strip() or None,
             "dev_bypass": False if settings.is_production else bool(
                 settings.OAUTH_DEV_BYPASS
                 or settings.ENVIRONMENT == "development"
             ),
+            "checklist": "docs/ops/external-integration-keys-checklist.md",
         }
     )
 
