@@ -430,9 +430,9 @@ def _lead_generation_graph(plan_id: str, event_id: str, payload: dict[str, Any])
         policies=GraphPolicies(max_parallel=2, degradation="skip"),
         nodes=[
             TaskNode(id="n1", executor="lead", capability="lead.search",
-                     depends_on=[], input={"industry": industry, "country": country}, on_fail="abort"),
+                     depends_on=[], input={"industry": industry, "country": country, "keyword": industry, "keywords": industry}, on_fail="abort"),
             TaskNode(id="n2", executor="lead", capability="lead.score",
-                     depends_on=["n1"], input_from={"prospects": "n1.output.leads"}, on_fail="skip"),
+                     depends_on=["n1"], input_from={"prospects": "n1.output.leads", "leads": "n1.output.leads"}, on_fail="skip"),
             TaskNode(id="n3", executor="billing", capability="billing.meter",
                      depends_on=["n2"], input={"event_type": "lead_generated", "scene": "lead_generation"},
                      on_fail="skip"),

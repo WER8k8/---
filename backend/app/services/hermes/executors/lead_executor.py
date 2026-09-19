@@ -112,35 +112,46 @@ class LeadExecutor(BaseExecutor):
         self, node: TaskNode, params: dict[str, Any], context: ExecutorContext
     ) -> ExecutorResult:
         """Score existing leads for conversion potential."""
-        lead_ids = params.get("lead_ids") or params.get("ids") or []
-        if not lead_ids:
+        raw_ids = params.get("lead_ids") or params.get("ids") or []
+        prospects = params.get("prospects") or params.get("leads") or params.get("items") or []
+        if isinstance(prospects, str):
+            prospects = []
+        if not raw_ids and not prospects:
             return ExecutorResult(
                 node_id=node.id,
                 status="failed",
                 output={},
-                error="missing_lead_ids: lead.score 节点需提供 lead_ids 列表",
+                error="missing_lead_ids: lead.score 节点需提供 lead_ids 或 prospects/leads 列表",
             )
 
         try:
             from app.services.geo_lead_service import GeoLeadService
 
             svc = GeoLeadService(context.db)
-            # Reuse search to get lead details, then score
             result = await svc.search_leads(
-                tenant_id=str(context.tenant_id) if context.tenant_id else None,
+                tenant_id=str(context.tenant_id) if context.tenant_id else "",
                 limit=100,
             )
-            leads = result.get("leads") or result.get("items") or []
+            if isinstance(result, list):
+                leads = result
+            else:
+                leads = result.get("leads") or result.get("items") or []
+            if prospects and not leads:
+                leads = prospects
             scored = []
+            id_set = {str(x) for x in raw_ids} if raw_ids else None
             for lead in leads:
+                if not isinstance(lead, dict):
+                    continue
                 lead_id = str(lead.get("id") or lead.get("lead_id") or "")
-                if str(lead_id) in [str(x) for x in lead_ids]:
-                    raw = lead.get("score") or lead.get("relevance_score")
-                    scored.append({
-                        "id": lead_id,
-                        "score": float(raw) if raw else _evidence_score(lead),
-                        "source": lead.get("source") or lead.get("source_channel") or "unknown",
-                    })
+                if id_set is not None and lead_id and lead_id not in id_set:
+                    continue
+                raw = lead.get("score") or lead.get("relevance_score")
+                scored.append({
+                    "id": lead_id,
+                    "score": float(raw) if raw else _evidence_score(lead),
+                    "source": lead.get("source") or lead.get("source_channel") or "unknown",
+                })
         except Exception as exc:  # noqa: BLE001
             logger.exception("LeadExecutor lead.score 执行失败 node=%s", node.id)
             return ExecutorResult(
