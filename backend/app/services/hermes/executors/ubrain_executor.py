@@ -42,11 +42,13 @@ class UbrainExecutor(BaseExecutor):
         try:
             from app.services.ubrain.orchestrator import ubrain_orchestrator
 
+            raw_ctx = params.get("context")
+            ctx_param = raw_ctx if isinstance(raw_ctx, dict) else {"raw_context": str(raw_ctx)} if raw_ctx else {}
             data = ubrain_orchestrator.chat(
                 message,
                 db=context.db,
                 tenant_id=str(context.tenant_id) if context.tenant_id else None,
-                context=params.get("context") or {},
+                context=ctx_param,
             )
         except Exception as exc:  # noqa: BLE001 - contract requires return not raise
             logger.exception("UbrainExecutor 执行失败 node=%s", node.id)

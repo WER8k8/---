@@ -109,3 +109,7 @@ class AISiteEngine:
                 "availability": "https://schema.org/InStock",
             },
         }
+
+
+# 别名兼容性导出，防止大小写差异导入失败
+AiSiteEngine = AISiteEngine

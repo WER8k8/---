@@ -630,7 +630,12 @@ class UBrainOrchestrator:
         """
         intent = self.detect_intent(message)
         intent = refine_intent(message, intent)
-        ctx = context or {}
+        if isinstance(context, dict):
+            ctx = dict(context)
+        elif isinstance(context, str):
+            ctx = {"raw_context": context}
+        else:
+            ctx = {}
         if intent in LONG_RUNNING_INTENTS and not ctx.get("sync"):
             ctx.setdefault("async", True)
         tool_result: dict[str, Any] = {}
