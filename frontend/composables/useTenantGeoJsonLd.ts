@@ -34,30 +34,35 @@ export interface TenantGeoJsonLdInput {
 }
 
 export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
+  /** 可选 ComputedRef 安全读值（SSR 下调用方可能未传 logoUrl/foundingDate 等） */
+  const read = <T,>(r?: ComputedRef<T>): T | undefined => (r == null ? undefined : r.value)
+
   const jsonLdGraph = computed(() => {
-    const origin = input.siteOrigin.value.replace(/\/$/, '')
+    const origin = (input.siteOrigin?.value || '').replace(/\/$/, '')
     const graph: Array<Record<string, unknown>> = []
 
     const org: Record<string, unknown> = {
       '@type': 'Organization',
-      name: input.companyName.value,
+      name: input.companyName?.value || '',
       url: origin || undefined,
-      description: input.description.value || undefined,
+      description: input.description?.value || undefined,
     }
-    if (input.contactEmail.value) {
+    if (input.contactEmail?.value) {
       org.email = input.contactEmail.value
     }
-    if (input.contactPhone.value) {
+    if (input.contactPhone?.value) {
       org.telephone = input.contactPhone.value
     }
-    if (input.logoUrl.value) {
-      org.logo = input.logoUrl.value
+    const logoUrl = read(input.logoUrl)
+    if (logoUrl) {
+      org.logo = logoUrl
     }
-    if (input.foundingDate.value) {
-      org.foundingDate = input.foundingDate.value
+    const foundingDate = read(input.foundingDate)
+    if (foundingDate) {
+      org.foundingDate = foundingDate
     }
-    if (input.address?.value) {
-      const addr = input.address.value
+    const addr = read(input.address)
+    if (addr) {
       org.address = {
         '@type': 'PostalAddress',
         streetAddress: addr.streetAddress || undefined,
@@ -68,15 +73,15 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
       }
       org.contactPoint = {
         '@type': 'ContactPoint',
-        telephone: input.contactPhone.value || undefined,
-        email: input.contactEmail.value || undefined,
+        telephone: input.contactPhone?.value || undefined,
+        email: input.contactEmail?.value || undefined,
         contactType: 'customer service',
         availableLanguage: ['Chinese', 'English'],
       }
     }
     graph.push(org)
 
-    const items = (input.products.value ?? []).slice(0, 24).map((p) => {
+    const items = (read(input.products) ?? []).slice(0, 24).map((p) => {
       const product: Record<string, unknown> = {
         '@type': 'Product',
         name: p.name,
@@ -105,10 +110,11 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
     })
     graph.push(...items)
 
-    if (input.faqs?.value && input.faqs.value.length > 0) {
+    const faqs = read(input.faqs)
+    if (faqs && faqs.length > 0) {
       const faqPage: Record<string, unknown> = {
         '@type': 'FAQPage',
-        mainEntity: input.faqs.value.map((q) => ({
+        mainEntity: faqs.map((q) => ({
           '@type': 'Question',
           name: q.question,
           acceptedAnswer: {
@@ -120,15 +126,16 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
       graph.push(faqPage)
     }
 
-    if (input.services?.value && input.services.value.length > 0) {
-      input.services.value.forEach((service) => {
+    const services = read(input.services)
+    if (services && services.length > 0) {
+      services.forEach((service) => {
         const serviceSchema: Record<string, unknown> = {
           '@type': 'Service',
           name: service.name,
           description: service.description,
           provider: {
             '@type': 'Organization',
-            name: input.companyName.value,
+            name: input.companyName?.value || '',
           },
         }
         if (service.url) {
@@ -140,18 +147,19 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
       })
     }
 
-    if (input.reviews?.value && input.reviews.value.length > 0) {
-      const avgRating = input.reviews.value.reduce((sum, r) => sum + r.rating, 0) / input.reviews.value.length
+    const reviews = read(input.reviews)
+    if (reviews && reviews.length > 0) {
+      const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       const aggregateRating: Record<string, unknown> = {
         '@type': 'AggregateRating',
         ratingValue: avgRating.toFixed(1),
-        reviewCount: input.reviews.value.length,
+        reviewCount: reviews.length,
         worstRating: 1,
         bestRating: 5,
       }
       org.aggregateRating = aggregateRating
 
-      input.reviews.value.forEach((review) => {
+      reviews.forEach((review) => {
         const reviewSchema: Record<string, unknown> = {
           '@type': 'Review',
           author: {
@@ -174,8 +182,9 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
     }
 
     // VideoObject schema（产品视频 / 企业视频）
-    if (input.videos?.value && input.videos.value.length > 0) {
-      input.videos.value.forEach((video) => {
+    const videos = read(input.videos)
+    if (videos && videos.length > 0) {
+      videos.forEach((video) => {
         const videoSchema: Record<string, unknown> = {
           '@type': 'VideoObject',
           name: video.name,

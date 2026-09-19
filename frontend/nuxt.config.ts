@@ -41,7 +41,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE || '/api/v1',
-      apiHost: process.env.API_HOST || 'http://127.0.0.1:8000',
+      // ENV-LOCK：本项目主后端固定 8001；8000 历史上被无关 Apache 占用
+      apiHost: process.env.API_HOST || 'http://127.0.0.1:8001',
       siteUrl: process.env.SITE_URL || 'http://127.0.0.1:3000',
       merchantId: process.env.DEFAULT_MERCHANT_ID || process.env.NUXT_PUBLIC_MERCHANT_ID || '1',
       /** SaaS 租户 UUID，埋点与询盘归因必填（部署按域名注入） */
@@ -280,11 +281,11 @@ export default defineNuxtConfig({
     minify: true,
     devProxy: {
       '/api': {
-        target: process.env.API_HOST || 'http://127.0.0.1:8000',
+        target: process.env.API_HOST || 'http://127.0.0.1:8001',
         changeOrigin: true,
       },
       '/uploads': {
-        target: process.env.API_HOST || 'http://127.0.0.1:8000',
+        target: process.env.API_HOST || 'http://127.0.0.1:8001',
         changeOrigin: true,
       },
     },

@@ -1,4 +1,5 @@
 # Start local dev: backend :8001 + admin Vite (5173, or 5174+ if busy)
+# 3000 官网 = 主要备份 Vite 暖白版（见 官网启动强制索引-必读.md）；Nuxt 租户预览改走 3002
 # Usage:
 #   powershell -File scripts/start-dev-admin.ps1
 #   powershell -File scripts/start-dev-admin.ps1 -Lan
@@ -19,9 +20,12 @@ $TenantDir = Join-Path $Root 'frontend'
 $AdminViteScript = Join-Path $Root 'scripts\start-admin-vite-dev.ps1'
 $TenantNuxtScript = Join-Path $Root 'scripts\start-tenant-nuxt-dev.ps1'
 $Bootstrap = Join-Path $Root 'scripts\dev-backend-bootstrap.ps1'
+# 官网运行真相源（强制索引）：工作区 主要备份 Vite，而非 worktree Nuxt
+$OfficialSiteDir = Join-Path (Split-Path -Parent $Root) '主要备份\上线网站\frontend'
 $ApiPort = 8001
 $AdminPort = 5173
 $TenantPort = 3000
+$NuxtPreviewPort = 3002
 
 function Test-HttpUp([string]$Url, [int]$Sec = 3) {
   try {
@@ -163,10 +167,11 @@ function Test-TenantNuxtReady([int]$Port, [int]$MaxWaitSec = 180) {
 }
 
 if ($ForceRestart) {
-  Write-Host "Force restart: stopping :$ApiPort, :$AdminPort, :$TenantPort" -ForegroundColor Yellow
+  Write-Host "Force restart: stopping :$ApiPort, :$AdminPort, :$TenantPort, :$NuxtPreviewPort" -ForegroundColor Yellow
   Stop-PortListener $ApiPort
   Stop-PortListener $AdminPort
   Stop-PortListener $TenantPort
+  Stop-PortListener $NuxtPreviewPort
   Clear-NuxtDevLock $TenantDir
   Start-Sleep -Seconds 2
 }
@@ -254,24 +259,38 @@ if (-not (Test-AdminVite $AdminPort) -or $ForceRestart) {
   }
 }
 
-if (-not (Test-TenantNuxt $TenantPort) -or $ForceRestart) {
-  if ($ForceRestart) {
-    Stop-PortListener $TenantPort
-    Clear-NuxtDevLock $TenantDir
-    Start-Sleep -Seconds 1
+# 3000 = 主要备份 Vite 官网（暖米白+砖橙，强制索引真源）
+if (-not (Test-HttpUp "http://127.0.0.1:$TenantPort/" 3) -or $ForceRestart) {
+  if ($ForceRestart) { Stop-PortListener $TenantPort; Start-Sleep -Seconds 1 }
+  if (Test-Path -LiteralPath (Join-Path $OfficialSiteDir 'package.json')) {
+    $officialLog = Join-Path $OfficialSiteDir 'vite-3000.log'
+    Write-Host "Starting official site Vite on :$TenantPort ($OfficialSiteDir)" -ForegroundColor Cyan
+    Start-Process powershell -WindowStyle Hidden -ArgumentList @(
+      '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
+      "Set-Location -LiteralPath '$OfficialSiteDir'; `$env:API_HOST='http://127.0.0.1:$ApiPort'; npx vite --port $TenantPort --host $ViteHost *> '$officialLog'"
+    )
+    $deadline = (Get-Date).AddSeconds(60)
+    while ((Get-Date) -lt $deadline) {
+      if (Test-HttpUp "http://127.0.0.1:$TenantPort/" 3) { break }
+      Start-Sleep -Seconds 2
+    }
+    Write-Host "Official site : http://127.0.0.1:$TenantPort/  (Vite 暖白，勿与后台薄荷混谈)" -ForegroundColor Green
+  } else {
+    Write-Host "WARN official site dir missing: $OfficialSiteDir" -ForegroundColor Yellow
   }
+}
+
+# 3002 = worktree Nuxt 租户站预览（?__tenant=dev.local），不占 3000
+if (-not (Test-HttpUp "http://127.0.0.1:$NuxtPreviewPort/" 3) -or $ForceRestart) {
+  if ($ForceRestart) { Stop-PortListener $NuxtPreviewPort; Clear-NuxtDevLock $TenantDir; Start-Sleep -Seconds 1 }
   if (Test-Path -LiteralPath (Join-Path $TenantDir 'package.json')) {
     $nuxtBind = if ($Lan -and $LanIp) { '0.0.0.0' } else { '127.0.0.1' }
-    Write-Host "Starting tenant Nuxt on :$TenantPort (我的网站预览, host=$nuxtBind)" -ForegroundColor Cyan
+    Write-Host "Starting tenant Nuxt preview on :$NuxtPreviewPort (host=$nuxtBind)" -ForegroundColor Cyan
     Start-Process powershell -WindowStyle Hidden -ArgumentList @(
-      '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $TenantNuxtScript,
-      '-FrontendDir', $TenantDir, '-Port', $TenantPort, '-NuxtHost', $nuxtBind
+      '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
+      "`$env:API_HOST='http://127.0.0.1:$ApiPort'; & powershell -NoProfile -ExecutionPolicy Bypass -File '$TenantNuxtScript' -FrontendDir '$TenantDir' -Port $NuxtPreviewPort -NuxtHost '$nuxtBind'"
     )
-    if (Test-TenantNuxtReady $TenantPort 180) {
-      Write-Host "Tenant site : http://127.0.0.1:$TenantPort/tenant?__tenant=dev.local&lpro=1" -ForegroundColor Green
-    } else {
-      Write-Host "WARN tenant Nuxt not ready on :$TenantPort — 我的网站 may not open yet (首次编译可再等 1～2 分钟)" -ForegroundColor Yellow
-    }
+    Write-Host "Tenant preview : http://127.0.0.1:$NuxtPreviewPort/tenant?__tenant=dev.local&lpro=1" -ForegroundColor Green
   }
 }
 
