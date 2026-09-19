@@ -461,8 +461,10 @@ def activate_supplier(db: Session, supplier_id: str) -> dict[str, Any]:
     row = db.query(EgressSupplier).filter(EgressSupplier.id == supplier_id).first()
     if not row or not row.enabled:
         raise ValueError("供应商不存在")
-    if row.adapter == "iproyal" and not _supplier_ready(row):
-        raise ValueError("IPRoyal 供应商未配置 API Token，请先编辑保存")
+    if row.adapter != "manual" and not _supplier_ready(row):
+        raise ValueError(
+            f"供应商 {row.code} 未配置上游凭证（Token/API Key），请先编辑保存后再启用自动采购"
+        )
     for other in db.query(EgressSupplier).filter(EgressSupplier.is_active.is_(True)).all():
         other.is_active = False
     row.is_active = True
@@ -481,23 +483,33 @@ def build_providers_page_payload(db: Session) -> dict[str, Any]:
     :return: 返回处理结果。
     """
     suppliers = list_suppliers(db)
-    # 每供应商补 has_token/ready，便于 UI 诚实展示「自动采购是否开通」
+    # has_token 与 _supplier_ready 同源（settings 或行内 config）
     for s in suppliers:
         adapter = str(s.get("adapter") or "")
-        if adapter == "iproyal":
+        row = None
+        if s.get("id"):
+            row = db.query(EgressSupplier).filter(EgressSupplier.id == s.get("id")).first()
+        if row is not None and adapter != "manual":
+            has = _supplier_ready(row)
+        elif adapter == "iproyal":
             has = bool((settings.IPROYAL_API_TOKEN or "").strip())
         elif adapter == "asocks":
             has = bool((settings.ASOCKS_API_KEY or "").strip() or (settings.ASOCKS_LIST_URL or "").strip())
         else:
-            has = True  # manual 不依赖上游 Token
+            has = True
         s["has_token"] = has
-        s["ready"] = bool(s.get("is_active")) and has if adapter != "manual" else bool(s.get("is_active"))
-        if adapter == "iproyal" and not has:
-            s["not_ready_reason"] = "IPROYAL_API_TOKEN 未配置 — 仅可手工录入，自动采购未开通"
-        elif adapter == "asocks" and not has:
-            s["not_ready_reason"] = "ASOCKS_API_KEY / ASOCKS_LIST_URL 未配置"
-        else:
-            s["not_ready_reason"] = None
+        s["ready"] = True if adapter == "manual" else has
+        s["not_ready_reason"] = (
+            None
+            if s["ready"]
+            else (
+                "IPROYAL_API_TOKEN 未配置 — 仅可手工录入，自动采购未开通"
+                if adapter == "iproyal"
+                else "ASOCKS_API_KEY / ASOCKS_LIST_URL 未配置"
+                if adapter == "asocks"
+                else "上游凭证未配置"
+            )
+        )
 
     active = next((s for s in suppliers if s.get("is_active")), None)
     auto_ready = any(s.get("adapter") in ("iproyal", "asocks") and s.get("has_token") and s.get("is_active") for s in suppliers)

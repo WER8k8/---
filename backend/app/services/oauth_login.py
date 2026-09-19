@@ -213,9 +213,8 @@ def build_oauth_authorize(
         raise ValueError("unsupported_provider")
 
     st = (state or "").strip() or secrets.token_urlsafe(24)
-    if settings.OAUTH_DEV_BYPASS or (
-        settings.ENVIRONMENT == "development" and not _provider_configured(p)
-    ):
+    # 生产强制禁用 dev 回调（即使 .env 误开 OAUTH_DEV_BYPASS）
+    if _oauth_dev_mode_enabled() and not _provider_configured(p):
         return _dev_authorize_url(p, st), st
 
     redirect = urllib.parse.quote(_redirect_uri(), safe="")

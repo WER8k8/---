@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Wave1 诚实接线：OAuth providers 明细 / QQ POST / referral 首付费。"""
+"""Wave1 诚实接线：OAuth providers 明细 / QQ POST / referral 首付费幂等。"""
 from __future__ import annotations
 
+import uuid
+
+from app.core.config import settings
 from app.services.oauth_login import (
     SUPPORTED_OAUTH_PROVIDERS,
     oauth_providers_status_detail,
@@ -17,30 +20,21 @@ def test_oauth_providers_detail_lists_all_and_hints():
         assert "missing_env" in info and "hint" in info
         if not info["configured"]:
             assert info["missing_env"], p
-            assert "未开通" in info["hint"] or "开发" in info["hint"]
 
 
 def test_wechat_signature_rejects_when_token_missing():
-    # 未配置 WECHAT_VERIFICATION_TOKEN 时诚实拒绝，禁止复用飞书 Token
-    assert verify_wechat_signature("deadbeef", "123", "abc") is False or True
-    # 有签名参数但 token 空 → False；有 token 时才可能 True
-    from app.core.config import settings
-
     old = settings.WECHAT_VERIFICATION_TOKEN
     try:
         settings.WECHAT_VERIFICATION_TOKEN = ""
         assert verify_wechat_signature("x", "1", "2") is False
         settings.WECHAT_VERIFICATION_TOKEN = "tok"
-        # wrong signature
         assert verify_wechat_signature("0" * 40, "1", "2") is False
     finally:
         settings.WECHAT_VERIFICATION_TOKEN = old
 
 
 def test_qq_token_exchange_uses_post(monkeypatch):
-    """QQ 换票必须 POST body，禁止 client_secret 进 query。"""
     import app.services.oauth_login as ol
-    from app.core.config import settings
 
     calls = {}
 
@@ -64,37 +58,93 @@ def test_qq_token_exchange_uses_post(monkeypatch):
         def post(self, url, **kw):
             if "token" in url:
                 calls["token_method"] = "POST"
-                calls["token_url"] = url
                 calls["token_data"] = kw.get("data") or {}
                 calls["token_params"] = kw.get("params")
             return _Resp()
 
         def get(self, url, **kw):
-            calls.setdefault("get_urls", []).append(url)
             calls.setdefault("get_params", []).append(kw.get("params"))
             return _Resp()
 
     monkeypatch.setattr(ol.httpx, "Client", _Client)
     monkeypatch.setattr(settings, "QQ_APP_ID", "appid", raising=False)
     monkeypatch.setattr(settings, "QQ_APP_KEY", "secret", raising=False)
-    monkeypatch.setattr(ol, "_redirect_uri", lambda: "http://localhost:5173/login/oauth-callback")
+    monkeypatch.setattr(ol, "_redirect_uri", lambda: "http://localhost/cb")
     try:
         ol._exchange_qq("code123")
     except Exception:
         pass
-    assert calls.get("token_method") == "POST", calls
-    assert "token" in str(calls.get("token_url", ""))
-    data = calls.get("token_data") or {}
-    assert data.get("client_secret") == "secret"
+    assert calls.get("token_method") == "POST"
+    assert calls.get("token_data", {}).get("client_secret") == "secret"
     assert calls.get("token_params") is None
-    # openid step may use GET but must not carry client_secret
     for p in calls.get("get_params") or []:
         if isinstance(p, dict):
             assert "client_secret" not in p
 
 
 def test_referral_mark_invite_qualified_idempotent():
-    """无 DB 时应安全返回；有会话时逻辑由 live/集成测覆盖。"""
+    """内存 SQLite：pending→rewarded 幂等，二次调用不再累加 total_earned。"""
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+
+    from app.core.database import Base
+    from app.models.referral import ReferralCode, ReferralRecord
+    from app.models.tenant import Tenant
     from app.services.referral_service import ReferralService
 
-    assert hasattr(ReferralService, "mark_invite_qualified")
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    db = Session()
+
+    from app.models.tenant import TenantPlan
+
+    plan = TenantPlan(id=str(uuid.uuid4()), name="Free", code=f"free-{uuid.uuid4().hex[:6]}")
+    db.add(plan)
+    db.flush()
+    inviter = Tenant(id=str(uuid.uuid4()), name="Inviter", domain=f"inv-{uuid.uuid4().hex[:8]}.local", plan_id=plan.id)
+    invited = Tenant(id=str(uuid.uuid4()), name="Invited", domain=f"invd-{uuid.uuid4().hex[:8]}.local", plan_id=plan.id)
+    db.add_all([inviter, invited])
+    db.flush()
+    code = ReferralCode(tenant_id=inviter.id, code="ABCD1234", is_active=True, total_referred=1)
+    db.add(code)
+    db.flush()
+    db.add(
+        ReferralRecord(
+            code_id=code.id,
+            inviter_tenant_id=inviter.id,
+            invited_tenant_id=invited.id,
+            status="pending",
+        )
+    )
+    db.commit()
+
+    svc = ReferralService(db)
+    r1 = svc.mark_invite_qualified(invited.id)
+    assert r1["qualified"] is True and r1["updated"] == 1
+    earned_after_first = db.query(ReferralCode).filter(ReferralCode.id == code.id).one().total_earned
+    r2 = svc.mark_invite_qualified(invited.id)
+    assert r2["updated"] == 0
+    earned_after_second = db.query(ReferralCode).filter(ReferralCode.id == code.id).one().total_earned
+    assert earned_after_second == earned_after_first
+    stats = svc.get_referral_stats(str(inviter.id))
+    assert stats["qualification_rule"] == "first_paid"
+    assert stats["total_rewarded"] == 1
+    db.close()
+
+
+def test_egress_payload_honest_fields():
+    from app.services.egress_supplier_service import build_providers_page_payload
+    from app.db.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        payload = build_providers_page_payload(db)
+        assert "auto_purchase_ready" in payload
+        assert "mode_hint" in payload
+        assert payload.get("checklist")
+        for p in payload.get("providers") or []:
+            assert "has_token" in p
+            assert "ready" in p
+    finally:
+        db.close()

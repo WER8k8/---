@@ -452,6 +452,8 @@ def mock_pay(req: MockPayRequest, db: Session=Depends(get_db), current_user: Use
     order = service.mock_pay_order(req.order_id)
     if not order:
         return error_response(404, '订单不存在或无法支付')
+    # 与真实回调一致：mock-pay 也触发支付成功事件 + referral 首付费资格
+    _emit_payment_success_event(order)
     return success_response(data={'id': order.id, 'order_no': order.order_no, 'status': order.status, 'paid_at': order.paid_at.isoformat() if order.paid_at else None}, message='模拟支付成功')
 
 @router.get('/orders', operation_id='payment_get_orders', summary='支付订单列表', description='查询当前用户支付订单列表，支持分页（需有效 JWT）。')
@@ -658,6 +660,12 @@ def balance_payment(order_no: str=Body(...), current_user: User=Depends(get_curr
             log.exception('[Payment] 余额支付后发放权益失败，补偿退回余额: order=%s', order_no)
             _refund_balance_after_failed_pay(current_user, amount, order)
             return error_response(500, '权益发放失败，余额已退回，请稍后重试')
+        # 余额支付成功 = 有效付费：补发支付成功事件（referral 首付费等）
+        try:
+            db.refresh(order)
+        except Exception:
+            pass
+        _emit_payment_success_event(order)
         return success_response(data=result.to_dict(), message='余额支付成功')
     except Exception as e:
         log.error('[Payment] 余额支付失败: %s', e)
