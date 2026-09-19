@@ -25,6 +25,10 @@ from sqlalchemy import (
 from app.core.database import Base, UUID_TYPE
 
 
+def _enum_values(enum_cls):
+    return [e.value for e in enum_cls]
+
+
 class LeadSource(str, enum.Enum):
     """线索来源渠道"""
     GOOGLE_CSE = "google_cse"           # Google Custom Search
@@ -82,13 +86,13 @@ class ProspectLead(Base):
     department = Column(String(100), nullable=True)
     # ── 来源与状态 ──
     source = Column(
-        Enum(LeadSource, name="lead_source_enum"),
+        Enum(LeadSource, name="lead_source_enum", values_callable=_enum_values, validate_strings=True),
         nullable=False,
         default=LeadSource.GOOGLE_CSE,
     )
     source_detail = Column(JSON, default=dict)  # {search_keyword, page_url, scraped_at}
     status = Column(
-        Enum(LeadStatus, name="lead_status_enum"),
+        Enum(LeadStatus, name="lead_status_enum", values_callable=_enum_values, validate_strings=True),
         nullable=False,
         default=LeadStatus.DISCOVERED,
         index=True,

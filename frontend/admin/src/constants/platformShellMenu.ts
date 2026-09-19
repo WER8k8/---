@@ -31,10 +31,9 @@ export const PLATFORM_SHELL_MENU: ShellMenuGroup[] = [
     { name:'Content',path:'/content',title:'文章内容',icon:'FileOutlined' },
     { name:'Cases',path:'/cases',title:'案例展示',icon:'PictureOutlined' },
     { name:'News',path:'/news',title:'新闻动态',icon:'ReadOutlined' },
-  ]},
-  { title: '附属执行台', children: [
-    { name:'AnnexTradeAi',path:'/admin/annex/trade-ai',title:'TradeAI 执行台',icon:'ThunderboltOutlined' },
-    { name:'AnnexGoodjob',path:'/admin/annex/goodjob',title:'GoodJob 执行台',icon:'GlobalOutlined' },
+    // 功能域菜单（无特权）：与其它业务项同级，非「附属执行台」
+    { name:'AnnexTradeAi',path:'/admin/annex/trade-ai',title:'社媒拓客',icon:'ThunderboltOutlined' },
+    { name:'AnnexGoodjob',path:'/admin/annex/goodjob',title:'外贸履约',icon:'GlobalOutlined' },
   ]},
   { title: '客户线索', children: [
     { name:'Inquiries',path:'/inquiries',title:'询盘留言',icon:'MessageOutlined' },

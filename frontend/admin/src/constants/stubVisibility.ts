@@ -159,8 +159,8 @@ export const PLATFORM_LAB_PREFIXES = [
 ]
 
 /**
- * 附属执行台（/admin/annex/*）不再列为 Lab：
- * TradeAI 与 GoodJob 属 SYSTEM-LOCK-02 八大子系统，常态必须有可达入口，
+ * 功能域菜单（/admin/annex/*）不列为 Lab：
+ * 社媒拓客 / 外贸履约 = 优丁业务功能域（无特权），与其它模块同级可达；
  * 藏在实验室开关后会让「子系统没入口」被误判成「子系统没设计」。
  * 未部署时页面自身已有降级提示，不需要靠菜单隐藏来表达状态。
  */

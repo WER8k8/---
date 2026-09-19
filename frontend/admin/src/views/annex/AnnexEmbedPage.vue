@@ -58,10 +58,10 @@
       :description="`单点进入：${annexReady ? '双向通信已就绪' : '等待应用握手响应'}。票据 5 分钟有效，遇会话失效可直接点击「重新握手」。`"
     />
 
-    <!-- GoodJob CRM 功能模块切换（票据中心管理 / 客户管理） -->
+    <!-- 外贸履约 功能域模块切换（外贸单证 / 客户档案） -->
     <div v-if="isGoodJob" class="gj-module-bar">
       <a-space size="small" wrap>
-        <strong class="gj-module-label">GoodJob CRM</strong>
+        <strong class="gj-module-label">外贸履约</strong>
         <a-button
           v-for="m in GOODJOB_MODULES"
           :key="m.key"
@@ -78,7 +78,7 @@
           type="text"
           @click="goAnnexModule('')"
         >
-          返回 GoodJob 全景
+          返回履约工作台
         </a-button>
       </a-space>
     </div>
@@ -86,7 +86,7 @@
     <!-- 嵌入容器 -->
     <div v-if="embedUrl" class="embed-shell">
       <div v-if="!ticketReady || ticketLoading" class="embed-loading">
-        <a-spin size="large" tip="正在为您安全接入 GoodJob CRM..." />
+        <a-spin size="large" tip="正在接入功能域工作台..." />
       </div>
       <iframe
         v-if="ticketReady"
@@ -107,7 +107,7 @@
         </a-button>
       </a-space>
       <span class="text-xs text-slate-400">
-        YouDing AEOS · GoodJob CRM 附属统一执行台 (单点登录受 SYSTEM-LOCK-02 与 LOGIN-LOCK-01 保护)
+        YouDing · 功能域工作台（无特权）· 任务由 Hermes 编排驱动 · 身份仅优丁 /login
       </span>
     </div>
   </YdPage>
@@ -137,17 +137,17 @@ const annexKey = computed(() => String(route.meta.annexKey || ''));
 const meta = computed(() => annexMeta(annexKey.value));
 
 
-const annexLabel = computed(() => meta.value?.label || '附属执行台');
+const annexLabel = computed(() => meta.value?.label || '功能域工作台');
 const annexModule = computed(() => String(route.meta.annexModule || ''));
 const moduleMeta = computed(() => goodjobModuleMeta(annexModule.value));
 const isGoodJob = computed(() => annexKey.value === 'goodjob');
 const pageTitle = computed(() => {
-  if (moduleMeta.value) return `GoodJob CRM · ${moduleMeta.value.label}`;
+  if (moduleMeta.value) return `${annexLabel.value} · ${moduleMeta.value.label}`;
   return annexLabel.value;
 });
 const pageSubtitle = computed(() => {
   if (moduleMeta.value) return moduleMeta.value.desc;
-  return meta.value?.desc || '附属项目统一接入中枢';
+  return meta.value?.desc || '业务功能域工作台（无特权）';
 });
 
 const isTenantShell = computed(() => route.path.startsWith('/client'));
@@ -186,7 +186,7 @@ const embedUrlWithTicket = computed(() => {
 
 const deployHint = computed(() => {
   const envKey = meta.value?.envKey || 'VITE_GOODJOB_EMBED_URL';
-  return `请在 frontend/admin/.env.development.local 中配置 ${envKey}（必须带 VITE_ 前缀，例如 http://127.0.0.1:5188/），并启动对应附属服务。`;
+  return `请在 frontend/admin/.env.development.local 中配置 ${envKey}（必须带 VITE_ 前缀，例如 http://127.0.0.1:5188/），并启动对应功能域引擎服务。`;
 });
 
 async function requestTicket() {

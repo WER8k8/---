@@ -13,9 +13,18 @@
         <a-select-option value="completed">履约结清完成</a-select-option>
       </a-select>
       <template #extra>
+        <a-button
+          type="primary"
+          :loading="hermesLoading"
+          :disabled="!items.length"
+          @click="dispatchGoldenPathFulfillment((items[0] as Record<string, unknown>) || undefined)"
+        >
+          <template #icon><ThunderboltOutlined /></template>
+          一键履约 · Hermes
+        </a-button>
         <a-button type="default" @click="goToGoodJobAnnex">
           <template #icon><LinkOutlined /></template>
-          打开 GoodJob CRM 全景
+          打开履约工作台
         </a-button>
         <YdTableColumnSettings
           :columns="orderedColumns"
@@ -194,7 +203,7 @@
         </a-space>
 
         <!-- 单证预览与套打卡片 -->
-        <a-divider style="margin: 16px 0 12px">GoodJob 外贸单证套打</a-divider>
+        <a-divider style="margin: 16px 0 12px">外贸单证套打</a-divider>
         <div class="flex flex-wrap gap-2 mb-3">
           <a-button size="small" :loading="docLoading === 'pi'" @click="fetchOrderDoc('pi')">形式发票 (PI)</a-button>
           <a-button size="small" :loading="docLoading === 'ci'" @click="fetchOrderDoc('ci')">商业发票 (CI)</a-button>
@@ -221,7 +230,7 @@
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import { DownOutlined, LinkOutlined } from '@ant-design/icons-vue';
+import { DownOutlined, LinkOutlined, ThunderboltOutlined } from '@ant-design/icons-vue';
 
 import {
   YdDataTable,
@@ -304,6 +313,52 @@ function goToGoodJobAnnex() {
   router.push('/client/annex/goodjob');
 }
 
+/** GP-A：任务面走 Hermes（功能域无特权；交互列表仍走同步 API） */
+const hermesLoading = ref(false);
+const lastHermesPlan = ref<{ plan_id?: string; graph_source?: string; node_count?: number } | null>(null);
+
+async function dispatchGoldenPathFulfillment(record?: Record<string, unknown>) {
+  hermesLoading.value = true;
+  try {
+    const orderId = record?.id ? String(record.id) : '';
+    const orderNo = record?.order_number ? String(record.order_number) : '';
+    const res = await apiPost<{
+      plan_id?: string;
+      graph_source?: string;
+      node_count?: number;
+      dispatched?: boolean;
+      node_tasks?: string[];
+    }>('/orchestration/golden-path/fulfillment', {
+      intent: '履约推进与形式发票',
+      payload: {
+        order_id: orderId,
+        message: orderNo
+          ? `订单 ${orderNo} 履约推进与 PI`
+          : orderId
+            ? `订单 ${orderId} 履约推进与 PI`
+            : '履约推进与 PI（请在列表行操作以带上订单上下文）',
+        product: String(record?.product || ''),
+      },
+      channel: 'web',
+      context: { golden_path: 'GP-A', plane: 'task', order_id: orderId || undefined },
+      auto_dispatch: true,
+    });
+    lastHermesPlan.value = {
+      plan_id: res?.plan_id,
+      graph_source: res?.graph_source,
+      node_count: res?.node_count,
+    };
+    message.success(
+      `已提交 Hermes 履约任务（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${res?.plan_id || ''}`,
+    );
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    message.error(`Hermes 履约任务提交失败：${msg}`);
+  } finally {
+    hermesLoading.value = false;
+  }
+}
+
 function formatStatusLabel(status: unknown): string {
   const s = String(status || '').toLowerCase();
   const map: Record<string, string> = {
@@ -344,6 +399,10 @@ async function openOrderDetail(record: Record<string, unknown>) {
 }
 
 async function handleDocumentAction(record: Record<string, unknown>, docType: string) {
+  // 任务面：PI 同步走 Hermes GP-A（功能域无特权驱动）；单证预览仍走交互 API
+  if (docType === 'pi') {
+    void dispatchGoldenPathFulfillment(record);
+  }
   await openOrderDetail(record);
   await fetchOrderDoc(docType === 'co' ? 'certificate-of-origin' : docType === 'pl' ? 'packing-list' : docType);
 }

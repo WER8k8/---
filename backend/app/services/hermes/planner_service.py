@@ -52,6 +52,13 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "platform_ops.tenant_list", "platform_ops.product_catalog",
     "platform_ops.seo_health", "platform_ops.system_health", "platform_ops.notify_draft",
     "module_matrix.matrix.inspect", "module_matrix.matrix.invoke", "module_matrix.matrix.health",
+    # 模板 capability 字段使用裸能力名（executor 另列）；smoke 白名单按裸名对齐
+    "matrix.inspect", "matrix.invoke", "matrix.health",
+    # TradeAI 功能域技能（GP-B / Hermes 驱动；执行器 trade_ai_agent）
+    "trade_ai.social_scraper", "trade_ai.auto_sender", "trade_ai.ai_reply",
+    "trade_ai.data_cleaner", "trade_ai.message_generator", "trade_ai.rag",
+    "trade_ai.monitor", "trade_ai.excel_reader",
+    "skill.social_scraper", "skill.auto_sender", "skill.ai_reply",
     "biz_bot.run", "biz_bot.list_actions", "biz_bot.coverage",
     "desktop_hermes.assemble", "desktop_hermes.aeos", "desktop_hermes.aeos_invoke",
     "desktop_hermes.feedback", "desktop_hermes.scenes", "desktop_hermes.status",

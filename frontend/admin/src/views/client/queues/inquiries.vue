@@ -103,7 +103,7 @@
           <a-button size="small" :loading="ftLoading === 'meddpicc'" @click="runInquiryMeddpicc">MEDDPICC</a-button>
           <a-button size="small" :loading="ftLoading === 'pi'" @click="runInquiryPi">生成 PI</a-button>
           <a-button size="small" type="default" @click="router.push('/client/annex/goodjob/customers')">
-            GoodJob 客户档案
+            客户档案
           </a-button>
         </div>
         <div v-if="bridgeSummary" class="mt-3 p-2 bg-amber-50 rounded text-xs">

@@ -13,10 +13,19 @@ from app.services.ubrain.accio_gap_constants import GAP_MVP_SKILL_IDS
 _CATALOG_PATH = Path(__file__).resolve().parents[2] / "data" / "accio_skill_catalog.json"
 
 
+_EMPTY_CATALOG: dict[str, Any] = {
+    "catalog_version": "missing",
+    "groups": [],
+}
+
+
 def load_skill_catalog() -> dict[str, Any]:
     """load_skill_catalog。
     :return: 返回处理结果。
     """
+    if not _CATALOG_PATH.is_file():
+        # 缺文件时诚实返回空目录，禁止 500（假交付红线）
+        return dict(_EMPTY_CATALOG)
     with open(_CATALOG_PATH, encoding="utf-8") as f:
         return json.load(f)
 

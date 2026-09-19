@@ -27,6 +27,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from app.core.database import Base, UUID_TYPE
 
 
+def _enum_values(enum_cls):
+    return [e.value for e in enum_cls]
+
+
 class EmailStatus(str, enum.Enum):
     """邮件发送状态机"""
     DRAFT = "draft"           # 草稿
@@ -72,7 +76,7 @@ class EmailOutreach(Base):
     text_body = Column(Text, nullable=True)  # 纯文本备选
     # 状态机
     status = Column(
-        Enum(EmailStatus, name="email_status_enum"),
+        Enum(EmailStatus, name="email_status_enum", values_callable=_enum_values, validate_strings=True),
         nullable=False,
         default=EmailStatus.DRAFT,
         index=True,
@@ -92,7 +96,10 @@ class EmailOutreach(Base):
     first_clicked_at = Column(DateTime(timezone=True), nullable=True)
     last_clicked_at = Column(DateTime(timezone=True), nullable=True)
     # 退回信息
-    bounce_type = Column(Enum(BounceType, name="bounce_type_enum"), nullable=True)
+    bounce_type = Column(
+        Enum(BounceType, name="bounce_type_enum", values_callable=_enum_values, validate_strings=True),
+        nullable=True,
+    )
     bounce_reason = Column(String(500), nullable=True)
     bounced_at = Column(DateTime(timezone=True), nullable=True)
     # 服务商信息

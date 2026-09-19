@@ -148,11 +148,11 @@ export const EXT_MODULE_NAV_BY_PREFIX: { prefix: string; config: ExtModuleNavCon
   {
     prefix: '/admin/annex',
     config: cfg(
-      '附属项目接入',
-      'TradeAI · GoodJob · 第三方仓库 ERP 对接',
+      '业务功能域',
+      '社媒拓客 · 外贸履约（无特权功能域菜单）',
       [
-        { label: 'TradeAI 执行台', path: '/admin/annex/trade-ai' },
-        { label: 'GoodJob 执行台', path: '/admin/annex/goodjob' },
+        { label: '社媒拓客', path: '/admin/annex/trade-ai' },
+        { label: '外贸履约', path: '/admin/annex/goodjob' },
       ],
       [...COMMON_RELATED, { label: '集成栈', path: '/admin/system/integrations-stack' }]
     ),

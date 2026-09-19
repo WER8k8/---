@@ -201,11 +201,11 @@ const categorizedNavGroups: CategorizedNavGroup[] = [
   },
   {
     key: 'goodjob',
-    title: 'GoodJob CRM',
+    title: '外贸履约',
     items: [
-      { label: 'GoodJob 全景', path: '/client/annex/goodjob', icon: 'GlobalOutlined', highlight: true },
-      { label: '票据中心管理', path: '/client/annex/goodjob/tickets', icon: 'FileTextOutlined' },
-      { label: '客户管理', path: '/client/annex/goodjob/customers', icon: 'TeamOutlined' },
+      { label: '履约工作台', path: '/client/annex/goodjob', icon: 'GlobalOutlined', highlight: true },
+      { label: '外贸单证', path: '/client/annex/goodjob/tickets', icon: 'FileTextOutlined' },
+      { label: '客户档案', path: '/client/annex/goodjob/customers', icon: 'TeamOutlined' },
     ],
   },
 ];

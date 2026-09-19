@@ -177,8 +177,15 @@ def act_outreach_gate(p: dict, db: Any = None) -> dict:
 
     email = str(p.get("email") or p.get("to_email") or "")
     iid = str(p.get("inquiry_id") or "")
+    if not email:
+        return {
+            "action": "outreach_gate",
+            "status": "failed",
+            "error": "missing_email",
+            "plain": "外发闸：缺少目标邮箱，未执行抑制名单检查（不使用占位邮箱）",
+        }
     check = suppression_store.check_outreach(
-        email=email or "probe@example.com",
+        email=email,
         tenant_id=_tenant(p),
         channel="email",
         mode="queued_draft",

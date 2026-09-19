@@ -13,6 +13,11 @@ from app.core.database import Base, UUID_TYPE
 from app.models.enums import OrderStatus, PaymentStatus
 
 
+def _enum_values(enum_cls):
+    """SQLAlchemy 以枚举 value（小写）落库，与 API/VALID_* 白名单一致。"""
+    return [e.value for e in enum_cls]
+
+
 class Order(Base):
     """订单表模型"""
     __tablename__ = "orders"
@@ -26,17 +31,27 @@ class Order(Base):
     total_amount = Column(Numeric(10, 2), nullable=False)
     currency = Column(String(10), default="USD")
     status = Column(
-        Enum(OrderStatus, name="order_status_enum"),
+        Enum(
+            OrderStatus,
+            name="order_status_enum",
+            values_callable=_enum_values,
+            validate_strings=True,
+        ),
         nullable=False,
         default=OrderStatus.PENDING,
         index=True,
-    )  # ORCH-08/09: 统一状态枚举
+    )  # ORCH-08/09: 统一状态枚举（库内存 value 小写）
     payment_status = Column(
-        Enum(PaymentStatus, name="payment_status_enum"),
+        Enum(
+            PaymentStatus,
+            name="payment_status_enum",
+            values_callable=_enum_values,
+            validate_strings=True,
+        ),
         nullable=False,
         default=PaymentStatus.PENDING,
         index=True,
-    )  # ORCH-09: 统一支付状态枚举
+    )  # ORCH-09: 统一支付状态枚举（库内存 value 小写）
     shipping_address = Column(Text, nullable=True)
     shipping_method = Column(String(100), nullable=True)
     tracking_number = Column(String(100), nullable=True)
