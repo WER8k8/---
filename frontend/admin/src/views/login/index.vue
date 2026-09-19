@@ -222,6 +222,7 @@ const oauthReady = ref<Record<OAuthProvider, boolean>>({
   dingtalk: false,
 })
 const oauthDevBypass = ref(false)
+const oauthDetail = ref<Record<string, { configured?: boolean; dev_mode?: boolean; missing_env?: string[]; hint?: string }>>({})
 
 const oauthItems: { id: OAuthProvider; icon: string }[] = [
   {
@@ -322,23 +323,30 @@ function isOAuthAvailable(provider: OAuthProvider): boolean {
 }
 
 function oauthTitle(provider: OAuthProvider): string {
+  const d = oauthDetail.value[provider]
   if (isOAuthAvailable(provider)) {
-    return oauthDevBypass.value
-      ? `开发模式：点击模拟${oauthProviderLabel(provider)}登录`
-      : `使用${oauthProviderLabel(provider)}登录`
+    if (d?.dev_mode || oauthDevBypass.value) {
+      return `开发模式：点击模拟${oauthProviderLabel(provider)}登录`
+    }
+    return `使用${oauthProviderLabel(provider)}登录`
   }
-  return `${oauthProviderLabel(provider)} 登录（暂未开通）`
+  const miss = d?.missing_env?.length ? `（缺 ${d.missing_env.join('/')}）` : ''
+  return `${oauthProviderLabel(provider)} 登录暂未开通${miss}`
 }
 
 async function loadOAuthStatus() {
   try {
     const st = await fetchOAuthProvidersStatus()
     oauthReady.value = st.providers
-    oauthDevBypass.value = st.dev_bypass ?? import.meta.env.DEV
+    oauthDetail.value = st.detail || {}
+    oauthDevBypass.value = st.dev_bypass ?? false
+    const unconfigured = Object.entries(st.detail || {})
+      .filter(([, v]) => v && v.configured === false)
+      .map(([k]) => k)
     if (oauthDevBypass.value) {
-      oauthHint.value = '开发模式：点击图标可模拟登录'
-    } else if (!Object.values(st.providers).some(Boolean)) {
-      oauthHint.value = '更多登录方式即将上线'
+      oauthHint.value = '开发模式：点击图标可模拟登录（生产禁用）'
+    } else if (unconfigured.length) {
+      oauthHint.value = `第三方登录未开通：${unconfigured.map((k) => oauthProviderLabel(k as OAuthProvider)).join('、')} — 见 docs/ops/external-integration-keys-checklist.md`
     } else {
       oauthHint.value = ''
     }

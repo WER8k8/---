@@ -481,12 +481,38 @@ def build_providers_page_payload(db: Session) -> dict[str, Any]:
     :return: 返回处理结果。
     """
     suppliers = list_suppliers(db)
+    # 每供应商补 has_token/ready，便于 UI 诚实展示「自动采购是否开通」
+    for s in suppliers:
+        adapter = str(s.get("adapter") or "")
+        if adapter == "iproyal":
+            has = bool((settings.IPROYAL_API_TOKEN or "").strip())
+        elif adapter == "asocks":
+            has = bool((settings.ASOCKS_API_KEY or "").strip() or (settings.ASOCKS_LIST_URL or "").strip())
+        else:
+            has = True  # manual 不依赖上游 Token
+        s["has_token"] = has
+        s["ready"] = bool(s.get("is_active")) and has if adapter != "manual" else bool(s.get("is_active"))
+        if adapter == "iproyal" and not has:
+            s["not_ready_reason"] = "IPROYAL_API_TOKEN 未配置 — 仅可手工录入，自动采购未开通"
+        elif adapter == "asocks" and not has:
+            s["not_ready_reason"] = "ASOCKS_API_KEY / ASOCKS_LIST_URL 未配置"
+        else:
+            s["not_ready_reason"] = None
+
     active = next((s for s in suppliers if s.get("is_active")), None)
+    auto_ready = any(s.get("adapter") in ("iproyal", "asocks") and s.get("has_token") and s.get("is_active") for s in suppliers)
     return {
         "active_provider": active.get("code") if active else None,
         "active_supplier_id": active.get("id") if active else None,
         "active_label": active.get("name") if active else None,
         "long_term_fixed": bool(active.get("long_term_fixed")) if active else False,
+        "auto_purchase_ready": auto_ready,
+        "mode_hint": (
+            "自动采购已开通"
+            if auto_ready
+            else "当前手工录入模式：IPROYAL/ASocks Token 未配置，自动采购未开通（非故障）"
+        ),
+        "checklist": "docs/ops/external-integration-keys-checklist.md",
         "providers": suppliers,
         "iproyal_config": {
             "plan_id": settings.IPROYAL_PLAN_ID,
@@ -495,5 +521,9 @@ def build_providers_page_payload(db: Session) -> dict[str, Any]:
             "pool_low_watermark": settings.IPROYAL_POOL_LOW_WATERMARK,
             "auto_renew_days": settings.IPROYAL_AUTO_RENEW_DAYS,
             "has_token": bool((settings.IPROYAL_API_TOKEN or "").strip()),
+        },
+        "asocks_config": {
+            "has_api_key": bool((settings.ASOCKS_API_KEY or "").strip()),
+            "has_list_url": bool((settings.ASOCKS_LIST_URL or "").strip()),
         },
     }

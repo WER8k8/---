@@ -149,6 +149,60 @@ class ReferralService:
             "rewards_granted": rewards,
         }
 
+    def mark_invite_qualified(self, invited_tenant_id: str, *, reason: str = "first_paid") -> dict:
+        """支付成功后：将该租户的 pending 邀请标为有效（幂等）。
+
+        规则：qualification_rule=first_paid — 仅首次有效付费；已 rewarded 不重复。
+        调用方（支付事件）须吞异常，不阻断支付主流程。
+        """
+        from datetime import datetime, timezone
+
+        tid = str(invited_tenant_id or "").strip()
+        if not tid:
+            return {"qualified": False, "reason": "missing_tenant"}
+
+        rows = (
+            self.db.query(ReferralRecord)
+            .filter(
+                ReferralRecord.invited_tenant_id == tid,
+                ReferralRecord.status == "pending",
+            )
+            .all()
+        )
+        if not rows:
+            already = (
+                self.db.query(ReferralRecord)
+                .filter(
+                    ReferralRecord.invited_tenant_id == tid,
+                    ReferralRecord.status == "rewarded",
+                )
+                .count()
+            )
+            return {
+                "qualified": bool(already),
+                "updated": 0,
+                "reason": "already_rewarded" if already else "no_pending_invite",
+            }
+
+        now = datetime.now(timezone.utc)
+        updated = 0
+        for rec in rows:
+            rec.status = "rewarded"
+            rec.rewarded_at = now
+            rec.reward_type = rec.reward_type or reason
+            if not rec.reward_amount:
+                rec.reward_amount = 1
+            code = (
+                self.db.query(ReferralCode)
+                .filter(ReferralCode.id == rec.code_id)
+                .first()
+            )
+            if code:
+                code.total_earned = (code.total_earned or 0) + (rec.reward_amount or 1)
+            updated += 1
+        self.db.commit()
+        return {"qualified": True, "updated": updated, "reason": reason}
+
     def get_leaderboard(self, limit: int = 20) -> list:
         """获取邀请排行榜"""
         rows = (

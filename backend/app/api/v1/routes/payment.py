@@ -32,6 +32,21 @@ def _emit_payment_success_event(order) -> None:
         emit_payment_event(event_type='payment.success', order_id=str(order.id), user_id=str(getattr(order, 'user_id', '')), tenant_id=str(getattr(order, 'tenant_id', '')), amount=order.amount, currency=getattr(order, 'currency', 'CNY'), channel=order.channel or 'unknown')
     except Exception as exc:
         log.debug('[Payment] 事件发布失败（不影响主流程）: %s', exc)
+    # 呼朋唤友：首付费有效邀请（幂等；失败不阻断支付）
+    try:
+        tenant_id = str(getattr(order, 'tenant_id', '') or '')
+        if tenant_id:
+            from app.db.session import SessionLocal
+            from app.services.referral_service import ReferralService
+            db = SessionLocal()
+            try:
+                result = ReferralService(db).mark_invite_qualified(tenant_id)
+                if result.get('updated'):
+                    log.info('[Payment] referral qualified tenant=%s %s', tenant_id, result)
+            finally:
+                db.close()
+    except Exception as exc:
+        log.warning('[Payment] referral qualification skipped: %s', exc)
 PAYMENT_ACCESS_ROLES = frozenset({'admin', 'super_admin', 'tenant_admin', 'agent', 'l2', 'l3', 'editor', 'sales', 'viewer'})
 PAYMENT_OPS_ADMIN_ROLES = frozenset({'admin', 'super_admin'})
 

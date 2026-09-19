@@ -22,7 +22,7 @@ import logging
 import re
 import secrets
 import urllib.parse
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 import httpx
 
@@ -149,6 +149,19 @@ def _provider_configured(provider: str) -> bool:
     return False
 
 
+def _provider_required_env(provider: str) -> tuple[str, ...]:
+    """该渠道开通所需的环境变量名（用于诚实提示，不泄露值）。"""
+    if provider == "feishu":
+        return ("FEISHU_APP_ID", "FEISHU_APP_SECRET")
+    if provider == "dingtalk":
+        return ("DINGTALK_APP_ID", "DINGTALK_APP_SECRET")
+    if provider == "qq":
+        return ("QQ_APP_ID", "QQ_APP_KEY")
+    if provider == "wechat":
+        return ("WECHAT_OPEN_APP_ID", "WECHAT_OPEN_APP_SECRET")
+    return ()
+
+
 def oauth_providers_status() -> dict[str, bool]:
     """各渠道是否已配置（开发环境未配凭据时也可点击走 dev 回调）。"""
     dev_ok = _oauth_dev_mode_enabled()
@@ -156,6 +169,32 @@ def oauth_providers_status() -> dict[str, bool]:
         p: _provider_configured(p) or dev_ok
         for p in sorted(SUPPORTED_OAUTH_PROVIDERS)
     }
+
+
+def oauth_providers_status_detail() -> dict[str, Any]:
+    """登录页用：是否可用 + 是否已配置真实 App + 缺哪些变量。"""
+    dev_ok = _oauth_dev_mode_enabled()
+    out: dict[str, Any] = {}
+    for p in sorted(SUPPORTED_OAUTH_PROVIDERS):
+        configured = _provider_configured(p)
+        missing = [] if configured else list(_provider_required_env(p))
+        out[p] = {
+            "enabled": bool(configured or dev_ok),
+            "configured": configured,
+            "dev_mode": bool(dev_ok and not configured),
+            "missing_env": missing,
+            "hint": (
+                "已配置真实 App"
+                if configured
+                else (
+                    "开发模式可模拟登录（生产禁用）"
+                    if dev_ok
+                    else f"暂未开通：请在 backend/.env 配置 {'、'.join(missing)}"
+                )
+            ),
+        }
+    return out
+
 
 
 # ── 授权 URL 构建 ─────────────────────────────────────────
@@ -398,9 +437,10 @@ def _exchange_qq(code: str) -> Tuple[str, Optional[str]]:
     with httpx.Client(timeout=20.0) as client:
         # ── Step 1: code → access_token ──
         logger.info("[QQ OAuth] Exchanging code for access_token...")
-        tr = client.get(
+        # 安全：client_secret 走 POST body，禁止进 URL/查询串（避免日志/Referer 泄露）
+        tr = client.post(
             "https://graph.qq.com/oauth2.0/token",
-            params={
+            data={
                 "grant_type": "authorization_code",
                 "client_id": app_id,
                 "client_secret": key,
