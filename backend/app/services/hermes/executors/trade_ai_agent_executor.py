@@ -19,10 +19,10 @@ logger = logging.getLogger(__name__)
 
 _CAPS = frozenset({
     "prospect.scrape", "prospect_search", "scrape_prospects",
-    "prospect.enrich",
-    "outreach.whatsapp", "whatsapp_send",
-    "outreach.email", "email_campaign", "cold_email",
-    "inbox.classify", "intent_classify",
+    "prospect.enrich", "scraper", "prospecting", "lead-research-assistant", "data_cleaner",
+    "outreach.whatsapp", "whatsapp_send", "auto_sender", "social",
+    "outreach.email", "email_campaign", "cold_email", "emails",
+    "inbox.classify", "intent_classify", "ai_reply", "rag",
 })
 
 
@@ -51,7 +51,7 @@ class TradeAiAgentExecutor(BaseExecutor):
         from app.services.tradeai import native_acquisition as native
         db = context.db
 
-        if capability in ("prospect.scrape", "prospect_search", "scrape_prospects", "prospect.enrich"):
+        if capability in ("prospect.scrape", "prospect_search", "scrape_prospects", "prospect.enrich", "scraper", "prospecting", "lead-research-assistant", "data_cleaner"):
             out = native.prospect_scrape(
                 tenant_id=context.tenant_id,
                 keyword=str(params.get("keyword") or params.get("q") or ""),
@@ -67,7 +67,7 @@ class TradeAiAgentExecutor(BaseExecutor):
                 error=None if out.get("success") else str(out.get("error") or "native_prospect_failed"),
             )
 
-        if capability in ("outreach.whatsapp", "whatsapp_send"):
+        if capability in ("outreach.whatsapp", "whatsapp_send", "auto_sender", "social"):
             out = native.outreach_whatsapp(
                 tenant_id=context.tenant_id,
                 phone=str(params.get("whatsapp") or params.get("to") or params.get("phone") or ""),
@@ -85,7 +85,7 @@ class TradeAiAgentExecutor(BaseExecutor):
                 error=None if out.get("success") else str(out.get("error") or "native_whatsapp_failed"),
             )
 
-        if capability in ("outreach.email", "email_campaign", "cold_email"):
+        if capability in ("outreach.email", "email_campaign", "cold_email", "emails"):
             out = native.outreach_email(
                 tenant_id=context.tenant_id,
                 to_email=str(params.get("email") or params.get("to") or ""),

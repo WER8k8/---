@@ -211,7 +211,7 @@ def _outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> Tas
         nodes=[
             # ① 找客：Geo/多渠道线索
             TaskNode(
-                id="n1", executor="lead", capability="lead.search",
+                id="n1", executor="trade_ai_agent", capability="prospect.scrape",
                 depends_on=[],
                 input={
                     "keyword": keyword,
@@ -238,7 +238,7 @@ def _outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> Tas
             ),
             # ③ 评分：证据分（无证据不默认假分）
             TaskNode(
-                id="n3", executor="lead", capability="lead.score",
+                id="n3", executor="trade_ai_agent", capability="prospect.enrich",
                 depends_on=["n2"],
                 input_from={"prospects": "n2.output.prospects"},
                 input={"min_score": int(payload.get("min_score") or 40)},
@@ -429,9 +429,9 @@ def _lead_generation_graph(plan_id: str, event_id: str, payload: dict[str, Any])
         strategy="standard",
         policies=GraphPolicies(max_parallel=2, degradation="skip"),
         nodes=[
-            TaskNode(id="n1", executor="lead", capability="lead.search",
+            TaskNode(id="n1", executor="trade_ai_agent", capability="prospect.scrape",
                      depends_on=[], input={"industry": industry, "country": country, "keyword": industry, "keywords": industry}, on_fail="abort"),
-            TaskNode(id="n2", executor="lead", capability="lead.score",
+            TaskNode(id="n2", executor="trade_ai_agent", capability="prospect.enrich",
                      depends_on=["n1"], input_from={"prospects": "n1.output.leads", "leads": "n1.output.leads"}, on_fail="skip"),
             TaskNode(id="n3", executor="billing", capability="billing.meter",
                      depends_on=["n2"], input={"event_type": "lead_generated", "scene": "lead_generation"},
@@ -621,7 +621,7 @@ def _composite_super_graph(plan_id: str, event_id: str, payload: dict[str, Any])
                 on_fail="skip",
             ),
             TaskNode(
-                id="n2", executor="lead", capability="lead.search",
+                id="n2", executor="trade_ai_agent", capability="prospect.scrape",
                 depends_on=[],
                 input={"keyword": keyword, "country": country, "limit": int(payload.get("limit") or 15)},
                 on_fail="abort",
@@ -634,7 +634,7 @@ def _composite_super_graph(plan_id: str, event_id: str, payload: dict[str, Any])
                 on_fail="skip",
             ),
             TaskNode(
-                id="n4", executor="lead", capability="lead.score",
+                id="n4", executor="trade_ai_agent", capability="prospect.enrich",
                 depends_on=["n3"],
                 input_from={"prospects": "n3.output.prospects"},
                 input={"min_score": int(payload.get("min_score") or 40)},
