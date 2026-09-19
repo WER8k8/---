@@ -3,7 +3,10 @@
  */
 <template>
   <TenantLProProductDetail v-if="lProMode" />
-  <TenantSite v-else visual-page="products" />
+  <TenantSite
+    v-else
+    visual-page="products"
+  />
 </template>
 
 <script setup lang="ts">

@@ -24,13 +24,27 @@
             <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
               <div class="flex items-center gap-4 mb-6">
                 <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <svg
+                    class="w-8 h-8 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="font-semibold text-text-primary">{{ user?.name || t('user.guest') }}</h3>
-                  <p class="text-sm text-text-secondary">{{ user?.email || '' }}</p>
+                  <h3 class="font-semibold text-text-primary">
+                    {{ user?.name || t('user.guest') }}
+                  </h3>
+                  <p class="text-sm text-text-secondary">
+                    {{ user?.email || '' }}
+                  </p>
                 </div>
               </div>
               <nav class="space-y-2">
@@ -54,9 +68,17 @@
           <!-- Main Content -->
           <div class="lg:col-span-3">
             <!-- Profile Tab -->
-            <div v-if="activeTab === 'profile'" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-              <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">{{ t('user.profileTitle') }}</h2>
-              <form @submit.prevent="updateProfile" class="space-y-6">
+            <div
+              v-if="activeTab === 'profile'"
+              class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+            >
+              <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+                {{ t('user.profileTitle') }}
+              </h2>
+              <form
+                @submit.prevent="updateProfile"
+                class="space-y-6"
+              >
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label class="block text-sm font-medium text-text-primary mb-2">{{ t('user.name') }}</label>
@@ -64,7 +86,7 @@
                       v-model="profileForm.name"
                       type="text"
                       class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                    />
+                    >
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-text-primary mb-2">{{ t('user.email') }}</label>
@@ -73,22 +95,38 @@
                       type="email"
                       disabled
                       class="w-full px-4 py-2.5 border border-border rounded-lg bg-surface-elevated text-text-secondary"
-                    />
+                    >
                   </div>
                 </div>
                 <div class="flex justify-end">
-                  <button type="submit" class="btn-primary">{{ t('common.save') }}</button>
+                  <button
+                    type="submit"
+                    class="btn-primary"
+                  >
+                    {{ t('common.save') }}
+                  </button>
                 </div>
               </form>
             </div>
 
             <!-- Orders Tab -->
-            <div v-else-if="activeTab === 'orders'" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-              <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">{{ t('user.ordersTitle') }}</h2>
-              <div v-if="userOrders.length === 0" class="text-center py-8 text-text-secondary">
+            <div
+              v-else-if="activeTab === 'orders'"
+              class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+            >
+              <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+                {{ t('user.ordersTitle') }}
+              </h2>
+              <div
+                v-if="userOrders.length === 0"
+                class="text-center py-8 text-text-secondary"
+              >
                 {{ t('user.noOrders') }}
               </div>
-              <div v-else class="space-y-4">
+              <div
+                v-else
+                class="space-y-4"
+              >
                 <div
                   v-for="order in userOrders"
                   :key="order.id"
@@ -105,18 +143,31 @@
                       {{ order.status }}
                     </span>
                   </div>
-                  <p class="text-sm text-text-secondary">{{ t('user.orderDate') }}: {{ new Date(order.created_at).toLocaleDateString() }}</p>
+                  <p class="text-sm text-text-secondary">
+                    {{ t('user.orderDate') }}: {{ new Date(order.created_at).toLocaleDateString() }}
+                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Inquiries Tab -->
-            <div v-else-if="activeTab === 'inquiries'" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-              <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">{{ t('user.inquiriesTitle') }}</h2>
-              <div v-if="userInquiries.length === 0" class="text-center py-8 text-text-secondary">
+            <div
+              v-else-if="activeTab === 'inquiries'"
+              class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+            >
+              <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+                {{ t('user.inquiriesTitle') }}
+              </h2>
+              <div
+                v-if="userInquiries.length === 0"
+                class="text-center py-8 text-text-secondary"
+              >
                 {{ t('user.noInquiries') }}
               </div>
-              <div v-else class="space-y-4">
+              <div
+                v-else
+                class="space-y-4"
+              >
                 <div
                   v-for="inquiry in userInquiries"
                   :key="inquiry.id"
@@ -133,7 +184,9 @@
                       {{ inquiry.status }}
                     </span>
                   </div>
-                  <p class="text-sm text-text-secondary truncate">{{ inquiry.message }}</p>
+                  <p class="text-sm text-text-secondary truncate">
+                    {{ inquiry.message }}
+                  </p>
                 </div>
               </div>
             </div>

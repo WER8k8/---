@@ -3,9 +3,17 @@
  */
 <template>
   <div class="tenant-blank-root min-h-screen">
-    <div v-if="booting" class="tenant-blank-boot" aria-live="polite">
-      <p class="tenant-blank-boot__title">正在打开您的网站…</p>
-      <p class="tenant-blank-boot__hint">若长时间空白，请确认 Nuxt :3000 与 API :8001 已启动</p>
+    <div
+      v-if="booting"
+      class="tenant-blank-boot"
+      aria-live="polite"
+    >
+      <p class="tenant-blank-boot__title">
+        正在打开您的网站…
+      </p>
+      <p class="tenant-blank-boot__hint">
+        若长时间空白，请确认 Nuxt :3000 与 API :8001 已启动
+      </p>
     </div>
     <slot />
   </div>

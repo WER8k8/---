@@ -19,14 +19,28 @@
     <section class="py-8 sm:py-10 lg:py-14">
       <div class="max-w-3xl mx-auto px-3 sm:px-4 lg:px-8">
         <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-          <form @submit.prevent="submitInquiry" class="space-y-6">
+          <form
+            @submit.prevent="submitInquiry"
+            class="space-y-6"
+          >
             <!-- Product Info (if from product page) -->
-            <div v-if="product" class="bg-surface-elevated rounded-xl p-4 mb-6">
+            <div
+              v-if="product"
+              class="bg-surface-elevated rounded-xl p-4 mb-6"
+            >
               <div class="flex items-center gap-4">
-                <img :src="product.image || '/images/placeholder.jpg'" :alt="product.name" class="w-16 h-16 object-cover rounded-lg" />
+                <img
+                  :src="product.image || '/images/placeholder.jpg'"
+                  :alt="product.name"
+                  class="w-16 h-16 object-cover rounded-lg"
+                >
                 <div>
-                  <h3 class="font-semibold text-text-primary">{{ product.name }}</h3>
-                  <p class="text-sm text-text-secondary">{{ product.price ? `$${product.price}` : '' }}</p>
+                  <h3 class="font-semibold text-text-primary">
+                    {{ product.name }}
+                  </h3>
+                  <p class="text-sm text-text-secondary">
+                    {{ product.price ? `$${product.price}` : '' }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -41,7 +55,7 @@
                   required
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   :placeholder="$t('inquiry.namePlaceholder')"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-2">{{ $t('inquiry.email') }} *</label>
@@ -51,7 +65,7 @@
                   required
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   :placeholder="$t('inquiry.emailPlaceholder')"
-                />
+                >
               </div>
             </div>
 
@@ -63,7 +77,7 @@
                   type="tel"
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   :placeholder="$t('inquiry.phonePlaceholder')"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-2">{{ $t('inquiry.company') }}</label>
@@ -72,7 +86,7 @@
                   type="text"
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   :placeholder="$t('inquiry.companyPlaceholder')"
-                />
+                >
               </div>
             </div>
 
@@ -85,7 +99,7 @@
                 rows="6"
                 class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                 :placeholder="$t('inquiry.messagePlaceholder')"
-              ></textarea>
+              />
             </div>
 
             <!-- Quantity & Unit -->
@@ -98,7 +112,7 @@
                   min="1"
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   :placeholder="$t('inquiry.quantityPlaceholder')"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-2">{{ $t('inquiry.unit') }}</label>
@@ -106,17 +120,28 @@
                   v-model="form.unit"
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 >
-                  <option value="piece">{{ $t('inquiry.unitPiece') }}</option>
-                  <option value="sqm">{{ $t('inquiry.unitSqm') }}</option>
-                  <option value="ton">{{ $t('inquiry.unitTon') }}</option>
-                  <option value="pallet">{{ $t('inquiry.unitPallet') }}</option>
+                  <option value="piece">
+                    {{ $t('inquiry.unitPiece') }}
+                  </option>
+                  <option value="sqm">
+                    {{ $t('inquiry.unitSqm') }}
+                  </option>
+                  <option value="ton">
+                    {{ $t('inquiry.unitTon') }}
+                  </option>
+                  <option value="pallet">
+                    {{ $t('inquiry.unitPallet') }}
+                  </option>
                 </select>
               </div>
             </div>
 
             <!-- Submit Button -->
             <div class="flex justify-end gap-4">
-              <NuxtLink to="/products" class="btn-outline">
+              <NuxtLink
+                to="/products"
+                class="btn-outline"
+              >
                 {{ $t('common.cancel') }}
               </NuxtLink>
               <button
@@ -124,9 +149,25 @@
                 :disabled="submitting"
                 class="btn-primary"
               >
-                <svg v-if="submitting" class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  v-if="submitting"
+                  class="animate-spin w-4 h-4 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 {{ submitting ? $t('common.submitting') : $t('inquiry.submit') }}
               </button>

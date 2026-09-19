@@ -4,59 +4,119 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar safe-area-top :blur="true">
+    <MobileNavbar
+      safe-area-top
+      :blur="true"
+    >
       <template #default>
-        <h1 class="text-base font-semibold text-gray-900">{{ t('mobile.user.address') }}</h1>
+        <h1 class="text-base font-semibold text-gray-900">
+          {{ t('mobile.user.address') }}
+        </h1>
       </template>
       <template #right>
         <button
           class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           @click="openAddForm"
         >
-          <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          <svg
+            class="w-5 h-5 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
         </button>
       </template>
     </MobileNavbar>
 
     <!-- Loading State -->
-    <div v-if="loading" class="px-4 py-4 space-y-3">
-      <div v-for="i in 3" :key="i" class="bg-white rounded-2xl p-4 animate-pulse">
-        <div class="h-5 bg-gray-200 rounded w-1/3 mb-3"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+    <div
+      v-if="loading"
+      class="px-4 py-4 space-y-3"
+    >
+      <div
+        v-for="i in 3"
+        :key="i"
+        class="bg-white rounded-2xl p-4 animate-pulse"
+      >
+        <div class="h-5 bg-gray-200 rounded w-1/3 mb-3" />
+        <div class="h-4 bg-gray-200 rounded w-3/4" />
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex items-center justify-center min-h-[60vh] px-4">
+    <div
+      v-else-if="error"
+      class="flex items-center justify-center min-h-[60vh] px-4"
+    >
       <div class="text-center">
-        <div class="text-6xl mb-4">😞</div>
+        <div class="text-6xl mb-4">
+          😞
+        </div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">
           {{ t('mobile.address.loadFailed') }}
         </h2>
-        <p class="text-gray-600 mb-6">{{ error }}</p>
-        <button class="mobile-btn-primary inline-block px-6 py-3 rounded-full" @click="fetchAddresses">
+        <p class="text-gray-600 mb-6">
+          {{ error }}
+        </p>
+        <button
+          class="mobile-btn-primary inline-block px-6 py-3 rounded-full"
+          @click="fetchAddresses"
+        >
           {{ t('mobile.address.retry') }}
         </button>
       </div>
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="addresses.length === 0" class="px-4 py-20 text-center">
-      <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+    <div
+      v-else-if="addresses.length === 0"
+      class="px-4 py-20 text-center"
+    >
+      <svg
+        class="w-16 h-16 mx-auto text-gray-300 mb-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        />
       </svg>
-      <h3 class="text-base font-medium text-gray-900 mb-2">{{ t('mobile.address.noAddress') }}</h3>
-      <p class="text-sm text-gray-500 mb-6">{{ t('mobile.address.noAddressDesc') }}</p>
-      <button class="mobile-btn-primary px-6 py-3 rounded-full" @click="openAddForm">
+      <h3 class="text-base font-medium text-gray-900 mb-2">
+        {{ t('mobile.address.noAddress') }}
+      </h3>
+      <p class="text-sm text-gray-500 mb-6">
+        {{ t('mobile.address.noAddressDesc') }}
+      </p>
+      <button
+        class="mobile-btn-primary px-6 py-3 rounded-full"
+        @click="openAddForm"
+      >
         {{ t('mobile.address.add') }}
       </button>
     </div>
 
     <!-- Address List -->
-    <div v-else class="px-4 py-2 space-y-3 pb-20">
+    <div
+      v-else
+      class="px-4 py-2 space-y-3 pb-20"
+    >
       <div
         v-for="addr in addresses"
         :key="addr.id"
@@ -66,18 +126,27 @@
         ]"
       >
         <!-- Default Badge -->
-        <div v-if="addr.is_default" class="absolute top-3 right-3 px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full">
+        <div
+          v-if="addr.is_default"
+          class="absolute top-3 right-3 px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full"
+        >
           {{ t('mobile.address.default') }}
         </div>
 
         <!-- Address Info -->
         <div class="pr-16">
-          <h3 class="text-sm font-semibold text-gray-900">{{ addr.recipient_name }}</h3>
-          <p class="text-sm text-gray-600 mt-1">{{ addr.phone }}</p>
+          <h3 class="text-sm font-semibold text-gray-900">
+            {{ addr.recipient_name }}
+          </h3>
+          <p class="text-sm text-gray-600 mt-1">
+            {{ addr.phone }}
+          </p>
           <p class="text-xs text-gray-500 mt-1">
             {{ addr.country }} {{ addr.province }} {{ addr.city }} {{ addr.district }}
           </p>
-          <p class="text-xs text-gray-500">{{ addr.street_address }}</p>
+          <p class="text-xs text-gray-500">
+            {{ addr.street_address }}
+          </p>
         </div>
 
         <!-- Actions -->
@@ -106,19 +175,40 @@
     </div>
 
     <!-- Address Form Modal -->
-    <div v-if="showForm" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-end justify-center">
+    <div
+      v-if="showForm"
+      class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-end justify-center"
+    >
       <div class="bg-white w-full max-h-[90vh] rounded-t-2xl overflow-y-auto">
         <div class="p-5">
           <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg font-bold text-gray-900">{{ isEditing ? t('mobile.address.edit') : t('mobile.address.add') }}</h2>
-            <button @click="showForm = false" class="p-1">
-              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <h2 class="text-lg font-bold text-gray-900">
+              {{ isEditing ? t('mobile.address.edit') : t('mobile.address.add') }}
+            </h2>
+            <button
+              @click="showForm = false"
+              class="p-1"
+            >
+              <svg
+                class="w-6 h-6 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
 
-          <form @submit.prevent="saveAddress" class="space-y-4">
+          <form
+            @submit.prevent="saveAddress"
+            class="space-y-4"
+          >
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.address.recipient') }}</label>
               <input
@@ -127,7 +217,7 @@
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 :placeholder="t('mobile.address.recipientPlaceholder')"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.address.phone') }}</label>
@@ -137,7 +227,7 @@
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 :placeholder="t('mobile.address.phonePlaceholder')"
-              />
+              >
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
@@ -148,7 +238,7 @@
                   required
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="中国"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.address.province') }}</label>
@@ -158,7 +248,7 @@
                   required
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   :placeholder="t('mobile.address.provincePlaceholder')"
-                />
+                >
               </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
@@ -170,7 +260,7 @@
                   required
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   :placeholder="t('mobile.address.cityPlaceholder')"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.address.district') }}</label>
@@ -179,7 +269,7 @@
                   type="text"
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   :placeholder="t('mobile.address.districtPlaceholder')"
-                />
+                >
               </div>
             </div>
             <div>
@@ -190,7 +280,7 @@
                 rows="2"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                 :placeholder="t('mobile.address.streetPlaceholder')"
-              ></textarea>
+              />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.address.postalCode') }}</label>
@@ -199,14 +289,14 @@
                 type="text"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 :placeholder="t('mobile.address.postalCodePlaceholder')"
-              />
+              >
             </div>
             <div class="flex items-center">
               <input
                 v-model="form.is_default"
                 type="checkbox"
                 class="w-5 h-5 text-blue-600 rounded"
-              />
+              >
               <label class="ml-2 text-sm text-gray-700">{{ t('mobile.address.setDefault') }}</label>
             </div>
 

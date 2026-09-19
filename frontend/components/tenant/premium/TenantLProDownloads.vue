@@ -11,7 +11,10 @@
     </section>
     <section class="lpro-section lpro-section--white">
       <div class="lpro-container">
-        <div v-if="items.length" class="space-y-3">
+        <div
+          v-if="items.length"
+          class="space-y-3"
+        >
           <a
             v-for="(item, i) in items"
             :key="i"
@@ -21,10 +24,18 @@
             rel="noopener noreferrer"
           >
             <div class="font-semibold">{{ item.title }}</div>
-            <div v-if="item.type" class="text-sm text-[var(--lpro-muted)]">{{ item.type }}</div>
+            <div
+              v-if="item.type"
+              class="text-sm text-[var(--lpro-muted)]"
+            >{{ item.type }}</div>
           </a>
         </div>
-        <p v-else class="text-[var(--lpro-muted)]">{{ tSite('downloads_empty') }}</p>
+        <p
+          v-else
+          class="text-[var(--lpro-muted)]"
+        >
+          {{ tSite('downloads_empty') }}
+        </p>
       </div>
     </section>
   </PremiumB2bShell>

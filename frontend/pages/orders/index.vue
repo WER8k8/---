@@ -19,28 +19,58 @@
     <section class="py-8 sm:py-10 lg:py-14">
       <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <!-- Loading State -->
-        <div v-if="loading" class="space-y-4">
-          <div v-for="i in 3" :key="i" class="animate-pulse bg-surface rounded-2xl p-6">
-            <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div
+          v-if="loading"
+          class="space-y-4"
+        >
+          <div
+            v-for="i in 3"
+            :key="i"
+            class="animate-pulse bg-surface rounded-2xl p-6"
+          >
+            <div class="h-6 bg-gray-200 rounded w-1/4 mb-4" />
+            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2" />
+            <div class="h-4 bg-gray-200 rounded w-3/4" />
           </div>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="orders.length === 0" class="text-center py-10 sm:py-16">
-          <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <div
+          v-else-if="orders.length === 0"
+          class="text-center py-10 sm:py-16"
+        >
+          <svg
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+            />
           </svg>
-          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">{{ t('orders.noOrders') }}</h3>
-          <p class="text-sm text-text-secondary mb-6">{{ t('orders.noOrdersDesc') }}</p>
-          <NuxtLink to="/products" class="btn-primary">
+          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">
+            {{ t('orders.noOrders') }}
+          </h3>
+          <p class="text-sm text-text-secondary mb-6">
+            {{ t('orders.noOrdersDesc') }}
+          </p>
+          <NuxtLink
+            to="/products"
+            class="btn-primary"
+          >
             {{ t('orders.browseProducts') }}
           </NuxtLink>
         </div>
 
         <!-- Orders Grid -->
-        <div v-else class="space-y-6">
+        <div
+          v-else
+          class="space-y-6"
+        >
           <div
             v-for="order in orders"
             :key="order.id"
@@ -81,9 +111,11 @@
                   :src="item.product_image || '/images/placeholder.jpg'"
                   :alt="item.product_name"
                   class="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg"
-                />
+                >
                 <div class="flex-1 min-w-0">
-                  <h4 class="text-sm sm:text-base font-medium text-text-primary truncate">{{ item.product_name }}</h4>
+                  <h4 class="text-sm sm:text-base font-medium text-text-primary truncate">
+                    {{ item.product_name }}
+                  </h4>
                   <p class="text-xs sm:text-sm text-text-secondary">
                     {{ t('orders.quantity') }}: {{ item.quantity }} {{ item.unit }}
                   </p>

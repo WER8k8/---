@@ -5,7 +5,9 @@
   <div class="leads-page max-w-[430px] mx-auto px-4 py-6">
     <!-- 页眉 -->
     <header class="relative mb-6">
-      <p class="text-xs font-bold text-teal-700 uppercase tracking-wide mb-2">移动端询盘看板</p>
+      <p class="text-xs font-bold text-teal-700 uppercase tracking-wide mb-2">
+        移动端询盘看板
+      </p>
       <h1 class="text-2xl font-bold mb-2 bg-gradient-to-r from-teal-700 to-green-500 bg-clip-text text-transparent">
         线索跟进
       </h1>
@@ -13,19 +15,45 @@
         汇总移动端 H5 带来的采购线索，优先查看地区、采购量、预估到场价和联系方式。
       </p>
       <div class="flex gap-2">
-        <Button variant="outline" size="sm" @click="handleExport">导出 CSV</Button>
-        <Button variant="ghost" size="sm" :loading="refreshing" @click="refresh">刷新</Button>
+        <Button
+          variant="outline"
+          size="sm"
+          @click="handleExport"
+        >
+          导出 CSV
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          :loading="refreshing"
+          @click="refresh"
+        >
+          刷新
+        </Button>
       </div>
       <!-- Divider -->
-      <div class="absolute -bottom-4 left-0 right-0 h-px opacity-30"
-        style="background: linear-gradient(135deg, #0f766e 0%, #22c55e 100%)" />
+      <div
+        class="absolute -bottom-4 left-0 right-0 h-px opacity-30"
+        style="background: linear-gradient(135deg, #0f766e 0%, #22c55e 100%)"
+      />
     </header>
 
     <!-- 统计卡片 -->
     <section class="grid grid-cols-3 gap-2 mb-3 mt-6">
-      <StatCard label="总询盘" :value="summary.total" />
-      <StatCard label="总采购量" :value="summary.total_quantity_m3" unit="m³" />
-      <StatCard label="均价" :value="`¥${summary.avg_estimated_price}`" unit="/m³" />
+      <StatCard
+        label="总询盘"
+        :value="summary.total"
+      />
+      <StatCard
+        label="总采购量"
+        :value="summary.total_quantity_m3"
+        unit="m³"
+      />
+      <StatCard
+        label="均价"
+        :value="`¥${summary.avg_estimated_price}`"
+        unit="/m³"
+      />
     </section>
 
     <!-- 地区热度 -->
@@ -33,23 +61,46 @@
 
     <!-- 最近询盘 -->
     <section class="mt-4">
-      <h2 class="flex items-center gap-2 text-lg font-semibold mb-3
-        bg-gradient-to-r from-teal-700 to-green-500 bg-clip-text text-transparent">
-        <span class="block w-1 h-5 rounded-sm"
-          style="background: linear-gradient(135deg, #0f766e 0%, #22c55e 100%); box-shadow: 0 0 6px 2px rgba(15, 118, 110, 0.25)" />
+      <h2
+        class="flex items-center gap-2 text-lg font-semibold mb-3
+        bg-gradient-to-r from-teal-700 to-green-500 bg-clip-text text-transparent"
+      >
+        <span
+          class="block w-1 h-5 rounded-sm"
+          style="background: linear-gradient(135deg, #0f766e 0%, #22c55e 100%); box-shadow: 0 0 6px 2px rgba(15, 118, 110, 0.25)"
+        />
         最近询盘
       </h2>
 
       <!-- 骨架屏加载 -->
       <template v-if="pending">
-        <Skeleton v-for="i in 5" :key="i" variant="rect" class="h-20 mb-3" />
+        <Skeleton
+          v-for="i in 5"
+          :key="i"
+          variant="rect"
+          class="h-20 mb-3"
+        />
       </template>
 
       <!-- 询盘列表 -->
       <template v-else-if="leads.length">
-        <LeadItem v-for="lead in leads" :key="lead.id" :lead="lead" />
-        <div v-if="hasMore" class="py-4 text-center">
-          <Button variant="ghost" size="sm" :loading="loadingMore" @click="loadMore">加载更多</Button>
+        <LeadItem
+          v-for="lead in leads"
+          :key="lead.id"
+          :lead="lead"
+        />
+        <div
+          v-if="hasMore"
+          class="py-4 text-center"
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            :loading="loadingMore"
+            @click="loadMore"
+          >
+            加载更多
+          </Button>
         </div>
       </template>
 
@@ -60,7 +111,12 @@
         title="暂无询盘"
         description="还没有采购线索，先从产品页提交一条测试线索。"
       >
-        <Button variant="primary" size="sm" class="mt-4" @click="navigateTo('/product/polyurethane-lightweight-concrete')">
+        <Button
+          variant="primary"
+          size="sm"
+          class="mt-4"
+          @click="navigateTo('/product/polyurethane-lightweight-concrete')"
+        >
           去提交询盘
         </Button>
       </EmptyState>

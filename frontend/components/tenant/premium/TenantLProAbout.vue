@@ -6,29 +6,67 @@
     <section class="lpro-hero">
       <div class="lpro-container">
         <h1>{{ tSite('section_about', { name: companyName }) }}</h1>
-        <p v-if="aboutText">{{ aboutText.slice(0, 200) }}</p>
+        <p v-if="aboutText">
+          {{ aboutText.slice(0, 200) }}
+        </p>
       </div>
     </section>
     <section class="lpro-section lpro-section--white">
       <div class="lpro-container max-w-3xl">
-        <p v-if="aboutText" class="mb-6 leading-relaxed">{{ aboutText }}</p>
-        <div v-if="mission || vision" class="lpro-grid mb-6">
-          <article v-if="mission" class="lpro-card">
-            <h3 class="font-semibold mb-2">{{ tSite('mission') }}</h3>
+        <p
+          v-if="aboutText"
+          class="mb-6 leading-relaxed"
+        >
+          {{ aboutText }}
+        </p>
+        <div
+          v-if="mission || vision"
+          class="lpro-grid mb-6"
+        >
+          <article
+            v-if="mission"
+            class="lpro-card"
+          >
+            <h3 class="font-semibold mb-2">
+              {{ tSite('mission') }}
+            </h3>
             <p>{{ mission }}</p>
           </article>
-          <article v-if="vision" class="lpro-card">
-            <h3 class="font-semibold mb-2">{{ tSite('vision') }}</h3>
+          <article
+            v-if="vision"
+            class="lpro-card"
+          >
+            <h3 class="font-semibold mb-2">
+              {{ tSite('vision') }}
+            </h3>
             <p>{{ vision }}</p>
           </article>
         </div>
-        <p v-if="capacitySummary" class="text-[var(--lpro-muted)]">{{ capacitySummary }}</p>
-        <div v-if="milestones.length" class="mt-8">
-          <h2 class="lpro-section-title">{{ tSite('company_history') }}</h2>
+        <p
+          v-if="capacitySummary"
+          class="text-[var(--lpro-muted)]"
+        >
+          {{ capacitySummary }}
+        </p>
+        <div
+          v-if="milestones.length"
+          class="mt-8"
+        >
+          <h2 class="lpro-section-title">
+            {{ tSite('company_history') }}
+          </h2>
           <div class="space-y-4">
-            <article v-for="(m, i) in milestones" :key="i" class="lpro-card">
-              <div class="font-bold text-[var(--lpro-primary)]">{{ m.year }}</div>
-              <h3 class="font-semibold">{{ m.title }}</h3>
+            <article
+              v-for="(m, i) in milestones"
+              :key="i"
+              class="lpro-card"
+            >
+              <div class="font-bold text-[var(--lpro-primary)]">
+                {{ m.year }}
+              </div>
+              <h3 class="font-semibold">
+                {{ m.title }}
+              </h3>
               <p>{{ m.description }}</p>
             </article>
           </div>

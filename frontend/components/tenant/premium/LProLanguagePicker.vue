@@ -2,7 +2,11 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <div class="lpro-lang" ref="rootRef" :class="{ 'lpro-lang--open': open }">
+  <div
+    class="lpro-lang"
+    ref="rootRef"
+    :class="{ 'lpro-lang--open': open }"
+  >
     <button
       type="button"
       class="lpro-lang-trigger"
@@ -12,13 +16,29 @@
       @click="toggleOpen"
     >
       <span class="lpro-lang-trigger-text">{{ currentLanguageName }}</span>
-      <span class="lpro-lang-chevron" aria-hidden="true">▾</span>
+      <span
+        class="lpro-lang-chevron"
+        aria-hidden="true"
+      >▾</span>
     </button>
 
-    <div v-if="open" class="lpro-lang-panel" role="dialog" :aria-label="tSite('lang_picker_label')">
-      <p class="lpro-lang-panel-title">{{ tSite('lang_picker_label') }}</p>
-      <ul class="lpro-lang-tier1" role="listbox">
-        <li v-for="opt in tier1Languages" :key="opt.code">
+    <div
+      v-if="open"
+      class="lpro-lang-panel"
+      role="dialog"
+      :aria-label="tSite('lang_picker_label')"
+    >
+      <p class="lpro-lang-panel-title">
+        {{ tSite('lang_picker_label') }}
+      </p>
+      <ul
+        class="lpro-lang-tier1"
+        role="listbox"
+      >
+        <li
+          v-for="opt in tier1Languages"
+          :key="opt.code"
+        >
           <button
             type="button"
             class="lpro-lang-tier1-btn"
@@ -33,8 +53,12 @@
         </li>
       </ul>
       <div class="lpro-lang-tier2-block">
-        <p class="lpro-lang-tier2-heading">{{ tSite('lang_more') }}</p>
-        <p class="lpro-lang-disclaimer">{{ tSite('lang_tier2_disclaimer') }}</p>
+        <p class="lpro-lang-tier2-heading">
+          {{ tSite('lang_more') }}
+        </p>
+        <p class="lpro-lang-disclaimer">
+          {{ tSite('lang_tier2_disclaimer') }}
+        </p>
         <div class="lpro-lang-tier2-grid">
           <a
             v-for="opt in tier2Languages"

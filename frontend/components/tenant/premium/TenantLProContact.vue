@@ -12,7 +12,9 @@
     <section class="lpro-section lpro-section--white">
       <div class="lpro-container lpro-detail-layout">
         <div>
-          <h2 class="lpro-section-title">{{ tSite('footer_contact') }}</h2>
+          <h2 class="lpro-section-title">
+            {{ tSite('footer_contact') }}
+          </h2>
           <div class="space-y-3">
             <a
               v-for="ch in contactDisplayChannels"
@@ -23,7 +25,10 @@
               <strong>{{ ch.label }}</strong>
               <span class="block text-[var(--lpro-muted)]">{{ ch.value }}</span>
             </a>
-            <div v-if="factoryAddress" class="lpro-card">
+            <div
+              v-if="factoryAddress"
+              class="lpro-card"
+            >
               <strong>{{ tSite('factory_label') }}</strong>
               <span class="block text-[var(--lpro-muted)]">{{ factoryAddress }}</span>
             </div>

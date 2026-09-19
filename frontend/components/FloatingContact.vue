@@ -4,44 +4,89 @@
 <template>
   <div class="floating-contact">
     <!-- 微信悬浮窗 -->
-    <div class="fc-item" @mouseenter="showWechat = true" @mouseleave="showWechat = false" @click="openWechat">
+    <div
+      class="fc-item"
+      @mouseenter="showWechat = true"
+      @mouseleave="showWechat = false"
+      @click="openWechat"
+    >
       <div class="fc-btn wechat">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-          <path d="M8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-2 7C6.478 18 3 15.09 3 11.5S6.478 5 10.5 5 18 7.91 18 11.5c0 1.105-.316 2.14-.863 3.03l.863 2.97-2.97-.863A7.437 7.437 0 0110.5 18z"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width="22"
+          height="22"
+        >
+          <path d="M8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-2 7C6.478 18 3 15.09 3 11.5S6.478 5 10.5 5 18 7.91 18 11.5c0 1.105-.316 2.14-.863 3.03l.863 2.97-2.97-.863A7.437 7.437 0 0110.5 18z" />
         </svg>
       </div>
-      <span v-if="copied" class="fc-label copied">{{ t('contact.wechatCopied') }}</span>
+      <span
+        v-if="copied"
+        class="fc-label copied"
+      >{{ t('contact.wechatCopied') }}</span>
       <transition name="fc-fade">
-        <div v-if="showWechat && !copied" class="fc-popover wechat-popover">
+        <div
+          v-if="showWechat && !copied"
+          class="fc-popover wechat-popover"
+        >
           <div class="fc-popover-arrow" />
           <div class="fc-qr-placeholder">
             <div class="fc-qr-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-                <path d="M8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-2 7C6.478 18 3 15.09 3 11.5S6.478 5 10.5 5 18 7.91 18 11.5c0 1.105-.316 2.14-.863 3.03l.863 2.97-2.97-.863A7.437 7.437 0 0110.5 18z"/>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="32"
+                height="32"
+              >
+                <path d="M8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-2 7C6.478 18 3 15.09 3 11.5S6.478 5 10.5 5 18 7.91 18 11.5c0 1.105-.316 2.14-.863 3.03l.863 2.97-2.97-.863A7.437 7.437 0 0110.5 18z" />
               </svg>
             </div>
-            <p class="fc-qr-text">{{ t('contact.wechatService') }}youding-builder</p>
-            <p class="fc-qr-hint">{{ t('contact.wechatHint') }}</p>
+            <p class="fc-qr-text">
+              {{ t('contact.wechatService') }}youding-builder
+            </p>
+            <p class="fc-qr-hint">
+              {{ t('contact.wechatHint') }}
+            </p>
           </div>
         </div>
       </transition>
     </div>
 
     <!-- 电话悬浮窗 -->
-    <div class="fc-item" @click="callPhone">
+    <div
+      class="fc-item"
+      @click="callPhone"
+    >
       <div class="fc-btn phone">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
-          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="22"
+          height="22"
+        >
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" />
         </svg>
       </div>
       <span class="fc-label">{{ SITE_CONFIG.phone }}</span>
     </div>
 
     <!-- 留言/咨询悬浮窗 -->
-    <div class="fc-item" @click="openInquiry">
+    <div
+      class="fc-item"
+      @click="openInquiry"
+    >
       <div class="fc-btn inquiry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="22"
+          height="22"
+        >
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
         </svg>
       </div>
       <span class="fc-label">{{ t('contact.onlineMessage') }}</span>

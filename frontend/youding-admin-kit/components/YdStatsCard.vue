@@ -1,10 +1,20 @@
 <template>
-  <div class="yd-stats-card" :class="{ compact }">
-    <div class="yd-stats-card__label">{{ label }}</div>
+  <div
+    class="yd-stats-card"
+    :class="{ compact }"
+  >
+    <div class="yd-stats-card__label">
+      {{ label }}
+    </div>
     <div class="yd-stats-card__value">
       <slot>{{ displayValue }}</slot>
     </div>
-    <div v-if="hint" class="yd-stats-card__hint">{{ hint }}</div>
+    <div
+      v-if="hint"
+      class="yd-stats-card__hint"
+    >
+      {{ hint }}
+    </div>
   </div>
 </template>
 

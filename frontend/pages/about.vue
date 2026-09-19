@@ -191,7 +191,12 @@
             rel="noopener noreferrer"
             class="inline-flex items-center px-5 py-2.5 bg-secondary-500 hover:bg-secondary-600 text-white text-sm font-medium rounded-lg transition-all duration-300 shadow-md"
           >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"

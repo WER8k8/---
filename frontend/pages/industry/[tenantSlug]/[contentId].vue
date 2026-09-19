@@ -3,17 +3,29 @@
  */
 <template>
   <div class="industry-content-page min-h-screen bg-surface">
-    <div v-if="pending" class="min-h-[50vh] flex items-center justify-center">
+    <div
+      v-if="pending"
+      class="min-h-[50vh] flex items-center justify-center"
+    >
       <div class="text-center">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto" />
-        <p class="mt-4 text-text-secondary text-sm">加载中...</p>
+        <p class="mt-4 text-text-secondary text-sm">
+          加载中...
+        </p>
       </div>
     </div>
 
-    <div v-else-if="fetchError" class="min-h-[50vh] flex items-center justify-center px-4">
+    <div
+      v-else-if="fetchError"
+      class="min-h-[50vh] flex items-center justify-center px-4"
+    >
       <div class="text-center max-w-md">
-        <h1 class="text-xl font-bold text-text-primary mb-2">内容不可用</h1>
-        <p class="text-text-secondary text-sm mb-6">{{ fetchError }}</p>
+        <h1 class="text-xl font-bold text-text-primary mb-2">
+          内容不可用
+        </h1>
+        <p class="text-text-secondary text-sm mb-6">
+          {{ fetchError }}
+        </p>
         <NuxtLink
           :to="`/industry/${tenantSlug}`"
           class="inline-flex px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition-colors"
@@ -32,7 +44,9 @@
           >
             ← 返回 {{ tenantLabel }} 枢纽
           </NuxtLink>
-          <p class="text-xs font-medium text-primary mb-2">行业内容摘要</p>
+          <p class="text-xs font-medium text-primary mb-2">
+            行业内容摘要
+          </p>
           <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-4">
             {{ pageTitle }}
           </h1>
@@ -57,11 +71,24 @@
                 class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors"
               >
                 阅读完整内容
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
                 </svg>
               </a>
-              <p v-if="!hasExplicitUrl" class="mt-3 text-xs text-text-secondary">
+              <p
+                v-if="!hasExplicitUrl"
+                class="mt-3 text-xs text-text-secondary"
+              >
                 提示：可通过 <code class="px-1 py-0.5 bg-surface-elevated rounded">?url=</code> 覆盖跳转地址
               </p>
             </div>

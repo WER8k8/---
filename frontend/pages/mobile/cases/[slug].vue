@@ -4,29 +4,49 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar :title="t('mobile.cases.detailTitle')" safe-area-top :blur="true" />
+    <MobileNavbar
+      :title="t('mobile.cases.detailTitle')"
+      safe-area-top
+      :blur="true"
+    />
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex items-center justify-center min-h-[60vh]">
+    <div
+      v-if="loading"
+      class="flex items-center justify-center min-h-[60vh]"
+    >
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex items-center justify-center min-h-[60vh] px-4">
+    <div
+      v-else-if="error"
+      class="flex items-center justify-center min-h-[60vh] px-4"
+    >
       <div class="text-center">
-        <div class="text-6xl mb-4">😞</div>
+        <div class="text-6xl mb-4">
+          😞
+        </div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">
           {{ t('mobile.cases.loadFailed') }}
         </h2>
-        <p class="text-gray-600 mb-6">{{ error }}</p>
-        <NuxtLink to="/cases" class="mobile-btn-primary inline-block px-6 py-3 rounded-full">
+        <p class="text-gray-600 mb-6">
+          {{ error }}
+        </p>
+        <NuxtLink
+          to="/cases"
+          class="mobile-btn-primary inline-block px-6 py-3 rounded-full"
+        >
           {{ t('mobile.cases.backToList') }}
         </NuxtLink>
       </div>
     </div>
 
     <!-- Case Detail -->
-    <div v-else-if="caseItem" class="pb-20">
+    <div
+      v-else-if="caseItem"
+      class="pb-20"
+    >
       <!-- Hero Image -->
       <div class="relative h-64 md:h-80 bg-gray-200">
         <img
@@ -35,7 +55,10 @@
           :alt="caseItem.project_name"
           class="w-full h-full object-cover"
         >
-        <div v-else class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
+        <div
+          v-else
+          class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700"
+        >
           <span class="text-white text-4xl">🏗️</span>
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -72,19 +95,31 @@
             {{ t('mobile.cases.projectInfo') }}
           </h2>
           <div class="space-y-3">
-            <div v-if="caseItem.client_name" class="flex justify-between items-center">
+            <div
+              v-if="caseItem.client_name"
+              class="flex justify-between items-center"
+            >
               <span class="text-sm text-gray-500">{{ t('mobile.cases.clientName') }}</span>
               <span class="text-sm font-medium text-gray-900">{{ caseItem.client_name }}</span>
             </div>
-            <div v-if="caseItem.location" class="flex justify-between items-center">
+            <div
+              v-if="caseItem.location"
+              class="flex justify-between items-center"
+            >
               <span class="text-sm text-gray-500">{{ t('mobile.cases.projectLocation') }}</span>
               <span class="text-sm font-medium text-gray-900">{{ caseItem.location }}</span>
             </div>
-            <div v-if="caseItem.construction_area" class="flex justify-between items-center">
+            <div
+              v-if="caseItem.construction_area"
+              class="flex justify-between items-center"
+            >
               <span class="text-sm text-gray-500">{{ t('mobile.cases.constructionArea') }}</span>
               <span class="text-sm font-medium text-gray-900">{{ caseItem.construction_area }}</span>
             </div>
-            <div v-if="caseItem.project_date" class="flex justify-between items-center">
+            <div
+              v-if="caseItem.project_date"
+              class="flex justify-between items-center"
+            >
               <span class="text-sm text-gray-500">{{ t('mobile.cases.projectDate') }}</span>
               <span class="text-sm font-medium text-gray-900">{{ caseItem.project_date }}</span>
             </div>
@@ -96,7 +131,10 @@
         </div>
 
         <!-- Materials Used -->
-        <div v-if="caseItem.materials_used" class="bg-white rounded-xl shadow-sm p-4 mb-4">
+        <div
+          v-if="caseItem.materials_used"
+          class="bg-white rounded-xl shadow-sm p-4 mb-4"
+        >
           <h2 class="text-lg font-semibold text-gray-900 mb-3">
             {{ t('mobile.cases.materialsUsed') }}
           </h2>
@@ -114,10 +152,16 @@
             {{ t('mobile.cases.contactDesc') }}
           </p>
           <div class="flex flex-col gap-2">
-            <NuxtLink to="/contact" class="mobile-btn bg-white text-blue-600 justify-center">
+            <NuxtLink
+              to="/contact"
+              class="mobile-btn bg-white text-blue-600 justify-center"
+            >
               {{ t('mobile.cases.consultNow') }}
             </NuxtLink>
-            <a :href="`tel:${contactPhone}`" class="mobile-btn border-2 border-white text-white justify-center">
+            <a
+              :href="`tel:${contactPhone}`"
+              class="mobile-btn border-2 border-white text-white justify-center"
+            >
               {{ t('mobile.cases.phoneConsult') }}
             </a>
           </div>

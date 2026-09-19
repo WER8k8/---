@@ -19,39 +19,93 @@
     <section class="py-8 sm:py-10 lg:py-14">
       <div class="max-w-3xl mx-auto px-3 sm:px-4 lg:px-8">
         <!-- Success Message -->
-        <div v-if="successMessage" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-          <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div
+          v-if="successMessage"
+          class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3"
+        >
+          <svg
+            class="w-5 h-5 text-green-500 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <span class="text-green-700 text-sm">{{ successMessage }}</span>
         </div>
 
         <!-- Error Message -->
-        <div v-if="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-          <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div
+          v-if="errorMessage"
+          class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3"
+        >
+          <svg
+            class="w-5 h-5 text-red-500 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <span class="text-red-700 text-sm">{{ errorMessage }}</span>
         </div>
 
         <!-- Profile Settings -->
         <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8 mb-6 sm:mb-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">基本信息</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+            基本信息
+          </h2>
           <form @submit.prevent="updateProfile">
             <!-- Avatar -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-text-primary mb-2">头像</label>
               <div class="flex items-center gap-4">
                 <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
-                  <img v-if="profileForm.avatar" :src="profileForm.avatar" alt="头像" class="w-full h-full object-cover" />
-                  <svg v-else class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <img
+                    v-if="profileForm.avatar"
+                    :src="profileForm.avatar"
+                    alt="头像"
+                    class="w-full h-full object-cover"
+                  >
+                  <svg
+                    v-else
+                    class="w-8 h-8 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                 </div>
-                <button type="button" @click="uploadAvatar" class="px-4 py-2 border border-border rounded-lg text-sm font-medium text-text-secondary hover:bg-surface-elevated transition-colors">
+                <button
+                  type="button"
+                  @click="uploadAvatar"
+                  class="px-4 py-2 border border-border rounded-lg text-sm font-medium text-text-secondary hover:bg-surface-elevated transition-colors"
+                >
                   上传头像
                 </button>
-                <input ref="avatarInput" type="file" accept="image/*" class="hidden" @change="handleAvatarUpload" />
+                <input
+                  ref="avatarInput"
+                  type="file"
+                  accept="image/*"
+                  class="hidden"
+                  @change="handleAvatarUpload"
+                >
               </div>
             </div>
 
@@ -63,7 +117,7 @@
                 type="text"
                 class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="请输入用户名"
-              />
+              >
             </div>
 
             <!-- Email -->
@@ -74,11 +128,15 @@
                 type="email"
                 disabled
                 class="w-full px-4 py-2.5 border border-border rounded-lg bg-surface-elevated text-text-secondary"
-              />
+              >
             </div>
 
             <div class="flex justify-end">
-              <button type="submit" :disabled="profileLoading" class="btn-primary">
+              <button
+                type="submit"
+                :disabled="profileLoading"
+                class="btn-primary"
+              >
                 {{ profileLoading ? '保存中...' : '保存修改' }}
               </button>
             </div>
@@ -87,7 +145,9 @@
 
         <!-- Password Settings -->
         <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8 mb-6 sm:mb-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">修改密码</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+            修改密码
+          </h2>
           <form @submit.prevent="changePassword">
             <div class="mb-4">
               <label class="block text-sm font-medium text-text-primary mb-2">当前密码</label>
@@ -96,7 +156,7 @@
                 type="password"
                 class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="请输入当前密码"
-              />
+              >
             </div>
             <div class="mb-4">
               <label class="block text-sm font-medium text-text-primary mb-2">新密码</label>
@@ -105,7 +165,7 @@
                 type="password"
                 class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="请输入新密码（至少6位）"
-              />
+              >
             </div>
             <div class="mb-6">
               <label class="block text-sm font-medium text-text-primary mb-2">确认新密码</label>
@@ -114,10 +174,14 @@
                 type="password"
                 class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="请再次输入新密码"
-              />
+              >
             </div>
             <div class="flex justify-end">
-              <button type="submit" :disabled="passwordLoading" class="btn-primary">
+              <button
+                type="submit"
+                :disabled="passwordLoading"
+                class="btn-primary"
+              >
                 {{ passwordLoading ? '修改中...' : '修改密码' }}
               </button>
             </div>
@@ -126,7 +190,9 @@
 
         <!-- Language Settings -->
         <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8 mb-6 sm:mb-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">语言设置</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+            语言设置
+          </h2>
           <div class="space-y-3">
             <label
               v-for="lang in languageOptions"
@@ -138,12 +204,16 @@
                 type="radio"
                 :value="lang.value"
                 class="w-4 h-4 text-primary focus:ring-primary/20"
-              />
+              >
               <span class="text-text-primary">{{ lang.label }}</span>
             </label>
           </div>
           <div class="flex justify-end mt-4">
-            <button @click="saveLanguage" :disabled="languageLoading" class="btn-primary">
+            <button
+              @click="saveLanguage"
+              :disabled="languageLoading"
+              class="btn-primary"
+            >
               {{ languageLoading ? '保存中...' : '保存设置' }}
             </button>
           </div>
@@ -151,7 +221,9 @@
 
         <!-- Notification Preferences -->
         <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">通知偏好</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-6">
+            通知偏好
+          </h2>
           <div class="space-y-4">
             <div
               v-for="pref in notificationPrefs"
@@ -159,8 +231,12 @@
               class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-elevated transition-colors"
             >
               <div>
-                <h4 class="font-medium text-text-primary">{{ pref.label }}</h4>
-                <p class="text-sm text-text-secondary">{{ pref.description }}</p>
+                <h4 class="font-medium text-text-primary">
+                  {{ pref.label }}
+                </h4>
+                <p class="text-sm text-text-secondary">
+                  {{ pref.description }}
+                </p>
               </div>
               <button
                 @click="toggleNotification(pref.key)"
@@ -179,7 +255,11 @@
             </div>
           </div>
           <div class="flex justify-end mt-4">
-            <button @click="saveNotificationPrefs" :disabled="notifLoading" class="btn-primary">
+            <button
+              @click="saveNotificationPrefs"
+              :disabled="notifLoading"
+              class="btn-primary"
+            >
               {{ notifLoading ? '保存中...' : '保存设置' }}
             </button>
           </div>

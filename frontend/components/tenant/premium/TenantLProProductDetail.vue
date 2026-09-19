@@ -9,15 +9,23 @@
   >
     <section class="lpro-section lpro-section--white">
       <div class="lpro-container">
-        <NuxtLink to="/tenant/products" class="lpro-link mb-4 inline-block">← {{ tSite('nav_products') }}</NuxtLink>
-        <div v-if="product" class="lpro-detail-layout">
+        <NuxtLink
+          to="/tenant/products"
+          class="lpro-link mb-4 inline-block"
+        >
+          ← {{ tSite('nav_products') }}
+        </NuxtLink>
+        <div
+          v-if="product"
+          class="lpro-detail-layout"
+        >
           <div>
             <div class="lpro-thumb mb-4">
               <img
                 v-if="product.image"
                 :src="resolveMediaUrl(product.image)"
                 :alt="product.imageAlt || product.name"
-              />
+              >
             </div>
             <a
               v-if="product.downloadUrl"
@@ -30,12 +38,27 @@
             </a>
           </div>
           <div>
-            <h1 class="text-2xl font-bold mb-2">{{ product.name }}</h1>
-            <p v-if="product.category" class="text-sm text-[var(--lpro-muted)] mb-3">{{ product.category }}</p>
-            <p class="mb-4">{{ product.summary }}</p>
-            <table v-if="product.specs?.length" class="lpro-spec-table mb-6">
+            <h1 class="text-2xl font-bold mb-2">
+              {{ product.name }}
+            </h1>
+            <p
+              v-if="product.category"
+              class="text-sm text-[var(--lpro-muted)] mb-3"
+            >
+              {{ product.category }}
+            </p>
+            <p class="mb-4">
+              {{ product.summary }}
+            </p>
+            <table
+              v-if="product.specs?.length"
+              class="lpro-spec-table mb-6"
+            >
               <tbody>
-                <tr v-for="(row, i) in product.specs" :key="i">
+                <tr
+                  v-for="(row, i) in product.specs"
+                  :key="i"
+                >
                   <th>{{ row.label }}</th>
                   <td>{{ row.value }}</td>
                 </tr>
@@ -53,8 +76,15 @@
           </div>
         </div>
         <div v-else>
-          <h1 class="lpro-section-title">{{ tSite('product_not_found') }}</h1>
-          <NuxtLink to="/tenant/products" class="lpro-link">{{ tSite('nav_products') }}</NuxtLink>
+          <h1 class="lpro-section-title">
+            {{ tSite('product_not_found') }}
+          </h1>
+          <NuxtLink
+            to="/tenant/products"
+            class="lpro-link"
+          >
+            {{ tSite('nav_products') }}
+          </NuxtLink>
         </div>
       </div>
     </section>

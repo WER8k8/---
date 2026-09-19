@@ -2,8 +2,14 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <div v-if="showBar" class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] border-t border-gray-200 md:hidden pb-[env(safe-area-inset-bottom)]">
-    <div v-if="imChannels.length > 1" class="flex justify-center gap-1 px-2 pt-1">
+  <div
+    v-if="showBar"
+    class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] border-t border-gray-200 md:hidden pb-[env(safe-area-inset-bottom)]"
+  >
+    <div
+      v-if="imChannels.length > 1"
+      class="flex justify-center gap-1 px-2 pt-1"
+    >
       <button
         v-for="(ch, idx) in imChannels"
         :key="`${ch.type}-${idx}`"
@@ -49,18 +55,29 @@
     </div>
 
     <Transition name="slide-up">
-      <div v-if="showForm" class="fixed inset-0 z-[60] bg-white overflow-y-auto">
-        <div class="h-1.5 w-10 bg-gray-300 rounded-full mx-auto mt-2 cursor-pointer" @click="closeForm"></div>
+      <div
+        v-if="showForm"
+        class="fixed inset-0 z-[60] bg-white overflow-y-auto"
+      >
+        <div
+          class="h-1.5 w-10 bg-gray-300 rounded-full mx-auto mt-2 cursor-pointer"
+          @click="closeForm"
+        />
         <div class="p-6 space-y-5">
-          <h3 class="text-xl font-bold text-gray-800">{{ t('chat.form_title') }}</h3>
-          <form class="space-y-4" @submit.prevent="submitForm">
+          <h3 class="text-xl font-bold text-gray-800">
+            {{ t('chat.form_title') }}
+          </h3>
+          <form
+            class="space-y-4"
+            @submit.prevent="submitForm"
+          >
             <input
               v-model="form.name"
               type="text"
               :placeholder="t('chat.form_name')"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none"
               required
-            />
+            >
             <input
               v-model="form.phone"
               type="tel"
@@ -69,20 +86,25 @@
               placeholder="手机号（必填）"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none"
               required
-            />
+            >
             <input
               v-model="form.email"
               type="email"
               :placeholder="t('chat.form_email')"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none"
-            />
+            >
             <textarea
               v-model="form.spec"
               :placeholder="t('chat.form_spec')"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none h-32 resize-none"
               required
-            ></textarea>
-            <p v-if="formError" class="text-sm text-red-600">{{ formError }}</p>
+            />
+            <p
+              v-if="formError"
+              class="text-sm text-red-600"
+            >
+              {{ formError }}
+            </p>
             <button
               type="submit"
               class="w-full py-4 bg-green-500 hover:bg-green-600 text-white text-lg font-bold rounded-xl"

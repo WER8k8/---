@@ -4,29 +4,56 @@
 <template>
   <div class="payment-callback-page">
     <!-- Loading State -->
-    <div v-if="verifying" class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div
+      v-if="verifying"
+      class="min-h-screen flex items-center justify-center bg-gray-50"
+    >
       <div class="text-center">
-        <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-        <p class="text-lg text-text-secondary">正在验证支付结果...</p>
+        <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4" />
+        <p class="text-lg text-text-secondary">
+          正在验证支付结果...
+        </p>
       </div>
     </div>
 
     <!-- Payment Success -->
-    <div v-else-if="paymentStatus === 'success'" class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div
+      v-else-if="paymentStatus === 'success'"
+      class="min-h-screen flex items-center justify-center bg-gray-50 px-4"
+    >
       <div class="max-w-md w-full bg-white rounded-2xl shadow-card p-8 sm:p-10 text-center">
         <!-- Success Icon -->
         <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            class="w-10 h-10 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         </div>
 
-        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">支付成功！</h1>
-        <p class="text-text-secondary mb-6">您的订单已支付成功，我们将尽快为您处理</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+          支付成功！
+        </h1>
+        <p class="text-text-secondary mb-6">
+          您的订单已支付成功，我们将尽快为您处理
+        </p>
 
         <!-- Order Summary -->
-        <div v-if="order" class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 text-left">
-          <h2 class="text-base font-semibold text-text-primary mb-3">订单摘要</h2>
+        <div
+          v-if="order"
+          class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 text-left"
+        >
+          <h2 class="text-base font-semibold text-text-primary mb-3">
+            订单摘要
+          </h2>
           <div class="space-y-2 text-sm">
             <div class="flex justify-between">
               <span class="text-text-secondary">订单号</span>
@@ -71,18 +98,40 @@
     </div>
 
     <!-- Payment Failed -->
-    <div v-else-if="paymentStatus === 'failed'" class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div
+      v-else-if="paymentStatus === 'failed'"
+      class="min-h-screen flex items-center justify-center bg-gray-50 px-4"
+    >
       <div class="max-w-md w-full bg-white rounded-2xl shadow-card p-8 sm:p-10 text-center">
         <!-- Failed Icon -->
         <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
-          <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            class="w-10 h-10 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         </div>
 
-        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">支付失败</h1>
-        <p class="text-text-secondary mb-2">{{ errorMessage || '支付过程中出现问题，请重试' }}</p>
-        <p v-if="errorCode" class="text-xs text-text-secondary mb-6">错误代码: {{ errorCode }}</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+          支付失败
+        </h1>
+        <p class="text-text-secondary mb-2">
+          {{ errorMessage || '支付过程中出现问题，请重试' }}
+        </p>
+        <p
+          v-if="errorCode"
+          class="text-xs text-text-secondary mb-6"
+        >
+          错误代码: {{ errorCode }}
+        </p>
 
         <!-- Action Buttons -->
         <div class="space-y-3">
@@ -104,17 +153,34 @@
     </div>
 
     <!-- Payment Pending -->
-    <div v-else-if="paymentStatus === 'pending'" class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div
+      v-else-if="paymentStatus === 'pending'"
+      class="min-h-screen flex items-center justify-center bg-gray-50 px-4"
+    >
       <div class="max-w-md w-full bg-white rounded-2xl shadow-card p-8 sm:p-10 text-center">
         <!-- Pending Icon -->
         <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-yellow-100 flex items-center justify-center">
-          <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            class="w-10 h-10 text-yellow-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         </div>
 
-        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">支付处理中</h1>
-        <p class="text-text-secondary mb-6">您的支付正在处理中，请稍后查看订单状态</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+          支付处理中
+        </h1>
+        <p class="text-text-secondary mb-6">
+          您的支付正在处理中，请稍后查看订单状态
+        </p>
 
         <!-- Action Buttons -->
         <div class="space-y-3">

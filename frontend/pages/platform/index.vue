@@ -5,12 +5,22 @@
   <div class="saas-landing">
     <header class="saas-header">
       <div class="saas-container saas-header-inner">
-        <NuxtLink to="/platform" class="saas-logo">
+        <NuxtLink
+          to="/platform"
+          class="saas-logo"
+        >
           <span class="saas-logo-mark">优</span>
           <span class="saas-logo-text">优丁 YOU DING</span>
         </NuxtLink>
-        <nav class="saas-nav hidden lg:flex" aria-label="营销页导航">
-          <a v-for="link in navLinks" :key="link.href" :href="link.href">{{ link.label }}</a>
+        <nav
+          class="saas-nav hidden lg:flex"
+          aria-label="营销页导航"
+        >
+          <a
+            v-for="link in navLinks"
+            :key="link.href"
+            :href="link.href"
+          >{{ link.label }}</a>
         </nav>
         <div class="saas-header-actions">
           <button
@@ -22,45 +32,85 @@
           >
             ☰
           </button>
-          <a :href="admin.login('tenant')" class="saas-btn saas-btn-outline saas-btn-sm hidden sm:inline-flex">卖家登录</a>
-          <a :href="admin.register" class="saas-btn saas-btn-primary saas-btn-sm">{{ copy.hero.ctaPrimary }}</a>
+          <a
+            :href="admin.login('tenant')"
+            class="saas-btn saas-btn-outline saas-btn-sm hidden sm:inline-flex"
+          >卖家登录</a>
+          <a
+            :href="admin.register"
+            class="saas-btn saas-btn-primary saas-btn-sm"
+          >{{ copy.hero.ctaPrimary }}</a>
         </div>
       </div>
-      <nav v-show="mobileNavOpen" class="saas-mobile-nav lg:hidden" aria-label="移动端导航">
+      <nav
+        v-show="mobileNavOpen"
+        class="saas-mobile-nav lg:hidden"
+        aria-label="移动端导航"
+      >
         <a
           v-for="link in navLinks"
           :key="link.href"
           :href="link.href"
           @click="mobileNavOpen = false"
         >{{ link.label }}</a>
-        <a :href="admin.login('tenant')" @click="mobileNavOpen = false">卖家登录</a>
+        <a
+          :href="admin.login('tenant')"
+          @click="mobileNavOpen = false"
+        >卖家登录</a>
       </nav>
     </header>
 
     <section class="saas-hero">
       <div class="saas-container saas-hero-grid">
         <div>
-          <p class="saas-eyebrow">{{ copy.hero.eyebrow }}</p>
-          <h1 class="saas-hero-title">{{ copy.hero.h1 }}</h1>
-          <p class="saas-hero-sub">{{ copy.hero.sub }}</p>
+          <p class="saas-eyebrow">
+            {{ copy.hero.eyebrow }}
+          </p>
+          <h1 class="saas-hero-title">
+            {{ copy.hero.h1 }}
+          </h1>
+          <p class="saas-hero-sub">
+            {{ copy.hero.sub }}
+          </p>
           <ul class="saas-bullets">
-            <li v-for="item in copy.pillars" :key="item.title">
+            <li
+              v-for="item in copy.pillars"
+              :key="item.title"
+            >
               <strong>{{ item.title }}</strong>
               <span>{{ item.desc }}</span>
             </li>
           </ul>
           <div class="saas-hero-actions">
-            <a :href="admin.register" class="saas-btn saas-btn-primary">{{ copy.hero.ctaPrimary }}</a>
-            <a :href="admin.login('tenant')" class="saas-btn saas-btn-outline">{{ copy.hero.ctaSecondary }}</a>
-            <a :href="admin.login('partner')" class="saas-btn saas-btn-ghost">{{ copy.hero.ctaPartner }}</a>
+            <a
+              :href="admin.register"
+              class="saas-btn saas-btn-primary"
+            >{{ copy.hero.ctaPrimary }}</a>
+            <a
+              :href="admin.login('tenant')"
+              class="saas-btn saas-btn-outline"
+            >{{ copy.hero.ctaSecondary }}</a>
+            <a
+              :href="admin.login('partner')"
+              class="saas-btn saas-btn-ghost"
+            >{{ copy.hero.ctaPartner }}</a>
           </div>
-          <p class="saas-trial-note">{{ copy.hero.trialNote }}</p>
+          <p class="saas-trial-note">
+            {{ copy.hero.trialNote }}
+          </p>
           <div class="saas-trust-strip">
-            <span v-for="badge in copy.trust" :key="badge" class="saas-trust-badge">{{ badge }}</span>
+            <span
+              v-for="badge in copy.trust"
+              :key="badge"
+              class="saas-trust-badge"
+            >{{ badge }}</span>
           </div>
         </div>
 
-        <div class="saas-workbench-mock" aria-label="工作台预览示意">
+        <div
+          class="saas-workbench-mock"
+          aria-label="工作台预览示意"
+        >
           <div class="saas-mock-header">
             <span>{{ mock.greeting }}</span>
             <span class="saas-mock-plan">{{ mock.plan }}</span>
@@ -94,16 +144,30 @@
       </div>
     </section>
 
-    <section class="saas-trust-proof" aria-label="客户信任">
+    <section
+      class="saas-trust-proof"
+      aria-label="客户信任"
+    >
       <div class="saas-container">
         <div class="saas-trust-stats">
-          <div v-for="stat in trustProof.stats" :key="stat.label" class="saas-trust-stat">
+          <div
+            v-for="stat in trustProof.stats"
+            :key="stat.label"
+            class="saas-trust-stat"
+          >
             <span class="saas-trust-stat-value">{{ stat.value }}</span>
             <span class="saas-trust-stat-label">{{ stat.label }}</span>
           </div>
         </div>
-        <div class="saas-trust-logos" aria-label="建材行业客户">
-          <span v-for="logo in trustProof.logos" :key="logo" class="saas-trust-logo">{{ logo }}</span>
+        <div
+          class="saas-trust-logos"
+          aria-label="建材行业客户"
+        >
+          <span
+            v-for="logo in trustProof.logos"
+            :key="logo"
+            class="saas-trust-logo"
+          >{{ logo }}</span>
         </div>
         <blockquote class="saas-trust-quote">
           「{{ trustProof.quote.text }}」
@@ -112,10 +176,17 @@
       </div>
     </section>
 
-    <section id="capabilities" class="saas-section saas-section-muted">
+    <section
+      id="capabilities"
+      class="saas-section saas-section-muted"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">{{ copy.sections.capabilitiesTitle }}</h2>
-        <p class="saas-section-sub">{{ copy.sections.capabilitiesSub }}</p>
+        <h2 class="saas-section-title">
+          {{ copy.sections.capabilitiesTitle }}
+        </h2>
+        <p class="saas-section-sub">
+          {{ copy.sections.capabilitiesSub }}
+        </p>
         <div class="saas-cap-grid">
           <article
             v-for="cap in copy.capabilities"
@@ -126,17 +197,30 @@
             <span class="saas-cap-metric">{{ cap.metric }}</span>
             <h3>{{ cap.title }}</h3>
             <p>{{ cap.desc }}</p>
-            <a :href="capLink(cap)" class="saas-cap-cta">{{ cap.cta }}</a>
+            <a
+              :href="capLink(cap)"
+              class="saas-cap-cta"
+            >{{ cap.cta }}</a>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="value" class="saas-section">
+    <section
+      id="value"
+      class="saas-section"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">为什么建材厂选优丁</h2>
-        <p class="saas-section-sub">结构参考现代 SaaS，语境只为建材外贸</p>
-        <div class="saas-tabs" role="tablist">
+        <h2 class="saas-section-title">
+          为什么建材厂选优丁
+        </h2>
+        <p class="saas-section-sub">
+          结构参考现代 SaaS，语境只为建材外贸
+        </p>
+        <div
+          class="saas-tabs"
+          role="tablist"
+        >
           <button
             v-for="tab in copy.valueTabs"
             :key="tab.id"
@@ -150,16 +234,29 @@
             {{ tab.label }}
           </button>
         </div>
-        <div v-for="tab in copy.valueTabs" v-show="activeValueTab === tab.id" :key="tab.id" class="saas-value-panel">
+        <div
+          v-for="tab in copy.valueTabs"
+          v-show="activeValueTab === tab.id"
+          :key="tab.id"
+          class="saas-value-panel"
+        >
           <div class="saas-value-panel-grid">
             <div>
               <h3>{{ tab.title }}</h3>
               <p>{{ tab.desc }}</p>
               <ul class="saas-value-bullets">
-                <li v-for="b in tab.bullets" :key="b">{{ b }}</li>
+                <li
+                  v-for="b in tab.bullets"
+                  :key="b"
+                >
+                  {{ b }}
+                </li>
               </ul>
             </div>
-            <div class="saas-value-visual" aria-hidden="true">
+            <div
+              class="saas-value-visual"
+              aria-hidden="true"
+            >
               <div class="saas-value-visual-metric">
                 <span>{{ tab.label }} · 工作台预览</span>
                 <span>{{ valueVisualPct(tab.id) }}%</span>
@@ -167,19 +264,32 @@
               <div class="saas-value-visual-bar">
                 <span :style="{ width: `${valueVisualPct(tab.id)}%` }" />
               </div>
-              <p class="text-sm text-slate-500 m-0">{{ valueVisualHint(tab.id) }}</p>
+              <p class="text-sm text-slate-500 m-0">
+                {{ valueVisualHint(tab.id) }}
+              </p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="integrations" class="saas-section saas-section-muted">
+    <section
+      id="integrations"
+      class="saas-section saas-section-muted"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">{{ integrations.title }}</h2>
-        <p class="saas-section-sub">{{ integrations.sub }}</p>
+        <h2 class="saas-section-title">
+          {{ integrations.title }}
+        </h2>
+        <p class="saas-section-sub">
+          {{ integrations.sub }}
+        </p>
         <div class="saas-integration-grid">
-          <article v-for="item in integrations.items" :key="item.name" class="saas-integration-card">
+          <article
+            v-for="item in integrations.items"
+            :key="item.name"
+            class="saas-integration-card"
+          >
             <span class="saas-integration-name">{{ item.name }}</span>
             <span class="saas-integration-tag">{{ item.tag }}</span>
           </article>
@@ -187,12 +297,23 @@
       </div>
     </section>
 
-    <section id="scenarios" class="saas-section">
+    <section
+      id="scenarios"
+      class="saas-section"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">{{ copy.sections.scenariosTitle }}</h2>
-        <p class="saas-section-sub">{{ copy.sections.scenariosSub }}</p>
+        <h2 class="saas-section-title">
+          {{ copy.sections.scenariosTitle }}
+        </h2>
+        <p class="saas-section-sub">
+          {{ copy.sections.scenariosSub }}
+        </p>
         <div class="saas-scenario-grid">
-          <article v-for="scene in copy.scenarios" :key="scene.title" class="saas-scenario-card">
+          <article
+            v-for="scene in copy.scenarios"
+            :key="scene.title"
+            class="saas-scenario-card"
+          >
             <h3>{{ scene.title }}</h3>
             <p>{{ scene.desc }}</p>
           </article>
@@ -200,15 +321,34 @@
       </div>
     </section>
 
-    <section id="plans" class="saas-section">
+    <section
+      id="plans"
+      class="saas-section"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">{{ copy.sections.plansTitle }}</h2>
-        <p class="saas-section-sub">{{ copy.sections.plansSub }}</p>
-        <div class="saas-billing-toggle" role="group" aria-label="计费周期">
-          <button type="button" :class="{ 'is-active': billingCycle === 'monthly' }" @click="billingCycle = 'monthly'">
+        <h2 class="saas-section-title">
+          {{ copy.sections.plansTitle }}
+        </h2>
+        <p class="saas-section-sub">
+          {{ copy.sections.plansSub }}
+        </p>
+        <div
+          class="saas-billing-toggle"
+          role="group"
+          aria-label="计费周期"
+        >
+          <button
+            type="button"
+            :class="{ 'is-active': billingCycle === 'monthly' }"
+            @click="billingCycle = 'monthly'"
+          >
             月付
           </button>
-          <button type="button" :class="{ 'is-active': billingCycle === 'yearly' }" @click="billingCycle = 'yearly'">
+          <button
+            type="button"
+            :class="{ 'is-active': billingCycle === 'yearly' }"
+            @click="billingCycle = 'yearly'"
+          >
             年付更省
           </button>
         </div>
@@ -223,15 +363,25 @@
             @click="selectPlan(plan.id)"
             @keydown.enter.prevent="selectPlan(plan.id)"
           >
-            <span v-if="plan.featured" class="saas-plan-badge">推荐</span>
+            <span
+              v-if="plan.featured"
+              class="saas-plan-badge"
+            >推荐</span>
             <h3>{{ plan.name }}</h3>
             <p class="saas-plan-price">
               <span class="saas-plan-price-value">{{ planPrice(plan.id) }}</span>
               <span class="saas-plan-price-unit">{{ planPriceUnit(plan.id) }}</span>
             </p>
-            <p class="saas-plan-tagline">{{ plan.tagline }}</p>
+            <p class="saas-plan-tagline">
+              {{ plan.tagline }}
+            </p>
             <ul class="saas-plan-bullets">
-              <li v-for="item in planBullets(plan.id)" :key="item">{{ item }}</li>
+              <li
+                v-for="item in planBullets(plan.id)"
+                :key="item"
+              >
+                {{ item }}
+              </li>
             </ul>
             <a
               :href="planRegisterUrl(plan.id)"
@@ -247,30 +397,51 @@
         </div>
         <p class="saas-plan-note">
           完整功能矩阵见下方对比表 ·
-          <a :href="admin.pricing" target="_blank" rel="noopener noreferrer">Admin 定价页</a>
+          <a
+            :href="admin.pricing"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Admin 定价页</a>
           · 年付可享额外折扣（以定价页为准）
         </p>
-        <div id="plan-matrix" class="saas-matrix-wrap">
+        <div
+          id="plan-matrix"
+          class="saas-matrix-wrap"
+        >
           <table class="saas-matrix">
             <thead>
               <tr>
-                <th scope="col">能力</th>
+                <th scope="col">
+                  能力
+                </th>
                 <th
                   v-for="col in pricingMatrix.columns"
                   :key="col.id"
                   scope="col"
                   :class="{ 'is-selected-col': selectedPlan === col.id }"
                 >
-                  <button type="button" class="saas-matrix-plan-head" @click="selectPlan(col.id)">
+                  <button
+                    type="button"
+                    class="saas-matrix-plan-head"
+                    @click="selectPlan(col.id)"
+                  >
                     {{ col.label }}
                   </button>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <template v-for="row in pricingMatrix.rows" :key="row.featureKey || row.feature">
-                <tr v-if="row.group" class="saas-matrix-group">
-                  <td :colspan="pricingMatrix.columns.length + 1">{{ row.group }}</td>
+              <template
+                v-for="row in pricingMatrix.rows"
+                :key="row.featureKey || row.feature"
+              >
+                <tr
+                  v-if="row.group"
+                  class="saas-matrix-group"
+                >
+                  <td :colspan="pricingMatrix.columns.length + 1">
+                    {{ row.group }}
+                  </td>
                 </tr>
                 <tr>
                   <td>{{ row.feature }}</td>
@@ -292,12 +463,23 @@
       </div>
     </section>
 
-    <section id="hierarchy" class="saas-section saas-section-dark">
+    <section
+      id="hierarchy"
+      class="saas-section saas-section-dark"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">四级渠道，各看各的盘</h2>
-        <p class="saas-section-sub">超管 → 省代 → 市代 → 建材卖家，数据一体、权限分层</p>
+        <h2 class="saas-section-title">
+          四级渠道，各看各的盘
+        </h2>
+        <p class="saas-section-sub">
+          超管 → 省代 → 市代 → 建材卖家，数据一体、权限分层
+        </p>
         <div class="saas-hierarchy-grid">
-          <article v-for="level in copy.hierarchy" :key="level.code" class="saas-hierarchy-card">
+          <article
+            v-for="level in copy.hierarchy"
+            :key="level.code"
+            class="saas-hierarchy-card"
+          >
             <h3>{{ level.name }}</h3>
             <p>{{ level.desc }}</p>
           </article>
@@ -305,10 +487,17 @@
       </div>
     </section>
 
-    <section id="portals" class="saas-section saas-section-muted">
+    <section
+      id="portals"
+      class="saas-section saas-section-muted"
+    >
       <div class="saas-container">
-        <h2 class="saas-section-title">登录入口</h2>
-        <p class="saas-section-sub">卖家、代理、省代、平台 — 四套门户，同一产品</p>
+        <h2 class="saas-section-title">
+          登录入口
+        </h2>
+        <p class="saas-section-sub">
+          卖家、代理、省代、平台 — 四套门户，同一产品
+        </p>
         <div class="saas-portal-grid">
           <a
             v-for="portal in copy.portals"
@@ -328,8 +517,14 @@
         <h2>{{ copy.finalCta.title }}</h2>
         <p>{{ copy.finalCta.sub }}</p>
         <div class="saas-final-actions">
-          <a :href="admin.register" class="saas-btn saas-btn-primary">{{ copy.finalCta.primary }}</a>
-          <a :href="demoContactUrl" class="saas-btn saas-btn-outline">{{ copy.finalCta.secondary }}</a>
+          <a
+            :href="admin.register"
+            class="saas-btn saas-btn-primary"
+          >{{ copy.finalCta.primary }}</a>
+          <a
+            :href="demoContactUrl"
+            class="saas-btn saas-btn-outline"
+          >{{ copy.finalCta.secondary }}</a>
         </div>
       </div>
     </section>
@@ -338,7 +533,9 @@
       <div class="saas-container saas-footer-inner">
         <span>© {{ year }} 优丁 · {{ copy.footerTagline }}</span>
         <div class="saas-footer-links">
-          <NuxtLink to="/">建材企业官网</NuxtLink>
+          <NuxtLink to="/">
+            建材企业官网
+          </NuxtLink>
           <a :href="admin.login('agent')">代理登录</a>
           <a :href="admin.login('tenant')">卖家登录</a>
         </div>

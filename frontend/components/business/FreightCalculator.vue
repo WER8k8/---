@@ -3,13 +3,24 @@
  */
 <template>
   <Card class="p-5">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">运费快速测算</h2>
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      运费快速测算
+    </h2>
 
     <!-- 距离输入 -->
     <div class="mb-4">
       <label class="block text-sm font-semibold text-gray-700 mb-2">工地距离（公里）</label>
-      <Input v-model.number="localDistance" type="number" placeholder="例如 50" />
-      <p v-if="distanceHint" class="mt-1 text-xs text-gray-400">{{ distanceHint }}</p>
+      <Input
+        v-model.number="localDistance"
+        type="number"
+        placeholder="例如 50"
+      />
+      <p
+        v-if="distanceHint"
+        class="mt-1 text-xs text-gray-400"
+      >
+        {{ distanceHint }}
+      </p>
     </div>
 
     <!-- 采购量滑块 -->
@@ -30,23 +41,44 @@
           [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform
           [&::-webkit-slider-thumb]:active:scale-115"
         @input="handleSliderChange"
-      />
+      >
       <div class="flex justify-between mt-1 text-xs text-gray-400">
         <span>1m³</span>
         <span>500m³</span>
       </div>
-      <div v-if="hasDiscount" class="mt-2 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold inline-block">已享批量优惠 -¥8/m³</div>
+      <div
+        v-if="hasDiscount"
+        class="mt-2 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold inline-block"
+      >
+        已享批量优惠 -¥8/m³
+      </div>
     </div>
 
     <!-- 预估结果 -->
     <Transition name="slide-up">
-      <div v-if="estimatedPrice !== null" class="mt-4 p-4 rounded-lg bg-teal-50 text-center">
-        <div class="text-sm text-gray-500 mb-2">预估到场价</div>
-        <div class="mb-2">
-          <PriceDisplay :amount="estimatedPrice" unit="m³" large />
+      <div
+        v-if="estimatedPrice !== null"
+        class="mt-4 p-4 rounded-lg bg-teal-50 text-center"
+      >
+        <div class="text-sm text-gray-500 mb-2">
+          预估到场价
         </div>
-        <div class="text-xs text-gray-400">实际报价以当天调度确认为准</div>
-        <div v-if="hasDiscount" class="mt-3 px-3 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold inline-block">批量优惠 ¥8/m³</div>
+        <div class="mb-2">
+          <PriceDisplay
+            :amount="estimatedPrice"
+            unit="m³"
+            large
+          />
+        </div>
+        <div class="text-xs text-gray-400">
+          实际报价以当天调度确认为准
+        </div>
+        <div
+          v-if="hasDiscount"
+          class="mt-3 px-3 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold inline-block"
+        >
+          批量优惠 ¥8/m³
+        </div>
       </div>
     </Transition>
   </Card>

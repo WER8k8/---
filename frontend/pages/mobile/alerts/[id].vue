@@ -4,56 +4,95 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar safe-area-top :blur="true">
+    <MobileNavbar
+      safe-area-top
+      :blur="true"
+    >
       <div class="flex items-center h-14">
         <button
           class="p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors"
           @click="router.back()"
         >
-          <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg
+            class="w-5 h-5 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
-        <h1 class="ml-2 text-base font-semibold text-gray-900 truncate">{{ t('mobile.alerts.detail') }}</h1>
+        <h1 class="ml-2 text-base font-semibold text-gray-900 truncate">
+          {{ t('mobile.alerts.detail') }}
+        </h1>
       </div>
     </MobileNavbar>
 
     <!-- Loading State -->
-    <div v-if="loading" class="px-4 py-6 space-y-4">
+    <div
+      v-if="loading"
+      class="px-4 py-6 space-y-4"
+    >
       <div class="bg-white rounded-2xl p-4 animate-pulse">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
+          <div class="w-12 h-12 bg-gray-200 rounded-full" />
           <div class="flex-1">
-            <div class="h-5 bg-gray-200 rounded w-1/2 mb-2"></div>
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div class="h-5 bg-gray-200 rounded w-1/2 mb-2" />
+            <div class="h-4 bg-gray-200 rounded w-3/4" />
           </div>
         </div>
         <div class="space-y-2">
-          <div class="h-4 bg-gray-200 rounded w-full"></div>
-          <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+          <div class="h-4 bg-gray-200 rounded w-full" />
+          <div class="h-4 bg-gray-200 rounded w-5/6" />
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="px-4 py-20 text-center">
-      <div class="text-red-500 text-base font-medium mb-2">{{ t('mobile.alerts.fetchError') }}</div>
-      <p class="text-sm text-gray-500 mb-4">{{ error }}</p>
-      <button class="mobile-btn-primary px-6 py-3 rounded-full" @click="fetchAlert">
+    <div
+      v-else-if="error"
+      class="px-4 py-20 text-center"
+    >
+      <div class="text-red-500 text-base font-medium mb-2">
+        {{ t('mobile.alerts.fetchError') }}
+      </div>
+      <p class="text-sm text-gray-500 mb-4">
+        {{ error }}
+      </p>
+      <button
+        class="mobile-btn-primary px-6 py-3 rounded-full"
+        @click="fetchAlert"
+      >
         {{ t('mobile.common.retry') }}
       </button>
     </div>
 
     <!-- Not Found State -->
-    <div v-else-if="!alert" class="px-4 py-20 text-center">
-      <div class="text-gray-500 text-base font-medium mb-4">{{ t('mobile.alerts.notFound') }}</div>
-      <button class="mobile-btn-primary px-6 py-3 rounded-full" @click="router.back()">
+    <div
+      v-else-if="!alert"
+      class="px-4 py-20 text-center"
+    >
+      <div class="text-gray-500 text-base font-medium mb-4">
+        {{ t('mobile.alerts.notFound') }}
+      </div>
+      <button
+        class="mobile-btn-primary px-6 py-3 rounded-full"
+        @click="router.back()"
+      >
         {{ t('mobile.common.goBack') }}
       </button>
     </div>
 
     <!-- Alert Detail -->
-    <div v-else class="pb-24">
+    <div
+      v-else
+      class="pb-24"
+    >
       <!-- Alert Header Card -->
       <div class="px-4 pt-4">
         <div class="bg-white rounded-2xl p-4 relative">
@@ -67,15 +106,39 @@
               'bg-blue-100 text-blue-600'
             ]"
           >
-            <svg v-if="alert.severity === 'critical' || alert.severity === 'error'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2m7-2a9 9 0 11-18 0 9 9 0 01 18 0z" />
+            <svg
+              v-if="alert.severity === 'critical' || alert.severity === 'error'"
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2m7-2a9 9 0 11-18 0 9 9 0 01 18 0z"
+              />
             </svg>
-            <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 01 18 0z" />
+            <svg
+              v-else
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 01 18 0z"
+              />
             </svg>
           </div>
 
-          <h2 class="text-lg font-bold text-gray-900 mb-2">{{ alert.title }}</h2>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">
+            {{ alert.title }}
+          </h2>
 
           <!-- Status & Severity Badges -->
           <div class="flex flex-wrap gap-2 mb-3">
@@ -105,10 +168,15 @@
             </span>
           </div>
 
-          <p class="text-xs text-gray-500">{{ formatTime(alert.created_at) }}</p>
+          <p class="text-xs text-gray-500">
+            {{ formatTime(alert.created_at) }}
+          </p>
 
           <!-- Action Buttons -->
-          <div v-if="alert.status !== 'resolved'" class="flex gap-2 mt-4">
+          <div
+            v-if="alert.status !== 'resolved'"
+            class="flex gap-2 mt-4"
+          >
             <button
               v-if="alert.status !== 'acknowledged'"
               @click="showAckModal = true"
@@ -129,42 +197,88 @@
       <!-- Description -->
       <div class="px-4 pt-3">
         <div class="bg-white rounded-2xl p-4">
-          <h3 class="text-sm font-semibold text-gray-900 mb-2">{{ t('mobile.alerts.description') }}</h3>
-          <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ alert.description }}</p>
+          <h3 class="text-sm font-semibold text-gray-900 mb-2">
+            {{ t('mobile.alerts.description') }}
+          </h3>
+          <p class="text-sm text-gray-600 whitespace-pre-wrap">
+            {{ alert.description }}
+          </p>
         </div>
       </div>
 
       <!-- Impact Scope -->
-      <div v-if="alert.impact_scope" class="px-4 pt-3">
+      <div
+        v-if="alert.impact_scope"
+        class="px-4 pt-3"
+      >
         <div class="bg-white rounded-2xl p-4">
-          <h3 class="text-sm font-semibold text-gray-900 mb-2">{{ t('mobile.alerts.impactScope') }}</h3>
-          <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ alert.impact_scope }}</p>
+          <h3 class="text-sm font-semibold text-gray-900 mb-2">
+            {{ t('mobile.alerts.impactScope') }}
+          </h3>
+          <p class="text-sm text-gray-600 whitespace-pre-wrap">
+            {{ alert.impact_scope }}
+          </p>
         </div>
       </div>
 
       <!-- Proposed Solution -->
-      <div v-if="alert.proposed_solution" class="px-4 pt-3">
+      <div
+        v-if="alert.proposed_solution"
+        class="px-4 pt-3"
+      >
         <div class="bg-white rounded-2xl p-4">
-          <h3 class="text-sm font-semibold text-gray-900 mb-2">{{ t('mobile.alerts.proposedSolution') }}</h3>
-          <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ alert.proposed_solution }}</p>
+          <h3 class="text-sm font-semibold text-gray-900 mb-2">
+            {{ t('mobile.alerts.proposedSolution') }}
+          </h3>
+          <p class="text-sm text-gray-600 whitespace-pre-wrap">
+            {{ alert.proposed_solution }}
+          </p>
         </div>
       </div>
 
       <!-- History -->
-      <div v-if="histories.length > 0" class="px-4 pt-3">
+      <div
+        v-if="histories.length > 0"
+        class="px-4 pt-3"
+      >
         <div class="bg-white rounded-2xl p-4">
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">{{ t('mobile.alerts.history') }}</h3>
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">
+            {{ t('mobile.alerts.history') }}
+          </h3>
           <div class="space-y-3">
-            <div v-for="h in histories" :key="h.id" class="flex gap-3">
+            <div
+              v-for="h in histories"
+              :key="h.id"
+              class="flex gap-3"
+            >
               <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900">{{ getActionText(h.action_type) }}</p>
-                <p v-if="h.action_notes" class="text-xs text-gray-500 mt-0.5">{{ h.action_notes }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">{{ formatTime(h.created_at) }}</p>
+                <p class="text-sm font-medium text-gray-900">
+                  {{ getActionText(h.action_type) }}
+                </p>
+                <p
+                  v-if="h.action_notes"
+                  class="text-xs text-gray-500 mt-0.5"
+                >
+                  {{ h.action_notes }}
+                </p>
+                <p class="text-xs text-gray-400 mt-0.5">
+                  {{ formatTime(h.created_at) }}
+                </p>
               </div>
             </div>
           </div>
@@ -173,18 +287,39 @@
     </div>
 
     <!-- Acknowledge Modal -->
-    <div v-if="showAckModal" class="fixed inset-0 z-50 bg-black/50 flex items-end justify-center">
+    <div
+      v-if="showAckModal"
+      class="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+    >
       <div class="bg-white w-full max-h-[80vh] rounded-t-2xl overflow-y-auto">
         <div class="p-5">
           <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg font-bold text-gray-900">{{ t('mobile.alerts.acknowledge') }}</h2>
-            <button @click="showAckModal = false" class="p-1">
-              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <h2 class="text-lg font-bold text-gray-900">
+              {{ t('mobile.alerts.acknowledge') }}
+            </h2>
+            <button
+              @click="showAckModal = false"
+              class="p-1"
+            >
+              <svg
+                class="w-6 h-6 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
-          <form @submit.prevent="acknowledge" class="space-y-4">
+          <form
+            @submit.prevent="acknowledge"
+            class="space-y-4"
+          >
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.alerts.acknowledgedBy') }}</label>
               <input
@@ -193,7 +328,7 @@
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                 :placeholder="t('mobile.alerts.acknowledgedByPlaceholder')"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.alerts.notes') }}</label>
@@ -202,13 +337,21 @@
                 rows="3"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 resize-none"
                 :placeholder="t('mobile.alerts.notesPlaceholder')"
-              ></textarea>
+              />
             </div>
             <div class="flex gap-3 pt-4">
-              <button type="submit" :disabled="acking" class="flex-1 mobile-btn-primary py-3 rounded-xl font-semibold">
+              <button
+                type="submit"
+                :disabled="acking"
+                class="flex-1 mobile-btn-primary py-3 rounded-xl font-semibold"
+              >
                 {{ acking ? t('mobile.common.saving') : t('mobile.alerts.confirm') }}
               </button>
-              <button type="button" @click="showAckModal = false" class="flex-1 mobile-btn-outline py-3 rounded-xl font-semibold">
+              <button
+                type="button"
+                @click="showAckModal = false"
+                class="flex-1 mobile-btn-outline py-3 rounded-xl font-semibold"
+              >
                 {{ t('mobile.common.cancel') }}
               </button>
             </div>
@@ -218,18 +361,39 @@
     </div>
 
     <!-- Resolve Modal -->
-    <div v-if="showResolveModal" class="fixed inset-0 z-50 bg-black/50 flex items-end justify-center">
+    <div
+      v-if="showResolveModal"
+      class="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+    >
       <div class="bg-white w-full max-h-[80vh] rounded-t-2xl overflow-y-auto">
         <div class="p-5">
           <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg font-bold text-gray-900">{{ t('mobile.alerts.resolve') }}</h2>
-            <button @click="showResolveModal = false" class="p-1">
-              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <h2 class="text-lg font-bold text-gray-900">
+              {{ t('mobile.alerts.resolve') }}
+            </h2>
+            <button
+              @click="showResolveModal = false"
+              class="p-1"
+            >
+              <svg
+                class="w-6 h-6 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
-          <form @submit.prevent="resolve" class="space-y-4">
+          <form
+            @submit.prevent="resolve"
+            class="space-y-4"
+          >
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.alerts.resolvedBy') }}</label>
               <input
@@ -238,7 +402,7 @@
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                 :placeholder="t('mobile.alerts.resolvedByPlaceholder')"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('mobile.alerts.resolutionNotes') }}</label>
@@ -248,13 +412,21 @@
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 resize-none"
                 :placeholder="t('mobile.alerts.resolutionNotesPlaceholder')"
-              ></textarea>
+              />
             </div>
             <div class="flex gap-3 pt-4">
-              <button type="submit" :disabled="resolving" class="flex-1 mobile-btn-primary py-3 rounded-xl font-semibold">
+              <button
+                type="submit"
+                :disabled="resolving"
+                class="flex-1 mobile-btn-primary py-3 rounded-xl font-semibold"
+              >
                 {{ resolving ? t('mobile.common.saving') : t('mobile.alerts.confirm') }}
               </button>
-              <button type="button" @click="showResolveModal = false" class="flex-1 mobile-btn-outline py-3 rounded-xl font-semibold">
+              <button
+                type="button"
+                @click="showResolveModal = false"
+                class="flex-1 mobile-btn-outline py-3 rounded-xl font-semibold"
+              >
                 {{ t('mobile.common.cancel') }}
               </button>
             </div>

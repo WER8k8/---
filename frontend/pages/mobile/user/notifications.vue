@@ -4,7 +4,11 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar :title="t('mobile.notifications.title')" safe-area-top :blur="true">
+    <MobileNavbar
+      :title="t('mobile.notifications.title')"
+      safe-area-top
+      :blur="true"
+    >
       <template #right>
         <button
           v-if="notifications.length > 0"
@@ -17,29 +21,50 @@
     </MobileNavbar>
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex items-center justify-center min-h-[60vh]">
+    <div
+      v-if="loading"
+      class="flex items-center justify-center min-h-[60vh]"
+    >
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex items-center justify-center min-h-[60vh] px-4">
+    <div
+      v-else-if="error"
+      class="flex items-center justify-center min-h-[60vh] px-4"
+    >
       <div class="text-center">
-        <div class="text-6xl mb-4">😞</div>
+        <div class="text-6xl mb-4">
+          😞
+        </div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">
           {{ t('mobile.notifications.loadFailed') }}
         </h2>
-        <p class="text-gray-600 mb-6">{{ error }}</p>
-        <button class="mobile-btn-primary inline-block px-6 py-3 rounded-full" @click="fetchNotifications">
+        <p class="text-gray-600 mb-6">
+          {{ error }}
+        </p>
+        <button
+          class="mobile-btn-primary inline-block px-6 py-3 rounded-full"
+          @click="fetchNotifications"
+        >
           {{ t('mobile.notifications.retry') }}
         </button>
       </div>
     </div>
 
     <!-- Notifications List -->
-    <div v-else class="pb-20">
+    <div
+      v-else
+      class="pb-20"
+    >
       <!-- Empty State -->
-      <div v-if="notifications.length === 0" class="flex flex-col items-center justify-center min-h-[60vh] px-4">
-        <div class="text-6xl mb-4">🔔</div>
+      <div
+        v-if="notifications.length === 0"
+        class="flex flex-col items-center justify-center min-h-[60vh] px-4"
+      >
+        <div class="text-6xl mb-4">
+          🔔
+        </div>
         <h3 class="text-lg font-semibold text-gray-900 mb-2">
           {{ t('mobile.notifications.noNotifications') }}
         </h3>
@@ -49,7 +74,10 @@
       </div>
 
       <!-- List -->
-      <div v-else class="px-4 py-4 space-y-3">
+      <div
+        v-else
+        class="px-4 py-4 space-y-3"
+      >
         <div
           v-for="notification in notifications"
           :key="notification.id"

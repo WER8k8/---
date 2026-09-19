@@ -365,14 +365,22 @@
       </section>
 
       <!-- FAQ Section (GEO Optimized) -->
-      <section v-if="faqs.length" class="py-12 bg-surface-elevated">
+      <section
+        v-if="faqs.length"
+        class="py-12 bg-surface-elevated"
+      >
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection animation="fade-in-up" :delay="0">
-            <h2 class="section-title text-center mb-8">{{ t('products.detail.faqTitle', '常见问题') }}</h2>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-8">
+              {{ t('products.detail.faqTitle', '常见问题') }}
+            </h2>
           </AnimatedSection>
           <div class="space-y-4">
             <div
-              v-for="(faq, idx) in faqs"
+              v-for="(faq) in faqs"
               :key="faq.id"
               class="bg-surface border border-border rounded-xl p-5 sm:p-6"
             >
@@ -388,10 +396,18 @@
       </section>
 
       <!-- Case Studies Section -->
-      <section v-if="caseStudies.length" class="py-12">
+      <section
+        v-if="caseStudies.length"
+        class="py-12"
+      >
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection animation="fade-in-up" :delay="0">
-            <h2 class="section-title text-center mb-8">{{ t('products.detail.casesTitle', '工程案例') }}</h2>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-8">
+              {{ t('products.detail.casesTitle', '工程案例') }}
+            </h2>
           </AnimatedSection>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div
@@ -406,7 +422,9 @@
                 class="w-full h-48 object-cover"
               >
               <div class="p-5">
-                <h3 class="font-semibold text-text-primary mb-2">{{ currentLocale === 'en' && cs.title_en ? cs.title_en : cs.title }}</h3>
+                <h3 class="font-semibold text-text-primary mb-2">
+                  {{ currentLocale === 'en' && cs.title_en ? cs.title_en : cs.title }}
+                </h3>
                 <p class="text-sm text-text-secondary line-clamp-3">
                   {{ currentLocale === 'en' && cs.summary_en ? cs.summary_en : cs.summary }}
                 </p>
@@ -417,10 +435,18 @@
       </section>
 
       <!-- Test Reports Section -->
-      <section v-if="documents.length" class="py-12 bg-surface-elevated">
+      <section
+        v-if="documents.length"
+        class="py-12 bg-surface-elevated"
+      >
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection animation="fade-in-up" :delay="0">
-            <h2 class="section-title text-center mb-8">{{ t('products.detail.docsTitle', '检测报告与资料') }}</h2>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-8">
+              {{ t('products.detail.docsTitle', '检测报告与资料') }}
+            </h2>
           </AnimatedSection>
           <div class="space-y-3">
             <div
@@ -429,13 +455,30 @@
               class="flex items-center gap-4 bg-surface border border-border rounded-xl p-4 hover:border-primary/30 transition-colors"
             >
               <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  class="w-5 h-5 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-text-primary truncate">{{ doc.file_name }}</p>
-                <p v-if="doc.description" class="text-xs text-text-muted">{{ doc.description }}</p>
+                <p class="text-sm font-medium text-text-primary truncate">
+                  {{ doc.file_name }}
+                </p>
+                <p
+                  v-if="doc.description"
+                  class="text-xs text-text-muted"
+                >
+                  {{ doc.description }}
+                </p>
               </div>
               <a
                 :href="doc.file_path"
@@ -452,13 +495,21 @@
       <!-- Get Quote Section -->
       <section class="py-16 bg-gradient-to-br from-primary/5 via-surface-elevated to-accent/5">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection animation="fade-in-up" :delay="0">
-            <h2 class="section-title text-center mb-4">{{ t('products.detail.getQuoteTitle') }}</h2>
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="0"
+          >
+            <h2 class="section-title text-center mb-4">
+              {{ t('products.detail.getQuoteTitle') }}
+            </h2>
             <p class="text-center text-text-secondary mb-8 sm:mb-10">
               {{ t('products.detail.getQuoteDesc') }}
             </p>
           </AnimatedSection>
-          <AnimatedSection animation="fade-in-up" :delay="100">
+          <AnimatedSection
+            animation="fade-in-up"
+            :delay="100"
+          >
             <form
               class="bg-surface rounded-2xl p-6 sm:p-8 md:p-10 border border-border shadow-card"
               @submit.prevent="handleQuoteSubmit"
@@ -526,8 +577,18 @@
                 v-if="quoteSuccess"
                 class="text-green-600 text-center font-medium mt-4 text-sm sm:text-base flex items-center justify-center"
               >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <svg
+                  class="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 {{ t('products.detail.quoteSuccess') }}
               </p>
@@ -567,7 +628,9 @@
                 <span class="font-bold text-text-primary">20GP 标准小柜</span>
                 <span class="text-xs px-2 py-0.5 rounded bg-surface-elevated font-medium text-text-secondary">约 26 m³</span>
               </div>
-              <p class="text-xs text-text-secondary">适合小批量试单与样品工程，快速起运</p>
+              <p class="text-xs text-text-secondary">
+                适合小批量试单与样品工程，快速起运
+              </p>
             </div>
             <div
               @click="selectContainer('40HQ')"
@@ -580,7 +643,9 @@
                 <span class="font-bold text-text-primary">40HQ 高容大柜</span>
                 <span class="text-xs px-2 py-0.5 rounded bg-surface-elevated font-medium text-text-secondary">约 58 m³</span>
               </div>
-              <p class="text-xs text-text-secondary">大宗工程总包优选，单方海运成本最低</p>
+              <p class="text-xs text-text-secondary">
+                大宗工程总包优选，单方海运成本最低
+              </p>
             </div>
           </div>
           <button

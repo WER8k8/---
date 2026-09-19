@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import logging
 import os
-import uuid
 from typing import Any, Optional
 
 from sqlalchemy import or_

@@ -4,45 +4,135 @@
 <template>
   <div class="alert-detail-page">
     <div class="page-header">
-      <button class="back-button" @click="goBack">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button
+        class="back-button"
+        @click="goBack"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
         返回
       </button>
-      <h1 class="page-title">预警详情</h1>
+      <h1 class="page-title">
+        预警详情
+      </h1>
     </div>
 
-    <div v-if="loading" class="loading-state">
-      <Skeleton height="200px" count="1" />
-      <Skeleton height="100px" count="2" style="margin-top: 1rem;" />
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <Skeleton
+        height="200px"
+        count="1"
+      />
+      <Skeleton
+        height="100px"
+        count="2"
+        style="margin-top: 1rem;"
+      />
     </div>
 
-    <div v-else-if="alert" class="alert-content">
-      <Card class="alert-header-card" variant="elevated">
+    <div
+      v-else-if="alert"
+      class="alert-content"
+    >
+      <Card
+        class="alert-header-card"
+        variant="elevated"
+      >
         <div class="alert-header-top">
           <div :class="['alert-icon-big', alert.severity]">
-            <svg v-if="alert.severity === 'critical'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
+            <svg
+              v-if="alert.severity === 'critical'"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <line
+                x1="12"
+                y1="8"
+                x2="12"
+                y2="12"
+              />
+              <line
+                x1="12"
+                y1="16"
+                x2="12.01"
+                y2="16"
+              />
             </svg>
-            <svg v-else-if="alert.severity === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              v-else-if="alert.severity === 'error'"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <svg v-else-if="alert.severity === 'warning'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              v-else-if="alert.severity === 'warning'"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
+              <line
+                x1="12"
+                y1="9"
+                x2="12"
+                y2="13"
+              />
+              <line
+                x1="12"
+                y1="17"
+                x2="12.01"
+                y2="17"
+              />
             </svg>
-            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <line
+                x1="12"
+                y1="16"
+                x2="12"
+                y2="12"
+              />
+              <line
+                x1="12"
+                y1="8"
+                x2="12.01"
+                y2="8"
+              />
             </svg>
           </div>
           <div class="alert-info">
-            <h2 class="alert-title">{{ alert.title }}</h2>
+            <h2 class="alert-title">
+              {{ alert.title }}
+            </h2>
             <div class="alert-meta-line">
               <span :class="['alert-status-badge', alert.status]">
                 {{ getStatusLabel(alert.status) }}
@@ -63,7 +153,10 @@
           </div>
         </div>
 
-        <div v-if="alert.status !== 'resolved'" class="alert-actions">
+        <div
+          v-if="alert.status !== 'resolved'"
+          class="alert-actions"
+        >
           <Button 
             v-if="alert.status !== 'acknowledged'"
             variant="secondary" 
@@ -82,41 +175,84 @@
 
       <Card class="alert-section">
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
           预警描述
         </h3>
-        <p class="alert-description">{{ alert.description }}</p>
+        <p class="alert-description">
+          {{ alert.description }}
+        </p>
       </Card>
 
-      <Card v-if="alert.impact_scope" class="alert-section">
+      <Card
+        v-if="alert.impact_scope"
+        class="alert-section"
+      >
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
           </svg>
           影响范围
         </h3>
-        <p class="alert-text">{{ alert.impact_scope }}</p>
+        <p class="alert-text">
+          {{ alert.impact_scope }}
+        </p>
       </Card>
 
-      <Card v-if="alert.proposed_solution" class="alert-section">
+      <Card
+        v-if="alert.proposed_solution"
+        class="alert-section"
+      >
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
             <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
           建议解决方案
         </h3>
-        <p class="alert-text">{{ alert.proposed_solution }}</p>
+        <p class="alert-text">
+          {{ alert.proposed_solution }}
+        </p>
       </Card>
 
-      <Card v-if="alert.acknowledged_at" class="alert-section">
+      <Card
+        v-if="alert.acknowledged_at"
+        class="alert-section"
+      >
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
+            <circle
+              cx="12"
+              cy="7"
+              r="4"
+            />
           </svg>
           确认信息
         </h3>
@@ -130,9 +266,17 @@
         </div>
       </Card>
 
-      <Card v-if="alert.resolved_at" class="alert-section">
+      <Card
+        v-if="alert.resolved_at"
+        class="alert-section"
+      >
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <polyline points="9 11 12 14 22 4" />
             <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
           </svg>
@@ -146,7 +290,10 @@
           <span class="info-label">解决时间</span>
           <span class="info-value">{{ formatTime(alert.resolved_at) }}</span>
         </div>
-        <div v-if="alert.resolution_notes" class="info-row">
+        <div
+          v-if="alert.resolution_notes"
+          class="info-row"
+        >
           <span class="info-label">解决说明</span>
           <span class="info-value">{{ alert.resolution_notes }}</span>
         </div>
@@ -154,16 +301,37 @@
 
       <Card class="alert-section">
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="3"
+            />
             <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
           </svg>
           处理历史
         </h3>
-        <div v-if="histories.length > 0" class="history-list">
-          <div v-for="history in histories" :key="history.id" class="history-item">
+        <div
+          v-if="histories.length > 0"
+          class="history-list"
+        >
+          <div
+            v-for="history in histories"
+            :key="history.id"
+            class="history-item"
+          >
             <div class="history-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="9 11 12 14 22 4" />
                 <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
               </svg>
@@ -173,24 +341,47 @@
                 <span class="history-action">{{ getHistoryActionLabel(history.action_type) }}</span>
                 <span class="history-time">{{ formatTime(history.created_at) }}</span>
               </div>
-              <p v-if="history.action_notes" class="history-notes">{{ history.action_notes }}</p>
+              <p
+                v-if="history.action_notes"
+                class="history-notes"
+              >
+                {{ history.action_notes }}
+              </p>
               <div class="history-meta">
-                <span v-if="history.old_status" class="history-status">
+                <span
+                  v-if="history.old_status"
+                  class="history-status"
+                >
                   {{ getStatusLabel(history.old_status) }} → {{ getStatusLabel(history.new_status) }}
                 </span>
-                <span v-if="history.action_by" class="history-actor">
+                <span
+                  v-if="history.action_by"
+                  class="history-actor"
+                >
                   by {{ history.action_by }}
                 </span>
               </div>
             </div>
           </div>
         </div>
-        <EmptyState v-else title="暂无处理记录" description="该预警尚未有任何处理记录" />
+        <EmptyState
+          v-else
+          title="暂无处理记录"
+          description="该预警尚未有任何处理记录"
+        />
       </Card>
 
-      <Card v-if="alert.metadata && Object.keys(alert.metadata).length > 0" class="alert-section">
+      <Card
+        v-if="alert.metadata && Object.keys(alert.metadata).length > 0"
+        class="alert-section"
+      >
         <h3 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" />
             <polyline points="13 2 13 9 20 9" />
           </svg>
@@ -200,9 +391,17 @@
       </Card>
     </div>
 
-    <div v-else class="empty-state">
-      <EmptyState title="预警不存在" description="找不到该预警或已被删除">
-        <Button @click="goBack">返回列表</Button>
+    <div
+      v-else
+      class="empty-state"
+    >
+      <EmptyState
+        title="预警不存在"
+        description="找不到该预警或已被删除"
+      >
+        <Button @click="goBack">
+          返回列表
+        </Button>
       </EmptyState>
     </div>
 
@@ -211,7 +410,10 @@
       title="确认处理预警"
       size="medium"
     >
-      <form @submit.prevent="handleAcknowledge" class="modal-form">
+      <form
+        @submit.prevent="handleAcknowledge"
+        class="modal-form"
+      >
         <div class="form-group">
           <label class="form-label">处理人</label>
           <input 
@@ -220,7 +422,7 @@
             class="form-input" 
             placeholder="输入处理人姓名"
             required
-          />
+          >
         </div>
         <div class="form-group">
           <label class="form-label">备注（可选）</label>
@@ -229,13 +431,20 @@
             class="form-textarea" 
             placeholder="输入备注信息"
             rows="3"
-          ></textarea>
+          />
         </div>
         <div class="form-actions">
-          <Button type="button" variant="secondary" @click="showAcknowledgeModal = false">
+          <Button
+            type="button"
+            variant="secondary"
+            @click="showAcknowledgeModal = false"
+          >
             取消
           </Button>
-          <Button type="submit" variant="primary">
+          <Button
+            type="submit"
+            variant="primary"
+          >
             确认
           </Button>
         </div>
@@ -247,7 +456,10 @@
       title="标记预警已解决"
       size="medium"
     >
-      <form @submit.prevent="handleResolve" class="modal-form">
+      <form
+        @submit.prevent="handleResolve"
+        class="modal-form"
+      >
         <div class="form-group">
           <label class="form-label">解决人</label>
           <input 
@@ -256,7 +468,7 @@
             class="form-input" 
             placeholder="输入解决人姓名"
             required
-          />
+          >
         </div>
         <div class="form-group">
           <label class="form-label">解决说明</label>
@@ -266,13 +478,20 @@
             placeholder="描述解决方案"
             rows="4"
             required
-          ></textarea>
+          />
         </div>
         <div class="form-actions">
-          <Button type="button" variant="secondary" @click="showResolveModal = false">
+          <Button
+            type="button"
+            variant="secondary"
+            @click="showResolveModal = false"
+          >
             取消
           </Button>
-          <Button type="submit" variant="primary">
+          <Button
+            type="submit"
+            variant="primary"
+          >
             标记解决
           </Button>
         </div>

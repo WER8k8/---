@@ -2,7 +2,10 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <div class="relative" ref="dropdownRef">
+  <div
+    class="relative"
+    ref="dropdownRef"
+  >
     <button
       type="button"
       class="flex items-center space-x-1 px-2 sm:px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface-hover rounded-lg transition-all duration-200 text-sm font-medium min-w-[44px] min-h-[44px] justify-center"
@@ -19,7 +22,12 @@
         stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
       </svg>
     </button>
 
@@ -51,8 +59,18 @@
             v-if="locale.code === currentLocale"
             class="ml-auto"
           >
-            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            <svg
+              class="w-4 h-4 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </span>
         </button>

@@ -12,11 +12,22 @@
     <section class="lpro-section lpro-section--white">
       <div class="lpro-container">
         <div class="lpro-grid">
-          <article v-for="(sol, i) in solutions" :key="i" class="lpro-card">
-            <div class="text-xs font-semibold uppercase text-[var(--lpro-muted)]">{{ sol.segment }}</div>
+          <article
+            v-for="(sol, i) in solutions"
+            :key="i"
+            class="lpro-card"
+          >
+            <div class="text-xs font-semibold uppercase text-[var(--lpro-muted)]">
+              {{ sol.segment }}
+            </div>
             <h3>{{ sol.title }}</h3>
             <p>{{ sol.description }}</p>
-            <NuxtLink to="/tenant/contact" class="lpro-link">{{ tSite('inquiry_link') }}</NuxtLink>
+            <NuxtLink
+              to="/tenant/contact"
+              class="lpro-link"
+            >
+              {{ tSite('inquiry_link') }}
+            </NuxtLink>
           </article>
         </div>
       </div>

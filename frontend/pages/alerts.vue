@@ -27,62 +27,138 @@
     </div>
 
     <div class="stats-grid">
-      <Card class="stat-card" variant="elevated">
+      <Card
+        class="stat-card"
+        variant="elevated"
+      >
         <div class="stat-content">
           <div class="stat-icon critical">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <line
+                x1="12"
+                y1="8"
+                x2="12"
+                y2="12"
+              />
+              <line
+                x1="12"
+                y1="16"
+                x2="12.01"
+                y2="16"
+              />
             </svg>
           </div>
           <div class="stat-info">
-            <div class="stat-value">{{ store.statistics?.active_alerts || 0 }}</div>
-            <div class="stat-label">活动预警</div>
+            <div class="stat-value">
+              {{ store.statistics?.active_alerts || 0 }}
+            </div>
+            <div class="stat-label">
+              活动预警
+            </div>
           </div>
         </div>
       </Card>
       
-      <Card class="stat-card" variant="elevated">
+      <Card
+        class="stat-card"
+        variant="elevated"
+      >
         <div class="stat-content">
           <div class="stat-icon error">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           </div>
           <div class="stat-info">
-            <div class="stat-value">{{ store.statistics?.total_alerts || 0 }}</div>
-            <div class="stat-label">总预警数</div>
+            <div class="stat-value">
+              {{ store.statistics?.total_alerts || 0 }}
+            </div>
+            <div class="stat-label">
+              总预警数
+            </div>
           </div>
         </div>
       </Card>
       
-      <Card class="stat-card" variant="elevated">
+      <Card
+        class="stat-card"
+        variant="elevated"
+      >
         <div class="stat-content">
           <div class="stat-icon success">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
           <div class="stat-info">
-            <div class="stat-value">{{ store.statistics?.resolved_today || 0 }}</div>
-            <div class="stat-label">今日解决</div>
+            <div class="stat-value">
+              {{ store.statistics?.resolved_today || 0 }}
+            </div>
+            <div class="stat-label">
+              今日解决
+            </div>
           </div>
         </div>
       </Card>
       
-      <Card class="stat-card" variant="elevated">
+      <Card
+        class="stat-card"
+        variant="elevated"
+      >
         <div class="stat-content">
           <div class="stat-icon info">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <line
+                x1="12"
+                y1="16"
+                x2="12"
+                y2="12"
+              />
+              <line
+                x1="12"
+                y1="8"
+                x2="12.01"
+                y2="8"
+              />
             </svg>
           </div>
           <div class="stat-info">
-            <div class="stat-value">{{ store.rules.length }}</div>
-            <div class="stat-label">预警规则</div>
+            <div class="stat-value">
+              {{ store.rules.length }}
+            </div>
+            <div class="stat-label">
+              预警规则
+            </div>
           </div>
         </div>
       </Card>
@@ -95,7 +171,10 @@
           @click="activeTab = 'alerts'"
         >
           预警列表
-          <span v-if="store.activeAlerts.length > 0" class="tab-badge">
+          <span
+            v-if="store.activeAlerts.length > 0"
+            class="tab-badge"
+          >
             {{ store.activeAlerts.length }}
           </span>
         </button>
@@ -114,11 +193,21 @@
             class="filter-select"
             @change="fetchData"
           >
-            <option value="">全部状态</option>
-            <option value="active">活动</option>
-            <option value="acknowledged">已确认</option>
-            <option value="resolved">已解决</option>
-            <option value="dismissed">已忽略</option>
+            <option value="">
+              全部状态
+            </option>
+            <option value="active">
+              活动
+            </option>
+            <option value="acknowledged">
+              已确认
+            </option>
+            <option value="resolved">
+              已解决
+            </option>
+            <option value="dismissed">
+              已忽略
+            </option>
           </select>
           
           <select 
@@ -126,28 +215,53 @@
             class="filter-select"
             @change="fetchData"
           >
-            <option value="">全部级别</option>
-            <option value="info">信息</option>
-            <option value="warning">警告</option>
-            <option value="error">错误</option>
-            <option value="critical">严重</option>
+            <option value="">
+              全部级别
+            </option>
+            <option value="info">
+              信息
+            </option>
+            <option value="warning">
+              警告
+            </option>
+            <option value="error">
+              错误
+            </option>
+            <option value="critical">
+              严重
+            </option>
           </select>
         </div>
       </div>
 
-      <div v-if="activeTab === 'alerts'" class="alerts-content">
-        <div v-if="store.loading" class="loading-state">
-          <Skeleton height="60px" count="5" />
+      <div
+        v-if="activeTab === 'alerts'"
+        class="alerts-content"
+      >
+        <div
+          v-if="store.loading"
+          class="loading-state"
+        >
+          <Skeleton
+            height="60px"
+            count="5"
+          />
         </div>
         
-        <div v-else-if="store.alerts.length === 0" class="empty-state">
+        <div
+          v-else-if="store.alerts.length === 0"
+          class="empty-state"
+        >
           <EmptyState 
             title="暂无预警"
             description="系统运行正常，没有触发任何预警"
           />
         </div>
         
-        <div v-else class="alerts-list">
+        <div
+          v-else
+          class="alerts-list"
+        >
           <div 
             v-for="alert in store.alerts" 
             :key="alert.id"
@@ -155,34 +269,100 @@
             @click="viewAlert(alert)"
           >
             <div class="alert-icon">
-              <svg v-if="alert.severity === 'critical'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+              <svg
+                v-if="alert.severity === 'critical'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <line
+                  x1="12"
+                  y1="8"
+                  x2="12"
+                  y2="12"
+                />
+                <line
+                  x1="12"
+                  y1="16"
+                  x2="12.01"
+                  y2="16"
+                />
               </svg>
-              <svg v-else-if="alert.severity === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                v-else-if="alert.severity === 'error'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
-              <svg v-else-if="alert.severity === 'warning'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                v-else-if="alert.severity === 'warning'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
+                <line
+                  x1="12"
+                  y1="9"
+                  x2="12"
+                  y2="13"
+                />
+                <line
+                  x1="12"
+                  y1="17"
+                  x2="12.01"
+                  y2="17"
+                />
               </svg>
-              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="16" x2="12" y2="12" />
-                <line x1="12" y1="8" x2="12.01" y2="8" />
+              <svg
+                v-else
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <line
+                  x1="12"
+                  y1="16"
+                  x2="12"
+                  y2="12"
+                />
+                <line
+                  x1="12"
+                  y1="8"
+                  x2="12.01"
+                  y2="8"
+                />
               </svg>
             </div>
             
             <div class="alert-content">
               <div class="alert-header">
-                <h3 class="alert-title">{{ alert.title }}</h3>
+                <h3 class="alert-title">
+                  {{ alert.title }}
+                </h3>
                 <span :class="['alert-status', alert.status]">
                   {{ getStatusLabel(alert.status) }}
                 </span>
               </div>
-              <p class="alert-description">{{ alert.description }}</p>
+              <p class="alert-description">
+                {{ alert.description }}
+              </p>
               <div class="alert-meta">
                 <span class="alert-type">{{ getTypeLabel(alert.alert_type) }}</span>
                 <span class="alert-time">{{ formatTime(alert.created_at) }}</span>
@@ -190,7 +370,12 @@
             </div>
             
             <div class="alert-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </div>
@@ -198,21 +383,38 @@
         </div>
       </div>
 
-      <div v-else class="rules-content">
-        <div v-if="store.loading" class="loading-state">
-          <Skeleton height="60px" count="5" />
+      <div
+        v-else
+        class="rules-content"
+      >
+        <div
+          v-if="store.loading"
+          class="loading-state"
+        >
+          <Skeleton
+            height="60px"
+            count="5"
+          />
         </div>
         
-        <div v-else-if="store.rules.length === 0" class="empty-state">
+        <div
+          v-else-if="store.rules.length === 0"
+          class="empty-state"
+        >
           <EmptyState 
             title="暂无预警规则"
             description="创建一些预警规则来监控系统状态"
           >
-            <Button @click="showCreateRule = true">创建规则</Button>
+            <Button @click="showCreateRule = true">
+              创建规则
+            </Button>
           </EmptyState>
         </div>
         
-        <div v-else class="rules-list">
+        <div
+          v-else
+          class="rules-list"
+        >
           <div 
             v-for="rule in store.rules" 
             :key="rule.id"
@@ -220,19 +422,26 @@
             @click="viewRule(rule)"
           >
             <div class="rule-status">
-              <span :class="['status-dot', rule.enabled ? 'active' : 'inactive']"></span>
+              <span :class="['status-dot', rule.enabled ? 'active' : 'inactive']" />
             </div>
             
             <div class="rule-content">
               <div class="rule-header">
-                <h3 class="rule-title">{{ rule.name }}</h3>
+                <h3 class="rule-title">
+                  {{ rule.name }}
+                </h3>
                 <div class="rule-badges">
                   <span :class="['rule-severity', rule.severity]">
                     {{ getSeverityLabel(rule.severity) }}
                   </span>
                 </div>
               </div>
-              <p v-if="rule.description" class="rule-description">{{ rule.description }}</p>
+              <p
+                v-if="rule.description"
+                class="rule-description"
+              >
+                {{ rule.description }}
+              </p>
               <div class="rule-meta">
                 <span class="rule-type">{{ getTypeLabel(rule.alert_type) }}</span>
                 <span class="rule-trigger-count">触发 {{ rule.trigger_count || 0 }} 次</span>
@@ -240,7 +449,12 @@
             </div>
             
             <div class="rule-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </div>
@@ -254,27 +468,60 @@
       title="创建预警"
       size="medium"
     >
-      <form @submit.prevent="handleCreateAlert" class="alert-form">
+      <form
+        @submit.prevent="handleCreateAlert"
+        class="alert-form"
+      >
         <div class="form-group">
           <label class="form-label">预警类型</label>
-          <select v-model="newAlert.alert_type" class="form-select" required>
-            <option value="system">系统</option>
-            <option value="performance">性能</option>
-            <option value="availability">可用性</option>
-            <option value="data_quality">数据质量</option>
-            <option value="user_behavior">用户行为</option>
-            <option value="business">业务</option>
-            <option value="security">安全</option>
+          <select
+            v-model="newAlert.alert_type"
+            class="form-select"
+            required
+          >
+            <option value="system">
+              系统
+            </option>
+            <option value="performance">
+              性能
+            </option>
+            <option value="availability">
+              可用性
+            </option>
+            <option value="data_quality">
+              数据质量
+            </option>
+            <option value="user_behavior">
+              用户行为
+            </option>
+            <option value="business">
+              业务
+            </option>
+            <option value="security">
+              安全
+            </option>
           </select>
         </div>
         
         <div class="form-group">
           <label class="form-label">严重程度</label>
-          <select v-model="newAlert.severity" class="form-select" required>
-            <option value="info">信息</option>
-            <option value="warning">警告</option>
-            <option value="error">错误</option>
-            <option value="critical">严重</option>
+          <select
+            v-model="newAlert.severity"
+            class="form-select"
+            required
+          >
+            <option value="info">
+              信息
+            </option>
+            <option value="warning">
+              警告
+            </option>
+            <option value="error">
+              错误
+            </option>
+            <option value="critical">
+              严重
+            </option>
           </select>
         </div>
         
@@ -286,7 +533,7 @@
             class="form-input" 
             placeholder="输入预警标题"
             required
-          />
+          >
         </div>
         
         <div class="form-group">
@@ -297,7 +544,7 @@
             placeholder="输入预警描述"
             rows="4"
             required
-          ></textarea>
+          />
         </div>
         
         <div class="form-group">
@@ -307,7 +554,7 @@
             type="text" 
             class="form-input" 
             placeholder="描述影响范围"
-          />
+          >
         </div>
         
         <div class="form-group">
@@ -317,14 +564,21 @@
             class="form-textarea" 
             placeholder="输入建议的解决方案"
             rows="3"
-          ></textarea>
+          />
         </div>
         
         <div class="form-actions">
-          <Button type="button" variant="secondary" @click="showCreateAlert = false">
+          <Button
+            type="button"
+            variant="secondary"
+            @click="showCreateAlert = false"
+          >
             取消
           </Button>
-          <Button type="submit" variant="primary">
+          <Button
+            type="submit"
+            variant="primary"
+          >
             创建
           </Button>
         </div>
@@ -336,7 +590,10 @@
       title="创建预警规则"
       size="medium"
     >
-      <form @submit.prevent="handleCreateRule" class="rule-form">
+      <form
+        @submit.prevent="handleCreateRule"
+        class="rule-form"
+      >
         <div class="form-group">
           <label class="form-label">规则名称</label>
           <input 
@@ -345,7 +602,7 @@
             class="form-input" 
             placeholder="输入规则名称"
             required
-          />
+          >
         </div>
         
         <div class="form-group">
@@ -355,29 +612,59 @@
             class="form-textarea" 
             placeholder="输入规则描述"
             rows="3"
-          ></textarea>
+          />
         </div>
         
         <div class="form-group">
           <label class="form-label">预警类型</label>
-          <select v-model="newRule.alert_type" class="form-select" required>
-            <option value="system">系统</option>
-            <option value="performance">性能</option>
-            <option value="availability">可用性</option>
-            <option value="data_quality">数据质量</option>
-            <option value="user_behavior">用户行为</option>
-            <option value="business">业务</option>
-            <option value="security">安全</option>
+          <select
+            v-model="newRule.alert_type"
+            class="form-select"
+            required
+          >
+            <option value="system">
+              系统
+            </option>
+            <option value="performance">
+              性能
+            </option>
+            <option value="availability">
+              可用性
+            </option>
+            <option value="data_quality">
+              数据质量
+            </option>
+            <option value="user_behavior">
+              用户行为
+            </option>
+            <option value="business">
+              业务
+            </option>
+            <option value="security">
+              安全
+            </option>
           </select>
         </div>
         
         <div class="form-group">
           <label class="form-label">严重程度</label>
-          <select v-model="newRule.severity" class="form-select" required>
-            <option value="info">信息</option>
-            <option value="warning">警告</option>
-            <option value="error">错误</option>
-            <option value="critical">严重</option>
+          <select
+            v-model="newRule.severity"
+            class="form-select"
+            required
+          >
+            <option value="info">
+              信息
+            </option>
+            <option value="warning">
+              警告
+            </option>
+            <option value="error">
+              错误
+            </option>
+            <option value="critical">
+              严重
+            </option>
           </select>
         </div>
         
@@ -389,22 +676,32 @@
             class="form-input" 
             :min="10"
             required
-          />
+          >
         </div>
         
         <div class="form-group">
           <label class="form-label">启用规则</label>
           <label class="form-toggle">
-            <input type="checkbox" v-model="newRule.enabled" />
-            <span class="toggle-slider"></span>
+            <input
+              type="checkbox"
+              v-model="newRule.enabled"
+            >
+            <span class="toggle-slider" />
           </label>
         </div>
         
         <div class="form-actions">
-          <Button type="button" variant="secondary" @click="showCreateRule = false">
+          <Button
+            type="button"
+            variant="secondary"
+            @click="showCreateRule = false"
+          >
             取消
           </Button>
-          <Button type="submit" variant="primary">
+          <Button
+            type="submit"
+            variant="primary"
+          >
             创建
           </Button>
         </div>

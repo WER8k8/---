@@ -20,36 +20,83 @@
       <div class="max-w-3xl mx-auto px-3 sm:px-4 lg:px-8">
         <!-- Header -->
         <div class="flex items-center justify-between mb-6 sm:mb-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-text-primary">我的地址</h2>
-          <button @click="openAddDialog" class="btn-primary text-sm sm:text-base">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          <h2 class="text-xl sm:text-2xl font-bold text-text-primary">
+            我的地址
+          </h2>
+          <button
+            @click="openAddDialog"
+            class="btn-primary text-sm sm:text-base"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             添加地址
           </button>
         </div>
 
         <!-- Loading State -->
-        <div v-if="loading" class="space-y-4">
-          <div v-for="i in 3" :key="i" class="animate-pulse bg-surface rounded-2xl p-6">
-            <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div
+          v-if="loading"
+          class="space-y-4"
+        >
+          <div
+            v-for="i in 3"
+            :key="i"
+            class="animate-pulse bg-surface rounded-2xl p-6"
+          >
+            <div class="h-6 bg-gray-200 rounded w-1/4 mb-4" />
+            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2" />
+            <div class="h-4 bg-gray-200 rounded w-3/4" />
           </div>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="addresses.length === 0" class="text-center py-10 sm:py-16">
-          <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        <div
+          v-else-if="addresses.length === 0"
+          class="text-center py-10 sm:py-16"
+        >
+          <svg
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
           </svg>
-          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">暂无地址</h3>
-          <p class="text-sm text-text-secondary mb-6">您还没有添加收货地址，请点击上方按钮添加</p>
+          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">
+            暂无地址
+          </h3>
+          <p class="text-sm text-text-secondary mb-6">
+            您还没有添加收货地址，请点击上方按钮添加
+          </p>
         </div>
 
         <!-- Address Cards -->
-        <div v-else class="space-y-4">
+        <div
+          v-else
+          class="space-y-4"
+        >
           <div
             v-for="addr in addresses"
             :key="addr.id"
@@ -61,7 +108,9 @@
             <div class="flex flex-col sm:flex-row sm:items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-text-primary">{{ addr.recipient_name }}</h3>
+                  <h3 class="text-lg font-semibold text-text-primary">
+                    {{ addr.recipient_name }}
+                  </h3>
                   <span class="text-sm text-text-secondary">{{ addr.phone }}</span>
                   <span
                     v-if="addr.is_default"
@@ -76,7 +125,10 @@
                 <p class="text-sm text-text-secondary">
                   {{ addr.street_address }}
                 </p>
-                <p v-if="addr.postal_code" class="text-sm text-text-secondary mt-1">
+                <p
+                  v-if="addr.postal_code"
+                  class="text-sm text-text-secondary mt-1"
+                >
                   邮编: {{ addr.postal_code }}
                 </p>
               </div>
@@ -88,8 +140,18 @@
                   class="p-2 text-text-secondary hover:text-primary transition-colors"
                   title="设为默认"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </button>
                 <button
@@ -97,8 +159,18 @@
                   class="p-2 text-text-secondary hover:text-blue-600 transition-colors"
                   title="编辑"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
                   </svg>
                 </button>
                 <button
@@ -106,8 +178,18 @@
                   class="p-2 text-text-secondary hover:text-red-600 transition-colors"
                   title="删除"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
                   </svg>
                 </button>
               </div>
@@ -118,10 +200,16 @@
     </section>
 
     <!-- Add/Edit Address Dialog -->
-    <div v-if="showDialog" class="fixed inset-0 z-50 overflow-y-auto">
+    <div
+      v-if="showDialog"
+      class="fixed inset-0 z-50 overflow-y-auto"
+    >
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" @click="closeDialog">
-          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        <div
+          class="fixed inset-0 transition-opacity"
+          @click="closeDialog"
+        >
+          <div class="absolute inset-0 bg-gray-500 opacity-75" />
         </div>
 
         <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
@@ -129,7 +217,10 @@
             <h3 class="text-lg font-bold text-text-primary mb-4">
               {{ isEditing ? '编辑地址' : '添加地址' }}
             </h3>
-            <form @submit.prevent="saveAddress" class="space-y-4">
+            <form
+              @submit.prevent="saveAddress"
+              class="space-y-4"
+            >
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-1">收件人姓名</label>
                 <input
@@ -138,7 +229,7 @@
                   required
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   placeholder="请输入收件人姓名"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-1">联系电话</label>
@@ -148,7 +239,7 @@
                   required
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   placeholder="请输入联系电话"
-                />
+                >
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
@@ -159,7 +250,7 @@
                     required
                     class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     placeholder="如：中国"
-                  />
+                  >
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-text-primary mb-1">省份/州</label>
@@ -169,7 +260,7 @@
                     required
                     class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     placeholder="如：广东省"
-                  />
+                  >
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
@@ -181,7 +272,7 @@
                     required
                     class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     placeholder="如：深圳市"
-                  />
+                  >
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-text-primary mb-1">区/县</label>
@@ -190,7 +281,7 @@
                     type="text"
                     class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     placeholder="如：南山区"
-                  />
+                  >
                 </div>
               </div>
               <div>
@@ -201,7 +292,7 @@
                   rows="2"
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                   placeholder="请输入详细地址"
-                ></textarea>
+                />
               </div>
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-1">邮政编码</label>
@@ -210,14 +301,14 @@
                   type="text"
                   class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   placeholder="请输入邮政编码"
-                />
+                >
               </div>
               <div class="flex items-center">
                 <input
                   v-model="addressForm.is_default"
                   type="checkbox"
                   class="w-4 h-4 text-primary focus:ring-primary/20 rounded"
-                />
+                >
                 <label class="ml-2 text-sm text-text-primary">设为默认地址</label>
               </div>
             </form>
