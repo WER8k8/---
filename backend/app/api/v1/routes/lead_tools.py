@@ -82,7 +82,8 @@ async def export_leads_csv(
         if min_score is not None:
             filters["min_score"] = min_score
 
-        csv_content = await service.export_csv(filters=filters)
+        tenant_id = getattr(current_user, "tenant_id", None)
+        csv_content = await service.export_csv(filters=filters, tenant_id=tenant_id)
         return StreamingResponse(
             io.BytesIO(csv_content),
             media_type="text/csv",
@@ -162,14 +163,17 @@ async def get_lead_funnel(current_user=Depends(get_current_user)):
                     "lead_to_contacted": round(
                         status_map.get("contacted", 0) / max(1, total_leads) * 100, 1
                     ),
-                    "contacted_to_interested": round(
-                        status_map.get("interested", 0) / max(1, status_map.get("contacted", 1)) * 100, 1
+                    "contacted_to_engaged": round(
+                        status_map.get("engaged", 0) / max(1, status_map.get("contacted", 1)) * 100, 1
                     ),
-                    "interested_to_won": round(
-                        status_map.get("won", 0) / max(1, status_map.get("interested", 1)) * 100, 1
+                    "engaged_to_qualified": round(
+                        status_map.get("qualified", 0) / max(1, status_map.get("engaged", 1)) * 100, 1
+                    ),
+                    "qualified_to_converted": round(
+                        status_map.get("converted", 0) / max(1, status_map.get("qualified", 1)) * 100, 1
                     ),
                     "overall": round(
-                        status_map.get("won", 0) / max(1, total_leads) * 100, 1
+                        status_map.get("converted", 0) / max(1, total_leads) * 100, 1
                     ),
                 },
             }

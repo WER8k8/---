@@ -162,6 +162,36 @@ def resolve_publish_task_for_inquiry(
     return None
 
 
+def _derive_attribution_channel(utm: dict, source_channel: str | None = None) -> str:
+    """将 UTM / 来源通道归一到 attribution_channel 标准分类。
+
+    标准分类（与 Inquiry.attribution_channel 注释一致）：
+    seo / customer_finder / email / social / ai_search / referral / direct
+    """
+    src = (utm.get("utm_source") or "").lower().strip()
+    mapping = {
+        "google": "seo", "bing": "seo", "baidu": "seo", "yandex": "seo",
+        "sogou": "seo", "duckduckgo": "seo", "yahoo": "seo",
+        "facebook": "social", "instagram": "social", "linkedin": "social",
+        "twitter": "social", "x": "social", "tiktok": "social",
+        "youtube": "social", "pinterest": "social", "reddit": "social",
+        "email": "email", "mailchimp": "email", "edm": "email",
+        "chatgpt": "ai_search", "perplexity": "ai_search",
+        "gemini": "ai_search", "claude": "ai_search", "ai_search": "ai_search",
+        "referral": "referral", "refer": "referral",
+        "customer_finder": "customer_finder",
+    }
+    if src in mapping:
+        return mapping[src]
+    if source_channel:
+        sc = str(source_channel).lower()
+        for key, val in mapping.items():
+            if key in sc:
+                return val
+        return sc[:20]
+    return "direct"
+
+
 def attach_utm_to_inquiry(
     db: Session,
     inquiry: Inquiry,
@@ -193,8 +223,26 @@ def attach_utm_to_inquiry(
 
     if "source_utm" in cols and merged:
         inquiry.source_utm = serialize_utm(merged)
+    # P0-5: 同步写入独立 UTM 列（可检索/聚合），避免只存 blob 导致归因报表无法过滤
+    _utm_col_map = {
+        "utm_source": 200,
+        "utm_medium": 120,
+        "utm_campaign": 200,
+        "utm_content": 200,
+        "utm_term": 200,
+    }
+    for _col, _limit in _utm_col_map.items():
+        if _col in cols and merged.get(_col):
+            setattr(inquiry, _col, str(merged[_col])[:_limit])
     if task and "publish_task_id" in cols:
         inquiry.publish_task_id = str(task.id)
+
+    # P0-6: 补全 attribution_channel 写入。
+    # 此前 attach_utm_to_inquiry 只写 source_utm / publish_task_id，
+    # Inquiry.attribution_channel 始终为 NULL → 归因报表全部落 direct。
+    _channel = _derive_attribution_channel(merged, getattr(inquiry, "source_channel", None))
+    if "attribution_channel" in cols and _channel:
+        inquiry.attribution_channel = _channel[:50]
 
     return {
         "utm": merged,

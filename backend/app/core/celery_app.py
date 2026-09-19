@@ -57,7 +57,7 @@ CELERY_CONFIG = {
     "beat_schedule": {
         # 每天凌晨执行日志清理
         "daily-cleanup": {
-            "task": "app.core.celery_app.cleanup_logs",
+            "task": "app.core.celery_app.cleanup_old_logs_task",
             "schedule": 86400.0,  # 每天一次
             "options": {"queue": "cleanup"}
         },
@@ -243,3 +243,20 @@ celery -A app.core.celery_app worker -Q lead_verify -c 2 -l info -n verify_worke
 celery -A app.core.celery_app worker -Q scoring -c 1 -l info -n scoring_worker &
 celery -A app.core.celery_app worker -Q default -c 2 -l info -n default_worker &
 """
+
+# ============================================================
+# 生产容器入口兼容（P0-1 阻塞级修复）
+# ============================================================
+# backend/deploy/docker-compose.prod.yml 的 worker / beat 启动命令为
+#   celery -A app.core.celery_app.celery_app worker ...
+# 原模块仅暴露 create_celery_app() 工厂函数、缺少名为 celery_app 的模块级实例，
+# 导致 Celery 在导入期找不到属性而 worker / beat 全部启动崩溃（13 个定时任务从未运行）。
+# 此处显式构造并暴露 celery_app 实例，复用上方 CELERY_CONFIG（已修正 cleanup_logs 任务路径）。
+from celery import Celery as _Celery  # noqa: E402
+
+celery_app = _Celery("uj-admin")  # noqa: E402
+celery_app.config_from_object(CELERY_CONFIG)  # noqa: E402
+try:
+    celery_app.autodiscover_tasks(["app.tasks"], force=True)  # noqa: E402
+except Exception as _celery_autodisc_err:  # noqa: E402,BLE001
+    log.warning("Celery 任务自动发现失败: %s", _celery_autodisc_err)

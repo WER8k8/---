@@ -52,19 +52,21 @@ def pick_assignee(db: Session, *, source_channel: str) -> Optional[str]:
     if "assigned_to" not in cols:
         return pool[0]
 
-    counts: dict[str, int] = {uid: 0 for uid in pool}
+    counts: dict[str, float] = {uid: 0.0 for uid in pool}
     rows = (
-        db.query(Inquiry.assigned_to)
+        db.query(Inquiry.assigned_to, Inquiry.priority_score)
         .filter(
             Inquiry.source_channel == PLATFORM_LANDING_CHANNEL,
             Inquiry.assigned_to.in_(pool),
         )
         .all()
     )
-    for (uid,) in rows:
-        if uid and uid in counts:
-            counts[str(uid)] += 1
-    return min(pool, key=lambda uid: (counts.get(uid, 0), uid))
+    # P0-8: 加权负载 —— 高价值线索权重更高，避免资深销售被均摊成「只接普通线索」
+    for (uid, ps) in rows:
+        if uid and str(uid) in counts:
+            weight = 1.0 + (float(ps or 0) / 100.0)
+            counts[str(uid)] += weight
+    return min(pool, key=lambda uid: (counts.get(uid, 0.0), uid))
 
 
 def assign_inquiry(
@@ -138,6 +140,15 @@ def assign_inquiry(
 def auto_assign_platform_lead(db: Session, inquiry: Inquiry) -> dict[str, Any]:
     """公开询盘创建后：platform_landing 自动分配并通知。"""
     channel = getattr(inquiry, "source_channel", None) or ""
+    # P0-8: 先算线索价值评分并回写，供分配加权 + 销售队列排序
+    cols = {c.key for c in Inquiry.__table__.columns}
+    if "priority_score" in cols:
+        try:
+            from app.services.lead_priority_service import compute_inquiry_priority
+            inquiry.priority_score = compute_inquiry_priority(db, inquiry)
+            db.commit()
+        except Exception as _prio_err:
+            logger.warning("compute inquiry priority failed: %s", _prio_err)
     assignee_id = pick_assignee(db, source_channel=channel)
     if not assignee_id:
         return {"assigned": False, "reason": "no_assignee_pool"}

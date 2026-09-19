@@ -6,7 +6,7 @@ Inquiry Model - 询盘模型
 """
 import uuid as _uuid_lib
 
-from sqlalchemy import Column, String, Text, DateTime, Boolean, JSON
+from sqlalchemy import Column, String, Text, DateTime, Boolean, JSON, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -37,6 +37,12 @@ class Inquiry(SoftDeleteMixin, Base):
     source_utm = Column(Text, nullable=True)
     publish_task_id = Column(String(36), nullable=True, index=True)
     meddpicc_json = Column(Text, nullable=True)
+    # ── P0-5: 独立 UTM 列（原仅 source_utm 序列化 blob，无法检索/聚合）──
+    utm_source = Column(String(200), nullable=True, index=True, comment="UTM source")
+    utm_medium = Column(String(120), nullable=True, index=True, comment="UTM medium")
+    utm_campaign = Column(String(200), nullable=True, index=True, comment="UTM campaign")
+    utm_content = Column(String(200), nullable=True, comment="UTM content")
+    utm_term = Column(String(200), nullable=True, comment="UTM term")
     # ── 全链路归因字段 ──
     source_url = Column(String(1000), nullable=True, comment="来源页面完整 URL")
     source_keyword = Column(String(300), nullable=True, comment="搜索关键词")
@@ -46,6 +52,8 @@ class Inquiry(SoftDeleteMixin, Base):
     customer_finder_id = Column(String(36), nullable=True, index=True, comment="关联的 Customer Finder 结果 ID")
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
     provenance_metadata = Column(JSON, nullable=True)
+    # ── P0-8: 线索价值评分 0-100，驱动销售分配排序（评分越高的线索权重越大）──
+    priority_score = Column(Integer, nullable=False, default=0, comment="线索价值评分 0-100，驱动分配排序")
 
     updated_at = Column(DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
     wechat = Column(String(100), nullable=True)

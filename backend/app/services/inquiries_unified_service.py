@@ -432,6 +432,7 @@ class InquiriesUnifiedService:
         utm_medium: Optional[str] = None,
         utm_campaign: Optional[str] = None,
         utm_content: Optional[str] = None,
+        utm_term: Optional[str] = None,
         publish_task_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
     ) -> dict[str, Any]:
@@ -491,6 +492,7 @@ class InquiriesUnifiedService:
                         "utm_medium": utm_medium,
                         "utm_campaign": utm_campaign,
                         "utm_content": utm_content,
+                        "utm_term": utm_term,
                     }.items()
                     if v
                 },
