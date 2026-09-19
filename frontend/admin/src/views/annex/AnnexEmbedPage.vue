@@ -5,6 +5,22 @@
   <YdPage :title="pageTitle" :subtitle="pageSubtitle" surface="elevated">
     <template #actions>
       <a-space>
+        <a-button
+          v-if="isTradeAi"
+          type="primary"
+          :loading="hermesLoading"
+          @click="dispatchHermesOutreach"
+        >
+          一键触达 · Hermes
+        </a-button>
+        <a-button
+          v-if="isGoodJob"
+          type="primary"
+          :loading="hermesLoading"
+          @click="dispatchHermesFulfillment"
+        >
+          一键履约 · Hermes
+        </a-button>
         <a-button @click="handleBack">
           <template #icon><ArrowLeftOutlined /></template>
           返回工作台
@@ -21,6 +37,22 @@
         </a-button>
       </a-space>
     </template>
+
+    <!-- Hermes 任务面（功能域无特权驱动） -->
+    <a-alert
+      v-if="lastHermesPlan?.plan_id"
+      class="mb-4"
+      type="success"
+      show-icon
+      message="Hermes 任务已提交"
+      :description="`来源 ${lastHermesPlan.graph_source || 'L1'} · 节点 ${lastHermesPlan.node_count ?? '-'} · plan ${lastHermesPlan.plan_id}`"
+    >
+      <template #action>
+        <a-button size="small" type="primary" @click="goHermesTasks(lastHermesPlan.plan_id)">
+          查看任务
+        </a-button>
+      </template>
+    </a-alert>
 
     <!-- 异常状态 1: 未配置或未部署 -->
     <a-alert
@@ -116,10 +148,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
 import { ArrowLeftOutlined, ReloadOutlined } from '@ant-design/icons-vue';
 
 import { YdPage } from '@/components/youding';
 import { annexMeta, resolveAnnexEmbedUrl, goodjobModuleMeta, GOODJOB_MODULES } from '@/constants/annexModules';
+import { goldenPathFulfillment, goldenPathOutreach } from '@/api/orchestration';
 import { useAuthStore } from '@/stores/auth';
 import { apiPost } from '@/utils/api';
 
@@ -132,6 +166,8 @@ const annexTicket = ref('');
 const ticketReady = ref(false);
 const ticketLoading = ref(false);
 const ticketError = ref('');
+const hermesLoading = ref(false);
+const lastHermesPlan = ref<{ plan_id?: string; graph_source?: string; node_count?: number } | null>(null);
 
 const annexKey = computed(() => String(route.meta.annexKey || ''));
 const meta = computed(() => annexMeta(annexKey.value));
@@ -141,6 +177,7 @@ const annexLabel = computed(() => meta.value?.label || '功能域工作台');
 const annexModule = computed(() => String(route.meta.annexModule || ''));
 const moduleMeta = computed(() => goodjobModuleMeta(annexModule.value));
 const isGoodJob = computed(() => annexKey.value === 'goodjob');
+const isTradeAi = computed(() => annexKey.value === 'trade-ai');
 const pageTitle = computed(() => {
   if (moduleMeta.value) return `${annexLabel.value} · ${moduleMeta.value.label}`;
   return annexLabel.value;
@@ -212,6 +249,67 @@ async function requestTicket() {
 
 function onIframeLoad() {
   annexReady.value = true;
+}
+
+function goHermesTasks(planId?: string) {
+  void router.push({
+    path: isTenantShell.value ? '/client/tasks' : '/client/tasks',
+    query: planId ? { plan: planId } : {},
+  });
+}
+
+/** GP-B：社媒拓客功能域 → Hermes 任务面（不打开附属主控） */
+async function dispatchHermesOutreach() {
+  hermesLoading.value = true;
+  try {
+    const res = await goldenPathOutreach({
+      intent: '社媒拓客 WhatsApp 私域触达 prospect social_outreach',
+      payload: { channel: 'social', source: 'annex-trade-ai' },
+      context: { golden_path: 'GP-B', plane: 'task', entry: 'annex-trade-ai' },
+    });
+    lastHermesPlan.value = {
+      plan_id: res?.plan_id,
+      graph_source: res?.graph_source,
+      node_count: res?.node_count,
+    };
+    message.success({
+      content: `已提交 Hermes 拓客任务（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${res?.plan_id || ''}`,
+      duration: 6,
+    });
+    if (res?.plan_id) goHermesTasks(res.plan_id);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    message.error(`Hermes 拓客任务提交失败：${msg}`);
+  } finally {
+    hermesLoading.value = false;
+  }
+}
+
+/** GP-A：外贸履约功能域 → Hermes 任务面 */
+async function dispatchHermesFulfillment() {
+  hermesLoading.value = true;
+  try {
+    const res = await goldenPathFulfillment({
+      intent: '履约推进与形式发票',
+      payload: { source: 'annex-goodjob', message: '外贸履约功能域一键履约' },
+      context: { golden_path: 'GP-A', plane: 'task', entry: 'annex-goodjob' },
+    });
+    lastHermesPlan.value = {
+      plan_id: res?.plan_id,
+      graph_source: res?.graph_source,
+      node_count: res?.node_count,
+    };
+    message.success({
+      content: `已提交 Hermes 履约任务（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${res?.plan_id || ''}`,
+      duration: 6,
+    });
+    if (res?.plan_id) goHermesTasks(res.plan_id);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    message.error(`Hermes 履约任务提交失败：${msg}`);
+  } finally {
+    hermesLoading.value = false;
+  }
 }
 
 function onAnnexMessage(event: MessageEvent) {

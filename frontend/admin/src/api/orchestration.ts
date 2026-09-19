@@ -199,3 +199,31 @@ export async function getHermesTaskDetail(planId: string, tenantId?: string): Pr
   const raw = await apiGet<any>(`/orchestration/hermes/tasks/${encodeURIComponent(planId)}${qs}`)
   return unwrap(raw)
 }
+
+/** 黄金路径：GP-A 履约 / GP-B 社媒拓客（任务面 Hermes，无特权） */
+export interface GoldenPathRequest {
+  intent?: string
+  payload?: Record<string, unknown>
+  channel?: string
+  context?: Record<string, unknown>
+  tenant_id?: string
+  auto_dispatch?: boolean
+}
+
+export async function goldenPathFulfillment(body: GoldenPathRequest): Promise<FromIntentResponse> {
+  const raw = await apiPost<any>('/orchestration/golden-path/fulfillment', {
+    channel: 'web',
+    auto_dispatch: true,
+    ...body,
+  })
+  return unwrap<FromIntentResponse>(raw)
+}
+
+export async function goldenPathOutreach(body: GoldenPathRequest = {}): Promise<FromIntentResponse> {
+  const raw = await apiPost<any>('/orchestration/golden-path/outreach', {
+    channel: 'web',
+    auto_dispatch: true,
+    ...body,
+  })
+  return unwrap<FromIntentResponse>(raw)
+}

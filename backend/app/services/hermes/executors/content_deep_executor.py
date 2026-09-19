@@ -83,8 +83,8 @@ class ContentDeepExecutor(BaseExecutor):
                     "executor": self.get_executor_name(),
                 },
             )
-        except Exception:
-            # 引擎类名/接口漂移时：诚实降级为静态模板，不因 ImportError 整节点失败
+        except Exception as exc:  # noqa: BLE001
+            # 引擎类名/接口漂移：诚实降级为静态模板；输出保留 error 供排查，不假成功
             meta = {
                 "title": name[:60],
                 "description": f"{name} - product information and B2B supply",
@@ -95,10 +95,14 @@ class ContentDeepExecutor(BaseExecutor):
             return ExecutorResult(
                 node_id=node.id,
                 status="degraded",
-                output={"meta": meta, "degraded": True, "note": "seo_meta template fallback", "executor": self.get_executor_name()},
+                output={
+                    "meta": meta,
+                    "degraded": True,
+                    "note": "seo_meta template fallback (engine unavailable)",
+                    "engine_error": str(exc)[:200],
+                    "executor": self.get_executor_name(),
+                },
             )
-        except Exception as exc:  # noqa: BLE001
-            return ExecutorResult(node_id=node.id, status="failed", output={}, error=f"seo_meta: {exc}")
 
     def _acquisition(self, p, node) -> ExecutorResult:
         cid = str(p.get("content_id") or "").strip()
@@ -147,7 +151,18 @@ class ContentDeepExecutor(BaseExecutor):
                 },
             )
         except Exception as exc:  # noqa: BLE001
-            return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc))
+            # 知识队列存储不可用时降级为可读摘要，避免内容获客图整节点 failed
+            return ExecutorResult(
+                node_id=node.id,
+                status="degraded",
+                output={
+                    "pending": 0,
+                    "next": None,
+                    "plain_summary": "知识队列暂不可用，跳过待读摘要",
+                    "note": f"knowledge_queue unavailable: {str(exc)[:160]}",
+                    "executor": self.get_executor_name(),
+                },
+            )
 
 
 ExecutorRegistry.register(ContentDeepExecutor())
