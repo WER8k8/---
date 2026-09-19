@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import logging
 import os
+from app.core.audit_logger import AuditLogger
 from typing import Any, Optional
 
 from sqlalchemy import or_
@@ -134,6 +135,7 @@ def prospect_scrape(
                     "id": str(r.id),
                     "source": "inquiries",
                     "company_name": getattr(r, "name", None),
+                    "provenance": {"source": "youding_pg", "skill_id": "prospect.scrape", "original_id": str(r.id)},
                     "email": getattr(r, "email", None),
                     "phone": getattr(r, "phone", None),
                     "product": getattr(r, "product", None),
@@ -157,7 +159,7 @@ def prospect_scrape(
         event_type="prospect_search",
         direction="internal",
         summary=f"keyword={keyword!r} country={country!r} hits={len(prospects)}",
-        payload={"keyword": keyword, "country": country, "hit_count": len(prospects)},
+        payload={"keyword": keyword, "country": country, "hit_count": len(prospects), "provenance_metadata": {"skill_id": "prospect.scrape"}},
     )
 
     out["prospects"] = prospects

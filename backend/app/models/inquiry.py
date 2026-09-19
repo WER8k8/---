@@ -1,3 +1,4 @@
+from sqlalchemy import JSON
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
@@ -45,6 +46,8 @@ class Inquiry(SoftDeleteMixin, Base):
     attribution_data = Column(Text, nullable=True, comment="归因详情 JSON: {page_id, article_id, geo_score, ...}")
     customer_finder_id = Column(String(36), nullable=True, index=True, comment="关联的 Customer Finder 结果 ID")
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
+    provenance_metadata = Column(JSON, nullable=True)
+
     updated_at = Column(DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
     wechat = Column(String(100), nullable=True)
     quotes = relationship("Quote", back_populates="inquiry")

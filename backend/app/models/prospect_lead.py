@@ -1,3 +1,4 @@
+from sqlalchemy import JSON
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """
@@ -147,6 +148,8 @@ class ProspectLead(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
     # ── 复合索引 ──
+    provenance_metadata = Column(JSON, nullable=True)
+
     __table_args__ = (
         # 邮箱 + 租户唯一（同一租户内邮箱不重复）
         UniqueConstraint("email", "tenant_id", name="uq_prospect_lead_email_tenant"),
