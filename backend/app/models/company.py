@@ -76,6 +76,11 @@ class Company(SoftDeleteMixin, Base):
     source_url = Column(String(1000), nullable=True)
     retrieved_at = Column(DateTime(timezone=True), nullable=True)
     confidence = Column(Float, nullable=True)  # 0-1
+    # P1-8 标签体系：规则标签（JSON 数组文本，由 rfm_service 生成，可筛选运营）
+    tags = Column(Text, nullable=True)
+    rfm_segment = Column(String(30), nullable=True, index=True)  # 冠军/忠诚/流失风险… 分段
+    rfm_code = Column(String(10), nullable=True)  # 如 "543"
+    rfm_updated_at = Column(DateTime(timezone=True), nullable=True)
     tenant_id = Column(String(36), nullable=True, index=True)
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
     updated_at = Column(DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now())

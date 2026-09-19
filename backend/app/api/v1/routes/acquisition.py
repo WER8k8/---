@@ -909,9 +909,24 @@ def ops_card_quote_validity(
     card.quote_valid_days = int(body.valid_days or 14)
     card.quote_fx_locked = bool(body.fx_locked)
     card.quote_fx_note = body.fx_note or card.quote_fx_note
+    # P1-6：登记报价即自动生成跟进节奏排期并落库（T+1/T+3/T+7/到期前）。
+    # 人工已填 next_action 时不覆盖（force=False），尊重销售自己的安排。
+    try:
+        from app.services.acquisition.cadence import apply_quote_cadence, build_quote_cadence
+
+        card = apply_quote_cadence(card, quote_at=card.quote_at, valid_days=card.quote_valid_days)
+    except Exception:  # noqa: BLE001
+        build_quote_cadence = None  # type: ignore[assignment]
     card = ops_card_store.update(card)
     out = _ops_card_payload(card)
     out["quote_validity"] = card.quote_validity_view()
+    try:
+        from app.services.acquisition.cadence import build_quote_cadence as _bqc
+
+        out["quote_cadence"] = _bqc(card.quote_at, card.quote_valid_days)
+    except Exception:  # noqa: BLE001
+        out["quote_cadence"] = []
+    return out
     return out
 
 
@@ -985,6 +1000,55 @@ def acquisition_outreach_allow(
         channel=body.channel,
         mode=body.mode,
     )
+
+
+@router.get("/rfm")
+def acquisition_rfm_accounts(
+    tenant_id: str = "",
+    segment: str = "",
+    tag: str = "",
+    limit: int = 200,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """P1-8 RFM 分层 + 标签 + ABM 账号聚合。
+
+    把同一买家散落在多条询盘/多张跟单卡上的动作聚合成一个「账号」，
+    按 R/F/M 打 1-5 分并分层，附规则标签 —— 运营据此圈人（如「沉睡待唤醒 + 高价值」）。
+    """
+    from app.services.acquisition.rfm_service import (
+        SEGMENTS,
+        build_accounts,
+        rfm_summary,
+    )
+
+    accounts = build_accounts(db, tenant_id=tenant_id)
+    if segment:
+        accounts = [a for a in accounts if a["segment"] == segment]
+    if tag:
+        accounts = [a for a in accounts if tag in a["tags"]]
+    summary = rfm_summary(accounts)
+    return {
+        "tenant_id": tenant_id or "all",
+        "filters": {"segment": segment, "tag": tag, "limit": limit},
+        "summary": summary,
+        "segments_dict": SEGMENTS,
+        "accounts": accounts[: max(1, min(limit, 1000))],
+    }
+
+
+@router.post("/rfm/refresh-tags")
+def acquisition_rfm_refresh_tags(
+    tenant_id: str = "",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """P1-8 重算并把标签/分层写回 companies（供按标签筛选）。"""
+    from app.services.acquisition.rfm_service import build_accounts, persist_account_tags
+
+    accounts = build_accounts(db, tenant_id=tenant_id)
+    result = persist_account_tags(db, tenant_id=tenant_id, accounts=accounts)
+    return {"ok": True, **result}
 
 
 @router.post("/payment-risk")

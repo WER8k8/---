@@ -13,6 +13,18 @@ from app.models.tenant import Tenant, TenantPlan, TenantSubscription
 _CHURN_CONTACTED_KEY = "churn_contacted_at"
 
 
+def _aware(dt):
+    """将可能 naive 的 datetime 规整为 UTC aware，避免与 now(timezone.utc) 相减报 TypeError。
+
+    tenant.updated_at / expires_at / trial_ends_at 经 DateTime(timezone=True) 列落库后，
+    部分记录为 naive（取决于驱动/时区配置），与 tz-aware 的 now 相减会崩。
+    已在 P1-3 接线时发现并修复（同时修好既有 /churn/at-risk 接口）。
+    """
+    if dt is None:
+        return None
+    return dt if dt.tzinfo is not None else dt.replace(tzinfo=timezone.utc)
+
+
 class ChurnService:
     """分析客户流失风险，基于真实租户数据计算预警"""
     # ── 风险因子权重 ──
@@ -76,7 +88,7 @@ class ChurnService:
         reasons: list[str] = []
         # 1. 最后活跃时间（用 updated_at 近似 login）
         if tenant.updated_at:
-            days_inactive = (now - tenant.updated_at).days
+            days_inactive = (now - _aware(tenant.updated_at)).days
             if days_inactive >= 15:
                 score += ChurnService.WEIGHT_LAST_LOGIN * 100
                 reasons.append(f"{days_inactive}天未登录")
@@ -89,7 +101,7 @@ class ChurnService:
 
         # 2. 套餐到期临近度
         if tenant.expires_at:
-            days_to_expiry = (tenant.expires_at - now).days
+            days_to_expiry = (_aware(tenant.expires_at) - now).days
             if days_to_expiry <= 0:
                 score += ChurnService.WEIGHT_EXPIRY * 100
                 reasons.append("套餐已到期")
@@ -102,7 +114,7 @@ class ChurnService:
 
         # 3. 试用到期判断
         if tenant.status == "trial" and tenant.trial_ends_at:
-            trial_left = (tenant.trial_ends_at - now).days
+            trial_left = (_aware(tenant.trial_ends_at) - now).days
             if trial_left <= 3:
                 score += ChurnService.WEIGHT_EXPIRY * 60
                 reasons.append(f"试用期仅剩{trial_left}天")

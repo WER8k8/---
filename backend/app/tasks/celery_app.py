@@ -16,6 +16,10 @@ celery_app = Celery(
         "app.tasks.trade_intel_tasks",
         "app.tasks.cross_border_tasks",
         "app.tasks.billing_tasks",
+        "app.tasks.churn_tasks",
+        "app.tasks.sla_tasks",
+        "app.tasks.quote_wake_tasks",
+        "app.tasks.company_autofill_tasks",
         "app.tasks.deerflow_tasks",
         "app.tasks.orchestration_tasks",
         "app.tasks.ops_scheduler_tasks",
@@ -82,6 +86,41 @@ celery_app.conf.update(
         "meter-events-aggregate-hourly": {
             "task": "app.tasks.billing_tasks.aggregate_meter_events",
             "schedule": crontab(minute=5),
+        },
+        # P1-1：租户到期催续提醒（每日 09:00 低峰；幂等按到期日去重，不重发）
+        "subscription-dunning-daily": {
+            "task": "app.tasks.billing_tasks.subscription_dunning_daily",
+            "schedule": crontab(hour=9, minute=0),
+            "kwargs": {"within_days": 14},
+            "options": {"max_instances": 1},
+        },
+        # P1-3: 流失预警自动动作（每日 09:30 扫描高风险租户，建跟进任务 + 飞书/邮件通知）。
+        "churn-auto-action-daily": {
+            "task": "app.tasks.churn_tasks.churn_auto_action_daily",
+            "schedule": crontab(hour=9, minute=30),
+            "kwargs": {"min_risk": "high", "dry_run": False},
+            "options": {"max_instances": 1},
+        },
+        # P1-7: 跟进 SLA 逾期主动告警（每日 10:00 扫全量跟单卡，逾期建任务+通知，按日幂等）。
+        "sla-overdue-alert-daily": {
+            "task": "app.tasks.sla_tasks.sla_overdue_alert_daily",
+            "schedule": crontab(hour=10, minute=0),
+            "kwargs": {"dry_run": False},
+            "options": {"max_instances": 1},
+        },
+        # P1-6: 报价未回访唤醒（每日 10:30；报价≥3天无跟进或已过期 → 建任务+通知）。
+        "quote-followup-wake-daily": {
+            "task": "app.tasks.quote_wake_tasks.quote_followup_wake_daily",
+            "schedule": crontab(hour=10, minute=30),
+            "kwargs": {"idle_days": 3, "dry_run": False},
+            "options": {"max_instances": 1},
+        },
+        # P1-8 收尾: 询盘域名→公司档案 兜底回填（每日 11:00；创建钩子是 best-effort，需要每日补齐）。
+        "company-autofill-backfill-daily": {
+            "task": "app.tasks.company_autofill_tasks.company_autofill_backfill_daily",
+            "schedule": crontab(hour=11, minute=0),
+            "kwargs": {"limit": 5000},
+            "options": {"max_instances": 1},
         },
         # PC-04: 平台账号会话巡检（每日一次，低峰时段）。纯 DB 判定，不触网。
         "platform-session-patrol-daily": {

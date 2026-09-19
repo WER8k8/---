@@ -200,6 +200,7 @@ class PublicInquiryCreate(BaseModel):
     utm_medium: Optional[str] = None
     utm_campaign: Optional[str] = None
     utm_content: Optional[str] = None
+    utm_term: Optional[str] = None
     publish_task_id: Optional[str] = Field(None, description="矩阵 publish_task 归因")
     @field_validator("phone")
     @classmethod
@@ -590,10 +591,19 @@ def create_public_inquiry(body: PublicInquiryCreate, request: Request, db: Sessi
             utm_medium=body.utm_medium,
             utm_campaign=body.utm_campaign,
             utm_content=body.utm_content,
+            utm_term=body.utm_term,
             publish_task_id=body.publish_task_id,
         )
     except ValueError as exc:
         return error_response(400, str(exc))
+    # P1-8 收尾：按邮箱域名自动建/补公司档案（内部用独立会话，任何失败都不影响询盘创建）。
+    # 不做这一步，RFM 标签与 ABM 账号视图就永远挂不到 companies 上。
+    try:
+        from app.services.acquisition.company_autofill import autofill_from_lead
+
+        autofill_from_lead(email=body.email, contact_name=body.name, tenant_id=body.tenant_id or "")
+    except Exception:  # noqa: BLE001
+        pass
     return success_response(data=data, message="询盘提交成功")
 
 
@@ -623,6 +633,20 @@ def update_inquiry(
     if denial:
         return denial
 
+    # P0-9: 通用更新同样受漏斗状态机约束（防止经 PUT 绕过状态守卫）
+    _put_status = getattr(req, "status", None)
+    if _put_status is not None and str(_put_status).strip().lower() != inquiry.status:
+        try:
+            from app.services.inquiry_funnel_state_machine import can_transition as _ct
+            _ok, _reason = _ct(inquiry.status, str(_put_status).strip().lower())
+        except Exception:
+            _ok, _reason = True, ""
+        if not _ok:
+            return error_response(
+                400,
+                f"状态流转被拒绝: {_reason}（当前: {inquiry.status} → 目标: {_put_status}）",
+            )
+
     for k, v in req.items():
         if hasattr(inquiry, k):
             setattr(inquiry, k, v)
@@ -651,6 +675,17 @@ def update_inquiry_status(
     new_status = body.status.strip().lower()
     if new_status not in _VALID_INQUIRY_STATUSES:
         return error_response(400, f"无效的询盘状态 '{body.status}'，允许值: {', '.join(sorted(_VALID_INQUIRY_STATUSES))}")
+    # P0-9: 统一权威漏斗状态机守卫（前进-only + 显式重开，杜绝任意互跳）
+    try:
+        from app.services.inquiry_funnel_state_machine import can_transition
+        ok, reason = can_transition(inquiry.status, new_status)
+    except Exception:
+        ok, reason = True, ""
+    if not ok:
+        return error_response(
+            400,
+            f"状态流转被拒绝: {reason}（当前: {inquiry.status} → 目标: {new_status}）",
+        )
     inquiry.status = new_status
     db.commit()
     db.refresh(inquiry)
