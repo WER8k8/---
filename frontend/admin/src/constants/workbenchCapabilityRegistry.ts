@@ -31,6 +31,10 @@ export interface WorkbenchItemDef {
   quick?: boolean;
   /** 仅参与路由守卫与划拨，不在工作台卡片区展示 */
   guardOnly?: boolean;
+  /** 功能域业务归属（如 获客转化 / 履约与账户） */
+  domain?: string;
+  /** 功能域是否特权入口；附属域必须为 false */
+  privileged?: boolean;
 }
 
 export interface WorkbenchSectionDef {

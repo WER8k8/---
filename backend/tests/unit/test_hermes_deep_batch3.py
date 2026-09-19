@@ -83,7 +83,7 @@ def test_content_deep_knowledge_and_attr():
     ex = ExecutorRegistry.get("content_deep")
     node = TaskNode(id="c1", executor="content_deep", capability="content_deep.knowledge", input={"tenant_id": "demo"})
     res = asyncio.run(ex.run(node, _ctx(None)))
-    assert res.status == "succeeded"
+    assert res.status in ("succeeded", "degraded")
     assert "plain_summary" in res.output
 
     node2 = TaskNode(
@@ -97,6 +97,59 @@ def test_content_deep_knowledge_and_attr():
     assert res2.output.get("linked") is True
 
 
+def test_content_deep_honest_degradations():
+    """深挖契约：缺实体/存储不可用 → degraded 诚实，不假成功不整图 failed。"""
+    ex = ExecutorRegistry.get("content_deep")
+    node_missing = TaskNode(
+        id="c-miss",
+        executor="content_deep",
+        capability="content_deep.acquisition",
+        input={"tenant_id": "demo", "content_id": "", "inquiry_id": ""},
+    )
+    res_miss = asyncio.run(ex.run(node_missing, _ctx(None)))
+    assert res_miss.status == "degraded"
+    assert res_miss.output.get("linked") is False
+
+    node_name = TaskNode(
+        id="c-noname",
+        executor="content_deep",
+        capability="content_deep.seo_meta",
+        input={"product_name": "", "title": ""},
+    )
+    res_name = asyncio.run(ex.run(node_name, _ctx(None)))
+    assert res_name.status == "failed"
+    assert res_name.error == "missing_product_name"
+
+
+def test_content_deep_knowledge_store_down_degrades(monkeypatch):
+    class Boom:
+        @staticmethod
+        def report(tenant_id=None):
+            raise RuntimeError("knowledge store offline")
+
+    import app.services.acquisition.knowledge_queue as kq
+
+    monkeypatch.setattr(kq, "knowledge_queue_store", Boom(), raising=False)
+    # executor does local import; patch module attribute used after import
+    monkeypatch.setattr(
+        "app.services.acquisition.knowledge_queue.knowledge_queue_store",
+        Boom(),
+    )
+    ex = ExecutorRegistry.get("content_deep")
+    node = TaskNode(
+        id="c-kdown",
+        executor="content_deep",
+        capability="content_deep.knowledge",
+        input={"tenant_id": "demo"},
+    )
+    res = asyncio.run(ex.run(node, _ctx(None)))
+    assert res.status == "degraded"
+    assert res.output.get("pending") == 0
+    assert "unavailable" in str(res.output.get("note", "")).lower() or "不可用" in str(
+        res.output.get("plain_summary", "")
+    )
+
+
 def test_seo_meta_degraded_flag():
     ex = ExecutorRegistry.get("content_deep")
     node = TaskNode(
@@ -106,13 +159,42 @@ def test_seo_meta_degraded_flag():
         input={"product_name": "Rockwool Board", "industry": "building materials"},
     )
     res = asyncio.run(ex.run(node, _ctx(None)))
-    # 诚实契约：凡能产出 meta 的路径，output 标 degraded 时顶层 status 不得伪装 succeeded；
-    # AiSiteEngine 不可导入等失败路径 → 如实 failed（空 output），同样可接受。
+    # 诚实契约：凡能产出 meta 的路径，output 标 degraded 时顶层 status 不得伪装 succeeded。
+    # 引擎不可用 → 模板 degraded（含 engine_error），不得伪装 AI 成功。
     if res.output.get("executor"):
         assert res.output.get("executor") == "content_deep"
         assert "degraded" in res.output
         if res.output.get("degraded"):
             assert res.status == "degraded", "seo_meta 为模板/降级却报 succeeded = 假成功"
+            assert res.output.get("ai_generated") is not True
+
+
+def test_seo_meta_engine_unavailable_degrades(monkeypatch):
+    """引擎导入/调用失败 → 模板 degraded + engine_error，不假成功不整节点裸崩。"""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "app.services.ai_site_engine" or name.endswith("ai_site_engine"):
+            raise ImportError("AiSiteEngine unavailable in test")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    ex = ExecutorRegistry.get("content_deep")
+    node = TaskNode(
+        id="c-eng",
+        executor="content_deep",
+        capability="content_deep.seo_meta",
+        input={"product_name": "Rockwool Board"},
+    )
+    res = asyncio.run(ex.run(node, _ctx(None)))
+    assert res.status == "degraded"
+    assert res.output.get("degraded") is True
+    assert res.output.get("meta", {}).get("ai_generated") is False
+    assert "engine_error" in res.output
+    assert res.output.get("executor") == "content_deep"
+
 
 
 def test_outreach_gate_blocks_without_research():

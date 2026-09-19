@@ -102,6 +102,9 @@
           <a-button size="small" :loading="ftLoading === 'osint'" @click="runInquiryOsint">背调</a-button>
           <a-button size="small" :loading="ftLoading === 'meddpicc'" @click="runInquiryMeddpicc">MEDDPICC</a-button>
           <a-button size="small" :loading="ftLoading === 'pi'" @click="runInquiryPi">生成 PI</a-button>
+          <a-button size="small" :loading="hermesLoading" type="primary" ghost @click="runHermesFulfillment">
+            Hermes 履约
+          </a-button>
           <a-button size="small" type="default" @click="router.push('/client/annex/goodjob/customers')">
             客户档案
           </a-button>
@@ -224,6 +227,7 @@ import { useYoudingTable } from '@/composables/useYoudingTableBridge';
 import { apiGet } from '@/utils/api';
 import { downloadTableCsv } from '@/utils/exportCsv';
 import { adaptPaginatedResponse } from '@/utils/ydTableUtils';
+import { goldenPathFulfillment } from '@/api/orchestration';
 import {
   inquiryBridgeStatus,
   inquiryBridgeSummary,
@@ -271,6 +275,7 @@ const baseColumns = [
 const detailOpen = ref(false);
 const detailRow = ref<Record<string, unknown> | null>(null);
 const ftLoading = ref<'osint' | 'meddpicc' | 'pi' | ''>('');
+const hermesLoading = ref(false);
 const bridgeLoading = ref<'summary' | 'reply' | ''>('');
 const bridgeSummary = ref<BridgeSummary | null>(null);
 const bridgeStatus = ref<InquiryBridgeStatus | null>(null);
@@ -474,6 +479,39 @@ async function runInquiryPi() {
     message.error(e instanceof Error ? e.message : 'PI 生成失败');
   } finally {
     ftLoading.value = '';
+  }
+}
+
+/** 询盘任务面第二路径：GP-A Hermes（交互 PI 仍保留） */
+async function runHermesFulfillment() {
+  const row = detailRow.value || {};
+  const inquiryId = String(row.id || '');
+  if (!inquiryId) return;
+  hermesLoading.value = true;
+  try {
+    const res = await goldenPathFulfillment({
+      intent: '履约推进与形式发票',
+      payload: {
+        inquiry_id: inquiryId,
+        name: String(row.name || ''),
+        message: String(row.message_clean || row.message || `询盘 ${inquiryId} 履约推进与 PI`),
+        country: String(row.country || ''),
+        phone: String(row.phone || ''),
+        source: 'inquiry_queue',
+      },
+      context: { golden_path: 'GP-A', plane: 'task', inquiry_id: inquiryId },
+    });
+    message.success({
+      content: `已提交 Hermes 履约（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${res?.plan_id || ''}`,
+      duration: 6,
+    });
+    if (res?.plan_id) {
+      void router.push({ path: '/client/tasks', query: { plan: res.plan_id } });
+    }
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : 'Hermes 履约任务提交失败');
+  } finally {
+    hermesLoading.value = false;
   }
 }
 
