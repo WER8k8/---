@@ -6,10 +6,16 @@
     class="lpro-root min-h-screen flex flex-col"
     :style="{ '--tenant-primary': themePrimary, '--lpro-primary': themePrimary }"
   >
-    <div v-if="loading" class="lpro-loading">
+    <div
+      v-if="loading"
+      class="lpro-loading"
+    >
       <p>{{ tSite('loading') }}</p>
     </div>
-    <div v-else-if="error" class="lpro-error">
+    <div
+      v-else-if="error"
+      class="lpro-error"
+    >
       <h1>{{ tSite('site_unavailable') }}</h1>
       <p>{{ error }}</p>
     </div>
@@ -33,14 +39,31 @@
 
       <header class="lpro-header">
         <div class="lpro-container lpro-header-inner">
-          <NuxtLink to="/tenant" class="lpro-brand">
-            <img v-if="tenant.brand.logo_url" :src="tenant.brand.logo_url" :alt="companyName" />
+          <NuxtLink
+            to="/tenant"
+            class="lpro-brand"
+          >
+            <img
+              v-if="tenant.brand.logo_url"
+              :src="tenant.brand.logo_url"
+              :alt="companyName"
+            >
             <div>
-              <div class="lpro-brand-title">{{ companyName }}</div>
-              <div v-if="brandTagline" class="lpro-brand-tag">{{ brandTagline }}</div>
+              <div class="lpro-brand-title">
+                {{ companyName }}
+              </div>
+              <div
+                v-if="brandTagline"
+                class="lpro-brand-tag"
+              >
+                {{ brandTagline }}
+              </div>
             </div>
           </NuxtLink>
-          <nav class="lpro-nav" aria-label="Main">
+          <nav
+            class="lpro-nav"
+            aria-label="Main"
+          >
             <NuxtLink
               v-for="item in navItems"
               :key="item.key"
@@ -61,13 +84,26 @@
                 :on-language-change="onLanguageChange"
               />
             </div>
-            <NuxtLink to="/tenant/contact" class="lpro-header-cta">{{ ctaPrimary }}</NuxtLink>
+            <NuxtLink
+              to="/tenant/contact"
+              class="lpro-header-cta"
+            >
+              {{ ctaPrimary }}
+            </NuxtLink>
           </div>
-          <button type="button" class="lpro-menu-btn md:hidden" :aria-expanded="menuOpen" @click="menuOpen = !menuOpen">
+          <button
+            type="button"
+            class="lpro-menu-btn md:hidden"
+            :aria-expanded="menuOpen"
+            @click="menuOpen = !menuOpen"
+          >
             ☰
           </button>
         </div>
-        <div v-if="menuOpen" class="lpro-container lpro-mobile-nav md:hidden">
+        <div
+          v-if="menuOpen"
+          class="lpro-container lpro-mobile-nav md:hidden"
+        >
           <LProLanguagePicker
             v-if="tenant.domain"
             class="lpro-mobile-lang"
@@ -96,15 +132,29 @@
       <footer class="lpro-footer">
         <div class="lpro-container lpro-footer-grid">
           <div>
-            <div class="font-bold text-lg mb-1">{{ companyName }}</div>
-            <p class="text-white/70 text-sm">{{ brandTagline }}</p>
+            <div class="font-bold text-lg mb-1">
+              {{ companyName }}
+            </div>
+            <p class="text-white/70 text-sm">
+              {{ brandTagline }}
+            </p>
           </div>
           <div>
-            <div class="font-semibold mb-2">{{ tSite('footer_quick_links') }}</div>
-            <NuxtLink v-for="item in navItems" :key="item.key" :to="item.href">{{ item.label }}</NuxtLink>
+            <div class="font-semibold mb-2">
+              {{ tSite('footer_quick_links') }}
+            </div>
+            <NuxtLink
+              v-for="item in navItems"
+              :key="item.key"
+              :to="item.href"
+            >
+              {{ item.label }}
+            </NuxtLink>
           </div>
           <div>
-            <div class="font-semibold mb-2">{{ tSite('footer_contact') }}</div>
+            <div class="font-semibold mb-2">
+              {{ tSite('footer_contact') }}
+            </div>
             <a
               v-for="ch in contactDisplayChannels"
               :key="`footer-${ch.channel_type}-${ch.value}`"
@@ -114,7 +164,9 @@
             </a>
           </div>
         </div>
-        <div class="lpro-container lpro-footer-copy">{{ footerText }}</div>
+        <div class="lpro-container lpro-footer-copy">
+          {{ footerText }}
+        </div>
       </footer>
 
       <TenantSiteCompanion

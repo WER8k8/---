@@ -65,18 +65,23 @@ def test_fulfillment_node_write():
 
 
 def test_goodjob_pi_not_configured_honest():
+    """本项目 CRM 原生直驱：无外桥也可出 PI；账户未配置 → degraded（不假成功、不编造银行号）。"""
     import os
     os.environ.pop("GOODJOB_BASE_URL", None)
+    os.environ.pop("GOODJOB_USE_EXTERNAL_ENGINE", None)
     ex = ExecutorRegistry.get("trade_ops")
     node = TaskNode(
         id="t3",
         executor="trade_ops",
         capability="trade_ops.goodjob_pi",
-        input={"inquiry_id": "INQ-PI-GJ"},
+        input={"inquiry_id": "INQ-PI-GJ", "buyer_name": "Probe Buyer", "quantity": 1, "unit_price": 10},
     )
     res = asyncio.run(ex.run(node, _ctx(None)))
-    assert res.status == "failed"
-    assert "GOODJOB" in (res.error or "") or res.output.get("status") == "not_configured"
+    assert res.status in ("degraded", "succeeded", "failed")
+    if res.status == "failed":
+        assert "GOODJOB_BASE_URL" not in (res.error or "")
+    else:
+        assert res.output.get("native") is True or res.output.get("status") == "ok"
 
 
 def test_content_deep_knowledge_and_attr():

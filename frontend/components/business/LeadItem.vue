@@ -2,28 +2,39 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <article class="p-4 mb-3 bg-white rounded-xl border border-slate-200 transition-all duration-200 relative overflow-hidden
-    hover:-translate-y-0.5 hover:shadow-lg hover:border-teal-600">
+  <article
+    class="p-4 mb-3 bg-white rounded-xl border border-slate-200 transition-all duration-200 relative overflow-hidden
+    hover:-translate-y-0.5 hover:shadow-lg hover:border-teal-600"
+  >
     <!-- Top gradient accent -->
-    <div class="absolute top-0 left-0 right-0 h-[3px] opacity-40"
-      style="background: linear-gradient(135deg, #0f766e 0%, #22c55e 100%)" />
+    <div
+      class="absolute top-0 left-0 right-0 h-[3px] opacity-40"
+      style="background: linear-gradient(135deg, #0f766e 0%, #22c55e 100%)"
+    />
 
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center gap-3">
         <strong class="text-base font-semibold">{{ lead.name || '未留姓名' }}</strong>
-        <a :href="`tel:${lead.phone}`"
+        <a
+          :href="`tel:${lead.phone}`"
           class="text-sm font-semibold px-2 py-1 rounded-lg transition-all duration-200"
-          style="color: #0f766e; background: rgba(15, 118, 110, 0.1)">
+          style="color: #0f766e; background: rgba(15, 118, 110, 0.1)"
+        >
           {{ lead.phone }}
         </a>
       </div>
-      <span :class="badgeClass" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold">
+      <span
+        :class="badgeClass"
+        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+      >
         {{ statusLabel }}
       </span>
     </div>
 
-    <div class="text-sm text-slate-500 mb-1 p-2 rounded-r-lg border-l-[3px] border-l-green-500"
-      style="background: rgba(34, 197, 94, 0.05)">
+    <div
+      class="text-sm text-slate-500 mb-1 p-2 rounded-r-lg border-l-[3px] border-l-green-500"
+      style="background: rgba(34, 197, 94, 0.05)"
+    >
       {{ lead.region || '未知地区' }} ·
       {{ lead.quantity_m3 || 0 }}m³ ·
       ¥{{ lead.estimated_price || 0 }}/m³

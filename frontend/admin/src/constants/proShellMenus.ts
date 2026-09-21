@@ -41,8 +41,6 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
       { name: 'ClientAcquisitionOps', path: '/client/acquisition-ops', title: '获客作战台', icon: 'AimOutlined' },
       { name: 'ClientInquiryQueue', path: '/client/queues/inquiries', title: '询盘队列', icon: 'OrderedListOutlined' },
       { name: 'ClientEmailCampaigns', path: '/client/email-campaigns', title: '邮件营销', icon: 'MailOutlined' },
-      // 功能域（无特权）：原 TradeAI → 社媒拓客，与其它获客模块同级
-      { name: 'ClientAnnexTradeAi', path: '/client/annex/trade-ai', title: '社媒拓客', icon: 'ThunderboltOutlined' },
       { name: 'ClientTradeTools', path: '/client/trade-tools', title: '外贸工具指南', icon: 'QuestionCircleOutlined' },
       { name: 'ClientReferral', path: '/client/referral', title: '邀请好友', icon: 'TeamOutlined' },
     ],
@@ -68,16 +66,6 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
     children: [
       { name: 'ClientFulfillmentQueue', path: '/client/queues/fulfillment', title: '履约队列', icon: 'CarryOutOutlined' },
       // 功能域（无特权）：原 GoodJob → 外贸履约，与其它履约模块同级
-      {
-        name: 'ClientAnnexGoodjob',
-        path: '/client/annex/goodjob',
-        title: '外贸履约',
-        icon: 'GlobalOutlined',
-        children: [
-          { name: 'ClientAnnexGoodjobTickets', path: '/client/annex/goodjob/tickets', title: '外贸单证', icon: 'FileTextOutlined' },
-          { name: 'ClientAnnexGoodjobCustomers', path: '/client/annex/goodjob/customers', title: '客户档案', icon: 'TeamOutlined' },
-        ],
-      },
       { name: 'ClientHermesTasks', path: '/client/tasks', title: 'Hermes 任务', icon: 'NodeIndexOutlined' },
       { name: 'ClientBilling', path: '/client/billing', title: '套餐续费', icon: 'AccountBookOutlined' },
       { name: 'ClientInvoices', path: '/client/invoices', title: '开票申请', icon: 'FileTextOutlined' },

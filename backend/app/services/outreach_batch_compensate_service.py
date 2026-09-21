@@ -80,9 +80,18 @@ def _compensate_single_row(db: Session, row: Any, result: dict[str, Any]) -> Non
         retry_count = meta.get("retry_count", 0)
         if retry_count >= 3:
             result["failed"] += 1
+            # 超过 3 次重试：推入死信队列 (DLQ)
+            push_to_dlq({
+                "id": str(row.id),
+                "sequence_id": str(row.sequence_id) if row.sequence_id else None,
+                "tenant_id": str(row.tenant_id) if hasattr(row, "tenant_id") else None,
+                "status": "max_retries_exceeded",
+                "retry_count": retry_count,
+                "failed_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+            })
             result["details"].append({
                 "id": str(row.id),
-                "status": "max_retries_exceeded",
+                "status": "pushed_to_dlq",
                 "retry_count": retry_count,
             })
             return
@@ -138,3 +147,75 @@ def get_outreach_batch_stats(db: Session) -> dict[str, Any]:
         )
         stats[status.value] = count
     return stats
+
+
+# ── 死信队列 (DLQ) 基础设施 ──────────────────────────────────────
+_DLQ_KEY = "youding:trade_outreach_dlq"
+_IN_MEMORY_DLQ: list[dict[str, Any]] = []
+
+
+def _get_redis_client():
+    try:
+        from app.core.redis import get_redis
+        return get_redis()
+    except Exception:
+        return None
+
+
+def push_to_dlq(payload: dict[str, Any]) -> bool:
+    """将失败外联推入 Redis / 内存死信队列 (DLQ)。"""
+    import json
+    r = _get_redis_client()
+    if r:
+        try:
+            r.lpush(_DLQ_KEY, json.dumps(payload, ensure_ascii=False))
+            r.expire(_DLQ_KEY, 7 * 24 * 3600)  # 保留 7 天
+            return True
+        except Exception as exc:
+            logger.warning("Redis DLQ push failed: %s, falling back to in-memory DLQ", exc)
+    _IN_MEMORY_DLQ.append(payload)
+    return True
+
+
+def get_dlq_items(limit: int = 50) -> list[dict[str, Any]]:
+    """查询死信队列中的异常任务列表。"""
+    import json
+    r = _get_redis_client()
+    items = []
+    if r:
+        try:
+            raw = r.lrange(_DLQ_KEY, 0, limit - 1)
+            for it in raw:
+                try:
+                    items.append(json.loads(it))
+                except Exception:
+                    pass
+            if items:
+                return items
+        except Exception:
+            pass
+    return _IN_MEMORY_DLQ[:limit]
+
+
+def retry_dlq_item(db: Session, outreach_id: str) -> dict[str, Any]:
+    """从死信队列中人工/自动重试单条外联任务。"""
+    row = db.query(EmailOutreach).filter(EmailOutreach.id == outreach_id).first()
+    if not row:
+        return {"success": False, "reason": "outreach_not_found"}
+
+    # 重置重试计数器并再次尝试投递
+    meta = row.outreach_metadata or {}
+    meta["retry_count"] = 0
+    row.outreach_metadata = meta
+    row.status = EmailStatus.QUEUED
+    db.commit()
+    db.refresh(row)
+
+    step_result = send_outreach_step(db, outreach_id=str(row.id))
+    return {
+        "success": bool(step_result.get("ok")),
+        "outreach_id": str(row.id),
+        "status": step_result.get("status"),
+        "error": step_result.get("error"),
+    }
+

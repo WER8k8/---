@@ -20,7 +20,10 @@
       <div class="max-w-3xl mx-auto px-3 sm:px-4 lg:px-8">
         <!-- Search Form -->
         <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8 mb-6 sm:mb-8">
-          <form @submit.prevent="trackLogistics" class="space-y-4">
+          <form
+            @submit.prevent="trackLogistics"
+            class="space-y-4"
+          >
             <div>
               <label class="block text-sm font-medium text-text-primary mb-2">运单号</label>
               <div class="flex gap-3">
@@ -30,8 +33,12 @@
                   required
                   class="flex-1 px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   placeholder="请输入运单号，如：SF1234567890"
-                />
-                <button type="submit" :disabled="trackingLoading" class="btn-primary whitespace-nowrap">
+                >
+                <button
+                  type="submit"
+                  :disabled="trackingLoading"
+                  class="btn-primary whitespace-nowrap"
+                >
                   {{ trackingLoading ? '查询中...' : '查询' }}
                 </button>
               </div>
@@ -42,47 +49,97 @@
                 v-model="carrier"
                 class="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
               >
-                <option value="">自动识别</option>
-                <option value="sf-express">顺丰速运</option>
-                <option value="zto">中通快递</option>
-                <option value="sto">申通快递</option>
-                <option value="yto">圆通速递</option>
-                <option value="yd">韵达快递</option>
-                <option value="ems">EMS</option>
-                <option value="dhl">DHL</option>
-                <option value="fedex">FedEx</option>
-                <option value="ups">UPS</option>
+                <option value="">
+                  自动识别
+                </option>
+                <option value="sf-express">
+                  顺丰速运
+                </option>
+                <option value="zto">
+                  中通快递
+                </option>
+                <option value="sto">
+                  申通快递
+                </option>
+                <option value="yto">
+                  圆通速递
+                </option>
+                <option value="yd">
+                  韵达快递
+                </option>
+                <option value="ems">
+                  EMS
+                </option>
+                <option value="dhl">
+                  DHL
+                </option>
+                <option value="fedex">
+                  FedEx
+                </option>
+                <option value="ups">
+                  UPS
+                </option>
               </select>
             </div>
           </form>
         </div>
 
         <!-- Loading State -->
-        <div v-if="trackingLoading" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
+        <div
+          v-if="trackingLoading"
+          class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+        >
           <div class="animate-pulse space-y-4">
-            <div class="h-6 bg-gray-200 rounded w-1/3"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div v-for="i in 4" :key="i" class="flex gap-4">
-              <div class="w-6 h-6 bg-gray-200 rounded-full"></div>
-              <div class="flex-1 h-16 bg-gray-200 rounded"></div>
+            <div class="h-6 bg-gray-200 rounded w-1/3" />
+            <div class="h-4 bg-gray-200 rounded w-1/2" />
+            <div
+              v-for="i in 4"
+              :key="i"
+              class="flex gap-4"
+            >
+              <div class="w-6 h-6 bg-gray-200 rounded-full" />
+              <div class="flex-1 h-16 bg-gray-200 rounded" />
             </div>
           </div>
         </div>
 
         <!-- Error State -->
-        <div v-else-if="trackingError" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8 text-center">
-          <svg class="w-16 h-16 mx-auto text-red-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div
+          v-else-if="trackingError"
+          class="bg-surface rounded-2xl shadow-card p-6 sm:p-8 text-center"
+        >
+          <svg
+            class="w-16 h-16 mx-auto text-red-300 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
-          <h3 class="text-lg font-semibold text-text-primary mb-2">查询失败</h3>
-          <p class="text-sm text-text-secondary mb-4">{{ trackingError }}</p>
-          <button @click="trackLogistics" class="btn-primary">
+          <h3 class="text-lg font-semibold text-text-primary mb-2">
+            查询失败
+          </h3>
+          <p class="text-sm text-text-secondary mb-4">
+            {{ trackingError }}
+          </p>
+          <button
+            @click="trackLogistics"
+            class="btn-primary"
+          >
             重试
           </button>
         </div>
 
         <!-- Tracking Result -->
-        <div v-else-if="trackingResult" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
+        <div
+          v-else-if="trackingResult"
+          class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+        >
           <!-- Tracking Header -->
           <div class="mb-6 sm:mb-8 pb-6 border-b border-border">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
@@ -107,27 +164,45 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
               <div>
-                <p class="text-text-secondary">发货地</p>
-                <p class="font-medium text-text-primary">{{ trackingResult.origin || '-' }}</p>
+                <p class="text-text-secondary">
+                  发货地
+                </p>
+                <p class="font-medium text-text-primary">
+                  {{ trackingResult.origin || '-' }}
+                </p>
               </div>
               <div>
-                <p class="text-text-secondary">目的地</p>
-                <p class="font-medium text-text-primary">{{ trackingResult.destination || '-' }}</p>
+                <p class="text-text-secondary">
+                  目的地
+                </p>
+                <p class="font-medium text-text-primary">
+                  {{ trackingResult.destination || '-' }}
+                </p>
               </div>
               <div>
-                <p class="text-text-secondary">预计到达</p>
-                <p class="font-medium text-text-primary">{{ trackingResult.estimated_delivery || '-' }}</p>
+                <p class="text-text-secondary">
+                  预计到达
+                </p>
+                <p class="font-medium text-text-primary">
+                  {{ trackingResult.estimated_delivery || '-' }}
+                </p>
               </div>
               <div>
-                <p class="text-text-secondary">最新更新</p>
-                <p class="font-medium text-text-primary">{{ formatDate(trackingResult.last_update) }}</p>
+                <p class="text-text-secondary">
+                  最新更新
+                </p>
+                <p class="font-medium text-text-primary">
+                  {{ formatDate(trackingResult.last_update) }}
+                </p>
               </div>
             </div>
           </div>
 
           <!-- Tracking Timeline -->
           <div>
-            <h3 class="text-base sm:text-lg font-bold text-text-primary mb-4">物流轨迹</h3>
+            <h3 class="text-base sm:text-lg font-bold text-text-primary mb-4">
+              物流轨迹
+            </h3>
             <div class="relative">
               <div
                 v-for="(event, idx) in trackingResult.events"
@@ -139,7 +214,7 @@
                   v-if="idx < trackingResult.events.length - 1"
                   class="absolute left-3 top-3 bottom-0 w-0.5"
                   :class="idx === 0 ? 'bg-primary' : 'bg-gray-200'"
-                ></div>
+                />
                 <!-- Timeline dot -->
                 <div
                   :class="[
@@ -147,10 +222,18 @@
                     idx === 0 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
                   ]"
                 >
-                  <svg v-if="idx === 0" class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    v-if="idx === 0"
+                    class="w-3 h-3"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span v-else class="text-xs">{{ idx + 1 }}</span>
+                  <span
+                    v-else
+                    class="text-xs"
+                  >{{ idx + 1 }}</span>
                 </div>
                 <!-- Event Content -->
                 <div
@@ -167,11 +250,19 @@
                   >
                     {{ event.description }}
                   </p>
-                  <p class="text-xs text-text-secondary mt-1">{{ formatDate(event.timestamp) }}</p>
-                  <p v-if="event.location" class="text-xs text-text-secondary mt-0.5">
+                  <p class="text-xs text-text-secondary mt-1">
+                    {{ formatDate(event.timestamp) }}
+                  </p>
+                  <p
+                    v-if="event.location"
+                    class="text-xs text-text-secondary mt-0.5"
+                  >
                     {{ event.location }}
                   </p>
-                  <p v-if="event.operator" class="text-xs text-text-secondary mt-0.5">
+                  <p
+                    v-if="event.operator"
+                    class="text-xs text-text-secondary mt-0.5"
+                  >
                     操作人: {{ event.operator }}
                   </p>
                 </div>
@@ -181,12 +272,29 @@
         </div>
 
         <!-- Empty State (Initial) -->
-        <div v-else class="text-center py-10 sm:py-16">
-          <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <div
+          v-else
+          class="text-center py-10 sm:py-16"
+        >
+          <svg
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+            />
           </svg>
-          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">输入运单号查询</h3>
-          <p class="text-sm text-text-secondary">请输入运单号进行物流跟踪查询</p>
+          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">
+            输入运单号查询
+          </h3>
+          <p class="text-sm text-text-secondary">
+            请输入运单号进行物流跟踪查询
+          </p>
         </div>
       </div>
     </section>

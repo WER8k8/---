@@ -4,43 +4,72 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar safe-area-top :blur="true">
+    <MobileNavbar
+      safe-area-top
+      :blur="true"
+    >
       <template #default>
         <div class="flex items-center h-14">
           <button
             class="p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors"
             @click="router.back()"
           >
-            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <svg
+              class="w-5 h-5 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
-          <h1 class="ml-2 text-base font-semibold text-gray-900 truncate">{{ t('mobile.orders.detail') }}</h1>
+          <h1 class="ml-2 text-base font-semibold text-gray-900 truncate">
+            {{ t('mobile.orders.detail') }}
+          </h1>
         </div>
       </template>
     </MobileNavbar>
 
     <!-- Loading State -->
-    <div v-if="pending" class="px-4 py-4 space-y-3">
+    <div
+      v-if="pending"
+      class="px-4 py-4 space-y-3"
+    >
       <div class="bg-white rounded-2xl p-4 animate-pulse">
-        <div class="h-6 bg-gray-200 rounded w-1/3 mb-3"></div>
-        <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+        <div class="h-6 bg-gray-200 rounded w-1/3 mb-3" />
+        <div class="h-4 bg-gray-200 rounded w-1/2 mb-4" />
         <div class="space-y-2">
-          <div class="h-16 bg-gray-200 rounded-lg"></div>
+          <div class="h-16 bg-gray-200 rounded-lg" />
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="px-4 py-20 text-center">
-      <div class="text-red-500 text-base font-medium mb-4">{{ t('mobile.orders.loadError') }}</div>
-      <button class="mobile-btn-primary px-6 py-3 rounded-full" @click="router.back()">
+    <div
+      v-else-if="error"
+      class="px-4 py-20 text-center"
+    >
+      <div class="text-red-500 text-base font-medium mb-4">
+        {{ t('mobile.orders.loadError') }}
+      </div>
+      <button
+        class="mobile-btn-primary px-6 py-3 rounded-full"
+        @click="router.back()"
+      >
         {{ t('mobile.common.goBack') }}
       </button>
     </div>
 
     <!-- Order Detail -->
-    <div v-else-if="order" class="pb-24">
+    <div
+      v-else-if="order"
+      class="pb-24"
+    >
       <!-- Order Header -->
       <div class="px-4 py-4 bg-white">
         <div class="flex items-center justify-between mb-2">
@@ -58,12 +87,16 @@
             {{ getStatusText(order.status) }}
           </span>
         </div>
-        <p class="text-xs text-gray-500">{{ formatDate(order.created_at) }}</p>
+        <p class="text-xs text-gray-500">
+          {{ formatDate(order.created_at) }}
+        </p>
       </div>
 
       <!-- Order Items -->
       <div class="px-4 py-3 bg-white mt-2">
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">{{ t('mobile.orders.items') }}</h3>
+        <h3 class="text-sm font-semibold text-gray-900 mb-3">
+          {{ t('mobile.orders.items') }}
+        </h3>
         <div
           v-for="item in order.items"
           :key="item.id"
@@ -73,10 +106,14 @@
             :src="item.product_image || '/images/placeholder.jpg'"
             :alt="item.product_name"
             class="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-          />
+          >
           <div class="flex-1 min-w-0">
-            <h4 class="text-sm font-medium text-gray-900 truncate">{{ item.product_name }}</h4>
-            <p class="text-xs text-gray-500">Qty: {{ item.quantity }} {{ item.unit }}</p>
+            <h4 class="text-sm font-medium text-gray-900 truncate">
+              {{ item.product_name }}
+            </h4>
+            <p class="text-xs text-gray-500">
+              Qty: {{ item.quantity }} {{ item.unit }}
+            </p>
           </div>
           <div class="text-sm font-semibold text-gray-900 flex-shrink-0">
             ${{ item.price }}
@@ -89,19 +126,32 @@
       </div>
 
       <!-- Shipping Address -->
-      <div v-if="order.shipping_address" class="px-4 py-3 bg-white mt-2">
-        <h3 class="text-sm font-semibold text-gray-900 mb-2">{{ t('mobile.orders.shippingAddress') }}</h3>
-        <p class="text-sm text-gray-700 font-medium">{{ order.shipping_address.recipient_name }}</p>
-        <p class="text-sm text-gray-500">{{ order.shipping_address.phone }}</p>
+      <div
+        v-if="order.shipping_address"
+        class="px-4 py-3 bg-white mt-2"
+      >
+        <h3 class="text-sm font-semibold text-gray-900 mb-2">
+          {{ t('mobile.orders.shippingAddress') }}
+        </h3>
+        <p class="text-sm text-gray-700 font-medium">
+          {{ order.shipping_address.recipient_name }}
+        </p>
+        <p class="text-sm text-gray-500">
+          {{ order.shipping_address.phone }}
+        </p>
         <p class="text-sm text-gray-500">
           {{ order.shipping_address.country }} {{ order.shipping_address.province }} {{ order.shipping_address.city }}
         </p>
-        <p class="text-sm text-gray-500">{{ order.shipping_address.street_address }}</p>
+        <p class="text-sm text-gray-500">
+          {{ order.shipping_address.street_address }}
+        </p>
       </div>
 
       <!-- Order Status Timeline -->
       <div class="px-4 py-3 bg-white mt-2">
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">{{ t('mobile.orders.statusTimeline') }}</h3>
+        <h3 class="text-sm font-semibold text-gray-900 mb-3">
+          {{ t('mobile.orders.statusTimeline') }}
+        </h3>
         <div class="relative">
           <div
             v-for="(status, idx) in orderStatusTimeline"
@@ -112,33 +162,55 @@
               v-if="idx < orderStatusTimeline.length - 1"
               class="absolute left-3 top-3 bottom-0 w-0.5"
               :class="status.completed ? 'bg-blue-500' : 'bg-gray-200'"
-            ></div>
+            />
             <div
               :class="[
                 'absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center text-xs',
                 status.completed ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'
               ]"
             >
-              <svg v-if="status.completed" class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+              <svg
+                v-if="status.completed"
+                class="w-3 h-3"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path d="M5 13l4 4L19 7" />
               </svg>
               <span v-else>{{ idx + 1 }}</span>
             </div>
             <div>
-              <p class="text-sm font-medium" :class="status.completed ? 'text-gray-900' : 'text-gray-500'">
+              <p
+                class="text-sm font-medium"
+                :class="status.completed ? 'text-gray-900' : 'text-gray-500'"
+              >
                 {{ status.label }}
               </p>
-              <p v-if="status.timestamp" class="text-xs text-gray-400">{{ formatDate(status.timestamp) }}</p>
+              <p
+                v-if="status.timestamp"
+                class="text-xs text-gray-400"
+              >
+                {{ formatDate(status.timestamp) }}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Logistics (if available) -->
-      <div v-if="order.logistics" class="px-4 py-3 bg-white mt-2">
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">{{ t('mobile.orders.logistics') }}</h3>
-        <p class="text-sm text-gray-600">{{ t('mobile.orders.trackingNumber') }}: {{ order.logistics.tracking_number }}</p>
-        <p class="text-sm text-gray-600">{{ t('mobile.orders.carrier') }}: {{ order.logistics.carrier }}</p>
+      <div
+        v-if="order.logistics"
+        class="px-4 py-3 bg-white mt-2"
+      >
+        <h3 class="text-sm font-semibold text-gray-900 mb-3">
+          {{ t('mobile.orders.logistics') }}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {{ t('mobile.orders.trackingNumber') }}: {{ order.logistics.tracking_number }}
+        </p>
+        <p class="text-sm text-gray-600">
+          {{ t('mobile.orders.carrier') }}: {{ order.logistics.carrier }}
+        </p>
       </div>
 
       <!-- Action Buttons -->

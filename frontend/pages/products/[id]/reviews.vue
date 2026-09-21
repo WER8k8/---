@@ -4,44 +4,87 @@
 <template>
   <div class="reviews-page">
     <!-- Loading State -->
-    <div v-if="loading" class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12">
+    <div
+      v-if="loading"
+      class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12"
+    >
       <div class="animate-pulse">
-        <div class="h-8 sm:h-10 bg-gray-200 rounded w-3/4 mb-4"></div>
-        <div class="h-4 sm:h-5 bg-gray-200 rounded w-1/2 mb-8"></div>
+        <div class="h-8 sm:h-10 bg-gray-200 rounded w-3/4 mb-4" />
+        <div class="h-4 sm:h-5 bg-gray-200 rounded w-1/2 mb-8" />
         <div class="space-y-4">
-          <div class="h-32 bg-gray-200 rounded-2xl"></div>
-          <div class="h-32 bg-gray-200 rounded-2xl"></div>
-          <div class="h-32 bg-gray-200 rounded-2xl"></div>
+          <div class="h-32 bg-gray-200 rounded-2xl" />
+          <div class="h-32 bg-gray-200 rounded-2xl" />
+          <div class="h-32 bg-gray-200 rounded-2xl" />
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12 text-center">
-      <div class="text-red-500 text-lg sm:text-xl font-semibold mb-4">{{ error }}</div>
-      <NuxtLink to="/products" class="btn-primary">{{ $t('common.backToProducts') }}</NuxtLink>
+    <div
+      v-else-if="error"
+      class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12 text-center"
+    >
+      <div class="text-red-500 text-lg sm:text-xl font-semibold mb-4">
+        {{ error }}
+      </div>
+      <NuxtLink
+        to="/products"
+        class="btn-primary"
+      >
+        {{ $t('common.backToProducts') }}
+      </NuxtLink>
     </div>
 
     <!-- Reviews Content -->
-    <div v-else class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12">
+    <div
+      v-else
+      class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12"
+    >
       <!-- Breadcrumb -->
       <nav class="mb-4 sm:mb-6">
         <ol class="flex items-center space-x-2 text-sm text-text-secondary">
-          <li><NuxtLink to="/" class="hover:text-primary">{{ $t('common.home') }}</NuxtLink></li>
+          <li>
+            <NuxtLink
+              to="/"
+              class="hover:text-primary"
+            >
+              {{ $t('common.home') }}
+            </NuxtLink>
+          </li>
           <li>/</li>
-          <li><NuxtLink to="/products" class="hover:text-primary">{{ $t('common.products') }}</NuxtLink></li>
+          <li>
+            <NuxtLink
+              to="/products"
+              class="hover:text-primary"
+            >
+              {{ $t('common.products') }}
+            </NuxtLink>
+          </li>
           <li>/</li>
-          <li><NuxtLink :to="`/products/${productId}`" class="hover:text-primary">{{ productName }}</NuxtLink></li>
+          <li>
+            <NuxtLink
+              :to="`/products/${productId}`"
+              class="hover:text-primary"
+            >
+              {{ productName }}
+            </NuxtLink>
+          </li>
           <li>/</li>
-          <li class="text-text-primary font-medium">{{ $t('reviews.title') }}</li>
+          <li class="text-text-primary font-medium">
+            {{ $t('reviews.title') }}
+          </li>
         </ol>
       </nav>
 
       <!-- Page Header -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
         <div>
-          <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">{{ $t('reviews.title') }}</h1>
-          <p class="text-text-secondary">{{ $t('reviews.subtitle') }}</p>
+          <h1 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+            {{ $t('reviews.title') }}
+          </h1>
+          <p class="text-text-secondary">
+            {{ $t('reviews.subtitle') }}
+          </p>
         </div>
         <button 
           @click="showReviewForm = true" 
@@ -57,24 +100,36 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Average Rating -->
           <div class="text-center">
-            <div class="text-5xl font-bold text-primary mb-2">{{ averageRating }}</div>
+            <div class="text-5xl font-bold text-primary mb-2">
+              {{ averageRating }}
+            </div>
             <div class="flex justify-center mb-2">
-              <span v-for="star in 5" :key="star" class="text-yellow-400 text-xl">
+              <span
+                v-for="star in 5"
+                :key="star"
+                class="text-yellow-400 text-xl"
+              >
                 {{ star <= Math.round(averageRating) ? '★' : '☆' }}
               </span>
             </div>
-            <div class="text-text-secondary">{{ $t('reviews.basedOn', { count: totalReviews }) }}</div>
+            <div class="text-text-secondary">
+              {{ $t('reviews.basedOn', { count: totalReviews }) }}
+            </div>
           </div>
 
           <!-- Rating Distribution -->
           <div class="space-y-2">
-            <div v-for="rating in [5, 4, 3, 2, 1]" :key="rating" class="flex items-center gap-2">
+            <div
+              v-for="rating in [5, 4, 3, 2, 1]"
+              :key="rating"
+              class="flex items-center gap-2"
+            >
               <span class="text-sm text-text-secondary w-8">{{ rating }}★</span>
               <div class="flex-1 bg-gray-200 rounded-full h-2">
                 <div 
                   class="bg-yellow-400 h-2 rounded-full" 
                   :style="{ width: `${getRatingPercentage(rating)}%` }"
-                ></div>
+                />
               </div>
               <span class="text-sm text-text-secondary w-8 text-right">{{ getRatingCount(rating) }}</span>
             </div>
@@ -83,19 +138,40 @@
       </div>
 
       <!-- Review Form Modal -->
-      <div v-if="showReviewForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div
+        v-if="showReviewForm"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      >
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
           <div class="p-6">
             <div class="flex justify-between items-center mb-6">
-              <h2 class="text-2xl font-bold text-text-primary">{{ $t('reviews.writeReview') }}</h2>
-              <button @click="showReviewForm = false" class="text-text-secondary hover:text-text-primary">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <h2 class="text-2xl font-bold text-text-primary">
+                {{ $t('reviews.writeReview') }}
+              </h2>
+              <button
+                @click="showReviewForm = false"
+                class="text-text-secondary hover:text-text-primary"
+              >
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
-            <form @submit.prevent="submitReview" class="space-y-6">
+            <form
+              @submit.prevent="submitReview"
+              class="space-y-6"
+            >
               <!-- Rating -->
               <div>
                 <label class="block text-sm font-medium text-text-primary mb-2">{{ $t('reviews.rating') }}</label>
@@ -121,7 +197,7 @@
                   rows="4"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                   :placeholder="$t('reviews.contentPlaceholder')"
-                ></textarea>
+                />
               </div>
 
               <!-- Images -->
@@ -130,19 +206,46 @@
                 <div class="flex items-center justify-center w-full">
                   <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg class="w-8 h-8 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      <svg
+                        class="w-8 h-8 mb-4 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
                       </svg>
                       <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('common.upload') }}</span></p>
                       <p class="text-xs text-gray-500">PNG, JPG (MAX. 5MB)</p>
                     </div>
-                    <input type="file" class="hidden" multiple accept="image/*" @change="handleImageUpload" />
+                    <input
+                      type="file"
+                      class="hidden"
+                      multiple
+                      accept="image/*"
+                      @change="handleImageUpload"
+                    >
                   </label>
                 </div>
                 <!-- Image Previews -->
-                <div v-if="reviewForm.images.length > 0" class="flex gap-2 mt-4">
-                  <div v-for="(image, index) in reviewForm.images" :key="index" class="relative">
-                    <img :src="image" alt="Preview" class="w-20 h-20 object-cover rounded-lg" />
+                <div
+                  v-if="reviewForm.images.length > 0"
+                  class="flex gap-2 mt-4"
+                >
+                  <div
+                    v-for="(image, index) in reviewForm.images"
+                    :key="index"
+                    class="relative"
+                  >
+                    <img
+                      :src="image"
+                      alt="Preview"
+                      class="w-20 h-20 object-cover rounded-lg"
+                    >
                     <button
                       type="button"
                       @click="removeImage(index)"
@@ -178,32 +281,52 @@
 
       <!-- Reviews List -->
       <div class="space-y-6">
-        <div v-if="reviews.length === 0" class="text-center py-12 text-text-secondary">
+        <div
+          v-if="reviews.length === 0"
+          class="text-center py-12 text-text-secondary"
+        >
           {{ $t('reviews.noReviews') }}
         </div>
 
-        <div v-for="review in reviews" :key="review.id" class="bg-surface-elevated rounded-2xl p-6">
+        <div
+          v-for="review in reviews"
+          :key="review.id"
+          class="bg-surface-elevated rounded-2xl p-6"
+        >
           <div class="flex justify-between items-start mb-4">
             <div class="flex items-center gap-4">
               <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
                 {{ getInitials(review.user_id) }}
               </div>
               <div>
-                <div class="font-semibold text-text-primary">{{ $t('reviews.user') }} {{ review.user_id.slice(0, 8) }}</div>
-                <div class="text-sm text-text-secondary">{{ formatDate(review.created_at) }}</div>
+                <div class="font-semibold text-text-primary">
+                  {{ $t('reviews.user') }} {{ review.user_id.slice(0, 8) }}
+                </div>
+                <div class="text-sm text-text-secondary">
+                  {{ formatDate(review.created_at) }}
+                </div>
               </div>
             </div>
             <div class="flex items-center gap-1">
-              <span v-for="star in 5" :key="star" class="text-yellow-400">
+              <span
+                v-for="star in 5"
+                :key="star"
+                class="text-yellow-400"
+              >
                 {{ star <= review.rating ? '★' : '☆' }}
               </span>
             </div>
           </div>
 
-          <p class="text-text-primary mb-4">{{ review.content }}</p>
+          <p class="text-text-primary mb-4">
+            {{ review.content }}
+          </p>
 
           <!-- Review Images -->
-          <div v-if="review.images" class="flex gap-2 mb-4">
+          <div
+            v-if="review.images"
+            class="flex gap-2 mb-4"
+          >
             <img 
               v-for="(image, index) in parseImages(review.images)" 
               :key="index" 
@@ -211,7 +334,7 @@
               alt="Review image" 
               class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-80"
               @click="openImagePreview(image)"
-            />
+            >
           </div>
 
           <!-- Review Actions -->
@@ -230,13 +353,22 @@
             >
               {{ $t('common.delete') }}
             </button>
-            <span v-if="review.status === 'pending'" class="text-yellow-600">{{ $t('reviews.pending') }}</span>
-            <span v-if="review.status === 'rejected'" class="text-red-600">{{ $t('reviews.rejected') }}</span>
+            <span
+              v-if="review.status === 'pending'"
+              class="text-yellow-600"
+            >{{ $t('reviews.pending') }}</span>
+            <span
+              v-if="review.status === 'rejected'"
+              class="text-red-600"
+            >{{ $t('reviews.rejected') }}</span>
           </div>
         </div>
 
         <!-- Pagination -->
-        <div v-if="totalPages > 1" class="flex justify-center gap-2 mt-8">
+        <div
+          v-if="totalPages > 1"
+          class="flex justify-center gap-2 mt-8"
+        >
           <button
             v-for="page in totalPages"
             :key="page"
@@ -253,8 +385,16 @@
     </div>
 
     <!-- Image Preview Modal -->
-    <div v-if="previewImage" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" @click="previewImage = null">
-      <img :src="previewImage" alt="Preview" class="max-w-full max-h-full object-contain" />
+    <div
+      v-if="previewImage"
+      class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      @click="previewImage = null"
+    >
+      <img
+        :src="previewImage"
+        alt="Preview"
+        class="max-w-full max-h-full object-contain"
+      >
     </div>
   </div>
 </template>

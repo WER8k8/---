@@ -4,29 +4,49 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar :title="t('mobile.news.detailTitle')" safe-area-top :blur="true" />
+    <MobileNavbar
+      :title="t('mobile.news.detailTitle')"
+      safe-area-top
+      :blur="true"
+    />
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex items-center justify-center min-h-[60vh]">
+    <div
+      v-if="loading"
+      class="flex items-center justify-center min-h-[60vh]"
+    >
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex items-center justify-center min-h-[60vh] px-4">
+    <div
+      v-else-if="error"
+      class="flex items-center justify-center min-h-[60vh] px-4"
+    >
       <div class="text-center">
-        <div class="text-6xl mb-4">😞</div>
+        <div class="text-6xl mb-4">
+          😞
+        </div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">
           {{ t('mobile.news.loadFailed') }}
         </h2>
-        <p class="text-gray-600 mb-6">{{ error }}</p>
-        <NuxtLink to="/news" class="mobile-btn-primary inline-block px-6 py-3 rounded-full">
+        <p class="text-gray-600 mb-6">
+          {{ error }}
+        </p>
+        <NuxtLink
+          to="/news"
+          class="mobile-btn-primary inline-block px-6 py-3 rounded-full"
+        >
           {{ t('mobile.news.backToList') }}
         </NuxtLink>
       </div>
     </div>
 
     <!-- News Detail -->
-    <div v-else-if="newsItem" class="pb-20">
+    <div
+      v-else-if="newsItem"
+      class="pb-20"
+    >
       <!-- Hero Image -->
       <div class="relative h-64 md:h-80 bg-gray-200">
         <img
@@ -35,7 +55,10 @@
           :alt="newsItem.title"
           class="w-full h-full object-cover"
         >
-        <div v-else class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
+        <div
+          v-else
+          class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700"
+        >
           <span class="text-white text-4xl">📰</span>
         </div>
       </div>
@@ -63,7 +86,10 @@
         </div>
 
         <!-- Tags -->
-        <div v-if="newsItem.tags && newsItem.tags.length > 0" class="bg-white rounded-xl shadow-sm p-4 mb-4">
+        <div
+          v-if="newsItem.tags && newsItem.tags.length > 0"
+          class="bg-white rounded-xl shadow-sm p-4 mb-4"
+        >
           <h3 class="text-sm font-semibold text-gray-900 mb-2">
             {{ t('mobile.news.tags') }}
           </h3>

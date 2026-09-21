@@ -4,15 +4,30 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar safe-area-top :blur="true">
+    <MobileNavbar
+      safe-area-top
+      :blur="true"
+    >
       <div class="flex items-center justify-between h-14">
-        <h1 class="text-lg font-semibold text-gray-900">{{ $t('publish.title') }}</h1>
+        <h1 class="text-lg font-semibold text-gray-900">
+          {{ $t('publish.title') }}
+        </h1>
         <button
           class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           @click="router.push('/publish/create')"
         >
-          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          <svg
+            class="w-5 h-5 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
         </button>
       </div>
@@ -43,8 +58,12 @@
       >
         <div class="flex items-start justify-between mb-2">
           <div class="flex-1">
-            <h3 class="text-sm font-semibold text-gray-900 truncate">{{ task.content_data?.title || $t('publish.untitled') }}</h3>
-            <p class="text-xs text-gray-500 mt-1">{{ task.platform_id }} · {{ formatDate(task.created_at) }}</p>
+            <h3 class="text-sm font-semibold text-gray-900 truncate">
+              {{ task.content_data?.title || $t('publish.untitled') }}
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">
+              {{ task.platform_id }} · {{ formatDate(task.created_at) }}
+            </p>
           </div>
           <span
             class="px-2 py-1 rounded-full text-xs font-medium"
@@ -56,21 +75,49 @@
 
         <div class="flex items-center gap-2 text-xs text-gray-500">
           <span v-if="task.platform_post_url">
-            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            <svg
+              class="w-4 h-4 inline mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
             </svg>
             {{ $t('publish.viewPost') }}
           </span>
-          <span v-if="task.error_message" class="text-red-500">{{ task.error_message }}</span>
+          <span
+            v-if="task.error_message"
+            class="text-red-500"
+          >{{ task.error_message }}</span>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div v-if="filteredTasks.length === 0" class="text-center py-20">
-        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      <div
+        v-if="filteredTasks.length === 0"
+        class="text-center py-20"
+      >
+        <svg
+          class="w-16 h-16 mx-auto text-gray-300 mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
         </svg>
-        <p class="text-gray-500">{{ $t('publish.noTasks') }}</p>
+        <p class="text-gray-500">
+          {{ $t('publish.noTasks') }}
+        </p>
         <button
           class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-full text-sm font-medium"
           @click="router.push('/publish/create')"

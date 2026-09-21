@@ -2,23 +2,21 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-
   <PremiumB2bShell active-key="home">
-
     <section class="lpro-hero">
-
       <div class="lpro-container">
-
-        <p v-if="primaryPromise" class="text-sm font-semibold tracking-wide mb-2 lpro-hero-kicker">
-
+        <p
+          v-if="primaryPromise"
+          class="text-sm font-semibold tracking-wide mb-2 lpro-hero-kicker"
+        >
           {{ primaryPromise }}
-
         </p>
 
-        <p v-else-if="establishedYear" class="text-sm uppercase tracking-wide opacity-80 mb-2">
-
+        <p
+          v-else-if="establishedYear"
+          class="text-sm uppercase tracking-wide opacity-80 mb-2"
+        >
           {{ tSite('hero_since', { year: establishedYear }) }}
-
         </p>
 
         <h1>{{ heroTitle }}</h1>
@@ -26,225 +24,283 @@
         <p>{{ heroDescription }}</p>
 
         <div class="lpro-hero-actions">
+          <NuxtLink
+            to="/tenant/contact"
+            class="lpro-btn lpro-btn-primary"
+          >
+            {{ ctaPrimary }}
+          </NuxtLink>
 
-          <NuxtLink to="/tenant/contact" class="lpro-btn lpro-btn-primary">{{ ctaPrimary }}</NuxtLink>
-
-          <NuxtLink to="/tenant/products" class="lpro-btn lpro-btn-outline">{{ tSite('nav_products') }}</NuxtLink>
-
+          <NuxtLink
+            to="/tenant/products"
+            class="lpro-btn lpro-btn-outline"
+          >
+            {{ tSite('nav_products') }}
+          </NuxtLink>
         </div>
-
       </div>
-
     </section>
 
 
 
-    <section v-if="stats.length" class="lpro-section lpro-section--white">
-
+    <section
+      v-if="stats.length"
+      class="lpro-section lpro-section--white"
+    >
       <div class="lpro-container">
+        <p class="lpro-section-eyebrow">
+          {{ tSite('stats_eyebrow') }}
+        </p>
 
-        <p class="lpro-section-eyebrow">{{ tSite('stats_eyebrow') }}</p>
-
-        <h2 class="lpro-section-title">{{ tSite('stats_title') }}</h2>
+        <h2 class="lpro-section-title">
+          {{ tSite('stats_title') }}
+        </h2>
 
         <div class="lpro-grid">
-
-          <div v-for="(stat, i) in stats" :key="i" class="lpro-card">
-
-            <div class="text-2xl font-bold" style="color: var(--lpro-primary)">{{ stat.value }}</div>
+          <div
+            v-for="(stat, i) in stats"
+            :key="i"
+            class="lpro-card"
+          >
+            <div
+              class="text-2xl font-bold"
+              style="color: var(--lpro-primary)"
+            >
+              {{ stat.value }}
+            </div>
 
             <p>{{ stat.label }}</p>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
 
 
 
-    <section v-if="serviceStages.length" class="lpro-section">
-
+    <section
+      v-if="serviceStages.length"
+      class="lpro-section"
+    >
       <div class="lpro-container">
+        <p class="lpro-section-eyebrow">
+          {{ tSite('section_stages_eyebrow') }}
+        </p>
 
-        <p class="lpro-section-eyebrow">{{ tSite('section_stages_eyebrow') }}</p>
+        <h2 class="lpro-section-title">
+          {{ tSite('section_stages_title') }}
+        </h2>
 
-        <h2 class="lpro-section-title">{{ tSite('section_stages_title') }}</h2>
-
-        <p class="lpro-section-desc">{{ tSite('section_stages_desc') }}</p>
+        <p class="lpro-section-desc">
+          {{ tSite('section_stages_desc') }}
+        </p>
 
         <div class="lpro-stages">
-
-          <article v-for="(stage, i) in serviceStages" :key="i" class="lpro-stage-card">
-
-            <div class="lpro-stage-num">{{ stage.stage || String(i + 1).padStart(2, '0') }}</div>
+          <article
+            v-for="(stage, i) in serviceStages"
+            :key="i"
+            class="lpro-stage-card"
+          >
+            <div class="lpro-stage-num">
+              {{ stage.stage || String(i + 1).padStart(2, '0') }}
+            </div>
 
             <h3>{{ stage.title }}</h3>
 
-            <p v-if="stage.description">{{ stage.description }}</p>
-
+            <p v-if="stage.description">
+              {{ stage.description }}
+            </p>
           </article>
-
         </div>
-
       </div>
-
     </section>
 
 
 
-    <section v-if="solutions.length" class="lpro-section lpro-section--white">
-
+    <section
+      v-if="solutions.length"
+      class="lpro-section lpro-section--white"
+    >
       <div class="lpro-container">
+        <h2 class="lpro-section-title">
+          {{ tSite('section_solutions') }}
+        </h2>
 
-        <h2 class="lpro-section-title">{{ tSite('section_solutions') }}</h2>
-
-        <p class="lpro-section-desc">{{ tSite('section_solutions_desc') }}</p>
+        <p class="lpro-section-desc">
+          {{ tSite('section_solutions_desc') }}
+        </p>
 
         <div class="lpro-grid">
-
-          <article v-for="(sol, i) in solutions.slice(0, 4)" :key="i" class="lpro-card">
-
-            <div class="text-xs font-semibold uppercase text-[var(--lpro-muted)]">{{ sol.segment }}</div>
+          <article
+            v-for="(sol, i) in solutions.slice(0, 4)"
+            :key="i"
+            class="lpro-card"
+          >
+            <div class="text-xs font-semibold uppercase text-[var(--lpro-muted)]">
+              {{ sol.segment }}
+            </div>
 
             <h3>{{ sol.title }}</h3>
 
-            <p v-if="sol.description">{{ sol.description }}</p>
-
+            <p v-if="sol.description">
+              {{ sol.description }}
+            </p>
           </article>
-
         </div>
 
-        <NuxtLink v-if="solutions.length > 4" to="/tenant/solutions" class="lpro-link mt-4 inline-block">
-
+        <NuxtLink
+          v-if="solutions.length > 4"
+          to="/tenant/solutions"
+          class="lpro-link mt-4 inline-block"
+        >
           {{ tSite('nav_solutions') }} →
-
         </NuxtLink>
-
       </div>
-
     </section>
 
 
 
-    <section v-if="advantages.length" class="lpro-section">
-
+    <section
+      v-if="advantages.length"
+      class="lpro-section"
+    >
       <div class="lpro-container">
+        <h2 class="lpro-section-title">
+          {{ sectionTitle }}
+        </h2>
 
-        <h2 class="lpro-section-title">{{ sectionTitle }}</h2>
-
-        <p v-if="sectionDesc" class="lpro-section-desc">{{ sectionDesc }}</p>
+        <p
+          v-if="sectionDesc"
+          class="lpro-section-desc"
+        >
+          {{ sectionDesc }}
+        </p>
 
         <div class="lpro-grid">
-
-          <article v-for="(adv, i) in advantages" :key="i" class="lpro-card">
-
+          <article
+            v-for="(adv, i) in advantages"
+            :key="i"
+            class="lpro-card"
+          >
             <h3>{{ adv.title }}</h3>
 
             <p>{{ adv.description }}</p>
-
           </article>
-
         </div>
-
       </div>
-
     </section>
 
 
 
-    <section v-if="featuredProducts.length" class="lpro-section lpro-section--white">
-
+    <section
+      v-if="featuredProducts.length"
+      class="lpro-section lpro-section--white"
+    >
       <div class="lpro-container">
+        <h2 class="lpro-section-title">
+          {{ productsTitle }}
+        </h2>
 
-        <h2 class="lpro-section-title">{{ productsTitle }}</h2>
-
-        <p class="lpro-section-desc">{{ productsDescription || tSite('section_products_desc') }}</p>
+        <p class="lpro-section-desc">
+          {{ productsDescription || tSite('section_products_desc') }}
+        </p>
 
         <div class="lpro-grid">
-
-          <article v-for="item in featuredProducts" :key="item.slug" class="lpro-card">
-
+          <article
+            v-for="item in featuredProducts"
+            :key="item.slug"
+            class="lpro-card"
+          >
             <div class="lpro-thumb">
-
-              <img v-if="item.image" :src="resolveMediaUrl(item.image)" :alt="item.name" />
-
+              <img
+                v-if="item.image"
+                :src="resolveMediaUrl(item.image)"
+                :alt="item.name"
+              >
             </div>
 
             <h3>{{ item.name }}</h3>
 
             <p>{{ item.summary }}</p>
 
-            <NuxtLink :to="tenantProductDetailPath(item.slug!)" class="lpro-link">
-
+            <NuxtLink
+              :to="tenantProductDetailPath(item.slug!)"
+              class="lpro-link"
+            >
               {{ tSite('inquiry_link') }}
-
             </NuxtLink>
-
           </article>
-
         </div>
 
         <div class="mt-6">
-
-          <NuxtLink to="/tenant/products" class="lpro-btn lpro-btn-primary">{{ tSite('nav_products') }}</NuxtLink>
-
+          <NuxtLink
+            to="/tenant/products"
+            class="lpro-btn lpro-btn-primary"
+          >
+            {{ tSite('nav_products') }}
+          </NuxtLink>
         </div>
-
       </div>
-
     </section>
 
 
 
-    <section v-if="knowledgeTopics.length" class="lpro-section">
-
+    <section
+      v-if="knowledgeTopics.length"
+      class="lpro-section"
+    >
       <div class="lpro-container">
+        <p class="lpro-section-eyebrow">
+          {{ tSite('section_knowledge_eyebrow') }}
+        </p>
 
-        <p class="lpro-section-eyebrow">{{ tSite('section_knowledge_eyebrow') }}</p>
+        <h2 class="lpro-section-title">
+          {{ tSite('section_knowledge_title') }}
+        </h2>
 
-        <h2 class="lpro-section-title">{{ tSite('section_knowledge_title') }}</h2>
-
-        <p class="lpro-section-desc">{{ tSite('section_knowledge_desc') }}</p>
+        <p class="lpro-section-desc">
+          {{ tSite('section_knowledge_desc') }}
+        </p>
 
         <div class="lpro-grid">
-
-          <article v-for="(topic, i) in knowledgeTopics.slice(0, 6)" :key="i" class="lpro-card lpro-knowledge-card">
-
+          <article
+            v-for="(topic, i) in knowledgeTopics.slice(0, 6)"
+            :key="i"
+            class="lpro-card lpro-knowledge-card"
+          >
             <h3>{{ topic.title }}</h3>
 
-            <p v-if="topic.hook">{{ topic.hook }}</p>
+            <p v-if="topic.hook">
+              {{ topic.hook }}
+            </p>
 
-            <NuxtLink to="/tenant/contact" class="lpro-link">{{ tSite('inquiry_link') }}</NuxtLink>
-
+            <NuxtLink
+              to="/tenant/contact"
+              class="lpro-link"
+            >
+              {{ tSite('inquiry_link') }}
+            </NuxtLink>
           </article>
-
         </div>
-
       </div>
-
     </section>
 
 
 
     <section class="lpro-section lpro-cta-band">
-
       <div class="lpro-container lpro-cta-band-inner">
-
         <h2>{{ tSite('section_cta_title') }}</h2>
 
         <p>{{ inquiryHook }}</p>
 
-        <NuxtLink to="/tenant/contact" class="lpro-btn lpro-btn-primary">{{ ctaPrimary }}</NuxtLink>
-
+        <NuxtLink
+          to="/tenant/contact"
+          class="lpro-btn lpro-btn-primary"
+        >
+          {{ ctaPrimary }}
+        </NuxtLink>
       </div>
-
     </section>
-
   </PremiumB2bShell>
-
 </template>
 
 

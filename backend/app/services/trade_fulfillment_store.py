@@ -48,6 +48,7 @@ def persist_whatsapp_message(
     status: str = "queued",
     inquiry_id: Optional[str] = None,
     lead_id: Optional[str] = None,
+    provenance_metadata: Optional[dict] = None,
     template_id: Optional[str] = None,
     external_msg_id: Optional[str] = None,
     simulated: bool = False,
@@ -198,6 +199,7 @@ def persist_contact_event(
     inquiry_id: Optional[str] = None,
     lead_id: Optional[str] = None,
     payload: Optional[dict] = None,
+    provenance_metadata: Optional[dict] = None,
 ) -> dict[str, Any]:
     """触点事件落库 contact_events。"""
     if db is None:

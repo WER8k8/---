@@ -48,13 +48,24 @@
           <article class="panel uj-glass-panel chart-card">
             <header class="card-head">
               <h3>模块活跃趋势</h3>
-              <span>{{ trendEmpty ? '暂无近 7 日流量' : '来自 analytics/traffic' }}</span>
+              <!-- 游标联动读数：静止显示 7 日均值，游标停某天则切当天值；数字由码表补间 -->
+              <span
+                v-if="!trendEmpty"
+                class="cursor-readout"
+                :class="{ 'is-live': cursorActive }"
+                :title="readoutTitle"
+              >
+                <em class="cursor-src">{{ readoutLabel }}</em>
+                <b class="cursor-num">{{ readoutText }}<i>%</i></b>
+              </span>
+              <span v-else>暂无近 7 日流量</span>
             </header>
             <div v-if="trendEmpty" class="trend-empty">
               暂无近 7 日流量数据，请先在站点产生访问
             </div>
             <v-chart
               v-else
+              ref="trendChartRef"
               class="echart-trend"
               :option="trendChartOption"
               autoresize
@@ -184,7 +195,7 @@ onMounted(async () => {
   try { await apiGet('/dashboard') } catch { /* 空状态 */ }
 })
 import type { Component } from 'vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { YdPage, YdReliefIcon, YdStatsCard } from '@/components/youding';
@@ -193,6 +204,8 @@ import { getAuthToken } from '@/utils/api';
 import { useAuthStore } from '@/stores/auth';
 import { useEffectivePlatformRole } from '@/composables/useEffectivePlatformRole';
 import VChart from 'vue-echarts';
+import { applySnapCursor, useChartCursor } from '@/composables/useChartCursor';
+import { useCountUp } from '@/composables/useCountUp';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart, BarChart } from 'echarts/charts';
@@ -423,7 +436,7 @@ const domainDistribution = computed(() => {
 });
 
 /* ---- ECharts: trend line/area ---- */
-const trendChartOption = computed(() => ({
+const trendChartOption = computed(() => applySnapCursor({
   tooltip: {
     trigger: 'axis',
     backgroundColor: '#fff',
@@ -471,6 +484,81 @@ const trendChartOption = computed(() => ({
     },
   ],
 }));
+
+/* ══════════════════════════════════════════════════════════════
+   游标联动读数（图表游标 → 顶部码表）
+   ──────────────────────────────────────────────────────────────
+   本页是「读数联动」的**样板页**，另外 5 个折线页按同一模式接入。
+   三个必须逐页拍板的设计决策，本页的答案与理由：
+
+     1) **联动哪条 series** —— 本页只有 1 条「活跃度」折线，取它的 y 值，无歧义。
+        多 series 的页面必须先指定「主 series」，否则读数会随 tooltip 的
+        条目顺序漂移，看起来像随机跳数。
+     2) **读数放哪** —— 卡片头部右侧。那里原本是一句静态提示
+        「来自 analytics/traffic」，信息价值低且白占位；改为读数区后把数据源
+        降级为 hover 的 title，**零布局改动**，也不会与图表内的 tooltip 打架。
+     3) **离开图表后显示什么** —— 回到「近 7 日均值」，而不是留空。
+        好处：数字区始终有含义；且能看见码表往回收，而不是数字突然消失。
+   ══════════════════════════════════════════════════════════════ */
+
+/** 图表容器 ref：vue-echarts 通过 expose 的 `chart` getter 暴露底层实例 */
+const trendChartRef = ref<unknown>(null);
+
+const trendAverage = computed(() => {
+  const d = trendData.value;
+  return d.length ? Math.round(d.reduce((a, b) => a + b, 0) / d.length) : 0;
+});
+
+const {
+  activeIndex: cursorIndex,
+  activeValue: cursorValue,
+  bindWhenReady,
+} = useChartCursor<number>((info) => {
+  const v = trendData.value[info.dataIndex];
+  return typeof v === 'number' ? v : null;
+});
+
+const cursorActive = computed(() => cursorIndex.value >= 0);
+
+const cursorDay = computed(() => {
+  const i = cursorIndex.value;
+  if (i < 0) return '';
+  const labels = trendLabels.value.length
+    ? trendLabels.value
+    : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  return labels[i] ?? '';
+});
+
+const readoutLabel = computed(() =>
+  cursorActive.value && cursorDay.value ? cursorDay.value : '近 7 日均值',
+);
+
+/** 码表目标：有游标读游标，无游标读均值 —— 两者共用同一个码表，切换时才看得到翻滚 */
+const readoutTarget = computed(() => cursorValue.value ?? trendAverage.value);
+const readoutText = useCountUp(() => readoutTarget.value, {
+  changeDuration: 220,
+  decimals: 0,
+});
+
+const readoutTitle = computed(() =>
+  cursorActive.value
+    ? `游标停在 ${cursorDay.value || '该点'} · ${readoutText.value}% 活跃度`
+    : '近 7 日活跃度均值 · 数据源：analytics/traffic',
+);
+
+/**
+ * 绑定图表实例。**必须走有界重试**，原因有两条（都是实测结构决定的）：
+ *   · 图表被 `v-if="trendEmpty"` 的骨架屏包着，挂载时机不由本组件决定；
+ *   · vue-echarts 的实例初始化走 `initDeferred` + `nextTick`，比 ref 赋值再晚一帧。
+ * `flush: 'post'` 保证回调在本次 DOM 更新之后执行。
+ */
+watch(
+  trendChartRef,
+  (el) => {
+    if (el) void bindWhenReady(() => trendChartRef.value);
+  },
+  { flush: 'post' },
+);
 
 /* ---- ECharts: domain bar chart ---- */
 const barChartOption = computed(() => {
@@ -693,6 +781,50 @@ function onSearch(raw: string) {
 .card-head span {
   color: #9ca3af;
   font-size: 12px;
+}
+
+/* ── 游标联动读数 ──
+   ⚠️ 特异性：上面的 `.card-head span`(0,1,1) 会给这里所有 span 染上灰色提示色 + 12px，
+      所以必须用 `.card-head .cursor-readout`(0,2,0) 盖住，
+      否则读数会被当成脚注染灰，读数与提示分不出主次。
+   字重只用 400/500（符合设计规范）：靠**字号 + 颜色**而非粗体做强调。 */
+.card-head .cursor-readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--uj-text-secondary-strong, #55706b);
+  transition: color 0.24s ease;
+}
+
+.card-head .cursor-readout .cursor-src {
+  font-style: normal;
+  font-size: 12px;
+  color: inherit;
+}
+
+.card-head .cursor-readout .cursor-num {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--uj-text, #1f2937);
+  /* ★ 等宽数字：缺了这行，码表翻滚时数字宽度会左右抖动 */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.2px;
+  transition: color 0.24s ease;
+}
+
+.card-head .cursor-readout .cursor-num i {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 400;
+  margin-left: 1px;
+  opacity: 0.55;
+}
+
+/* 游标激活：整个读数区切到品牌色，提示「这个数字正在跟着图表走」 */
+.card-head .cursor-readout.is-live,
+.card-head .cursor-readout.is-live .cursor-num {
+  color: var(--uj-brand-strong, #367469);
 }
 
 .echart-trend {

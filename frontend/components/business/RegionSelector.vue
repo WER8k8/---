@@ -5,17 +5,36 @@
   <div class="mb-4">
     <label class="block text-sm font-semibold text-gray-700 mb-2">
       {{ label }}
-      <span v-if="required" class="text-red-500">*</span>
+      <span
+        v-if="required"
+        class="text-red-500"
+      >*</span>
     </label>
-    <div class="flex items-center min-h-[48px] px-4 border-1.5 border-gray-200 rounded-lg bg-white cursor-pointer transition-colors active:border-teal-600" @click="showPicker = true">
-      <span v-if="selectedLabel" class="flex-1 text-base text-gray-900">{{ selectedLabel }}</span>
-      <span v-else class="flex-1 text-base text-gray-400">{{ placeholder }}</span>
+    <div
+      class="flex items-center min-h-[48px] px-4 border-1.5 border-gray-200 rounded-lg bg-white cursor-pointer transition-colors active:border-teal-600"
+      @click="showPicker = true"
+    >
+      <span
+        v-if="selectedLabel"
+        class="flex-1 text-base text-gray-900"
+      >{{ selectedLabel }}</span>
+      <span
+        v-else
+        class="flex-1 text-base text-gray-400"
+      >{{ placeholder }}</span>
       <span class="text-[10px] text-gray-400">&#9660;</span>
     </div>
 
-    <Modal :visible="showPicker" title="选择地区" @update:visible="showPicker = $event">
+    <Modal
+      :visible="showPicker"
+      title="选择地区"
+      @update:visible="showPicker = $event"
+    >
       <!-- 省份列表 -->
-      <div v-if="!selectedProvince" class="max-h-[400px] overflow-y-auto -mx-5 -mt-5">
+      <div
+        v-if="!selectedProvince"
+        class="max-h-[400px] overflow-y-auto -mx-5 -mt-5"
+      >
         <button
           v-for="province in provinces"
           :key="province.name"
@@ -28,11 +47,19 @@
       </div>
 
       <!-- 城市列表 -->
-      <div v-else class="max-h-[400px] overflow-y-auto -mx-5 -mt-5">
-        <button class="w-full min-h-[44px] px-5 border-b border-gray-100 text-sm text-teal-600 font-semibold text-left" @click="selectedProvince = null">
+      <div
+        v-else
+        class="max-h-[400px] overflow-y-auto -mx-5 -mt-5"
+      >
+        <button
+          class="w-full min-h-[44px] px-5 border-b border-gray-100 text-sm text-teal-600 font-semibold text-left"
+          @click="selectedProvince = null"
+        >
           &#8592; 返回省份
         </button>
-        <div class="px-5 py-3 text-sm font-bold text-gray-500 border-b border-gray-100">{{ selectedProvince.name }}</div>
+        <div class="px-5 py-3 text-sm font-bold text-gray-500 border-b border-gray-100">
+          {{ selectedProvince.name }}
+        </div>
         <button
           v-for="city in selectedProvince.cities"
           :key="city.name"

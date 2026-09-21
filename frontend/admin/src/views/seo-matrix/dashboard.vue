@@ -224,6 +224,7 @@ import {
   DownloadOutlined,
 } from '@ant-design/icons-vue';
 import VChart from 'vue-echarts';
+import { applySnapCursor } from '@/composables/useChartCursor';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart, PieChart } from 'echarts/charts';
@@ -270,7 +271,7 @@ const taskColumns = [
   { title: '发布时间', key: 'created_at', width: 120 },
 ];
 
-const publishTrendChart = computed(() => ({
+const publishTrendChart = computed(() => applySnapCursor({
   tooltip: {
     trigger: 'axis',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',

@@ -24,6 +24,8 @@ declare module 'vue' {
     AgentTaskTree: typeof import('./components/agent/AgentTaskTree.vue')['default']
     AInput: typeof import('ant-design-vue/es')['Input']
     AInputNumber: typeof import('ant-design-vue/es')['InputNumber']
+    AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
+    AInputSearch: typeof import('ant-design-vue/es')['InputSearch']
     AitoearnCapabilityBar: typeof import('./components/tenant/AitoearnCapabilityBar.vue')['default']
     AMenu: typeof import('ant-design-vue/es')['Menu']
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']

@@ -4,36 +4,68 @@
 <template>
   <div class="order-detail-page">
     <!-- Loading State -->
-    <div v-if="loading" class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12">
+    <div
+      v-if="loading"
+      class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12"
+    >
       <div class="animate-pulse">
-        <div class="h-8 sm:h-10 bg-gray-200 rounded w-1/3 mb-4"></div>
-        <div class="h-4 sm:h-5 bg-gray-200 rounded w-1/2 mb-8"></div>
+        <div class="h-8 sm:h-10 bg-gray-200 rounded w-1/3 mb-4" />
+        <div class="h-4 sm:h-5 bg-gray-200 rounded w-1/2 mb-8" />
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <div class="lg:col-span-2 space-y-4">
-            <div class="h-40 bg-gray-200 rounded-2xl"></div>
-            <div class="h-60 bg-gray-200 rounded-2xl"></div>
+            <div class="h-40 bg-gray-200 rounded-2xl" />
+            <div class="h-60 bg-gray-200 rounded-2xl" />
           </div>
-          <div class="h-80 bg-gray-200 rounded-2xl"></div>
+          <div class="h-80 bg-gray-200 rounded-2xl" />
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12 text-center">
-      <div class="text-red-500 text-lg sm:text-xl font-semibold mb-4">{{ error }}</div>
-      <button @click="fetchOrder" class="btn-primary">重试</button>
+    <div
+      v-else-if="error"
+      class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12 text-center"
+    >
+      <div class="text-red-500 text-lg sm:text-xl font-semibold mb-4">
+        {{ error }}
+      </div>
+      <button
+        @click="fetchOrder"
+        class="btn-primary"
+      >
+        重试
+      </button>
     </div>
 
     <!-- Order Detail -->
-    <div v-else-if="order" class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12">
+    <div
+      v-else-if="order"
+      class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12"
+    >
       <!-- Breadcrumb -->
       <nav class="mb-4 sm:mb-6">
         <ol class="flex items-center space-x-2 text-sm text-text-secondary">
-          <li><NuxtLink to="/" class="hover:text-primary">首页</NuxtLink></li>
+          <li>
+            <NuxtLink
+              to="/"
+              class="hover:text-primary"
+            >
+              首页
+            </NuxtLink>
+          </li>
           <li>/</li>
-          <li><NuxtLink to="/orders" class="hover:text-primary">订单列表</NuxtLink></li>
+          <li>
+            <NuxtLink
+              to="/orders"
+              class="hover:text-primary"
+            >
+              订单列表
+            </NuxtLink>
+          </li>
           <li>/</li>
-          <li class="text-text-primary font-medium">{{ order.order_number }}</li>
+          <li class="text-text-primary font-medium">
+            {{ order.order_number }}
+          </li>
         </ol>
       </nav>
 
@@ -64,7 +96,9 @@
         <div class="lg:col-span-2 space-y-6">
           <!-- Order Items -->
           <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-            <h2 class="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">商品清单</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">
+              商品清单
+            </h2>
             <div
               v-for="item in order.items"
               :key="item.id"
@@ -74,7 +108,7 @@
                 :src="item.product_image || '/images/placeholder.jpg'"
                 :alt="item.product_name"
                 class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg flex-shrink-0"
-              />
+              >
               <div class="flex-1 min-w-0">
                 <NuxtLink :to="`/products/${item.product_id}`">
                   <h4 class="text-sm sm:text-base font-medium text-text-primary hover:text-primary transition-colors truncate">
@@ -84,7 +118,10 @@
                 <p class="text-xs sm:text-sm text-text-secondary mt-1">
                   数量: {{ item.quantity }} {{ item.unit }}
                 </p>
-                <p v-if="item.specs" class="text-xs text-text-secondary mt-1">
+                <p
+                  v-if="item.specs"
+                  class="text-xs text-text-secondary mt-1"
+                >
                   {{ item.specs }}
                 </p>
               </div>
@@ -99,8 +136,13 @@
           </div>
 
           <!-- Logistics Tracking -->
-          <div v-if="order.logistics" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-            <h2 class="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">物流跟踪</h2>
+          <div
+            v-if="order.logistics"
+            class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+          >
+            <h2 class="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">
+              物流跟踪
+            </h2>
             <div class="mb-4">
               <p class="text-sm text-text-secondary">
                 运单号: <span class="font-medium text-text-primary">{{ order.logistics.tracking_number }}</span>
@@ -120,7 +162,7 @@
                 <div
                   v-if="idx < order.logistics.events.length - 1"
                   class="absolute left-3 top-3 bottom-0 w-0.5 bg-gray-200"
-                ></div>
+                />
                 <!-- Timeline dot -->
                 <div
                   :class="[
@@ -128,14 +170,27 @@
                     idx === 0 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
                   ]"
                 >
-                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-3 h-3"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-text-primary">{{ event.description }}</p>
-                  <p class="text-xs text-text-secondary mt-0.5">{{ formatDate(event.timestamp) }}</p>
-                  <p v-if="event.location" class="text-xs text-text-secondary">{{ event.location }}</p>
+                  <p class="text-sm font-medium text-text-primary">
+                    {{ event.description }}
+                  </p>
+                  <p class="text-xs text-text-secondary mt-0.5">
+                    {{ formatDate(event.timestamp) }}
+                  </p>
+                  <p
+                    v-if="event.location"
+                    class="text-xs text-text-secondary"
+                  >
+                    {{ event.location }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -143,7 +198,9 @@
 
           <!-- Order Status Timeline -->
           <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-            <h2 class="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">订单状态</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">
+              订单状态
+            </h2>
             <div class="relative">
               <div
                 v-for="(status, idx) in orderStatusTimeline"
@@ -154,14 +211,19 @@
                   v-if="idx < orderStatusTimeline.length - 1"
                   class="absolute left-3 top-3 bottom-0 w-0.5"
                   :class="status.completed ? 'bg-primary' : 'bg-gray-200'"
-                ></div>
+                />
                 <div
                   :class="[
                     'absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center text-xs',
                     status.completed ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
                   ]"
                 >
-                  <svg v-if="status.completed" class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    v-if="status.completed"
+                    class="w-3 h-3"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                   <span v-else>{{ idx + 1 }}</span>
@@ -175,7 +237,10 @@
                   >
                     {{ status.label }}
                   </p>
-                  <p v-if="status.timestamp" class="text-xs text-text-secondary mt-0.5">
+                  <p
+                    v-if="status.timestamp"
+                    class="text-xs text-text-secondary mt-0.5"
+                  >
                     {{ formatDate(status.timestamp) }}
                   </p>
                 </div>
@@ -188,7 +253,9 @@
         <div class="space-y-6">
           <!-- Order Info -->
           <div class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-            <h2 class="text-lg font-bold text-text-primary mb-4">订单信息</h2>
+            <h2 class="text-lg font-bold text-text-primary mb-4">
+              订单信息
+            </h2>
             <div class="space-y-3">
               <div class="flex justify-between text-sm">
                 <span class="text-text-secondary">订单号</span>
@@ -217,14 +284,23 @@
           </div>
 
           <!-- Shipping Address -->
-          <div v-if="order.shipping_address" class="bg-surface rounded-2xl shadow-card p-6 sm:p-8">
-            <h2 class="text-lg font-bold text-text-primary mb-4">收货地址</h2>
+          <div
+            v-if="order.shipping_address"
+            class="bg-surface rounded-2xl shadow-card p-6 sm:p-8"
+          >
+            <h2 class="text-lg font-bold text-text-primary mb-4">
+              收货地址
+            </h2>
             <div class="text-sm text-text-secondary space-y-1">
-              <p class="font-medium text-text-primary">{{ order.shipping_address.recipient_name }}</p>
+              <p class="font-medium text-text-primary">
+                {{ order.shipping_address.recipient_name }}
+              </p>
               <p>{{ order.shipping_address.phone }}</p>
               <p>{{ order.shipping_address.country }} {{ order.shipping_address.province }} {{ order.shipping_address.city }}</p>
               <p>{{ order.shipping_address.street_address }}</p>
-              <p v-if="order.shipping_address.postal_code">邮编: {{ order.shipping_address.postal_code }}</p>
+              <p v-if="order.shipping_address.postal_code">
+                邮编: {{ order.shipping_address.postal_code }}
+              </p>
             </div>
           </div>
 

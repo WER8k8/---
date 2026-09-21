@@ -5,7 +5,9 @@
   <div class="industry-hub-page min-h-screen bg-surface">
     <section class="bg-gradient-to-br from-primary/5 via-surface to-accent/5 py-12 sm:py-16 lg:py-20">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-sm font-medium text-primary mb-3">行业内容枢纽</p>
+        <p class="text-sm font-medium text-primary mb-3">
+          行业内容枢纽
+        </p>
         <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary mb-4">
           {{ tenantLabel }} · 精选摘要
         </h1>
@@ -18,7 +20,9 @@
     <section class="py-10 sm:py-14">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-surface rounded-2xl shadow-card border border-border p-6 sm:p-8">
-          <h2 class="text-lg font-semibold text-text-primary mb-3">关于 {{ tenantLabel }}</h2>
+          <h2 class="text-lg font-semibold text-text-primary mb-3">
+            关于 {{ tenantLabel }}
+          </h2>
           <p class="text-text-secondary text-sm sm:text-base leading-relaxed mb-6">
             {{ hubIntro }}
           </p>
@@ -29,11 +33,24 @@
             class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors"
           >
             访问企业官网
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
             </svg>
           </a>
-          <p v-if="!hasTenantUrl" class="mt-3 text-xs text-text-secondary">
+          <p
+            v-if="!hasTenantUrl"
+            class="mt-3 text-xs text-text-secondary"
+          >
             提示：可通过 <code class="px-1 py-0.5 bg-surface-elevated rounded">?url=</code> 指定企业站点地址
           </p>
         </div>

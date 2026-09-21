@@ -14,7 +14,11 @@
   >
     <!-- 对话气泡 -->
     <Transition name="companion-bubble">
-      <div v-if="bubbleVisible && !panelOpen" class="site-companion-bubble" @click="openPanel">
+      <div
+        v-if="bubbleVisible && !panelOpen"
+        class="site-companion-bubble"
+        @click="openPanel"
+      >
         <p>{{ currentMessage }}</p>
         <span class="site-companion-bubble-tail" />
       </div>
@@ -22,11 +26,21 @@
 
     <!-- 联系面板（官网主体之外浮层） -->
     <Transition name="companion-panel">
-      <div v-if="panelOpen" class="site-companion-panel">
+      <div
+        v-if="panelOpen"
+        class="site-companion-panel"
+      >
         <div class="site-companion-panel-head">
           <strong>{{ companyName }}</strong>
           <span class="site-companion-panel-sub">{{ ui('panel_sub') }}</span>
-          <button type="button" class="site-companion-close" :aria-label="ui('close')" @click="closePanel">×</button>
+          <button
+            type="button"
+            class="site-companion-close"
+            :aria-label="ui('close')"
+            @click="closePanel"
+          >
+            ×
+          </button>
         </div>
 
         <div class="site-companion-tabs">
@@ -48,35 +62,48 @@
         </div>
 
         <template v-if="panelTab === 'contact'">
-        <p class="site-companion-panel-tip">{{ panelTip }}</p>
-        <div class="site-companion-actions">
-          <template v-if="visibleContactChannels.length">
-            <a
-              v-for="ch in visibleContactChannels"
-              :key="ch.channel_type + ch.value"
-              :href="channelHref(ch)"
-              :target="channelExternal(ch) ? '_blank' : undefined"
-              :rel="channelExternal(ch) ? 'noopener noreferrer' : undefined"
-              class="site-companion-action"
-              :class="channelClass(ch.channel_type)"
-              @click="onChannelClick(ch, $event)"
+          <p class="site-companion-panel-tip">
+            {{ panelTip }}
+          </p>
+          <div class="site-companion-actions">
+            <template v-if="visibleContactChannels.length">
+              <a
+                v-for="ch in visibleContactChannels"
+                :key="ch.channel_type + ch.value"
+                :href="channelHref(ch)"
+                :target="channelExternal(ch) ? '_blank' : undefined"
+                :rel="channelExternal(ch) ? 'noopener noreferrer' : undefined"
+                class="site-companion-action"
+                :class="channelClass(ch.channel_type)"
+                @click="onChannelClick(ch, $event)"
+              >
+                <span class="site-companion-action-icon">{{ channelIcon(ch.channel_type) }}</span>
+                <span>
+                  <em>{{ ch.label }}</em>
+                  <small>{{ channelSubtext(ch) }}</small>
+                </span>
+              </a>
+            </template>
+            <p
+              v-else
+              class="site-companion-chat-hint"
             >
-              <span class="site-companion-action-icon">{{ channelIcon(ch.channel_type) }}</span>
-              <span>
-                <em>{{ ch.label }}</em>
-                <small>{{ channelSubtext(ch) }}</small>
-              </span>
-            </a>
-          </template>
-          <p v-else class="site-companion-chat-hint">{{ ui('cn_no_contact') }}</p>
-        </div>
+              {{ ui('cn_no_contact') }}
+            </p>
+          </div>
         </template>
 
         <template v-else>
           <div class="site-companion-chat">
-            <div ref="chatScroll" class="site-companion-chat-log">
-              <p v-if="!chatMessages.length" class="site-companion-chat-hint">
-              {{ ui('chat_hint') }}
+            <div
+              ref="chatScroll"
+              class="site-companion-chat-log"
+            >
+              <p
+                v-if="!chatMessages.length"
+                class="site-companion-chat-hint"
+              >
+                {{ ui('chat_hint') }}
               </p>
               <div
                 v-for="(msg, idx) in chatMessages"
@@ -86,9 +113,17 @@
               >
                 <p>{{ msg.text }}</p>
               </div>
-              <p v-if="chatLoading" class="site-companion-chat-hint">{{ ui('chat_loading') }}</p>
+              <p
+                v-if="chatLoading"
+                class="site-companion-chat-hint"
+              >
+                {{ ui('chat_loading') }}
+              </p>
             </div>
-            <div v-if="quickPrompts.length" class="site-companion-chips">
+            <div
+              v-if="quickPrompts.length"
+              class="site-companion-chips"
+            >
               <button
                 v-for="p in quickPrompts"
                 :key="p.id"
@@ -100,19 +135,30 @@
                 {{ p.label || p.label_en }}
               </button>
             </div>
-            <form class="site-companion-ask-form" @submit.prevent="submitAsk">
+            <form
+              class="site-companion-ask-form"
+              @submit.prevent="submitAsk"
+            >
               <input
                 v-model="askInput"
                 type="text"
                 maxlength="800"
                 :placeholder="ui('ask_placeholder')"
                 :disabled="chatLoading || !tenantDomain"
-              />
-              <button type="submit" :disabled="chatLoading || !askInput.trim() || !tenantDomain">
+              >
+              <button
+                type="submit"
+                :disabled="chatLoading || !askInput.trim() || !tenantDomain"
+              >
                 {{ ui('ask_button') }}
               </button>
             </form>
-            <p v-if="chatDisclaimer" class="site-companion-disclaimer">{{ chatDisclaimer }}</p>
+            <p
+              v-if="chatDisclaimer"
+              class="site-companion-disclaimer"
+            >
+              {{ chatDisclaimer }}
+            </p>
           </div>
         </template>
       </div>
@@ -125,30 +171,115 @@
       :aria-label="companyName + ' ' + ui('mascot_aria')"
       @click="togglePanel"
     >
-      <span class="site-companion-glow" :style="{ '--accent': accent }" />
-      <svg class="site-companion-cat" viewBox="0 0 120 120" aria-hidden="true">
+      <span
+        class="site-companion-glow"
+        :style="{ '--accent': accent }"
+      />
+      <svg
+        class="site-companion-cat"
+        viewBox="0 0 120 120"
+        aria-hidden="true"
+      >
         <defs>
-          <linearGradient id="wc-body" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" :stop-color="accentDeep" />
-            <stop offset="55%" :stop-color="accentMid" />
-            <stop offset="100%" :stop-color="accentLight" />
+          <linearGradient
+            id="wc-body"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              :stop-color="accentDeep"
+            />
+            <stop
+              offset="55%"
+              :stop-color="accentMid"
+            />
+            <stop
+              offset="100%"
+              :stop-color="accentLight"
+            />
           </linearGradient>
-          <linearGradient id="wc-rim" x1="100%" y1="20%" x2="0%" y2="80%">
-            <stop offset="0%" :stop-color="accentColor" />
-            <stop offset="45%" stop-color="#a78bfa" />
-            <stop offset="100%" stop-color="#38bdf8" />
+          <linearGradient
+            id="wc-rim"
+            x1="100%"
+            y1="20%"
+            x2="0%"
+            y2="80%"
+          >
+            <stop
+              offset="0%"
+              :stop-color="accentColor"
+            />
+            <stop
+              offset="45%"
+              stop-color="#a78bfa"
+            />
+            <stop
+              offset="100%"
+              stop-color="#38bdf8"
+            />
           </linearGradient>
         </defs>
-        <ellipse cx="60" cy="72" rx="38" ry="34" fill="url(#wc-body)" />
-        <path d="M28 38 L38 58 L48 36 Z" fill="#0f172a" />
-        <path d="M92 38 L82 58 L72 36 Z" fill="#0f172a" />
-        <circle cx="44" cy="68" r="11" fill="#fff" />
-        <circle cx="76" cy="68" r="11" fill="#fff" />
-        <circle cx="46" cy="70" r="5" fill="#0f172a" />
-        <circle cx="78" cy="70" r="5" fill="#0f172a" />
-        <circle cx="48" cy="66" r="2" fill="#fff" />
-        <circle cx="80" cy="66" r="2" fill="#fff" />
-        <ellipse cx="60" cy="82" rx="5" ry="3" fill="#fda4af" />
+        <ellipse
+          cx="60"
+          cy="72"
+          rx="38"
+          ry="34"
+          fill="url(#wc-body)"
+        />
+        <path
+          d="M28 38 L38 58 L48 36 Z"
+          fill="#0f172a"
+        />
+        <path
+          d="M92 38 L82 58 L72 36 Z"
+          fill="#0f172a"
+        />
+        <circle
+          cx="44"
+          cy="68"
+          r="11"
+          fill="#fff"
+        />
+        <circle
+          cx="76"
+          cy="68"
+          r="11"
+          fill="#fff"
+        />
+        <circle
+          cx="46"
+          cy="70"
+          r="5"
+          fill="#0f172a"
+        />
+        <circle
+          cx="78"
+          cy="70"
+          r="5"
+          fill="#0f172a"
+        />
+        <circle
+          cx="48"
+          cy="66"
+          r="2"
+          fill="#fff"
+        />
+        <circle
+          cx="80"
+          cy="66"
+          r="2"
+          fill="#fff"
+        />
+        <ellipse
+          cx="60"
+          cy="82"
+          rx="5"
+          ry="3"
+          fill="#fda4af"
+        />
         <path
           d="M52 88 Q60 94 68 88"
           fill="none"
@@ -167,7 +298,10 @@
           opacity="0.85"
         />
       </svg>
-      <span v-if="hasContact" class="site-companion-badge" />
+      <span
+        v-if="hasContact"
+        class="site-companion-badge"
+      />
     </button>
   </div>
 </template>

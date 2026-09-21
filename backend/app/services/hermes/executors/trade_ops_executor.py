@@ -249,16 +249,33 @@ class TradeOpsExecutor(BaseExecutor):
                 )
                 out["card_logistics"] = card.summary_lines().get("物流")
             out["executor"] = self.get_executor_name()
-            # P0-1 写路径：发运单落库 logistics_shipments（失败不阻断主链，如实标注）
+            # 本项目 CRM/物流：发运单写优丁 PG（复用 context.db，避免二次开连接）
             try:
-                from app.core.database import SessionLocal
                 from app.services.trade_fulfillment_store import persist_logistics_shipment
 
-                db = SessionLocal()
-                try:
-                    persist = persist_logistics_shipment(
+                db = getattr(context, "db", None)
+                if db is None:
+                    from app.core.database import SessionLocal
+
+                    db = SessionLocal()
+                    try:
+                        persist = persist_logistics_shipment(
+                            db,
+                            tenant_id=str(p.get("tenant_id") or context.tenant_id or "") or None,
+                            tracking_no=tn,
+                            carrier=str(p.get("carrier") or out.get("carrier") or "") or None,
+                            status=str(out.get("status") or out.get("milestone") or "in_transit"),
+                            order_id=str(p.get("order_id") or "") or None,
+                            payload=out,
+                            simulated=bool(out.get("simulated")),
+                        )
+                        out["shipment_persisted"] = persist
+                    finally:
+                        db.close()
+                else:
+                    out["shipment_persisted"] = persist_logistics_shipment(
                         db,
-                        tenant_id=str(p.get("tenant_id") or "") or None,
+                        tenant_id=str(p.get("tenant_id") or context.tenant_id or "") or None,
                         tracking_no=tn,
                         carrier=str(p.get("carrier") or out.get("carrier") or "") or None,
                         status=str(out.get("status") or out.get("milestone") or "in_transit"),
@@ -266,12 +283,6 @@ class TradeOpsExecutor(BaseExecutor):
                         payload=out,
                         simulated=bool(out.get("simulated")),
                     )
-                    out["shipment_persisted"] = persist
-                finally:
-                    try:
-                        db.close()
-                    except Exception:  # noqa: BLE001
-                        pass
             except Exception as persist_exc:  # noqa: BLE001
                 out["shipment_persisted"] = {"persisted": False, "error": str(persist_exc)}
             # 统一口径：物流源为 demo/simulated 属模拟交付 → 顶层如实 degraded，不伪装 succeeded
@@ -282,35 +293,47 @@ class TradeOpsExecutor(BaseExecutor):
 
     def _goodjob_pi(self, node, context, p) -> ExecutorResult:
         iid = str(p.get("inquiry_id") or "").strip()
+        # 本项目 CRM 原生路径（goodjob_crm = 优丁 CRM，默认无外桥）
         try:
-            import os
-            base = (os.getenv("GOODJOB_BASE_URL") or "").strip()
-            if not base:
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="failed",
-                    output={"status": "not_configured", "inquiry_id": iid},
-                    error="GOODJOB_BASE_URL 未配置 — 拒绝生成假 PI",
-                )
-            # 真桥路径：优先调用 goodjob 服务（存在则调）
-            try:
-                from app.services.goodjob.trade_document_bridge import generate_pi  # type: ignore
+            from app.services.goodjob.native_fulfillment import generate_trade_document
 
-                out = generate_pi(inquiry_id=iid, **{k: p.get(k) for k in ("buyer", "amount", "currency") if p.get(k) is not None})
+            out = generate_trade_document(
+                doc_type="PI",
+                tenant_id=getattr(context, "tenant_id", None),
+                params={
+                    "inquiry_id": iid or None,
+                    "buyer_name": p.get("buyer") or p.get("buyer_name"),
+                    "amount": p.get("amount"),
+                    "currency": p.get("currency") or "USD",
+                    "quantity": p.get("quantity") or 1,
+                    "unit_price": p.get("unit_price") or p.get("amount"),
+                    "product_name": p.get("product_name") or "Trade Ops PI",
+                    "order_id": p.get("order_id"),
+                },
+                db=getattr(context, "db", None),
+                order_id=str(p.get("order_id") or "") or None,
+                inquiry_id=iid or None,
+            )
+            if out.get("success"):
+                status = "degraded" if out.get("bank_configured") is False else "succeeded"
                 return ExecutorResult(
                     node_id=node.id,
-                    status="succeeded",
-                    output={"status": "ok", **(out if isinstance(out, dict) else {"result": out}), "executor": self.get_executor_name()},
+                    status=status,
+                    output={**out, "status": "ok", "inquiry_id": iid, "executor": self.get_executor_name()},
                 )
-            except Exception as exc:  # noqa: BLE001
-                return ExecutorResult(
-                    node_id=node.id,
-                    status="failed",
-                    output={"status": "bridge_error", "inquiry_id": iid},
-                    error=f"goodjob_pi: {exc}",
-                )
+            return ExecutorResult(
+                node_id=node.id,
+                status="failed",
+                output={"status": "native_failed", "inquiry_id": iid},
+                error=str(out.get("error") or "native PI failed"),
+            )
         except Exception as exc:  # noqa: BLE001
-            return ExecutorResult(node_id=node.id, status="failed", output={}, error=str(exc))
+            return ExecutorResult(
+                node_id=node.id,
+                status="failed",
+                output={"status": "error", "inquiry_id": iid},
+                error=f"goodjob_pi: {exc}",
+            )
 
 
 ExecutorRegistry.register(TradeOpsExecutor())

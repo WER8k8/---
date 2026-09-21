@@ -4,8 +4,15 @@
       <slot />
     </div>
     <div class="yd-search-bar__actions">
-      <a-button type="primary" @click="$emit('search')">查询</a-button>
-      <a-button @click="$emit('reset')">重置</a-button>
+      <a-button
+        type="primary"
+        @click="$emit('search')"
+      >
+        查询
+      </a-button>
+      <a-button @click="$emit('reset')">
+        重置
+      </a-button>
       <slot name="extra" />
     </div>
   </div>

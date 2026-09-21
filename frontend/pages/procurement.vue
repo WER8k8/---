@@ -141,7 +141,7 @@
     />
     <!-- Hero Section - 价值主张 -->
     <section class="hero-section">
-      <div class="hero-gradient"></div>
+      <div class="hero-gradient" />
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-icon">🎯</span>
@@ -158,25 +158,46 @@
         <!-- 核心数据亮点 -->
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-value">8500+</div>
-            <div class="stat-label">合作企业</div>
+            <div class="stat-value">
+              8500+
+            </div>
+            <div class="stat-label">
+              合作企业
+            </div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">18%</div>
-            <div class="stat-label">平均省钱</div>
+            <div class="stat-value">
+              18%
+            </div>
+            <div class="stat-label">
+              平均省钱
+            </div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">24h</div>
-            <div class="stat-label">极速响应</div>
+            <div class="stat-value">
+              24h
+            </div>
+            <div class="stat-label">
+              极速响应
+            </div>
           </div>
         </div>
 
         <!-- 主CTA - 置顶 -->
         <div class="hero-cta">
-          <Button size="lg" block @click="scrollToForm">
+          <Button
+            size="lg"
+            block
+            @click="scrollToForm"
+          >
             📱 立即获取报价方案
           </Button>
-          <Button variant="secondary" size="lg" block @click="callPhone">
+          <Button
+            variant="secondary"
+            size="lg"
+            block
+            @click="callPhone"
+          >
             📞 138-0013-8000
           </Button>
         </div>
@@ -186,14 +207,28 @@
     <!-- 价值主张卡片 -->
     <section class="value-section">
       <div class="section-header">
-        <h2 class="section-title">为什么选择我们</h2>
-        <p class="section-subtitle">专为采购经理打造的一站式解决方案</p>
+        <h2 class="section-title">
+          为什么选择我们
+        </h2>
+        <p class="section-subtitle">
+          专为采购经理打造的一站式解决方案
+        </p>
       </div>
       <div class="value-grid">
-        <div class="value-card" v-for="(value, index) in valueProps" :key="index">
-          <div class="value-icon">{{ value.icon }}</div>
-          <h3 class="value-title">{{ value.title }}</h3>
-          <p class="value-desc">{{ value.desc }}</p>
+        <div
+          class="value-card"
+          v-for="(value, index) in valueProps"
+          :key="index"
+        >
+          <div class="value-icon">
+            {{ value.icon }}
+          </div>
+          <h3 class="value-title">
+            {{ value.title }}
+          </h3>
+          <p class="value-desc">
+            {{ value.desc }}
+          </p>
         </div>
       </div>
     </section>
@@ -201,15 +236,33 @@
     <!-- 产品展示 -->
     <section class="product-section">
       <div class="section-header">
-        <h2 class="section-title">热销建材</h2>
-        <p class="section-subtitle">采购经理都在买</p>
+        <h2 class="section-title">
+          热销建材
+        </h2>
+        <p class="section-subtitle">
+          采购经理都在买
+        </p>
       </div>
       <div class="product-grid">
-        <div class="product-card" v-for="product in products" :key="product.id" @click="selectProduct(product)">
-          <div class="product-tag" v-if="product.tag">{{ product.tag }}</div>
-          <div class="product-icon">{{ product.icon }}</div>
+        <div
+          class="product-card"
+          v-for="product in products"
+          :key="product.id"
+          @click="selectProduct(product)"
+        >
+          <div
+            class="product-tag"
+            v-if="product.tag"
+          >
+            {{ product.tag }}
+          </div>
+          <div class="product-icon">
+            {{ product.icon }}
+          </div>
           <div class="product-info">
-            <div class="product-name">{{ product.name }}</div>
+            <div class="product-name">
+              {{ product.name }}
+            </div>
             <div class="product-price">
               <span class="price-symbol">¥</span>
               <span class="price-value">{{ product.price }}</span>
@@ -223,17 +276,29 @@
     <!-- 客户见证 -->
     <section class="testimonial-section">
       <div class="section-header">
-        <h2 class="section-title">他们都在用</h2>
-        <p class="section-subtitle">来自500强企业采购经理的真实反馈</p>
+        <h2 class="section-title">
+          他们都在用
+        </h2>
+        <p class="section-subtitle">
+          来自500强企业采购经理的真实反馈
+        </p>
       </div>
       <div class="testimonial-card">
         <div class="testimonial-header">
-          <div class="testimonial-avatar">张</div>
-          <div class="testimonial-author">
-            <div class="author-name">张经理</div>
-            <div class="author-role">某建筑集团 采购总监</div>
+          <div class="testimonial-avatar">
+            张
           </div>
-          <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+          <div class="testimonial-author">
+            <div class="author-name">
+              张经理
+            </div>
+            <div class="author-role">
+              某建筑集团 采购总监
+            </div>
+          </div>
+          <div class="testimonial-rating">
+            ⭐⭐⭐⭐⭐
+          </div>
         </div>
         <p class="testimonial-content">
           "合作3年，每年节省采购成本超过200万。响应速度快，品质稳定，强烈推荐！"
@@ -246,24 +311,35 @@
     </section>
 
     <!-- 留资表单 - 核心转化 -->
-    <section class="form-section" id="lead-form">
+    <section
+      class="form-section"
+      id="lead-form"
+    >
       <div class="form-container">
         <div class="form-header">
-          <h2 class="form-title">免费获取报价方案</h2>
-          <p class="form-subtitle">30秒填写 · 1对1顾问服务 · 无任何费用</p>
+          <h2 class="form-title">
+            免费获取报价方案
+          </h2>
+          <p class="form-subtitle">
+            30秒填写 · 1对1顾问服务 · 无任何费用
+          </p>
         </div>
 
         <ClientOnly>
           <template #fallback>
             <div class="form-skeleton">
-              <div class="skeleton-item skeleton-full"></div>
-              <div class="skeleton-item skeleton-full"></div>
-              <div class="skeleton-item skeleton-full"></div>
-              <div class="skeleton-item skeleton-half"></div>
+              <div class="skeleton-item skeleton-full" />
+              <div class="skeleton-item skeleton-full" />
+              <div class="skeleton-item skeleton-full" />
+              <div class="skeleton-item skeleton-half" />
             </div>
           </template>
           <template #default>
-            <form class="lead-form" @submit.prevent="submitForm" v-if="!showSuccess">
+            <form
+              class="lead-form"
+              @submit.prevent="submitForm"
+              v-if="!showSuccess"
+            >
               <!-- 姓名 -->
               <Input
                 v-model="formData.name"
@@ -302,25 +378,55 @@
                   :class="{ 'form-select-error': errors.product }"
                   @change="validateField('product')"
                 >
-                  <option value="">请选择采购品类</option>
-                  <option value="polyurethane">聚氨酯轻集料混凝土</option>
-                  <option value="ceramsite">陶粒轻集料混凝土</option>
-                  <option value="foam">泡沫水泥保温板</option>
-                  <option value="aerated">加气轻填料</option>
-                  <option value="other">其他建材</option>
+                  <option value="">
+                    请选择采购品类
+                  </option>
+                  <option value="polyurethane">
+                    聚氨酯轻集料混凝土
+                  </option>
+                  <option value="ceramsite">
+                    陶粒轻集料混凝土
+                  </option>
+                  <option value="foam">
+                    泡沫水泥保温板
+                  </option>
+                  <option value="aerated">
+                    加气轻填料
+                  </option>
+                  <option value="other">
+                    其他建材
+                  </option>
                 </select>
-                <div v-if="errors.product" class="form-error-text">{{ errors.product }}</div>
+                <div
+                  v-if="errors.product"
+                  class="form-error-text"
+                >
+                  {{ errors.product }}
+                </div>
               </div>
 
               <!-- 预估用量 -->
               <div class="form-select-group">
                 <label class="form-label">预估用量</label>
-                <select v-model="formData.quantity" class="form-select">
-                  <option value="">请选择预估用量</option>
-                  <option value="small">100m³ 以下</option>
-                  <option value="medium">100-500m³</option>
-                  <option value="large">500-2000m³</option>
-                  <option value="xlarge">2000m³ 以上</option>
+                <select
+                  v-model="formData.quantity"
+                  class="form-select"
+                >
+                  <option value="">
+                    请选择预估用量
+                  </option>
+                  <option value="small">
+                    100m³ 以下
+                  </option>
+                  <option value="medium">
+                    100-500m³
+                  </option>
+                  <option value="large">
+                    500-2000m³
+                  </option>
+                  <option value="xlarge">
+                    2000m³ 以上
+                  </option>
                 </select>
               </div>
 
@@ -332,7 +438,7 @@
                   class="form-textarea"
                   placeholder="项目地点、工期要求、特殊需求等..."
                   rows="3"
-                ></textarea>
+                />
               </div>
 
               <!-- 隐私承诺 -->
@@ -342,26 +448,46 @@
               </div>
 
               <!-- 提交按钮 -->
-              <Button type="submit" size="lg" block :loading="isSubmitting">
+              <Button
+                type="submit"
+                size="lg"
+                block
+                :loading="isSubmitting"
+              >
                 立即获取报价方案
               </Button>
 
               <!-- 辅助CTA -->
               <div class="alternative-actions">
-                <Button variant="secondary" @click="callPhone">
+                <Button
+                  variant="secondary"
+                  @click="callPhone"
+                >
                   📞 直接拨打电话
                 </Button>
-                <Button variant="secondary" @click="copyWechat">
+                <Button
+                  variant="secondary"
+                  @click="copyWechat"
+                >
                   💬 复制微信号
                 </Button>
               </div>
             </form>
 
             <!-- 成功提示 -->
-            <div v-if="showSuccess" class="success-message">
-              <div class="success-icon">✅</div>
-              <h3 class="success-title">提交成功！</h3>
-              <p class="success-desc">我们的采购顾问将在10分钟内联系您</p>
+            <div
+              v-if="showSuccess"
+              class="success-message"
+            >
+              <div class="success-icon">
+                ✅
+              </div>
+              <h3 class="success-title">
+                提交成功！
+              </h3>
+              <p class="success-desc">
+                我们的采购顾问将在10分钟内联系您
+              </p>
             </div>
           </template>
         </ClientOnly>
@@ -371,8 +497,12 @@
     <!-- FAQ -->
     <section class="faq-section">
       <div class="section-header">
-        <h2 class="section-title">常见问题</h2>
-        <p class="section-subtitle">采购经理最关心的问题</p>
+        <h2 class="section-title">
+          常见问题
+        </h2>
+        <p class="section-subtitle">
+          采购经理最关心的问题
+        </p>
       </div>
       <div class="faq-list">
         <div
@@ -383,9 +513,15 @@
         >
           <div class="faq-question">
             <span class="question-text">{{ faq.question }}</span>
-            <span class="faq-icon" :class="{ expanded: expandedFaq === index }">▼</span>
+            <span
+              class="faq-icon"
+              :class="{ expanded: expandedFaq === index }"
+            >▼</span>
           </div>
-          <div class="faq-answer" v-show="expandedFaq === index">
+          <div
+            class="faq-answer"
+            v-show="expandedFaq === index"
+          >
             {{ faq.answer }}
           </div>
         </div>
@@ -396,10 +532,16 @@
     <div class="sticky-footer">
       <div class="sticky-content">
         <div class="sticky-info">
-          <div class="sticky-title">免费获取报价方案</div>
-          <div class="sticky-desc">30秒填写，1对1服务</div>
+          <div class="sticky-title">
+            免费获取报价方案
+          </div>
+          <div class="sticky-desc">
+            30秒填写，1对1服务
+          </div>
         </div>
-        <Button @click="scrollToForm">立即咨询</Button>
+        <Button @click="scrollToForm">
+          立即咨询
+        </Button>
       </div>
     </div>
   </div>

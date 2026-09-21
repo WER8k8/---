@@ -7,6 +7,7 @@ from app.services.platforms.baijiahao import BaijiahaoPublisher, BaijiahaoPublis
 from app.services.platforms.csdn import CSDNPublisher, CSDNPublisherAdapter
 from app.services.platforms.weibo import WeiboPublisher, WeiboPublisherAdapter
 from app.services.platforms.xiaohongshu import XiaohongshuPublisher, XiaohongshuPublisherAdapter
+from app.services.platforms.b2b_platform_inbox_hub import B2BPlatformInboxHub
 
 __all__ = [
     "WeChatPublisher", "WeChatPublisherAdapter",
@@ -16,4 +17,5 @@ __all__ = [
     "CSDNPublisher", "CSDNPublisherAdapter",
     "WeiboPublisher", "WeiboPublisherAdapter",
     "XiaohongshuPublisher", "XiaohongshuPublisherAdapter",
+    "B2BPlatformInboxHub",
 ]

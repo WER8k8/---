@@ -4,10 +4,20 @@
 <template>
   <teleport to="body">
     <transition name="guide-fade">
-      <div v-if="visible" class="guide-overlay" @click.self="handleLater">
+      <div
+        v-if="visible"
+        class="guide-overlay"
+        @click.self="handleLater"
+      >
         <transition name="guide-scale">
-          <div v-if="visible" class="guide-modal">
-            <button class="guide-close" @click="handleLater">
+          <div
+            v-if="visible"
+            class="guide-modal"
+          >
+            <button
+              class="guide-close"
+              @click="handleLater"
+            >
               <CloseOutlined />
             </button>
 
@@ -15,7 +25,9 @@
               <div class="guide-icon-wrap">
                 <BulbOutlined class="guide-icon" />
               </div>
-              <h2 class="guide-title">欢迎使用 AI 大模型平台</h2>
+              <h2 class="guide-title">
+                欢迎使用 AI 大模型平台
+              </h2>
               <p class="guide-subtitle">
                 为充分发挥 AI 能力，建议您优先配置以下平台的 API Key，
                 即可在 AI 内容助手、智能分析等功能中使用大模型服务。
@@ -36,17 +48,38 @@
                 >
                   <span class="ri-emoji">{{ item.emoji }}</span>
                   <span class="ri-name">{{ item.name }}</span>
-                  <a-tag v-if="item.configured" color="success" size="small">已配置</a-tag>
-                  <a-tag v-else color="processing" size="small">推荐</a-tag>
+                  <a-tag
+                    v-if="item.configured"
+                    color="success"
+                    size="small"
+                  >
+                    已配置
+                  </a-tag>
+                  <a-tag
+                    v-else
+                    color="processing"
+                    size="small"
+                  >
+                    推荐
+                  </a-tag>
                 </div>
               </div>
             </div>
 
             <div class="guide-actions">
-              <a-button type="primary" size="large" class="guide-btn-primary" @click="handleSetup">
+              <a-button
+                type="primary"
+                size="large"
+                class="guide-btn-primary"
+                @click="handleSetup"
+              >
                 <SettingOutlined /> 立即配置
               </a-button>
-              <a-button size="large" class="guide-btn-secondary" @click="handleLater">
+              <a-button
+                size="large"
+                class="guide-btn-secondary"
+                @click="handleLater"
+              >
                 稍后配置
               </a-button>
             </div>

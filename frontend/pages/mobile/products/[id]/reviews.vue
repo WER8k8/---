@@ -6,46 +6,71 @@
     <MobileNavbar :title="t('mobile.reviews.title')" />
 
     <!-- Loading State -->
-    <div v-if="pending && currentPage === 1" class="px-4 py-6">
+    <div
+      v-if="pending && currentPage === 1"
+      class="px-4 py-6"
+    >
       <div class="animate-pulse space-y-4">
-        <div class="h-20 bg-gray-200 rounded-xl"></div>
-        <div class="h-32 bg-gray-200 rounded-xl"></div>
-        <div class="h-32 bg-gray-200 rounded-xl"></div>
+        <div class="h-20 bg-gray-200 rounded-xl" />
+        <div class="h-32 bg-gray-200 rounded-xl" />
+        <div class="h-32 bg-gray-200 rounded-xl" />
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error && currentPage === 1" class="px-4 py-12 text-center">
-      <div class="text-red-500 text-sm mb-4">{{ error.message || t('mobile.reviews.fetchError') }}</div>
-      <button @click="refresh()" class="text-primary text-sm font-medium">
+    <div
+      v-else-if="error && currentPage === 1"
+      class="px-4 py-12 text-center"
+    >
+      <div class="text-red-500 text-sm mb-4">
+        {{ error.message || t('mobile.reviews.fetchError') }}
+      </div>
+      <button
+        @click="refresh()"
+        class="text-primary text-sm font-medium"
+      >
         {{ t('common.retry') }}
       </button>
     </div>
 
     <!-- Reviews Content -->
-    <div v-else class="px-4 py-4">
+    <div
+      v-else
+      class="px-4 py-4"
+    >
       <!-- Review Stats Card -->
       <div class="bg-white rounded-xl p-4 mb-4 shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <div>
-            <div class="text-3xl font-bold text-primary">{{ averageRating }}</div>
+            <div class="text-3xl font-bold text-primary">
+              {{ averageRating }}
+            </div>
             <div class="flex text-yellow-400 text-lg mt-1">
-              <span v-for="star in 5" :key="star">{{ star <= Math.round(averageRating) ? '★' : '☆' }}</span>
+              <span
+                v-for="star in 5"
+                :key="star"
+              >{{ star <= Math.round(averageRating) ? '★' : '☆' }}</span>
             </div>
           </div>
           <div class="text-right">
-            <div class="text-sm text-gray-500">{{ t('mobile.reviews.basedOn', { count: totalReviews }) }}</div>
+            <div class="text-sm text-gray-500">
+              {{ t('mobile.reviews.basedOn', { count: totalReviews }) }}
+            </div>
           </div>
         </div>
         <!-- Rating Distribution -->
         <div class="space-y-1">
-          <div v-for="rating in [5, 4, 3, 2, 1]" :key="rating" class="flex items-center gap-2">
+          <div
+            v-for="rating in [5, 4, 3, 2, 1]"
+            :key="rating"
+            class="flex items-center gap-2"
+          >
             <span class="text-xs text-gray-500 w-6">{{ rating }}★</span>
             <div class="flex-1 bg-gray-100 rounded-full h-1.5">
               <div
                 class="bg-yellow-400 h-1.5 rounded-full transition-all duration-300"
                 :style="{ width: `${getRatingPercentage(rating)}%` }"
-              ></div>
+              />
             </div>
             <span class="text-xs text-gray-400 w-6 text-right">{{ getRatingCount(rating) }}</span>
           </div>
@@ -53,31 +78,53 @@
       </div>
 
       <!-- Reviews List -->
-      <div v-if="reviews.length === 0 && !pending" class="text-center py-12 text-gray-400 text-sm">
+      <div
+        v-if="reviews.length === 0 && !pending"
+        class="text-center py-12 text-gray-400 text-sm"
+      >
         {{ t('mobile.reviews.noReviews') }}
       </div>
 
-      <div v-else class="space-y-3">
-        <div v-for="review in reviews" :key="review.id" class="bg-white rounded-xl p-4 shadow-sm">
+      <div
+        v-else
+        class="space-y-3"
+      >
+        <div
+          v-for="review in reviews"
+          :key="review.id"
+          class="bg-white rounded-xl p-4 shadow-sm"
+        >
           <div class="flex items-start justify-between mb-2">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-semibold">
                 {{ getInitials(review.user_id) }}
               </div>
               <div>
-                <div class="text-sm font-medium text-gray-800">{{ t('mobile.reviews.user') }} {{ review.user_id.slice(0, 8) }}</div>
-                <div class="text-xs text-gray-400">{{ formatDate(review.created_at) }}</div>
+                <div class="text-sm font-medium text-gray-800">
+                  {{ t('mobile.reviews.user') }} {{ review.user_id.slice(0, 8) }}
+                </div>
+                <div class="text-xs text-gray-400">
+                  {{ formatDate(review.created_at) }}
+                </div>
               </div>
             </div>
             <div class="flex text-yellow-400 text-sm">
-              <span v-for="star in 5" :key="star">{{ star <= review.rating ? '★' : '☆' }}</span>
+              <span
+                v-for="star in 5"
+                :key="star"
+              >{{ star <= review.rating ? '★' : '☆' }}</span>
             </div>
           </div>
 
-          <p class="text-sm text-gray-700 mb-2">{{ review.content }}</p>
+          <p class="text-sm text-gray-700 mb-2">
+            {{ review.content }}
+          </p>
 
           <!-- Review Images -->
-          <div v-if="review.images" class="flex gap-2 mb-2">
+          <div
+            v-if="review.images"
+            class="flex gap-2 mb-2"
+          >
             <img
               v-for="(image, index) in parseImages(review.images)"
               :key="index"
@@ -85,13 +132,19 @@
               alt="Review image"
               class="w-16 h-16 object-cover rounded-lg cursor-pointer"
               @click="openImagePreview(image)"
-            />
+            >
           </div>
 
           <!-- Review Status/Actions -->
           <div class="flex items-center gap-3 text-xs">
-            <span v-if="review.status === 'pending'" class="text-yellow-600">{{ t('mobile.reviews.pending') }}</span>
-            <span v-if="review.status === 'rejected'" class="text-red-600">{{ t('mobile.reviews.rejected') }}</span>
+            <span
+              v-if="review.status === 'pending'"
+              class="text-yellow-600"
+            >{{ t('mobile.reviews.pending') }}</span>
+            <span
+              v-if="review.status === 'rejected'"
+              class="text-red-600"
+            >{{ t('mobile.reviews.rejected') }}</span>
             <button
               v-if="canEditReview(review)"
               @click="editReview(review)"
@@ -133,18 +186,40 @@
     </div>
 
     <!-- Review Form Modal (Bottom Sheet) -->
-    <div v-if="showReviewForm" class="fixed inset-0 bg-black bg-opacity-50 z-50" @click.self="showReviewForm = false">
+    <div
+      v-if="showReviewForm"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50"
+      @click.self="showReviewForm = false"
+    >
       <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-white rounded-t-2xl p-4 border-b border-gray-100 flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-gray-800">{{ t('mobile.reviews.writeReview') }}</h3>
-          <button @click="showReviewForm = false" class="text-gray-400">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <h3 class="text-lg font-semibold text-gray-800">
+            {{ t('mobile.reviews.writeReview') }}
+          </h3>
+          <button
+            @click="showReviewForm = false"
+            class="text-gray-400"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
-        <form @submit.prevent="submitReview" class="p-4 space-y-4">
+        <form
+          @submit.prevent="submitReview"
+          class="p-4 space-y-4"
+        >
           <!-- Rating -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('mobile.reviews.rating') }}</label>
@@ -170,7 +245,7 @@
               rows="4"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm"
               :placeholder="t('mobile.reviews.contentPlaceholder')"
-            ></textarea>
+            />
           </div>
 
           <!-- Images -->
@@ -178,17 +253,44 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('mobile.reviews.images') }}</label>
             <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
               <div class="flex flex-col items-center justify-center">
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                <svg
+                  class="w-6 h-6 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
                 </svg>
                 <p class="text-xs text-gray-500 mt-1">{{ t('common.upload') }}</p>
               </div>
-              <input type="file" class="hidden" multiple accept="image/*" @change="handleImageUpload" />
+              <input
+                type="file"
+                class="hidden"
+                multiple
+                accept="image/*"
+                @change="handleImageUpload"
+              >
             </label>
             <!-- Image Previews -->
-            <div v-if="reviewForm.images.length > 0" class="flex gap-2 mt-2">
-              <div v-for="(image, index) in reviewForm.images" :key="index" class="relative">
-                <img :src="image" alt="Preview" class="w-16 h-16 object-cover rounded-lg" />
+            <div
+              v-if="reviewForm.images.length > 0"
+              class="flex gap-2 mt-2"
+            >
+              <div
+                v-for="(image, index) in reviewForm.images"
+                :key="index"
+                class="relative"
+              >
+                <img
+                  :src="image"
+                  alt="Preview"
+                  class="w-16 h-16 object-cover rounded-lg"
+                >
                 <button
                   type="button"
                   @click="removeImage(index)"
@@ -222,8 +324,16 @@
     </div>
 
     <!-- Image Preview Modal -->
-    <div v-if="previewImage" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center" @click="previewImage = null">
-      <img :src="previewImage" alt="Preview" class="max-w-full max-h-full object-contain" />
+    <div
+      v-if="previewImage"
+      class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center"
+      @click="previewImage = null"
+    >
+      <img
+        :src="previewImage"
+        alt="Preview"
+        class="max-w-full max-h-full object-contain"
+      >
     </div>
   </div>
 </template>

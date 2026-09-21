@@ -4,17 +4,32 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-safe-bottom">
     <!-- Mobile Navbar -->
-    <MobileNavbar safe-area-top :blur="true">
+    <MobileNavbar
+      safe-area-top
+      :blur="true"
+    >
       <div class="flex items-center h-14">
         <button
           class="p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors"
           @click="router.back()"
         >
-          <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg
+            class="w-5 h-5 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
-        <h1 class="ml-2 text-base font-semibold text-gray-900">{{ $t('mobile.user.settings') }}</h1>
+        <h1 class="ml-2 text-base font-semibold text-gray-900">
+          {{ $t('mobile.user.settings') }}
+        </h1>
       </div>
     </MobileNavbar>
 
@@ -22,8 +37,13 @@
     <div class="px-4 py-6 space-y-6">
       <!-- Profile Section -->
       <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ $t('mobile.settings.profile') }}</h2>
-        <form @submit.prevent="updateProfile" class="space-y-4">
+        <h2 class="text-sm font-semibold text-gray-900 mb-4">
+          {{ $t('mobile.settings.profile') }}
+        </h2>
+        <form
+          @submit.prevent="updateProfile"
+          class="space-y-4"
+        >
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.name') }}</label>
             <input
@@ -31,7 +51,7 @@
               type="text"
               required
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
+            >
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.email') }}</label>
@@ -40,7 +60,7 @@
               type="email"
               disabled
               class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm"
-            />
+            >
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.phone') }}</label>
@@ -48,7 +68,7 @@
               v-model="profileForm.phone"
               type="tel"
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
+            >
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.company') }}</label>
@@ -56,7 +76,7 @@
               v-model="profileForm.company"
               type="text"
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
+            >
           </div>
           <button
             type="submit"
@@ -70,8 +90,13 @@
 
       <!-- Password Section -->
       <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ $t('mobile.settings.password') }}</h2>
-        <form @submit.prevent="updatePassword" class="space-y-4">
+        <h2 class="text-sm font-semibold text-gray-900 mb-4">
+          {{ $t('mobile.settings.password') }}
+        </h2>
+        <form
+          @submit.prevent="updatePassword"
+          class="space-y-4"
+        >
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.currentPassword') }}</label>
             <input
@@ -79,7 +104,7 @@
               type="password"
               required
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
+            >
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.newPassword') }}</label>
@@ -89,7 +114,7 @@
               required
               minlength="8"
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
+            >
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('mobile.settings.confirmPassword') }}</label>
@@ -98,7 +123,7 @@
               type="password"
               required
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
+            >
           </div>
           <button
             type="submit"
@@ -112,7 +137,9 @@
 
       <!-- Language Section -->
       <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ $t('mobile.settings.language') }}</h2>
+        <h2 class="text-sm font-semibold text-gray-900 mb-4">
+          {{ $t('mobile.settings.language') }}
+        </h2>
         <div class="space-y-2">
           <button
             v-for="lang in languages"
@@ -122,8 +149,19 @@
             @click="switchLanguage(lang.code)"
           >
             <span class="text-sm font-medium">{{ lang.name }}</span>
-            <svg v-if="currentLocale === lang.code" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            <svg
+              v-if="currentLocale === lang.code"
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </button>
         </div>

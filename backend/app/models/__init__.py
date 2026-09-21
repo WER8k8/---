@@ -39,6 +39,7 @@ from app.models.international import (InternationalCrawlLog,
                                        InternationalInquiry,
                                        InternationalTargetSite)
 from app.models.inquiry import Inquiry
+from app.models.domestic import DomesticInquiry
 from app.models.social_interaction import SocialInteraction
 from app.models.push_event import PushEvent
 from app.models.tenant_wecom_push import TenantWecomPushConfig
@@ -315,4 +316,5 @@ __all__ = [
     "Invoice",
     "BusinessPayment",
     "Pipeline",
+    "DomesticInquiry",
 ]

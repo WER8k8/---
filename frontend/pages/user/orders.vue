@@ -36,28 +36,58 @@
         </div>
 
         <!-- Loading State -->
-        <div v-if="loading" class="space-y-4">
-          <div v-for="i in 3" :key="i" class="animate-pulse bg-surface rounded-2xl p-6">
-            <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div
+          v-if="loading"
+          class="space-y-4"
+        >
+          <div
+            v-for="i in 3"
+            :key="i"
+            class="animate-pulse bg-surface rounded-2xl p-6"
+          >
+            <div class="h-6 bg-gray-200 rounded w-1/4 mb-4" />
+            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2" />
+            <div class="h-4 bg-gray-200 rounded w-3/4" />
           </div>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="orders.length === 0" class="text-center py-10 sm:py-16">
-          <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <div
+          v-else-if="orders.length === 0"
+          class="text-center py-10 sm:py-16"
+        >
+          <svg
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+            />
           </svg>
-          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">暂无订单</h3>
-          <p class="text-sm text-text-secondary mb-6">您还没有任何订单，快去挑选商品吧</p>
-          <NuxtLink to="/products" class="btn-primary">
+          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">
+            暂无订单
+          </h3>
+          <p class="text-sm text-text-secondary mb-6">
+            您还没有任何订单，快去挑选商品吧
+          </p>
+          <NuxtLink
+            to="/products"
+            class="btn-primary"
+          >
             去购物
           </NuxtLink>
         </div>
 
         <!-- Orders List -->
-        <div v-else class="space-y-6">
+        <div
+          v-else
+          class="space-y-6"
+        >
           <div
             v-for="order in orders"
             :key="order.id"
@@ -96,9 +126,11 @@
                   :src="item.product_image || '/images/placeholder.jpg'"
                   :alt="item.product_name"
                   class="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg"
-                />
+                >
                 <div class="flex-1 min-w-0">
-                  <h4 class="text-sm sm:text-base font-medium text-text-primary truncate">{{ item.product_name }}</h4>
+                  <h4 class="text-sm sm:text-base font-medium text-text-primary truncate">
+                    {{ item.product_name }}
+                  </h4>
                   <p class="text-xs sm:text-sm text-text-secondary">
                     数量: {{ item.quantity }} {{ item.unit }}
                   </p>
@@ -118,7 +150,10 @@
         </div>
 
         <!-- Pagination -->
-        <div v-if="orders.length > 0 && totalPages > 1" class="flex justify-center mt-8 sm:mt-10">
+        <div
+          v-if="orders.length > 0 && totalPages > 1"
+          class="flex justify-center mt-8 sm:mt-10"
+        >
           <nav class="flex items-center gap-2">
             <button
               @click="changePage(currentPage - 1)"
@@ -192,7 +227,7 @@ const displayedPages = computed(() => {
   const pages: number[] = [];
   const maxVisible = 5;
   let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
-  let end = Math.min(totalPages.value, start + maxVisible - 1);
+  const end = Math.min(totalPages.value, start + maxVisible - 1);
 
   if (end - start + 1 < maxVisible) {
     start = Math.max(1, end - maxVisible + 1);

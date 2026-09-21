@@ -3,15 +3,19 @@
 """
 AI Recommendations API Router - AI推荐API
 """
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import uuid
 
 from app.core.database import get_db
+from app.core.response import success_response
 from app.core.security import get_current_user
 from app.models.ai_recommendation import AIRecommendation
+from app.models.inquiry import Inquiry
 from app.models.user import User
+from app.services.ai_recommendation_service import recommendation_service
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -138,3 +142,47 @@ def list_recommendations(
         }
         for r in recommendations
     ]
+
+
+@router.get("/cross-sell", response_model=List[dict])
+def cross_sell_recommendations(
+    tenant_id: str,
+    limit: int = Query(10, ge=1, le=50),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """基于询盘历史的增购/交叉销售实时推荐（P1-2 接线）。
+
+    激活 ai_recommendation_service.RecommendationService 的 item-based 协同过滤：
+    以「租户 -> 询盘商品（近因加权）」构建 user_item_matrix，为目标租户返回
+    与其历史询盘商品高共现、但自身尚未询盘过的商品，作为交叉销售线索。
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(days=365)
+    rows = (
+        db.query(Inquiry.tenant_id, Inquiry.product, Inquiry.created_at)
+        .filter(Inquiry.product.isnot(None), Inquiry.created_at >= cutoff)
+        .all()
+    )
+    matrix: dict[str, dict[str, float]] = {}
+    now = datetime.now(timezone.utc)
+    for tid, prod, created in rows:
+        if not tid or not prod or created is None:
+            continue
+        # created_at 落库后可能为 naive（同 churn_service 的时区坑），
+        # 与 tz-aware 的 now 相减会抛 TypeError，先规整为 UTC aware。
+        created_aware = (
+            created if created.tzinfo is not None else created.replace(tzinfo=timezone.utc)
+        )
+        age_days = max((now - created_aware).days, 0)
+        weight = 1.0 / (1.0 + age_days / 30.0)  # 近因加权：越近权重越高
+        matrix.setdefault(tid, {})
+        matrix[tid][prod] = matrix[tid].get(prod, 0.0) + weight
+
+    if tenant_id not in matrix:
+        return success_response(data=[])
+
+    recs = recommendation_service.collaborative_filtering_item_based(
+        tenant_id, matrix, n_recommendations=limit
+    )
+    data = [{"product": p, "score": round(float(s), 4)} for p, s in recs]
+    return success_response(data=data)

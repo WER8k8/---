@@ -604,3 +604,29 @@ def build_attribution_report(
         "top_ai_engines": top_engines_list,
         "total_revenue": sum(channel_revenue.values()),
     }
+
+
+def parse_and_bind_utm_to_inquiry(inquiry: Any, utm_data: dict[str, Any]) -> None:
+    """提取 URL 中的 UTM 标记与来源参数，直接绑定至询盘实体。"""
+    if not inquiry or not utm_data:
+        return
+    for field in ("utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"):
+        val = utm_data.get(field)
+        if val and hasattr(inquiry, field):
+            setattr(inquiry, field, str(val)[:200])
+
+    # 自动识别主要归因渠道
+    src = str(utm_data.get("utm_source") or "").lower()
+    med = str(utm_data.get("utm_medium") or "").lower()
+    if hasattr(inquiry, "attribution_channel"):
+        if "seo" in med or "google" in src or "baidu" in src:
+            inquiry.attribution_channel = "seo"
+        elif "email" in med or "newsletter" in src:
+            inquiry.attribution_channel = "email"
+        elif "social" in med or any(s in src for s in ("linkedin", "facebook", "twitter", "tiktok")):
+            inquiry.attribution_channel = "social"
+        elif "ai" in med or any(a in src for a in ("deepseek", "chatgpt", "perplexity", "gemini")):
+            inquiry.attribution_channel = "ai_search"
+        elif src:
+            inquiry.attribution_channel = "referral"
+

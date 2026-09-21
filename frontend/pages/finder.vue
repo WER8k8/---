@@ -6,7 +6,9 @@
     <!-- Hero -->
     <section class="finder-hero">
       <div class="finder-hero-inner">
-        <h1 class="finder-title">产品匹配引擎</h1>
+        <h1 class="finder-title">
+          产品匹配引擎
+        </h1>
         <p class="finder-sub">
           输入应用场景与技术约束，系统基于真实产品参数做硬过滤 + 加权评分，
           给出可解释的推荐结果（不编造认证或测试数据）。
@@ -16,8 +18,14 @@
 
     <section class="finder-body">
       <!-- 查询表单 -->
-      <a-card class="finder-form-card" :bordered="false">
-        <form class="finder-form" @submit.prevent="onSubmit">
+      <a-card
+        class="finder-form-card"
+        :bordered="false"
+      >
+        <form
+          class="finder-form"
+          @submit.prevent="onSubmit"
+        >
           <div class="field field-full">
             <label class="field-label">应用场景 <span class="req">*</span></label>
             <a-input
@@ -95,7 +103,12 @@
           </div>
 
           <div class="field-full form-actions">
-            <a-button type="primary" html-type="submit" :loading="loading" block>
+            <a-button
+              type="primary"
+              html-type="submit"
+              :loading="loading"
+              block
+            >
               开始匹配
             </a-button>
           </div>
@@ -112,8 +125,14 @@
       />
 
       <!-- 结果区 -->
-      <a-spin :spinning="loading" tip="匹配计算中...">
-        <div v-if="result" class="finder-results">
+      <a-spin
+        :spinning="loading"
+        tip="匹配计算中..."
+      >
+        <div
+          v-if="result"
+          class="finder-results"
+        >
           <div class="result-summary">
             共 <b>{{ result.total_products }}</b> 个在售产品参与匹配，
             推荐 <b>{{ result.matches.length }}</b> 条，
@@ -134,9 +153,13 @@
           >
             <div class="match-head">
               <div class="match-head-main">
-                <h3 class="match-name">{{ m.name }}</h3>
+                <h3 class="match-name">
+                  {{ m.name }}
+                </h3>
                 <div class="match-meta">
-                  <a-tag :color="tierColor(m.tier)">{{ m.tier }}</a-tag>
+                  <a-tag :color="tierColor(m.tier)">
+                    {{ m.tier }}
+                  </a-tag>
                   <span class="match-score">综合分 <b>{{ m.score }}</b> / 100</span>
                 </div>
                 <div class="match-fields">
@@ -145,13 +168,24 @@
                   <span v-if="m.slug">slug：{{ m.slug }}</span>
                 </div>
               </div>
-              <div v-if="m.image_url" class="match-img">
-                <img :src="m.image_url" :alt="m.name" loading="lazy" />
+              <div
+                v-if="m.image_url"
+                class="match-img"
+              >
+                <img
+                  :src="m.image_url"
+                  :alt="m.name"
+                  loading="lazy"
+                >
               </div>
             </div>
 
             <div class="dims">
-              <div v-for="(val, key) in m.dimensions" :key="key" class="dim">
+              <div
+                v-for="(val, key) in m.dimensions"
+                :key="key"
+                class="dim"
+              >
                 <span class="dim-label">{{ dimLabel(key as string) }}</span>
                 <a-progress
                   :percent="Math.round(val as number)"
@@ -166,7 +200,13 @@
             <a-divider style="margin: 10px 0" />
 
             <div class="evidence">
-              <div v-for="(e, i) in m.evidence" :key="i" class="evidence-item">• {{ e }}</div>
+              <div
+                v-for="(e, i) in m.evidence"
+                :key="i"
+                class="evidence-item"
+              >
+                • {{ e }}
+              </div>
             </div>
 
             <a-alert
@@ -185,7 +225,11 @@
             :bordered="false"
             title="未通过硬条件过滤的产品"
           >
-            <div v-for="(r, i) in result.rejected" :key="i" class="rejected-item">
+            <div
+              v-for="(r, i) in result.rejected"
+              :key="i"
+              class="rejected-item"
+            >
               <span class="rejected-name">{{ r.name }}</span>
               <span class="rejected-reason">{{ r.reason }}</span>
             </div>

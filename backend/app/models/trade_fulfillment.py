@@ -20,6 +20,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     DateTime,
@@ -60,6 +61,8 @@ class PurchaseOrder(Base):
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
 
+    provenance_metadata = Column(JSON, nullable=True)
+
     __table_args__ = (Index("ix_purchase_orders_tenant_status", "tenant_id", "status"),)
 
 
@@ -84,6 +87,8 @@ class LogisticsShipment(Base):
     payload_json = Column(Text, default="{}")
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
+
+    provenance_metadata = Column(JSON, nullable=True)
 
     __table_args__ = (Index("ix_logistics_shipments_tenant_status", "tenant_id", "status"),)
 
@@ -111,6 +116,8 @@ class WhatsappMessage(Base):
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
 
+    provenance_metadata = Column(JSON, nullable=True)
+
     __table_args__ = (
         Index("ix_whatsapp_messages_tenant_dir", "tenant_id", "direction", "created_at"),
     )
@@ -136,6 +143,8 @@ class ExperienceRecord(Base):
     metadata_json = Column(Text, default="{}")
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
+
+    provenance_metadata = Column(JSON, nullable=True)
 
     __table_args__ = (
         Index("ix_experience_records_tenant_status", "tenant_id", "status"),
@@ -163,6 +172,8 @@ class ContactEvent(Base):
     occurred_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
 
+    provenance_metadata = Column(JSON, nullable=True)
+
     __table_args__ = (
         Index("ix_contact_events_tenant_channel", "tenant_id", "channel", "occurred_at"),
     )
@@ -184,6 +195,8 @@ class KnowledgeBase(Base):
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
+
+    provenance_metadata = Column(JSON, nullable=True)
 
     __table_args__ = (Index("ix_knowledge_bases_tenant_type", "tenant_id", "kb_type"),)
 
@@ -212,6 +225,8 @@ class Invoice(Base):
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
 
+    provenance_metadata = Column(JSON, nullable=True)
+
     __table_args__ = (Index("ix_invoices_tenant_status", "tenant_id", "status"),)
 
 
@@ -237,6 +252,8 @@ class BusinessPayment(Base):
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
 
+    provenance_metadata = Column(JSON, nullable=True)
+
     __table_args__ = (Index("ix_payments_tenant_status", "tenant_id", "status"),)
 
 
@@ -256,5 +273,7 @@ class Pipeline(Base):
     config_json = Column(Text, default="{}")
     created_at = Column(DateTime(timezone=True), default=_now, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now, onupdate=_now, nullable=False)
+
+    provenance_metadata = Column(JSON, nullable=True)
 
     __table_args__ = (Index("ix_pipelines_tenant_type", "tenant_id", "pipeline_type"),)

@@ -58,6 +58,12 @@ _API_EXEMPT_PREFIXES: tuple[str, ...] = (
     "/api/v1/calculator",
     # 公开技术问答（基于批准知识库）— 无需登录，跳过 CSRF
     "/api/v1/technical-qna",
+    # 谷歌商机大数据与 AI 拓客雷达端点 — 跳过 CSRF
+    "/api/v1/google-radar",
+    # 获客全链路极智升维端点 — 跳过 CSRF
+    "/api/v1/acquisition-pipeline",
+    # 国内获客与内贸商机中枢 — 跳过 CSRF
+    "/api/v1/domestic-pipeline",
     # 公开询盘表单与谈判 API — 跳过 Cookie CSRF（走 Bearer 或无状态提交）
     "/api/v1/inquiries",
     "/api/v1/negotiation",

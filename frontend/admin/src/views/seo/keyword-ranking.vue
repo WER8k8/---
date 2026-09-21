@@ -347,6 +347,7 @@ import {
   BarChartOutlined,
 } from '@ant-design/icons-vue';
 import VChart from 'vue-echarts';
+import { applySnapCursor } from '@/composables/useChartCursor';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
@@ -531,7 +532,7 @@ const columns = [
 ];
 
 // 图表配置
-const chartOption = computed(() => ({
+const chartOption = computed(() => applySnapCursor({
   tooltip: { trigger: 'axis' },
   xAxis: {
     type: 'category',

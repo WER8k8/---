@@ -2,11 +2,20 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <form class="tenant-inquiry-form" @submit.prevent="onSubmit">
+  <form
+    class="tenant-inquiry-form"
+    @submit.prevent="onSubmit"
+  >
     <div class="tenant-inquiry-form-grid">
       <label class="tenant-inquiry-field">
         <span>{{ tSite('form_name') }}</span>
-        <input v-model="form.name" type="text" required maxlength="120" autocomplete="name" />
+        <input
+          v-model="form.name"
+          type="text"
+          required
+          maxlength="120"
+          autocomplete="name"
+        >
       </label>
       <label class="tenant-inquiry-field">
         <span>{{ tSite('form_email') }}</span>
@@ -16,7 +25,7 @@
           :required="!form.phone"
           maxlength="120"
           autocomplete="email"
-        />
+        >
       </label>
       <label class="tenant-inquiry-field">
         <span>{{ phoneLabel }}</span>
@@ -26,23 +35,51 @@
           :required="!form.email"
           maxlength="30"
           autocomplete="tel"
-        />
+        >
       </label>
       <label class="tenant-inquiry-field tenant-inquiry-field--full">
         <span>{{ tSite('form_product') }}</span>
-        <input v-model="form.product" type="text" maxlength="200" :placeholder="productPlaceholder" />
+        <input
+          v-model="form.product"
+          type="text"
+          maxlength="200"
+          :placeholder="productPlaceholder"
+        >
       </label>
       <label class="tenant-inquiry-field tenant-inquiry-field--full">
         <span>{{ tSite('form_message') }}</span>
-        <textarea v-model="form.message" required rows="4" maxlength="2000" />
+        <textarea
+          v-model="form.message"
+          required
+          rows="4"
+          maxlength="2000"
+        />
       </label>
     </div>
-    <p v-if="errorText" class="tenant-inquiry-error" role="alert">{{ errorText }}</p>
-    <p v-if="successText" class="tenant-inquiry-success" role="status">{{ successText }}</p>
-    <button type="submit" class="tenant-btn tenant-btn-primary tenant-inquiry-submit" :disabled="submitting">
+    <p
+      v-if="errorText"
+      class="tenant-inquiry-error"
+      role="alert"
+    >
+      {{ errorText }}
+    </p>
+    <p
+      v-if="successText"
+      class="tenant-inquiry-success"
+      role="status"
+    >
+      {{ successText }}
+    </p>
+    <button
+      type="submit"
+      class="tenant-btn tenant-btn-primary tenant-inquiry-submit"
+      :disabled="submitting"
+    >
       {{ submitting ? tSite('form_submitting') : tSite('form_submit') }}
     </button>
-    <p class="tenant-inquiry-hint">{{ tSite('form_hint') }}</p>
+    <p class="tenant-inquiry-hint">
+      {{ tSite('form_hint') }}
+    </p>
   </form>
 </template>
 

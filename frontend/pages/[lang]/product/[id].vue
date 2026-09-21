@@ -5,13 +5,14 @@
   <div class="min-h-screen bg-gray-50">
     <!-- 产品详情页 - SSR渲染，SEO友好 -->
     <div class="max-w-4xl mx-auto px-4 py-8">
-
       <!-- 产品标题区 -->
       <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
           {{ product?.name || t('product.title') }}
         </h1>
-        <p class="text-lg text-gray-600 mb-4">{{ product?.subtitle || t('product.subtitle') }}</p>
+        <p class="text-lg text-gray-600 mb-4">
+          {{ product?.subtitle || t('product.subtitle') }}
+        </p>
 
         <!-- Meta描述（SEO） -->
         <MetaHead
@@ -22,13 +23,16 @@
       </div>
 
       <!-- 产品图片 -->
-      <div v-if="product?.image_url" class="mb-8 rounded-2xl overflow-hidden shadow-lg">
+      <div
+        v-if="product?.image_url"
+        class="mb-8 rounded-2xl overflow-hidden shadow-lg"
+      >
         <img
           :src="product.image_url"
           :alt="product?.name"
           class="w-full h-auto object-cover"
           loading="lazy"
-        />
+        >
       </div>
 
       <!-- 技术参数折叠框 -->
@@ -41,10 +45,17 @@
       />
 
       <!-- 物流时间线 -->
-      <ShippingTimeline :country-code="buyerCountry" class="mb-8" />
+      <ShippingTimeline
+        :country-code="buyerCountry"
+        class="mb-8"
+      />
 
       <!-- 产品描述 -->
-      <div v-if="product?.description" class="prose max-w-none mb-8" v-html="sanitizedDescription"></div>
+      <div
+        v-if="product?.description"
+        class="prose max-w-none mb-8"
+        v-html="sanitizedDescription"
+      />
 
       <!-- 底部CTA -->
       <div class="sticky bottom-0 bg-white border-t border-gray-200 p-4 -mx-4">
@@ -69,30 +80,41 @@
 
     <!-- 询盘抽屉表单 -->
     <Transition name="slide-up">
-      <div v-if="showForm" class="fixed inset-0 z-[60] bg-white overflow-y-auto">
-        <div class="h-1.5 w-10 bg-gray-300 rounded-full mx-auto mt-2 cursor-pointer" @click="showForm = false"></div>
+      <div
+        v-if="showForm"
+        class="fixed inset-0 z-[60] bg-white overflow-y-auto"
+      >
+        <div
+          class="h-1.5 w-10 bg-gray-300 rounded-full mx-auto mt-2 cursor-pointer"
+          @click="showForm = false"
+        />
         <div class="p-6 space-y-5">
-          <h3 class="text-xl font-bold text-gray-800">{{ t('chat.form_title') }}</h3>
-          <form @submit.prevent="submitForm" class="space-y-4">
+          <h3 class="text-xl font-bold text-gray-800">
+            {{ t('chat.form_title') }}
+          </h3>
+          <form
+            @submit.prevent="submitForm"
+            class="space-y-4"
+          >
             <input
               v-model="form.name"
               type="text"
               :placeholder="t('chat.form_name')"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none"
               required
-            />
+            >
             <input
               v-model="form.email"
               type="email"
               :placeholder="t('chat.form_email')"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none"
               required
-            />
+            >
             <textarea
               v-model="form.spec"
               :placeholder="t('chat.form_spec')"
               class="w-full p-4 text-lg border-b-2 border-gray-200 focus:border-green-500 outline-none h-32 resize-none"
-            ></textarea>
+            />
             <button
               type="submit"
               class="w-full py-4 bg-green-500 hover:bg-green-600 text-white text-lg font-bold rounded-xl transition-colors active:scale-95"

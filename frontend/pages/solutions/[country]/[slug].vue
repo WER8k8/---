@@ -9,7 +9,9 @@
       class="flex flex-col items-center justify-center min-h-[60vh]"
     >
       <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-      <p class="text-text-secondary text-sm">正在加载全球出海本地化解决方案...</p>
+      <p class="text-text-secondary text-sm">
+        正在加载全球出海本地化解决方案...
+      </p>
     </div>
 
     <!-- Error State -->
@@ -20,8 +22,12 @@
       <div class="w-16 h-16 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl font-bold mb-4">
         !
       </div>
-      <h2 class="text-xl font-bold text-text-primary mb-2">方案暂未就绪</h2>
-      <p class="text-text-secondary text-sm max-w-md mb-6">{{ error || '未找到该国家或产品的工程适配方案' }}</p>
+      <h2 class="text-xl font-bold text-text-primary mb-2">
+        方案暂未就绪
+      </h2>
+      <p class="text-text-secondary text-sm max-w-md mb-6">
+        {{ error || '未找到该国家或产品的工程适配方案' }}
+      </p>
       <NuxtLink
         to="/products"
         class="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-hover transition-colors shadow-sm"
@@ -31,7 +37,10 @@
     </div>
 
     <!-- Active State -->
-    <div v-else class="pb-24">
+    <div
+      v-else
+      class="pb-24"
+    >
       <!-- Top Country Banner -->
       <div class="bg-white border-b border-border/40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs sm:text-sm">
@@ -55,15 +64,33 @@
       <!-- Breadcrumbs -->
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-xs text-text-secondary">
         <ol class="flex items-center gap-2 flex-wrap">
-          <li><NuxtLink to="/" class="hover:text-primary transition-colors">首页</NuxtLink></li>
+          <li>
+            <NuxtLink
+              to="/"
+              class="hover:text-primary transition-colors"
+            >
+              首页
+            </NuxtLink>
+          </li>
           <li>/</li>
-          <li><NuxtLink to="/products" class="hover:text-primary transition-colors">产品中心</NuxtLink></li>
+          <li>
+            <NuxtLink
+              to="/products"
+              class="hover:text-primary transition-colors"
+            >
+              产品中心
+            </NuxtLink>
+          </li>
           <li>/</li>
           <li><span>全球工程出海</span></li>
           <li>/</li>
-          <li class="text-text-primary font-medium">{{ bundle.country_profile.country_name_en }}</li>
+          <li class="text-text-primary font-medium">
+            {{ bundle.country_profile.country_name_en }}
+          </li>
           <li>/</li>
-          <li class="text-primary font-semibold truncate max-w-xs">{{ bundle.product.name_en || bundle.product.name }}</li>
+          <li class="text-primary font-semibold truncate max-w-xs">
+            {{ bundle.product.name_en || bundle.product.name }}
+          </li>
         </ol>
       </nav>
 
@@ -75,7 +102,7 @@
               <span>{{ bundle.country_profile.flag_emoji }} 本地化采购专供方案</span>
             </div>
             <h1 class="text-2xl sm:text-4xl font-extrabold text-text-primary leading-tight mb-4">
-              {{ bundle.country_profile.country_name_en }} Certified <br class="hidden sm:inline" />
+              {{ bundle.country_profile.country_name_en }} Certified <br class="hidden sm:inline">
               <span class="text-primary">{{ bundle.product.name_en || bundle.product.name }}</span>
             </h1>
             <p class="text-sm sm:text-base text-text-secondary leading-relaxed mb-6">
@@ -137,13 +164,15 @@
                 :src="bundle.product.image_url || '/images/product-default.jpg'"
                 :alt="bundle.product.name"
                 class="w-full h-72 sm:h-80 object-cover rounded-xl"
-              />
+              >
               <div class="absolute bottom-6 left-6 right-6 bg-black/75 backdrop-blur-md px-4 py-3 rounded-xl text-white text-xs">
                 <div class="flex items-center justify-between font-semibold mb-1">
                   <span>{{ bundle.country_profile.destination_ports[0] }} 直航专线</span>
                   <span class="text-[#25D366]">{{ bundle.country_profile.transit_days }}</span>
                 </div>
-                <p class="text-white/80 line-clamp-1">{{ bundle.shipping_logistics.container_load_advice }}</p>
+                <p class="text-white/80 line-clamp-1">
+                  {{ bundle.shipping_logistics.container_load_advice }}
+                </p>
               </div>
             </div>
           </div>
@@ -245,7 +274,10 @@
       </section>
 
       <!-- Inquiry Section -->
-      <section id="inquiry-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <section
+        id="inquiry-section"
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+      >
         <div class="bg-gradient-to-br from-primary/5 via-white to-primary/5 p-6 sm:p-10 rounded-3xl border border-primary/20 shadow-md">
           <div class="max-w-2xl mx-auto text-center mb-8">
             <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-2">
@@ -256,7 +288,10 @@
             </p>
           </div>
 
-          <form @submit.prevent="submitCountryInquiry" class="max-w-xl mx-auto space-y-4">
+          <form
+            @submit.prevent="submitCountryInquiry"
+            class="max-w-xl mx-auto space-y-4"
+          >
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-text-secondary mb-1">您的姓名 / Name *</label>
@@ -266,7 +301,7 @@
                   required
                   class="w-full px-4 py-2.5 text-sm bg-white border border-border rounded-xl focus:outline-none focus:border-primary"
                   placeholder="e.g. Abdullah Al-Otaibi"
-                />
+                >
               </div>
               <div>
                 <label class="block text-xs font-semibold text-text-secondary mb-1">邮箱 / Email *</label>
@@ -276,7 +311,7 @@
                   required
                   class="w-full px-4 py-2.5 text-sm bg-white border border-border rounded-xl focus:outline-none focus:border-primary"
                   placeholder="name@company.com"
-                />
+                >
               </div>
             </div>
 
@@ -289,7 +324,7 @@
                   required
                   class="w-full px-4 py-2.5 text-sm bg-white border border-border rounded-xl focus:outline-none focus:border-primary"
                   placeholder="+966 50 123 4567"
-                />
+                >
               </div>
               <div>
                 <label class="block text-xs font-semibold text-text-secondary mb-1">目的港口 / Destination Port</label>
@@ -326,7 +361,10 @@
               {{ submitting ? '正在加密提交询盘...' : '立即获取专属技术方案与报价单 (PI)' }}
             </button>
 
-            <p v-if="submitSuccess" class="text-center text-xs text-primary font-semibold mt-2">
+            <p
+              v-if="submitSuccess"
+              class="text-center text-xs text-primary font-semibold mt-2"
+            >
               ✓ 询盘已成功送达！我们的外贸专员将通过 WhatsApp 与邮件在 2 小时内与您联络。
             </p>
           </form>

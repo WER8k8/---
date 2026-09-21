@@ -153,6 +153,7 @@ import {
   Alert as AAlert,
 } from 'ant-design-vue';
 import VChart from 'vue-echarts';
+import { applySnapCursor } from '@/composables/useChartCursor';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart, PieChart } from 'echarts/charts';
@@ -241,7 +242,8 @@ const visitChartOption = computed(() => {
   const t = trafficSeries.value;
   const labels = t?.labels?.length ? t.labels : [];
   const values = t?.values?.length ? t.values : [];
-  return {
+  // 磁吸游标：折线图吸附最近数据点（配置见 @/composables/useChartCursor）
+  return applySnapCursor({
     tooltip: { trigger: 'axis' },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
     xAxis: { type: 'category', boundaryGap: false, data: labels },
@@ -268,7 +270,7 @@ const visitChartOption = computed(() => {
         },
       },
     ],
-  };
+  });
 });
 
 const sourceChartOption = computed(() => {

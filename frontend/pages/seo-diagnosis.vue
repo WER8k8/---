@@ -7,9 +7,18 @@
       <!-- 页面标题 -->
       <div class="text-center mb-10">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
-          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            class="w-8 h-8 text-primary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
         <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
@@ -26,9 +35,18 @@
           <div class="flex-1">
             <div class="relative">
               <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <input
@@ -38,9 +56,14 @@
                 class="w-full pl-12 pr-4 py-3.5 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
                 :class="{ 'border-red-300 focus:ring-red-200 focus:border-red-400': urlError }"
                 @keyup.enter="startDiagnosis"
-              />
+              >
             </div>
-            <p v-if="urlError" class="mt-2 text-sm text-red-500">{{ urlError }}</p>
+            <p
+              v-if="urlError"
+              class="mt-2 text-sm text-red-500"
+            >
+              {{ urlError }}
+            </p>
           </div>
           <button
             @click="startDiagnosis"
@@ -50,14 +73,39 @@
               ? 'opacity-60 cursor-not-allowed'
               : 'hover:bg-primary-700 hover:shadow-lg active:scale-[0.98]'"
           >
-            <svg v-if="isDiagnosing" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            <svg
+              v-if="isDiagnosing"
+              class="w-5 h-5 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
             </svg>
-            <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 5l7 7-7 7" />
+            <svg
+              v-else
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
             {{ isDiagnosing ? '诊断中...' : '开始诊断' }}
           </button>
@@ -73,15 +121,30 @@
         leave-from-class="opacity-100 translate-y-0"
         leave-to-class="opacity-0 translate-y-4"
       >
-        <div v-if="report" class="space-y-6">
+        <div
+          v-if="report"
+          class="space-y-6"
+        >
           <!-- 总分卡片 -->
           <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
             <div class="flex flex-col sm:flex-row items-center gap-6">
               <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0">
-                <svg class="w-full h-full" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="52" fill="none" stroke="#E5E7EB" stroke-width="8" />
+                <svg
+                  class="w-full h-full"
+                  viewBox="0 0 120 120"
+                >
                   <circle
-                    cx="60" cy="60" r="52"
+                    cx="60"
+                    cy="60"
+                    r="52"
+                    fill="none"
+                    stroke="#E5E7EB"
+                    stroke-width="8"
+                  />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="52"
                     fill="none"
                     :stroke="scoreColor"
                     stroke-width="8"
@@ -93,7 +156,10 @@
                   />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span class="text-3xl sm:text-4xl font-bold" :class="scoreTextColor">{{ report.score }}</span>
+                  <span
+                    class="text-3xl sm:text-4xl font-bold"
+                    :class="scoreTextColor"
+                  >{{ report.score }}</span>
                   <span class="text-xs text-gray-400">/ 100</span>
                 </div>
               </div>
@@ -101,7 +167,9 @@
                 <h2 class="text-xl font-bold text-gray-900 mb-2">
                   {{ scoreLabel }}
                 </h2>
-                <p class="text-gray-600">{{ report.summary }}</p>
+                <p class="text-gray-600">
+                  {{ report.summary }}
+                </p>
               </div>
             </div>
           </div>
@@ -114,7 +182,9 @@
               class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow"
             >
               <div class="flex items-center justify-between mb-3">
-                <h3 class="font-medium text-gray-900 text-sm">{{ item.label }}</h3>
+                <h3 class="font-medium text-gray-900 text-sm">
+                  {{ item.label }}
+                </h3>
                 <span class="text-lg">{{ item.icon }}</span>
               </div>
               <div class="flex items-center gap-2">
@@ -138,9 +208,18 @@
           <!-- 优化建议 -->
           <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
             <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              <svg
+                class="w-5 h-5 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
               </svg>
               优化建议
             </h3>
@@ -173,12 +252,23 @@
           <!-- 获取完整报告 -->
           <div class="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl border border-primary/20 p-6 sm:p-8 text-center">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 mb-4">
-              <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              <svg
+                class="w-7 h-7 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">获取完整报告</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">
+              获取完整报告
+            </h3>
             <p class="text-gray-600 mb-6 max-w-md mx-auto">
               输入手机号，我们将把完整的SEO诊断报告发送给您，包含详细优化方案和执行建议
             </p>
@@ -193,15 +283,31 @@
       </transition>
 
       <!-- 空状态 -->
-      <div v-if="!report && !isDiagnosing" class="text-center py-16">
+      <div
+        v-if="!report && !isDiagnosing"
+        class="text-center py-16"
+      >
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
-          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            class="w-10 h-10 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
-        <p class="text-gray-500">输入网址开始免费诊断</p>
-        <p class="text-gray-400 text-sm mt-1">诊断内容包含标题标签、描述、关键词、H标签、图片Alt、<br>内部链接、加载速度、移动端适配、Schema标记等维度</p>
+        <p class="text-gray-500">
+          输入网址开始免费诊断
+        </p>
+        <p class="text-gray-400 text-sm mt-1">
+          诊断内容包含标题标签、描述、关键词、H标签、图片Alt、<br>内部链接、加载速度、移动端适配、Schema标记等维度
+        </p>
       </div>
     </div>
 
@@ -223,16 +329,32 @@
           <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 sm:p-8">
             <div class="text-center mb-6">
               <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-3">
-                <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                <svg
+                  class="w-7 h-7 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
-              <h3 class="text-xl font-bold text-gray-900">提交信息获取完整报告</h3>
-              <p class="text-sm text-gray-500 mt-1">我们将把详细诊断报告发送给您</p>
+              <h3 class="text-xl font-bold text-gray-900">
+                提交信息获取完整报告
+              </h3>
+              <p class="text-sm text-gray-500 mt-1">
+                我们将把详细诊断报告发送给您
+              </p>
             </div>
 
-            <form @submit.prevent="submitLead" class="space-y-4">
+            <form
+              @submit.prevent="submitLead"
+              class="space-y-4"
+            >
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
                 <input
@@ -242,8 +364,13 @@
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
                   :class="{ 'border-red-300': leadErrors.name }"
                   required
-                />
-                <p v-if="leadErrors.name" class="mt-1 text-xs text-red-500">{{ leadErrors.name }}</p>
+                >
+                <p
+                  v-if="leadErrors.name"
+                  class="mt-1 text-xs text-red-500"
+                >
+                  {{ leadErrors.name }}
+                </p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
@@ -254,8 +381,13 @@
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
                   :class="{ 'border-red-300': leadErrors.phone }"
                   required
-                />
-                <p v-if="leadErrors.phone" class="mt-1 text-xs text-red-500">{{ leadErrors.phone }}</p>
+                >
+                <p
+                  v-if="leadErrors.phone"
+                  class="mt-1 text-xs text-red-500"
+                >
+                  {{ leadErrors.phone }}
+                </p>
               </div>
               <button
                 type="submit"
@@ -263,16 +395,35 @@
                 class="w-full py-3 bg-primary text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
                 :class="isSubmitting ? 'opacity-60 cursor-not-allowed' : 'hover:bg-primary-700 hover:shadow-lg active:scale-[0.98]'"
               >
-                <svg v-if="isSubmitting" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                  <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <svg
+                  v-if="isSubmitting"
+                  class="w-5 h-5 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 {{ isSubmitting ? '提交中...' : '确认提交' }}
               </button>
             </form>
 
-            <p v-if="submitMessage" class="mt-4 text-center text-sm" :class="submitSuccess ? 'text-green-600' : 'text-red-500'">
+            <p
+              v-if="submitMessage"
+              class="mt-4 text-center text-sm"
+              :class="submitSuccess ? 'text-green-600' : 'text-red-500'"
+            >
               {{ submitMessage }}
             </p>
 

@@ -67,6 +67,25 @@ def billing_reconcile_patrol() -> dict:
         return {"error": str(exc), "error_free": False}
 
 
+@shared_task(name="app.tasks.billing_tasks.subscription_dunning_daily", ignore_result=False)
+def subscription_dunning_daily(within_days: int = 14) -> dict:
+    """每日催续提醒（P1-1 接线）：遍历临近到期租户，飞书+邮件通知，幂等按到期日去重。
+
+    复用既有 tenant_renewal_notify_service.TenantRenewalNotifyService.notify_expiring，
+    其内部用 subscription_countdown 的窗口判定 + 到期日去重，天然一次性不重发。
+    """
+    from app.core.database import SessionLocal
+    from app.services.tenant_renewal_notify_service import TenantRenewalNotifyService
+
+    try:
+        with SessionLocal() as db:
+            svc = TenantRenewalNotifyService(db)
+            return svc.notify_expiring(within_days=within_days, dry_run=False)
+    except Exception:  # noqa: BLE001
+        logger.exception("subscription_dunning_daily failed")
+        return {"sent_count": 0, "error": True}
+
+
 def run_billing_reconcile_patrol_sync() -> dict:
     """同步执行一次对账巡检（Celery 之外直接调用，供自检/运维手动触发）。"""
     return billing_reconcile_patrol.run()

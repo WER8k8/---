@@ -19,30 +19,60 @@
     <section class="py-8 sm:py-10 lg:py-14">
       <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <!-- Loading State -->
-        <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          <div v-for="i in 8" :key="i" class="animate-pulse">
+        <div
+          v-if="loading"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+        >
+          <div
+            v-for="i in 8"
+            :key="i"
+            class="animate-pulse"
+          >
             <div class="bg-surface rounded-2xl p-4 sm:p-5">
-              <div class="aspect-w-4 aspect-h-3 bg-gray-200 rounded-lg mb-3"></div>
-              <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div class="aspect-w-4 aspect-h-3 bg-gray-200 rounded-lg mb-3" />
+              <div class="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+              <div class="h-4 bg-gray-200 rounded w-1/2" />
             </div>
           </div>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="favorites.length === 0" class="text-center py-10 sm:py-16">
-          <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        <div
+          v-else-if="favorites.length === 0"
+          class="text-center py-10 sm:py-16"
+        >
+          <svg
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-text-secondary mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
           </svg>
-          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">暂无收藏</h3>
-          <p class="text-sm text-text-secondary mb-6">您还没有收藏任何产品，快去挑选喜欢的商品吧</p>
-          <NuxtLink to="/products" class="btn-primary">
+          <h3 class="text-lg sm:text-xl font-semibold text-text-primary mb-2">
+            暂无收藏
+          </h3>
+          <p class="text-sm text-text-secondary mb-6">
+            您还没有收藏任何产品，快去挑选喜欢的商品吧
+          </p>
+          <NuxtLink
+            to="/products"
+            class="btn-primary"
+          >
             去逛逛
           </NuxtLink>
         </div>
 
         <!-- Favorites Grid -->
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        <div
+          v-else
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+        >
           <div
             v-for="item in favorites"
             :key="item.id"
@@ -54,14 +84,18 @@
                 :src="item.product?.images?.[0]?.url || item.product_image || '/images/placeholder.jpg'"
                 :alt="item.product?.name || item.product_name"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
+              >
               <!-- Remove Favorite Button -->
               <button
                 @click.stop="removeFavorite(item.id)"
                 class="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white hover:text-red-500 transition-all duration-200 shadow-sm"
                 title="取消收藏"
               >
-                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-5 h-5 text-red-500"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                 </svg>
               </button>
@@ -75,7 +109,10 @@
                 </h3>
               </NuxtLink>
               <div class="flex items-center justify-between">
-                <span v-if="item.product?.price" class="text-lg font-bold text-primary">
+                <span
+                  v-if="item.product?.price"
+                  class="text-lg font-bold text-primary"
+                >
                   ${{ item.product?.price }}
                 </span>
                 <span class="text-xs text-text-secondary">
@@ -87,7 +124,10 @@
         </div>
 
         <!-- Pagination -->
-        <div v-if="favorites.length > 0 && totalPages > 1" class="flex justify-center mt-8 sm:mt-10">
+        <div
+          v-if="favorites.length > 0 && totalPages > 1"
+          class="flex justify-center mt-8 sm:mt-10"
+        >
           <nav class="flex items-center gap-2">
             <button
               @click="changePage(currentPage - 1)"
@@ -151,7 +191,7 @@ const displayedPages = computed(() => {
   const pages: number[] = [];
   const maxVisible = 5;
   let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
-  let end = Math.min(totalPages.value, start + maxVisible - 1);
+  const end = Math.min(totalPages.value, start + maxVisible - 1);
 
   if (end - start + 1 < maxVisible) {
     start = Math.max(1, end - maxVisible + 1);

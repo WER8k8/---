@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from typing import Any, Optional
 
@@ -15,6 +16,8 @@ from app.core.security import get_current_user
 from app.db.session import get_db
 from app.models.company import Company, CompanyContact, CompanySignal, IntentEngineRun
 from app.models.user import User
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -227,6 +230,12 @@ def create_company(
     db.add(c)
     db.commit()
     db.refresh(c)
+    # P0-7: 公司落库即激活 ICP/Intent/Account 评分（此前三列恒为 0）
+    try:
+        from app.services.company_scoring_service import score_company
+        score_company(db, c)
+    except Exception as _score_err:
+        logger.warning("company scoring failed for %s: %s", getattr(c, "id", "?"), _score_err)
     return success_response(data=_serialize_company(c), message="公司已创建")
 
 

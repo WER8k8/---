@@ -116,8 +116,9 @@ def _import_task_modules() -> None:
 
     for m in (
         "seo_tasks", "geo_tasks", "ubrain_tasks", "trade_intel_tasks",
-        "cross_border_tasks", "billing_tasks", "deerflow_tasks",
-        "orchestration_tasks",
+        "cross_border_tasks", "billing_tasks", "churn_tasks", "sla_tasks",
+        "quote_wake_tasks", "company_autofill_tasks", "deerflow_tasks",
+        "orchestration_tasks", "ops_scheduler_tasks",
     ):
         try:
             importlib.import_module(f"app.tasks.{m}")

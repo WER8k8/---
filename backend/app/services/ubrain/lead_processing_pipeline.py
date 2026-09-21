@@ -139,17 +139,24 @@ class DedupHandler(LeadHandler):
         :return: 返回处理结果。
         """
         try:
+            from app.db.session import SessionLocal
             from app.services.ubrain.dedup_engine import DedupEngine
-            engine = DedupEngine()
-            result = await engine.check_duplicate(ctx.normalized)
-            if result.get("is_duplicate"):
-                ctx.is_duplicate = True
-                ctx.duplicate_of = result.get("existing_id")
-                ctx.status = PipelineStatus.SKIPPED
-                ctx.metadata["dedup"] = result
-                log.info("[dedup] 重复线索跳过: %s → %s", ctx.normalized.get("email"), ctx.duplicate_of)
-            else:
-                ctx.metadata["dedup"] = {"is_duplicate": False}
+            db = SessionLocal()
+            try:
+                # P0-3: 必须传入 db，否则 DedupEngine 的 self.db 为 None，
+                # check_duplicate 恒返回「非重复」，去重彻底失效。
+                engine = DedupEngine(db)
+                result = await engine.check_duplicate(ctx.normalized)
+                if result.get("is_duplicate"):
+                    ctx.is_duplicate = True
+                    ctx.duplicate_of = result.get("existing_id")
+                    ctx.status = PipelineStatus.SKIPPED
+                    ctx.metadata["dedup"] = result
+                    log.info("[dedup] 重复线索跳过: %s → %s", ctx.normalized.get("email"), ctx.duplicate_of)
+                else:
+                    ctx.metadata["dedup"] = {"is_duplicate": False}
+            finally:
+                db.close()
         except Exception as e:
             log.warning("[dedup] 去重检查失败，放行: %s", e)
             ctx.metadata["dedup"] = {"is_duplicate": False, "error": str(e)}

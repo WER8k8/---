@@ -21,12 +21,22 @@
               class="lpro-search-input"
               :placeholder="tSite('products_search_placeholder')"
               autocomplete="off"
-            />
+            >
           </label>
-          <select v-model="sortBy" class="lpro-sort-select" :aria-label="tSite('products_sort_label')">
-            <option value="default">{{ tSite('products_sort_default') }}</option>
-            <option value="name-asc">{{ tSite('products_sort_name_asc') }}</option>
-            <option value="name-desc">{{ tSite('products_sort_name_desc') }}</option>
+          <select
+            v-model="sortBy"
+            class="lpro-sort-select"
+            :aria-label="tSite('products_sort_label')"
+          >
+            <option value="default">
+              {{ tSite('products_sort_default') }}
+            </option>
+            <option value="name-asc">
+              {{ tSite('products_sort_name_asc') }}
+            </option>
+            <option value="name-desc">
+              {{ tSite('products_sort_name_desc') }}
+            </option>
           </select>
           <button
             v-if="searchQuery.trim() || specFilter"
@@ -38,7 +48,10 @@
           </button>
         </div>
 
-        <div v-if="categoryFilters.length" class="lpro-chip-row">
+        <div
+          v-if="categoryFilters.length"
+          class="lpro-chip-row"
+        >
           <NuxtLink
             to="/tenant/products"
             class="lpro-chip"
@@ -57,7 +70,10 @@
           </NuxtLink>
         </div>
 
-        <div v-if="specFilterOptions.length" class="lpro-chip-row lpro-chip-row--spec">
+        <div
+          v-if="specFilterOptions.length"
+          class="lpro-chip-row lpro-chip-row--spec"
+        >
           <span class="lpro-chip-label">{{ tSite('products_spec_filter') }}</span>
           <button
             type="button"
@@ -79,25 +95,53 @@
           </button>
         </div>
 
-        <div v-if="filteredProducts.length" class="lpro-grid">
-          <article v-for="item in filteredProducts" :key="item.slug" class="lpro-card">
+        <div
+          v-if="filteredProducts.length"
+          class="lpro-grid"
+        >
+          <article
+            v-for="item in filteredProducts"
+            :key="item.slug"
+            class="lpro-card"
+          >
             <div class="lpro-thumb">
-              <img v-if="item.image" :src="resolveMediaUrl(item.image)" :alt="item.imageAlt || item.name" />
+              <img
+                v-if="item.image"
+                :src="resolveMediaUrl(item.image)"
+                :alt="item.imageAlt || item.name"
+              >
             </div>
             <h3>{{ item.name }}</h3>
             <p>{{ item.summary }}</p>
-            <p v-if="item.category" class="text-xs mt-2 opacity-70">{{ item.category }}</p>
-            <ul v-if="item.specs?.length" class="lpro-spec-tags">
-              <li v-for="(spec, i) in item.specs.slice(0, 3)" :key="i">
+            <p
+              v-if="item.category"
+              class="text-xs mt-2 opacity-70"
+            >
+              {{ item.category }}
+            </p>
+            <ul
+              v-if="item.specs?.length"
+              class="lpro-spec-tags"
+            >
+              <li
+                v-for="(spec, i) in item.specs.slice(0, 3)"
+                :key="i"
+              >
                 {{ spec.label }}: {{ spec.value }}
               </li>
             </ul>
-            <NuxtLink :to="tenantProductDetailPath(item.slug!)" class="lpro-link">
+            <NuxtLink
+              :to="tenantProductDetailPath(item.slug!)"
+              class="lpro-link"
+            >
               {{ tSite('view_product') }} →
             </NuxtLink>
           </article>
         </div>
-        <p v-else class="text-[var(--lpro-muted)]">
+        <p
+          v-else
+          class="text-[var(--lpro-muted)]"
+        >
           {{ hasActiveFilters ? tSite('products_no_match') : tSite('products_empty') }}
         </p>
       </div>

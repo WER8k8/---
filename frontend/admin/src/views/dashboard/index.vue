@@ -329,6 +329,7 @@ import {
   ApiOutlined, TagOutlined, DollarOutlined, AlertOutlined, CheckCircleOutlined,
 } from '@ant-design/icons-vue';
 import VChart from 'vue-echarts';
+import { applySnapCursor } from '@/composables/useChartCursor';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart, PieChart } from 'echarts/charts';
@@ -523,7 +524,8 @@ const keywordTrendChart = computed(() => {
   const pts = keywordTrendPoints.value;
   const labels = pts.length ? pts.map((p) => dayjs(p.date).format('MM-DD')) : ['—'];
   const values = pts.length ? pts.map((p) => (p.avg_rank != null ? p.avg_rank : 0)) : [0];
-  return {
+  // 磁吸游标：折线图吸附最近数据点（配置见 @/composables/useChartCursor）
+  return applySnapCursor({
     tooltip: {
       trigger: 'axis',
       backgroundColor: 'rgba(255, 255, 255, 0.96)',
@@ -572,7 +574,7 @@ const keywordTrendChart = computed(() => {
         },
       },
     }],
-  };
+  });
 });
 
 // ECharts: Page status pie

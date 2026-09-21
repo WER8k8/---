@@ -2,7 +2,11 @@
   <YdPage title="获客作战台" subtitle="谁在跟 · 货 · 物流 · 联系 · 交代 · 付款" surface="elevated">
     <template #actions>
       <a-space>
-        <a-button type="primary" @click="showPreview = true">智能拆解预览</a-button>
+        <a-button type="primary" style="background-color: #4a9b8c; border-color: #4a9b8c;" @click="outreachDrawerOpen = true">
+          <template #icon><GlobalOutlined /></template>
+          全网外贸拓客 · Hermes GP-B
+        </a-button>
+        <a-button type="default" @click="showPreview = true">智能拆解预览</a-button>
         <a-button @click="reloadTips">刷新提醒</a-button>
       </a-space>
     </template>
@@ -611,6 +615,363 @@
         </div>
       </div>
     </a-modal>
+
+    <!-- 🌐 全网外贸主动拓客 (Hermes GP-B) 抽屉 -->
+    <a-drawer v-model:open="outreachDrawerOpen" title="谷歌商机大数据与全球主动拓客 · 极智出海工作舱" width="820">
+      <a-tabs v-model:activeKey="activeOutreachTab" type="card">
+        <!-- Tab 1: 全球直采商发现 -->
+        <a-tab-pane key="discovery" tab="1. 全球直采商发现 (Hermes GP-B)">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="Hermes GP-B 全域出站与冷启动探针"
+              description="输入建材品类关键词与目标采购国家，由 Hermes L1 自动编排拓客图：全球B2B买家探测 -> MEDDPICC意向打分 -> WhatsApp矩阵与邮件降级触达。"
+            />
+
+            <a-card size="small" title="拓客任务参数">
+              <a-form layout="vertical">
+                <a-row :gutter="16">
+                  <a-col :span="12">
+                    <a-form-item label="建材品类/产品关键词 (Keyword)" required>
+                      <a-input v-model:value="outreachForm.keyword" placeholder="例如 ceramic tiles, marble slab, granite" />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-form-item label="目标国家/市场 (Country)">
+                      <a-input v-model:value="outreachForm.country" placeholder="例如 Saudi Arabia, UAE, Germany" />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-form-item label="触达策略通道">
+                  <a-radio-group v-model:value="outreachForm.channel">
+                    <a-radio value="omni">多通道融合 (WhatsApp 优先，失败自动降级 Email)</a-radio>
+                    <a-radio value="whatsapp">仅 WhatsApp 矩阵触达</a-radio>
+                    <a-radio value="email">仅 Cold Email 邮件外发</a-radio>
+                  </a-radio-group>
+                </a-form-item>
+                <a-button type="primary" :loading="outreachLoading" @click="runGlobalOutreach">
+                  🚀 启动 Hermes GP-B 拓客任务
+                </a-button>
+              </a-form>
+            </a-card>
+
+            <a-card v-if="outreachProspects.length" size="small" title="发现的全球买家线索">
+              <div class="mb-3 flex justify-between items-center">
+                <span class="text-sm font-semibold">命中海外采购商: {{ outreachProspects.length }} 家</span>
+                <a-button size="small" @click="exportOutreachCsv">导出为 CSV</a-button>
+              </div>
+              <a-table
+                :data-source="outreachProspects"
+                :columns="outreachColumns"
+                size="small"
+                :pagination="{ pageSize: 5 }"
+                row-key="id"
+              >
+                <template #bodyCell="{ column, record }">
+                  <template v-if="column.key === 'company_name'">
+                    <div class="font-medium text-gray-800">{{ record.company_name }}</div>
+                    <div class="text-xs text-gray-400">{{ record.industry }}</div>
+                  </template>
+                  <template v-else-if="column.key === 'provenance'">
+                    <a-tag color="blue">{{ record.provenance?.source || record.source || 'youding_pg' }}</a-tag>
+                  </template>
+                  <template v-else-if="column.key === 'action'">
+                    <a-space>
+                      <a-button type="link" size="small" @click="quickContact(record)">
+                        跟单
+                      </a-button>
+                      <a-button type="link" size="small" style="color: #4a9b8c;" @click="quickHandoffBOQ(record)">
+                        核价开PI
+                      </a-button>
+                    </a-space>
+                  </template>
+                </template>
+              </a-table>
+            </a-card>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 2: 买家 360° 深度画像反查 -->
+        <a-tab-pane key="buyer360" tab="2. 买家 360° 透视 (Buyer 360)">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="360° 全球买家透视与深度画像反查"
+              description="秒级反查企业采购体量（Tier 1~4）、高频进口 HS Code、常走目的港、决策树（CPO/总工/关务）以及合规资信雷达。"
+            />
+            <div class="flex gap-2 items-center">
+              <a-input v-model:value="buyer360Form.company_name" placeholder="输入买家公司名 (如 Al Fozan Group, Turner)" style="width: 280px" />
+              <a-input v-model:value="buyer360Form.country" placeholder="国家 (如 SA, US)" style="width: 110px" />
+              <a-select v-model:value="buyer360Form.industry_hint" style="width: 140px">
+                <a-select-option value="stone">石材/大理石 (6802)</a-select-option>
+                <a-select-option value="ceramic">陶瓷/地砖 (6907)</a-select-option>
+                <a-select-option value="steel">建筑钢结构 (7308)</a-select-option>
+                <a-select-option value="wood">木作地板 (4418)</a-select-option>
+                <a-select-option value="glass">建筑玻璃 (7005)</a-select-option>
+              </a-select>
+              <a-button type="primary" :loading="buyer360Loading" @click="runBuyer360Enrich">执行 360° 透视</a-button>
+            </div>
+
+            <div v-if="buyer360Result" class="space-y-3">
+              <a-card size="small" :title="buyer360Result.company_name">
+                <template #extra>
+                  <a-space>
+                    <a-tag color="purple">{{ buyer360Result.tier }}</a-tag>
+                    <a-tag color="green">信用评级 {{ buyer360Result.credit_grade }}</a-tag>
+                  </a-space>
+                </template>
+                <a-descriptions bordered size="small" :column="2">
+                  <a-descriptions-item label="预估年采购量">{{ buyer360Result.estimated_annual_volume }}</a-descriptions-item>
+                  <a-descriptions-item label="采购频次">{{ buyer360Result.order_frequency }}</a-descriptions-item>
+                  <a-descriptions-item label="目的港口" :span="2">
+                    <span class="font-medium text-teal-700">{{ buyer360Result.port_intelligence?.primary_ports?.join('、') }}</span>
+                    (直达航程约 {{ buyer360Result.port_intelligence?.avg_transit_days }} 天)
+                  </a-descriptions-item>
+                  <a-descriptions-item label="关务单证与准入">{{ buyer360Result.port_intelligence?.customs_platform }} · {{ buyer360Result.port_intelligence?.mandatory_cert }}</a-descriptions-item>
+                  <a-descriptions-item label="推荐贸易条款">{{ buyer360Result.port_intelligence?.recommended_incoterm }} ({{ buyer360Result.preferred_payment }})</a-descriptions-item>
+                  <a-descriptions-item label="品类与HS编码" :span="2">
+                    {{ buyer360Result.product_intelligence?.category_name }} · <b>HS {{ buyer360Result.product_intelligence?.hs_code }}</b>
+                    ({{ buyer360Result.product_intelligence?.container_payload }})
+                  </a-descriptions-item>
+                </a-descriptions>
+
+                <div class="mt-3 font-semibold text-xs text-gray-700">关键决策树 (Buying Committee)</div>
+                <div class="space-y-2 mt-1">
+                  <div v-for="(m, idx) in buyer360Result.buying_committee" :key="idx" class="p-2 bg-gray-50 rounded border text-xs">
+                    <div class="font-semibold text-gray-800">{{ m.role }}</div>
+                    <div class="text-gray-600 mt-1">关注点: {{ m.focus }}</div>
+                    <div class="text-amber-700 mt-0.5">核心痛点: {{ m.pain_point }}</div>
+                    <div class="text-xs text-blue-600 mt-0.5">推荐通道: {{ m.contact_channel }}</div>
+                  </div>
+                </div>
+
+                <div class="mt-3 p-2 bg-teal-50 border border-teal-200 rounded text-xs text-teal-900">
+                  <b>实战攻坚策略：</b> {{ buyer360Result.strategic_playbook }}
+                </div>
+
+                <div class="mt-3 flex gap-2">
+                  <a-button size="small" type="primary" style="background-color: #4a9b8c;" @click="handoffBuyerToPitch(buyer360Result)">
+                    带入 AI 破冰工坊 →
+                  </a-button>
+                  <a-button size="small" @click="quickHandoffBOQ(buyer360Result)">
+                    一键开 BOQ 报价单与 PI →
+                  </a-button>
+                </div>
+              </a-card>
+            </div>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 3: AI 极智多语种破冰工坊 -->
+        <a-tab-pane key="pitch" tab="3. AI 极智破冰工坊 (Pitch Studio)">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="AI 极智千人千面多语种外贸破冰工坊"
+              description="严格遵循 P1-6 背调门禁红线，针对买家痛点与工程标准自动生成高质量 Cold Email、WhatsApp 黄金 3 行钩子与 LinkedIn 邀约，支持 6 种主流外贸语言。"
+            />
+            <a-card size="small" title="破冰参数配置">
+              <div class="grid gap-2 md:grid-cols-3">
+                <a-input v-model:value="pitchForm.company_name" placeholder="买家公司名" />
+                <a-input v-model:value="pitchForm.country" placeholder="目标国家" />
+                <a-input v-model:value="pitchForm.product_category" placeholder="主推建材品类" />
+                <a-input v-model:value="pitchForm.contact_person" placeholder="决策人称谓 (如 Procurement Director)" />
+                <a-select v-model:value="pitchForm.language" style="width: 100%">
+                  <a-select-option value="en">English (英语)</a-select-option>
+                  <a-select-option value="ar">العربية (阿拉伯语 · 中东海湾)</a-select-option>
+                  <a-select-option value="es">Español (西班牙语 · 拉美/欧洲)</a-select-option>
+                  <a-select-option value="ru">Русский (俄语 · 中亚/东欧)</a-select-option>
+                  <a-select-option value="pt">Português (葡萄牙语 · 巴西/非洲)</a-select-option>
+                  <a-select-option value="fr">Français (法语 · 欧洲/西非)</a-select-option>
+                </a-select>
+                <a-select v-model:value="pitchForm.research_level" style="width: 100%">
+                  <a-select-option value="basic">基础背调 (轻度个性化)</a-select-option>
+                  <a-select-option value="osint">OSINT 背调 (深度可信引用)</a-select-option>
+                  <a-select-option value="full">全量背调 (最高级工程引用)</a-select-option>
+                </a-select>
+              </div>
+              <a-button type="primary" class="mt-3" :loading="pitchLoading" @click="runGeneratePitch">
+                ⚡ 生成多渠道破冰矩阵
+              </a-button>
+            </a-card>
+
+            <div v-if="pitchResult" class="space-y-3">
+              <!-- Cold Email -->
+              <a-card size="small" title="📧 高转化冷开发信 (Cold Email)">
+                <template #extra>
+                  <a-button size="small" type="link" @click="copyPitchEmail">
+                    复制整封邮件
+                  </a-button>
+                </template>
+                <div class="text-xs font-semibold text-gray-700 mb-1">主题：{{ pitchResult.channel_artifacts.cold_email.subject }}</div>
+                <pre class="bg-gray-50 p-2.5 rounded text-xs text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{{ pitchResult.channel_artifacts.cold_email.body }}</pre>
+              </a-card>
+
+              <!-- WhatsApp -->
+              <a-card size="small" title="📱 WhatsApp 黄金 3 行破冰">
+                <template #extra>
+                  <a-button size="small" type="link" @click="copyText(pitchResult.channel_artifacts.whatsapp_hook.text)">
+                    复制 WhatsApp 话术
+                  </a-button>
+                </template>
+                <pre class="bg-green-50 p-2.5 rounded text-xs text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{{ pitchResult.channel_artifacts.whatsapp_hook.text }}</pre>
+              </a-card>
+
+              <!-- LinkedIn -->
+              <a-card size="small" title="💼 LinkedIn 决策人 InMail 邀约">
+                <template #extra>
+                  <a-button size="small" type="link" @click="copyText(pitchResult.channel_artifacts.linkedin_inmail.text)">
+                    复制 LinkedIn 附言
+                  </a-button>
+                </template>
+                <pre class="bg-blue-50 p-2.5 rounded text-xs text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{{ pitchResult.channel_artifacts.linkedin_inmail.text }}</pre>
+              </a-card>
+            </div>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 4: 7 步出海高转化节奏编排 -->
+        <a-tab-pane key="cadence" tab="4. 7 步节奏编排 (7-Touch Cadence)">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="30 天 7 步出海跟进节奏编排器"
+              description="80% 的大宗外贸订单发生在第 4~12 次跟进。系统基于目标国时区，自动计算工作日 09:30 黄金窗口，科学编排 7 轮多通道递进触达。"
+            />
+            <div class="flex gap-2 items-center">
+              <a-input v-model:value="cadenceForm.company_name" placeholder="买家公司名" style="width: 240px" />
+              <a-input v-model:value="cadenceForm.country" placeholder="国家 (如 SA, AE, US, DE)" style="width: 140px" />
+              <a-input v-model:value="cadenceForm.product_category" placeholder="品类 (如 Ceramic & Stone)" style="width: 200px" />
+              <a-button type="primary" :loading="cadenceLoading" @click="runCadencePlan">生成 7 步跟进计划</a-button>
+            </div>
+
+            <div v-if="cadenceResult" class="space-y-3">
+              <a-card size="small" :title="`${cadenceResult.company_name} · 30天全周期出海节奏`">
+                <template #extra>
+                  <a-tag color="blue">{{ cadenceResult.timezone_intelligence?.tz_name }}</a-tag>
+                  <a-tag color="orange">投递窗口 {{ cadenceResult.timezone_intelligence?.golden_window }}</a-tag>
+                </template>
+                <a-timeline class="mt-3">
+                  <a-timeline-item v-for="t in cadenceResult.touches" :key="t.touch_number" color="green">
+                    <div class="font-semibold text-xs text-gray-800">
+                      第 {{ t.touch_number }} 轮 (Day {{ t.day_offset }} · {{ t.scheduled_date }}): {{ t.action_title }}
+                      <a-tag size="small" color="cyan" class="ml-2">{{ t.channel }}</a-tag>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-0.5">{{ t.core_objective }}</div>
+                    <div class="text-xs text-gray-500 italic mt-0.5">话术示范: {{ t.talk_track }}</div>
+                  </a-timeline-item>
+                </a-timeline>
+              </a-card>
+            </div>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 5: 外贸 8 大异议谈判助攻 -->
+        <a-tab-pane key="objection" tab="5. 异议谈判助攻 (Objection Copilot)">
+          <div class="space-y-4 pt-2">
+            <a-alert
+              type="info"
+              show-icon
+              message="外贸 8 大经典异议智能反击中枢"
+              description="点击买家在回复中的卡点抗拒场景，秒级调取外贸老手反击战术、双语话术模板与谈判底牌置换条件（坚决不单向降价，用条件换让步）。"
+            />
+            <div class="flex flex-wrap gap-2">
+              <a-button
+                v-for="obj in objectionList"
+                :key="obj.key"
+                :type="selectedObjectionKey === obj.key ? 'primary' : 'default'"
+                size="small"
+                @click="loadObjectionDetail(obj.key)"
+              >
+                {{ obj.name_cn }}
+              </a-button>
+            </div>
+
+            <div v-if="selectedObjectionDetail" class="space-y-3">
+              <a-card size="small" :title="selectedObjectionDetail.name_cn">
+                <template #extra>
+                  <span class="text-xs text-gray-400">{{ selectedObjectionDetail.name_en }}</span>
+                </template>
+                <div class="text-xs text-gray-700 bg-amber-50 p-2 rounded border border-amber-200 mb-3">
+                  <b>买家心理学实质：</b> {{ selectedObjectionDetail.psychology }}
+                </div>
+
+                <div class="font-semibold text-xs text-gray-800 mb-1">谈判底牌与等价置换条件 (Red Lines)：</div>
+                <ul class="list-disc list-inside text-xs text-gray-600 space-y-1 mb-3">
+                  <li v-for="(rule, i) in selectedObjectionDetail.bottom_line_rules" :key="i">{{ rule }}</li>
+                </ul>
+
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-semibold text-xs text-gray-800">地道外贸反击英语范本：</span>
+                  <a-button size="small" type="link" @click="copyText(selectedObjectionDetail.response_en)">复制话术</a-button>
+                </div>
+                <pre class="bg-gray-50 p-2.5 rounded text-xs text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{{ selectedObjectionDetail.response_en }}</pre>
+
+                <div class="mt-2 text-xs text-gray-500">
+                  <b>业务指导：</b> {{ selectedObjectionDetail.response_cn }}
+                </div>
+              </a-card>
+            </div>
+          </div>
+        </a-tab-pane>
+
+        <!-- Tab 6: 谷歌情报大盘与连通预检 -->
+        <a-tab-pane key="google_intelligence" tab="6. 谷歌 Dorking & 海关雷达 & 邮箱预检">
+          <div class="space-y-4 pt-2">
+            <!-- 子段落 A: 谷歌高阶 Dorking 穿透 -->
+            <a-card size="small" title="谷歌顶级高阶搜索运算符 (Google Dorking Vectors)">
+              <div class="flex gap-2 items-center mb-2">
+                <a-input v-model:value="outreachForm.keyword" placeholder="品类关键词" style="width: 220px" />
+                <a-input v-model:value="outreachForm.country" placeholder="国家" style="width: 150px" />
+                <a-button type="primary" :loading="dorkLoading" @click="loadGoogleDorks">生成谷歌 Dorking 向量</a-button>
+              </div>
+              <div v-if="dorkResult" class="space-y-2 mt-2">
+                <div v-for="d in dorkResult.dorks" :key="d.id" class="p-2 border rounded bg-gray-50 text-xs">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-medium text-gray-800">{{ d.category }}</span>
+                    <a :href="d.google_search_url" target="_blank" rel="noopener">
+                      <a-button size="small" type="link">直达 Google 搜索 →</a-button>
+                    </a>
+                  </div>
+                  <pre class="bg-white p-1 rounded font-mono text-xs text-gray-700 break-all select-all">{{ d.query }}</pre>
+                </div>
+              </div>
+            </a-card>
+
+            <!-- 子段落 B: 海关 HS 编码进出口大盘雷达 -->
+            <a-card size="small" title="海关进出口贸易流向雷达">
+              <div class="flex gap-2 items-center mb-2">
+                <a-input v-model:value="outreachForm.keyword" placeholder="品类关键词 (如 marble, ceramic, steel)" style="width: 260px" />
+                <a-button type="primary" :loading="tradeFlowLoading" @click="loadTradeFlow">查询海关贸易大盘</a-button>
+              </div>
+              <div v-if="tradeFlowResult" class="space-y-2">
+                <div class="text-xs">
+                  <b>品类：</b> {{ tradeFlowResult.intelligence?.category }} | <b>HS：</b> {{ tradeFlowResult.intelligence?.hs_code }} | <b>年增：</b> {{ tradeFlowResult.intelligence?.annual_growth_rate }}
+                </div>
+                <div class="text-xs text-amber-700"><b>集装箱规则：</b> {{ tradeFlowResult.intelligence?.container_rules }}</div>
+              </div>
+            </a-card>
+
+            <!-- 子段落 C: 邮箱连通性校验 -->
+            <a-card size="small" title="买家邮箱 DNS MX 协议预检">
+              <div class="flex gap-2 items-center mb-2">
+                <a-input v-model:value="verifyEmailInput" placeholder="输入买家邮箱 (如 procurement@alfozan.com)" style="width: 320px" />
+                <a-button type="primary" :loading="verifyEmailLoading" @click="verifyBuyerEmail">执行 DNS 连通握手</a-button>
+              </div>
+              <div v-if="verifyEmailResult" class="p-2 bg-gray-50 rounded border text-xs">
+                得分: <b :style="{ color: verifyEmailResult.deliverable ? '#4a9b8c' : '#ef4444' }">{{ verifyEmailResult.score }}/100</b> |
+                属性: <b>{{ verifyEmailResult.domain_type }}</b> |
+                建议: <b>{{ verifyEmailResult.recommendation }}</b>
+              </div>
+            </a-card>
+          </div>
+        </a-tab-pane>
+      </a-tabs>
+    </a-drawer>
   </YdPage>
 </template>
 
@@ -621,6 +982,8 @@
  */
 import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
+import { GlobalOutlined } from '@ant-design/icons-vue'
+import { apiPost } from '@/utils/api'
 import YdPage from '@/components/youding/YdPage.vue'
 import {
   addOpsCardNote,
@@ -1460,6 +1823,291 @@ const translateResult = ref<{
   degraded: boolean
   message: string
 } | null>(null)
+
+// ── 🌐 全网主动海外拓客 (Hermes GP-B) 状态 ──
+const outreachDrawerOpen = ref(false)
+const outreachLoading = ref(false)
+const outreachProspects = ref<any[]>([])
+const outreachForm = reactive({
+  keyword: 'ceramic tiles',
+  country: 'Saudi Arabia',
+  channel: 'omni',
+})
+
+// ── 🌟 外贸获客全链路极智升维状态 ──
+const buyer360Form = reactive({
+  company_name: 'Al Fozan Industrial Group',
+  country: 'SA',
+  industry_hint: 'stone',
+})
+const buyer360Result = ref<any>(null)
+const buyer360Loading = ref(false)
+
+async function runBuyer360Enrich() {
+  if (!buyer360Form.company_name) {
+    message.warning('请输入买家公司名称')
+    return
+  }
+  buyer360Loading.value = true
+  try {
+    const res = await apiPost<any>('/acquisition-pipeline/enrich-buyer', buyer360Form)
+    buyer360Result.value = (res as any)?.data || res
+    message.success('买家 360° 深度画像透视完成')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '透视失败')
+  } finally {
+    buyer360Loading.value = false
+  }
+}
+
+function handoffBuyerToPitch(b: any) {
+  pitchForm.company_name = b.company_name
+  pitchForm.country = b.target_country || 'Saudi Arabia'
+  pitchForm.product_category = b.product_intelligence?.category_name || 'Porcelain Tiles & Marble Slabs'
+  activeOutreachTab.value = 'pitch'
+  message.info(`已将买家「${b.company_name}」带入破冰工坊`)
+}
+
+const pitchForm = reactive({
+  company_name: 'Al Fozan Industrial Group',
+  country: 'Saudi Arabia',
+  product_category: 'Porcelain Tiles & Marble Slabs',
+  contact_person: 'Procurement Director',
+  language: 'en',
+  research_level: 'osint',
+})
+const pitchResult = ref<any>(null)
+const pitchLoading = ref(false)
+
+async function runGeneratePitch() {
+  if (!pitchForm.company_name) {
+    message.warning('请输入公司名')
+    return
+  }
+  pitchLoading.value = true
+  try {
+    const res = await apiPost<any>('/acquisition-pipeline/generate-pitch', pitchForm)
+    pitchResult.value = (res as any)?.data || res
+    message.success('AI 多语种破冰矩阵已就绪')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '生成失败')
+  } finally {
+    pitchLoading.value = false
+  }
+}
+
+const cadenceForm = reactive({
+  company_name: 'Al Fozan Industrial Group',
+  country: 'SA',
+  product_category: 'Ceramic & Stone',
+})
+const cadenceResult = ref<any>(null)
+const cadenceLoading = ref(false)
+
+async function runCadencePlan() {
+  cadenceLoading.value = true
+  try {
+    const res = await apiPost<any>('/acquisition-pipeline/cadence-plan', cadenceForm)
+    cadenceResult.value = (res as any)?.data || res
+    message.success('30天出海节奏编排已生成')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '编排失败')
+  } finally {
+    cadenceLoading.value = false
+  }
+}
+
+const objectionList = ref<any[]>([
+  { key: 'price_high', name_cn: '价格偏高 (Target Price)' },
+  { key: 'long_oa', name_cn: '索要长账期 (O/A 60/90)' },
+  { key: 'quality_cert', name_cn: '质疑质量/认证 (Quality/Cert)' },
+  { key: 'sample_fee', name_cn: '争议样品费 (Sample Fee)' },
+  { key: 'existing_supplier', name_cn: '已有固定老供应商 (Old Supplier)' },
+  { key: 'moq_high', name_cn: '起订量偏高 (MOQ High)' },
+  { key: 'urgent_delivery', name_cn: '交期急迫 (Urgent Delivery)' },
+  { key: 'ghosting', name_cn: '已读不回断联 (Ghosting)' },
+])
+const selectedObjectionKey = ref('price_high')
+const selectedObjectionDetail = ref<any>(null)
+
+async function loadObjectionDetail(key: string) {
+  selectedObjectionKey.value = key
+  try {
+    const res = await apiPost<any>('/acquisition-pipeline/objection-assist', { objection_key: key })
+    selectedObjectionDetail.value = (res as any)?.data || res
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '获取助攻方案失败')
+  }
+}
+
+function copyText(text: string) {
+  if (!text) return
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+    message.success('已复制到剪贴板')
+  } else {
+    message.info('请手动选中文本进行复制')
+  }
+}
+
+function copyPitchEmail() {
+  if (!pitchResult.value) return
+  const e = pitchResult.value.channel_artifacts?.cold_email
+  if (!e) return
+  copyText(`${e.subject}\n\n${e.body}`)
+}
+
+async function quickHandoffBOQ(record: any) {
+  try {
+    const bName = record.company_name || record.buyer_name || 'VIP Buyer'
+    const cName = record.country || record.target_country || 'SA'
+    const cat = record.industry || 'marble'
+    const res = await apiPost<any>('/acquisition-pipeline/handoff-to-quote', {
+      buyer_name: bName,
+      country: cName,
+      product_category: cat,
+      target_port: 'Jeddah Islamic Port',
+      estimated_sqm: 1200,
+    })
+    const payload = (res as any)?.data || res
+    message.success('已预填 BOQ 22 参数工业核价单！即将跳转...')
+    window.location.href = payload.recommended_route || `/client/export-quote?buyer=${encodeURIComponent(bName)}`
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '核价流转失败')
+  }
+}
+
+// ── 谷歌商机大数据扩展状态 ──
+const activeOutreachTab = ref('discovery')
+const dorkResult = ref<any>(null)
+const dorkLoading = ref(false)
+const tradeFlowResult = ref<any>(null)
+const tradeFlowLoading = ref(false)
+const verifyEmailInput = ref('')
+const verifyEmailResult = ref<any>(null)
+const verifyEmailLoading = ref(false)
+
+async function loadGoogleDorks() {
+  dorkLoading.value = true
+  try {
+    const res = await apiPost<any>('/google-radar/dork-matrix', {
+      keyword: outreachForm.keyword,
+      country: outreachForm.country || 'Global',
+    })
+    dorkResult.value = (res as any)?.data || res
+    message.success('谷歌高阶 Dorking 穿透语法已生成')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '生成失败')
+  } finally {
+    dorkLoading.value = false
+  }
+}
+
+async function loadTradeFlow() {
+  tradeFlowLoading.value = true
+  try {
+    const res = await apiGet<any>(`/google-radar/trade-flow?keyword=${encodeURIComponent(outreachForm.keyword)}`)
+    tradeFlowResult.value = (res as any)?.data || res
+    message.success('全球海关贸易流向雷达已更新')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '海关数据加载失败')
+  } finally {
+    tradeFlowLoading.value = false
+  }
+}
+
+async function verifyBuyerEmail() {
+  if (!verifyEmailInput.value) {
+    message.warning('请输入待核验的邮箱')
+    return
+  }
+  verifyEmailLoading.value = true
+  try {
+    const res = await apiPost<any>('/google-radar/verify-email', {
+      email: verifyEmailInput.value,
+    })
+    verifyEmailResult.value = (res as any)?.data || res
+    message.success('谷歌级 DNS MX 校验完成')
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '校验失败')
+  } finally {
+    verifyEmailLoading.value = false
+  }
+}
+
+const outreachColumns = [
+  { title: '采购商企业', key: 'company_name', dataIndex: 'company_name' },
+  { title: '国家', key: 'country', dataIndex: 'country', width: 110 },
+  { title: '联系方式', key: 'contact', customRender: ({ record }: any) => record.phone || record.email || '—' },
+  { title: '数据出处', key: 'provenance', width: 140 },
+  { title: '操作', key: 'action', width: 90 },
+]
+
+async function runGlobalOutreach() {
+  if (!outreachForm.keyword) {
+    message.warning('请输入建材品类关键词')
+    return
+  }
+  outreachLoading.value = true
+  try {
+    const res = await apiPost<any>('/orchestration/golden-path/outreach', {
+      intent: `社媒拓客 WhatsApp 私域触达 prospect social_outreach ${outreachForm.keyword}`,
+      payload: {
+        keyword: outreachForm.keyword,
+        country: outreachForm.country || 'Global',
+        channel: outreachForm.channel,
+      },
+      channel: 'web',
+      context: { golden_path: 'GP-B', plane: 'task' },
+      auto_dispatch: true,
+    })
+    message.success('Hermes GP-B 拓客任务已调度 · Plan ' + (res?.plan_id || ''))
+    // 同步获取候选
+    if (res?.prospects && res.prospects.length) {
+      outreachProspects.value = res.prospects
+    } else {
+      // 查询拓客检索结果
+      const qRes = await apiPost<any>('/orchestration/intents/resolve', {
+        intent: 'prospect_search',
+        payload: { keyword: outreachForm.keyword, country: outreachForm.country },
+      })
+      outreachProspects.value = qRes?.output?.prospects || []
+    }
+  } catch (err: unknown) {
+    message.error(err instanceof Error ? err.message : '拓客调度失败')
+  } finally {
+    outreachLoading.value = false
+  }
+}
+
+function quickContact(record: any) {
+  form.inquiry_id = record.id
+  form.country = record.country
+  form.message = `海外采购商: ${record.company_name} | 需求: ${record.industry || outreachForm.keyword}`
+  outreachDrawerOpen.value = false
+  message.info(`已带入采购商「${record.company_name}」，可在主界面跟进`)
+}
+
+function exportOutreachCsv() {
+  if (!outreachProspects.value.length) return
+  const headers = ['Company Name', 'Country', 'Email', 'Phone', 'Industry', 'Source']
+  const rows = outreachProspects.value.map(p => [
+    `"${p.company_name || ''}"`,
+    `"${p.country || ''}"`,
+    `"${p.email || ''}"`,
+    `"${p.phone || ''}"`,
+    `"${p.industry || ''}"`,
+    `"${p.provenance?.source || p.source || ''}"`,
+  ])
+  const csvContent = "﻿" + [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = `outreach_leads_${outreachForm.keyword}_${Date.now()}.csv`
+  link.click()
+  message.success('线索已导出为 CSV')
+}
+
 </script>
 
 <style scoped>

@@ -54,3 +54,24 @@ class TestBOQCalculator:
         })
         expected = ((60 * 200) * 1.15 + 500 + 200) * 1.02
         assert result["total"] == round(expected, 2)
+
+    def test_industrial_22_params_thickness_and_container_load(self, calc):
+        result = calc.calculate({
+            "material_type": "marble",
+            "material_grade": "premium",
+            "quantity_sqm": 1500,
+            "thickness_mm": 30,
+            "surface_finish": "honed",
+            "edge_profile": "bullnose",
+            "incoterms": "CIF",
+            "certification": "ce",
+            "lead_time_days": 45,
+            "payment_terms": "30% T/T deposit, 70% against B/L copy",
+        })
+        assert "breakdown" in result
+        assert result["breakdown"]["thickness_mm"] == 30
+        assert result["breakdown"]["grade"] == "premium"
+        assert result["breakdown"]["estimated_20gp_containers"] >= 1
+        assert "20GP" in result["trade_advisory"]
+        assert result["currency"] == "USD"
+

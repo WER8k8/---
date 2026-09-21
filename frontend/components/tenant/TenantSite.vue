@@ -2,435 +2,828 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <div class="tenant-site-root" :dir="documentDir" :class="{ 'tenant-site-root--rtl': isRtl }">
   <div
-    class="tenant-site min-h-screen flex flex-col"
-    :style="siteThemeVars"
+    class="tenant-site-root"
+    :dir="documentDir"
+    :class="{ 'tenant-site-root--rtl': isRtl }"
   >
-    <div v-if="loading" class="flex-1 flex items-center justify-center">
-      <div class="text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" :style="{ borderColor: themePrimary }"></div>
-        <p class="mt-4 text-gray-500">{{ tSite('loading') }}</p>
-      </div>
-    </div>
-
-    <div v-else-if="error" class="flex-1 flex items-center justify-center">
-      <div class="text-center max-w-md mx-auto p-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ tSite('site_unavailable') }}</h1>
-        <p class="text-gray-500">{{ error }}</p>
-      </div>
-    </div>
-
-    <template v-else-if="tenant">
-
-      <!-- 可视化建站导出页（GrapesJS 保存的 HTML/CSS） -->
-      <div v-if="hasVisualSite" class="tenant-visual-site">
-        <component :is="'style'" v-if="visualSiteCss">{{ visualSiteCss }}</component>
-        <div ref="visualHtmlRef" class="tenant-visual-site__html" v-html="visualSiteHtml" />
-      </div>
-
-      <template v-else>
-      <div class="tenant-topbar" :style="{ backgroundColor: themePrimary }">
-        <div class="tenant-container tenant-topbar-inner">
-          <a
-            v-for="ch in topbarChannels"
-            :key="`${ch.channel_type}-${ch.value}`"
-            :href="topbarContactHref(ch)"
-            :target="isExternalContactChannel(ch) ? '_blank' : undefined"
-            :rel="isExternalContactChannel(ch) ? 'noopener noreferrer' : undefined"
-          >
-            {{ ch.label }}: {{ ch.value }}
-          </a>
+    <div
+      class="tenant-site min-h-screen flex flex-col"
+      :style="siteThemeVars"
+    >
+      <div
+        v-if="loading"
+        class="flex-1 flex items-center justify-center"
+      >
+        <div class="text-center">
+          <div
+            class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto"
+            :style="{ borderColor: themePrimary }"
+          />
+          <p class="mt-4 text-gray-500">
+            {{ tSite('loading') }}
+          </p>
         </div>
       </div>
 
-      <!-- 导航 -->
-      <header class="tenant-header sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
-        <nav class="tenant-container">
-          <div class="flex items-center justify-between h-16">
-            <div class="flex items-center gap-3 min-w-0">
-              <img v-if="tenant.brand.logo_url" :src="tenant.brand.logo_url" :alt="companyName" class="h-10 w-auto object-contain" />
-              <div class="min-w-0">
-                <div class="font-bold text-gray-900 truncate">{{ companyName }}</div>
-                <div v-if="brandTagline" class="text-xs text-gray-500 truncate">{{ brandTagline }}</div>
-              </div>
-            </div>
-            <div class="hidden md:flex items-center gap-6">
-              <a v-for="item in navItems" :key="item.key" :href="item.href" class="tenant-nav-link" :class="{ active: activeNav === item.key }">
-                {{ item.label }}
+      <div
+        v-else-if="error"
+        class="flex-1 flex items-center justify-center"
+      >
+        <div class="text-center max-w-md mx-auto p-8">
+          <h1 class="text-2xl font-bold text-gray-800 mb-2">
+            {{ tSite('site_unavailable') }}
+          </h1>
+          <p class="text-gray-500">
+            {{ error }}
+          </p>
+        </div>
+      </div>
+
+      <template v-else-if="tenant">
+        <!-- 可视化建站导出页（GrapesJS 保存的 HTML/CSS） -->
+        <div
+          v-if="hasVisualSite"
+          class="tenant-visual-site"
+        >
+          <component
+            :is="'style'"
+            v-if="visualSiteCss"
+          >
+            {{ visualSiteCss }}
+          </component>
+          <div
+            ref="visualHtmlRef"
+            class="tenant-visual-site__html"
+            v-html="visualSiteHtml"
+          />
+        </div>
+
+        <template v-else>
+          <div
+            class="tenant-topbar"
+            :style="{ backgroundColor: themePrimary }"
+          >
+            <div class="tenant-container tenant-topbar-inner">
+              <a
+                v-for="ch in topbarChannels"
+                :key="`${ch.channel_type}-${ch.value}`"
+                :href="topbarContactHref(ch)"
+                :target="isExternalContactChannel(ch) ? '_blank' : undefined"
+                :rel="isExternalContactChannel(ch) ? 'noopener noreferrer' : undefined"
+              >
+                {{ ch.label }}: {{ ch.value }}
               </a>
             </div>
-            <button
-              type="button"
-              class="tenant-mobile-menu-btn md:hidden"
-              :aria-expanded="mobileMenuOpen"
-              aria-controls="tenant-mobile-nav"
-              @click="toggleMobileMenu"
-            >
-              <span class="tenant-sr-only">{{ mobileMenuOpen ? tSite('menu_close') : tSite('menu_open') }}</span>
-              <span class="tenant-mobile-menu-icon" :class="{ 'is-open': mobileMenuOpen }">
-                <span /><span /><span />
-              </span>
-            </button>
           </div>
-          <Transition name="tenant-mobile-nav">
-            <div
-              v-if="mobileMenuOpen"
-              id="tenant-mobile-nav"
-              class="tenant-mobile-nav md:hidden"
-              role="dialog"
-              aria-modal="true"
-              :aria-label="tSite('menu_open')"
-            >
-              <div class="tenant-mobile-nav-inner">
+
+          <!-- 导航 -->
+          <header class="tenant-header sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+            <nav class="tenant-container">
+              <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3 min-w-0">
+                  <img
+                    v-if="tenant.brand.logo_url"
+                    :src="tenant.brand.logo_url"
+                    :alt="companyName"
+                    class="h-10 w-auto object-contain"
+                  >
+                  <div class="min-w-0">
+                    <div class="font-bold text-gray-900 truncate">
+                      {{ companyName }}
+                    </div>
+                    <div
+                      v-if="brandTagline"
+                      class="text-xs text-gray-500 truncate"
+                    >
+                      {{ brandTagline }}
+                    </div>
+                  </div>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                  <a
+                    v-for="item in navItems"
+                    :key="item.key"
+                    :href="item.href"
+                    class="tenant-nav-link"
+                    :class="{ active: activeNav === item.key }"
+                  >
+                    {{ item.label }}
+                  </a>
+                </div>
+                <button
+                  type="button"
+                  class="tenant-mobile-menu-btn md:hidden"
+                  :aria-expanded="mobileMenuOpen"
+                  aria-controls="tenant-mobile-nav"
+                  @click="toggleMobileMenu"
+                >
+                  <span class="tenant-sr-only">{{ mobileMenuOpen ? tSite('menu_close') : tSite('menu_open') }}</span>
+                  <span
+                    class="tenant-mobile-menu-icon"
+                    :class="{ 'is-open': mobileMenuOpen }"
+                  >
+                    <span /><span /><span />
+                  </span>
+                </button>
+              </div>
+              <Transition name="tenant-mobile-nav">
+                <div
+                  v-if="mobileMenuOpen"
+                  id="tenant-mobile-nav"
+                  class="tenant-mobile-nav md:hidden"
+                  role="dialog"
+                  aria-modal="true"
+                  :aria-label="tSite('menu_open')"
+                >
+                  <div class="tenant-mobile-nav-inner">
+                    <a
+                      v-for="item in navItems"
+                      :key="item.key"
+                      :href="item.href"
+                      class="tenant-mobile-nav-link"
+                      :class="{ active: activeNav === item.key }"
+                      @click="closeMobileMenu(); activeNav = item.key"
+                    >
+                      {{ item.label }}
+                    </a>
+                    <a
+                      href="#contact"
+                      class="tenant-mobile-nav-cta"
+                      @click="closeMobileMenu"
+                    >{{ ctaPrimary }}</a>
+                  </div>
+                </div>
+              </Transition>
+              <div
+                v-if="mobileMenuOpen"
+                class="tenant-mobile-backdrop md:hidden"
+                aria-hidden="true"
+                @click="closeMobileMenu"
+              />
+            </nav>
+          </header>
+
+          <!-- Hero 左右分栏（luyang / cattuong 企业叙事） -->
+          <section
+            id="home"
+            class="tenant-hero"
+            :style="{ backgroundColor: themeHeroBg }"
+          >
+            <div class="tenant-container tenant-hero-grid">
+              <div class="tenant-hero-copy">
+                <p
+                  v-if="primaryPromise"
+                  class="tenant-hero-eyebrow tenant-hero-eyebrow--promise"
+                >
+                  {{ primaryPromise }}
+                </p>
+                <p
+                  v-else-if="establishedYear"
+                  class="tenant-hero-eyebrow"
+                >
+                  {{ tSite('hero_since', { year: establishedYear }) }}
+                </p>
+                <h1 class="tenant-hero-title">
+                  {{ heroTitle }}
+                </h1>
+                <p class="tenant-hero-desc">
+                  {{ heroDescription }}
+                </p>
+                <div
+                  v-if="trustBadges.length"
+                  class="tenant-trust-badges"
+                >
+                  <span
+                    v-for="(badge, i) in trustBadges"
+                    :key="i"
+                    class="tenant-trust-badge"
+                  >{{ badge }}</span>
+                </div>
+                <div class="tenant-hero-actions">
+                  <a
+                    href="#contact"
+                    class="tenant-btn tenant-btn-primary"
+                  >{{ ctaPrimary }}</a>
+                  <a
+                    href="#contact"
+                    class="tenant-btn tenant-btn-outline"
+                  >{{ ctaSecondary }}</a>
+                </div>
+                <p
+                  v-if="inquiryHook"
+                  class="tenant-inquiry-hook"
+                >
+                  {{ inquiryHook }}
+                </p>
+              </div>
+              <div class="tenant-hero-media">
+                <img
+                  v-if="heroImage"
+                  :src="resolveMediaUrl(heroImage)"
+                  :alt="heroTitle"
+                  class="tenant-hero-img"
+                >
+                <div
+                  v-else
+                  class="tenant-hero-placeholder"
+                  :style="heroPlaceholderStyle"
+                >
+                  <div
+                    class="tenant-hero-placeholder-pattern"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      viewBox="0 0 200 120"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="8"
+                        y="52"
+                        width="48"
+                        height="56"
+                        rx="4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        opacity="0.35"
+                      />
+                      <rect
+                        x="72"
+                        y="28"
+                        width="56"
+                        height="80"
+                        rx="4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        opacity="0.5"
+                      />
+                      <rect
+                        x="144"
+                        y="44"
+                        width="48"
+                        height="64"
+                        rx="4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        opacity="0.35"
+                      />
+                      <path
+                        d="M20 52 L32 36 L44 52"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        opacity="0.4"
+                      />
+                      <path
+                        d="M84 28 L100 12 L116 28"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        opacity="0.55"
+                      />
+                      <path
+                        d="M156 44 L168 30 L180 44"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        opacity="0.4"
+                      />
+                    </svg>
+                  </div>
+                  <div class="tenant-hero-placeholder-content">
+                    <img
+                      v-if="tenant.brand.logo_url"
+                      :src="tenant.brand.logo_url"
+                      :alt="companyName"
+                      class="tenant-hero-placeholder-logo"
+                    >
+                    <span class="tenant-hero-placeholder-name">{{ companyName }}</span>
+                    <span
+                      v-if="brandTagline"
+                      class="tenant-hero-placeholder-tagline"
+                    >{{ brandTagline }}</span>
+                    <span
+                      v-else
+                      class="tenant-hero-placeholder-hint"
+                    >{{ heroPlaceholderHint }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 大数字条（rsref / luyang WHY CHOOSE） -->
+          <section
+            v-if="stats.length"
+            class="tenant-stats"
+            :style="{ backgroundColor: themePrimary }"
+          >
+            <div class="tenant-container">
+              <p class="tenant-stats-eyebrow">
+                {{ tSite('stats_eyebrow') }}
+              </p>
+              <h2 class="tenant-stats-title">
+                {{ tSite('stats_title') }}
+              </h2>
+              <div class="tenant-stats-grid">
+                <div
+                  v-for="(stat, i) in stats"
+                  :key="i"
+                  class="tenant-stat-item"
+                >
+                  <div class="tenant-stat-value">
+                    {{ stat.value }}
+                  </div>
+                  <div class="tenant-stat-label">
+                    {{ stat.label }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            v-if="serviceStages.length"
+            class="tenant-section bg-white"
+          >
+            <div class="tenant-container">
+              <p class="tenant-stats-eyebrow">
+                {{ tSite('section_stages_eyebrow') }}
+              </p>
+              <h2 class="tenant-section-title">
+                {{ tSite('section_stages_title') }}
+              </h2>
+              <p class="tenant-section-desc">
+                {{ tSite('section_stages_desc') }}
+              </p>
+              <div class="tenant-stage-grid">
+                <article
+                  v-for="(stage, i) in serviceStages"
+                  :key="i"
+                  class="tenant-stage-card"
+                >
+                  <div class="tenant-stage-num">
+                    {{ stage.stage || String(i + 1).padStart(2, '0') }}
+                  </div>
+                  <h3>{{ stage.title }}</h3>
+                  <p v-if="stage.description">
+                    {{ stage.description }}
+                  </p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 全领域解决方案（cnabm / shenzhou / rockwool） -->
+          <section
+            v-if="solutions.length"
+            id="solutions"
+            class="tenant-section bg-gray-50"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ tSite('section_solutions') }}
+              </h2>
+              <p class="tenant-section-desc">
+                {{ tSite('section_solutions_desc') }}
+              </p>
+              <div class="tenant-solution-grid">
+                <article
+                  v-for="(sol, i) in solutions"
+                  :key="i"
+                  class="tenant-solution-card"
+                >
+                  <div class="tenant-solution-segment">
+                    {{ sol.segment }}
+                  </div>
+                  <h3>{{ sol.title }}</h3>
+                  <p>{{ sol.description }}</p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 四大优势（证据链） -->
+          <section
+            v-if="advantages.length"
+            id="advantages"
+            class="tenant-section bg-gray-50"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ sectionTitle }}
+              </h2>
+              <div class="tenant-adv-grid">
+                <article
+                  v-for="(adv, i) in advantages"
+                  :key="i"
+                  class="tenant-adv-card"
+                >
+                  <div class="tenant-adv-icon">
+                    {{ i + 1 }}
+                  </div>
+                  <h3>{{ adv.title }}</h3>
+                  <p>{{ adv.description }}</p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 产品分类 -->
+          <section
+            v-if="categories.length"
+            id="categories"
+            class="tenant-section bg-white"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ tSite('section_categories') }}
+              </h2>
+              <p class="tenant-section-desc">
+                {{ tSite('section_categories_desc') }}
+              </p>
+              <div class="tenant-card-grid">
+                <article
+                  v-for="(cat, i) in categories"
+                  :key="i"
+                  class="tenant-card"
+                >
+                  <h3>{{ cat.name }}</h3>
+                  <p>{{ cat.description }}</p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 产品列表（tingertech 风格） -->
+          <section
+            id="products"
+            class="tenant-section bg-gray-50"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ productsTitle }}
+              </h2>
+              <p
+                v-if="productsDescription"
+                class="tenant-section-desc"
+              >
+                {{ productsDescription }}
+              </p>
+              <p
+                v-else
+                class="tenant-section-desc"
+              >
+                {{ tSite('section_products_desc') }}
+              </p>
+              <div class="tenant-card-grid">
+                <article
+                  v-for="(item, i) in productItems"
+                  :key="i"
+                  class="tenant-card tenant-product-card"
+                >
+                  <div class="tenant-product-thumb">
+                    <img
+                      v-if="item.image"
+                      :src="resolveMediaUrl(item.image)"
+                      :alt="item.name"
+                      class="tenant-product-img"
+                    >
+                  </div>
+                  <h3>{{ item.name }}</h3>
+                  <p>{{ item.summary }}</p>
+                  <a
+                    href="#contact"
+                    class="tenant-link"
+                  >{{ tSite('inquiry_link') }}</a>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 应用场景 -->
+          <section
+            v-if="applications.length"
+            id="applications"
+            class="tenant-section bg-white"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ applicationsTitle }}
+              </h2>
+              <div class="tenant-card-grid tenant-card-grid--3">
+                <article
+                  v-for="(app, i) in applications"
+                  :key="i"
+                  class="tenant-card"
+                >
+                  <h3>{{ app.title }}</h3>
+                  <p>{{ app.description }}</p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section
+            v-if="knowledgeTopics.length"
+            class="tenant-section bg-gray-50"
+          >
+            <div class="tenant-container">
+              <p class="tenant-stats-eyebrow">
+                {{ tSite('section_knowledge_eyebrow') }}
+              </p>
+              <h2 class="tenant-section-title">
+                {{ tSite('section_knowledge_title') }}
+              </h2>
+              <p class="tenant-section-desc">
+                {{ tSite('section_knowledge_desc') }}
+              </p>
+              <div class="tenant-card-grid">
+                <article
+                  v-for="(topic, i) in knowledgeTopics"
+                  :key="i"
+                  class="tenant-card"
+                >
+                  <h3>{{ topic.title }}</h3>
+                  <p v-if="topic.hook">
+                    {{ topic.hook }}
+                  </p>
+                  <a
+                    href="#contact"
+                    class="tenant-link"
+                  >{{ tSite('inquiry_link') }}</a>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 关于（cattuong Mission / Vision / Timeline） -->
+          <section
+            v-if="aboutText || mission || vision"
+            id="about"
+            class="tenant-section bg-white"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ tSite('section_about', { name: companyName }) }}
+              </h2>
+              <p
+                v-if="aboutText"
+                class="tenant-about-text"
+              >
+                {{ aboutText }}
+              </p>
+              <div
+                v-if="mission || vision"
+                class="tenant-mv-grid"
+              >
+                <article
+                  v-if="mission"
+                  class="tenant-mv-card"
+                >
+                  <h3 class="tenant-mv-heading">
+                    {{ tSite('mission') }}
+                  </h3>
+                  <p class="tenant-mv-text">
+                    {{ mission }}
+                  </p>
+                </article>
+                <article
+                  v-if="vision"
+                  class="tenant-mv-card"
+                >
+                  <h3 class="tenant-mv-heading">
+                    {{ tSite('vision') }}
+                  </h3>
+                  <p class="tenant-mv-text">
+                    {{ vision }}
+                  </p>
+                </article>
+              </div>
+              <p
+                v-if="capacitySummary"
+                class="tenant-capacity"
+              >
+                {{ capacitySummary }}
+              </p>
+              <div
+                v-if="milestones.length"
+                class="tenant-timeline"
+              >
+                <h3 class="tenant-timeline-heading">
+                  {{ tSite('company_history') }}
+                </h3>
+                <div class="tenant-timeline-track">
+                  <article
+                    v-for="(m, i) in milestones"
+                    :key="i"
+                    class="tenant-timeline-item"
+                  >
+                    <div class="tenant-timeline-year">
+                      {{ m.year }}
+                    </div>
+                    <div class="tenant-timeline-body">
+                      <h4>{{ m.title }}</h4>
+                      <p>{{ m.description }}</p>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 视频 -->
+          <section
+            v-if="videos.length"
+            id="videos"
+            class="tenant-section bg-gray-50"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ tSite('video_center') }}
+              </h2>
+              <div class="tenant-card-grid">
+                <article
+                  v-for="v in videos"
+                  :key="v.id"
+                  class="tenant-card p-0 overflow-hidden"
+                >
+                  <div class="aspect-video bg-black">
+                    <video
+                      v-if="v.playback_url"
+                      :src="v.playback_url"
+                      controls
+                      preload="metadata"
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div class="p-4">
+                    <h3 class="font-semibold">
+                      {{ v.title }}
+                    </h3>
+                    <a
+                      href="#contact"
+                      class="tenant-link mt-2 inline-block"
+                    >{{ tSite('inquiry_link') }}</a>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 买家问答（Answer Sidecar iframe） -->
+          <section
+            v-if="forumEmbed?.enabled && forumEmbed.iframe_src"
+            id="forum"
+            class="tenant-section bg-white"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ tSite('nav_qa') }}
+              </h2>
+              <p
+                v-if="forumEmbed.honest_note"
+                class="text-sm text-gray-500 mb-4"
+              >
+                {{ forumEmbed.honest_note }}
+              </p>
+              <iframe
+                :src="forumEmbed.iframe_src"
+                class="tenant-forum-iframe"
+                :title="tSite('nav_qa')"
+                loading="lazy"
+              />
+            </div>
+          </section>
+
+          <!-- 联系 -->
+          <section
+            id="contact"
+            class="tenant-section bg-white"
+          >
+            <div class="tenant-container">
+              <h2 class="tenant-section-title">
+                {{ tSite('section_contact') }}
+              </h2>
+              <p
+                v-if="inquiryPrompt"
+                class="tenant-inquiry-banner"
+              >
+                {{ inquiryPrompt }}
+              </p>
+              <div class="tenant-contact-grid">
+                <a
+                  v-for="ch in contactDisplayChannels"
+                  :key="`${ch.channel_type}-${ch.value}`"
+                  :href="topbarContactHref(ch)"
+                  class="tenant-contact-item tenant-contact-item--link"
+                  :target="isExternalContactChannel(ch) ? '_blank' : undefined"
+                  :rel="isExternalContactChannel(ch) ? 'noopener noreferrer' : undefined"
+                >
+                  <strong>{{ ch.label }}</strong><span>{{ ch.value }}</span>
+                </a>
+                <div
+                  v-if="factoryAddress"
+                  class="tenant-contact-item"
+                >
+                  <strong>{{ tSite('factory_label') }}</strong><span>{{ factoryAddress }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 页脚 -->
+          <footer
+            class="tenant-footer"
+            :style="{ backgroundColor: themePrimary }"
+          >
+            <div class="tenant-container tenant-footer-grid">
+              <div>
+                <div class="font-bold text-lg mb-2">
+                  {{ companyName }}
+                </div>
+                <p class="text-white/70 text-sm">
+                  {{ brandTagline }}
+                </p>
+              </div>
+              <div>
+                <div class="font-semibold mb-2">
+                  {{ tSite('footer_quick_links') }}
+                </div>
                 <a
                   v-for="item in navItems"
                   :key="item.key"
                   :href="item.href"
-                  class="tenant-mobile-nav-link"
-                  :class="{ active: activeNav === item.key }"
-                  @click="closeMobileMenu(); activeNav = item.key"
-                >
-                  {{ item.label }}
-                </a>
-                <a href="#contact" class="tenant-mobile-nav-cta" @click="closeMobileMenu">{{ ctaPrimary }}</a>
+                  class="block text-white/70 text-sm py-0.5 hover:text-white"
+                >{{ item.label }}</a>
               </div>
-            </div>
-          </Transition>
-          <div
-            v-if="mobileMenuOpen"
-            class="tenant-mobile-backdrop md:hidden"
-            aria-hidden="true"
-            @click="closeMobileMenu"
-          />
-        </nav>
-      </header>
-
-      <!-- Hero 左右分栏（luyang / cattuong 企业叙事） -->
-      <section id="home" class="tenant-hero" :style="{ backgroundColor: themeHeroBg }">
-        <div class="tenant-container tenant-hero-grid">
-          <div class="tenant-hero-copy">
-            <p v-if="primaryPromise" class="tenant-hero-eyebrow tenant-hero-eyebrow--promise">{{ primaryPromise }}</p>
-            <p v-else-if="establishedYear" class="tenant-hero-eyebrow">{{ tSite('hero_since', { year: establishedYear }) }}</p>
-            <h1 class="tenant-hero-title">{{ heroTitle }}</h1>
-            <p class="tenant-hero-desc">{{ heroDescription }}</p>
-            <div v-if="trustBadges.length" class="tenant-trust-badges">
-              <span v-for="(badge, i) in trustBadges" :key="i" class="tenant-trust-badge">{{ badge }}</span>
-            </div>
-            <div class="tenant-hero-actions">
-              <a href="#contact" class="tenant-btn tenant-btn-primary">{{ ctaPrimary }}</a>
-              <a href="#contact" class="tenant-btn tenant-btn-outline">{{ ctaSecondary }}</a>
-            </div>
-            <p v-if="inquiryHook" class="tenant-inquiry-hook">{{ inquiryHook }}</p>
-          </div>
-          <div class="tenant-hero-media">
-            <img v-if="heroImage" :src="resolveMediaUrl(heroImage)" :alt="heroTitle" class="tenant-hero-img" />
-            <div v-else class="tenant-hero-placeholder" :style="heroPlaceholderStyle">
-              <div class="tenant-hero-placeholder-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="8" y="52" width="48" height="56" rx="4" stroke="currentColor" stroke-width="2" opacity="0.35" />
-                  <rect x="72" y="28" width="56" height="80" rx="4" stroke="currentColor" stroke-width="2" opacity="0.5" />
-                  <rect x="144" y="44" width="48" height="64" rx="4" stroke="currentColor" stroke-width="2" opacity="0.35" />
-                  <path d="M20 52 L32 36 L44 52" stroke="currentColor" stroke-width="2" opacity="0.4" />
-                  <path d="M84 28 L100 12 L116 28" stroke="currentColor" stroke-width="2" opacity="0.55" />
-                  <path d="M156 44 L168 30 L180 44" stroke="currentColor" stroke-width="2" opacity="0.4" />
-                </svg>
-              </div>
-              <div class="tenant-hero-placeholder-content">
-                <img
-                  v-if="tenant.brand.logo_url"
-                  :src="tenant.brand.logo_url"
-                  :alt="companyName"
-                  class="tenant-hero-placeholder-logo"
-                />
-                <span class="tenant-hero-placeholder-name">{{ companyName }}</span>
-                <span v-if="brandTagline" class="tenant-hero-placeholder-tagline">{{ brandTagline }}</span>
-                <span v-else class="tenant-hero-placeholder-hint">{{ heroPlaceholderHint }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 大数字条（rsref / luyang WHY CHOOSE） -->
-      <section v-if="stats.length" class="tenant-stats" :style="{ backgroundColor: themePrimary }">
-        <div class="tenant-container">
-          <p class="tenant-stats-eyebrow">{{ tSite('stats_eyebrow') }}</p>
-          <h2 class="tenant-stats-title">{{ tSite('stats_title') }}</h2>
-          <div class="tenant-stats-grid">
-            <div v-for="(stat, i) in stats" :key="i" class="tenant-stat-item">
-              <div class="tenant-stat-value">{{ stat.value }}</div>
-              <div class="tenant-stat-label">{{ stat.label }}</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section v-if="serviceStages.length" class="tenant-section bg-white">
-        <div class="tenant-container">
-          <p class="tenant-stats-eyebrow">{{ tSite('section_stages_eyebrow') }}</p>
-          <h2 class="tenant-section-title">{{ tSite('section_stages_title') }}</h2>
-          <p class="tenant-section-desc">{{ tSite('section_stages_desc') }}</p>
-          <div class="tenant-stage-grid">
-            <article v-for="(stage, i) in serviceStages" :key="i" class="tenant-stage-card">
-              <div class="tenant-stage-num">{{ stage.stage || String(i + 1).padStart(2, '0') }}</div>
-              <h3>{{ stage.title }}</h3>
-              <p v-if="stage.description">{{ stage.description }}</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 全领域解决方案（cnabm / shenzhou / rockwool） -->
-      <section v-if="solutions.length" id="solutions" class="tenant-section bg-gray-50">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ tSite('section_solutions') }}</h2>
-          <p class="tenant-section-desc">{{ tSite('section_solutions_desc') }}</p>
-          <div class="tenant-solution-grid">
-            <article v-for="(sol, i) in solutions" :key="i" class="tenant-solution-card">
-              <div class="tenant-solution-segment">{{ sol.segment }}</div>
-              <h3>{{ sol.title }}</h3>
-              <p>{{ sol.description }}</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 四大优势（证据链） -->
-      <section v-if="advantages.length" id="advantages" class="tenant-section bg-gray-50">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ sectionTitle }}</h2>
-          <div class="tenant-adv-grid">
-            <article v-for="(adv, i) in advantages" :key="i" class="tenant-adv-card">
-              <div class="tenant-adv-icon">{{ i + 1 }}</div>
-              <h3>{{ adv.title }}</h3>
-              <p>{{ adv.description }}</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 产品分类 -->
-      <section v-if="categories.length" id="categories" class="tenant-section bg-white">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ tSite('section_categories') }}</h2>
-          <p class="tenant-section-desc">{{ tSite('section_categories_desc') }}</p>
-          <div class="tenant-card-grid">
-            <article v-for="(cat, i) in categories" :key="i" class="tenant-card">
-              <h3>{{ cat.name }}</h3>
-              <p>{{ cat.description }}</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 产品列表（tingertech 风格） -->
-      <section id="products" class="tenant-section bg-gray-50">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ productsTitle }}</h2>
-          <p v-if="productsDescription" class="tenant-section-desc">{{ productsDescription }}</p>
-          <p v-else class="tenant-section-desc">{{ tSite('section_products_desc') }}</p>
-          <div class="tenant-card-grid">
-            <article v-for="(item, i) in productItems" :key="i" class="tenant-card tenant-product-card">
-              <div class="tenant-product-thumb">
-                <img v-if="item.image" :src="resolveMediaUrl(item.image)" :alt="item.name" class="tenant-product-img" />
-              </div>
-              <h3>{{ item.name }}</h3>
-              <p>{{ item.summary }}</p>
-              <a href="#contact" class="tenant-link">{{ tSite('inquiry_link') }}</a>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 应用场景 -->
-      <section v-if="applications.length" id="applications" class="tenant-section bg-white">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ applicationsTitle }}</h2>
-          <div class="tenant-card-grid tenant-card-grid--3">
-            <article v-for="(app, i) in applications" :key="i" class="tenant-card">
-              <h3>{{ app.title }}</h3>
-              <p>{{ app.description }}</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section v-if="knowledgeTopics.length" class="tenant-section bg-gray-50">
-        <div class="tenant-container">
-          <p class="tenant-stats-eyebrow">{{ tSite('section_knowledge_eyebrow') }}</p>
-          <h2 class="tenant-section-title">{{ tSite('section_knowledge_title') }}</h2>
-          <p class="tenant-section-desc">{{ tSite('section_knowledge_desc') }}</p>
-          <div class="tenant-card-grid">
-            <article v-for="(topic, i) in knowledgeTopics" :key="i" class="tenant-card">
-              <h3>{{ topic.title }}</h3>
-              <p v-if="topic.hook">{{ topic.hook }}</p>
-              <a href="#contact" class="tenant-link">{{ tSite('inquiry_link') }}</a>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 关于（cattuong Mission / Vision / Timeline） -->
-      <section v-if="aboutText || mission || vision" id="about" class="tenant-section bg-white">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ tSite('section_about', { name: companyName }) }}</h2>
-          <p v-if="aboutText" class="tenant-about-text">{{ aboutText }}</p>
-          <div v-if="mission || vision" class="tenant-mv-grid">
-            <article v-if="mission" class="tenant-mv-card">
-              <h3 class="tenant-mv-heading">{{ tSite('mission') }}</h3>
-              <p class="tenant-mv-text">{{ mission }}</p>
-            </article>
-            <article v-if="vision" class="tenant-mv-card">
-              <h3 class="tenant-mv-heading">{{ tSite('vision') }}</h3>
-              <p class="tenant-mv-text">{{ vision }}</p>
-            </article>
-          </div>
-          <p v-if="capacitySummary" class="tenant-capacity">{{ capacitySummary }}</p>
-          <div v-if="milestones.length" class="tenant-timeline">
-            <h3 class="tenant-timeline-heading">{{ tSite('company_history') }}</h3>
-            <div class="tenant-timeline-track">
-              <article v-for="(m, i) in milestones" :key="i" class="tenant-timeline-item">
-                <div class="tenant-timeline-year">{{ m.year }}</div>
-                <div class="tenant-timeline-body">
-                  <h4>{{ m.title }}</h4>
-                  <p>{{ m.description }}</p>
+              <div>
+                <div class="font-semibold mb-2">
+                  {{ tSite('footer_contact') }}
                 </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 视频 -->
-      <section v-if="videos.length" id="videos" class="tenant-section bg-gray-50">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ tSite('video_center') }}</h2>
-          <div class="tenant-card-grid">
-            <article v-for="v in videos" :key="v.id" class="tenant-card p-0 overflow-hidden">
-              <div class="aspect-video bg-black">
-                <video v-if="v.playback_url" :src="v.playback_url" controls preload="metadata" class="w-full h-full object-contain" />
+                <a
+                  v-for="ch in contactDisplayChannels"
+                  :key="`footer-${ch.channel_type}-${ch.value}`"
+                  :href="topbarContactHref(ch)"
+                  class="block text-white/70 text-sm py-0.5 hover:text-white"
+                >
+                  {{ ch.label }}: {{ ch.value }}
+                </a>
               </div>
-              <div class="p-4">
-                <h3 class="font-semibold">{{ v.title }}</h3>
-                <a href="#contact" class="tenant-link mt-2 inline-block">{{ tSite('inquiry_link') }}</a>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 买家问答（Answer Sidecar iframe） -->
-      <section v-if="forumEmbed?.enabled && forumEmbed.iframe_src" id="forum" class="tenant-section bg-white">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ tSite('nav_qa') }}</h2>
-          <p v-if="forumEmbed.honest_note" class="text-sm text-gray-500 mb-4">{{ forumEmbed.honest_note }}</p>
-          <iframe
-            :src="forumEmbed.iframe_src"
-            class="tenant-forum-iframe"
-            :title="tSite('nav_qa')"
-            loading="lazy"
-          />
-        </div>
-      </section>
-
-      <!-- 联系 -->
-      <section id="contact" class="tenant-section bg-white">
-        <div class="tenant-container">
-          <h2 class="tenant-section-title">{{ tSite('section_contact') }}</h2>
-          <p v-if="inquiryPrompt" class="tenant-inquiry-banner">{{ inquiryPrompt }}</p>
-          <div class="tenant-contact-grid">
-            <a
-              v-for="ch in contactDisplayChannels"
-              :key="`${ch.channel_type}-${ch.value}`"
-              :href="topbarContactHref(ch)"
-              class="tenant-contact-item tenant-contact-item--link"
-              :target="isExternalContactChannel(ch) ? '_blank' : undefined"
-              :rel="isExternalContactChannel(ch) ? 'noopener noreferrer' : undefined"
-            >
-              <strong>{{ ch.label }}</strong><span>{{ ch.value }}</span>
-            </a>
-            <div v-if="factoryAddress" class="tenant-contact-item">
-              <strong>{{ tSite('factory_label') }}</strong><span>{{ factoryAddress }}</span>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 页脚 -->
-      <footer class="tenant-footer" :style="{ backgroundColor: themePrimary }">
-        <div class="tenant-container tenant-footer-grid">
-          <div>
-            <div class="font-bold text-lg mb-2">{{ companyName }}</div>
-            <p class="text-white/70 text-sm">{{ brandTagline }}</p>
-          </div>
-          <div>
-            <div class="font-semibold mb-2">{{ tSite('footer_quick_links') }}</div>
-            <a v-for="item in navItems" :key="item.key" :href="item.href" class="block text-white/70 text-sm py-0.5 hover:text-white">{{ item.label }}</a>
-          </div>
-          <div>
-            <div class="font-semibold mb-2">{{ tSite('footer_contact') }}</div>
-            <a
-              v-for="ch in contactDisplayChannels"
-              :key="`footer-${ch.channel_type}-${ch.value}`"
-              :href="topbarContactHref(ch)"
-              class="block text-white/70 text-sm py-0.5 hover:text-white"
-            >
-              {{ ch.label }}: {{ ch.value }}
-            </a>
-          </div>
-        </div>
-        <div class="tenant-container text-center text-white/50 text-xs pt-6 border-t border-white/10 mt-6">
-          {{ footerText }}
-        </div>
-      </footer>
+            <div class="tenant-container text-center text-white/50 text-xs pt-6 border-t border-white/10 mt-6">
+              {{ footerText }}
+            </div>
+          </footer>
+        </template>
       </template>
-    </template>
-  </div>
+    </div>
 
-  <!-- 移动端底部快捷操作栏 -->
-  <nav
-    v-if="tenant && !loading && !error && showMobileActionBar"
-    class="tenant-mobile-action-bar md:hidden"
-    :style="{ gridTemplateColumns: `repeat(${Math.max(mobileQuickActions.length, 1)}, minmax(0, 1fr))` }"
-    :aria-label="tSite('mobile_quick_actions')"
-  >
-    <a
-      v-for="action in mobileQuickActions"
-      :key="action.key"
-      :href="action.href"
-      class="tenant-mobile-action-btn"
-      :class="{ 'is-primary': action.primary }"
-      :target="action.external ? '_blank' : undefined"
-      :rel="action.external ? 'noopener noreferrer' : undefined"
-      @click="onMobileActionClick(action)"
+    <!-- 移动端底部快捷操作栏 -->
+    <nav
+      v-if="tenant && !loading && !error && showMobileActionBar"
+      class="tenant-mobile-action-bar md:hidden"
+      :style="{ gridTemplateColumns: `repeat(${Math.max(mobileQuickActions.length, 1)}, minmax(0, 1fr))` }"
+      :aria-label="tSite('mobile_quick_actions')"
     >
-      <span v-if="action.icon" class="tenant-mobile-action-icon" aria-hidden="true">{{ action.icon }}</span>
-      <span class="tenant-mobile-action-label">{{ action.label }}</span>
-    </a>
-  </nav>
+      <a
+        v-for="action in mobileQuickActions"
+        :key="action.key"
+        :href="action.href"
+        class="tenant-mobile-action-btn"
+        :class="{ 'is-primary': action.primary }"
+        :target="action.external ? '_blank' : undefined"
+        :rel="action.external ? 'noopener noreferrer' : undefined"
+        @click="onMobileActionClick(action)"
+      >
+        <span
+          v-if="action.icon"
+          class="tenant-mobile-action-icon"
+          aria-hidden="true"
+        >{{ action.icon }}</span>
+        <span class="tenant-mobile-action-label">{{ action.label }}</span>
+      </a>
+    </nav>
 
-  <!-- 旺财外置引导挂件：固定视口跟随滚动，不暴露 Agent 信息 -->
-  <TenantSiteCompanion
-    v-if="tenant && !loading && !error"
-    :company-name="companyName"
-    :phone="contactPhone"
-    :email="contactEmail"
-    :whatsapp="contactWhatsapp"
-    :wechat="contactWechat"
-    :qq="contactQq"
-    :accent="themePrimary"
-    :product-hint="productHint"
-    :tenant-domain="tenant.domain"
-    :api-base="apiBase"
-    :visitor-language="visitorLanguage"
-    :visitor-country="visitorCountry"
-    :cn-compliant-only="cnCompliantOnly"
-    :wangcai-ui="wangcaiUi"
-    :contact-channels="effectiveChannels"
-    :trade-qa-enabled="tradeQaEnabled"
-    :is-rtl="isRtl"
-  />
+    <!-- 旺财外置引导挂件：固定视口跟随滚动，不暴露 Agent 信息 -->
+    <TenantSiteCompanion
+      v-if="tenant && !loading && !error"
+      :company-name="companyName"
+      :phone="contactPhone"
+      :email="contactEmail"
+      :whatsapp="contactWhatsapp"
+      :wechat="contactWechat"
+      :qq="contactQq"
+      :accent="themePrimary"
+      :product-hint="productHint"
+      :tenant-domain="tenant.domain"
+      :api-base="apiBase"
+      :visitor-language="visitorLanguage"
+      :visitor-country="visitorCountry"
+      :cn-compliant-only="cnCompliantOnly"
+      :wangcai-ui="wangcaiUi"
+      :contact-channels="effectiveChannels"
+      :trade-qa-enabled="tradeQaEnabled"
+      :is-rtl="isRtl"
+    />
   </div>
 </template>
 

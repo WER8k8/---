@@ -66,8 +66,8 @@ class LeadCSVService:
             # 分批导入
             from app.db.session import SessionLocal
             from app.services.ubrain.dedup_engine import DedupEngine
-            dedup = DedupEngine()
             db = SessionLocal()
+            dedup = DedupEngine(db)
             try:
                 for batch_start in range(0, len(rows), self.BATCH_SIZE):
                     batch = rows[batch_start:batch_start + self.BATCH_SIZE]
@@ -161,6 +161,7 @@ class LeadCSVService:
         self,
         lead_ids: Optional[list[str]] = None,
         filters: Optional[dict] = None,
+        tenant_id: Optional[str] = None,
     ) -> bytes:
         """导出线索为 CSV。
 
@@ -179,13 +180,18 @@ class LeadCSVService:
             if lead_ids:
                 query = query.filter(ProspectLead.id.in_(lead_ids))
 
+            # P0-2: 补租户隔离，避免跨租户线索泄露
+            if tenant_id:
+                query = query.filter(ProspectLead.tenant_id == tenant_id)
             if filters:
                 if filters.get("status"):
                     query = query.filter(ProspectLead.status == filters["status"])
                 if filters.get("source"):
                     query = query.filter(ProspectLead.source == filters["source"])
-                if filters.get("min_score"):
-                    query = query.filter(ProspectLead.score >= filters["min_score"])
+                if filters.get("min_score") is not None:
+                    # P0-2: 原代码引用不存在的 ProspectLead.score（实际字段为 overall_score），
+                    # 且 min_score=0.0 时原 if 判定为假被跳过。修正为 overall_score 并用 is not None。
+                    query = query.filter(ProspectLead.overall_score >= filters["min_score"])
 
             leads = query.order_by(ProspectLead.created_at.desc()).limit(5000).all()
             # 转为 UnifiedLead 再导出
