@@ -85,9 +85,18 @@ def register_routes():
         logging.getLogger(__name__).info("GEO: 已挂载 geo 子包")
     except Exception as _geo_exc:  # noqa: BLE001
         logging.getLogger(__name__).error("GEO: 挂载 geo 子包失败: %s", _geo_exc)
+    try:
+        from app.api.v1.chat import router as chat_im_router
+        # chat 子包 router 自带 prefix=/chat（IM 会话/WebSocket）
+        router.include_router(chat_im_router)
+        logging.getLogger(__name__).info("ChatIM: 已挂载 chat 子包（prefix=/chat）")
+    except Exception as _chat_exc:  # noqa: BLE001
+        logging.getLogger(__name__).error("ChatIM: 挂载 chat 子包失败: %s", _chat_exc)
 
     # 3) 扫描 app.api.v1 顶层散落 .py 模块（不在 routes/ 下的独立文件）
-    #    显式排除：routes（已扫）、admin_bff（已手动）、ai/chat/seo/super_admin/system/marketing/geo（子包）
+    #    显式排除：routes（已扫）、admin_bff（已手动）、ai/seo/super_admin/system/marketing/geo（子包）
+    #    chat 是子包（app/api/v1/chat/，自带 prefix=/chat），走下方 2d 显式挂载；
+    #    原顶层 chat.py（AI 接待）已迁至 routes/ai_chat.py 由 auto_discovery 注册，避免包遮蔽。
     from app.api.v1.routes.auto_discovery import _resolve_domain_tag as _domain_tag
     _TOP_LEVEL_EXCLUDE = {
         "routes", "admin_bff", "ai", "chat", "seo", "super_admin", "system", "marketing", "geo",

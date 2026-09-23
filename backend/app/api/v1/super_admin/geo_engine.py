@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.core.admin_auth import get_current_super_admin
 from app.core.database import get_db
-from app.core.response import success_response
+from app.core.response import error_response, success_response
 from app.models.user import User
 from app.services.geo_engine_service import GEOEngine
 logger = logging.getLogger(__name__)
@@ -786,9 +786,10 @@ def get_generate_history(
                             continue
                     results.append(data)
             return success_response(data=results[:limit])
+        return error_response(501, "needs_config: Redis 未启用，无法查询生成历史")
     except Exception as e:
         logger.warning(f"查询历史记录失败: {e}")
-    return success_response(data=[])
+        return error_response(501, f"not_implemented: 历史查询失败，禁止空列表假成功 ({e})")
 
 
 # ─────────────────────────────────────────────

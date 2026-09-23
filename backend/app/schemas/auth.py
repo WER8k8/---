@@ -72,3 +72,14 @@ class EmailVerificationResponse(BaseModel):
     message: str
     expires_in: int
     dev_code: Optional[str] = None
+    needs_config: bool = False
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    code: str = Field(..., min_length=4)
+    new_password: str = Field(..., min_length=8)

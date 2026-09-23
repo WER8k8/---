@@ -135,12 +135,7 @@ def get_system_logs(
     if current_user.role not in ["super_admin"]:
         return error_response(403, "权限不足")
 
-    return success_response(
-        data={
-            "items": [],
-            "total": 0,
-            "page": page,
-            "page_size": page_size})
+    return error_response(501, "not_implemented: 系统日志查询未实现，禁止空列表假成功")
 
 
 @router.post("/cache/clear")

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const proShellMenu = fs.readFileSync(path.join(root, 'src/constants/proShellMenus.ts'), 'utf8');
-const navRoute = fs.readFileSync(path.join(root, 'src/constants/navRouteRegistry.ts'), 'utf8');
+const navRoute = fs.readFileSync(path.join(root, 'scripts/navRouteRegistry.ts'), 'utf8'); // lint-only registry
 
 const menuPathRegex = /path:\s*['"](\/client\/[^'"]+)['"]/g;
 const navPathRegex = /'client-[^']+':\s*['"]([^'"]+)['"]/g;

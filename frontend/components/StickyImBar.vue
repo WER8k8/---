@@ -137,15 +137,28 @@ const form = ref({ name: '', phone: '', email: '', spec: '' })
 const formError = ref('')
 
 const CN_PHONE = /^1[3-9]\d{9}$/
+const INTL_PHONE = /^\+?[0-9]{6,15}$/
 
 function normalizePhone(raw: string) {
   return (raw || '').replace(/\s|-/g, '')
 }
 
+function isDomesticVisitor(): boolean {
+  const ch = activeChannel.value
+  const cc = ((ch as { country_code?: string } | undefined)?.country_code || '').toUpperCase()
+  if (cc) return cc === 'CN' || cc === 'TW' || cc === 'HK'
+  const tpe = ch?.type || ''
+  return tpe === 'wechat' || tpe === 'qq'
+}
+
 function validateInquiryForm(): string | null {
   if (!form.value.name.trim()) return '请填写姓名'
   const phone = normalizePhone(form.value.phone)
-  if (!CN_PHONE.test(phone)) return '请填写有效的 11 位中国大陆手机号'
+  if (isDomesticVisitor()) {
+    if (!CN_PHONE.test(phone)) return '请填写有效的 11 位中国大陆手机号'
+  } else if (!INTL_PHONE.test(phone) && !CN_PHONE.test(phone)) {
+    return '请填写有效手机号（境内 11 位或国际区号 6–15 位）'
+  }
   if (!form.value.spec.trim()) return '请填写需求说明'
   return null
 }
@@ -158,20 +171,27 @@ function mapChannel(ch: ImChannel) {
     text: ch.prefilled_text || '',
     display: ch.display_text || '',
     link: ch.im_link || '',
+    country: (ch.country_code || '').toUpperCase(),
   }
 }
 
 const activeChannel = computed(() => imChannels.value[channelIndex.value] || imChannels.value[0])
 
 const isFormChannel = computed(() => {
-  const tpe = activeChannel.value?.type || 'form'
-  return ['form', 'wecom_inquiry', 'douyin_inquiry', 'live_chat'].includes(tpe) || !activeChannel.value?.account
+  const ch = activeChannel.value
+  const tpe = ch?.type || 'form'
+  if (['form', 'wecom_inquiry', 'douyin_inquiry', 'live_chat', 'wechat', 'qq', 'phone'].includes(tpe)) {
+    if (tpe === 'phone' && ch?.account) return false
+    if (tpe === 'qq' && ch?.account) return false
+    return true
+  }
+  return !ch?.account
 })
 
 const imLink = computed(() => {
   const ch = activeChannel.value
-  if (!ch) return '#'
-  if (ch.link && ch.link !== '#') return ch.link
+  if (!ch) return '#inquiry-form'
+  if (ch.link && ch.link !== '#' && ch.link !== '#contact') return ch.link
   if (ch.type === 'whatsapp') {
     const text = encodeURIComponent(ch.text || t('chat.welcome'))
     return `https://wa.me/${ch.account}?text=${text}`
@@ -179,7 +199,10 @@ const imLink = computed(() => {
   if (ch.type === 'telegram') return `https://t.me/${ch.account}`
   if (ch.type === 'line') return `https://line.me/ti/p/~${ch.account}`
   if (ch.type === 'zalo') return `https://zalo.me/${ch.account}`
-  return '#'
+  if (ch.type === 'wechat') return ch.account ? `weixin://dl/chat?${ch.account}` : '#inquiry-form'
+  if (ch.type === 'qq') return ch.account ? `tencent://message/?uin=${ch.account}` : '#inquiry-form'
+  if (ch.type === 'phone') return ch.account ? `tel:${ch.account}` : '#inquiry-form'
+  return '#inquiry-form'
 })
 
 function channelLabel(ch: ImChannel & { type: string }) {
@@ -190,6 +213,9 @@ function channelLabel(ch: ImChannel & { type: string }) {
     form: '表单',
     wecom_inquiry: '企微',
     douyin_inquiry: '抖音',
+    wechat: '微信',
+    qq: 'QQ',
+    phone: '电话',
   }
   return labels[ch.type] || ch.type
 }
@@ -200,6 +226,9 @@ const imIcon = computed(() => {
   if (type === 'telegram') return '✈️'
   if (type === 'wecom_inquiry') return '💼'
   if (type === 'douyin_inquiry') return '🎵'
+  if (type === 'wechat') return '💚'
+  if (type === 'qq') return '🐧'
+  if (type === 'phone') return '📞'
   return '📋'
 })
 
@@ -216,17 +245,25 @@ const primaryBtnClass = computed(() => {
   if (type === 'telegram') return 'bg-blue-500 hover:bg-blue-600'
   if (type === 'wecom_inquiry') return 'bg-emerald-600 hover:bg-emerald-700'
   if (type === 'douyin_inquiry') return 'bg-gray-900 hover:bg-black'
+  if (type === 'wechat') return 'bg-green-600 hover:bg-green-700'
+  if (type === 'qq') return 'bg-sky-600 hover:bg-sky-700'
+  if (type === 'phone') return 'bg-orange-600 hover:bg-orange-700'
   return 'bg-gray-700 hover:bg-gray-800'
 })
 
 async function loadChannels() {
   const list = await fetchChannels()
   imChannels.value = list.map((c) => ({ ...c, type: c.channel_type }))
-  showBar.value = imChannels.value.length > 0
+  // 无可用渠道时仍展示表单兜底；API 失败返回空且不注入假渠道
+  showBar.value = true
 }
 
 function onImClick() {
+  const ch = activeChannel.value
   if (isFormChannel.value) {
+    if (ch?.type === 'wechat' && ch.account) {
+      alert(`微信号：${ch.account}`)
+    }
     openForm()
     return
   }

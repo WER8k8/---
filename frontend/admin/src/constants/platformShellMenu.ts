@@ -24,8 +24,10 @@ export const PLATFORM_SHELL_MENU: ShellMenuGroup[] = [
     { name:'OperationsTrafficBoard',path:'/operations/traffic',title:'流量看板',icon:'LineChartOutlined' },
   ]},
   { title: '业务管理', children: [
+    // 功能域（无特权）：与其它业务项同级，非「附属执行台」
+    { name:'SocialOutreach',path:'/sales/customer-finder',title:'社媒拓客',icon:'GlobalOutlined' },
+    { name:'TradeFulfillment',path:'/admin/queues/fulfillment',title:'外贸履约',icon:'CarryOutOutlined' },
     { name:'Products',path:'/products',title:'产品管理',icon:'ShoppingOutlined' },
-    { name:'ProductImages',path:'/admin/file-manager',title:'产品图片空间',icon:'PictureOutlined' },
     { name:'VideoSpace',path:'/admin/video-space',title:'视频空间',icon:'VideoCameraOutlined' },
     { name:'Categories',path:'/products/categories',title:'分类管理',icon:'FolderOpenOutlined' },
     { name:'Content',path:'/content',title:'文章内容',icon:'FileOutlined' },
@@ -212,7 +214,7 @@ export const PLATFORM_SHELL_MENU: ShellMenuGroup[] = [
     ]},
     { name:'V2RayProxy',path:'/admin/v2ray',title:'V2RayN代理',icon:'GlobalOutlined', group:'工具箱', children: [
       { name:'V2RayHub', path:'/admin/v2ray', title:'代理总控', icon:'GlobalOutlined' },
-      { name:'V2RayServers', path:'/admin/v2ray/servers', title:'节点管理', icon:'CloudServerOutlined' },
+      { name:'V2RayServers', path:'/admin/v2ray-legacy/servers', title:'节点管理', icon:'CloudServerOutlined' },
     ]},
     { name:'EdgeCDN',path:'/edge-cdn/dashboard',title:'边缘计算CDN',icon:'CloudServerOutlined', group:'工具箱', children: [
       { name:'CdnDashboard', path:'/edge-cdn/dashboard', title:'CDN 总览', icon:'DashboardOutlined' },

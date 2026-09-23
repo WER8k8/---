@@ -65,6 +65,16 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/views/login/forgot-password.vue'),
+    meta: {
+      title: '找回密码',
+      requiresAuth: false,
+      skipCapabilityGuard: true,
+    },
+  },
+  {
     path: '/tenants/register',
     name: 'TenantRegister',
     component: () => import('@/views/tenants/register.vue'),
@@ -124,7 +134,8 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '今日三步' },
       },
       // 死页归位：未接线视图 → 指向可用能力（避免 404 / 孤岛）
-      { path: 'export-quote', redirect: '/client/trade-tools', meta: { title: '出口报价（并入外贸工具）' } },
+      { path: 'document-maker', name: 'ClientDocumentMaker', component: () => import('@/views/client/document-maker.vue'), meta: { title: '制单中心' } },
+      { path: 'export-quote', redirect: '/client/document-maker', meta: { title: '出口报价（制单中心）' } },
       { path: 'forum-qa', redirect: '/client/assistant', meta: { title: '论坛问答（并入助手）' } },
       { path: 'video-studio-project-panel', redirect: '/client/video-studio', meta: { title: '视频项目面板' } },
       { path: 'dashboard', name: 'ClientDashboard', component: () => import('@/views/client/dashboard.vue'), meta: { title: '工作台' } },
@@ -242,7 +253,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'workspace/outreach', name: 'OutreachEditor', component: () => import('@/views/workspace/OutreachEditor.vue'), meta: { title: '写信工作台' } },
       { path: 'email-campaigns', name: 'ClientEmailCampaigns', component: () => import('@/views/sales/EmailAutomation.vue'), meta: { title: '邮件营销' } },
       { path: 'workspace/skills', name: 'SkillConsole', component: () => import('@/views/workspace/SkillConsole.vue'), meta: { title: 'AI 技能台' } },
-      { path: 'skills', name: 'ClientSkillsMarket', component: () => import('@/views/client/skills-market.vue'), meta: { title: 'Meoo专属技能' } },
+      { path: 'skills', name: 'ClientSkillsMarket', component: () => import('@/views/client/skills-market.vue'), meta: { title: '专属技能' } },
       { path: 'explore', name: 'ClientTemplatesExplore', component: () => import('@/views/client/templates-explore.vue'), meta: { title: '创意社区与模板' } },
       { path: 'ai-config', name: 'ClientAiConfig', component: () => import('@/views/client/ai-config.vue'), meta: { title: 'AI 配置' } },
       {
@@ -322,7 +333,17 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/ai-center/article-to-video.vue'),
         meta: { title: '文章转视频' },
       },
-      { path: 'settings', name: 'ClientSettings', component: () => import('@/views/system/settings.vue'), meta: { title: '系统设置' } },
+      {
+        path: 'settings',
+        name: 'ClientSettings',
+        component: () => import('@/views/system/settings.vue'),
+        meta: { title: '系统设置' },
+        children: [
+          { path: '', name: 'ClientSettingsMain', component: () => import('@/views/system/settings-main.vue'), meta: { title: '基本设置' } },
+          { path: 'drag-module', name: 'ClientDragModule', component: () => import('@/views/system/drag-module.vue'), meta: { title: '自定义拖拽模块' } },
+          { path: 'effects', name: 'ClientEffects', component: () => import('@/views/system/effects.vue'), meta: { title: '自定义特效组件' } },
+        ],
+      },
     ],
   },
   // ========== 客户登录（独立页面，用客户端布局） ==========
@@ -444,6 +465,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/layout.vue'),
         meta: { title: '超级管理员', icon: 'CrownOutlined' },
         children: [
+          {
+            path: 'queues/fulfillment',
+            name: 'AdminTradeFulfillment',
+            component: () => import('@/views/client/queues/fulfillment.vue'),
+            meta: { title: '外贸履约' },
+          },
           {
             path: '',
             name: 'AdminDashboard',

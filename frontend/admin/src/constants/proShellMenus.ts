@@ -2,8 +2,14 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 /**
- * YoudingProLayout · Client / Partner / Agent 侧栏菜单（一壳三 accent）
+ * YoudingProLayout · Client / Partner / Agent 侧栏菜单声明源（一壳三 accent）
  * @see docs/youding-omni-pro-design-LOCKED.md P2
+ *
+ * 双源收敛约定（2026-09-23 审计 P1-1）：
+ * - ClientShellLayout.categorizedNavGroups = 租户壳主栏「唯一真渲染源」
+ * - 本文件 CLIENT_SHELL_MENU = 声明/清单源（更多面板、测试、代理/省代壳共用）
+ * - CLIENT_PRIMARY_SHELL_PATHS 必须与 categorizedNavGroups 路径集保持一致；
+ *   其余 CLIENT_SHELL_MENU 项由 ClientShellLayout「更多功能」面板渲染，禁止再漂移
  */
 
 import { isClientPathHidden, isClientMoreMenuPathVisible, filterShellMenuByCertMode } from '@/constants/stubVisibility';
@@ -38,6 +44,9 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
   {
     title: '获客转化',
     children: [
+      // 功能域（无特权）：社媒拓客 / 外贸履约 = 普通业务菜单，非附属特权入口
+      { name: 'ClientSocialOutreach', path: '/client/trade-tools', title: '社媒拓客', icon: 'GlobalOutlined' },
+      { name: 'ClientTradeFulfillment', path: '/client/queues/fulfillment', title: '外贸履约', icon: 'CarryOutOutlined' },
       { name: 'ClientInquiries', path: '/client/inquiries', title: '询盘管理', icon: 'MessageOutlined' },
       { name: 'ClientAcquisitionOps', path: '/client/acquisition-ops', title: '获客作战台', icon: 'AimOutlined' },
       { name: 'ClientInquiryQueue', path: '/client/queues/inquiries', title: '询盘队列', icon: 'OrderedListOutlined' },
@@ -86,12 +95,13 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
   {
     title: '履约与账户',
     children: [
+      { name: 'ClientDocumentMaker', path: '/client/document-maker', title: '制单中心', icon: 'FileTextOutlined' },
       { name: 'ClientFulfillmentQueue', path: '/client/queues/fulfillment', title: '履约队列', icon: 'CarryOutOutlined' },
       // 功能域（无特权）：原 GoodJob → 外贸履约，与其它履约模块同级
-      { name: 'ClientHermesTasks', path: '/client/tasks', title: 'Hermes 任务', icon: 'NodeIndexOutlined' },
+      { name: 'ClientHermesTasks', path: '/client/tasks', title: '我的任务', icon: 'NodeIndexOutlined' },
       { name: 'ClientBilling', path: '/client/billing', title: '套餐续费', icon: 'AccountBookOutlined' },
       { name: 'ClientInvoices', path: '/client/invoices', title: '开票申请', icon: 'FileTextOutlined' },
-      { name: 'ClientTokens', path: '/client/tokens', title: 'AI 流量充值', icon: 'ThunderboltOutlined' },
+      { name: 'ClientTokens', path: '/client/tokens', title: 'AI 用量充值', icon: 'ThunderboltOutlined' },
       { name: 'ClientEgress', path: '/client/egress', title: '出口 IP', icon: 'GlobalOutlined' },
       { name: 'ClientPlanGate', path: '/client/plan-gate', title: '套餐门槛', icon: 'SafetyCertificateOutlined' },
       { name: 'ClientSettings', path: '/client/settings', title: '系统设置', icon: 'SettingOutlined' },
@@ -159,12 +169,29 @@ function filterHiddenClientItems(groups: ProShellMenuGroup[]): ProShellMenuGroup
 }
 
 /** 租户轻量壳 · 主栏固定五项（与 ClientShellLayout 同步） */
-export const CLIENT_PRIMARY_SHELL_PATHS = [
+export const /** 侧栏主菜单（与 ClientShellLayout.categorizedNavGroups 保持一致，避免双源漂移） */
+CLIENT_PRIMARY_SHELL_PATHS = [
   '/client/today',
+  '/client/onboarding',
+  '/client/dashboard',
   '/client/inquiries',
+  '/client/queues/inquiries',
+  '/client/acquisition-ops',
+  '/client/email-campaigns',
+  '/client/site-editor',
+  '/client/product-images',
+  '/client/video-space',
+  '/client/explore',
   '/client/products',
+  '/client/content',
   '/client/distribute',
+  '/client/cross-platform',
+  '/client/document-maker',
+  '/client/queues/fulfillment',
+  '/client/tasks',
   '/client/billing',
+  '/client/tokens',
+  '/client/settings',
 ] as const;
 
 export function getClientShellMenu(): ProShellMenuGroup[] {

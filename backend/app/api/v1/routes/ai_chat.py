@@ -21,7 +21,7 @@ router = APIRouter()
 _AI_CHAT_MOCK_FLAG = "AI_CHAT_ALLOW_MOCK"
 
 
-@router.post("/chat/webhook")
+@router.post("/webhook")
 async def ai_chat_webhook(
     merchant_id: str,
     buyer_message: str,
@@ -150,7 +150,7 @@ def _invoke_ai_rag_reply(message: str, country: str, msg_count: int) -> str:
     )
 
 
-@router.get("/chat/sessions/{session_id}")
+@router.get("/sessions/{session_id}")
 async def get_chat_session(session_id: str, db: Session = Depends(get_db)):
     """获取聊天会话历史"""
     session = db.query(AiChatSession).filter(AiChatSession.id == session_id).first()
@@ -176,7 +176,7 @@ async def get_chat_session(session_id: str, db: Session = Depends(get_db)):
     })
 
 
-@router.post("/chat/sessions/{session_id}/email")
+@router.post("/sessions/{session_id}/email")
 async def update_session_email(session_id: str, email: str, phone: Optional[str] = None, db: Session = Depends(get_db)):
     """更新会话邮箱（KPI达成）"""
     session = db.query(AiChatSession).filter(AiChatSession.id == session_id).first()

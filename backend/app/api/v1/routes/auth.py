@@ -35,8 +35,10 @@ from app.db.session import get_db
 from app.models.user import EmailVerification, ThirdPartyLogin, User
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import (EmailLoginRequest, EmailVerificationRequest,
-                              EmailVerificationResponse, LoginRequest,
+                              EmailVerificationResponse, ForgotPasswordRequest,
+                              LoginRequest,
                               LogoutResponse, OAuthAuthorizeResponse,
+                              ResetPasswordRequest,
                               ThirdPartyLoginRequest, ThirdPartyLoginResponse,
                               TokenRefreshRequest, TokenResponse)
 from app.schemas.user import ChangePasswordRequest, UserResponse
@@ -345,6 +347,107 @@ def send_email_code(
             dev_code=dev_code,
         )
     )
+
+
+@router.post("/forgot-password", response_model=APIResponse[EmailVerificationResponse])
+def forgot_password(
+        request: ForgotPasswordRequest,
+        db: Session = Depends(get_db)):
+    """发送找回密码验证码。无 SMTP 时诚实 needs_config，不假发邮件。"""
+    email = request.email
+    _check_email_code_rate(email)
+    user = UserRepository(db).get_by_email(email)
+    # 防枚举：未知邮箱同样返回成功，但不落码、不发信
+    generic_msg = "若该邮箱已注册，验证码将发送至邮箱"
+    if not user or not user.is_active:
+        return success_response(
+            data=EmailVerificationResponse(
+                message=generic_msg,
+                expires_in=300,
+                dev_code=None,
+                needs_config=False,
+            )
+        )
+
+    expire_time = datetime.now(timezone.utc) + timedelta(minutes=10)
+    code = "".join(secrets.choice("0123456789ABCDEFGHJKLMNPQRSTUVWXYZ") for _ in range(8))
+    code_hash = hashlib.sha256(code.encode()).hexdigest()
+    existing_verification = (
+        db.query(EmailVerification).filter(
+            EmailVerification.email == email,
+            EmailVerification.used == False).first())
+    if existing_verification:
+        db.delete(existing_verification)
+    db.add(EmailVerification(email=email, code=code_hash, expires_at=expire_time))
+    db.commit()
+
+    mailed = email_service.send_verification_code(email, code)
+    is_dev = settings.ENVIRONMENT == "development" or settings.DEBUG
+    if not mailed and not is_dev:
+        return success_response(
+            data=EmailVerificationResponse(
+                message="邮件服务未配置（SMTP），暂时无法发送找回密码验证码",
+                expires_in=300,
+                dev_code=None,
+                needs_config=True,
+            )
+        )
+
+    dev_code = code if is_dev else None
+    msg = "验证码已发送至邮箱" if mailed else "验证码已生成（开发环境或未配置 SMTP）"
+    return success_response(
+        data=EmailVerificationResponse(
+            message=msg,
+            expires_in=600,
+            dev_code=dev_code,
+            needs_config=not mailed,
+        )
+    )
+
+
+@router.post("/reset-password", response_model=APIResponse)
+def reset_password(
+        request: ResetPasswordRequest,
+        db: Session = Depends(get_db)):
+    """用邮箱验证码重置密码。"""
+    if len(request.new_password) < 8:
+        return error_response(400, "新密码至少 8 位")
+    input_code_hash = hashlib.sha256(request.code.encode()).hexdigest()
+    verification = (
+        db.query(EmailVerification)
+        .filter(
+            EmailVerification.email == request.email,
+            EmailVerification.code == input_code_hash,
+            EmailVerification.used == False,
+            EmailVerification.expires_at > datetime.now(timezone.utc),
+        )
+        .with_for_update()
+        .first()
+    )
+    if not verification:
+        return error_response(400, "验证码无效或已过期")
+
+    user = UserRepository(db).get_by_email(request.email)
+    if not user or not user.is_active:
+        return error_response(400, "账号不可用")
+
+    verification.used = True
+    user.hashed_password = get_password_hash(request.new_password)
+    user.is_default_password = False
+    db.commit()
+    try:
+        from app.models.user import OperationLog
+        db.add(OperationLog(
+            user_id=str(user.id),
+            action="reset_password",
+            resource_type="user",
+            resource_id=str(user.id),
+            detail="forgot-password flow",
+        ))
+        db.commit()
+    except Exception:
+        db.rollback()
+    return success_response(message="密码已重置，请返回登录")
 
 
 @router.post("/login-by-email", response_model=APIResponse[TokenResponse])

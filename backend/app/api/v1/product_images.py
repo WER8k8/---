@@ -72,6 +72,41 @@ def upload_product_image(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.get("/wall", response_model=dict)
+def product_images_wall(
+    page: int = 1,
+    page_size: int = 24,
+    db: Session = Depends(get_db),
+):
+    """产品图片墙（B5 兼容别名）：分页返回图片网格。"""
+    page = max(1, page)
+    page_size = max(1, min(page_size, 100))
+    total = db.query(ProductImage).count()
+    images = (
+        db.query(ProductImage)
+        .order_by(ProductImage.sort_order, ProductImage.created_at.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+    return success_response(data={
+        "items": [
+            {
+                "id": str(img.id),
+                "product_id": str(img.product_id),
+                "image_url": img.image_url,
+                "alt_text": img.alt_text,
+                "sort_order": img.sort_order,
+                "is_primary": img.is_primary,
+            }
+            for img in images
+        ],
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    })
+
+
 @router.get("/{image_id}", response_model=dict)
 def get_product_image(image_id: str, db: Session = Depends(get_db)):
     """获取产品图片详情"""

@@ -37,6 +37,8 @@ _API_EXEMPT_PREFIXES: tuple[str, ...] = (
     "/api/v1/auth/register",
     "/api/v1/auth/send-email-code",
     "/api/v1/auth/login-by-email",
+    "/api/v1/auth/forgot-password",
+    "/api/v1/auth/reset-password",
     "/api/v1/auth/third-party-login",
     "/api/v1/auth/refresh",
     "/api/v1/admin-bff/auth/login",

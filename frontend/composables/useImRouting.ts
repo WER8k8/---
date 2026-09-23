@@ -9,6 +9,8 @@ export type ImChannel = {
   prefilled_text?: string
   im_link?: string
   display_text?: string
+  country_code?: string
+  language?: string
 }
 
 export function useImRouting() {
@@ -56,7 +58,7 @@ export function useImRouting() {
         `${apiBase}/im-routing/channels`,
         {
           params: {
-            merchant_id: Number(mid) || 1,
+            merchant_id: Number(merchantId.value) || 1,
             country_code: countryCode.value,
             language: locale.value,
           },

@@ -275,7 +275,7 @@ def get_sales_trend(
     current_user: User = Depends(get_current_user),  # SECURITY: 强制认证
 ):
     """销售趋势（结构化空数据，待趋势表落地）"""
-    return success_response(data={"type": type, "points": []})
+    return error_response(501, "not_implemented: 销售趋势表未落地")
 
 
 @router.get("/dashboard/regions")
@@ -283,4 +283,4 @@ def get_region_distribution(
     current_user: User = Depends(get_current_user),  # SECURITY: 强制认证
 ):
     """地区分布（结构化空数据，待客户国家字段统计落地）"""
-    return success_response(data=[])
+    return error_response(501, "not_implemented: 客户国家字段统计未落地")

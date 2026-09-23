@@ -12,7 +12,7 @@ from app.core.admin_auth import get_current_super_admin
 from app.core.cache import (delete_pattern, invalidate_system_monitor_cache,
                              redis_client)
 from app.core.database import get_db
-from app.core.response import success_response
+from app.core.response import error_response, success_response
 from app.models.user import User
 
 router = APIRouter()
@@ -109,7 +109,7 @@ def list_cache_keys(
 ):
     """列出缓存键"""
     if not redis_client:
-        return success_response(data=[])
+        return error_response(501, "needs_config: Redis 未启用，无法列出缓存键")
 
     keys = list(redis_client.scan_iter(match=pattern, count=100))
     # 限制返回数量

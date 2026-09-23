@@ -508,7 +508,11 @@ def hermes_ops_latest(current_user: User = Depends(get_current_user)):
     if err := _ops_gate(current_user):
         return err
     from app.services.hermes.ops_autopilot import load_ops_snapshot
-    return success_response(data=load_ops_snapshot() or {})
+    from app.core.cache import redis_available
+    snapshot = load_ops_snapshot()
+    if snapshot is None and not redis_available():
+        return error_response(501, "needs_config: Redis 未启用，无法读取 ops 快照")
+    return success_response(data=snapshot or {})
 
 
 @router.get("/ops/command-center")

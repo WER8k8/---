@@ -47,6 +47,7 @@ const TENANT_LEGACY_REDIRECTS: Record<string, string> = {
 const PLATFORM_LEGACY_REDIRECTS: Record<string, string> = {
   '/client/video-space': '/admin/video-space',
   '/client/product-images': '/admin/file-manager',
+  '/client/queues/fulfillment': '/admin/queues/fulfillment',
 };
 
 const PARTNER_FROM_AGENT: Record<string, string> = {
@@ -69,6 +70,7 @@ const AGENT_BLOCKED_PREFIXES = [
 const PUBLIC_AUTH_PATHS = new Set([
   '/login',
   '/login/oauth-callback',
+  '/forgot-password',
   '/tenants/register',
   '/client/login',
 ]);

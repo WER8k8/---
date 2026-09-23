@@ -31,7 +31,7 @@
     <div class="client-body">
       <aside class="client-sidebar" :class="{ 'client-sidebar--open': mobileOpen }">
         <nav class="client-nav" aria-label="主要功能">
-          <div v-for="group in categorizedNavGroups" :key="group.key" class="client-nav__group">
+          <div v-for="group in visibleNavGroups" :key="group.key" class="client-nav__group">
             <div class="client-nav__group-title">{{ group.title }}</div>
             <button
               v-for="item in group.items"
@@ -49,6 +49,34 @@
               <span v-if="item.badge" class="client-nav__badge">{{ item.badge }}</span>
             </button>
           </div>
+          <div class="client-nav__more">
+            <button
+              type="button"
+              class="client-nav__more-toggle"
+              :aria-expanded="moreOpen"
+              @click="moreOpen = !moreOpen"
+            >
+              <AppstoreOutlined />
+              <span class="client-nav__item-label">更多功能</span>
+              <span class="client-nav__more-caret">{{ moreOpen ? '−' : '+' }}</span>
+            </button>
+            <div v-if="moreOpen" class="client-nav__more-panel">
+              <div v-for="group in moreNavGroups" :key="group.key" class="client-nav__group">
+                <div class="client-nav__group-title">{{ group.title }}</div>
+                <button
+                  v-for="item in group.items"
+                  :key="item.path"
+                  type="button"
+                  class="client-nav__item"
+                  :class="{ 'client-nav__item--active': isActiveMenu(item.path) }"
+                  @click="navigate(item.path)"
+                >
+                  <YdNavIcon :name="item.icon" size="sm" :active="isActiveMenu(item.path)" />
+                  <span class="client-nav__item-label">{{ item.label }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </nav>
       </aside>
       <div v-if="mobileOpen" class="client-overlay" @click="mobileOpen = false" />
@@ -65,12 +93,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { MenuOutlined } from '@ant-design/icons-vue';
+import { MenuOutlined, AppstoreOutlined } from '@ant-design/icons-vue';
 import { useAuthStore } from '@/stores/auth';
 import { useUiPreferencesStore } from '@/stores/uiPreferences';
-import { getAuthToken } from '@/utils/api';
+import { getAuthToken, apiGet } from '@/utils/api';
 import { provideTenantBrand } from '@/composables/useTenantBrand';
-import { getClientMoreShellMenu } from '@/constants/proShellMenus';
+import { getClientShellMenu, CLIENT_PRIMARY_SHELL_PATHS } from '@/constants/proShellMenus';
 import UBrainAssistant from '@/components/UBrainAssistant.vue';
 import { YdNavIcon, YdClientPlanUsageBar } from '@/components/youding';
 import '@/styles/client-experience-2026.scss';
@@ -94,43 +122,105 @@ const showPlanBar = computed(() => Boolean(getAuthToken()) && route.path.startsW
 
 function isActiveMenu(path: string) {
   const p = route.path;
-  if (path === '/client/today') {
-    return p === '/client/today';
+  // 精确优先，避免 /client/product 误亮 /client/product-images
+  const exact = (base: string) => p === base || p.startsWith(`${base}/`);
+  switch (path) {
+    case '/client/today':
+      return p === '/client/today';
+    case '/client/onboarding':
+      return exact('/client/onboarding');
+    case '/client/dashboard':
+      return exact('/client/dashboard');
+    case '/client/inquiries':
+      return p === '/client/inquiries' || p.startsWith('/client/im');
+    case '/client/queues/inquiries':
+      return exact('/client/queues/inquiries');
+    case '/client/acquisition-ops':
+      return exact('/client/acquisition-ops');
+    case '/client/email-campaigns':
+      return exact('/client/email-campaigns');
+    case '/client/site-editor':
+      return exact('/client/site-editor');
+    case '/client/product-images':
+      return exact('/client/product-images');
+    case '/client/video-space':
+      return exact('/client/video-space');
+    case '/client/explore':
+      return exact('/client/explore') || exact('/client/skills') || exact('/client/plugin-market');
+    case '/client/products':
+      return p === '/client/products' || p.startsWith('/client/products/');
+    case '/client/content':
+      return p === '/client/content' || p.startsWith('/client/content/') || p.startsWith('/client/seo');
+    case '/client/distribute':
+      return (
+        exact('/client/distribute')
+        || exact('/client/queues/publish')
+        || exact('/client/video-overseas')
+        || exact('/client/video-studio')
+        || exact('/client/article-to-video')
+      );
+    case '/client/cross-platform':
+      return exact('/client/cross-platform') || exact('/client/engage');
+    case '/client/document-maker':
+    case '/client/queues/fulfillment':
+      return exact('/client/document-maker') || exact('/client/export-quote') || exact('/client/queues/fulfillment');
+    case '/client/tasks':
+      return exact('/client/tasks');
+    case '/client/billing':
+      return exact('/client/billing') || exact('/client/invoices');
+    case '/client/tokens':
+      return exact('/client/tokens');
+    case '/client/settings':
+      return exact('/client/settings') || exact('/client/egress') || exact('/client/plan-gate');
+    case '/client/traffic':
+      return exact('/client/traffic');
+    case '/client/trade-tools':
+      return exact('/client/trade-tools');
+    case '/client/foreign-trade-team':
+      return exact('/client/foreign-trade-team');
+    case '/client/referral':
+      return exact('/client/referral');
+    case '/client/seo':
+      return exact('/client/seo');
+    case '/client/seo-publish':
+      return exact('/client/seo-publish');
+    case '/client/queues/publish':
+      return exact('/client/queues/publish');
+    case '/client/engage':
+      return exact('/client/engage');
+    case '/client/media-factory':
+      return exact('/client/media-factory');
+    case '/client/article-to-video':
+      return exact('/client/article-to-video');
+    case '/client/ai-scenarios':
+      return exact('/client/ai-scenarios');
+    case '/client/video-studio':
+      return exact('/client/video-studio');
+    case '/client/video-overseas':
+      return exact('/client/video-overseas');
+    case '/client/skills':
+      return exact('/client/skills');
+    case '/client/plugin-market':
+      return exact('/client/plugin-market');
+    case '/client/product-candidates':
+      return exact('/client/product-candidates');
+    case '/client/assistant':
+      return exact('/client/assistant');
+    case '/client/copilot':
+      return exact('/client/copilot');
+    case '/client/geo-visibility':
+      return exact('/client/geo-visibility');
+    case '/client/app':
+      return exact('/client/app');
+    case '/client/invoices':
+      return exact('/client/invoices');
+    case '/client/egress':
+      return exact('/client/egress');
+    case '/client/plan-gate':
+      return exact('/client/plan-gate');
+    default:
+      return p === path || p.startsWith(`${path}/`);
   }
-  if (path === '/client/dashboard') {
-    return p === '/client/dashboard' || p === '/client/onboarding';
-  }
-  if (path === '/client/inquiries') {
-    return p.startsWith('/client/inquir') || p.startsWith('/client/im');
-  }
-  if (path === '/client/products') {
-    return (
-      p.startsWith('/client/product')
-      || p.startsWith('/client/content')
-      || p.startsWith('/client/seo')
-      || p.startsWith('/client/article-to-video')
-    );
-  }
-  if (path === '/client/distribute') {
-    return (
-      p.startsWith('/client/distribute')
-      || p.startsWith('/client/cross-platform')
-      || p.startsWith('/client/publish')
-      || p.startsWith('/client/queues/publish')
-      || p.startsWith('/client/video-overseas')
-      || p.startsWith('/client/video-studio')
-    );
-  }
-  if (path === '/client/billing') {
-    return (
-      p.startsWith('/client/billing')
-      || p.startsWith('/client/token')
-      || p.startsWith('/client/invoice')
-      || p.startsWith('/client/egress')
-      || p.startsWith('/client/setting')
-    );
-  }
-  return p === path || p.startsWith(`${path}/`);
 }
 
 interface CategorizedNavItem {
@@ -150,38 +240,36 @@ interface CategorizedNavGroup {
 const categorizedNavGroups: CategorizedNavGroup[] = [
   {
     key: 'overview',
-    title: '经营中枢',
+    title: '今天先干这些',
     items: [
       { label: '今日三步', path: '/client/today', icon: 'ThunderboltOutlined', highlight: true },
-      { label: '经营概览', path: '/client/dashboard', icon: 'DashboardOutlined' },
       { label: '开通向导', path: '/client/onboarding', icon: 'CarryOutOutlined' },
+      { label: '经营概览', path: '/client/dashboard', icon: 'DashboardOutlined' },
+    ],
+  },
+  {
+    key: 'leads',
+    title: '找客户',
+    items: [
+      { label: '询盘管理', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
+      { label: '询盘队列', path: '/client/queues/inquiries', icon: 'OrderedListOutlined' },
+      { label: '获客作战台', path: '/client/acquisition-ops', icon: 'AimOutlined', highlight: true },
+      { label: '邮件开发', path: '/client/email-campaigns', icon: 'MailOutlined' },
     ],
   },
   {
     key: 'site',
-    title: '独立站与多模态空间',
+    title: '独立站与素材',
     items: [
       { label: '可视化建站', path: '/client/site-editor', icon: 'EditOutlined', highlight: true, badge: '核心' },
-      { label: '模板社区', path: '/client/explore', icon: 'AppstoreOutlined', badge: 'Meoo' },
-      { label: '专属技能', path: '/client/skills', icon: 'ThunderboltOutlined', badge: '新' },
-      { label: '产品图片空间', path: '/client/product-images', icon: 'PictureOutlined' },
-      { label: '视频空间', path: '/client/video-space', icon: 'VideoCameraOutlined' },
-    ],
-  },
-
-  {
-    key: 'leads',
-    title: '拓客与商机',
-    items: [
-      { label: '询盘管理', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
-      { label: '询盘队列', path: '/client/queues/inquiries', icon: 'OrderedListOutlined' },
-      { label: '邮件营销', path: '/client/email-campaigns', icon: 'MailOutlined' },
-      { label: '外贸工具指南', path: '/client/trade-tools', icon: 'QuestionCircleOutlined' },
+      { label: '产品图片', path: '/client/product-images', icon: 'PictureOutlined' },
+      { label: '视频素材', path: '/client/video-space', icon: 'VideoCameraOutlined' },
+      { label: '模板与技能', path: '/client/explore', icon: 'AppstoreOutlined' },
     ],
   },
   {
     key: 'catalog',
-    title: '发品与分发',
+    title: '发品与推广',
     items: [
       { label: '产品管理', path: '/client/products', icon: 'ShoppingOutlined' },
       { label: '内容管理', path: '/client/content', icon: 'FileOutlined' },
@@ -191,28 +279,76 @@ const categorizedNavGroups: CategorizedNavGroup[] = [
   },
   {
     key: 'operations',
-    title: '履约与账户',
+    title: '成交与账户',
     items: [
-      { label: '套餐与续费', path: '/client/billing', icon: 'AccountBookOutlined' },
-      { label: 'AI 流量充值', path: '/client/tokens', icon: 'ThunderboltOutlined' },
-      { label: '履约队列', path: '/client/queues/fulfillment', icon: 'CarryOutOutlined' },
+      { label: '制单中心', path: '/client/document-maker', icon: 'FileTextOutlined', highlight: true },
+      { label: '履约队列', path: '/client/queues/fulfillment', icon: 'CarryOutOutlined', highlight: true },
+      { label: '我的任务', path: '/client/tasks', icon: 'NodeIndexOutlined' },
+      { label: '套餐续费', path: '/client/billing', icon: 'AccountBookOutlined' },
+      { label: 'AI 用量充值', path: '/client/tokens', icon: 'ThunderboltOutlined' },
       { label: '系统设置', path: '/client/settings', icon: 'SettingOutlined' },
-    ],
-  },
-  {
-    key: 'goodjob',
-    title: '外贸履约',
-    items: [
-      { label: 'Hermes 任务', path: '/client/tasks', icon: 'NodeIndexOutlined' },
     ],
   },
 ];
 
+/** 开通向导完成后：从顶栏隐藏，收进「系统设置」（设置页内保留入口） */
+const onboardingCompleted = ref(false);
+
+const visibleNavGroups = computed<CategorizedNavGroup[]>(() =>
+  categorizedNavGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) => !(item.path === '/client/onboarding' && onboardingCompleted.value),
+      ),
+    }))
+    .filter((group) => group.items.length > 0),
+);
+
+const primaryPathSet = new Set<string>(CLIENT_PRIMARY_SHELL_PATHS);
+
+const moreNavGroups = computed<CategorizedNavGroup[]>(() => {
+  const groups: CategorizedNavGroup[] = [];
+  for (const group of getClientShellMenu()) {
+    const items: CategorizedNavItem[] = [];
+    const seen = new Set<string>();
+    for (const child of group.children) {
+      if (primaryPathSet.has(child.path) || seen.has(child.path)) continue;
+      seen.add(child.path);
+      items.push({
+        label: child.title,
+        path: child.path,
+        icon: child.icon,
+        highlight: false,
+      });
+    }
+    if (items.length > 0) {
+      groups.push({ key: `more-${group.title}`, title: group.title, items });
+    }
+  }
+  return groups;
+});
+
+async function loadOnboardingStatus() {
+  if (!getAuthToken()) return;
+  try {
+    const status = await apiGet<{
+      wizard_completed?: boolean;
+      autopilot_completed?: boolean;
+    }>('/tenants/self/onboarding-status');
+    onboardingCompleted.value = Boolean(
+      status?.wizard_completed || status?.autopilot_completed,
+    );
+  } catch {
+    /* 接口不可用（未登录/无权限）时保持显示，避免误隐藏 */
+  }
+}
+
 const primaryMenuItems = [
-  { label: '今日三步', path: '/client/today', icon: 'ThunderboltOutlined' },
-  { label: '获客', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
+  { label: '今日', path: '/client/today', icon: 'ThunderboltOutlined' },
+  { label: '找客户', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
   { label: '发品', path: '/client/products', icon: 'SendOutlined' },
-  { label: '视频分发', path: '/client/distribute', icon: 'VideoCameraOutlined' },
+  { label: '履约', path: '/client/queues/fulfillment', icon: 'CarryOutOutlined' },
   { label: '账户', path: '/client/billing', icon: 'AccountBookOutlined' },
 ] as const;
 
@@ -235,6 +371,7 @@ onMounted(async () => {
     uiPrefs.setAccentRole('client');
   }
   await tenantBrand.load();
+  void loadOnboardingStatus();
 });
 </script>
 
@@ -276,7 +413,7 @@ onMounted(async () => {
   border-radius: var(--uj-radius-sm);
   background: linear-gradient(135deg, var(--uj-brand), var(--uj-brand-deep));
   color: #fff;
-  font-weight: 700;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,7 +421,7 @@ onMounted(async () => {
 }
 .client-header__name {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .client-header__tag {
   font-size: 12px;
@@ -329,7 +466,7 @@ onMounted(async () => {
 .client-nav__group-title {
   padding: 0 12px 6px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #94a3b8;
@@ -364,16 +501,16 @@ onMounted(async () => {
 .client-nav__item--active {
   background: var(--uj-brand-muted, rgba(74, 155, 140, 0.12));
   color: var(--uj-brand-deep, #2a6b60) !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 .client-nav__item--highlight:not(.client-nav__item--active) {
   color: #1e293b;
-  font-weight: 600;
+  font-weight: 500;
 }
 .client-nav__badge {
   padding: 1px 6px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 500;
   border-radius: 9999px;
   background: #e0f2fe;
   color: #0369a1;
@@ -382,6 +519,45 @@ onMounted(async () => {
 .client-nav__item--active .client-nav__badge {
   background: #d8f2e9;
   color: #2a6b60;
+}
+.client-nav__more {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--uj-border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.client-nav__more-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--uj-radius-md, 8px);
+  background: transparent;
+  color: var(--uj-text-secondary, #475569);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+.client-nav__more-toggle:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+.client-nav__more-caret {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--uj-text-muted);
+}
+.client-nav__more-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
 }
 .client-content {
   flex: 1;

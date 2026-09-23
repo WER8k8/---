@@ -179,9 +179,17 @@ def generate_im_link(channel_type: str, account_id: str) -> str:
         return f"https://line.me/ti/p/{account_id}"
     if channel_type == "zalo":
         return f"https://zalo.me/{account_id}"
+    if channel_type == "wechat":
+        return f"weixin://dl/chat?{account_id}" if account_id else "#inquiry-form"
+    if channel_type == "qq":
+        return f"tencent://message/?uin={account_id}" if account_id else "#inquiry-form"
+    if channel_type == "phone":
+        return f"tel:{account_id}" if account_id else "#inquiry-form"
     if channel_type == "form":
         return "#inquiry-form"
-    return "#contact"
+    if channel_type == "live_chat":
+        return "#inquiry-form"
+    return "#inquiry-form"
 
 
 @dataclass
@@ -262,10 +270,47 @@ def resolve_im_channels(
         .all()
     )
     channels = [_routing_to_resolved(r, lang=lang, cc=cc, merchant_id=merchant_id) for r in rows]
-    # 中国大陆：仅微信 / QQ / 电话，不展示境外 IM 与表单兜底
+    # 中国大陆：优先微信 / QQ / 电话；无可用渠道时仍给表单/电话兜底，禁止空列表
     if cc == "CN":
         allowed = frozenset({"wechat", "qq", "phone"})
-        return [c for c in channels if c.channel_type in allowed]
+        cn_channels = [c for c in channels if c.channel_type in allowed]
+        if cn_channels:
+            if not any(c.channel_type == "form" for c in cn_channels):
+                cn_channels.append(
+                    ResolvedIMChannel(
+                        channel_type="form",
+                        account_id="",
+                        prefilled_text="",
+                        im_link="#inquiry-form",
+                        display_text=localized_channel_label("form", lang),
+                        language=lang,
+                        country_code=cc,
+                        merchant_id=merchant_id,
+                    )
+                )
+            return cn_channels
+        return [
+            ResolvedIMChannel(
+                channel_type="phone",
+                account_id="",
+                prefilled_text="",
+                im_link="#inquiry-form",
+                display_text=localized_channel_label("form", lang),
+                language=lang,
+                country_code=cc,
+                merchant_id=merchant_id,
+            ),
+            ResolvedIMChannel(
+                channel_type="form",
+                account_id="",
+                prefilled_text="",
+                im_link="#inquiry-form",
+                display_text=localized_channel_label("form", lang),
+                language=lang,
+                country_code=cc,
+                merchant_id=merchant_id,
+            ),
+        ]
     seen = {c.channel_type for c in channels}
     if not channels:
         channels.append(
@@ -273,7 +318,7 @@ def resolve_im_channels(
                 channel_type="live_chat",
                 account_id="",
                 prefilled_text="Hello! How can I help you?",
-                im_link="#contact",
+                im_link="#inquiry-form",
                 display_text=localized_channel_label("live_chat", lang),
                 language=lang,
                 country_code=cc,

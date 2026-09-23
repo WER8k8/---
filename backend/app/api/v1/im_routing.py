@@ -138,12 +138,12 @@ def get_im_channel_by_country(
         MerchantIMRouting.is_active == True
     ).first()
     if not routing:
-        # 返回默认配置（Live Chat）
+        # 返回默认配置（Live Chat）— 落到表单，不回落 #contact 死链
         return IMChannelResponse(
             channel_type="live_chat",
             account_id="",
             prefilled_text="Hello! How can I help you?",
-            im_link="#contact",
+            im_link="#inquiry-form",
             display_text="Live Chat"
         )
     
@@ -169,12 +169,18 @@ def generate_im_link(channel_type: str, account_id: str) -> str:
         return f"https://line.me/ti/p/{account_id}"
     elif channel_type == "zalo":
         return f"https://zalo.me/{account_id}"
+    elif channel_type == "wechat":
+        return f"weixin://dl/chat?{account_id}" if account_id else "#inquiry-form"
+    elif channel_type == "qq":
+        return f"tencent://message/?uin={account_id}" if account_id else "#inquiry-form"
+    elif channel_type == "phone":
+        return f"tel:{account_id}" if account_id else "#inquiry-form"
     elif channel_type == "live_chat":
-        return "#contact"
+        return "#inquiry-form"
     elif channel_type == "form":
         return "#inquiry-form"
     else:
-        return "#"
+        return "#inquiry-form"
 
 
 def get_display_text(channel_type: str, country_code: str) -> str:
@@ -184,10 +190,12 @@ def get_display_text(channel_type: str, country_code: str) -> str:
         "telegram": "Chat on Telegram",
         "line": "Chat on LINE",
         "zalo": "Chat on Zalo",
+        "wechat": "微信咨询",
+        "qq": "QQ 咨询",
+        "phone": "电话咨询",
         "live_chat": "Live Chat",
         "form": "Send Inquiry"
     }
-    # 可以根据country_code返回本地语言文本（未来扩展）
     return channel_names.get(channel_type, "Contact Us")
 
 

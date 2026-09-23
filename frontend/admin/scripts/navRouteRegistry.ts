@@ -2,9 +2,9 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 /**
- * 导航路由注册表 - 单一数据源
- * 所有导航菜单项的 key 到路由路径映射都在此定义
- * 路由壳统一由 layout/index.vue + YdProSidebar.vue 消费，保持单一映射配置
+ * 导航路由注册表 — lint-only（2026-09-23 审计 P1-4）
+ * 运行时零引用：仅 scripts/check-nav-consistency.mjs 读取做菜单/路由一致性检查。
+ * 禁止再当作运行时 SSOT；真渲染源见 ClientShellLayout.categorizedNavGroups 与 proShellMenus。
  */
 
 export interface NavRoute {
