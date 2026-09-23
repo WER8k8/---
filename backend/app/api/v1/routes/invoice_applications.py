@@ -52,7 +52,7 @@ class PlatformConfigUpdate(BaseModel):
 
 
 class ReviewBody(BaseModel):
-    action: str = Field(..., pattern="^(approve|reject)$")
+    action: str = Field(..., pattern="^(approve|reject|revoke)$")
     reject_reason: Optional[str] = Field(None, max_length=500)
     admin_note: Optional[str] = Field(None, max_length=500)
 
@@ -61,6 +61,11 @@ class MarkIssuedBody(BaseModel):
     invoice_code: str = Field(..., min_length=4, max_length=32)
     invoice_number: str = Field(..., min_length=4, max_length=32)
     invoice_file_note: Optional[str] = Field(None, max_length=500)
+
+
+class VoidIssuedBody(BaseModel):
+    void_reason: str = Field(..., min_length=2, max_length=500)
+    admin_note: Optional[str] = Field(None, max_length=500)
 
 
 def _finance_only(user: User):
@@ -357,7 +362,12 @@ def finance_review_application(
         )
     except InvoiceApplicationError as exc:
         return error_response(400, str(exc))
-    return success_response(data=svc.to_dict(row), message="审核完成")
+    msg_map = {
+        "approve": "审核通过",
+        "reject": "已驳回",
+        "revoke": "已撤销",
+    }
+    return success_response(data=svc.to_dict(row), message=msg_map.get(body.action, "审核完成"))
 
 
 @finance_router.post("/{application_id}/mark-issued")
@@ -434,3 +444,42 @@ def finance_einvoice_provider_status(
             "configured": p.is_configured(),
         }
     )
+
+
+@finance_router.get("/{application_id}")
+def finance_get_application(
+    application_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """开票申请详情（含合法下一状态）。"""
+    if err := _finance_only(current_user):
+        return err
+    svc = InvoiceApplicationService(db)
+    row = svc.get_application(application_id)
+    if not row:
+        return error_response(404, "申请不存在")
+    return success_response(data=svc.to_dict(row))
+
+
+@finance_router.post("/{application_id}/void")
+def finance_void_application(
+    application_id: str,
+    body: VoidIssuedBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """已开票作废/红冲占位（issued → void；正式红冲须税控办理后登记）。"""
+    if err := _finance_only(current_user):
+        return err
+    svc = InvoiceApplicationService(db)
+    try:
+        row = svc.void_issued(
+            application_id,
+            current_user,
+            void_reason=body.void_reason,
+            admin_note=body.admin_note,
+        )
+    except InvoiceApplicationError as exc:
+        return error_response(400, str(exc))
+    return success_response(data=svc.to_dict(row), message="已登记作废/红冲占位")

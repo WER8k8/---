@@ -328,6 +328,9 @@ _ORDER_TRADE_COLS = (
     ("shipping_marks", "TEXT"),
     ("container_no", "VARCHAR(50)"),
     ("bl_number", "VARCHAR(50)"),
+    ("inquiry_id", "VARCHAR(36)"),
+    ("customer_name", "VARCHAR(200)"),
+    ("product_summary", "VARCHAR(300)"),
 )
 
 
@@ -356,6 +359,48 @@ def _ensure_order_trade_columns() -> None:
         logger.warning("Could not ensure order trade columns: %s", exc)
 
 
+_COMMISSION_SETTLEMENT_COLS = (
+    ("reject_reason", "TEXT"),
+    ("updated_at", "TIMESTAMP"),
+)
+
+_PAYMENT_ORDER_STATUS_NOTE = True
+
+
+def _ensure_payment_ops_schema() -> None:
+    """补齐佣金驳回字段与 payment_refunds 表（未跑对应迁移时）。"""
+    import re
+    try:
+        insp = inspect(engine)
+        dialect = engine.dialect.name
+        if "agent_commission_settlements" in insp.get_table_names():
+            existing = {c["name"] for c in insp.get_columns("agent_commission_settlements")}
+            with engine.begin() as conn:
+                preparer = conn.engine.dialect.identifier_preparer
+                for col, col_type in _COMMISSION_SETTLEMENT_COLS:
+                    if col in existing:
+                        continue
+                    if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", col):
+                        continue
+                    safe_col = preparer.quote(col)
+                    if dialect == "postgresql":
+                        conn.execute(
+                            text(
+                                f"ALTER TABLE agent_commission_settlements ADD COLUMN IF NOT EXISTS {safe_col} {col_type}"
+                            )
+                        )
+                    else:
+                        conn.execute(
+                            text(f"ALTER TABLE agent_commission_settlements ADD COLUMN {safe_col} {col_type}")
+                        )
+        if "payment_refunds" not in insp.get_table_names():
+            import app.models  # noqa: F401
+            Base.metadata.create_all(bind=engine, tables=[Base.metadata.tables["payment_refunds"]])
+        logger.info("Ensured payment ops schema patches")
+    except Exception as exc:
+        logger.warning("Could not ensure payment ops schema: %s", exc)
+
+
 def init_db():
     """初始化数据库表结构（保留 in session 层以维持向后兼容）"""
     import app.models  # noqa: F401 — 注册全部 ORM（含 SiteAnalyticsEvent）
@@ -372,3 +417,4 @@ def init_db():
     _ensure_seo_metadata_columns()
     _ensure_ai_model_sort_order_column()
     _ensure_order_trade_columns()
+    _ensure_payment_ops_schema()

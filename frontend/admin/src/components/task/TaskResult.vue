@@ -207,9 +207,72 @@ function renderMarkdown(content: string): string {
   return rendered;
 }
 
+function buildMarkdown(): string {
+  const r = props.result;
+  const lines: string[] = [];
+  lines.push(`# 任务结果 · ${resultTypeText.value}`);
+  if (r.summary) {
+    lines.push('');
+    lines.push('## 结果摘要');
+    lines.push(r.summary);
+  }
+  if (props.executionTime) {
+    lines.push('');
+    lines.push(`执行时间: ${formatExecutionTime(props.executionTime)}`);
+  }
+  lines.push('');
+  lines.push('## 详细结果');
+  if (r.type === 'email_draft' && r.data) {
+    lines.push(`- 收件人: ${r.data.to ?? ''}`);
+    lines.push(`- 主题: ${r.data.subject ?? ''}`);
+    lines.push('');
+    lines.push(String(r.data.body ?? ''));
+  } else if (r.type === 'research_report' && r.data?.content) {
+    lines.push(String(r.data.content));
+  } else if (r.type === 'analysis' && r.data) {
+    lines.push(String(r.data.overview ?? ''));
+    lines.push('');
+    lines.push(String(r.data.details ?? ''));
+    lines.push('');
+    lines.push(String(r.data.recommendations ?? ''));
+  } else if (r.type === 'customer_list' && Array.isArray(r.data)) {
+    lines.push('| 客户名称 | 公司 | 邮箱 | 电话 | 意向度 |');
+    lines.push('| --- | --- | --- | --- | --- |');
+    for (const row of r.data) {
+      lines.push(`| ${row?.name ?? ''} | ${row?.company ?? ''} | ${row?.email ?? ''} | ${row?.phone ?? ''} | ${row?.score ?? ''} |`);
+    }
+  } else {
+    lines.push('```json');
+    lines.push(JSON.stringify(r.data, null, 2));
+    lines.push('```');
+  }
+  return lines.join('\n');
+}
+
+function buildShareSummary(): string {
+  const r = props.result;
+  const parts = [`【任务结果】${resultTypeText.value}`];
+  if (r.summary) parts.push(r.summary);
+  if (props.executionTime) parts.push(`耗时 ${formatExecutionTime(props.executionTime)}`);
+  return parts.join('\n');
+}
+
+function downloadFile(filename: string, content: string, mime: string) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function handleExport() {
+  const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+  downloadFile(`task-result-${stamp}.md`, buildMarkdown(), 'text/markdown;charset=utf-8');
+  downloadFile(`task-result-${stamp}.json`, JSON.stringify(props.result, null, 2), 'application/json;charset=utf-8');
+  message.success('已导出 Markdown 与 JSON 文件');
   emit('export');
-  message.info('导出功能开发中...');
 }
 
 function handleCopy() {
@@ -219,9 +282,15 @@ function handleCopy() {
   emit('copy');
 }
 
-function handleShare() {
-  emit('share');
-  message.info('分享功能开发中...');
+async function handleShare() {
+  const summary = buildShareSummary();
+  try {
+    await navigator.clipboard.writeText(summary);
+    message.success('分享摘要已复制到剪贴板');
+    emit('share');
+  } catch {
+    message.error('复制失败，请手动选择文本复制');
+  }
 }
 </script>
 
@@ -245,7 +314,7 @@ function handleShare() {
 .result-title {
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 
@@ -264,7 +333,7 @@ function handleShare() {
 .result-content h4 {
   margin: 0 0 12px 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 
@@ -341,7 +410,7 @@ function handleShare() {
 .analysis-result :deep(h3) {
   margin-top: 16px;
   margin-bottom: 8px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 

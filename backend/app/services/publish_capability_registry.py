@@ -287,7 +287,15 @@ def video_publish_capability(
             "worker_chain": chain,
         }
 
+    # 未接入真发 Worker 的平台一律不可选，禁止「查无此文」假发布
     if name in VIDEO_LIVE_PLATFORM_NAMES or key == "youtube":
+        if not any_publish_worker_ready():
+            return {
+                "tier": "blocked",
+                "selectable": False,
+                "label": "未接入真发",
+                "reason": "YouTube 直发 Worker 未就绪，不可选",
+            }
         return {
             "tier": "live_video",
             "selectable": True,

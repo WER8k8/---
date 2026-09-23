@@ -181,19 +181,78 @@ def _build_approve_history(
     reviewer: str | None,
     reason: str | None,
 ) -> dict[str, Any]:
-    """组装审核通过的历史记录。"""
-    return {
-        "action": "approved",
+    """组装审核通过的历史记录；排队失败时标 partially_failed 并保留可重试载荷。"""
+    exec_status = (publish_exec or {}).get("status")
+    plan_mode = plan.get("mode")
+    failed = exec_status == "failed" or plan_mode in ("publish_execute_failed", "plan_build_failed") or bool(plan.get("error"))
+    action = "partially_failed" if failed else "approved"
+    history = {
+        "action": action,
         "sku": item.get("sku"),
         "locale": item.get("locale"),
         "publish_plan": plan,
-        "publish_status": (publish_exec or {}).get("status"),
+        "publish_status": exec_status,
         "task_ids": (publish_exec or {}).get("task_ids"),
         "task_count": (publish_exec or {}).get("count"),
         "content_master_id": (publish_exec or {}).get("content_master_id"),
         "channels": item.get("publish_channels"),
         "reviewer": reviewer,
         "note": (reason or "")[:500] or None,
+    }
+    if failed:
+        history["error"] = (publish_exec or {}).get("error") or plan.get("error") or "publish queue failed"
+        # 保留原 item 以便 retry_failed_publish，禁止「已通过审核但发布排队失败」后无下文
+        history["retry_payload"] = {
+            "item": item,
+            "reviewer": reviewer,
+            "content_master_id": (publish_exec or {}).get("content_master_id"),
+        }
+    return history
+
+
+def retry_failed_publish(
+    *,
+    history_index: int = 0,
+    reviewer: str | None = None,
+    db: Session | None = None,
+) -> dict[str, Any]:
+    """对 partially_failed 的审核记录重试发布排队。"""
+    rows = get_publish_review_history(limit=100)
+    idx = int(history_index)
+    if idx < 0 or idx >= len(rows):
+        return {"ok": False, "error": "history_index_out_of_range", "total": len(rows)}
+    entry = rows[idx]
+    if entry.get("action") != "partially_failed":
+        return {"ok": False, "error": "not_partially_failed", "action": entry.get("action")}
+    payload = entry.get("retry_payload") or {}
+    item = payload.get("item") or {}
+    if not item:
+        return {"ok": False, "error": "missing_retry_payload"}
+    who = reviewer or payload.get("reviewer")
+    plan, publish_exec = _build_publish_plan(db, item, reviewer=who)
+    failed = (publish_exec or {}).get("status") == "failed" or plan.get("mode") in (
+        "publish_execute_failed",
+        "plan_build_failed",
+    )
+    new_entry = _build_approve_history(
+        item,
+        plan=plan,
+        publish_exec=publish_exec,
+        reviewer=who,
+        reason=entry.get("note"),
+    )
+    new_entry["retry_of_index"] = idx
+    new_entry["retry_of_sku"] = entry.get("sku")
+    if not failed and new_entry.get("action") == "partially_failed":
+        new_entry["action"] = "approved"
+        new_entry.pop("retry_payload", None)
+    _append_history(new_entry)
+    return {
+        "ok": not failed,
+        "action": new_entry.get("action"),
+        "publish_plan": plan,
+        "publish_execution": publish_exec,
+        "history": new_entry,
     }
 
 

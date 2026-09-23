@@ -13,9 +13,11 @@ from sqlalchemy.orm import Session
 
 from app.models.invoice_application import (
     INVOICE_APP_STATUSES,
+    INVOICE_APP_TRANSITIONS,
     InvoiceApplication,
     PlatformInvoiceConfig,
     TenantInvoiceProfile,
+    invoice_can_transition,
 )
 from app.models.payment import PaymentOrder
 from app.models.tenant import Tenant, UserTenant
@@ -402,15 +404,31 @@ class InvoiceApplicationService:
         row = self.db.query(InvoiceApplication).filter(InvoiceApplication.id == app_id).first()
         if not row:
             raise InvoiceApplicationError("申请不存在")
-        if row.status != "pending_review":
-            raise InvoiceApplicationError("仅待审核申请可操作")
 
         if action == "approve":
+            if row.status != "pending_review":
+                raise InvoiceApplicationError("仅待审核申请可审核通过")
+            if not invoice_can_transition(row.status, "approved"):
+                raise InvoiceApplicationError("状态迁移非法")
             row.status = "approved"
         elif action == "reject":
+            if row.status != "pending_review":
+                raise InvoiceApplicationError("仅待审核申请可驳回")
             if not (reject_reason or "").strip():
                 raise InvoiceApplicationError("驳回须填写原因")
+            if not invoice_can_transition(row.status, "rejected"):
+                raise InvoiceApplicationError("状态迁移非法")
             row.status = "rejected"
+            row.reject_reason = reject_reason.strip()[:500]
+        elif action == "revoke":
+            # 审核通过后、开具前撤销（approved|issuing → revoked）
+            if row.status not in ("approved", "issuing"):
+                raise InvoiceApplicationError("仅已通过/开具中的申请可撤销")
+            if not invoice_can_transition(row.status, "revoked"):
+                raise InvoiceApplicationError("状态迁移非法")
+            if not (reject_reason or "").strip():
+                raise InvoiceApplicationError("撤销须填写原因")
+            row.status = "revoked"
             row.reject_reason = reject_reason.strip()[:500]
         else:
             raise InvoiceApplicationError("无效审核动作")
@@ -422,6 +440,42 @@ class InvoiceApplicationService:
         self.db.commit()
         self.db.refresh(row)
         return row
+
+    def void_issued(
+        self,
+        app_id: str,
+        reviewer: User,
+        *,
+        void_reason: str,
+        admin_note: Optional[str] = None,
+    ) -> InvoiceApplication:
+        """issued 终态作废/红冲占位（issued → void）。正式红冲须在税控系统办理后登记。"""
+        row = self.db.query(InvoiceApplication).filter(InvoiceApplication.id == app_id).first()
+        if not row:
+            raise InvoiceApplicationError("申请不存在")
+        if row.status != "issued":
+            raise InvoiceApplicationError("仅已开票申请可作废/红冲")
+        if not invoice_can_transition(row.status, "void"):
+            raise InvoiceApplicationError("状态迁移非法")
+        if not (void_reason or "").strip():
+            raise InvoiceApplicationError("作废/红冲须填写原因")
+        row.status = "void"
+        row.reject_reason = void_reason.strip()[:500]
+        if admin_note:
+            row.admin_note = admin_note.strip()[:500]
+        row.reviewed_by = str(reviewer.id)
+        row.reviewed_at = datetime.now(timezone.utc)
+        self.db.commit()
+        self.db.refresh(row)
+        return row
+
+    def get_application(self, app_id: str) -> Optional[InvoiceApplication]:
+        """按 ID 取申请详情。"""
+        return (
+            self.db.query(InvoiceApplication)
+            .filter(InvoiceApplication.id == app_id)
+            .first()
+        )
 
     def mark_issued(
         self,
@@ -454,6 +508,8 @@ class InvoiceApplicationService:
         if not code or not number:
             raise InvoiceApplicationError("须填写发票代码与发票号码")
 
+        if not invoice_can_transition(row.status, "issued"):
+            raise InvoiceApplicationError("状态迁移非法")
         row.status = "issued"
         row.invoice_code = code[:32]
         row.invoice_number = number[:32]
@@ -497,6 +553,8 @@ class InvoiceApplicationService:
             raise InvoiceApplicationError(result.message or "电子开票失败")
 
         if not result.invoice_code or not result.invoice_number:
+            if not invoice_can_transition(row.status, "issuing"):
+                raise InvoiceApplicationError("状态迁移非法")
             row.status = "issuing"
             row.admin_note = (result.message or "Provider 受理中")[:500]
             self.db.commit()
@@ -538,6 +596,9 @@ class InvoiceApplicationService:
             "recipient_email": row.recipient_email,
             "status": row.status,
             "reject_reason": row.reject_reason,
+            "admin_note": row.admin_note,
+            "reviewed_by": str(row.reviewed_by) if row.reviewed_by else None,
+            "allowed_next": sorted(INVOICE_APP_TRANSITIONS.get(row.status or "", frozenset())),
             "customer_note": row.customer_note,
             "invoice_code": row.invoice_code,
             "invoice_number": row.invoice_number,

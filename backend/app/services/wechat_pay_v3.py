@@ -52,8 +52,11 @@ class WeChatPayV3Config:
 
 def payment_mock_allowed() -> bool:
     """payment_mock_allowed。
-    :return: 返回处理结果。
+
+    生产环境强制拒绝 mock（即使误配 PAYMENT_ALLOW_MOCK=1），禁止假支付到账。
     """
+    if (os.getenv("ENVIRONMENT", "") or "").strip().lower() == "production":
+        return False
     default = "0" if os.getenv("ENVIRONMENT", "").lower() == "production" else "1"
     return os.getenv("PAYMENT_ALLOW_MOCK", default).lower() in ("1", "true", "yes")
 

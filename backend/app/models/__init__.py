@@ -47,7 +47,13 @@ from app.models.news import NewsArticle, NewsCategory
 from app.models.notification import Notification
 from app.models.product import Category, Product, ProductDocument
 from app.models.tenant import Tenant, TenantInvoice, TenantPlan, TenantSubscription, UserTenant
-from app.models.payment import PaymentChannel, PaymentOpsAudit, PaymentOrder, PaymentCompensationTask
+from app.models.payment import (
+    PaymentChannel,
+    PaymentCompensationTask,
+    PaymentOpsAudit,
+    PaymentOrder,
+    PaymentRefund,
+)
 from app.models.referral import ReferralCode, ReferralRecord
 from app.models.region import (City, CombinatorialRule, District,
                                GeneratedKeyword, GroupKeyword, IndustryKeyword,

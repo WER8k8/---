@@ -9,7 +9,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, T
 
 from app.core.database import UUID_TYPE, Base
 
-# pending_review → approved → issuing → issued | rejected | cancelled
+# 状态词表（非迁移表）
 INVOICE_APP_STATUSES = frozenset(
     {
         "pending_review",
@@ -18,8 +18,31 @@ INVOICE_APP_STATUSES = frozenset(
         "issuing",
         "issued",
         "cancelled",
+        "revoked",
+        "void",
     }
 )
+
+# 有向迁移：from → 允许的 to（禁止 frozenset 无序边表）
+# pending_review → approved | rejected | cancelled
+# approved → issuing | issued | revoked | cancelled
+# issuing → issued | revoked
+# issued → void（红冲/作废占位，终态）
+INVOICE_APP_TRANSITIONS: dict[str, frozenset[str]] = {
+    "pending_review": frozenset({"approved", "rejected", "cancelled"}),
+    "approved": frozenset({"issuing", "issued", "revoked", "cancelled"}),
+    "issuing": frozenset({"issued", "revoked"}),
+    "issued": frozenset({"void"}),
+    "rejected": frozenset(),
+    "cancelled": frozenset(),
+    "revoked": frozenset(),
+    "void": frozenset(),
+}
+
+
+def invoice_can_transition(from_status: str, to_status: str) -> bool:
+    """有向状态机判定：仅允许 INVOICE_APP_TRANSITIONS[from] → to。"""
+    return to_status in INVOICE_APP_TRANSITIONS.get(from_status, frozenset())
 
 
 class PlatformInvoiceConfig(Base):

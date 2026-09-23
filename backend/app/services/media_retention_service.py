@@ -134,12 +134,17 @@ def record_handoff(
         raise ValueError(f"handoff 动作无效，支持: {', '.join(sorted(VALID_HANDOFF_ACTIONS))}")
     if task.file_purged or not task.result_path:
         raise ValueError("成品文件已过期或不存在，无法登记 handoff")
+    cleaned_url = (external_url or "").strip()
+    if action == HANDOFF_PUBLISHED:
+        # 登记发布强制可核验 URL，禁止无链接假成功
+        if not cleaned_url.lower().startswith(("http://", "https://")):
+            raise ValueError("登记发布必须填写可核验的 http(s) 发布链接")
 
     handoff_hours = int(getattr(settings, "MEDIA_HANDOFF_DELETE_HOURS", 1) or 1)
     now = _utcnow()
     task.handoff_type = action
     task.handoff_at = now
-    task.handoff_external_url = (external_url or "").strip() or None
+    task.handoff_external_url = cleaned_url or None
     task.purge_at = now + timedelta(hours=handoff_hours)
     task.updated_at = now
     db.add(task)

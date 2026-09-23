@@ -760,6 +760,22 @@ export const v2rayAPI = {
     api.post(`/super-admin/v2ray/subscriptions/${id}/refresh`),
   deleteSubscription: (id: string | number) =>
     api.delete(`/super-admin/v2ray/subscriptions/${id}`),
+  listServers: () => api.get('/super-admin/v2ray/servers'),
+  createServer: (data: Record<string, unknown>) =>
+    api.post('/super-admin/v2ray/servers', data),
+  updateServer: (id: string | number, data: Record<string, unknown>) =>
+    api.put(`/super-admin/v2ray/servers/${id}`, data),
+  deleteServer: (id: string | number) =>
+    api.delete(`/super-admin/v2ray/servers/${id}`),
+  speedTestServer: (id: string | number) =>
+    api.get(`/super-admin/v2ray/servers/${id}/speed-test`),
+  listRouting: () => api.get('/super-admin/v2ray/routing'),
+  createRouting: (data: Record<string, unknown>) =>
+    api.post('/super-admin/v2ray/routing', data),
+  updateRouting: (id: string | number, data: Record<string, unknown>) =>
+    api.put(`/super-admin/v2ray/routing/${id}`, data),
+  deleteRouting: (id: string | number) =>
+    api.delete(`/super-admin/v2ray/routing/${id}`),
 };
 
 export * from './ubrain/conversation';

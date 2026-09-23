@@ -6,7 +6,7 @@ import { ref, computed, watch } from 'vue';
 import { allCapabilityIds } from '@/constants/workbenchCapabilityRegistry';
 import { decodeJwtPayload, jwtRoleFromPayload, mapJwtRoleToAgentLevelId } from '@/utils/jwtPayload';
 import { isPlatformAdminFromToken, readStoredAccessToken } from '@/utils/sessionAuth';
-import { apiGet, apiPost } from '@/utils/api';
+import { apiGet, apiPost, apiPut } from '@/utils/api';
 
 export const AGENT_LEVEL_IDS = ['L1', 'L2', 'L3', 'L4', 'L5'] as const;
 export type AgentLevelId = (typeof AGENT_LEVEL_IDS)[number];
@@ -88,18 +88,87 @@ export const useAgentCapabilitiesStore = defineStore('agentCapabilities', () => 
     return new Set(list);
   });
 
-  function persistGrants() {
-    // 缓存到 localStorage（降级方案）
+  const BACKEND_KEY = 'admin_agent_capability_grants';
+  const saveState = ref<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const saveError = ref('');
+  const lastSavedAt = ref('');
+  let backendConfigId: string | null = null;
+  let persistTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function cacheGrantsLocal() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(LS_GRANTS, JSON.stringify(grants.value));
     }
-    // 异步同步到后端 API（主数据源）
-    apiPost('/super-admin/permissions/roles', { grants: grants.value }).catch(() => {});
   }
 
-  // 深度监听 grants 变化，同步到 localStorage 和后端 API
-  // TODO: 添加 debounce(300) 减少 API 调用频率
-  watch(grants, persistGrants, { deep: true });
+  async function loadGrantsFromBackend(): Promise<boolean> {
+    try {
+      const data = await apiGet<{ id?: string; value?: string }>(
+        `/system-config/by-key/${BACKEND_KEY}`,
+      );
+      if (data?.id) backendConfigId = data.id;
+      if (data?.value) {
+        const parsed = JSON.parse(data.value) as Record<string, unknown>;
+        const next: Record<AgentLevelId, string[]> = { ...grants.value };
+        for (const id of AGENT_LEVEL_IDS) {
+          const v = parsed[id];
+          if (Array.isArray(v) && v.every((x) => typeof x === 'string')) {
+            next[id] = v as string[];
+          }
+        }
+        grants.value = next;
+        cacheGrantsLocal();
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  async function persistGrants(): Promise<boolean> {
+    cacheGrantsLocal();
+    saveState.value = 'saving';
+    saveError.value = '';
+    const payload = JSON.stringify(grants.value);
+    try {
+      if (backendConfigId) {
+        await apiPut(
+          `/system-config/${backendConfigId}?value=${encodeURIComponent(payload)}&value_type=json`,
+        );
+      } else {
+        try {
+          const created = await apiPost<{ id?: string }>(
+            `/system-config/?key=${BACKEND_KEY}&value=${encodeURIComponent(payload)}&value_type=json&description=${encodeURIComponent('Agent capability grants L1-L5')}`,
+          );
+          if (created?.id) backendConfigId = created.id;
+        } catch {
+          const data = await apiGet<{ id?: string }>(`/system-config/by-key/${BACKEND_KEY}`);
+          backendConfigId = data?.id ?? null;
+          if (!backendConfigId) throw new Error('无法定位 system-config 记录');
+          await apiPut(
+            `/system-config/${backendConfigId}?value=${encodeURIComponent(payload)}&value_type=json`,
+          );
+        }
+      }
+      saveState.value = 'saved';
+      lastSavedAt.value = new Date().toLocaleString('zh-CN');
+      return true;
+    } catch (err: any) {
+      saveState.value = 'error';
+      saveError.value = err?.message || '后端保存失败';
+      return false;
+    }
+  }
+
+  function schedulePersist() {
+    if (persistTimer) clearTimeout(persistTimer);
+    persistTimer = setTimeout(() => {
+      void persistGrants();
+    }, 300);
+  }
+
+  watch(grants, schedulePersist, { deep: true });
 
   function setCurrentLevel(id: AgentLevelId) {
     currentLevelId.value = id;
@@ -156,6 +225,11 @@ export const useAgentCapabilitiesStore = defineStore('agentCapabilities', () => 
     currentLevelId,
     grants,
     currentGrantSet,
+    saveState,
+    saveError,
+    lastSavedAt,
+    loadGrantsFromBackend,
+    persistGrants,
     setCurrentLevel,
     resetSessionLevelFromJwt,
     applyJwtRoleToSessionLevel,

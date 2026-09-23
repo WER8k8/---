@@ -18,9 +18,15 @@ class AgentCommissionSettlement(Base):
     revenue_cents = Column(Integer, default=0)
     commission_cents = Column(Integer, default=0)
     commission_rate_bp = Column(Integer, default=1000)  # 万分比，1000=10%
-    status = Column(String(20), default="pending")  # pending | settled | cancelled
+    status = Column(String(20), default="pending")  # pending | settled | rejected | cancelled
     note = Column(Text)
+    reject_reason = Column(Text)
     settled_at = Column(DateTime(timezone=True), nullable=True)
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

@@ -362,6 +362,11 @@ def list_commissions(
         .filter(AgentCommissionSettlement.status == "pending")
         .scalar()
     )
+    rejected = (
+        db.query(func.coalesce(func.sum(AgentCommissionSettlement.commission_cents), 0))
+        .filter(AgentCommissionSettlement.status == "rejected")
+        .scalar()
+    )
     return success_response(
         data={
             "items": [
@@ -373,6 +378,8 @@ def list_commissions(
                     "commission_cents": i.commission_cents,
                     "commission_rate_bp": i.commission_rate_bp,
                     "status": i.status,
+                    "note": i.note,
+                    "reject_reason": getattr(i, "reject_reason", None),
                     "settled_at": i.settled_at.isoformat() if i.settled_at else None,
                 }
                 for i in items
@@ -381,6 +388,7 @@ def list_commissions(
             "stats": {
                 "settled_cents": int(settled or 0),
                 "pending_cents": int(pending or 0),
+                "rejected_cents": int(rejected or 0),
                 "total_cents": int(settled or 0) + int(pending or 0),
             },
         }
@@ -392,6 +400,50 @@ class CommissionCreate(BaseModel):
     period: str
     revenue_cents: int = Field(..., gt=0)
     commission_rate_bp: int = Field(3000, ge=0, le=10000)
+
+
+class CommissionRejectBody(BaseModel):
+    reason: str = Field(..., min_length=2, max_length=500)
+
+
+class CommissionCancelBody(BaseModel):
+    reason: str = Field(..., min_length=2, max_length=500)
+
+
+class CommissionUpdate(BaseModel):
+    revenue_cents: Optional[int] = Field(None, gt=0)
+    commission_rate_bp: Optional[int] = Field(None, ge=0, le=10000)
+    commission_cents: Optional[int] = Field(None, ge=0)
+    note: Optional[str] = Field(None, max_length=500)
+
+
+# 有向迁移：from → 允许的 to（禁止 frozenset 无序边表）
+COMMISSION_TRANSITIONS: dict[str, frozenset[str]] = {
+    "pending": frozenset({"settled", "rejected", "cancelled"}),
+    "settled": frozenset({"cancelled"}),
+    "rejected": frozenset(),
+    "cancelled": frozenset(),
+}
+
+
+def _commission_can_transition(from_status: str, to_status: str) -> bool:
+    return to_status in COMMISSION_TRANSITIONS.get(from_status, frozenset())
+
+
+def _commission_row_to_dict(row: AgentCommissionSettlement) -> dict:
+    return {
+        "id": row.id,
+        "agent_node_id": row.agent_node_id,
+        "period": row.period,
+        "revenue_cents": row.revenue_cents,
+        "commission_cents": row.commission_cents,
+        "commission_rate_bp": row.commission_rate_bp,
+        "status": row.status,
+        "note": row.note,
+        "reject_reason": row.reject_reason,
+        "settled_at": row.settled_at.isoformat() if row.settled_at else None,
+        "allowed_next": sorted(COMMISSION_TRANSITIONS.get(row.status or "", frozenset())),
+    }
 
 
 @router.post("/commissions")
@@ -426,6 +478,55 @@ def create_commission(
     return success_response(data={"id": row.id}, message="结算单已创建")
 
 
+@router.put("/commissions/{settlement_id}")
+def update_commission(
+    settlement_id: str,
+    body: CommissionUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """佣金单修正（仅 pending 可改；已结算/驳回/取消不可改）。"""
+    if err := _admin_only(current_user):
+        return err
+    row = db.query(AgentCommissionSettlement).filter_by(id=settlement_id).first()
+    if not row:
+        return error_response(404, "结算单不存在")
+    if row.status != "pending":
+        return error_response(400, f"当前状态 {row.status} 不可修正，仅待结算可改")
+    if body.revenue_cents is not None:
+        row.revenue_cents = body.revenue_cents
+    if body.commission_rate_bp is not None:
+        row.commission_rate_bp = body.commission_rate_bp
+    if body.commission_cents is not None:
+        row.commission_cents = body.commission_cents
+    elif body.revenue_cents is not None or body.commission_rate_bp is not None:
+        row.commission_cents = int(row.revenue_cents or 0) * int(row.commission_rate_bp or 0) // 10000
+    if body.note is not None:
+        row.note = body.note.strip()[:500]
+    db.commit()
+    db.refresh(row)
+    return success_response(data=_commission_row_to_dict(row), message="结算单已修正")
+
+
+@router.delete("/commissions/{settlement_id}")
+def delete_commission(
+    settlement_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """删除佣金单（仅 pending 可删；已结算须走 cancel 留痕）。"""
+    if err := _admin_only(current_user):
+        return err
+    row = db.query(AgentCommissionSettlement).filter_by(id=settlement_id).first()
+    if not row:
+        return error_response(404, "结算单不存在")
+    if row.status != "pending":
+        return error_response(400, f"当前状态 {row.status} 不可删除，仅待结算可删")
+    db.delete(row)
+    db.commit()
+    return success_response(message="结算单已删除")
+
+
 @router.post("/commissions/{settlement_id}/settle")
 def settle_commission(
     settlement_id: str,
@@ -446,12 +547,57 @@ def settle_commission(
     row = db.query(AgentCommissionSettlement).filter_by(id=settlement_id).first()
     if not row:
         return error_response(404, "结算单不存在")
-    if row.status == "settled":
-        return error_response(400, "已结算")
+    if not _commission_can_transition(row.status or "", "settled"):
+        return error_response(400, f"当前状态 {row.status} 不可结算")
     row.status = "settled"
     row.settled_at = datetime.now(timezone.utc)
     db.commit()
-    return success_response(message="已标记为已结算")
+    return success_response(data=_commission_row_to_dict(row), message="已标记为已结算")
+
+
+@router.post("/commissions/{settlement_id}/reject")
+def reject_commission(
+    settlement_id: str,
+    body: CommissionRejectBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """佣金单驳回（带原因；pending → rejected）。"""
+    if err := _admin_only(current_user):
+        return err
+    row = db.query(AgentCommissionSettlement).filter_by(id=settlement_id).first()
+    if not row:
+        return error_response(404, "结算单不存在")
+    if not _commission_can_transition(row.status or "", "rejected"):
+        return error_response(400, f"当前状态 {row.status} 不可驳回")
+    row.status = "rejected"
+    row.reject_reason = body.reason.strip()[:500]
+    db.commit()
+    db.refresh(row)
+    return success_response(data=_commission_row_to_dict(row), message="结算单已驳回")
+
+
+@router.post("/commissions/{settlement_id}/cancel")
+def cancel_commission(
+    settlement_id: str,
+    body: CommissionCancelBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """佣金单取消（pending|settled → cancelled，带原因留痕）。"""
+    if err := _admin_only(current_user):
+        return err
+    row = db.query(AgentCommissionSettlement).filter_by(id=settlement_id).first()
+    if not row:
+        return error_response(404, "结算单不存在")
+    if not _commission_can_transition(row.status or "", "cancelled"):
+        return error_response(400, f"当前状态 {row.status} 不可取消")
+    # 取消已结算单：保留 settled_at 作审计痕迹，不抹除
+    row.status = "cancelled"
+    row.note = (body.reason.strip()[:500])
+    db.commit()
+    db.refresh(row)
+    return success_response(data=_commission_row_to_dict(row), message="结算单已取消")
 
 
 # ---------------------------------------------------------------------------

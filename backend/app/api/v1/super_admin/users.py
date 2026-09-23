@@ -17,12 +17,40 @@ from app.core.admin_auth import (get_current_super_admin,
                                   invalidate_user_permission_cache)
 from app.core.database import get_db
 from app.core.field_crypto import decrypt_field, encrypt_field
+from app.core.permissions import Role
 from app.core.response import success_response
 from app.core.security import get_password_hash
 from app.models.admin import LoginLog
 from app.models.user import User
 
 router = APIRouter()
+
+VALID_ROLES = frozenset(r.value for r in Role)
+
+
+def _assert_role_writable(role: str, admin: User) -> None:
+    if role not in VALID_ROLES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"非法角色: {role}，可选: {', '.join(sorted(VALID_ROLES))}",
+        )
+    if role == Role.SUPER_ADMIN.value and (admin.role or "") != Role.SUPER_ADMIN.value:
+        raise HTTPException(status_code=403, detail="仅 super_admin 可授予 super_admin")
+
+
+def _user_payload(u: User) -> dict:
+    return {
+        "id": str(u.id),
+        "username": u.username,
+        "email": _try_decrypt(u.email),
+        "display_name": u.display_name,
+        "role": u.role,
+        "role_id": str(u.role_id) if u.role_id else None,
+        "is_active": u.is_active,
+        "is_default_password": u.is_default_password,
+        "created_at": u.created_at.isoformat() if u.created_at else None,
+        "updated_at": u.updated_at.isoformat() if u.updated_at else None,
+    }
 
 
 def _try_decrypt(value: str) -> str:
@@ -78,16 +106,7 @@ def list_admin_users(
         .limit(page_size)
         .all()
     )
-    data = [{
-        "id": str(u.id),
-        "username": u.username,
-        "email": _try_decrypt(u.email),
-        "display_name": u.display_name,
-        "role": u.role,
-        "role_id": str(u.role_id) if u.role_id else None,
-        "is_active": u.is_active,
-        "created_at": u.created_at.isoformat() if u.created_at else None,
-    } for u in users]
+    data = [_user_payload(u) for u in users]
     return success_response(data=data, total=total, page=page, page_size=page_size)
 
 
@@ -98,6 +117,7 @@ def create_admin_user(
     admin: User = Depends(get_current_super_admin),
 ):
     """创建管理员用户"""
+    _assert_role_writable(body.role, admin)
     if db.query(User).filter(User.username == body.username).first():
         raise HTTPException(status_code=400, detail="用户名已存在")
 
@@ -136,6 +156,7 @@ def update_admin_user(
     if body.display_name is not None:
         target.display_name = body.display_name
     if body.role is not None:
+        _assert_role_writable(body.role, admin)
         target.role = body.role
     if body.role_id is not None:
         target.role_id = body.role_id
@@ -214,3 +235,16 @@ def list_login_logs(
         "created_at": log.created_at.isoformat() if log.created_at else None,
     } for log in logs]
     return success_response(data=data, total=total, page=page, page_size=page_size)
+
+
+@router.get("/{user_id}")
+def get_admin_user(
+    user_id: str,
+    db: Session = Depends(get_db),
+    admin: User = Depends(get_current_super_admin),
+):
+    """管理员用户详情"""
+    target = db.query(User).filter(User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    return success_response(data=_user_payload(target))

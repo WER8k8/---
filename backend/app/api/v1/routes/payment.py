@@ -12,7 +12,13 @@ from sqlalchemy.orm import Session
 from app.core.response import APIResponse, error_response, success_response
 from app.core.security import get_current_user
 from app.db.session import get_db
-from app.models.payment import PaymentOrder
+from app.models.payment import (
+    PaymentOrder,
+    PaymentRefund,
+    REFUND_TRANSITIONS,
+    payment_order_can_transition,
+    refund_can_transition,
+)
 from app.models.tenant import Tenant, TenantPlan
 from app.models.user import User
 from app.services.payment_service import PaymentService
@@ -93,6 +99,35 @@ class NotifyRequest(BaseModel):
 class MockPayRequest(BaseModel):
     order_id: str
 
+
+class RefundCreateBody(BaseModel):
+    order_no: str = Field(..., min_length=4, max_length=100)
+    refund_amount: float = Field(..., gt=0)
+    reason: str = Field('', max_length=500)
+
+
+class RefundReviewBody(BaseModel):
+    action: str = Field(..., pattern='^(approve|reject|cancel)$')
+    reason: Optional[str] = Field(None, max_length=500)
+
+
+class OrderCloseBody(BaseModel):
+    reason: str = Field(..., min_length=2, max_length=500)
+
+
+class OrderReconcileBody(BaseModel):
+    note: Optional[str] = Field(None, max_length=500)
+    external_ref: Optional[str] = Field(None, max_length=120, description='对账流水/银行回单号')
+
+
+class OrderSupplementBody(BaseModel):
+    tenant_id: str
+    amount: int = Field(..., gt=0, description='金额（分）')
+    subject: str = Field(..., min_length=2, max_length=200)
+    channel: str = Field('manual', pattern='^(manual|wechat|alipay|stripe|offline)$')
+    external_ref: Optional[str] = Field(None, max_length=120, description='线下流水/回单号')
+    note: Optional[str] = Field(None, max_length=500)
+
 class AlipayProbeRequest(BaseModel):
     amount_yuan: float = Field(0.01, gt=0, le=99999)
     subject: str = Field('支付运维探针', max_length=128)
@@ -129,7 +164,9 @@ class CreateTokenPackRequest(BaseModel):
         return self
 
 def _mock_pay_allowed() -> bool:
-    """mock-pay 默认关闭；仅显式 PAYMENT_ALLOW_MOCK=1 时允许（且响应须 stamp mock）。"""
+    """mock-pay 默认关闭；生产环境强制拒绝（PAYMENT_ALLOW_MOCK 在 production 恒 false）。"""
+    if (os.getenv('ENVIRONMENT', '') or '').strip().lower() == 'production':
+        return False
     return os.getenv('PAYMENT_ALLOW_MOCK', '0').lower() in ('1', 'true', 'yes')
 
 
@@ -592,28 +629,316 @@ async def stripe_webhook(request: Request, db: Session=Depends(get_db)):
         log.exception('[Payment] Stripe Webhook 处理失败: %s', e)
         return error_response(500, f'Webhook 处理失败: {e}')
 
-@router.post('/refund', summary='发起退款', operation_id='create_payment_refund', response_model=APIResponse, description='对指定订单发起退款申请（需有效 JWT）。')
-def create_refund(order_no: str=Body(...), refund_amount: float=Body(...), reason: str=Body(''), current_user: User=Depends(get_current_user), db: Session=Depends(get_db)):
-    """发起退款申请"""
+def _refund_row_to_dict(row: PaymentRefund) -> dict:
+    return {
+        'id': row.id,
+        'order_id': row.order_id,
+        'order_no': row.order_no,
+        'tenant_id': row.tenant_id,
+        'amount': row.amount,
+        'currency': row.currency,
+        'reason': row.reason,
+        'status': row.status,
+        'reject_reason': row.reject_reason,
+        'channel': row.channel,
+        'channel_refund_id': row.channel_refund_id,
+        'result_message': row.result_message,
+        'requested_by': str(row.requested_by) if row.requested_by else None,
+        'reviewed_by': str(row.reviewed_by) if row.reviewed_by else None,
+        'reviewed_at': row.reviewed_at.isoformat() if row.reviewed_at else None,
+        'created_at': row.created_at.isoformat() if row.created_at else None,
+        'allowed_next': sorted(REFUND_TRANSITIONS.get(row.status or '', frozenset())),
+    }
+
+
+@router.post('/refund', summary='发起退款', operation_id='create_payment_refund', response_model=APIResponse, description='对指定订单发起退款申请，进入超管审核队列（需有效 JWT）。')
+def create_refund(body: RefundCreateBody, current_user: User=Depends(get_current_user), db: Session=Depends(get_db)):
+    """创建退款申请单（pending_review），须超管审核后才触达通道。"""
+    if (err := _payment_ops_allowed(current_user)):
+        return err
+    order = db.query(PaymentOrder).filter(PaymentOrder.order_no == body.order_no).first()
+    if not order:
+        return error_response(404, f'订单不存在: {body.order_no}')
+    if order.status not in ('paid', 'reconciled'):
+        return error_response(400, f'订单状态 {order.status} 不可退款')
+    amount_cents = int(round(float(body.refund_amount) * 100))
+    if amount_cents <= 0 or amount_cents > int(order.amount or 0):
+        return error_response(400, '退款金额非法或超过订单金额')
+    row = PaymentRefund(
+        order_id=str(order.id),
+        order_no=order.order_no,
+        tenant_id=str(order.tenant_id),
+        amount=amount_cents,
+        currency=getattr(order, 'currency', 'CNY') or 'CNY',
+        reason=(body.reason or '')[:500] or None,
+        status='pending_review',
+        channel=order.channel,
+        requested_by=str(current_user.id),
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
     try:
-        from app.services.refund_service import RefundService
-        svc = RefundService(db)
-        result = svc.refund_by_order_no(order_no=order_no, amount=refund_amount, reason=reason)
-        return success_response(data=result, message='退款申请已提交')
-    except Exception as e:
-        log.error('[Payment] 退款失败: %s', e)
-        return error_response(500, f'退款失败: {e}')
+        from app.services.payment_ops_audit_service import log_payment_ops_action
+        log_payment_ops_action(
+            db,
+            action='refund_request',
+            result={'ok': True, 'order_no': row.order_no, 'amount': row.amount, 'refund_id': row.id},
+            actor_user_id=str(current_user.id),
+            ok=True,
+        )
+    except Exception:
+        log.debug('[Payment] refund audit skipped')
+    return success_response(data=_refund_row_to_dict(row), message='退款申请已提交，待超管审核')
+
+
+@router.get('/refunds', summary='退款列表', operation_id='list_payment_refunds', response_model=APIResponse, description='退款申请列表（超管），支持状态过滤与分页。')
+def list_payment_refunds(status: Optional[str]=None, page: int=Query(1, ge=1), page_size: int=Query(20, ge=1, le=100), db: Session=Depends(get_db), current_user: User=Depends(get_current_user)):
+    """退款申请列表（超管）。"""
+    if (err := _payment_ops_allowed(current_user)):
+        return err
+    q = db.query(PaymentRefund)
+    if status:
+        q = q.filter(PaymentRefund.status == status)
+    total = q.count()
+    rows = (
+        q.order_by(PaymentRefund.created_at.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+    return success_response(
+        data={
+            'items': [_refund_row_to_dict(r) for r in rows],
+            'total': total,
+            'page': page,
+            'page_size': page_size,
+        }
+    )
+
+
+@router.post('/refunds/{refund_id}/review', summary='退款审核', operation_id='review_payment_refund', response_model=APIResponse, description='超管审核退款：approve 触发通道退款 / reject 驳回 / cancel 取消。')
+def review_payment_refund(refund_id: str, body: RefundReviewBody, db: Session=Depends(get_db), current_user: User=Depends(get_current_user)):
+    """超管审核退款单：approve → 调 RefundService；reject/cancel 带原因。"""
+    if (err := _payment_ops_allowed(current_user)):
+        return err
+    row = db.query(PaymentRefund).filter(PaymentRefund.id == refund_id).first()
+    if not row:
+        return error_response(404, '退款单不存在')
+    action = body.action
+    target = {'approve': 'approved', 'reject': 'rejected', 'cancel': 'cancelled'}[action]
+    if not refund_can_transition(row.status or '', target):
+        return error_response(400, f'当前状态 {row.status} 不可 {action}')
+    if action in ('reject', 'cancel') and not (body.reason or '').strip():
+        return error_response(400, f'{action} 须填写原因')
+
+    if action == 'reject':
+        row.status = 'rejected'
+        row.reject_reason = (body.reason or '').strip()[:500]
+    elif action == 'cancel':
+        row.status = 'cancelled'
+        row.reject_reason = (body.reason or '').strip()[:500]
+    else:
+        # approve → 真实通道退款；失败不伪造成 completed
+        row.status = 'approved'
+        row.reviewed_by = str(current_user.id)
+        row.reviewed_at = datetime.now(timezone.utc)
+        db.commit()
+        try:
+            from app.services.refund_service import RefundService
+            result = RefundService(db).refund_by_order_no(
+                order_no=row.order_no,
+                amount=row.amount / 100.0,
+                reason=row.reason or row.reject_reason or 'admin approved refund',
+            )
+        except Exception as e:
+            log.error('[Payment] 退款执行异常: %s', e)
+            row.status = 'failed'
+            row.result_message = f'退款执行异常: {e}'
+            db.commit()
+            db.refresh(row)
+            return error_response(500, f'退款执行失败: {e}')
+        ok = bool(result.get('success'))
+        row.channel_refund_id = result.get('channel_refund_id') or None
+        row.result_message = (result.get('message') or '')[:500] or None
+        if ok and result.get('status') in ('completed', 'processing', 'success', True):
+            row.status = 'completed' if result.get('status') == 'completed' else 'processing'
+            if result.get('status') in ('processing', 'success') and not result.get('channel_refund_id'):
+                # 通道仅受理未返回终态时不得假装 completed
+                row.status = 'processing'
+        elif ok:
+            row.status = 'processing'
+        else:
+            row.status = 'failed'
+            row.result_message = (result.get('message') or '通道退款失败')[:500]
+        # 原订单闭环：全额退款成功后置 refunded
+        try:
+            order = db.query(PaymentOrder).filter(PaymentOrder.order_no == row.order_no).first()
+            if order and row.status in ('processing', 'completed') and int(row.amount or 0) >= int(order.amount or 0):
+                if payment_order_can_transition(order.status or '', 'refunded'):
+                    order.status = 'refunded'
+        except Exception:
+            log.debug('[Payment] order refunded flag skipped')
+    row.reviewed_by = str(current_user.id)
+    row.reviewed_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(row)
+    try:
+        from app.services.payment_ops_audit_service import log_payment_ops_action
+        log_payment_ops_action(
+            db,
+            action=f'refund_{action}',
+            result={'ok': row.status in ('approved', 'processing', 'completed', 'rejected', 'cancelled'), 'refund_id': row.id, 'status': row.status},
+            actor_user_id=str(current_user.id),
+            ok=row.status not in ('failed',),
+        )
+    except Exception:
+        pass
+    msg = {'approve': '退款已审核通过并提交通道', 'reject': '退款已驳回', 'cancel': '退款已取消'}[action]
+    return success_response(data=_refund_row_to_dict(row), message=msg)
+
 
 @router.get('/refund/status/{order_no}', summary='查询退款状态', operation_id='get_payment_refund_status', response_model=APIResponse, description='按订单号查询退款处理状态（需有效 JWT）。')
 def get_refund_status(order_no: str, current_user: User=Depends(get_current_user), db: Session=Depends(get_db)):
-    """查询退款状态"""
+    """查询退款状态（含退款申请单）。"""
     try:
+        rows = (
+            db.query(PaymentRefund)
+            .filter(PaymentRefund.order_no == order_no)
+            .order_by(PaymentRefund.created_at.desc())
+            .all()
+        )
         from app.services.refund_service import RefundService
         svc = RefundService(db)
         result = svc.get_refund_status(order_no)
+        result['refunds'] = [_refund_row_to_dict(r) for r in rows]
         return success_response(data=result)
     except Exception as e:
         return error_response(500, f'查询失败: {e}')
+
+
+@router.post('/orders/{order_id}/close', summary='关单', operation_id='close_payment_order', response_model=APIResponse, description='关闭支付订单（pending/failed/paid 可关，带原因；已支付关单仅关闭不退款）。')
+def close_payment_order(order_id: str, body: OrderCloseBody, db: Session=Depends(get_db), current_user: User=Depends(get_current_user)):
+    """订单 close 确认：pending/failed/paid/reconciled → closed（已支付关单不自动退款）。"""
+    if (err := _payment_ops_allowed(current_user)):
+        return err
+    order = db.query(PaymentOrder).filter(PaymentOrder.id == order_id).first()
+    if not order:
+        return error_response(404, '订单不存在')
+    if not payment_order_can_transition(order.status or '', 'closed'):
+        return error_response(400, f'当前状态 {order.status} 不可关闭')
+    prev = order.status
+    order.status = 'closed'
+    db.commit()
+    db.refresh(order)
+    try:
+        from app.services.payment_ops_audit_service import log_payment_ops_action
+        log_payment_ops_action(
+            db,
+            action='order_close',
+            result={'ok': True, 'order_no': order.order_no, 'from': prev, 'to': 'closed', 'reason': body.reason[:200]},
+            actor_user_id=str(current_user.id),
+            ok=True,
+        )
+    except Exception:
+        pass
+    return success_response(
+        data={'id': order.id, 'order_no': order.order_no, 'status': order.status},
+        message='订单已关闭' + ('（已支付订单资金未退，请另发起退款）' if prev in ('paid', 'reconciled') else ''),
+    )
+
+
+@router.post('/orders/{order_id}/reconcile', summary='订单核销/对账确认', operation_id='reconcile_payment_order', response_model=APIResponse, description='对已支付订单做核销/对账确认（paid → reconciled）。')
+def reconcile_payment_order(order_id: str, body: OrderReconcileBody, db: Session=Depends(get_db), current_user: User=Depends(get_current_user)):
+    """订单 reconcile 确认：paid → reconciled（核销闭环）。"""
+    if (err := _payment_ops_allowed(current_user)):
+        return err
+    order = db.query(PaymentOrder).filter(PaymentOrder.id == order_id).first()
+    if not order:
+        return error_response(404, '订单不存在')
+    if not payment_order_can_transition(order.status or '', 'reconciled'):
+        return error_response(400, f'当前状态 {order.status} 不可核销（仅已支付可核销）')
+    order.status = 'reconciled'
+    db.commit()
+    db.refresh(order)
+    try:
+        from app.services.payment_ops_audit_service import log_payment_ops_action
+        log_payment_ops_action(
+            db,
+            action='order_reconcile',
+            result={'ok': True, 'order_no': order.order_no, 'to': 'reconciled', 'external_ref': body.external_ref, 'note': body.note},
+            actor_user_id=str(current_user.id),
+            ok=True,
+        )
+    except Exception:
+        pass
+    return success_response(
+        data={'id': order.id, 'order_no': order.order_no, 'status': order.status},
+        message='订单已核销确认',
+    )
+
+
+@router.post('/orders/supplement', summary='补单（线下到账登记）', operation_id='supplement_payment_order', response_model=APIResponse, description='线下/手工到账补单：登记为已支付订单并走发放链路（超管；禁止假成功，发放失败回滚）。')
+def supplement_payment_order(body: OrderSupplementBody, db: Session=Depends(get_db), current_user: User=Depends(get_current_user)):
+    """补单：登记线下到账并走与回调一致的发放链路。"""
+    if (err := _payment_ops_allowed(current_user)):
+        return err
+    import uuid as _uuid
+    from app.services.payment_pkg.payment_service_impl import PaymentService
+    svc = PaymentService(db)
+    order_no = f'SUP-{datetime.now(timezone.utc).strftime("%m%d%H%M%S")}-{_uuid.uuid4().hex[:6]}'
+    try:
+        order = PaymentOrder(
+            tenant_id=body.tenant_id,
+            order_no=order_no,
+            amount=int(body.amount),
+            currency='CNY',
+            channel=body.channel,
+            subject=(body.subject or '')[:200],
+            status='pending',
+        )
+        db.add(order)
+        db.commit()
+        db.refresh(order)
+    except Exception as e:
+        db.rollback()
+        return error_response(500, f'补单落库失败: {e}')
+    try:
+        paid = svc._mark_paid_and_provision(order.order_no, sync_data={
+            'business_order_id': body.external_ref,
+            'out_trade_no': order.order_no,
+            'mode': 'manual_supplement',
+            'note': body.note,
+        })
+        if not paid:
+            order.status = 'failed'
+            db.commit()
+            return error_response(500, '补单发放失败，订单已标记 failed，请人工核对（禁止假成功）')
+    except Exception as e:
+        log.exception('[Payment] 补单发放失败')
+        try:
+            order.status = 'failed'
+            db.commit()
+        except Exception:
+            pass
+        return error_response(500, f'补单发放失败: {e}')
+    db.refresh(order)
+    try:
+        from app.services.payment_ops_audit_service import log_payment_ops_action
+        log_payment_ops_action(
+            db,
+            action='order_supplement',
+            result={'ok': True, 'order_no': order.order_no, 'amount': order.amount, 'external_ref': body.external_ref},
+            actor_user_id=str(current_user.id),
+            ok=True,
+        )
+    except Exception:
+        pass
+    _emit_payment_success_event(order)
+    return success_response(
+        data={'id': order.id, 'order_no': order.order_no, 'status': order.status, 'amount': order.amount},
+        message='补单已完成并发放权益',
+    )
 
 @router.post('/balance/pay', summary='余额支付', operation_id='balance_pay_order', response_model=APIResponse, description='使用账户余额支付订单（需有效 JWT）。')
 def balance_payment(order_no: str=Body(...), current_user: User=Depends(get_current_user), db: Session=Depends(get_db)):

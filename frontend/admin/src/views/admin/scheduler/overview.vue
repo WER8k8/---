@@ -2,200 +2,100 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <YdPage title="任务调度" subtitle="定时任务管理与自动化调度" surface="elevated">
-  <div class="scheduler-overview">
-    <div class="stats-row">
-      <div
-        class="stat-card"
-        v-for="stat in schedulerStats"
-        :key="stat.title"
-      >
-        <div
-          class="stat-icon"
-          :class="stat.iconBg"
-        >
-          <component :is="stat.icon" />
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stat.value }}</span>
-          <span class="stat-label">{{ stat.title }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="task-section">
-      <div class="section-header">
-        <h3 class="section-title">
-          任务列表
-        </h3>
-        <button
-          class="add-btn"
-          @click="() => { resetTaskForm(); showAddModal = true; }"
-        >
-          <PlusOutlined />
-          添加任务
-        </button>
-      </div>
-      <a-table
-        :columns="columns"
-        :data-source="tasks"
-        :pagination="{ pageSize: 8 }"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'status'">
-            <a-badge
-              :status="
-                record.status === 'running'
-                  ? 'processing'
-                  : record.status === 'completed'
-                    ? 'success'
-                    : 'warning'
-              "
-              :text="getStatusText(record.status)"
-            />
-          </template>
-          <template v-else-if="column.key === 'cron'">
-            <span class="cron-text">{{ record.cron }}</span>
-          </template>
-          <template v-else-if="column.key === 'actions'">
-            <a-space>
-              <a-button
-                size="small"
-                @click="editTask(record as Task)"
-              >
-                编辑
-              </a-button>
-              <a-button
-                size="small"
-                @click="toggleTask(record as Task)"
-              >
-                {{
-                  record.status === 'running' ? '暂停' : '启动'
-                }}
-              </a-button>
-              <a-button
-                size="small"
-                danger
-                @click="removeTask(record as Task)"
-              >
-                删除
-              </a-button>
-            </a-space>
-          </template>
-        </template>
-      </a-table>
-    </div>
-
-    <div class="recent-jobs">
-      <h3 class="section-title">
-        最近执行记录
-      </h3>
-      <div class="jobs-list">
-        <div
-          class="job-item"
-          v-for="job in recentJobs"
-          :key="job.id"
-        >
-          <div
-            class="job-status"
-            :class="job.status"
-          >
-            <component
-              :is="job.status === 'success' ? CheckCircleOutlined : ExclamationCircleOutlined"
-            />
+  <YdPage title="任务调度" subtitle="定时任务管理与自动化调度 · 已接后端 /ops-scheduler-tasks" surface="elevated">
+    <div class="scheduler-overview">
+      <div class="stats-row">
+        <div class="stat-card" v-for="stat in schedulerStats" :key="stat.title">
+          <div class="stat-icon" :class="stat.iconBg">
+            <component :is="stat.icon" />
           </div>
-          <div class="job-info">
-            <h4 class="job-name">
-              {{ job.taskName }}
-            </h4>
-            <span class="job-time">{{ job.time }}</span>
-          </div>
-          <div class="job-duration">
-            {{ job.duration }}
+          <div class="stat-content">
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.title }}</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <a-modal
-      v-model:open="showAddModal"
-      :title="editingTask ? '编辑定时任务' : '添加定时任务'"
-      :footer="null"
-    >
-      <a-form
-        :model="taskForm"
-        ref="taskFormRef"
-      >
-        <a-form-item
-          label="任务名称"
-          name="name"
-        >
-          <a-input
-            v-model:value="taskForm.name"
-            placeholder="请输入任务名称"
-          />
-        </a-form-item>
-        <a-form-item
-          label="任务类型"
-          name="type"
-        >
-          <a-select v-model:value="taskForm.type">
-            <a-select-option value="cleanup">
-              清理任务
-            </a-select-option>
-            <a-select-option value="backup">
-              备份任务
-            </a-select-option>
-            <a-select-option value="sync">
-              同步任务
-            </a-select-option>
-            <a-select-option value="report">
-              报表任务
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-          label="Cron表达式"
-          name="cron"
-        >
-          <a-input
-            v-model:value="taskForm.cron"
-            placeholder="如: 0 0 * * *"
-          />
-          <p class="cron-hint">
-            格式: 秒 分 时 日 月 周
-          </p>
-        </a-form-item>
-        <a-form-item
-          label="任务描述"
-          name="description"
-        >
-          <a-textarea
-            v-model:value="taskForm.description"
-            placeholder="请输入任务描述"
-            :rows="3"
-          />
-        </a-form-item>
-        <div class="modal-footer">
-          <a-button @click="showAddModal = false">
-            取消
-          </a-button>
-          <a-button
-            type="primary"
-            @click="saveTask"
-          >
-            {{ editingTask ? '保存' : '添加任务' }}
-          </a-button>
+      <div class="task-section">
+        <div class="section-header">
+          <h3 class="section-title">任务列表</h3>
+          <button class="add-btn" @click="() => { resetTaskForm(); showAddModal = true; }">
+            <PlusOutlined />
+            添加任务
+          </button>
         </div>
-      </a-form>
-    </a-modal>
-  </div>
+        <a-table
+          :columns="columns"
+          :data-source="tasks"
+          row-key="id"
+          :loading="loading"
+          :pagination="{ pageSize: 8 }"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'status'">
+              <a-badge
+                :status="record.enabled ? 'processing' : 'default'"
+                :text="record.enabled ? '已启用' : '已停用'"
+              />
+            </template>
+            <template v-else-if="column.key === 'cron'">
+              <span class="cron-text">{{ record.cron }}</span>
+            </template>
+            <template v-else-if="column.key === 'actions'">
+              <a-space>
+                <a-button size="small" @click="editTask(record as TaskRow)">编辑</a-button>
+                <a-button size="small" :loading="togglingId === record.id" @click="toggleTask(record as TaskRow)">
+                  {{ record.enabled ? '停用' : '启用' }}
+                </a-button>
+                <a-button size="small" danger :loading="deletingId === record.id" @click="removeTask(record as TaskRow)">
+                  删除
+                </a-button>
+              </a-space>
+            </template>
+          </template>
+        </a-table>
+      </div>
+
+      <a-modal
+        v-model:open="showAddModal"
+        :title="editingTask ? '编辑定时任务' : '添加定时任务'"
+        :footer="null"
+      >
+        <a-form :model="taskForm" ref="taskFormRef">
+          <a-form-item label="任务名称" name="name">
+            <a-input v-model:value="taskForm.name" placeholder="请输入任务名称" />
+          </a-form-item>
+          <a-form-item label="任务类型" name="type">
+            <a-select v-model:value="taskForm.type">
+              <a-select-option value="cleanup">清理任务</a-select-option>
+              <a-select-option value="backup">备份任务</a-select-option>
+              <a-select-option value="sync">同步任务</a-select-option>
+              <a-select-option value="report">报表任务</a-select-option>
+              <a-select-option value="custom">自定义</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="Cron表达式" name="cron">
+            <a-input v-model:value="taskForm.cron" placeholder="如: 0 0 * * *" />
+            <p class="cron-hint">格式: 分 时 日 月 周</p>
+          </a-form-item>
+          <a-form-item label="任务描述" name="description">
+            <a-textarea v-model:value="taskForm.description" placeholder="请输入任务描述" :rows="3" />
+          </a-form-item>
+          <div class="modal-footer">
+            <a-button @click="showAddModal = false">取消</a-button>
+            <a-button type="primary" :loading="saving" @click="saveTask">
+              {{ editingTask ? '保存' : '添加任务' }}
+            </a-button>
+          </div>
+        </a-form>
+      </a-modal>
+    </div>
   </YdPage>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { message, Modal as AModal } from 'ant-design-vue';
+import { ref, reactive, computed, onMounted } from 'vue';
+import { message } from 'ant-design-vue';
 import { YdPage } from '@/components/youding';
 import {
   ClockCircleOutlined,
@@ -204,27 +104,24 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons-vue';
 import type { TableColumnsType } from 'ant-design-vue';
-import { apiGet } from '@/utils/api';
+import { apiGet, apiPost, apiPut, apiPatch, apiDelete } from '@/utils/api';
 
-interface Task {
-  id: number;
+interface TaskRow {
+  id: string;
   name: string;
   type: string;
   cron: string;
-  status: string;
-  lastRun: string;
-}
-
-interface Job {
-  id: number;
-  taskName: string;
-  time: string;
-  duration: string;
-  status: string;
+  description: string;
+  enabled: boolean;
+  updated_at: string;
 }
 
 const showAddModal = ref(false);
-const editingTask = ref<Task | null>(null);
+const editingTask = ref<TaskRow | null>(null);
+const loading = ref(false);
+const saving = ref(false);
+const togglingId = ref<string | null>(null);
+const deletingId = ref<string | null>(null);
 
 const taskForm = reactive({
   name: '',
@@ -233,111 +130,85 @@ const taskForm = reactive({
   description: '',
 });
 
-const schedulerStats = ref<any[]>([]);
+const tasks = ref<TaskRow[]>([]);
 
-const columns: TableColumnsType<Task> = [
+const enabledCount = computed(() => tasks.value.filter((t) => t.enabled).length);
+const disabledCount = computed(() => tasks.value.length - enabledCount.value);
+
+const schedulerStats = computed(() => [
+  { title: '任务总数', value: tasks.value.length, icon: ClockCircleOutlined, iconBg: 'bg-blue' },
+  { title: '已启用', value: enabledCount.value, icon: CheckCircleOutlined, iconBg: 'bg-green' },
+  { title: '已停用', value: disabledCount.value, icon: ExclamationCircleOutlined, iconBg: 'bg-red' },
+]);
+
+const columns: TableColumnsType<TaskRow> = [
   { title: '任务名称', dataIndex: 'name', key: 'name' },
   { title: '类型', dataIndex: 'type', key: 'type' },
   { title: 'Cron表达式', key: 'cron' },
   { title: '状态', key: 'status' },
-  { title: '上次运行', dataIndex: 'lastRun', key: 'lastRun' },
+  { title: '描述', dataIndex: 'description', key: 'description', ellipsis: true },
   { title: '操作', key: 'actions' },
 ];
 
-const tasks = ref<Task[]>([
-  {
-    id: 1,
-    name: '日志清理任务',
-    type: 'cleanup',
-    cron: '0 0 * * *',
-    status: 'running',
-    lastRun: '2024-01-15 00:00:00',
-  },
-  {
-    id: 2,
-    name: '数据库备份',
-    type: 'backup',
-    cron: '0 3 * * *',
-    status: 'running',
-    lastRun: '2024-01-15 03:00:00',
-  },
-  {
-    id: 3,
-    name: '数据同步',
-    type: 'sync',
-    cron: '*/30 * * * *',
-    status: 'running',
-    lastRun: '2024-01-15 10:30:00',
-  },
-  {
-    id: 4,
-    name: '日报生成',
-    type: 'report',
-    cron: '0 8 * * *',
-    status: 'completed',
-    lastRun: '2024-01-15 08:00:00',
-  },
-]);
-
-const recentJobs = ref<Job[]>([
-  {
-    id: 1,
-    taskName: '日志清理任务',
-    time: '2024-01-15 00:00:00',
-    duration: '2.3s',
-    status: 'success',
-  },
-  {
-    id: 2,
-    taskName: '数据库备份',
-    time: '2024-01-15 03:00:00',
-    duration: '15.8s',
-    status: 'success',
-  },
-  { id: 3, taskName: '数据同步', time: '2024-01-15 10:30:00', duration: '1.2s', status: 'success' },
-  {
-    id: 4,
-    taskName: '日报生成',
-    time: '2024-01-15 08:00:00',
-    duration: '45.6s',
-    status: 'success',
-  },
-]);
-
-const getStatusText = (status: string) => {
-  const map: Record<string, string> = {
-    running: '运行中',
-    completed: '已完成',
-    paused: '已暂停',
-    failed: '失败',
+function mapItem(raw: any): TaskRow {
+  return {
+    id: String(raw.id),
+    name: String(raw.name ?? ''),
+    type: String(raw.type ?? 'custom'),
+    cron: String(raw.cron ?? ''),
+    description: String(raw.description ?? ''),
+    enabled: raw.enabled !== false,
+    updated_at: String(raw.updated_at ?? ''),
   };
-  return map[status] || status;
-};
+}
 
-const editTask = (task: Task) => {
+async function load() {
+  loading.value = true;
+  try {
+    const res = await apiGet<any>('/ops-scheduler-tasks');
+    const items = res?.items ?? res?.data?.items ?? (Array.isArray(res) ? res : []);
+    tasks.value = items.map(mapItem);
+  } catch (e: any) {
+    message.error(e?.message || '调度任务加载失败');
+    tasks.value = [];
+  } finally {
+    loading.value = false;
+  }
+}
+
+const editTask = (task: TaskRow) => {
   editingTask.value = task;
   taskForm.name = task.name;
-  taskForm.type = task.type;
+  taskForm.type = task.type || 'custom';
   taskForm.cron = task.cron;
-  taskForm.description = '';
+  taskForm.description = task.description || '';
   showAddModal.value = true;
 };
 
-const toggleTask = (task: Task) => {
-  task.status = task.status === 'running' ? 'paused' : 'running';
-  message.success(task.status === 'running' ? '任务已启动' : '任务已暂停');
+const toggleTask = async (task: TaskRow) => {
+  togglingId.value = task.id;
+  try {
+    await apiPatch(`/ops-scheduler-tasks/${task.id}/enabled`, { enabled: !task.enabled });
+    message.success(task.enabled ? '已停用' : '已启用');
+    await load();
+  } catch (e: any) {
+    message.error(e?.message || '启停失败');
+  } finally {
+    togglingId.value = null;
+  }
 };
 
-const removeTask = (task: Task) => {
-  AModal.confirm({
-    title: '确认删除',
-    content: `确定删除任务「${task.name}」？`,
-    okType: 'danger',
-    onOk() {
-      tasks.value = tasks.value.filter((t) => t.id !== task.id);
-      message.success('任务已删除');
-    },
-  });
+const removeTask = async (task: TaskRow) => {
+  deletingId.value = task.id;
+  try {
+    await apiDelete(`/ops-scheduler-tasks/${task.id}`);
+    message.success('已删除');
+    await load();
+  } catch (e: any) {
+    message.error(e?.message || '删除失败');
+  } finally {
+    deletingId.value = null;
+  }
 };
 
 function resetTaskForm() {
@@ -348,7 +219,7 @@ function resetTaskForm() {
   editingTask.value = null;
 }
 
-const saveTask = () => {
+const saveTask = async () => {
   if (!taskForm.name.trim()) {
     message.warning('请输入任务名称');
     return;
@@ -357,56 +228,39 @@ const saveTask = () => {
     message.warning('请输入 Cron 表达式');
     return;
   }
-  if (editingTask.value) {
-    editingTask.value.name = taskForm.name.trim();
-    editingTask.value.type = taskForm.type;
-    editingTask.value.cron = taskForm.cron.trim();
-    message.success('任务已更新');
-  } else {
-    const nextId = Math.max(0, ...tasks.value.map((t) => t.id)) + 1;
-    tasks.value.unshift({
-      id: nextId,
+  saving.value = true;
+  try {
+    const payload = {
       name: taskForm.name.trim(),
-      type: taskForm.type,
       cron: taskForm.cron.trim(),
-      status: 'paused',
-      lastRun: '-',
-    });
-    message.success('任务已添加');
+      description: taskForm.description.trim(),
+      type: taskForm.type,
+    };
+    if (editingTask.value) {
+      await apiPut(`/ops-scheduler-tasks/${editingTask.value.id}`, payload);
+      message.success('任务已保存');
+    } else {
+      await apiPost('/ops-scheduler-tasks', { ...payload, enabled: true });
+      message.success('任务已添加');
+    }
+    showAddModal.value = false;
+    resetTaskForm();
+    await load();
+  } catch (e: any) {
+    message.error(e?.message || '保存失败');
+  } finally {
+    saving.value = false;
   }
-  showAddModal.value = false;
-  resetTaskForm();
 };
 
-onMounted(async () => {
-  try {
-    await apiGet('/ops-jobs');
-  } catch { /* 空状态 */ }
+onMounted(() => {
+  void load();
 });
 </script>
 
 <style scoped lang="scss">
 .scheduler-overview {
   padding: 24px;
-}
-
-.page-header {
-  margin-bottom: 24px;
-
-  .page-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1f2937;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .page-desc {
-    font-size: 14px;
-    color: #6b7280;
-    margin-top: 4px;
-  }
 }
 
 .stats-row {
@@ -451,7 +305,7 @@ onMounted(async () => {
     .stat-content {
       .stat-value {
         font-size: 24px;
-        font-weight: 600;
+        font-weight: 500;
         color: #1f2937;
         display: block;
       }
@@ -479,7 +333,7 @@ onMounted(async () => {
 
     .section-title {
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 500;
       color: #1f2937;
       margin: 0;
     }
@@ -505,79 +359,6 @@ onMounted(async () => {
     background: #eef2ff;
     padding: 4px 8px;
     border-radius: 4px;
-  }
-}
-
-.recent-jobs {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-
-  .section-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f3f4f6;
-  }
-
-  .jobs-list {
-    .job-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #f3f4f6;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .job-status {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        color: #fff;
-        flex-shrink: 0;
-
-        &.success {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        &.failed {
-          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-      }
-
-      .job-info {
-        flex: 1;
-
-        .job-name {
-          font-size: 14px;
-          font-weight: 500;
-          color: #1f2937;
-          margin: 0;
-          margin-bottom: 2px;
-        }
-
-        .job-time {
-          font-size: 12px;
-          color: #9ca3af;
-        }
-      }
-
-      .job-duration {
-        font-size: 13px;
-        color: #4a9b8c;
-        font-weight: 500;
-      }
-    }
   }
 }
 

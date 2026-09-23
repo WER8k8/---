@@ -2,68 +2,203 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <YdPage title="V2RayN 服务器配置" subtitle="V2Ray / Xray 服务器节点管理" surface="elevated">
+  <YdPage title="V2RayN 服务器配置" subtitle="V2Ray / Xray 服务器节点管理 · 已接后端 CRUD" surface="elevated">
     <template #actions>
-      <a-button type="primary" @click="showAdd=true">+ 添加节点</a-button>
+      <a-button type="primary" @click="openCreate">+ 添加节点</a-button>
     </template>
     <div class="space-y-6">
+      <a-alert
+        v-if="speedNote"
+        type="info"
+        show-icon
+        message="测速未配置"
+        :description="speedNote"
+        closable
+        style="margin-bottom: 12px"
+        @close="speedNote = ''"
+      />
       <div class="grid grid-cols-4 gap-4">
         <a-card size="small"><a-statistic title="总节点" :value="servers.length" :value-style="{ color: 'var(--uj-brand, #4a9b8c)' }"/></a-card>
-        <a-card size="small"><a-statistic title="在线" :value="servers.filter((s:any)=>s.status==='online').length" :value-style="{ color: '#22c55e' }"/></a-card>
-        <a-card size="small"><a-statistic title="平均延迟" :value="avgLatency+'ms'" :value-style="{ color: '#8b5cf6' }"/></a-card>
-        <a-card size="small"><a-statistic title="总流量" :value="totalTraffic" :value-style="{ color: '#f59e0b' }"/></a-card>
+        <a-card size="small"><a-statistic title="已登记备注" :value="servers.filter((s:any)=>s.remarks).length" :value-style="{ color: '#10b981' }"/></a-card>
+        <a-card size="small"><a-statistic title="延迟" value="未探测" :value-style="{ color: '#8b5cf6' }"/></a-card>
+        <a-card size="small"><a-statistic title="流量" value="未采集" :value-style="{ color: '#f59e0b' }"/></a-card>
       </div>
       <a-card title="节点列表" size="small">
-        <a-table :columns="cols" :dataSource="servers" rowKey="id" size="small">
+        <a-table :columns="cols" :dataSource="servers" rowKey="id" size="small" :loading="loading">
           <template #bodyCell="{column,record}">
-            <template v-if="column.key==='status'"><a-tag :color="record.status==='online'?'green':'red'">{{ record.status==='online'?'在线':'离线' }}</a-tag></template>
+            <template v-if="column.key==='status'">
+              <a-tag color="default">{{ record.status || 'unknown' }}</a-tag>
+            </template>
             <template v-if="column.key==='protocol'"><a-tag>{{ record.protocol }}</a-tag></template>
+            <template v-if="column.key==='latency'">{{ record.latency == null ? '—' : record.latency + 'ms' }}</template>
             <template v-if="column.key==='actions'">
-              <a-space><a-button size="small" @click="testConn(record)">测试</a-button><a-button size="small" @click="editServer(record)">编辑</a-button><a-button size="small" danger @click="delServer(record)">删除</a-button></a-space>
+              <a-space>
+                <a-button size="small" :loading="speedingId===record.id" @click="speedTest(record)">测试</a-button>
+                <a-button size="small" @click="openEdit(record)">编辑</a-button>
+                <a-popconfirm title="确认删除该节点？" @confirm="remove(String(record.id))">
+                  <a-button size="small" danger :loading="deletingId===record.id">删除</a-button>
+                </a-popconfirm>
+              </a-space>
             </template>
           </template>
         </a-table>
       </a-card>
-      <a-modal v-model:open="showAdd" title="添加节点" @ok="addServer">
+
+      <a-modal v-model:open="showModal" :title="editing ? '编辑节点' : '添加节点'" :footer="null">
         <a-form layout="vertical">
-          <a-form-item label="备注名称"><a-input v-model:value="form.name" placeholder="如: 日本东京-01"/></a-form-item>
-          <a-form-item label="协议"><a-select v-model:value="form.protocol"><a-select-option value="vmess">VMess</a-select-option><a-select-option value="vless">VLESS</a-select-option><a-select-option value="trojan">Trojan</a-select-option><a-select-option value="shadowsocks">Shadowsocks</a-select-option></a-select></a-form-item>
-          <a-form-item label="服务器地址"><a-input v-model:value="form.address" placeholder="server.example.com"/></a-form-item>
-          <a-form-item label="端口"><a-input-number v-model:value="form.port" :min="1" :max="65535"/></a-form-item>
-          <a-form-item label="UUID / 密码"><a-input-password v-model:value="form.uuid" placeholder="UUID 或密码"/></a-form-item>
-          <a-form-item label="传输协议"><a-select v-model:value="form.transport"><a-select-option value="tcp">TCP</a-select-option><a-select-option value="ws">WebSocket</a-select-option><a-select-option value="grpc">gRPC</a-select-option><a-select-option value="h2">HTTP/2</a-select-option></a-select></a-form-item>
+          <a-form-item label="名称" required>
+            <a-input v-model:value="form.name" placeholder="节点名称" allow-clear />
+          </a-form-item>
+          <a-form-item label="地址" required>
+            <a-input v-model:value="form.address" placeholder="host 或 IP" allow-clear />
+          </a-form-item>
+          <a-form-item label="端口">
+            <a-input-number v-model:value="form.port" :min="1" :max="65535" style="width: 100%" placeholder="可选" />
+          </a-form-item>
+          <a-form-item label="协议">
+            <a-input v-model:value="form.protocol" placeholder="vmess / vless / trojan" allow-clear />
+          </a-form-item>
+          <a-form-item label="UUID">
+            <a-input v-model:value="form.uuid" allow-clear />
+          </a-form-item>
+          <a-form-item label="备注">
+            <a-textarea v-model:value="form.remarks" :rows="2" />
+          </a-form-item>
+          <div class="flex justify-end gap-2">
+            <a-button @click="showModal=false">取消</a-button>
+            <a-button type="primary" :loading="saving" @click="save">{{ editing ? '保存' : '添加' }}</a-button>
+          </div>
         </a-form>
       </a-modal>
     </div>
   </YdPage>
 </template>
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import { YdPage } from '@/components/youding'
-import { apiGet } from '@/utils/api'
+import { apiGet, apiPost, apiPut, apiDelete } from '@/utils/api'
 
-const showAdd = ref(false)
-const form = reactive({ name: '', protocol: 'vmess', address: '', port: 443, uuid: '', transport: 'ws' })
 const servers = ref<any[]>([])
+const loading = ref(false)
+const saving = ref(false)
+const deletingId = ref<string | null>(null)
+const speedingId = ref<string | null>(null)
+const speedNote = ref('')
+const showModal = ref(false)
+const editing = ref<any | null>(null)
+
+const form = reactive({
+  name: '',
+  address: '',
+  port: null as number | null,
+  protocol: 'vmess',
+  uuid: '',
+  remarks: '',
+})
 
 async function loadServers() {
+  loading.value = true
   try {
-    const d = await apiGet('/super-admin/v2ray/servers')
+    const d = await apiGet('/super-admin/v2ray/servers') as any
     const items = d?.items ?? d?.data?.items
-    if (Array.isArray(items)) servers.value = items
-  } catch { /* 空状态 */ }
+    servers.value = Array.isArray(items) ? items : []
+  } catch (e: any) {
+    servers.value = []
+    message.error(e?.message || '节点列表加载失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+function openCreate() {
+  editing.value = null
+  form.name = ''
+  form.address = ''
+  form.port = null
+  form.protocol = 'vmess'
+  form.uuid = ''
+  form.remarks = ''
+  showModal.value = true
+}
+
+function openEdit(row: any) {
+  editing.value = row
+  form.name = String(row.name ?? '')
+  form.address = String(row.address ?? '')
+  form.port = row.port ?? null
+  form.protocol = String(row.protocol ?? 'vmess')
+  form.uuid = String(row.uuid ?? '')
+  form.remarks = String(row.remarks ?? '')
+  showModal.value = true
+}
+
+async function save() {
+  if (!form.name.trim() || !form.address.trim()) {
+    message.warning('请填写名称与地址')
+    return
+  }
+  saving.value = true
+  try {
+    const payload = {
+      name: form.name.trim(),
+      address: form.address.trim(),
+      port: form.port,
+      protocol: form.protocol.trim() || 'vmess',
+      uuid: form.uuid.trim(),
+      remarks: form.remarks.trim(),
+    }
+    if (editing.value?.id) {
+      await apiPut(`/super-admin/v2ray/servers/${editing.value.id}`, payload)
+      message.success('节点已更新')
+    } else {
+      await apiPost('/super-admin/v2ray/servers', payload)
+      message.success('节点已添加')
+    }
+    showModal.value = false
+    await loadServers()
+  } catch (e: any) {
+    message.error(e?.message || '保存失败')
+  } finally {
+    saving.value = false
+  }
+}
+
+async function remove(id: string) {
+  deletingId.value = id
+  try {
+    await apiDelete(`/super-admin/v2ray/servers/${id}`)
+    message.success('已删除')
+    await loadServers()
+  } catch (e: any) {
+    message.error(e?.message || '删除失败')
+  } finally {
+    deletingId.value = null
+  }
+}
+
+async function speedTest(row: any) {
+  speedingId.value = String(row.id)
+  try {
+    const d = await apiGet(`/super-admin/v2ray/servers/${row.id}/speed-test`) as any
+    speedNote.value = String(d?.reason || d?.data?.reason || '测速探针未配置，不返回编造延迟')
+  } catch (e: any) {
+    speedNote.value = e?.message || '测速接口不可用'
+  } finally {
+    speedingId.value = null
+  }
 }
 
 onMounted(loadServers)
-const cols=[{title:'名称',dataIndex:'name'},{title:'协议',dataIndex:'protocol',key:'protocol'},{title:'地址',dataIndex:'address'},{title:'端口',dataIndex:'port'},{title:'状态',dataIndex:'status',key:'status'},{title:'延迟',dataIndex:'latency'},{title:'上行',dataIndex:'upload'},{title:'下行',dataIndex:'download'},{title:'操作',key:'actions'}]
-const avgLatency=computed(()=>{const o=servers.value.filter((s:any)=>s.status==='online'&&typeof s.latency==='number'); return o.length?Math.round(o.reduce((a:number,s:any)=>a+s.latency,0)/o.length):0})
-const totalTraffic=computed(()=>{const d=servers.value.reduce((a:number,s:any)=>{const m=s.download?.match(/[\d.]+/); return a+(m?parseFloat(m[0]):0)},0); return d.toFixed(1)+'GB'})
-function addServer(){ servers.value.unshift({id:Date.now(),name:form.name||'新节点',protocol:(form.protocol||'vmess').toUpperCase(),address:form.address,port:form.port,status:'offline',latency:'—',upload:'0',download:'0'}); showAdd.value=false; message.success('节点已添加') }
-function testConn(r:any){
-  const latency = typeof r.latency === 'number' ? r.latency : (r.status === 'online' ? avgLatency.value : null)
-  message.success(latency != null ? `${r.name} 延迟 ${latency}ms` : `${r.name} 节点离线，无法测速`)
-}
-function editServer(r:any){ Object.assign(form,{name:r.name,protocol:r.protocol.toLowerCase(),address:r.address,port:r.port}); showAdd.value=true }
-function delServer(r:any){ servers.value=servers.value.filter(s=>s.id!==r.id); message.success('已删除') }
+const cols=[
+  {title:'名称',dataIndex:'name'},
+  {title:'协议',dataIndex:'protocol',key:'protocol'},
+  {title:'地址',dataIndex:'address'},
+  {title:'端口',dataIndex:'port'},
+  {title:'UUID',dataIndex:'uuid',ellipsis:true},
+  {title:'状态',dataIndex:'status',key:'status'},
+  {title:'延迟',key:'latency'},
+  {title:'备注',dataIndex:'remarks',ellipsis:true},
+  {title:'操作',key:'actions'},
+]
 </script>

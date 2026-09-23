@@ -5,7 +5,7 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
-from typing import Any
+from typing import Any, Optional
 
 from app.core.config import settings
 from app.core.response import error_json_response, error_response, success_response
@@ -1406,7 +1406,39 @@ def hermes_greedy_publish_queue_review(
     if not result.get("ok"):
         return success_response(data=result, message=result.get("error") or "审核未通过")
     msg = "已通过并生成发布计划" if body.action == "approve" else "已驳回并移出队列"
+    if result.get("publish_execution", {}) and (result.get("publish_execution") or {}).get("status") == "failed":
+        msg = "已通过审核但发布排队失败，已标记 partially_failed，可重试"
+    elif (result.get("history") or {}).get("action") == "partially_failed":
+        msg = "已通过审核但发布排队失败，已标记 partially_failed，可重试"
     return success_response(data=result, message=msg)
+
+
+class GreedyPublishRetryBody(BaseModel):
+    history_index: int = 0
+    reason: Optional[str] = None
+
+
+@router.post("/greedy/publish-queue/retry-failed")
+def hermes_greedy_publish_queue_retry_failed(
+    body: GreedyPublishRetryBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """对 partially_failed 的审核记录重试发布排队（禁止失败后无下文）。"""
+    if err := _ops_gate(current_user):
+        return err
+    if err := _greedy_gate():
+        return err
+    from app.services.hermes.greedy_publish_queue_service import retry_failed_publish
+    reviewer = getattr(current_user, "username", None) or str(getattr(current_user, "id", ""))
+    result = retry_failed_publish(
+        history_index=body.history_index,
+        reviewer=reviewer,
+        db=db,
+    )
+    if not result.get("ok"):
+        return success_response(data=result, message=result.get("error") or "重试未成功")
+    return success_response(data=result, message="已重试发布排队")
 
 
 @router.get("/greedy/survival-digest/preview")
