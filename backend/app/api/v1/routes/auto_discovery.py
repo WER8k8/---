@@ -31,7 +31,6 @@ import importlib
 import logging
 import pkgutil
 from pathlib import Path
-from typing import Optional
 
 from fastapi import APIRouter
 
@@ -136,7 +135,6 @@ _DOMAIN_TAGS: dict[str, str] = {
     "geo": "GEO",
     "ab": "AB测试",
     "tree": "Agent树",
-    "hub": "Hub",
     "super": "超级Agent",
     "learning": "学习",
     "marketplace": "市场",
@@ -180,6 +178,7 @@ def discover_routes(
     """
     routers: list[APIRouter] = []
     exclude = exclude_modules or set()
+    skipped: list[tuple[str, str]] = []
     try:
         package = importlib.import_module(package_path)
         package_dir = Path(package.__file__).parent if package.__file__ else None
@@ -204,11 +203,23 @@ def discover_routes(
                         domain_tag = _resolve_domain_tag(module_name)
                         routers.append(router_instance)
                         log.debug("自动发现路由: %s → %s", full_module, domain_tag)
-            except (ImportError, ModuleNotFoundError, Exception) as e:
-                log.warning("跳过路由模块 %s: %s", full_module, e)
+            except ImportError as e:
+                # 依赖缺失属部署/配置问题，不是"正常跳过"——必须 error 级可见
+                skipped.append((module_name, f"ImportError: {e}"))
+                log.error("路由模块依赖缺失，已跳过 %s: %s", full_module, e)
+            except Exception as e:  # noqa: BLE001
+                skipped.append((module_name, f"{type(e).__name__}: {e}"))
+                log.error("路由模块加载失败，已跳过 %s: %s", full_module, e)
 
     except Exception as e:
         log.error("路由自动发现失败: %s", e)
+
+    if skipped:
+        log.error(
+            "⚠️ 共 %d 个路由模块未能发现，其接口将整体不可用：%s",
+            len(skipped),
+            "; ".join(f"{m}({r})" for m, r in skipped),
+        )
 
     return routers
 
@@ -228,6 +239,7 @@ def auto_register_routes(
     package_dir = Path(package.__file__).parent
     exclude = exclude_modules or set()
     count = 0
+    skipped: list[tuple[str, str]] = []
 
     for _, module_name, _ in pkgutil.iter_modules([str(package_dir)]):
         if module_name.startswith("_") or module_name in ("auto_discovery",) or module_name in exclude:
@@ -256,9 +268,21 @@ def auto_register_routes(
                     )
                     count += 1
                     log.debug("自动挂载路由: %s (prefix=%s)", full_module, prefix)
-        except Exception as e:
-            log.warning("跳过路由模块 %s: %s", full_module, e)
+        except ImportError as e:
+            # 依赖缺失 = 部署问题，整批接口会消失，必须 error 级 + 汇总
+            skipped.append((module_name, f"ImportError: {e}"))
+            log.error("路由模块依赖缺失，已跳过 %s: %s", full_module, e)
+        except Exception as e:  # noqa: BLE001
+            skipped.append((module_name, f"{type(e).__name__}: {e}"))
+            log.error("路由模块挂载失败，已跳过 %s: %s", full_module, e)
+
+    if skipped:
+        # 汇总一行，避免「路由批量消失却无人察觉」（2026-09-24 孤岛普查发现）
+        log.error(
+            "⚠️ 共 %d 个路由模块未注册，其接口将整体不可用：%s",
+            len(skipped),
+            "; ".join(f"{m}({r})" for m, r in skipped),
+        )
 
     log.info("自动注册 %d 个路由模块", count)
-    return count
     return count

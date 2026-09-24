@@ -760,8 +760,10 @@ def _check_ubrain_stack(report: ReadinessReport) -> None:
     :return: 返回处理结果。
     """
     try:
-        from app.main import app
-        paths = [getattr(r, "path", "") or "" for r in app.routes]
+        from app.core.route_introspection import mounted_route_paths
+
+        # 2026-09-24 修复：`app.routes` 看不到惰性 include_router 包装的路由
+        paths = mounted_route_paths()
         needed = ["/api/v1/ubrain/chat", "/api/v1/trade-intel/feasibility"]
         missing = [p for p in needed if p not in paths]
         if missing:
@@ -850,8 +852,10 @@ def check_mounted_routes() -> ReadinessCheck:
     ]
     seo_any = ["/api/v1/seo/site-audit", "/api/v1/seo/run-audit"]
     try:
-        from app.main import app
-        paths = [getattr(r, "path", "") or "" for r in app.routes]
+        from app.core.route_introspection import mounted_route_paths
+
+        # 2026-09-24 修复：`app.routes` 看不到惰性 include_router 包装的路由
+        paths = mounted_route_paths()
         missing = [
             p for p in required if not any(x.startswith(p) for x in paths)
         ]

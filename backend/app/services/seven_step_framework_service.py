@@ -28,8 +28,11 @@ def _route_ok(paths: list[str], needle: str) -> bool:
 
 def run_seven_step_audit(db: Session, demo_domain: str | None = None) -> dict[str, Any]:
     """按产品七步 1→7 返回每步 pass/warn/fail（框架最重要验收）。"""
-    from app.main import app
-    paths = [getattr(r, "path", "") or "" for r in app.routes]
+    from app.core.route_introspection import mounted_route_paths
+
+    # 2026-09-24 修复：原用 `app.routes` 只能看到 18 条主 app 路由，
+    # 看不到被 include_router 惰性包装的 1800+ 条业务路由 → 恒判「缺少 payment/tenants 路由」。
+    paths = mounted_route_paths()
     readiness = run_readiness_checks(db)
     route_check = check_mounted_routes()
     https_report = demo_https_rehearsal_report(demo_domain)
