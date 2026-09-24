@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.response import APIResponse, error_response, success_response
@@ -1105,6 +1106,49 @@ def add_tenant_domain(
         tenant.custom_domains = json.dumps(cur)
         db.commit()
     return success_response(message="域名已添加", data={"domain": body.domain})
+
+
+@router.get("/check-domain")
+def check_tenant_domain(
+    domain: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """检查域名是否已被其他租户占用。
+
+    2026-09-24 补齐（缺失接口逐个修复）：
+      前端 `views/tenants/dashboard.vue:551` 在**创建租户前**调
+      `GET /api/v1/tenants/check-domain?domain=xxx`，期望 `{exists: boolean}`，
+      但该端点零命中 → `domainCheck?.exists` 恒为 undefined → **重名检查形同虚设**。
+
+    求真：同时比对主域名（tenants.domain）与自定义域名（tenants.custom_domains），
+    命中即返回 exists=true；查询失败不吞异常。
+    """
+    want = (domain or "").strip().lower()
+    if not want:
+        return error_response(400, "domain 不能为空")
+
+    # 主域名精确匹配
+    hit = db.query(Tenant).filter(func.lower(Tenant.domain) == want).first()
+    if hit:
+        return success_response(data={"exists": True, "reason": "primary_domain_taken"})
+
+    # 自定义域名：custom_domains 为 JSON 字符串（也可能被写成 list）
+    for t in db.query(Tenant).filter(Tenant.custom_domains.isnot(None)).all():
+        raw = t.custom_domains
+        if isinstance(raw, str):
+            try:
+                items = json.loads(raw) if raw else []
+            except Exception:  # noqa: BLE001
+                items = [raw] if raw else []
+        elif isinstance(raw, list):
+            items = raw
+        else:
+            continue
+        if want in [str(d).strip().lower() for d in items if d]:
+            return success_response(data={"exists": True, "reason": "custom_domain_taken"})
+
+    return success_response(data={"exists": False})
 
 
 @router.post("/domains/verify")
