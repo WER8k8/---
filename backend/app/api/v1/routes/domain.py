@@ -230,6 +230,44 @@ def remove_domain(
 # ---------- 验证 DNS ----------
 
 
+def probe_domain_dns(domain: str) -> bool:
+    """探测域名 DNS 是否已生效。
+
+    判定顺序：A/AAAA 记录（socket.getaddrinfo）→ CNAME 指向 youding/saas。
+    dnspython 未安装时退化为仅 socket 检查。**探测失败一律返回 False，不伪造通过。**
+
+    2026-09-24 抽出为模块级函数：供本文件 verify_domain 与
+    `tenants.py` 的 `/tenants/domains/verify` 便捷端点共用，避免 DNS 逻辑重复实现。
+    """
+    import socket
+
+    try:
+        socket.getaddrinfo(domain, 80)
+        return True
+    except socket.gaierror:
+        pass
+    except (TimeoutError, Exception):  # noqa: BLE001
+        return False
+
+    # CNAME 可能还未生效或没有 A 记录，尝试 CNAME 查询
+    try:
+        import dns.exception
+        import dns.resolver
+
+        try:
+            answers = dns.resolver.resolve(domain, "CNAME")
+            for rdata in answers:
+                target = str(rdata.target).rstrip(".")
+                if "youding" in target or "saas" in target:
+                    return True
+        except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.DNSException):
+            return False
+    except ImportError:
+        # dnspython 未安装，只做 socket 检查
+        return False
+    return False
+
+
 @router.get(
     "/tenants/{tenant_id}/domains/{domain:path}/verify",
     response_model=APIResponse[DomainBindingResponse],
@@ -250,36 +288,14 @@ def verify_domain(
     if domain not in domains:
         return error_response(404, f"域名 {domain} 未绑定")
 
-    verified = False
-    try:
-        import socket
-        try:
-            result = socket.getaddrinfo(domain, 80)
-            verified = True
-        except socket.gaierror:
-            # CNAME 可能还未生效或没有 A 记录，尝试 CNAME 查询
-            try:
-                import dns.resolver
-                try:
-                    answers = dns.resolver.resolve(domain, "CNAME")
-                    for rdata in answers:
-                        target = str(rdata.target).rstrip(".")
-                        if "youding" in target or "saas" in target:
-                            verified = True
-                            break
-                except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.DNSException):
-                    pass
-            except ImportError:
-                # dnspython 未安装，只做 socket 检查
-                pass
-    except (socket.gaierror, TimeoutError, Exception):
-        pass
-        return DomainBindingResponse(
-            domain=domain,
-            verified=verified,
-            ssl_status=ssl_status_for_domain(tenant, domain),
-            cname_target="saas.youding.com",
-        )
+    # ⚠️ 2026-09-24 修复：原实现的 return 误缩进在 except 块内
+    #    → **成功路径会掉出函数返回 None**。现改为无条件返回。
+    return DomainBindingResponse(
+        domain=domain,
+        verified=probe_domain_dns(domain),
+        ssl_status=ssl_status_for_domain(tenant, domain),
+        cname_target="saas.youding.com",
+    )
 
 
 # ---------- 触发 SSL ----------

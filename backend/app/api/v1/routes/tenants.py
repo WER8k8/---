@@ -1107,6 +1107,61 @@ def add_tenant_domain(
     return success_response(message="域名已添加", data={"domain": body.domain})
 
 
+@router.post("/domains/verify")
+def verify_tenant_domain(
+    body: AddTenantDomainRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """验证当前租户自定义域名的 DNS 是否已生效。
+
+    2026-09-24 补齐（缺失接口逐个修复）：
+      前端 `views/tenants/domain.vue:209` 调 `POST /api/v1/tenants/domains/verify`
+      （body `{domain}`），而 DNS 探测能力此前只存在于
+      `/api/v1/domains/tenants/{tenant_id}/domains/{domain}/verify` —— 那条要前端传
+      tenant_id，但该页面拿不到 → 前端恒 404。
+
+      本端点把 tenant_id 从当前登录用户解析出来，复用 `probe_domain_dns`，不重复实现 DNS 逻辑。
+
+    求真：前端以 **HTTP 状态码** 判定成败（`if (res.ok)` 才提示「验证通过」），
+    因此 DNS 未生效时必须返回 4xx，**不能**用 200 + verified=false 蒙过去。
+    """
+    ut = db.query(UserTenant).filter(UserTenant.user_id == current_user.id, UserTenant.is_active.is_(True)).first()
+    tenant = db.query(Tenant).filter(Tenant.id == ut.tenant_id).first() if ut else db.query(Tenant).first()
+    if not tenant:
+        return error_response(404, "租户不存在")
+
+    domain = body.domain.strip().lower()
+    raw = tenant.custom_domains
+    if isinstance(raw, str):
+        try:
+            bound = json.loads(raw) if raw else []
+        except Exception:  # noqa: BLE001
+            bound = [raw] if raw else []
+    elif isinstance(raw, list):
+        bound = list(raw)
+    else:
+        bound = []
+    if domain not in [str(d).strip().lower() for d in bound]:
+        return error_response(404, f"域名 {domain} 未绑定到当前租户")
+
+    from app.api.v1.routes.domain import probe_domain_dns, ssl_status_for_domain
+
+    if not probe_domain_dns(domain):
+        return error_response(
+            400, f"DNS 未生效：请确认 {domain} 的 CNAME 已指向 saas.youding.com"
+        )
+    return success_response(
+        message="DNS 验证通过",
+        data={
+            "domain": domain,
+            "verified": True,
+            "cname_target": "saas.youding.com",
+            "ssl_status": ssl_status_for_domain(tenant, domain),
+        },
+    )
+
+
 @router.get("/{tenant_id}", response_model=APIResponse[TenantResponse])
 def get_tenant(
     tenant_id: str,
