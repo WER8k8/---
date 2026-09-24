@@ -481,6 +481,41 @@ def delete_publish_task(
 # ==================== 发布日志 ====================
 
 
+class PlatformFailureReviewBody(BaseModel):
+    """失败归因复核请求体（与 `publish_tasks.FailureReviewBody` 字段保持一致）。"""
+
+    attribution: str = Field(..., min_length=2, max_length=500, description="失败归因结论")
+    note: Optional[str] = Field(None, max_length=500)
+
+
+@router.post("/publish/tasks/{task_id}/failure-review")
+def failure_review_publish_task(
+    task_id: str,
+    body: PlatformFailureReviewBody,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """失败归因复核标记（`/platforms` 家族的入口）。
+
+    2026-09-24 补齐（缺失接口逐个修复）：
+      前端 `views/admin/system/greedy-publish-queue.vue:228` 调
+      `POST /api/v1/platforms/publish/tasks/{id}/failure-review`，
+      但该能力只实现在 **另一个路由家族** `/api/v1/publish-tasks/{id}/failure-review`
+      （`publish_tasks.py`）—— 两个家族并存，功能只落在一个里 → 前端恒 404。
+
+      本端点**委托** `publish_tasks.failure_review_publish_task`，
+      **不复制状态机规则**（`_publish_can_transition` 保持单一真源，避免两处漂移）。
+    """
+    from app.api.v1.routes import publish_tasks as _pt
+
+    return _pt.failure_review_publish_task(
+        task_id=task_id,
+        body=_pt.FailureReviewBody(attribution=body.attribution, note=body.note),
+        db=db,
+        current_user=current_user,
+    )
+
+
 @router.get("/publish/logs")
 def list_publish_logs(
     task_id: Optional[str] = Query(None),
