@@ -257,11 +257,11 @@
               <a-divider>触达记录</a-divider>
               <template v-if="currentLead.hasContactData">
                 <a-descriptions :column="2" size="small" bordered>
-                  <a-descriptions-item label="触达次数">{{ currentLead.contactCount }}</a-descriptions-item>
+                  <a-descriptions-item label="触达次数">{{ fmtNum(currentLead.contactCount) }}</a-descriptions-item>
                   <a-descriptions-item label="上次触达">{{ formatTime(currentLead.lastContactedAt) }}</a-descriptions-item>
                   <a-descriptions-item label="上次触达渠道">{{ currentLead.lastContactedChannel || '—' }}</a-descriptions-item>
-                  <a-descriptions-item label="打开/点击">{{ currentLead.openCount }} / {{ currentLead.clickCount }}</a-descriptions-item>
-                  <a-descriptions-item label="回复次数">{{ currentLead.replyCount }}</a-descriptions-item>
+                  <a-descriptions-item label="打开/点击">{{ fmtNum(currentLead.openCount) }} / {{ fmtNum(currentLead.clickCount) }}</a-descriptions-item>
+                  <a-descriptions-item label="回复次数">{{ fmtNum(currentLead.replyCount) }}</a-descriptions-item>
                   <a-descriptions-item label="上次回复">{{ formatTime(currentLead.lastRepliedAt) }}</a-descriptions-item>
                 </a-descriptions>
               </template>
@@ -454,12 +454,20 @@ function normalizeLeadDetail(d: any) {
   ]
   // 触达字段是否由后端提供：全部缺省时如实提示，不伪造 0
   const hasContactData =
-    d?.contactCount !== undefined
-    || d?.contact_count !== undefined
-    || d?.lastContactedAt !== undefined
-    || d?.last_contacted_at !== undefined
-    || d?.replyCount !== undefined
-    || d?.reply_count !== undefined
+  d?.contactCount != null
+    || d?.contact_count != null
+    || d?.lastContactedAt != null
+    || d?.last_contacted_at != null
+    || d?.lastContactedChannel != null
+    || d?.last_contacted_channel != null
+    || d?.openCount != null
+    || d?.open_count != null
+    || d?.clickCount != null
+    || d?.click_count != null
+    || d?.replyCount != null
+    || d?.reply_count != null
+    || d?.lastRepliedAt != null
+    || d?.last_replied_at != null
   return {
     ...d,
     overallScore: Number(d?.overallScore ?? sb.overall ?? 0),
@@ -469,12 +477,12 @@ function normalizeLeadDetail(d: any) {
     scoreBreakdown,
     evidenceChain: normalizeEvidenceChain(d?.evidenceChain ?? d?.evidence_chain),
     hasContactData,
-    contactCount: d?.contactCount ?? d?.contact_count ?? 0,
+    contactCount: d?.contactCount ?? d?.contact_count ?? null,
     lastContactedAt: d?.lastContactedAt ?? d?.last_contacted_at ?? '',
     lastContactedChannel: d?.lastContactedChannel ?? d?.last_contacted_channel ?? '',
-    openCount: d?.openCount ?? d?.open_count ?? 0,
-    clickCount: d?.clickCount ?? d?.click_count ?? 0,
-    replyCount: d?.replyCount ?? d?.reply_count ?? 0,
+    openCount: d?.openCount ?? d?.open_count ?? null,
+    clickCount: d?.clickCount ?? d?.click_count ?? null,
+    replyCount: d?.replyCount ?? d?.reply_count ?? null,
     lastRepliedAt: d?.lastRepliedAt ?? d?.last_replied_at ?? '',
   }
 }
@@ -629,6 +637,10 @@ function getScoreColor(score: number): string {
   if (score >= 60) return '#1890ff'
   if (score >= 40) return '#faad14'
   return '#ff4d4f'
+}
+
+function fmtNum(v: unknown): string {
+  return v === null || v === undefined ? '—' : String(v)
 }
 
 function formatTime(timestamp: string): string {

@@ -65,7 +65,10 @@
         <template #extra>
           <a-space :size="8">
             <a-tag v-if="channels" color="processing">共 {{ channels.channels.length }}</a-tag>
-            <a-tag v-if="channels && channels.mock_count" color="warning">演示 {{ channels.mock_count }}</a-tag>
+            <a-tag v-if="channelCounts.live" color="success">可用 {{ channelCounts.live }}</a-tag>
+            <a-tag v-if="channelCounts.mock" color="warning">演示 {{ channelCounts.mock }}</a-tag>
+            <a-tag v-if="channelCounts.degraded" color="processing">降级 {{ channelCounts.degraded }}</a-tag>
+            <a-tag v-if="channelCounts.blocked" color="error">不可用 {{ channelCounts.blocked }}</a-tag>
             <a-button size="small" :loading="channelsLoading" @click="loadChannels">刷新</a-button>
           </a-space>
         </template>
@@ -1081,7 +1084,7 @@ import {
 } from '@/api/acquisition'
 import { apiGet } from '@/utils/api'
 import ChannelStatusBadge from '@/components/growth/ChannelStatusBadge.vue'
-import { CHANNEL_STATE_ORDER } from '@/utils/channelStatus'
+import { CHANNEL_STATE_ORDER, normalizeChannelState } from '@/utils/channelStatus'
 
 const loading = ref(false)
 const alert = ref('')
@@ -1116,6 +1119,14 @@ const followupLoading = ref(false)
 const channels = ref<Awaited<ReturnType<typeof listAcquisitionChannels>> | null>(null)
 const channelsLoading = ref(false)
 const channelsError = ref('')
+
+const channelCounts = computed(() => {
+  const acc = { live: 0, mock: 0, degraded: 0, blocked: 0 }
+  for (const ch of channels.value?.channels || []) {
+    acc[normalizeChannelState(ch.status)] += 1
+  }
+  return acc
+})
 
 async function loadChannels() {
   channelsLoading.value = true
