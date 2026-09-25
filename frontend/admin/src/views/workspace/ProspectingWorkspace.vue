@@ -186,38 +186,92 @@
         <a-drawer
           v-model:open="showDetailDrawer"
           title="线索详情"
-          width="600"
+          width="640"
           placement="right"
         >
-          <div v-if="currentLead" class="lead-detail">
-            <div class="detail-header">
-              <h3>{{ currentLead.companyName }}</h3>
-              <a-tag :color="getScoreColor(currentLead.overallScore)">
-                {{ currentLead.overallScore }} 分
-              </a-tag>
+          <a-spin :spinning="detailLoading">
+            <div v-if="detailError" class="detail-error">
+              <a-alert type="error" show-icon :message="detailError" />
+              <a-button size="small" class="detail-retry" @click="reloadDetail">重试</a-button>
             </div>
 
-            <a-divider />
+            <div v-if="currentLead" class="lead-detail">
+              <div class="detail-header">
+                <h3>{{ currentLead.companyName || '未命名线索' }}</h3>
+                <a-space>
+                  <a-tag :color="currentLead.stageInfo.color">{{ currentLead.stageInfo.label }}</a-tag>
+                  <a-tag :color="getScoreColor(currentLead.overallScore)">
+                    {{ currentLead.overallScore }} 分
+                  </a-tag>
+                </a-space>
+              </div>
 
-            <ScoreRadar :scores="currentLead.scoreBreakdown" />
+              <!-- 阶段进度：当前阶段在 7 段主链上的位置 -->
+              <div v-if="currentLead.stageInfo.index >= 0" class="stage-track">
+                <div
+                  v-for="(s, i) in STAGE_ORDER"
+                  :key="s"
+                  class="stage-node"
+                  :class="{
+                    'is-done': i < currentLead.stageInfo.index,
+                    'is-current': i === currentLead.stageInfo.index,
+                  }"
+                >
+                  <span class="stage-dot"></span>
+                  <span class="stage-name">{{ STAGE_LABELS[s] }}</span>
+                </div>
+              </div>
+              <a-alert
+                v-else
+                class="mt-2"
+                type="warning"
+                show-icon
+                :message="`当前阶段：${currentLead.stageInfo.label}`"
+              />
 
-            <a-divider />
-
-            <EvidenceChain :evidences="currentLead.evidenceChain" />
-
-            <a-divider />
-
-            <div class="detail-info">
-              <a-descriptions :column="2" size="small">
-                <a-descriptions-item label="国家">{{ currentLead.country }}</a-descriptions-item>
-                <a-descriptions-item label="行业">{{ currentLead.industry }}</a-descriptions-item>
-                <a-descriptions-item label="邮箱">{{ currentLead.email || '暂无' }}</a-descriptions-item>
-                <a-descriptions-item label="电话">{{ currentLead.phone || '暂无' }}</a-descriptions-item>
-                <a-descriptions-item label="网站">{{ currentLead.website || '暂无' }}</a-descriptions-item>
-                <a-descriptions-item label="LinkedIn">{{ currentLead.linkedinUrl || '暂无' }}</a-descriptions-item>
+              <a-divider>来源与基本信息</a-divider>
+              <a-descriptions :column="2" size="small" bordered>
+                <a-descriptions-item label="来源">
+                  {{ SOURCE_LABELS[currentLead.source] || currentLead.source || '未知来源' }}
+                </a-descriptions-item>
+                <a-descriptions-item label="当前阶段">
+                  {{ currentLead.stageInfo.label }}
+                </a-descriptions-item>
+                <a-descriptions-item label="国家">{{ currentLead.country || '—' }}</a-descriptions-item>
+                <a-descriptions-item label="行业">{{ currentLead.industry || '—' }}</a-descriptions-item>
+                <a-descriptions-item label="邮箱">{{ currentLead.email || '—' }}</a-descriptions-item>
+                <a-descriptions-item label="电话">{{ currentLead.phone || '—' }}</a-descriptions-item>
+                <a-descriptions-item label="网站">{{ currentLead.website || '—' }}</a-descriptions-item>
+                <a-descriptions-item label="LinkedIn">{{ currentLead.linkedinUrl || '—' }}</a-descriptions-item>
               </a-descriptions>
+
+              <!-- 评分理由（4 维） -->
+              <a-divider>评分理由（4 维）</a-divider>
+              <ScoreRadar :scores="currentLead.scoreBreakdown" />
+
+              <!-- 证据链 -->
+              <a-divider>证据链</a-divider>
+              <EvidenceChain :evidences="currentLead.evidenceChain" />
+
+              <!-- 触达记录 -->
+              <a-divider>触达记录</a-divider>
+              <template v-if="currentLead.hasContactData">
+                <a-descriptions :column="2" size="small" bordered>
+                  <a-descriptions-item label="触达次数">{{ currentLead.contactCount }}</a-descriptions-item>
+                  <a-descriptions-item label="上次触达">{{ formatTime(currentLead.lastContactedAt) }}</a-descriptions-item>
+                  <a-descriptions-item label="上次触达渠道">{{ currentLead.lastContactedChannel || '—' }}</a-descriptions-item>
+                  <a-descriptions-item label="打开/点击">{{ currentLead.openCount }} / {{ currentLead.clickCount }}</a-descriptions-item>
+                  <a-descriptions-item label="回复次数">{{ currentLead.replyCount }}</a-descriptions-item>
+                  <a-descriptions-item label="上次回复">{{ formatTime(currentLead.lastRepliedAt) }}</a-descriptions-item>
+                </a-descriptions>
+              </template>
+              <a-empty
+                v-else
+                :image="null"
+                description="后端未返回触达字段，暂无法展示（需接口补齐）"
+              />
             </div>
-          </div>
+          </a-spin>
         </a-drawer>
       </div>
 
@@ -260,7 +314,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import {
@@ -306,6 +360,124 @@ const resultSort = ref('score')
 // 详情
 const showDetailDrawer = ref(false)
 const currentLead = ref<any>(null)
+const detailLoading = ref(false)
+const detailError = ref('')
+let detailAbort: AbortController | null = null
+
+onUnmounted(() => {
+  detailAbort?.abort()
+})
+
+// 线索来源（LeadSource 枚举）中文标签
+const SOURCE_LABELS: Record<string, string> = {
+  google_cse: 'Google 搜索',
+  website_scrape: '网站抓取',
+  hunter_io: 'Hunter.io',
+  apollo_io: 'Apollo.io',
+  linkedin: 'LinkedIn',
+  whatsapp: 'WhatsApp',
+  reddit: 'Reddit',
+  tiktok: 'TikTok',
+  quora: 'Quora',
+  manual_import: '手动导入',
+  referral: '客户推荐',
+}
+
+// 线索阶段（LeadStatus 枚举）中文标签 + 主链顺序
+const STAGE_ORDER = ['discovered', 'enriched', 'verified', 'qualified', 'contacted', 'engaged', 'converted']
+const STAGE_LABELS: Record<string, string> = {
+  discovered: '刚发现',
+  enriched: '已补全',
+  verified: '已验证',
+  qualified: '已认证',
+  contacted: '已联系',
+  engaged: '有互动',
+  converted: '已转化',
+  archived: '已归档',
+  invalid: '无效',
+}
+
+function stageInfo(status?: string): { label: string; color: string; index: number } {
+  const key = String(status || '').toLowerCase()
+  const label = STAGE_LABELS[key] || key || '未知'
+  const idx = STAGE_ORDER.indexOf(key)
+  if (idx >= 0) {
+    const colors = ['default', 'cyan', 'blue', 'geekblue', 'orange', 'purple', 'green']
+    return { label, color: colors[idx] || 'default', index: idx }
+  }
+  // 归档 / 无效等离链终态
+  return { label, color: key === 'invalid' ? 'error' : 'default', index: -1 }
+}
+
+// 证据链字段归一化：兼容后端 snake_case 与数值型置信度
+function normalizeConfidence(raw: unknown): 'high' | 'medium' | 'low' {
+  if (typeof raw === 'string') {
+    const s = raw.toLowerCase()
+    if (s === 'high' || s === 'medium' || s === 'low') return s
+    if (s === 'high_confidence' || s === 'verified') return 'high'
+    return 'medium'
+  }
+  if (typeof raw === 'number') {
+    const v = raw > 1 ? raw / 100 : raw
+    if (v >= 0.7) return 'high'
+    if (v >= 0.4) return 'medium'
+    return 'low'
+  }
+  return 'medium'
+}
+
+const EVIDENCE_TYPES = ['website', 'email', 'contact', 'certification', 'search', 'linkedin']
+function normalizeEvidenceChain(raw: unknown): Array<Record<string, unknown>> {
+  if (!Array.isArray(raw)) return []
+  return raw.map((item) => {
+    const it = (item || {}) as Record<string, unknown>
+    const type = String(it.type || 'search')
+    return {
+      type: EVIDENCE_TYPES.includes(type) ? type : 'search',
+      content: String(it.content || ''),
+      sourceUrl: (it.sourceUrl as string) || (it.source_url as string) || '',
+      confidence: normalizeConfidence(it.confidence),
+      timestamp: (it.timestamp as string) || '',
+      details: typeof it.details === 'string' ? it.details : it.details ? JSON.stringify(it.details) : '',
+    }
+  })
+}
+
+// 详情字段归一化：把 detail 接口返回的 {match,email,evidence,contact} 转成雷达图所需数组
+function normalizeLeadDetail(d: any) {
+  const sb = d?.scoreBreakdown || {}
+  const scoreBreakdown = [
+    { label: '匹配度', value: Number(sb.match ?? d?.scoreMatch ?? 0), description: '产品词 + 行业 + 国家匹配（权重 30%）' },
+    { label: '邮箱可信度', value: Number(sb.email ?? d?.scoreEmail ?? 0), description: '邮箱验证状态（权重 25%）' },
+    { label: '证据完整度', value: Number(sb.evidence ?? d?.scoreEvidence ?? 0), description: '证据链条数与置信度（权重 25%）' },
+    { label: '联系人完整度', value: Number(sb.contact ?? d?.scoreContact ?? 0), description: '关键人可达性（权重 20%）' },
+  ]
+  // 触达字段是否由后端提供：全部缺省时如实提示，不伪造 0
+  const hasContactData =
+    d?.contactCount !== undefined
+    || d?.contact_count !== undefined
+    || d?.lastContactedAt !== undefined
+    || d?.last_contacted_at !== undefined
+    || d?.replyCount !== undefined
+    || d?.reply_count !== undefined
+  return {
+    ...d,
+    overallScore: Number(d?.overallScore ?? sb.overall ?? 0),
+    source: d?.source ?? '',
+    status: d?.status ?? '',
+    stageInfo: stageInfo(d?.status),
+    scoreBreakdown,
+    evidenceChain: normalizeEvidenceChain(d?.evidenceChain ?? d?.evidence_chain),
+    hasContactData,
+    contactCount: d?.contactCount ?? d?.contact_count ?? 0,
+    lastContactedAt: d?.lastContactedAt ?? d?.last_contacted_at ?? '',
+    lastContactedChannel: d?.lastContactedChannel ?? d?.last_contacted_channel ?? '',
+    openCount: d?.openCount ?? d?.open_count ?? 0,
+    clickCount: d?.clickCount ?? d?.click_count ?? 0,
+    replyCount: d?.replyCount ?? d?.reply_count ?? 0,
+    lastRepliedAt: d?.lastRepliedAt ?? d?.last_replied_at ?? '',
+  }
+}
 
 // 追踪
 const trackingData = ref<any[]>([])
@@ -390,17 +562,34 @@ function toggleSelect(id: string) {
 }
 
 function viewLeadDetail(lead: any) {
-  currentLead.value = {
-    ...lead,
-    scoreBreakdown: [
-      { label: '匹配度', value: lead.scoreMatch || 0, description: '产品与市场匹配' },
-      { label: '邮箱质量', value: lead.scoreEmail || 0, description: '邮箱验证状态' },
-      { label: '证据强度', value: lead.scoreEvidence || 0, description: '证据链完整度' },
-      { label: '联系人', value: lead.scoreContact || 0, description: '关键人可达性' },
-    ],
-    evidenceChain: lead.evidenceChain || []
-  }
+  // 先用列表行的真实字段即时渲染基础信息（不编造），再拉详情补全证据链/评分/触达
+  currentLead.value = normalizeLeadDetail(lead)
   showDetailDrawer.value = true
+  void loadLeadDetail(lead.id)
+}
+
+function reloadDetail() {
+  if (currentLead.value?.id) void loadLeadDetail(currentLead.value.id)
+}
+
+async function loadLeadDetail(leadId: string) {
+  detailLoading.value = true
+  detailError.value = ''
+  detailAbort?.abort()
+  const controller = new AbortController()
+  detailAbort = controller
+  try {
+    const res = await apiGet(`/workspace/prospecting/leads/${encodeURIComponent(leadId)}`, undefined, {
+      signal: controller.signal,
+    })
+    if (controller.signal.aborted) return
+    currentLead.value = normalizeLeadDetail(res)
+  } catch (error) {
+    if (controller.signal.aborted) return
+    detailError.value = error instanceof Error ? error.message : '线索详情加载失败，请重试'
+  } finally {
+    if (detailAbort === controller) detailLoading.value = false
+  }
 }
 
 function openOutreach(lead: any) {
@@ -443,8 +632,10 @@ function getScoreColor(score: number): string {
 }
 
 function formatTime(timestamp: string): string {
+  if (!timestamp) return '—'
   try {
     const date = new Date(timestamp)
+    if (Number.isNaN(date.getTime())) return '—'
     return date.toLocaleString('zh-CN')
   } catch {
     return timestamp
@@ -568,14 +759,65 @@ async function loadLeads() {
     align-items: center;
   }
 
+  .detail-error {
+    margin-bottom: 12px;
+
+    .detail-retry {
+      margin-top: 8px;
+    }
+  }
+
   .lead-detail {
     .detail-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
 
       h3 {
         margin: 0;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break: break-word;
+      }
+    }
+
+    .stage-track {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #fafafa;
+      border-radius: 6px;
+
+      .stage-node {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #999;
+
+        .stage-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #d9d9d9;
+          flex-shrink: 0;
+        }
+
+        &.is-done {
+          color: var(--uj-success, #52c41a);
+          .stage-dot { background: var(--uj-success, #52c41a); }
+        }
+
+        &.is-current {
+          color: var(--uj-brand, #4a9b8c);
+          font-weight: 600;
+          .stage-dot { background: var(--uj-brand, #4a9b8c); box-shadow: 0 0 0 3px var(--uj-brand-muted, rgb(74 155 140 / 0.18)); }
+        }
       }
     }
   }

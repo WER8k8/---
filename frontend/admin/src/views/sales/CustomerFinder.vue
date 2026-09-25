@@ -300,12 +300,13 @@ import CustomsBuyerResearchPanel from '@/components/sales/CustomsBuyerResearchPa
 import SearchSyntaxPreview from '@/components/whatsfinds/SearchSyntaxPreview.vue';
 import type { Customer, CustomerFilters, SearchCriteria } from '@/types/sales';
 import { apiPut, apiGet, apiPost, authHeaders } from '@/utils/api';
+import { channelStateSuffix } from '@/utils/channelStatus';
 
-// FIX-5: 渠道状态类型
+// FIX-5: 渠道状态类型（后端当前 real/mock/coming_soon，向前兼容四态）
 interface ChannelStatus {
   id: string;
   name: string;
-  status: 'real' | 'mock' | 'coming_soon';
+  status: string;
   reason: string;
 }
 
@@ -517,8 +518,9 @@ const searchSourceOptions = computed(() => {
     // 零成本引擎始终是真实的
     if (opt.value === 'free_pipeline') return opt;
     const ch = map[opt.value];
-    if (!ch || ch.status === 'real') return opt;
-    return { ...opt, label: `${opt.label}（演示）` };
+    const suffix = channelStateSuffix(ch?.status);
+    if (!ch || !suffix) return opt;
+    return { ...opt, label: `${opt.label}${suffix}` };
   });
 });
 

@@ -60,13 +60,52 @@
         <a-alert v-if="alert" class="mt-3" :type="alertType" show-icon :message="alert" />
       </a-card>
 
-      <a-card v-if="channels && channels.channels.length" size="small" title="获客渠道（红标=演示/未开通）">
-        <div class="flex flex-wrap gap-2">
-          <a-tag v-for="ch in channels.channels" :key="ch.id" :color="ch.is_mock ? 'error' : 'success'">
-            {{ ch.name }}{{ ch.is_mock ? ' · 演示' : ' · 可用' }}
-          </a-tag>
-        </div>
-        <div class="text-xs text-gray-500 mt-1">{{ channels.hint }}</div>
+      <!-- 渠道可观测性：四态徽标（live / mock / degraded / blocked），live 才可当真实商机 -->
+      <a-card size="small" title="获客渠道状态">
+        <template #extra>
+          <a-space :size="8">
+            <a-tag v-if="channels" color="processing">共 {{ channels.channels.length }}</a-tag>
+            <a-tag v-if="channels && channels.mock_count" color="warning">演示 {{ channels.mock_count }}</a-tag>
+            <a-button size="small" :loading="channelsLoading" @click="loadChannels">刷新</a-button>
+          </a-space>
+        </template>
+
+        <a-spin :spinning="channelsLoading">
+          <!-- 错误态：可读提示 + 重试入口，不静默失败 -->
+          <div v-if="channelsError" class="flex flex-col gap-2">
+            <a-alert type="error" show-icon :message="channelsError" />
+            <a-button size="small" @click="loadChannels">重试</a-button>
+          </div>
+
+          <template v-else-if="channels && channels.channels.length">
+            <div class="flex flex-wrap gap-2">
+              <ChannelStatusBadge
+                v-for="ch in channels.channels"
+                :key="ch.id"
+                :status="ch.status"
+                :name="ch.name"
+                :reason="ch.reason"
+              />
+            </div>
+            <div class="text-xs text-gray-500 mt-2">
+              {{ channels.hint || '标记为「演示/降级/不可用」的渠道结果不可当作真实线索。' }}
+            </div>
+            <div class="flex flex-wrap items-center gap-3 mt-2">
+              <span class="text-xs text-gray-400">图例：</span>
+              <ChannelStatusBadge
+                v-for="s in CHANNEL_STATE_ORDER"
+                :key="s"
+                :status="s"
+                variant="plain"
+              />
+            </div>
+          </template>
+
+          <!-- 空态 -->
+          <div v-else class="text-gray-400 text-sm py-2">
+            暂未获取到渠道状态，点「刷新」重试。
+          </div>
+        </a-spin>
       </a-card>
 
       <!-- 今日待办 SLA -->
@@ -1041,6 +1080,8 @@ import {
   type ScoreDisplay,
 } from '@/api/acquisition'
 import { apiGet } from '@/utils/api'
+import ChannelStatusBadge from '@/components/growth/ChannelStatusBadge.vue'
+import { CHANNEL_STATE_ORDER } from '@/utils/channelStatus'
 
 const loading = ref(false)
 const alert = ref('')
@@ -1073,9 +1114,25 @@ const intentAnalysis = ref<{
 
 const followupLoading = ref(false)
 const channels = ref<Awaited<ReturnType<typeof listAcquisitionChannels>> | null>(null)
+const channelsLoading = ref(false)
+const channelsError = ref('')
 
 async function loadChannels() {
-  try { channels.value = await listAcquisitionChannels() } catch { channels.value = null }
+  channelsLoading.value = true
+  channelsError.value = ''
+  try {
+    const res = await listAcquisitionChannels()
+    channels.value = res
+    // 后端在渠道状态服务异常时仍返回 200，但带 error 字段 —— 必须显式提示
+    if (res?.error) {
+      channelsError.value = `渠道状态服务异常：${res.error}`
+    }
+  } catch (e) {
+    channels.value = null
+    channelsError.value = e instanceof Error ? e.message : '渠道状态获取失败，请稍后重试'
+  } finally {
+    channelsLoading.value = false
+  }
 }
 const followups = ref<Awaited<ReturnType<typeof listFollowups>> | null>(null)
 
