@@ -101,6 +101,30 @@ def create_llms_config(
     return config
 
 
+@router.get("/performance")
+def seo_performance(
+    db: Session = Depends(get_db),
+):
+    """SEO 性能与安全监控（占位端点，不编造数据）。
+
+    真实数据源（Lighthouse / CrUX / 站点探测）尚未接入；
+    按诚实策略返回空指标 + 说明，前端 performance.vue 会据此显示 empty 空态。
+    """
+    return success_response(data={
+        "page_speed_score": None,
+        "lcp": None,
+        "fid": None,
+        "cls": None,
+        "security_score": None,
+        "vuln_count": None,
+        "cert_days": None,
+        "seo_checks": [],
+        "audit_logs": [],
+        "source": "none",
+        "note": "数据源未接入：性能/安全监控尚未实现（无 Lighthouse/CrUX 采集）",
+    })
+
+
 @router.put("/llms/{config_id}", response_model=LlmsConfigResponse)
 def update_llms_config(
         config_id: str,

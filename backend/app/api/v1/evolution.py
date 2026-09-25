@@ -13,7 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.response import success_response
+from app.core.response import error_response, success_response
 from app.core.security import require_admin
 from app.models.evolution import ApprovalRecord
 from app.services.evolution import (
@@ -197,6 +197,18 @@ def experience_stats(
     """获取经验库统计信息。"""
     store = ExperienceStore(db)
     return success_response(data=store.get_stats())
+
+
+@router.post("/experiences/{experience_id}/apply")
+def apply_experience(
+    experience_id: str,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin),
+):
+    """标记某条经验为已应用（委托 ExperienceStore.mark_applied，不编造行为）。"""
+    store = ExperienceStore(db)
+    applied = store.mark_applied(experience_id)
+    return success_response(data={"id": experience_id, "applied": applied})
 
 
 # ═══════════════════════════════════════════════
