@@ -26,6 +26,17 @@ ROUTE_PREFIX = ""
 router = APIRouter(prefix="/feishu", tags=["飞书机器人"])
 
 
+@router.get("", tags=["飞书机器人"])
+def feishu_capability():
+    """飞书模块能力探针（`GET /api/v1/feishu`）。
+
+    2026-09-25 补齐：前端 `views/integrations/Feishu.vue:42` 在 onMounted 里
+    `try { await apiGet('/feishu') } catch {}` 探测飞书模块可达性；原无该基路径端点
+    → 静默 404。探测**不使用返回值**，返回 200 + 能力标记即可，不编造业务数据。
+    """
+    return success_response(data={"module": "feishu", "enabled": True})
+
+
 @router.post("/webhook")
 async def feishu_webhook(request: Request, background_tasks: BackgroundTasks):
     """

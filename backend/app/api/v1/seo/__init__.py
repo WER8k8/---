@@ -17,6 +17,7 @@ from app.api.v1.seo.report_export import router as report_export_router
 from app.api.v1.seo.schema_markup import router as schema_markup_router
 from app.api.v1.seo.site_audit import router as site_audit_router
 from app.core.database import get_db
+from app.core.response import success_response
 from app.core.security import require_admin
 from app.models.seo import (AiOptimizationLog, Keyword, KeywordRanking,
                             LlmsConfig, SiteAudit)
@@ -115,3 +116,15 @@ def update_llms_config(
     db.commit()
     db.refresh(config)
     return config
+
+
+@router.get("", tags=["seo"])
+def seo_capability():
+    """SEO 模块能力探针（`GET /api/v1/seo`）。
+
+    2026-09-25 补齐：前端 `views/seo/{batch-seo,schema-markup,eeat}.vue` 在 onMounted 里
+    `try { await apiGet('/seo') } catch {}` 探测 SEO 模块是否可用；原无该基路径端点
+    → 静默 404。该探测**不使用返回值**（仅存在性检查），故返回 200 + 能力标记即可，
+    **不编造业务数据**。真实 SEO 数据由各子端点（/llms、/audits、/llms-txt/* 等）提供。
+    """
+    return success_response(data={"module": "seo", "enabled": True})

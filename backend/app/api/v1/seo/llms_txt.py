@@ -1,15 +1,47 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+import json
+from datetime import datetime, timezone
+from typing import Any
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.response import success_response, error_response
 from app.core.security import get_current_user, optional_auth
 from app.models.seo import LlmsConfig
+from app.models.tenant import Tenant
 from app.models.user import User
 
 router = APIRouter()
+
+# 2026-09-25: 已保存 llms.txt 内容的存储键（复用既有 Tenant.settings JSON 列，无需迁移）。
+LLMS_TXT_SAVED_KEY = "llms_txt_saved"
+
+
+def _read_saved_llms_txt(tenant: Tenant) -> dict[str, Any]:
+    """从租户 settings JSON 读取已保存的 llms.txt 内容。"""
+    if not tenant.settings:
+        return {}
+    try:
+        data = json.loads(tenant.settings)
+    except (json.JSONDecodeError, TypeError):
+        return {}
+    return data.get(LLMS_TXT_SAVED_KEY, {}) or {}
+
+
+def _write_saved_llms_txt(tenant: Tenant, payload: dict[str, Any]) -> None:
+    """写入已保存的 llms.txt 内容到租户 settings JSON。"""
+    try:
+        data: Any = json.loads(tenant.settings) if tenant.settings else {}
+    except (json.JSONDecodeError, TypeError):
+        data = {}
+    if not isinstance(data, dict):
+        data = {}
+    data[LLMS_TXT_SAVED_KEY] = payload
+    tenant.settings = json.dumps(data, ensure_ascii=False)
 
 SECTION_TEMPLATES = {
     "brand": "## {title}\n\n{content}\n\n",
@@ -36,6 +68,12 @@ class GenerateRequest(BaseModel):
 
 class ValidateRequest(BaseModel):
     content: str
+
+
+class LlmsTxtSavedUpdate(BaseModel):
+    """`PUT /api/v1/seo/llms-txt` 的保存负载（前端 saveContent 发送）。"""
+    content: str = ""
+    config: dict[str, Any] = Field(default_factory=dict)
 
 
 @router.post("/generate")
@@ -166,3 +204,67 @@ def get_llms_txt_template():
 """,
         "available_sections": list(SECTION_TEMPLATES.keys()),
     }
+
+
+@router.get("")
+def get_llms_txt_saved(
+        current_user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)):
+    """获取已保存的 llms.txt 内容（`GET /api/v1/seo/llms-txt`）。
+
+    2026-09-25 补齐：前端 `views/seo/llms-txt.vue:248` 在 onMounted 调此端点加载已保存内容
+    （content/config/version/token_usage/cost），但后端只有 /generate、/validate-llms-txt
+    子端点，缺基路径 → 404，页面永远空白（catch 静默）。
+    存储：租户 settings JSON 的 `llms_txt_saved` 键（复用既有 Tenant.settings 列，无需迁移）。
+    作用域：当前登录用户所属租户（与同文件外的 tenant_ai_config.get_my_configs 一致）。
+    """
+    tenant_id = current_user.tenant_id
+    if not tenant_id:
+        return error_response(400, "用户未关联租户")
+    tenant = db.query(Tenant).filter(Tenant.id == tenant_id).first()
+    if not tenant:
+        return error_response(404, "租户不存在")
+    saved = _read_saved_llms_txt(tenant)
+    return success_response(data={
+        "content": saved.get("content", ""),
+        "config": saved.get("config", {}),
+        "version": saved.get("version", "1.0.0"),
+        "token_usage": saved.get("token_usage", 0),
+        "cost": saved.get("cost", 0.0),
+        "updated_at": saved.get("updated_at"),
+    })
+
+
+@router.put("")
+def save_llms_txt_saved(
+        req: LlmsTxtSavedUpdate,
+        current_user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)):
+    """保存 llms.txt 内容（`PUT /api/v1/seo/llms-txt`）。
+
+    2026-09-25 补齐：前端 `views/seo/llms-txt.vue:340` 调此端点持久化手动编辑的内容。
+    写入租户 settings JSON 的 `llms_txt_saved` 键。
+    """
+    tenant_id = current_user.tenant_id
+    if not tenant_id:
+        return error_response(400, "用户未关联租户")
+    tenant = db.query(Tenant).filter(Tenant.id == tenant_id).first()
+    if not tenant:
+        return error_response(404, "租户不存在")
+    cfg = req.config or {}
+    payload: dict[str, Any] = {
+        "content": req.content or "",
+        "config": {
+            "business_type": cfg.get("business_type", ""),
+            "ai_model": cfg.get("ai_model", ""),
+            "keywords": cfg.get("keywords", []),
+        },
+        "version": "1.0.0",
+        "token_usage": 0,
+        "cost": 0.0,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    _write_saved_llms_txt(tenant, payload)
+    db.add(tenant)
+    db.commit()
+    return success_response(data=payload, message="已保存 llms.txt 内容")

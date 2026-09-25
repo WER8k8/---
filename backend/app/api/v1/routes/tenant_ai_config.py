@@ -24,6 +24,18 @@ ROUTE_TAGS = ["租户AI配置"]
 router = APIRouter(prefix="/tenant-ai-config", tags=["租户AI配置"])
 
 
+@router.get("", tags=["租户AI配置"])
+def tenant_ai_config_capability(current_user: User = Depends(get_current_user)):
+    """租户 AI 配置模块能力探针（`GET /api/v1/tenant-ai-config`）。
+
+    2026-09-25 补齐：前端 `views/client/ai-config.vue:94` 在 onMounted 里
+    `try { await apiGet('/tenant-ai-config') } catch {}` 探测可达性；原无该基路径端点
+    → 静默 404。真实配置数据由 `/my-configs`、`/providers` 等子端点提供，
+    此处仅返回能力标记，不编造业务数据。
+    """
+    return success_response(data={"module": "tenant-ai-config", "enabled": True})
+
+
 @router.get("/my-configs")
 def get_my_configs(
     db: Session = Depends(get_db),
