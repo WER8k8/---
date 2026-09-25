@@ -453,6 +453,8 @@ class NativeAccioWorkEngine:
         per_channel: int,
     ) -> list[dict[str, Any]]:
         """并行获取各渠道线索、排序截断并落库，返回最终 prospects 列表。"""
+        from app.services.acquisition.intake_adapter import ingest_candidates
+
         all_prospects: list[dict[str, Any]] = []
         for channel_name, fetcher in channels:
             try:
@@ -472,24 +474,20 @@ class NativeAccioWorkEngine:
 
         all_prospects.sort(key=lambda x: x.get("fit_score", 0), reverse=True)
         all_prospects = all_prospects[:max_results]
-        for p in all_prospects:
-            row = {
-                "id": str(__import__("uuid").uuid4()),
-                "tenant_id": tenant_id,
-                "region_label": p.get("country", ""),
-                "country_code": (p.get("country_code") or "XX")[:8],
-                "buyer_type": (p.get("buyer_type") or "importer")[:32],
-                "title": (p.get("title") or "Multi-channel prospect")[:200],
-                "fit_score": int(p.get("fit_score") or 65),
-                "suggested_channel": "email",
-                "notes": (
-                    f"{p.get('notes') or ''} source={p.get('source', '')}"
-                    + f" evidence={p.get('evidence_url') or ''}"
-                )[:2000],
-                "status": "discovered",
-                "source_tool": f"{p.get('source', '')}_prospect_discovery",
-            }
-            db.add(__import__("app.models.ubrain_accio").models.ubrain_accio.BuyerProspectLead(**row))
+        # W2：收敛直写 → 统一 Intake Adapter（候选池唯一构造入口 + 自动晋级）
+        ingest_candidates(
+            db,
+            all_prospects,
+            tenant_id=tenant_id or "",
+            source="multi_channel",
+            source_tool="multi_channel_prospect_discovery",
+            title_default="Multi-channel prospect",
+            suggested_channel="email",
+            notes_builder=lambda p: (
+                f"{p.get('notes') or ''} source={p.get('source', '')}"
+                + f" evidence={p.get('evidence_url') or ''}"
+            ),
+        )
 
         db.commit()
         return all_prospects

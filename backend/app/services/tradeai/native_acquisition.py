@@ -212,21 +212,26 @@ def prospect_scrape(
                 seed_hits.append(s)
 
         if seed_hits:
+            from app.services.acquisition.repo import persist_prospect_lead
+
             for s in seed_hits[:limit]:
                 lead_id = str(uuid.uuid4())
                 try:
-                    new_lead = ProspectLead(
-                        id=lead_id,
-                        tenant_id=str(tenant_id) if tenant_id else None,
+                    # W2-4：收敛直写 → 统一落库收口 repo.persist_prospect_lead
+                    res = persist_prospect_lead(
+                        db,
+                        tenant_id=str(tenant_id) if tenant_id else "",
+                        email=s["email"],
                         company_name=s["company_name"],
                         country=s["country"],
-                        email=s["email"],
                         phone=s["phone"],
                         industry=s["industry"],
                         notes=s["notes"],
+                        source="manual_import",
+                        status="discovered",
                         provenance_metadata={"source": "youding_global_b2b_seeds", "skill_id": "prospect.scrape"},
                     )
-                    db.add(new_lead)
+                    lead_id = res.get("id") or lead_id
                 except Exception:
                     pass
                 prospects.append({

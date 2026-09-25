@@ -12,6 +12,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.models.ubrain_accio import BuyerProspectLead
+from app.services.acquisition.intake_adapter import ingest_candidates
 from app.services.trade_intel_service import blue_ocean
 from app.services.ubrain.commercial_os_bridge import retrieve_insights_for_accio
 from app.services.ubrain.outreach_deliverability_service import (
@@ -129,55 +130,28 @@ def _find_buyer_prospects_via_sidecar(db, tenant_id, region, category, message, 
     )
     if email_meta:
         sidecar = {**sidecar, "email_enrichment": email_meta}
-    prospects: list[dict[str, Any]] = []
-    for p in enriched_prospects:
-        row = BuyerProspectLead(
-            id=str(uuid.uuid4()),
-            tenant_id=tenant_id,
-            region_label=region,
-            country_code=(p.get("country_code") or "XX")[:8],
-            buyer_type=(p.get("buyer_type") or "importer")[:32],
-            title=(p.get("title") or "Sidecar prospect")[:200],
-            fit_score=int(p.get("fit_score") or 65),
-            suggested_channel=(p.get("suggested_channel") or "email")[:32],
-            notes=(
-                f"{p.get('notes') or ''} evidence={p.get('evidence_url') or ''}"
-                + (
-                    f" email_src={p.get('email_source_url')}"
-                    if p.get("email_source_url")
-                    else ""
-                )
-            )[:2000],
-            status="discovered",
-            source_tool=(
-                "ai_find_customer_sidecar_stub"
-                if sidecar.get("probe_mode") == "stub"
-                else "ai_find_customer_sidecar"
-            ),
-            # W1 · P0-5：Sidecar 为真实抓取候选；有 evidence_url 即证据完整。
-            # verified 仍为 False（需人工核实后才可外发）。
-            candidate_kind="scraped",
-            verified=False,
-            evidence_status="present" if p.get("evidence_url") else "missing",
-        )
-        db.add(row)
-        prospects.append(
-            {
-                "id": row.id,
-                "title": row.title,
-                "buyer_type": row.buyer_type,
-                "country_code": row.country_code,
-                "fit_score": row.fit_score,
-                "suggested_channel": row.suggested_channel,
-                "notes": p.get("notes"),
-                "evidence_url": p.get("evidence_url"),
-                "email": p.get("email"),
-                "email_source_url": p.get("email_source_url"),
-                "email_enrichment": p.get("email_enrichment"),
-                "confidence": p.get("confidence"),
-                "verification_status": "待核实候选",
-            }
-        )
+    # W2：收敛直写 → 统一 Intake Adapter（source_tool 按 probe_mode 区分）
+    sidecar_source_tool = (
+        "ai_find_customer_sidecar_stub"
+        if sidecar.get("probe_mode") == "stub"
+        else "ai_find_customer_sidecar"
+    )
+    result = ingest_candidates(
+        db,
+        enriched_prospects,
+        tenant_id=tenant_id,
+        source="website_scrape",
+        source_tool=sidecar_source_tool,
+        title_default="Sidecar prospect",
+        suggested_channel=lambda p: p.get("suggested_channel") or "email",
+        region_label=region,
+        notes_builder=lambda p: (
+            f"{p.get('notes') or ''} evidence={p.get('evidence_url') or ''}"
+            + (f" email_src={p.get('email_source_url')}" if p.get("email_source_url") else "")
+        ),
+        extra_out=["email_enrichment", "email_source_url"],
+    )
+    prospects: list[dict[str, Any]] = result["prospects"]
     db.commit()
     record_tool_use(
         db,

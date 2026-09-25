@@ -270,6 +270,13 @@ def persist_prospect_lead(
     lead_metadata: Optional[dict] = None,
     source_detail: Optional[dict] = None,
     dedup: bool = True,
+    # ── W2 扩展（Intake Adapter 收口用）：全部可选，向后兼容 ──
+    phone: str = "",
+    domain: str = "",
+    email_verified: str = "",
+    fit_score: Any = None,
+    provenance_metadata: Optional[dict] = None,
+    notes: str = "",
 ) -> dict[str, Any]:
     """统一线索落库入口（唯一收口）——尽力写入 ``prospect_leads``。
 
@@ -304,6 +311,8 @@ def persist_prospect_lead(
         if contact_name and " " in contact_name:
             parts = contact_name.split(None, 1)
             first, last = parts[0], parts[1]
+        _default_notes = (f"ops_inquiry={_safe_str(inquiry_ref)}; buyer_type={_safe_str(buyer_type)}"
+                          if inquiry_ref or buyer_type else None)
         lead = ProspectLead(
             email=_safe_str(email) or None,
             company_name=_safe_str(company_name) or None,
@@ -314,9 +323,19 @@ def persist_prospect_lead(
             first_name=_safe_str(first) or None,
             last_name=_safe_str(last) or None,
             title=_safe_str(contact_title) or None,
-            notes=(f"ops_inquiry={_safe_str(inquiry_ref)}; buyer_type={_safe_str(buyer_type)}"
-                   if inquiry_ref or buyer_type else None),
+            notes=_safe_str(notes) or _default_notes,
         )
+        # W2：可选扩展字段（候选晋级 / 种子导入需要，缺省不写）
+        if phone and hasattr(lead, "phone"):
+            lead.phone = _safe_str(phone)[:50] or None
+        if domain and hasattr(lead, "domain"):
+            lead.domain = _safe_str(domain) or None
+        if email_verified and hasattr(lead, "email_verified"):
+            lead.email_verified = _safe_str(email_verified)[:20]
+        if fit_score is not None and hasattr(lead, "fit_score"):
+            lead.fit_score = _clamp_score(fit_score, 50)
+        if provenance_metadata and hasattr(lead, "provenance_metadata"):
+            lead.provenance_metadata = provenance_metadata
         # multi-tenant 归属：业务 id 先解析成 tenants.id UUID，解析失败则不写（避免假归属）
         if tid and hasattr(lead, "tenant_id"):
             lead.tenant_id = tid
@@ -380,3 +399,145 @@ def persist_prospect_lead(
             pass
         return {"persisted": False, "id": None, "action": "error",
                 "reason": str(exc)[:200], "table": "prospect_leads", "tenant_resolved": tid}
+
+
+def persist_buyer_candidate(
+    db: Any,
+    *,
+    tenant_id: str = "",
+    title: str = "",
+    region_label: str = "",
+    country_code: str = "",
+    buyer_type: str = "importer",
+    fit_score: Any = 65,
+    suggested_channel: str = "email",
+    notes: str = "",
+    source_tool: str = "",
+    candidate_kind: str = "scraped",
+    evidence_url: str = "",
+    evidence_status: str = "",
+    verified: bool = False,
+    status: str = "discovered",
+    commit: bool = False,
+) -> dict[str, Any]:
+    """候选池唯一构造入口（W2 · Intake Adapter 收口）。
+
+    把各来源（Google / LinkedIn / Quora / Reddit / TikTok / WhatsApp / Sidecar）
+    原先散落的 ``BuyerProspectLead(...)`` 直写收敛到此一处，便于
+    ``grep -c 'BuyerProspectLead('`` 验收（仅 ``repo.py`` + Accio 画像生成处）。
+
+    诚实降级：``db is None`` 或构造失败 → ``persisted=False, row=None``，不抛裸异常。
+
+    Returns:
+        ``{"persisted": bool, "id": str|None, "row": BuyerProspectLead|None, "reason": str}``
+    """
+    if db is None:
+        return {"persisted": False, "id": None, "row": None, "reason": "db_unavailable"}
+    try:
+        from app.models.ubrain_accio import BuyerProspectLead
+
+        kind = _safe_str(candidate_kind, "scraped")
+        if kind not in ("archetype", "scraped", "imported"):
+            kind = "scraped"
+        ev_url = _safe_str(evidence_url)
+        ev_status = _safe_str(evidence_status) or ("present" if ev_url.startswith("http") else "missing")
+        row = BuyerProspectLead(
+            id=str(uuid.uuid4()),
+            tenant_id=tenant_id or None,
+            region_label=(_safe_str(region_label) or "unknown")[:80],
+            country_code=(_safe_str(country_code) or "XX")[:8],
+            buyer_type=(_safe_str(buyer_type) or "importer")[:40],
+            title=(_safe_str(title) or "Prospect")[:200],
+            fit_score=_clamp_score(fit_score, 65),
+            suggested_channel=(_safe_str(suggested_channel) or "email")[:40],
+            notes=_safe_str(notes) or None,
+            status=(_safe_str(status) or "discovered")[:20],
+            source_tool=(_safe_str(source_tool) or "find_buyers")[:64],
+            candidate_kind=kind,
+            verified=bool(verified),
+            evidence_status=ev_status[:20],
+        )
+        db.add(row)
+        if commit:
+            db.commit()
+        return {
+            "persisted": True,
+            "id": str(row.id),
+            "row": row,
+            "reason": "",
+            "evidence_url": ev_url,
+            "evidence_status": ev_status[:20],
+        }
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("persist_buyer_candidate 失败: %s", exc)
+        try:
+            db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        return {"persisted": False, "id": None, "row": None, "reason": str(exc)[:200]}
+
+
+def promote_candidate_to_prospect_lead(
+    db: Any,
+    candidate: Any,
+    *,
+    email: str = "",
+    company_name: str = "",
+    country: str = "",
+    website: str = "",
+    industry: str = "",
+    linkedin_url: str = "",
+    contact_name: str = "",
+    source: Any = None,
+    overall_score: Any = None,
+    evidence_url: str = "",
+    extra_metadata: Optional[dict] = None,
+) -> dict[str, Any]:
+    """候选人 → 统一线索主档**自动晋级**（W2-2）。
+
+    晋级动作：经 ``persist_prospect_lead`` 写 ``prospect_leads``（唯一主档），
+    ``lead_metadata.promoted_from`` 记录来源候选 id，``source_detail`` 保留证据；
+    候选行 ``status`` 置 ``promoted``。
+
+    晋级条件由调用方判定（本函数只执行落地）。返回 ``{promoted, id, action, reason}``。
+    """
+    if candidate is None or db is None:
+        return {"promoted": False, "id": None, "action": "skipped", "reason": "no_candidate"}
+    cid = _safe_str(getattr(candidate, "id", ""))
+    meta: dict[str, Any] = {"promoted_from": cid} if cid else {}
+    meta.update(extra_metadata or {})
+    res = persist_prospect_lead(
+        db,
+        tenant_id=_safe_str(getattr(candidate, "tenant_id", "")),
+        email=email,
+        company_name=company_name or _safe_str(getattr(candidate, "title", "")),
+        country=country or _safe_str(getattr(candidate, "country_code", "")),
+        website=website,
+        industry=industry,
+        linkedin_url=linkedin_url,
+        contact_name=contact_name,
+        source=source or _safe_str(getattr(candidate, "suggested_channel", "")) or "manual_import",
+        status="discovered",
+        overall_score=(overall_score if overall_score is not None
+                       else getattr(candidate, "fit_score", None)),
+        lead_metadata=meta,
+        source_detail={
+            "promoted_from": cid,
+            "evidence_url": evidence_url,
+            "source_tool": _safe_str(getattr(candidate, "source_tool", "")),
+        },
+    )
+    action = res.get("action")
+    promoted = action in ("created", "duplicate")
+    if promoted:
+        try:
+            candidate.status = "promoted"
+            db.commit()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("标记候选 promoted 失败: %s", exc)
+            try:
+                db.rollback()
+            except Exception:  # noqa: BLE001
+                pass
+    return {"promoted": promoted, "id": res.get("id"), "action": action,
+            "reason": res.get("reason", "")}

@@ -280,7 +280,7 @@ class PersistHandler(LeadHandler):
                 n = ctx.normalized
                 result = persist_prospect_lead(
                     db,
-                    tenant_id="",
+                    tenant_id=str(ctx.raw_data.get("tenant_id") or ""),
                     email=n.get("email") or "",
                     company_name=n.get("company") or "",
                     country=n.get("country") or "",

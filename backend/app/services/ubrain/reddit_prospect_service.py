@@ -22,7 +22,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.models.ubrain_accio import BuyerProspectLead
+from app.services.acquisition.intake_adapter import ingest_candidates
 from app.services.ubrain.tenant_memory_service import record_tool_use
 
 
@@ -202,42 +202,22 @@ def find_reddit_prospects(
         max_results=max_results,
     )
     raw_prospects = pack.get("prospects") or []
-    prospects: list[dict[str, Any]] = []
-    for p in raw_prospects:
-        row = BuyerProspectLead(
-            id=str(uuid.uuid4()),
-            tenant_id=tenant_id,
-            region_label=p.get("country", ""),
-            country_code=(p.get("country_code") or "XX")[:8],
-            buyer_type=(p.get("buyer_type") or "importer")[:32],
-            title=(p.get("title") or "Reddit prospect")[:200],
-            fit_score=int(p.get("fit_score") or 65),
-            suggested_channel="email",
-            notes=(
-                f"{p.get('notes') or ''} source=Reddit r/{p.get('subreddit', '')}"
-                + f" evidence={p.get('evidence_url') or ''}"
-            )[:2000],
-            status="discovered",
-            source_tool="reddit_prospect_discovery",
-        )
-        db.add(row)
-        prospects.append(
-            {
-                "id": row.id,
-                "title": row.title,
-                "buyer_type": row.buyer_type,
-                "country_code": row.country_code,
-                "fit_score": row.fit_score,
-                "suggested_channel": row.suggested_channel,
-                "notes": p.get("notes"),
-                "evidence_url": p.get("evidence_url"),
-                "email": p.get("email"),
-                "email_source_url": p.get("evidence_url"),
-                "confidence": p.get("confidence"),
-                "verification_status": "待核实候选",
-            }
-        )
-    
+    # W2：收敛直写 → 统一 Intake Adapter
+    result = ingest_candidates(
+        db,
+        raw_prospects,
+        tenant_id=tenant_id,
+        source="reddit",
+        source_tool="reddit_prospect_discovery",
+        title_default="Reddit prospect",
+        suggested_channel="email",
+        notes_builder=lambda p: (
+            f"{p.get('notes') or ''} source=Reddit r/{p.get('subreddit', '')}"
+            + f" evidence={p.get('evidence_url') or ''}"
+        ),
+    )
+    prospects: list[dict[str, Any]] = result["prospects"]
+
     db.commit()
     record_tool_use(
         db,

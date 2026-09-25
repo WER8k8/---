@@ -128,10 +128,12 @@ async def execute_lead_search(
     max_results: int = 10,
     verify_emails: bool = True,
     min_confidence: float = 0.3,
+    tenant_id: str = "",
 ) -> None:
     """在后台执行获客搜索，更新任务进度。
 
     这是 asyncio 版本，不阻塞主线程。
+    W2：结果经 ``intake_adapter.ingest_found_leads`` 落 ``prospect_leads``（幂等）。
     """
     from app.api.v1.routes.lead_generation import _google_cse_search, _process_lead
     update_task(task_id, status=TaskStatus.RUNNING, current_step="正在搜索 Google...", progress=10)
@@ -171,16 +173,37 @@ async def execute_lead_search(
             await asyncio.sleep(0.1)
 
         # Step 3: 汇总结果
-        leads_with_emails = [l for l in leads if l.emails]
-        total_emails = sum(len(l.emails) for l in leads)
-        verified_count = sum(1 for l in leads for e in l.emails if getattr(e, 'verified', None) is True)
+        leads_with_emails = [lead_obj for lead_obj in leads if lead_obj.emails]
+        total_emails = sum(len(lead_obj.emails) for lead_obj in leads)
+        verified_count = sum(
+            1 for lead_obj in leads for e in lead_obj.emails
+            if getattr(e, "verified", None) is True
+        )
+        # Step 4: W2 —— 异步入口同样经统一 Intake Adapter 落库（原先完全不落库）
+        persist_info: dict = {"persisted_count": 0, "persisted_ids": [], "skipped": []}
+        try:
+            from app.db.session import SessionLocal
+            from app.services.acquisition.intake_adapter import ingest_found_leads
+            _db = SessionLocal()
+            try:
+                persist_info = ingest_found_leads(
+                    _db,
+                    [lead_obj for lead_obj in leads if hasattr(lead_obj, "emails")],
+                    tenant_id=tenant_id,
+                    keyword=keywords,
+                    source="google_cse",
+                )
+            finally:
+                _db.close()
+        except Exception as pe:  # noqa: BLE001
+            logger.warning("异步搜索落库失败（已降级不阻断返回）: %s", pe)
         result = {
             "leads": [
                 {
-                    "company_name": l.company_name,
-                    "domain": l.domain,
-                    "website": l.website,
-                    "snippet": l.snippet,
+                    "company_name": lead_obj.company_name,
+                    "domain": lead_obj.domain,
+                    "website": lead_obj.website,
+                    "snippet": lead_obj.snippet,
                     "emails": [
                         {
                             "email": e.email,
@@ -189,17 +212,19 @@ async def execute_lead_search(
                             "verification_status": getattr(e, 'verification_status', None),
                             "source_page": getattr(e, 'source_page', None),
                         }
-                        for e in l.emails
+                        for e in lead_obj.emails
                     ],
-                    "source": l.source,
+                    "source": lead_obj.source,
                 }
-                for l in leads
+                for lead_obj in leads
             ],
             "total_found": len(leads),
             "emails_found": total_emails,
             "verified_emails": verified_count,
             "search_time_ms": int((time.time() - _task_store[task_id].created_at) * 1000),
             "method": "free_pipeline_async",
+            "persisted_count": persist_info.get("persisted_count", 0),
+            "persist_skipped": persist_info.get("skipped", []),
         }
         update_task(
             task_id,

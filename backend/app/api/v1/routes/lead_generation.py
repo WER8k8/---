@@ -216,71 +216,18 @@ def persist_found_leads(
 ) -> dict:
     """W1 · P0-4：主动搜客结果 → 统一线索主档 ``prospect_leads``（幂等收口）。
 
-    经 ``app.services.acquisition.repo.persist_prospect_lead``（唯一 Adapter）落库，
-    ``source=LeadSource.GOOGLE_CSE``、``status=DISCOVERED``，search keyword / page_url /
-    snippet 等写入 ``lead_metadata``。
-
-    幂等：以 ``email + tenant_id`` 为键（``uq_prospect_lead_email_tenant``），重复命中降级为
-    跳过、不产生重复行、不抛 500。**仅落有邮箱的线索**（无邮箱无法保证幂等，记为 ``no_email``）。
+    W2 起收敛为 ``app.services.acquisition.intake_adapter.ingest_found_leads``
+    的薄封装（同步 ``/search`` 与异步 ``/search-async`` 共用同一 Adapter），
+    返回结构与 W1 完全一致，向后兼容。
 
     Returns:
         ``{"persisted_count": int, "persisted_ids": list[str], "skipped": list[dict]}``
     """
-    from app.services.acquisition.repo import persist_prospect_lead
+    from app.services.acquisition.intake_adapter import ingest_found_leads
 
-    created = 0
-    ids: list[str] = []
-    skipped: list[dict] = []
-    for lead in leads:
-        if not isinstance(lead, FoundLead):
-            # asyncio.gather(return_exceptions=True) 可能带入异常对象，跳过
-            continue
-        best = next((e for e in lead.emails if e and e.email), None)
-        if best is None:
-            skipped.append({
-                "company_name": lead.company_name,
-                "website": lead.website,
-                "reason": "no_email",
-            })
-            continue
-        result = persist_prospect_lead(
-            db,
-            tenant_id=tenant_id,
-            email=best.email,
-            company_name=lead.company_name or "",
-            country=lead.country or "",
-            website=lead.website or "",
-            source="google_cse",
-            status="discovered",
-            source_detail={"search_keyword": keyword, "page_url": lead.website},
-            lead_metadata={
-                "search_keyword": keyword,
-                "page_url": lead.website,
-                "snippet": lead.snippet,
-                "domain": lead.domain,
-                "email_confidence": best.confidence,
-                "email_verification_status": best.verification_status,
-            },
-        )
-        action = result.get("action")
-        if action == "created":
-            created += 1
-            if result.get("id"):
-                ids.append(result["id"])
-        elif action == "duplicate":
-            skipped.append({
-                "company_name": lead.company_name,
-                "email": best.email,
-                "reason": "duplicate_email_tenant",
-                "existing_id": result.get("id"),
-            })
-        else:
-            skipped.append({
-                "company_name": lead.company_name,
-                "email": best.email,
-                "reason": result.get("reason") or "persist_failed",
-            })
-    return {"persisted_count": created, "persisted_ids": ids, "skipped": skipped}
+    return ingest_found_leads(
+        db, leads, tenant_id=tenant_id, keyword=keyword, source="google_cse",
+    )
 
 
 @router.post("/search")
@@ -732,6 +679,7 @@ async def search_leads_async(
             max_results=req.max_results,
             verify_emails=req.verify_emails,
             min_confidence=req.min_confidence,
+            tenant_id=str(getattr(current_user, "tenant_id", "") or ""),
         )
     )
     return success_response(data={
