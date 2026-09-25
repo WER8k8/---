@@ -728,11 +728,13 @@ async def execute_skill(
 def list_prospect_channels(
     current_user: User = Depends(get_current_user),
 ):
-    """FIX-5: 返回所有获客渠道的真实可用状态。
+    """FIX-5 / W4: 返回所有获客渠道的真实可用状态（四态）。
     前端根据 status 字段决定是否展示该渠道：
-      - "real": 真实 API 已配置，可正常使用
-      - "mock": 尚未实现，返回演示数据（前端应标注"演示"或隐藏）
-      - "coming_soon": 尚未开发
+      - "live": 真实 API 已配置，可正常使用，产出可当真实商机
+      - "mock": 走模拟数据 / 模板，不可当真实商机（前端应标注"演示"或隐藏）
+      - "degraded": 有实现但能力受损（缺 Key / 降级回退），需人工复核
+      - "blocked": 未配置 / 未接入 / 不可用
+    兼容字段：trustworthy（可否当真实商机）、is_mock（旧语义，非 live 即 true）。
     """
     channels = get_all_channel_statuses()
     return success_response(data=[
@@ -741,6 +743,8 @@ def list_prospect_channels(
             "name": ch.name,
             "status": ch.status,
             "reason": ch.reason,
+            "trustworthy": ch.trustworthy,
+            "is_mock": ch.is_mock,
         }
         for ch in channels
     ])

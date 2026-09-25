@@ -83,7 +83,8 @@ class GrowthProbeExecutor(BaseExecutor):
                     "name": c.name,
                     "status": c.status,
                     "reason": c.reason,
-                    "is_mock": c.status != "real",
+                    "is_mock": c.is_mock,
+                    "trustworthy": c.trustworthy,
                 }
                 for c in items
             ]
@@ -95,7 +96,7 @@ class GrowthProbeExecutor(BaseExecutor):
                     "channels": channels,
                     "mock_count": mock_n,
                     "real_count": len(channels) - mock_n,
-                    "hint": "mock/coming_soon 渠道结果不可当真实线索",
+                    "hint": "mock/degraded/blocked 渠道结果不可当真实线索；仅 live 可信",
                     "executor": self.get_executor_name(),
                 },
             )

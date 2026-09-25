@@ -283,7 +283,12 @@ def act_growth_probe(p: dict, db: Any = None) -> dict:
 
         items = get_all_channel_statuses()
         channels = [
-            {"id": c.id, "name": c.name, "status": c.status, "is_mock": getattr(c, "status", "") != "real"}
+            {
+                "id": c.id,
+                "name": c.name,
+                "status": c.status,
+                "is_mock": bool(getattr(c, "is_mock", c.status != "live")),
+            }
             for c in items
         ]
         mock_n = sum(1 for c in channels if c["is_mock"])

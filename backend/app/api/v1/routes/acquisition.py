@@ -1711,7 +1711,7 @@ def acquisition_wallet_status(
 
 @router.get("/channels")
 def acquisition_channels(current_user: User = Depends(get_current_user)):
-    """获客渠道健康：real / mock / coming_soon（前端红标）。"""
+    """获客渠道健康：四态 live / mock / degraded / blocked（前端红标）。"""
     try:
         from app.services.ubrain.channel_status import get_all_channel_statuses
         items = get_all_channel_statuses()
@@ -1721,19 +1721,29 @@ def acquisition_channels(current_user: User = Depends(get_current_user)):
                 "name": c.name,
                 "status": c.status,
                 "reason": c.reason,
-                "is_mock": c.status != "real",
+                "is_mock": c.is_mock,
+                "trustworthy": c.trustworthy,
+                "legacy_status": c.legacy_status,
             }
             for c in items
         ]
     except Exception as exc:  # noqa: BLE001
-        channels = []
-        return {"channels": [], "error": str(exc)[:200], "hint": "渠道状态服务不可用"}
+        # 不再用 200 + 空列表伪装「没有渠道」——显式报错，运营不会误读
+        raise HTTPException(
+            status_code=503,
+            detail="渠道状态服务不可用，请稍后重试",
+        ) from exc
     mock_n = sum(1 for c in channels if c.get("is_mock"))
+    live_n = len(channels) - mock_n
     return {
         "channels": channels,
         "mock_count": mock_n,
-        "real_count": len(channels) - mock_n,
-        "hint": "标记为「演示/未配置」的渠道结果不可当作真实线索。",
+        "real_count": live_n,
+        # 新增：四态分布，便于运营一眼看清「多少渠道真的可用」
+        "live_count": live_n,
+        "degraded_count": sum(1 for c in channels if c.get("status") == "degraded"),
+        "blocked_count": sum(1 for c in channels if c.get("status") == "blocked"),
+        "hint": "标记为「演示/降级/不可用」的渠道结果不可当作真实线索；仅有凭据且 live 的渠道可信。",
     }
 
 

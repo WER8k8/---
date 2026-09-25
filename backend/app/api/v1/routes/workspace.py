@@ -2,6 +2,8 @@
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """搜客执行台 + 写信台 路由（P1-1 + P1-2）。"""
 
+import uuid as _uuid
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -11,12 +13,26 @@ from app.db.session import get_db
 from app.models.user import User
 from app.models.prospect_lead import ProspectLead, LeadStatus
 from app.services.prospect_scorer import score_lead, batch_score_leads
+# ADR-002 单一真源：User 无 tenant_id 列，用户→租户归属必须经 user_tenants 关联表解析
+from app.services.tenant_scenario_service import resolve_tenant_id_for_user
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
 ROUTE_PREFIX = ""
 
 router = APIRouter(prefix="/workspace", tags=["工作台"])
+
+
+def _require_lead_id(lead_id: str) -> str:
+    """校验线索 ID 为合法 UUID。
+
+    非法入参直接 400，避免把 "not-a-uuid" 透传到 DB 触发 UUID 解析错误
+    （500 + SQL 语句泄漏到日志）。
+    """
+    try:
+        return str(_uuid.UUID(str(lead_id)))
+    except (ValueError, AttributeError, TypeError):
+        raise HTTPException(status_code=400, detail="线索 ID 格式非法")
 
 
 # ── 搜客执行台 ──
@@ -36,7 +52,7 @@ def prospecting_search(
         return error_response(400, "请至少输入一个产品关键词")
 
     # 查询当前租户已有线索（搜客任务通过 lead_generation 路由单独创建）
-    tenant_id = str(current_user.tenant_id)
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     query = db.query(ProspectLead).filter(ProspectLead.tenant_id == tenant_id)
     if countries:
         query = query.filter(ProspectLead.country.in_(countries))
@@ -61,8 +77,9 @@ def list_leads(
     current_user: User = Depends(get_current_user),
 ):
     """获取当前租户的线索列表。"""
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     query = db.query(ProspectLead).filter(
-        ProspectLead.tenant_id == current_user.tenant_id
+        ProspectLead.tenant_id == tenant_id
     )
     if status:
         query = query.filter(ProspectLead.status == status)
@@ -83,9 +100,11 @@ def get_lead(
     current_user: User = Depends(get_current_user),
 ):
     """获取线索详情（含 evidence_chain 和 score_breakdown）。"""
+    lead_id = _require_lead_id(lead_id)
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     lead = db.query(ProspectLead).filter(
         ProspectLead.id == lead_id,
-        ProspectLead.tenant_id == current_user.tenant_id,
+        ProspectLead.tenant_id == tenant_id,
     ).first()
     if not lead:
         raise HTTPException(status_code=404, detail="线索不存在")
@@ -109,9 +128,11 @@ def convert_lead(
     current_user: User = Depends(get_current_user),
 ):
     """将线索转为客户。"""
+    lead_id = _require_lead_id(lead_id)
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     lead = db.query(ProspectLead).filter(
         ProspectLead.id == lead_id,
-        ProspectLead.tenant_id == current_user.tenant_id,
+        ProspectLead.tenant_id == tenant_id,
     ).first()
     if not lead:
         raise HTTPException(status_code=404, detail="线索不存在")
@@ -135,9 +156,10 @@ def ai_generate_email(
         return error_response(400, "请提供 lead_id")
 
     # 租户隔离
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     lead = db.query(ProspectLead).filter(
         ProspectLead.id == lead_id,
-        ProspectLead.tenant_id == current_user.tenant_id,
+        ProspectLead.tenant_id == tenant_id,
     ).first()
     if not lead:
         raise HTTPException(status_code=404, detail="线索不存在")
@@ -187,9 +209,10 @@ def save_draft(
     lead_id = req.get("lead_id")
     if lead_id:
         # 租户隔离
+        tenant_id = resolve_tenant_id_for_user(db, current_user)
         lead = db.query(ProspectLead).filter(
             ProspectLead.id == lead_id,
-            ProspectLead.tenant_id == current_user.tenant_id,
+            ProspectLead.tenant_id == tenant_id,
         ).first()
         if lead:
             meta = lead.lead_metadata or {}
@@ -213,9 +236,10 @@ def get_draft(
     """获取邮件草稿。"""
     if lead_id:
         # 租户隔离
+        tenant_id = resolve_tenant_id_for_user(db, current_user)
         lead = db.query(ProspectLead).filter(
             ProspectLead.id == lead_id,
-            ProspectLead.tenant_id == current_user.tenant_id,
+            ProspectLead.tenant_id == tenant_id,
         ).first()
         if lead and lead.metadata:
             draft = lead.metadata.get("draft_a", {})
@@ -240,7 +264,7 @@ def send_email(
             body=req.get("body"),
             lead_id=req.get("lead_id"),
             user_id=str(current_user.id),
-            tenant_id=str(current_user.tenant_id),
+            tenant_id=resolve_tenant_id_for_user(db, current_user),
             track_opens=req.get("trackOpens", True),
             track_clicks=req.get("trackClicks", True),
         )
@@ -253,11 +277,27 @@ def send_email(
 # ── 辅助函数 ──
 
 def _lead_to_dict(lead: ProspectLead) -> dict:
-    """执行 lead_to_dict 相关逻辑处理。
-    
+    """线索 → 前端字典。
+
+    沿用本端点既有 camelCase 风格；在原有字段基础上补齐「来源 / 触达记录 / 补充信息」。
+    诚实约定：从未触达的线索，触达类计数与时间一律返回 ``null``，绝不用 ``0`` 伪装
+    成「已知触达 0 次」；时间字段统一 ISO 8601。
+
     :param lead: 参数 lead
     :return: 返回处理结果。
     """
+    def _iso(dt):
+        return dt.isoformat() if dt else None
+
+    # 无任何触达痕迹（计数全 0 且没有任何触达/回复时间）→ 视为「从未触达」
+    never_contacted = (
+        lead.last_contacted_at is None
+        and not lead.contact_count
+        and not lead.open_count
+        and not lead.click_count
+        and not lead.reply_count
+        and lead.last_replied_at is None
+    )
     return {
         "id": str(lead.id),
         "companyName": lead.company_name,
@@ -268,6 +308,8 @@ def _lead_to_dict(lead: ProspectLead) -> dict:
         "website": lead.website,
         "linkedinUrl": lead.linkedin_url,
         "contactName": f"{lead.first_name or ''} {lead.last_name or ''}".strip(),
+        "title": lead.title,
+        "department": lead.department,
         "overallScore": lead.overall_score,
         "scoreMatch": lead.score_match,
         "scoreEmail": lead.score_email,
@@ -275,5 +317,23 @@ def _lead_to_dict(lead: ProspectLead) -> dict:
         "scoreContact": lead.score_contact,
         "evidenceCount": len(lead.evidence_chain) if lead.evidence_chain else 0,
         "status": lead.status.value if lead.status else None,
-        "createdAt": lead.created_at.isoformat() if lead.created_at else None,
+        # ── 来源（LeadSource 枚举输出可读 value，前端做中文映射）──
+        "source": getattr(lead.source, "value", lead.source),
+        "sourceDetail": lead.source_detail,
+        # ── 验证信息 ──
+        "emailVerified": lead.email_verified,
+        # ── 触达记录（从未触达一律 null，不用 0 伪装）──
+        "contactCount": None if never_contacted else lead.contact_count,
+        "lastContactedAt": _iso(lead.last_contacted_at),
+        "lastContactedChannel": lead.last_contacted_channel,
+        "openCount": None if never_contacted else lead.open_count,
+        "clickCount": None if never_contacted else lead.click_count,
+        "replyCount": None if never_contacted else lead.reply_count,
+        "lastRepliedAt": _iso(lead.last_replied_at),
+        # ── 补充信息 ──
+        "tags": list(lead.tags or []),
+        "notes": lead.notes,
+        "assignedTo": str(lead.assigned_to) if lead.assigned_to else None,
+        "createdAt": _iso(lead.created_at),
+        "updatedAt": _iso(lead.updated_at),
     }
