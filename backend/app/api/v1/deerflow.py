@@ -351,6 +351,32 @@ def human_decision(
         raise HTTPException(status_code=404, detail="任务不存在")
 
 
+@router.post("/jobs/{job_id}/approve")
+def approve_job(
+    job_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """人工审批通过（`/approve` 便捷入口，无请求体）。
+
+    2026-09-24 补齐（缺失接口逐个修复）：
+      前端 `views/deerflow/Monitor.vue:215` 调
+      `POST /api/v1/deerflow/jobs/{id}/approve`（**无 body**），
+      但后端只提供 `/jobs/{job_id}/human-decision`（需 body `{decision:"approve"}`）
+      → 前端恒 404，「审批通过」按钮必失败。
+      （同页的 `/cancel` 端点存在，所以只有 approve 这一半是坏的。）
+
+    实现：**委托** `human_decision(decision="approve")`，
+    不复制状态机逻辑（`machine.human_approve()` 保持单一真源）。
+    """
+    return human_decision(
+        job_id=job_id,
+        request=HumanDecisionRequest(decision="approve"),
+        db=db,
+        current_user=current_user,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Checkpoint 管理
 # ---------------------------------------------------------------------------

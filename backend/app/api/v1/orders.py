@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 import hmac
+import logging
 import secrets
 import uuid
 
@@ -35,6 +36,11 @@ from app.services.foreign_trade.trade_document_export_service import (
     build_trade_document_html,
     build_trade_document_docx,
 )
+
+# 2026-09-24：补齐 logger —— `_sync_order_stage_to_goodjob` 的异常分支调用了
+# `logger.warning(...)`，但本模块此前**从未导入 logging** → ruff F821 / 运行期 NameError。
+# 置于全部 import 之后，避免触发 E402。
+logger = logging.getLogger(__name__)
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -91,8 +97,9 @@ def _sync_order_stage_to_goodjob(order: Order, stage: str, step_number: int, det
             )
         finally:
             db.close()
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("订单 CRM 同步失败（order_id=%s, stage=%s）: %s",
+                       getattr(order, "id", "?"), stage, exc)
 
 
 def _num(value):
@@ -304,6 +311,9 @@ def get_order(
         "shipping_marks": order.shipping_marks,
         "container_no": order.container_no,
         "bl_number": order.bl_number,
+        "inquiry_id": getattr(order, "inquiry_id", None) or "",
+        "customer_name": getattr(order, "customer_name", None) or "",
+        "product_summary": getattr(order, "product_summary", None) or "",
     })
 
 
@@ -392,6 +402,9 @@ def list_orders(
             "currency": o.currency,
             "tracking_number": o.tracking_number,
             "created_at": o.created_at.isoformat() if o.created_at else None,
+            "inquiry_id": getattr(o, "inquiry_id", None) or "",
+            "customer_name": getattr(o, "customer_name", None) or "",
+            "product_summary": getattr(o, "product_summary", None) or "",
         }
         for o in orders
     ]
@@ -726,6 +739,110 @@ def settle_order_balance(
         "status": _status_val(order.status),
         "payment_status": _status_val(order.payment_status),
     }, message="尾款已核销结清，订单7步全链路履约完成")
+
+
+class FulfillmentVerifyRequest(BaseModel):
+    """核销信息统一登记请求（聚合端点用）。
+
+    字段与前端 `views/client/queues/fulfillment.vue` 的 verifyForm 一一对应。
+    """
+
+    deposit_ref: Optional[str] = Field(None, description="定金水单号")
+    deposit_ref_amount: Optional[float] = Field(None, description="定金金额")
+    bl_number: Optional[str] = Field(None, description="海运提单号")
+    container_no: Optional[str] = Field(None, description="集装箱号")
+    settle_ref: Optional[str] = Field(None, description="尾款凭证号")
+
+
+@router.post("/{order_id}/fulfillment/verify")
+def verify_order_fulfillment(
+    order_id: str,
+    body: FulfillmentVerifyRequest,
+    request: Request = None,
+    user=Depends(get_current_user_optional),
+    db: Session = Depends(get_db),
+):
+    """核销信息统一登记（**聚合端点**）：按已填字段依次驱动对应履约步骤。
+
+    2026-09-24 补齐（缺失接口逐个修复）：
+      前端 `views/client/queues/fulfillment.vue:450` 把定金水单号/金额、提单号、
+      柜号、尾款凭证号**一次性** POST 到 `/orders/{id}/fulfillment/verify`，
+      但后端只提供**分步端点**（`/verify-deposit`、`/dispatch`、`/settle-balance`）
+      → 该聚合路径零命中 → 「保存核销信息」必失败。
+
+    实现：**委托**三个既有分步处理器，不复制任何业务规则
+    （状态跃迁白名单、GoodJob 阶段同步均保持单一真源）。
+
+    语义（由字段名与既有分步端点推定）：
+      · deposit_ref / deposit_ref_amount  → 定金核销（第④步）
+      · bl_number / container_no          → 发运装船与提单绑定（第⑥步）
+      · settle_ref                        → 尾款核销（第⑦步）
+
+    求真：任一步失败即**中止并明确报出是第几步**，不吞异常、不报「全部成功」。
+    """
+    done: list[str] = []
+
+    if body.deposit_ref or body.deposit_ref_amount is not None:
+        try:
+            verify_order_deposit(
+                order_id=order_id,
+                body=VerifyDepositRequest(
+                    deposit_amount=body.deposit_ref_amount,
+                    payment_reference=body.deposit_ref,
+                ),
+                request=request,
+                user=user,
+                db=db,
+            )
+            done.append("deposit")
+        except HTTPException as exc:
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail=f"定金核销失败：{exc.detail}（已完成步骤：{done or '无'}）",
+            ) from exc
+
+    if body.bl_number or body.container_no:
+        try:
+            dispatch_order_shipment(
+                order_id=order_id,
+                body=DispatchShipmentRequest(
+                    bl_number=body.bl_number,
+                    container_no=body.container_no,
+                ),
+                request=request,
+                user=user,
+                db=db,
+            )
+            done.append("dispatch")
+        except HTTPException as exc:
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail=f"发运登记失败：{exc.detail}（已完成步骤：{done or '无'}）",
+            ) from exc
+
+    if body.settle_ref:
+        try:
+            settle_order_balance(
+                order_id=order_id,
+                body=SettleBalanceRequest(payment_reference=body.settle_ref),
+                request=request,
+                user=user,
+                db=db,
+            )
+            done.append("settle_balance")
+        except HTTPException as exc:
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail=f"尾款核销失败：{exc.detail}（已完成步骤：{done or '无'}）",
+            ) from exc
+
+    if not done:
+        raise HTTPException(status_code=400, detail="未提供任何核销字段")
+
+    return success_response(
+        data={"order_id": order_id, "steps_applied": done},
+        message=f"核销信息已登记（{len(done)} 步）",
+    )
 
 
 @router.post("/{order_id}/documents/pi")
