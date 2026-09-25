@@ -169,6 +169,84 @@ def persist_inquiry(
         return {"persisted": False, "id": None, "reason": str(exc)[:200]}
 
 
+def _clamp_score(value: Any, default: int = 0) -> int:
+    """把任意分数夹取到 0-100 整数（满足 prospect_leads 的 CHECK 约束）。"""
+    try:
+        return max(0, min(100, int(round(float(value)))))
+    except (TypeError, ValueError):
+        return default
+
+
+def _split_score_breakdown(breakdown: Optional[dict]) -> dict[str, int]:
+    """把评分引擎的多维 breakdown 拆入 ProspectLead 的 4 个子分字段。
+
+    映射（缺失维度取 0）：
+      - score_email    ← email_quality
+      - score_match    ← company_completeness
+      - score_evidence ← source_quality
+      - score_contact  ← title_match
+    其余维度（activity_signals / geo_match 等）不落子分，由调用方写入 lead_metadata。
+    """
+    def _dim(key: str) -> int:
+        v = (breakdown or {}).get(key)
+        if isinstance(v, dict):
+            v = v.get("score")
+        return _clamp_score(v, 0)
+
+    return {
+        "score_email": _dim("email_quality"),
+        "score_match": _dim("company_completeness"),
+        "score_evidence": _dim("source_quality"),
+        "score_contact": _dim("title_match"),
+    }
+
+
+def _coerce_lead_source(value: Any, channel: str) -> Any:
+    """把任意来源串归一为 LeadSource 枚举（非法值兜底 manual_import）。"""
+    from app.models.prospect_lead import LeadSource
+
+    if isinstance(value, LeadSource):
+        return value
+    raw = (_safe_str(value) or _safe_str(channel) or "manual_import").lower()
+    aliases = {
+        "inbound": LeadSource.MANUAL_IMPORT,
+        "manual": LeadSource.MANUAL_IMPORT,
+        "manual_import": LeadSource.MANUAL_IMPORT,
+        "csv": LeadSource.MANUAL_IMPORT,
+        "csv_import": LeadSource.MANUAL_IMPORT,
+        "reply_ingest": LeadSource.MANUAL_IMPORT,
+        "email": LeadSource.HUNTER_IO,
+        "linkedin": LeadSource.LINKEDIN,
+        "whatsapp": LeadSource.WHATSAPP,
+        "google": LeadSource.GOOGLE_CSE,
+        "google_cse": LeadSource.GOOGLE_CSE,
+        "website": LeadSource.WEBSITE_SCRAPE,
+        "website_scrape": LeadSource.WEBSITE_SCRAPE,
+        "referral": LeadSource.REFERRAL,
+    }
+    if raw in aliases:
+        return aliases[raw]
+    try:
+        return LeadSource(raw)
+    except ValueError:
+        return LeadSource.MANUAL_IMPORT
+
+
+def _coerce_lead_status(value: Any) -> Any:
+    """把任意状态串归一为 LeadStatus 枚举（非法值/"new" 兜底 discovered）。"""
+    from app.models.prospect_lead import LeadStatus
+
+    if isinstance(value, LeadStatus):
+        return value
+    raw = _safe_str(value).lower()
+    if not raw:
+        return LeadStatus.DISCOVERED
+    try:
+        return LeadStatus(raw)
+    except ValueError:
+        return LeadStatus.DISCOVERED
+
+
 def persist_prospect_lead(
     db: Any,
     *,
@@ -181,29 +259,46 @@ def persist_prospect_lead(
     buyer_type: str = "",
     channel: str = "manual_import",
     inquiry_ref: str = "",
+    # ── W1 扩展（P0-2 / P0-4）：全部可选，向后兼容既有调用点 ──
+    website: str = "",
+    industry: str = "",
+    linkedin_url: str = "",
+    source: Any = None,
+    status: Any = None,
+    overall_score: Any = None,
+    score_breakdown: Optional[dict] = None,
+    lead_metadata: Optional[dict] = None,
+    source_detail: Optional[dict] = None,
+    dedup: bool = True,
 ) -> dict[str, Any]:
-    """尽力写入 prospect_leads。返回 {persisted, id, reason}。"""
-    if db is None:
-        return {"persisted": False, "id": None, "reason": "db_unavailable"}
-    if not email and not company_name and not contact_name:
-        return {"persisted": False, "id": None, "reason": "no_identity_fields"}
-    try:
-        from app.models.prospect_lead import LeadSource, LeadStatus, ProspectLead
+    """统一线索落库入口（唯一收口）——尽力写入 ``prospect_leads``。
 
-        src_name = (_safe_str(channel) or "manual_import").lower()
-        source_map = {
-            "inbound": LeadSource.MANUAL_IMPORT,
-            "manual": LeadSource.MANUAL_IMPORT,
-            "manual_import": LeadSource.MANUAL_IMPORT,
-            "email": LeadSource.HUNTER_IO,
-            "linkedin": LeadSource.LINKEDIN,
-            "whatsapp": LeadSource.WHATSAPP,
-            "google": LeadSource.GOOGLE_CSE,
-            "website": LeadSource.WEBSITE_SCRAPE,
-            "referral": LeadSource.REFERRAL,
-            "reply_ingest": LeadSource.MANUAL_IMPORT,
-        }
-        source = source_map.get(src_name, LeadSource.MANUAL_IMPORT)
+    幂等（P0-4）：命中 ``uq_prospect_lead_email_tenant`` 唯一约束时降级为「跳过」，
+    返回既有 id，不抛 500、不产生重复行。
+
+    Returns:
+        ``{persisted, id, action, reason, table, tenant_resolved}``
+
+        - ``action``: ``created`` / ``duplicate`` / ``skipped`` / ``error``
+        - ``persisted``: 仅当**新写入**成功为 ``True``
+    """
+    if db is None:
+        return {"persisted": False, "id": None, "action": "skipped",
+                "reason": "db_unavailable", "table": "prospect_leads", "tenant_resolved": None}
+    if not email and not company_name and not contact_name:
+        return {"persisted": False, "id": None, "action": "skipped",
+                "reason": "no_identity_fields", "table": "prospect_leads", "tenant_resolved": None}
+
+    from sqlalchemy.exc import IntegrityError
+
+    tid = resolve_tenant_uuid(db, tenant_id) if _safe_str(tenant_id) else None
+    try:
+        # 注意：模型导入放在 try 内 —— 保证任何导入/构造失败都走「诚实降级」，
+        # 不向调用方抛裸异常（既有单测依赖该语义）。
+        from app.models.prospect_lead import LeadStatus, ProspectLead
+
+        src = _coerce_lead_source(source, channel)
+        st = _coerce_lead_status(status) if status is not None else LeadStatus.DISCOVERED
         first = contact_name
         last = ""
         if contact_name and " " in contact_name:
@@ -213,6 +308,9 @@ def persist_prospect_lead(
             email=_safe_str(email) or None,
             company_name=_safe_str(company_name) or None,
             country=_safe_str(country)[:8] or None,
+            website=_safe_str(website) or None,
+            industry=_safe_str(industry) or None,
+            linkedin_url=_safe_str(linkedin_url) or None,
             first_name=_safe_str(first) or None,
             last_name=_safe_str(last) or None,
             title=_safe_str(contact_title) or None,
@@ -220,25 +318,57 @@ def persist_prospect_lead(
                    if inquiry_ref or buyer_type else None),
         )
         # multi-tenant 归属：业务 id 先解析成 tenants.id UUID，解析失败则不写（避免假归属）
-        tid = resolve_tenant_uuid(db, tenant_id) if _safe_str(tenant_id) else None
         if tid and hasattr(lead, "tenant_id"):
             lead.tenant_id = tid
-        # source 枚举字段若存在则赋值
         if hasattr(lead, "source"):
-            try:
-                lead.source = source
-            except Exception:  # noqa: BLE001
-                if hasattr(lead, "source"):
-                    lead.source = getattr(source, "value", src_name)
+            lead.source = src
         if hasattr(lead, "status"):
-            lead.status = LeadStatus.DISCOVERED
+            lead.status = st
+        if source_detail:
+            lead.source_detail = source_detail
+        if lead_metadata:
+            lead.lead_metadata = lead_metadata
+        # 评分：overall 优先，子分按 4 维拆入
+        if overall_score is not None:
+            lead.overall_score = _clamp_score(overall_score, 0)
+        subs = _split_score_breakdown(score_breakdown)
+        for attr, val in subs.items():
+            if hasattr(lead, attr):
+                setattr(lead, attr, val)
         db.add(lead)
         db.commit()
         rid = getattr(lead, "id", None)
         return {
             "persisted": True,
             "id": str(rid) if rid else None,
+            "action": "created",
             "reason": "",
+            "table": "prospect_leads",
+            "tenant_resolved": tid,
+        }
+    except IntegrityError:
+        # 幂等：email(+tenant) 命中唯一约束 → 跳过，返回既有线索 id
+        try:
+            db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        existing_id = None
+        if dedup and _safe_str(email):
+            try:
+                row = (
+                    db.query(ProspectLead)
+                    .filter(ProspectLead.email == _safe_str(email))
+                    .filter(ProspectLead.tenant_id == tid if tid else ProspectLead.tenant_id.is_(None))
+                    .first()
+                )
+                existing_id = str(getattr(row, "id", "")) or None
+            except Exception:  # noqa: BLE001
+                existing_id = None
+        return {
+            "persisted": False,
+            "id": existing_id,
+            "action": "duplicate",
+            "reason": "duplicate_email_tenant",
             "table": "prospect_leads",
             "tenant_resolved": tid,
         }
@@ -248,4 +378,5 @@ def persist_prospect_lead(
             db.rollback()
         except Exception:  # noqa: BLE001
             pass
-        return {"persisted": False, "id": None, "reason": str(exc)[:200]}
+        return {"persisted": False, "id": None, "action": "error",
+                "reason": str(exc)[:200], "table": "prospect_leads", "tenant_resolved": tid}

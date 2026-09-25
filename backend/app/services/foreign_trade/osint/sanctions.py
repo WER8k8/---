@@ -118,10 +118,13 @@ def _save_to_file_cache(list_name: str, entries: list[dict]) -> None:
         logger.warning("制裁名单文件缓存写入失败: %s", e)
 
 
-def _check_sanctions_extracted():
+def _check_sanctions_extracted(name: str):
     """提取出的子流程，封装原函数的局部计算逻辑。
 
-    :param self: 输入参数
+    W1 · P0-1 同型缺陷修复：原函数定义为无参却在体内使用未绑定 ``name``，
+    导致 ``check_sanctions`` 必然 ``NameError``。现补全 ``name`` 参数。
+
+    :param name: 公司名或人名（会进行模糊匹配）
     :return: 返回 exact_match_found, name_normalized, hits, name_upper 等计算结果
     """
     """筛查制裁名单（OFAC / UN / EU / UK / 中国）。
@@ -168,7 +171,7 @@ def check_sanctions(name: str, country: str | None = None) -> dict:
     :param country: 参数 country
     :return: 返回处理结果。
     """
-    exact_match_found, name_normalized, hits, name_upper = _check_sanctions_extracted()
+    exact_match_found, name_normalized, hits, name_upper = _check_sanctions_extracted(name)
     for list_name, entries in _sanctions_cache.items():
         for entry in entries:
             entry_name = entry.get("name", "").strip().lower()

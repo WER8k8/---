@@ -20,10 +20,19 @@ from app.services.foreign_trade.osint.tech_stack import detect_tech_stack
 from app.services.foreign_trade.osint.whois import domain_whois
 
 
-async def _osint_full_check_extracted():
+async def _osint_full_check_extracted(
+    target: str,
+    *,
+    include_sanctions: bool = True,
+    include_tech_stack: bool = True,
+    include_linkedin: bool = True,
+) -> dict:
     """提取出的子流程，封装原函数的局部计算逻辑。
 
-    :param self: 输入参数
+    :param target: 邮箱 / 域名 / 公司名（自动识别）
+    :param include_sanctions: 是否包含制裁名单筛查（默认 True）
+    :param include_tech_stack: 是否包含技术栈检测（默认 True）
+    :param include_linkedin: 是否包含 LinkedIn 验证（默认 True）
     :return: 返回 report 等计算结果
     """
     """完整 OSINT 尽职调查（异步编排，LLM 友好）。
@@ -158,10 +167,20 @@ async def _layer5_sanctions(report: dict, include_sanctions: bool, domain_from_e
 
 
 def _layer6_linkedin(report: dict, include_linkedin: bool, lookup_domain: str | None, target: str, target_type: str) -> None:
-    """Layer 6：LinkedIn 验证，生成 browser_navigate 指令。"""
+    """Layer 6：LinkedIn 验证。
+
+    当前仅产出 ``browser_navigate`` 指令，**非自动验证**：显式标注
+    ``mode='manual_browser'`` + ``requires_browser_execution=True``（诚实降级，
+    不谎称已验证）。真实自动验证留待 W4 Browser Runtime 接线。
+    """
     if include_linkedin and lookup_domain:
         _company_hint = target if target_type == "company" else lookup_domain
-        report["layers"]["linkedin"] = linkedin_company_verify(lookup_domain, _company_hint)
+        result = linkedin_company_verify(lookup_domain, _company_hint)
+        if isinstance(result, dict):
+            result.setdefault("mode", "manual_browser")
+            result.setdefault("requires_browser_execution", True)
+            result.setdefault("verified", False)
+        report["layers"]["linkedin"] = result
     else:
         report["layers"]["linkedin"] = None
 
@@ -190,7 +209,12 @@ async def osint_full_check(
     :param include_linkedin: 参数 include_linkedin
     :return: 返回处理结果。
     """
-    report = await _osint_full_check_extracted()
+    report = await _osint_full_check_extracted(
+        target,
+        include_sanctions=include_sanctions,
+        include_tech_stack=include_tech_stack,
+        include_linkedin=include_linkedin,
+    )
     return report
 
 

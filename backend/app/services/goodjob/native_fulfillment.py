@@ -22,6 +22,8 @@ from typing import Any, Optional
 
 from sqlalchemy.orm import Session
 
+from app.constants.crm_stages import INITIAL_STAGE, STAGE_ORDER, normalize_crm_stage
+
 logger = logging.getLogger(__name__)
 
 _DEFAULT_SELLER = {
@@ -52,19 +54,25 @@ _STAGE_TO_ORDER_STATUS = {
     "cancelled": "cancelled",
 }
 
+# 外部/遗留阶段词 → CRM 唯一合法阶段（app.constants.crm_stages.STAGE_ORDER）。
+# 原实现写入了 "prospecting" 等非法值，导致 crm_pipeline 阶段统计/推进判非法（P0-8）。
 _OPP_STAGE_MAP = {
-    "new": "prospecting",
-    "prospecting": "prospecting",
-    "contacted": "qualification",
-    "qualified": "qualification",
-    "needs_analysis": "needs_analysis",
-    "proposal": "proposal",
-    "quoted": "proposal",
-    "negotiation": "negotiation",
-    "negotiated": "negotiation",
-    "won": "won",
-    "lost": "lost",
+    "new": INITIAL_STAGE,            # "Lead"
+    "prospecting": INITIAL_STAGE,    # "Lead"
+    "contacted": "Qualified",
+    "qualified": "Qualified",
+    "needs_analysis": "Engaged",
+    "proposal": "Quote",
+    "quoted": "Quote",
+    "negotiation": "Negotiation",
+    "negotiated": "Negotiation",
+    "won": "Won",
+    "lost": "Lost",
 }
+# 断言：映射目标全部落在唯一合法集内（防止后续回归）
+assert set(_OPP_STAGE_MAP.values()) <= set(STAGE_ORDER), (
+    f"_OPP_STAGE_MAP 含非法阶段: {set(_OPP_STAGE_MAP.values()) - set(STAGE_ORDER)}"
+)
 
 
 def _bank_from_settings() -> Optional[dict[str, Any]]:
@@ -479,7 +487,7 @@ def sync_lead(
         contact_name=contact,
         contact_email=email,
         country=country or None,
-        stage="prospecting",
+        stage=INITIAL_STAGE,
         probability=10,
         tenant_id=str(tenant_id or "") or None,
         source=source,
@@ -520,11 +528,15 @@ def update_opportunity(
     db: Optional[Session] = None,
 ) -> dict[str, Any]:
     status_key = (status or "").strip().lower()
-    stage = _OPP_STAGE_MAP.get(status_key, status_key)
-    if stage not in set(_OPP_STAGE_MAP.values()):
+    # 先查遗留别名表（"contacted"/"qualified" → "Qualified" 等业务语义），
+    # 未命中再走通用归一（覆盖 "RFQ"/"Quote" 等合法值）；均未命中则判非法。
+    stage = _OPP_STAGE_MAP.get(status_key)
+    if stage is None:
+        stage = normalize_crm_stage(status)
+    if stage is None:
         return {
             "success": False,
-            "error": f"非法状态 {status_key!r}，合法值: {sorted(set(_OPP_STAGE_MAP))}",
+            "error": f"非法状态 {status_key!r}，合法值: {STAGE_ORDER}",
             "native": True,
         }
     if not opportunity_id:

@@ -10,6 +10,11 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
+from app.constants.crm_stages import (
+    STAGE_ORDER,
+    STAGE_PROBABILITY as _STAGE_PROBABILITY_01,
+    normalize_crm_stage,
+)
 from app.core.response import error_response, success_response
 from app.core.security import get_current_user
 from app.db.session import get_db
@@ -19,12 +24,12 @@ from app.models.user import User
 
 router = APIRouter()
 
-# 标准销售管道阶段（Technical Spec §6）
-PIPELINE_STAGES = ["Lead", "Qualified", "Contacted", "Engaged", "RFQ", "Quotation", "Negotiation", "Won", "Lost"]
-# 各阶段默认概率
+# 标准销售管道阶段 —— 唯一真源见 app.constants.crm_stages（W1 · N-3）
+# 原此处自建词表含 "Quotation"，已归一到真源的 "Quote"。
+PIPELINE_STAGES = list(STAGE_ORDER)
+# 各阶段默认概率（0-100 整数，由真源 0-1 概率换算）
 STAGE_PROBABILITY = {
-    "Lead": 10, "Qualified": 20, "Contacted": 30, "Engaged": 40,
-    "RFQ": 50, "Quotation": 60, "Negotiation": 75, "Won": 100, "Lost": 0,
+    stage: int(round(_STAGE_PROBABILITY_01[stage] * 100)) for stage in STAGE_ORDER
 }
 
 
@@ -257,9 +262,8 @@ def create_opportunity(
         if not rfq:
             return error_response(404, "RFQ 不存在")
 
-    stage = body.stage or "Qualified"
-    if stage not in PIPELINE_STAGES:
-        stage = "Qualified"
+    # 阶段归一（含遗留 "Quotation" → "Quote"）；非法值回落 Qualified（保持原行为）
+    stage = normalize_crm_stage(body.stage) or "Qualified"
     probability = body.probability if body.probability is not None else STAGE_PROBABILITY.get(stage, 20)
     expected_close = None
     if body.expected_close_date:
@@ -327,13 +331,14 @@ def update_stage(
     ).first()
     if not op:
         return error_response(404, "机会不存在")
-    if body.stage not in PIPELINE_STAGES:
+    normalized_stage = normalize_crm_stage(body.stage)
+    if normalized_stage is None:
         return error_response(400, f"无效阶段，可选 {', '.join(PIPELINE_STAGES)}")
-    op.stage = body.stage
-    op.probability = STAGE_PROBABILITY.get(body.stage, op.probability)
+    op.stage = normalized_stage
+    op.probability = STAGE_PROBABILITY.get(normalized_stage, op.probability)
     db.add(OpportunityStage(
         opportunity_id=op.id,
-        stage=body.stage,
+        stage=normalized_stage,
         changed_by=str(current_user.id),
         notes=body.notes,
     ))

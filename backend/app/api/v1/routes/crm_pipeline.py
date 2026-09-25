@@ -27,6 +27,12 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.constants.crm_stages import (  # noqa: F401  (转发以保持 crm_pipeline.STAGE_* 可导入)
+    STAGE_LABELS,
+    STAGE_ORDER,
+    STAGE_PROBABILITY,
+    TERMINAL_STAGES,
+)
 from app.core.response import APIResponse, error_response, success_response
 from app.core.security import get_current_user
 from app.db.session import get_db
@@ -36,40 +42,9 @@ from app.models.user import User
 router = APIRouter(tags=["CRM管线"])
 
 # ─────────────────────────────────────────────
-# 阶段配置
+# 阶段配置 —— 唯一真源已迁至 app.constants.crm_stages（W1 · N-3）
+# 通过顶部 import 转发，保持 `crm_pipeline.STAGE_*` 的对外可导入性不变。
 # ─────────────────────────────────────────────
-STAGE_ORDER: list[str] = [
-    "Lead", "Qualified", "Contacted", "Engaged",
-    "RFQ", "Quote", "Negotiation", "Won", "Lost",
-]
-
-STAGE_LABELS: dict[str, str] = {
-    "Lead": "线索",
-    "Qualified": "已验证",
-    "Contacted": "已联系",
-    "Engaged": "深度沟通",
-    "RFQ": "询价",
-    "Quote": "报价",
-    "Negotiation": "谈判",
-    "Won": "赢单",
-    "Lost": "输单",
-}
-
-# 各阶段赢单概率（用于加权金额）
-STAGE_PROBABILITY: dict[str, float] = {
-    "Lead": 0.05,
-    "Qualified": 0.10,
-    "Contacted": 0.20,
-    "Engaged": 0.30,
-    "RFQ": 0.45,
-    "Quote": 0.60,
-    "Negotiation": 0.75,
-    "Won": 1.00,
-    "Lost": 0.00,
-}
-
-TERMINAL_STAGES = frozenset({"Won", "Lost"})
-
 _SORTABLE_FIELDS = {"created_at", "updated_at", "amount", "name", "expected_close_date", "stage"}
 
 _STAGE_INDEX = {s: i for i, s in enumerate(STAGE_ORDER)}

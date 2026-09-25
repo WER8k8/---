@@ -154,6 +154,11 @@ def _find_buyer_prospects_via_sidecar(db, tenant_id, region, category, message, 
                 if sidecar.get("probe_mode") == "stub"
                 else "ai_find_customer_sidecar"
             ),
+            # W1 · P0-5：Sidecar 为真实抓取候选；有 evidence_url 即证据完整。
+            # verified 仍为 False（需人工核实后才可外发）。
+            candidate_kind="scraped",
+            verified=False,
+            evidence_status="present" if p.get("evidence_url") else "missing",
         )
         db.add(row)
         prospects.append(
@@ -234,6 +239,10 @@ def _find_buyer_prospects_via_archetypes(db, tenant_id, region, category, countr
             notes=(note + note_extra)[:2000],
             status="discovered",
             source_tool="find_buyers",
+            # W1 · P0-5：画像模板候选——结构上显式标注，禁止被当真实线索外发。
+            candidate_kind="archetype",
+            verified=False,
+            evidence_status="missing",
         )
         db.add(row)
         prospects.append(
@@ -562,6 +571,22 @@ def _enrich_outreach_letters(letters, prospects, category, brand, insight_line):
     return enriched
 
 
+def outreach_eligibility(candidate: Any) -> tuple[bool, str]:
+    """W1 · P0-5：外发资格闸门。
+
+    只有「非画像模板」且「已人工核实」的候选才允许进入开发信/外发队列。
+    - archetype（画像模板候选）→ 直接拒绝（无证据不群发红线）；
+    - 未 verified 的抓取候选 → 拒绝（需人工核实）；
+    - 返回 ``(是否可外发, 拒绝原因)``。
+    """
+    kind = str(getattr(candidate, "candidate_kind", "") or "")
+    if kind == "archetype":
+        return False, "archetype_candidate_requires_human_verification"
+    if not bool(getattr(candidate, "verified", False)):
+        return False, "candidate_not_verified"
+    return True, ""
+
+
 def outreach_letter_pack(
     db: Session,
     *,
@@ -587,20 +612,54 @@ def outreach_letter_pack(
     count = _parse_count(message, 5)
     lang = _parse_language(message, mem)
     tone = mem.get("tone") or "专业、简洁"
+    # W1 · P0-5：外发选客强制只取「已核实且非画像模板」的候选。
     q = db.query(BuyerProspectLead).filter(
         BuyerProspectLead.tenant_id == tenant_id,
         BuyerProspectLead.status == "discovered",
     )
+    rejected: list[dict[str, Any]] = []
     if prospect_ids:
-        q = q.filter(BuyerProspectLead.id.in_(prospect_ids))
-    rows = q.order_by(BuyerProspectLead.fit_score.desc()).limit(count).all()
+        # 显式指定候选时必须逐个过闸：不合格的拒绝入队并给出原因（不静默丢弃）。
+        candidates = q.filter(BuyerProspectLead.id.in_(prospect_ids)).all()
+        rows = []
+        for cand in candidates:
+            ok, reason = outreach_eligibility(cand)
+            if ok:
+                rows.append(cand)
+            else:
+                rejected.append({
+                    "id": cand.id,
+                    "title": cand.title,
+                    "candidate_kind": getattr(cand, "candidate_kind", ""),
+                    "verified": bool(getattr(cand, "verified", False)),
+                    "reason": reason,
+                })
+        rows = rows[:count]
+    else:
+        rows = (
+            q.filter(
+                BuyerProspectLead.candidate_kind != "archetype",
+                BuyerProspectLead.verified.is_(True),
+            )
+            .order_by(BuyerProspectLead.fit_score.desc())
+            .limit(count)
+            .all()
+        )
     prospects = [
         {"id": r.id, "title": r.title, "country_code": r.country_code}
         for r in rows
     ]
-    if not prospects:
+    if not prospects and not prospect_ids:
+        # 冷启动：生成画像候选供人工核实，但**不生成外发草稿**（无证据不外发）。
         fb = find_buyer_prospects(db, tenant_id=tenant_id, message=message, memory=mem)
-        prospects = fb.get("prospects") or []
+        for p in (fb.get("prospects") or []):
+            rejected.append({
+                "id": p.get("id"),
+                "title": p.get("title"),
+                "candidate_kind": "archetype",
+                "verified": False,
+                "reason": "archetype_candidate_requires_human_verification",
+            })
 
     insights = retrieve_insights_for_accio(
         db, tenant_id, region=region, category=category, limit=3
@@ -643,6 +702,8 @@ def outreach_letter_pack(
             ),
         },
         "letters": letters,
+        "rejected": rejected,
+        "rejected_count": len(rejected),
         "deliverability_summary": pack_deliverability_summary(letters),
         "human_send_required": True,
         "disclaimer": "开发信为审核草稿；送达率取决于 SPF/DKIM/域名预热与收件人质量，禁止未确认自动外发。",

@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 from dataclasses import dataclass, field
@@ -206,9 +207,86 @@ async def _process_lead(
 
 # ── API 端点 ──
 
+def persist_found_leads(
+    db: Session,
+    leads: list,
+    *,
+    tenant_id: str = "",
+    keyword: str = "",
+) -> dict:
+    """W1 · P0-4：主动搜客结果 → 统一线索主档 ``prospect_leads``（幂等收口）。
+
+    经 ``app.services.acquisition.repo.persist_prospect_lead``（唯一 Adapter）落库，
+    ``source=LeadSource.GOOGLE_CSE``、``status=DISCOVERED``，search keyword / page_url /
+    snippet 等写入 ``lead_metadata``。
+
+    幂等：以 ``email + tenant_id`` 为键（``uq_prospect_lead_email_tenant``），重复命中降级为
+    跳过、不产生重复行、不抛 500。**仅落有邮箱的线索**（无邮箱无法保证幂等，记为 ``no_email``）。
+
+    Returns:
+        ``{"persisted_count": int, "persisted_ids": list[str], "skipped": list[dict]}``
+    """
+    from app.services.acquisition.repo import persist_prospect_lead
+
+    created = 0
+    ids: list[str] = []
+    skipped: list[dict] = []
+    for lead in leads:
+        if not isinstance(lead, FoundLead):
+            # asyncio.gather(return_exceptions=True) 可能带入异常对象，跳过
+            continue
+        best = next((e for e in lead.emails if e and e.email), None)
+        if best is None:
+            skipped.append({
+                "company_name": lead.company_name,
+                "website": lead.website,
+                "reason": "no_email",
+            })
+            continue
+        result = persist_prospect_lead(
+            db,
+            tenant_id=tenant_id,
+            email=best.email,
+            company_name=lead.company_name or "",
+            country=lead.country or "",
+            website=lead.website or "",
+            source="google_cse",
+            status="discovered",
+            source_detail={"search_keyword": keyword, "page_url": lead.website},
+            lead_metadata={
+                "search_keyword": keyword,
+                "page_url": lead.website,
+                "snippet": lead.snippet,
+                "domain": lead.domain,
+                "email_confidence": best.confidence,
+                "email_verification_status": best.verification_status,
+            },
+        )
+        action = result.get("action")
+        if action == "created":
+            created += 1
+            if result.get("id"):
+                ids.append(result["id"])
+        elif action == "duplicate":
+            skipped.append({
+                "company_name": lead.company_name,
+                "email": best.email,
+                "reason": "duplicate_email_tenant",
+                "existing_id": result.get("id"),
+            })
+        else:
+            skipped.append({
+                "company_name": lead.company_name,
+                "email": best.email,
+                "reason": result.get("reason") or "persist_failed",
+            })
+    return {"persisted_count": created, "persisted_ids": ids, "skipped": skipped}
+
+
 @router.post("/search")
 async def search_leads(
     req: LeadSearchRequest,
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """零成本获客搜索 —— Google CSE + 网站抓取 + 邮箱验证
@@ -216,6 +294,9 @@ async def search_leads(
     完全免费，无需付费 API。
     准确率：邮箱 ~70-80%（SMTP 验证后 85%+）
     速度：每个网站 2-5 秒（主要是抓取+验证）
+
+    W1 · P0-4：命中结果经统一入口落 ``prospect_leads``（幂等），返回体新增
+    ``persisted_count`` / ``persist_skipped``（向后兼容，原字段不变）。
     """
     import time
     start = time.time()
@@ -226,6 +307,7 @@ async def search_leads(
     if req.industry:
         query_parts.append(req.industry)
     query = " ".join(query_parts)
+    tenant_id = str(getattr(current_user, "tenant_id", "") or "")
     # Step 1: Google CSE 搜索
     search_results = await _google_cse_search(query, num=req.max_results)
     if not search_results:
@@ -237,6 +319,8 @@ async def search_leads(
             "verified_emails": 0,
             "search_time_ms": int((time.time() - start) * 1000),
             "method": "free_pipeline",
+            "persisted_count": 0,
+            "persist_skipped": [],
             "note": "Google CSE 未配置或无结果。请在 .env 中配置 GOOGLE_CSE_API_KEY 和 GOOGLE_CSE_CX",
         })
 
@@ -253,21 +337,25 @@ async def search_leads(
     ]
     leads = await asyncio.gather(*tasks, return_exceptions=True)
     # Step 3: 过滤 + 统计
-    leads_with_emails = [l for l in leads if l.emails]
-    total_emails = sum(len(l.emails) for l in leads)
+    total_emails = sum(len(lead_obj.emails) for lead_obj in leads if getattr(lead_obj, "emails", None))
     verified_count = sum(
-        1 for l in leads for e in l.emails if e.verified is True
+        1 for lead_obj in leads if getattr(lead_obj, "emails", None)
+        for e in lead_obj.emails if e.verified is True
     )
     # 按邮箱数量排序（有邮箱的排前面）
-    leads.sort(key=lambda l: len(l.emails), reverse=True)
+    leads.sort(key=lambda lead_obj: len(getattr(lead_obj, "emails", []) or []), reverse=True)
+    # Step 4: 统一入口落库（幂等，向后兼容）
+    persist = persist_found_leads(db, leads, tenant_id=tenant_id, keyword=query)
     elapsed = int((time.time() - start) * 1000)
     return success_response(data={
-        "leads": [l.model_dump() for l in leads],
+        "leads": [lead_obj.model_dump() for lead_obj in leads if isinstance(lead_obj, FoundLead)],
         "total_found": len(leads),
         "emails_found": total_emails,
         "verified_emails": verified_count,
         "search_time_ms": elapsed,
         "method": "free_pipeline",
+        "persisted_count": persist["persisted_count"],
+        "persist_skipped": persist["skipped"],
     })
 
 

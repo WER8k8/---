@@ -271,32 +271,48 @@ class PersistHandler(LeadHandler):
 
         try:
             from app.db.session import SessionLocal
-            from app.models.prospect_lead import ProspectLead
+            from app.services.acquisition.repo import persist_prospect_lead
             db = SessionLocal()
             try:
-                lead = ProspectLead(
-                    id=ctx.id,
-                    email=ctx.normalized.get("email"),
-                    first_name=ctx.normalized.get("first_name"),
-                    last_name=ctx.normalized.get("last_name"),
-                    company=ctx.normalized.get("company"),
-                    title=ctx.normalized.get("title"),
-                    phone=ctx.normalized.get("phone"),
-                    linkedin_url=ctx.normalized.get("linkedin_url"),
-                    website=ctx.normalized.get("website"),
-                    country=ctx.normalized.get("country"),
-                    industry=ctx.normalized.get("industry"),
-                    source=ctx.normalized.get("source"),
-                    score=ctx.score,
+                # W1 · P0-2：不再手工 ProspectLead(**非法 kwargs)，统一经 repo 收口。
+                # 原实现用 company=/score=/score_breakdown=/enriched_data=/status="new"
+                # 全部与模型不符，导致线索永不落库。
+                n = ctx.normalized
+                result = persist_prospect_lead(
+                    db,
+                    tenant_id="",
+                    email=n.get("email") or "",
+                    company_name=n.get("company") or "",
+                    country=n.get("country") or "",
+                    contact_name=(
+                        f"{n.get('first_name', '')} {n.get('last_name', '')}".strip()
+                    ),
+                    contact_title=n.get("title") or "",
+                    website=n.get("website") or "",
+                    linkedin_url=n.get("linkedin_url") or "",
+                    industry=n.get("industry") or "",
+                    source=n.get("source") or "manual_import",
+                    status="discovered",
+                    overall_score=int(round(ctx.score or 0)),
                     score_breakdown=ctx.score_breakdown,
-                    enriched_data=ctx.enriched_data,
-                    status="new",
+                    lead_metadata={
+                        "score_breakdown": ctx.score_breakdown,
+                        "enriched_data": ctx.enriched_data,
+                        "pipeline": "LeadPipeline",
+                    },
+                    source_detail={"source_url": n.get("source_url") or ""},
                 )
-                db.add(lead)
-                db.commit()
-                ctx.status = PipelineStatus.COMPLETED
-                ctx.metadata["persist"] = {"lead_id": ctx.id}
-                log.info("[persist] 线索入库: %s (score=%.1f)", ctx.id, ctx.score)
+                if result.get("persisted"):
+                    ctx.status = PipelineStatus.COMPLETED
+                    ctx.metadata["persist"] = {
+                        "lead_id": result.get("id"),
+                        "action": result.get("action"),
+                    }
+                    log.info("[persist] 线索入库: %s (score=%.1f)", result.get("id"), ctx.score)
+                else:
+                    ctx.errors.append(f"persist: {result.get('reason')}")
+                    ctx.status = PipelineStatus.FAILED
+                    log.error("[persist] 入库失败: %s", result.get("reason"))
             finally:
                 db.close()
         except Exception as e:

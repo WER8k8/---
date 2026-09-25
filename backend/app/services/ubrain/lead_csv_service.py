@@ -134,9 +134,15 @@ class LeadCSVService:
     def _create_prospect_lead(
         self, lead: Any, tenant_id: str, db: Any
     ) -> str:
-        """创建 ProspectLead 记录并入库，返回 ID。"""
+        """创建 ProspectLead 记录并入库，返回 ID。
+
+        W1 · N-4：与 P0-2 同型缺陷修复 —— ``company=`` → ``company_name=``，
+        ``status="new"``（LeadStatus 无此值）→ ``LeadStatus.DISCOVERED``，
+        ``source`` 归一为 ``LeadSource`` 枚举。保持 ``db.flush()`` 事务语义不变。
+        """
         import uuid
-        from app.models.prospect_lead import ProspectLead
+        from app.models.prospect_lead import LeadStatus, ProspectLead
+        from app.services.acquisition.repo import _coerce_lead_source
         prospect = ProspectLead(
             id=str(uuid.uuid4()),
             email=lead.identity.email,
@@ -144,13 +150,13 @@ class LeadCSVService:
             last_name=lead.identity.last_name,
             phone=lead.identity.phone,
             linkedin_url=lead.identity.linkedin_url,
-            company=lead.company.company_name,
+            company_name=lead.company.company_name,
             website=lead.company.website,
             industry=lead.company.industry,
             country=lead.company.country,
             title=lead.position.title,
-            source=lead.source.channel or "csv_import",
-            status="new",
+            source=_coerce_lead_source(lead.source.channel, "csv_import"),
+            status=LeadStatus.DISCOVERED,
             tenant_id=tenant_id,
         )
         db.add(prospect)

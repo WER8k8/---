@@ -22,6 +22,7 @@ from typing import Any, Optional
 from uuid import uuid4
 
 # re-export for tests / API convenience
+from app.constants.crm_stages import INITIAL_STAGE as _CRM_INITIAL_STAGE
 from app.services.acquisition.sample_flow import SAMPLE_STATUSES, sample_view  # noqa: F401
 from app.services.acquisition.loss_report import build_loss_report  # noqa: F401
 from app.services.acquisition.outreach_gate import evaluate_research_gate  # noqa: F401
@@ -250,7 +251,8 @@ class OpsCard:
     inquiry_id: str = ""
     buyer_id: str = ""
     tenant_id: str = ""
-    stage: str = "new"
+    # W1 · N-6：初始阶段对齐 CRM 唯一词表（原自由串 "new" → 合法初始阶段 "Lead"）
+    stage: str = _CRM_INITIAL_STAGE
     # 人
     owner_user_id: str = ""
     collaborators: list[str] = field(default_factory=list)
@@ -473,7 +475,7 @@ class OpsCardStore:
         grade: str = "",
         grade_reason: str = "",
         playbook_tips: Optional[list[str]] = None,
-        stage: str = "new",
+        stage: str = _CRM_INITIAL_STAGE,
         score: int = 0,
     ) -> OpsCard:
         card = self._by_inquiry.get(inquiry_id)
@@ -673,7 +675,7 @@ class OpsCardStore:
             card.payment.deposit_paid_at = _now_iso()[:10]
         if key == "balance" and status == "done":
             card.payment.balance_status = "paid"
-        if key == "quote" and status == "done" and card.stage in ("new", "engaged", "qualifying"):
+        if key == "quote" and status == "done" and card.stage in (_CRM_INITIAL_STAGE, "new", "engaged", "qualifying"):
             card.stage = "quoted"
         return self.update(card)
 

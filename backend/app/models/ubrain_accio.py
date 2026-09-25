@@ -5,7 +5,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 
 from app.core.database import UUID_TYPE, Base
 
@@ -38,6 +38,13 @@ class BuyerProspectLead(Base):
     outreach_draft = Column(Text)
     status = Column(String(20), nullable=False, default="discovered", index=True)
     source_tool = Column(String(64), default="find_buyers")
+    # ── W1 · P0-5：结构上区分“画像模板候选”与“真实抓取候选”，杜绝画像候选被当真实线索群发 ──
+    # candidate_kind: archetype（画像模板·无证据）/ scraped（真实抓取）/ imported（导入）
+    candidate_kind = Column(String(20), nullable=False, default="archetype", index=True)
+    # 是否已人工核实（archetype 恒为 False，禁止进入外发队列）
+    verified = Column(Boolean, nullable=False, default=False)
+    # 证据状态：present / missing
+    evidence_status = Column(String(20), nullable=False, default="missing")
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

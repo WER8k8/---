@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import enum
+import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -56,7 +57,8 @@ class BounceType(str, enum.Enum):
 class EmailOutreach(Base):
     """邮件外联记录 —— 状态机 + 幂等 + 追踪"""
     __tablename__ = "email_outreachs"
-    id = Column(UUID_TYPE, primary_key=True, default=UUID_TYPE)
+    # N-7：原 default 误传类型对象 UUID_TYPE（不可调用），改为可调用工厂
+    id = Column(UUID_TYPE, primary_key=True, default=lambda: str(uuid.uuid4()))
     # 幂等键：同一键值只发送一次
     idempotency_key = Column(
         String(64), nullable=False, unique=True, index=True,
@@ -65,6 +67,8 @@ class EmailOutreach(Base):
     # 租户/用户隔离
     tenant_id = Column(UUID_TYPE, ForeignKey("tenants.id"), nullable=True, index=True)
     user_id = Column(UUID_TYPE, ForeignKey("users.id"), nullable=True, index=True)
+    # 关联回统一线索主档 prospect_leads（W1 · N-2：email_tracking_service 读写该列）
+    prospect_id = Column(UUID_TYPE, nullable=True, index=True)
     # 发件信息
     from_email = Column(String(255), nullable=False)
     from_name = Column(String(255), nullable=False, default="优丁出海")

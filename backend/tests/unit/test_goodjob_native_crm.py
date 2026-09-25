@@ -109,7 +109,8 @@ def test_native_lead_creates_inquiry_and_opportunity(db):
     assert out["success"] is True
     assert out["lead_id"]
     assert db.query(Inquiry).count() == 1
-    assert db.query(Opportunity).filter(Opportunity.id == out["lead_id"]).first().stage == "prospecting"
+    # W1 · P0-8：新建商机初始阶段须为 CRM 唯一词表的 "Lead"（原误写 "prospecting"）
+    assert db.query(Opportunity).filter(Opportunity.id == out["lead_id"]).first().stage == "Lead"
 
 
 def test_executor_native_pi_degraded_without_bank(db, tenant_order):
