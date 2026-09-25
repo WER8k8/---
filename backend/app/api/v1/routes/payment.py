@@ -537,9 +537,11 @@ def create_stripe_session(plan_id: int=Body(...), billing_cycle: str=Body('month
         price = plan.price_yearly if billing_cycle == 'yearly' else plan.price_monthly
         # 先建支付订单，供 webhook 回来时对账发放
         from app.services.payment_pkg.payment_service_impl import PaymentService
+        from app.services.tenant_scenario_service import resolve_tenant_id_for_user
+        tid = resolve_tenant_id_for_user(db, current_user)
         svc = PaymentService(db)
         created = svc.create_payment_order(
-            tenant_id=str(current_user.tenant_id),
+            tenant_id=str(tid),
             subscription_id=None,
             amount=price,
             channel='stripe',
@@ -551,7 +553,7 @@ def create_stripe_session(plan_id: int=Body(...), billing_cycle: str=Body('month
             mode='payment',
             success_url=f'{settings.SITE_URL}/payment/success?session_id={{CHECKOUT_SESSION_ID}}',
             cancel_url=f'{settings.SITE_URL}/payment/cancel',
-            tenant_id=str(current_user.tenant_id),
+            tenant_id=str(tid),
             metadata={'order_no': str(order.order_no)},
         )
         return success_response(data={**(result if isinstance(result, dict) else {}), 'order_no': str(order.order_no)}, message='Stripe Session 创建成功')

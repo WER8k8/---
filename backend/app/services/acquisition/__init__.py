@@ -100,6 +100,32 @@ class BuyerMasterStore:
         self._by_id: dict[str, BuyerMaster] = {}
         self._by_email: dict[tuple[str, str], str] = {}  # (tenant_id, email) -> buyer_id
         self.conflict_alerts: list[dict[str, Any]] = []
+        # 持久化观测：backend=postgres 才是真持久化；memory=显式降级（重启即丢）
+        self.persistence_backend: str = "memory"
+        self.persistence_stats: dict[str, Any] = {
+            "table": "acquisition_buyer_masters",
+            "writes": 0,
+            "write_failures": 0,
+            "loads": 0,
+            "load_misses": 0,
+            "last_error": None,
+        }
+
+    def persistence_report(self) -> dict[str, Any]:
+        """身份锁持久化自述（可观测）。"""
+        degraded = self.persistence_backend != "postgres"
+        return {
+            "entity": "buyer_master",
+            "backend": self.persistence_backend,
+            "degraded": degraded,
+            "durable": not degraded,
+            "stats": dict(self.persistence_stats),
+            "hint": (
+                "身份锁已写 PG，重启不丢。"
+                if not degraded
+                else "身份锁为内存降级（PG 不可用），重启会丢失，请检查数据库连接。"
+            ),
+        }
 
     def upsert(self, buyer: BuyerMaster) -> tuple[BuyerMaster, bool, list[str]]:
         """返回 (buyer, is_new, alerts)。"""
@@ -463,6 +489,32 @@ class OpsCardStore:
     def __init__(self) -> None:
         self._by_inquiry: dict[str, OpsCard] = {}
         self._by_id: dict[str, OpsCard] = {}
+        # 持久化观测：backend=postgres 才是真持久化；memory=显式降级（重启即丢）
+        self.persistence_backend: str = "memory"
+        self.persistence_stats: dict[str, Any] = {
+            "table": "acquisition_ops_cards",
+            "writes": 0,
+            "write_failures": 0,
+            "loads": 0,
+            "load_misses": 0,
+            "last_error": None,
+        }
+
+    def persistence_report(self) -> dict[str, Any]:
+        """跟单卡持久化自述（可观测）。"""
+        degraded = self.persistence_backend != "postgres"
+        return {
+            "entity": "ops_card",
+            "backend": self.persistence_backend,
+            "degraded": degraded,
+            "durable": not degraded,
+            "stats": dict(self.persistence_stats),
+            "hint": (
+                "跟单卡已写 PG，重启不丢。"
+                if not degraded
+                else "跟单卡为内存降级（PG 不可用），重启会丢失，请检查数据库连接。"
+            ),
+        }
 
     def materialize(
         self,
@@ -910,14 +962,28 @@ buyer_store = BuyerMasterStore()
 ops_card_store = OpsCardStore()
 playbook_store = PlaybookStore()
 
-# 本地/生产：跟单卡 PG 真源（重启不丢；无库时诚实内存降级）
+# 本地/生产：跟单卡 PG 真源（重启不丢；无库时显式降级并告警，绝不静默）
 try:
     from app.services.acquisition.ops_card_pg import patch_store_persistence
     patch_store_persistence(ops_card_store)
 except Exception as _ops_pg_exc:  # noqa: BLE001
-    import logging
-    logging.getLogger(__name__).warning(
+    logger.warning(
         "ops_card PG persistence patch failed, memory-only: %s", _ops_pg_exc
+    )
+
+# 本地/生产：Buyer Master 身份锁 + 内容归因 PG 真源（无库时显式降级并告警）
+try:
+    from app.services.acquisition.growth_ops import content_attr_store
+    from app.services.acquisition.identity_pg import (
+        patch_buyer_store_persistence,
+        patch_content_attr_persistence,
+    )
+    patch_buyer_store_persistence(buyer_store)
+    patch_content_attr_persistence(content_attr_store)
+except Exception as _identity_pg_exc:  # noqa: BLE001
+    logger.warning(
+        "BuyerMaster/ContentAttribution PG persistence patch failed, memory-only: %s",
+        _identity_pg_exc,
     )
 
 

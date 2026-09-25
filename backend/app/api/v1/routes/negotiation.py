@@ -30,6 +30,7 @@ from app.models.quote import Quote, QuoteItem
 from app.models.user import User
 from app.services.foreign_trade.trade_document_service import build_proforma_invoice
 from app.services.foreign_trade.negotiation_rules import apply_concession, NegotiationRules
+from app.services.tenant_scenario_service import resolve_tenant_id_for_user
 
 
 logger = logging.getLogger(__name__)
@@ -281,7 +282,7 @@ def submit_quote(
         else:
             new_quote = Quote(
                 id=uuid.uuid4(),
-                tenant_id=current_user.tenant_id,
+                tenant_id=resolve_tenant_id_for_user(db, current_user),
                 merchant_id=current_user.id,
                 inquiry_id=inquiry_row.id if inquiry_row else (quote_uuid if quote_uuid else None),
                 total_amount=total_val,

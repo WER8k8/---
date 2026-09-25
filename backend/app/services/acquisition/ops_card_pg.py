@@ -229,18 +229,48 @@ def restore_ops_card(store: Any, inquiry_id: str) -> Optional[Any]:
 
 
 def patch_store_persistence(store: Any) -> Any:
-    """给 OpsCardStore 打补丁：update 时写 PG；get 时 miss 则恢复。"""
+    """给 OpsCardStore 打补丁：update 时写 PG；get 时 miss 则恢复。
+
+    与早期版本的区别：**不再静默 pass**。任何未落库都显式告警并写入
+    ``store.persistence_stats``，供 ``store.persistence_report()`` / ``/ops/persistence`` 读出。
+    """
     if getattr(store, "_pg_patched", False):
         return store
     orig_update = store.update
     orig_get = store.get_by_inquiry
 
+    def _note(result: dict[str, Any], *, phase: str) -> None:
+        stats = getattr(store, "persistence_stats", None)
+        if isinstance(stats, dict):
+            if result.get("persisted"):
+                stats["writes"] = int(stats.get("writes", 0)) + 1
+                stats["last_error"] = None
+            else:
+                stats["write_failures"] = int(stats.get("write_failures", 0)) + 1
+                stats["last_error"] = result.get("reason")
+        if result.get("persisted"):
+            try:
+                store.persistence_backend = "postgres"
+            except Exception:  # noqa: BLE001
+                pass
+        else:
+            try:
+                store.persistence_backend = "memory"
+            except Exception:  # noqa: BLE001
+                pass
+            logger.warning(
+                "ops_card %s 未落库（已降级内存，重启会丢）: %s",
+                phase,
+                result.get("reason"),
+            )
+
     def update(card):
         out = orig_update(card)
         try:
-            save_ops_card(out)
-        except Exception:
-            pass
+            result = save_ops_card(out)
+        except Exception as exc:  # noqa: BLE001
+            result = {"persisted": False, "reason": str(exc)[:200]}
+        _note(result, phase="update")
         return out
 
     def get_by_inquiry(inquiry_id):
@@ -248,16 +278,33 @@ def patch_store_persistence(store: Any) -> Any:
         if card is None:
             try:
                 card = restore_ops_card(store, inquiry_id)
-            except Exception:
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("restore_ops_card 失败（返回 None）: %s", exc)
                 card = None
+            stats = getattr(store, "persistence_stats", None)
+            if isinstance(stats, dict):
+                if card is not None:
+                    stats["loads"] = int(stats.get("loads", 0)) + 1
+                else:
+                    stats["load_misses"] = int(stats.get("load_misses", 0)) + 1
         return card
 
     store.update = update  # type: ignore[method-assign]
     store.get_by_inquiry = get_by_inquiry  # type: ignore[method-assign]
     store._pg_patched = True
     store.ensure_pg_table = ensure_table  # type: ignore[attr-defined]
+    ok = False
     try:
-        ensure_table()
-    except Exception:
+        ok = ensure_table()
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("ensure ops_cards table failed: %s", exc)
+    try:
+        store.persistence_backend = "postgres" if ok else "memory"
+    except Exception:  # noqa: BLE001
         pass
+    if not ok:
+        logger.warning(
+            "OpsCardStore PG 不可用，已降级为内存存储（重启会丢）；"
+            "自述见 store.persistence_report()"
+        )
     return store

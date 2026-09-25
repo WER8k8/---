@@ -15,6 +15,7 @@ from app.models.user import User
 from app.models.tenant import Tenant
 from app.models.ai_config import TenantAiProviderConfig, AIModelProvider
 from app.core.field_crypto import encrypt_field, decrypt_field
+from app.services.tenant_scenario_service import resolve_tenant_id_for_user
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -42,7 +43,7 @@ def get_my_configs(
     current_user: User = Depends(get_current_user),
 ):
     """获取当前租户的AI配置列表"""
-    tenant_id = current_user.tenant_id
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     if not tenant_id:
         return error_response(400, "用户未关联租户")
 
@@ -82,7 +83,7 @@ def create_config(
     current_user: User = Depends(get_current_user),
 ):
     """创建租户AI配置"""
-    tenant_id = current_user.tenant_id
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     if not tenant_id:
         return error_response(400, "用户未关联租户")
 
@@ -118,11 +119,12 @@ def update_config(
     current_user: User = Depends(get_current_user),
 ):
     """更新租户AI配置"""
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     config = (
         db.query(TenantAiProviderConfig)
         .filter(
             TenantAiProviderConfig.id == config_id,
-            TenantAiProviderConfig.tenant_id == current_user.tenant_id,
+            TenantAiProviderConfig.tenant_id == tenant_id,
             TenantAiProviderConfig.user_id == current_user.id
         )
         .first()
@@ -160,11 +162,12 @@ def delete_config(
     current_user: User = Depends(get_current_user),
 ):
     """删除租户AI配置"""
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     config = (
         db.query(TenantAiProviderConfig)
         .filter(
             TenantAiProviderConfig.id == config_id,
-            TenantAiProviderConfig.tenant_id == current_user.tenant_id,
+            TenantAiProviderConfig.tenant_id == tenant_id,
             TenantAiProviderConfig.user_id == current_user.id
         )
         .first()
@@ -184,11 +187,12 @@ def test_config(
     current_user: User = Depends(get_current_user),
 ):
     """测试租户AI配置连接"""
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     config = (
         db.query(TenantAiProviderConfig)
         .filter(
             TenantAiProviderConfig.id == config_id,
-            TenantAiProviderConfig.tenant_id == current_user.tenant_id,
+            TenantAiProviderConfig.tenant_id == tenant_id,
             TenantAiProviderConfig.user_id == current_user.id
         )
         .first()

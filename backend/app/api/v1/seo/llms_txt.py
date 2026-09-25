@@ -14,6 +14,7 @@ from app.core.security import get_current_user, optional_auth
 from app.models.seo import LlmsConfig
 from app.models.tenant import Tenant
 from app.models.user import User
+from app.services.tenant_scenario_service import resolve_tenant_id_for_user
 
 router = APIRouter()
 
@@ -218,7 +219,7 @@ def get_llms_txt_saved(
     存储：租户 settings JSON 的 `llms_txt_saved` 键（复用既有 Tenant.settings 列，无需迁移）。
     作用域：当前登录用户所属租户（与同文件外的 tenant_ai_config.get_my_configs 一致）。
     """
-    tenant_id = current_user.tenant_id
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     if not tenant_id:
         return error_response(400, "用户未关联租户")
     tenant = db.query(Tenant).filter(Tenant.id == tenant_id).first()
@@ -245,7 +246,7 @@ def save_llms_txt_saved(
     2026-09-25 补齐：前端 `views/seo/llms-txt.vue:340` 调此端点持久化手动编辑的内容。
     写入租户 settings JSON 的 `llms_txt_saved` 键。
     """
-    tenant_id = current_user.tenant_id
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
     if not tenant_id:
         return error_response(400, "用户未关联租户")
     tenant = db.query(Tenant).filter(Tenant.id == tenant_id).first()

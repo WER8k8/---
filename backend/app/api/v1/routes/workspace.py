@@ -77,6 +77,10 @@ def list_leads(
     current_user: User = Depends(get_current_user),
 ):
     """获取当前租户的线索列表。"""
+    if page < 1:
+        raise HTTPException(status_code=400, detail="page 必须为不小于 1 的整数")
+    if page_size < 1 or page_size > 100:
+        raise HTTPException(status_code=400, detail="page_size 必须在 1~100 之间")
     tenant_id = resolve_tenant_id_for_user(db, current_user)
     query = db.query(ProspectLead).filter(
         ProspectLead.tenant_id == tenant_id

@@ -34,6 +34,32 @@ class ContentAttributionStore:
     def __init__(self) -> None:
         self._by_content: dict[str, ContentTouch] = {}
         self._by_inquiry: dict[str, list[str]] = {}  # inquiry_id -> content_ids
+        # 持久化观测：backend=postgres 才是真持久化；memory=显式降级（重启即丢）
+        self.persistence_backend: str = "memory"
+        self.persistence_stats: dict[str, Any] = {
+            "table": "acquisition_content_touches",
+            "writes": 0,
+            "write_failures": 0,
+            "loads": 0,
+            "load_misses": 0,
+            "last_error": None,
+        }
+
+    def persistence_report(self) -> dict[str, Any]:
+        """内容归因持久化自述（可观测）。"""
+        degraded = self.persistence_backend != "postgres"
+        return {
+            "entity": "content_attribution",
+            "backend": self.persistence_backend,
+            "degraded": degraded,
+            "durable": not degraded,
+            "stats": dict(self.persistence_stats),
+            "hint": (
+                "内容归因已写 PG，重启不丢。"
+                if not degraded
+                else "内容归因为内存降级（PG 不可用），重启会丢失，请检查数据库连接。"
+            ),
+        }
 
     def upsert_content(
         self,
@@ -109,6 +135,7 @@ class ContentAttributionStore:
             "items": items,
             "plain_summary": plain,
             "hint": "归因按「询盘挂 content_id」统计；未挂来源的内容记 0，不编造转化。",
+            "persistence": self.persistence_report(),
         }
 
 

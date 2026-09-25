@@ -1410,6 +1410,39 @@ def acquisition_baseline(
     }
 
 
+@router.get("/ops/persistence")
+def acquisition_persistence_status(current_user: User = Depends(get_current_user)):
+    """W4 持久化体检：身份锁 / 跟单卡 / 内容归因 是否真落 PG（内存降级可观测）。"""
+    reports = {
+        "buyer_master": (
+            buyer_store.persistence_report()
+            if hasattr(buyer_store, "persistence_report")
+            else {"entity": "buyer_master", "backend": "unknown", "degraded": True}
+        ),
+        "ops_card": (
+            ops_card_store.persistence_report()
+            if hasattr(ops_card_store, "persistence_report")
+            else {"entity": "ops_card", "backend": "unknown", "degraded": True}
+        ),
+        "content_attribution": (
+            content_attr_store.persistence_report()
+            if hasattr(content_attr_store, "persistence_report")
+            else {"entity": "content_attribution", "backend": "unknown", "degraded": True}
+        ),
+    }
+    degraded = [k for k, v in reports.items() if v.get("degraded")]
+    return {
+        "reports": reports,
+        "all_durable": not degraded,
+        "degraded_entities": degraded,
+        "plain_summary": (
+            "身份锁 / 跟单卡 / 内容归因 均已落 PG，重启不丢。"
+            if not degraded
+            else f"以下为内存降级（重启会丢）：{'、'.join(degraded)}，请检查数据库连接。"
+        ),
+    }
+
+
 @router.get("/orchestration-dictionary")
 def acquisition_orchestration_dictionary(
     current_user: User = Depends(get_current_user),
