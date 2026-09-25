@@ -457,6 +457,216 @@ def validate_canary(
 # ═══════════════════════════════════════════════
 
 
+@router.get("/stats")
+def evolution_stats(
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin),
+):
+    """进化引擎统计（`/stats` 便捷入口）。
+
+    2026-09-25 补齐（缺失接口逐个修复）：
+      前端 `views/evolution/Dashboard.vue:154` 调 `GET /api/v1/evolution/stats`，
+      但后端只有 `/evolution/overview` → 零命中 → 页面统计区永远为空
+      （该页 catch 里写着「接口可能未实现，不影响页面」，等于静默降级）。
+
+    实现：与 `/overview` 同源，直接返回 `engine.get_overview()`，不另造一份数据。
+    """
+    engine = EvolutionEngine(db)
+    return success_response(data=engine.get_overview())
+
+
+@router.get("/skills")
+def list_skills(
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin),
+):
+    """技能列表（`skills` 表）。
+
+    2026-09-25 补齐：前端 `Dashboard.vue:172` 调 `GET /api/v1/evolution/skills`，
+    期望 `data.items`，但后端只有 `/skills/{skill_id}/...` 单技能子路径，**无列表端点**
+      → 零命中 → 技能区永远为空。
+    """
+    from app.models.registry import RegistrySkill
+
+    rows = (
+        db.query(RegistrySkill)
+        .order_by(RegistrySkill.category.asc(), RegistrySkill.name.asc())
+        .limit(500)
+        .all()
+    )
+    items = [
+        {
+            "id": str(r.id),
+            "name": r.name,
+            "display_name": r.display_name or r.name,
+            "category": r.category,
+            "status": r.status,
+            "current_version": r.current_version,
+            "description": r.description,
+            "priority": r.priority,
+        }
+        for r in rows
+    ]
+    return success_response(data={"items": items, "total": len(items)})
+
+
+@router.post("/skills/optimize")
+def optimize_all_skills(
+    req: dict[str, Any] | None = None,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin),
+):
+    """**批量**技能优化：对 active 技能逐个执行既有单技能优化。
+
+    2026-09-25 补齐：前端 `Dashboard.vue:199` 调 `POST /api/v1/evolution/skills/optimize`
+    （**无参数**，语义 = 优化全部），但后端只有 `/skills/{skill_id}/optimize`（需 skill_id）
+    → 零命中 → 「一键优化」按钮必失败。
+
+    ⚠️ 语义假设（保守实现，可按需调整）：逐个对 `status='active'` 的技能调用
+    `engine.run_skill_optimization(bump='patch')`；**单个失败不中断整批**，
+    逐项返回结果，便于定位。批量上限 `limit`（默认 50，最大 200）以防一次性产生过多版本。
+    """
+    from app.models.registry import RegistrySkill
+
+    req = req or {}
+    limit = int(req.get("limit") or 50)
+    limit = max(1, min(limit, 200))
+
+    active_total = db.query(RegistrySkill).filter(RegistrySkill.status == "active").count()
+    skills = (
+        db.query(RegistrySkill)
+        .filter(RegistrySkill.status == "active")
+        .order_by(RegistrySkill.name.asc())
+        .limit(limit)
+        .all()
+    )
+    if not skills:
+        return success_response(
+            data={"total": 0, "succeeded": 0, "failed": 0, "results": []},
+            message="没有 status=active 的技能可优化",
+        )
+
+    engine = EvolutionEngine(db)
+    results: list[dict[str, Any]] = []
+    ok = fail = 0
+    for s in skills:
+        try:
+            out = engine.run_skill_optimization(
+                skill_id=str(s.id),
+                skill_name=s.display_name or s.name,
+                task_type=req.get("task_type", ""),
+                bump=req.get("bump", "patch"),
+                prompt_template=req.get("prompt_template"),
+                parameters=req.get("parameters"),
+            )
+            results.append({"skill_id": str(s.id), "name": s.name, "ok": True, "result": out})
+            ok += 1
+        except Exception as exc:  # noqa: BLE001
+            results.append({
+                "skill_id": str(s.id),
+                "name": s.name,
+                "ok": False,
+                "error": f"{type(exc).__name__}: {exc}",
+            })
+            fail += 1
+
+    # 求真：如实报出截断，避免「优化了 50 条却以为优化了全部」
+    truncated = active_total > len(skills)
+    return success_response(
+        data={
+            "total": len(skills),
+            "active_total": active_total,
+            "limit": limit,
+            "truncated": truncated,
+            "succeeded": ok,
+            "failed": fail,
+            "results": results,
+        },
+        message=(
+            f"批量优化完成：成功 {ok} / 失败 {fail}"
+            + (f"（active 共 {active_total} 条，本次仅处理前 {len(skills)} 条，可调 limit 继续）" if truncated else "")
+        ),
+    )
+
+
+@router.post("/deploy-canary")
+def deploy_canary_all(
+    req: dict[str, Any] | None = None,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin),
+):
+    """**批量**灰度部署：对 active 技能逐个把其当前版本部署到灰度。
+
+    2026-09-25 补齐：前端 `Dashboard.vue:204` 调 `POST /api/v1/evolution/deploy-canary`
+    （body 为 canaryForm），但后端只有 `/skills/{skill_id}/deploy-canary`（需 skill_id）
+    → 零命中 → 「灰度发布」按钮必失败。
+
+    ⚠️ 语义假设（保守实现）：逐个对 `status='active'` 的技能调用
+    `engine.deploy_to_canary(percentage=...)`；**单个失败不中断整批**，逐项返回。
+    未提供 version_id 时依赖引擎自身解析当前版本（引擎内已有该逻辑）。
+    """
+    from app.models.registry import RegistrySkill
+
+    req = req or {}
+    limit = max(1, min(int(req.get("limit") or 50), 200))
+    percentage = float(req.get("percentage") or 5.0)
+    tenant_ids = req.get("tenant_ids")
+
+    skills = (
+        db.query(RegistrySkill)
+        .filter(RegistrySkill.status == "active")
+        .order_by(RegistrySkill.name.asc())
+        .limit(limit)
+        .all()
+    )
+    active_total = db.query(RegistrySkill).filter(RegistrySkill.status == "active").count()
+    if not skills:
+        return success_response(
+            data={"total": 0, "succeeded": 0, "failed": 0, "results": []},
+            message="没有 status=active 的技能可部署",
+        )
+
+    engine = EvolutionEngine(db)
+    results: list[dict[str, Any]] = []
+    ok = fail = 0
+    for s in skills:
+        try:
+            out = engine.deploy_to_canary(
+                skill_id=str(s.id),
+                version_id=req.get("version_id", ""),
+                percentage=percentage,
+                tenant_ids=tenant_ids,
+            )
+            results.append({"skill_id": str(s.id), "name": s.name, "ok": True, "result": out})
+            ok += 1
+        except Exception as exc:  # noqa: BLE001
+            results.append({
+                "skill_id": str(s.id),
+                "name": s.name,
+                "ok": False,
+                "error": f"{type(exc).__name__}: {exc}",
+            })
+            fail += 1
+
+    # 求真：如实报出截断
+    truncated = active_total > len(skills)
+    return success_response(
+        data={
+            "total": len(skills),
+            "active_total": active_total,
+            "limit": limit,
+            "truncated": truncated,
+            "succeeded": ok,
+            "failed": fail,
+            "results": results,
+        },
+        message=(
+            f"批量灰度部署完成：成功 {ok} / 失败 {fail}"
+            + (f"（active 共 {active_total} 条，本次仅处理前 {len(skills)} 条，可调 limit 继续）" if truncated else "")
+        ),
+    )
+
+
 @router.get("/approvals")
 def list_approvals(
     target_type: Optional[str] = None,
