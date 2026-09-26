@@ -66,6 +66,19 @@ def _build_stored_message(msg: dict[str, Any]) -> str:
     return "\n".join(lines)[:12000]
 
 
+_REPLY_PREFIXES = ("re:", "re :", "fw:", "fwd:", "回复:", "答复:", "转发:")
+
+
+def _is_reply_subject(subject: str) -> bool:
+    """判断邮件主题是否像「回复」（用于触发谈判自动桥）。
+
+    仅对「回复」触发 ``create_negotiation_from_email_reply``，避免把冷邮件
+    （首封开发信/陌生询盘）也误建成谈判会话。
+    """
+    s = (subject or "").strip().lower()
+    return any(s.startswith(p) for p in _REPLY_PREFIXES)
+
+
 def poll_and_ingest_imap_inquiries(
     db: Session,
     *,
@@ -113,6 +126,27 @@ def poll_and_ingest_imap_inquiries(
         # phone 留空（Inquiry.phone 可空 legacy 允许）；联系方式以 email 为准。
         phone = ""
         subject = str(msg.get("subject") or "").strip()
+        # W3：邮件回复 → 谈判自动桥（best-effort；仅「回复」主题触发，冷邮件不误建）。
+        # 置于新建询盘之前：让 _find_campaign_inquiry 命中「原始触达询盘」而非本封新询盘。
+        negotiation_created: bool | None = None
+        if _is_reply_subject(subject):
+            try:
+                from app.services.attribution_service import (
+                    create_negotiation_from_email_reply,
+                )
+
+                neg = create_negotiation_from_email_reply(
+                    db,
+                    sender_email=from_email,
+                    subject=subject,
+                    body=body,
+                    tenant_id=str(tenant.id),
+                )
+                negotiation_created = bool(neg.get("created"))
+                if not negotiation_created:
+                    errors.append(f"negotiation {mid}: {neg.get('error') or 'not_created'}")
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"negotiation bridge {mid}: {str(exc)[:120]}")
         try:
             row = svc.create_public_lead(
                 name=name,
@@ -124,11 +158,19 @@ def poll_and_ingest_imap_inquiries(
                 tenant_id=str(tenant.id),
             )
             ingested += 1
-            items.append({"inquiry_id": row.get("id"), "message_id": mid, "from_email": from_email})
+            items.append(
+                {
+                    "inquiry_id": row.get("id"),
+                    "message_id": mid,
+                    "from_email": from_email,
+                    "negotiation_created": negotiation_created,
+                }
+            )
         except Exception as exc:
             skipped += 1
             errors.append(f"{mid}: {exc}")
 
+    negotiations_created = sum(1 for it in items if it.get("negotiation_created"))
     return {
         "ok": True,
         "ingested": ingested,
@@ -138,7 +180,11 @@ def poll_and_ingest_imap_inquiries(
         "mailbox": pack.get("mailbox"),
         "items": items,
         "errors": errors[:5] if errors else [],
+        "negotiations_created": negotiations_created,
         "human_verify_required": True,
-        "disclaimer": "只读收取；不自动回复、不标记已发送。回复须人工确认。",
+        "disclaimer": (
+            "只读收取；不自动回复、不标记已发送。"
+            "回复主题邮件已自动建谈判会话（供人工跟进，非自动发送）。"
+        ),
         "smtp_disabled": True,
     }
