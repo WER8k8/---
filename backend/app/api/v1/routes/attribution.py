@@ -109,6 +109,44 @@ def handle_email_reply(
         body=payload.body,
         tenant_id=payload.tenant_id,
     )
+
+    # W3：邮件回复 → 统一入站链（复用 inbound_bridge 收口，非第二套实现）。
+    # 目标：收到回复必然形成「可跟进询盘 + 触点留痕 + 跟单卡」，且重放幂等。
+    # 放在谈判会话之后，二者各自独立事务，互不拖累（谈判失败不丢询盘）。
+    inbound = None
+    try:
+        import hashlib as _hashlib
+
+        from app.services.acquisition.inbound_bridge import handle_inbound_message
+
+        tid = payload.tenant_id or ""
+        if not tid and current_user is not None:
+            try:
+                tid = str(resolve_tenant_id(db, user=current_user) or "")
+            except Exception:  # noqa: BLE001
+                tid = ""
+        ext_id = "email:" + _hashlib.sha1(
+            f"{payload.sender_email}|{payload.subject}|{payload.body[:200]}".encode("utf-8")
+        ).hexdigest()[:40]
+        inbound = handle_inbound_message(
+            db,
+            tenant_id=tid,
+            channel="email",
+            email=payload.sender_email,
+            body=payload.body,
+            subject=payload.subject,
+            external_msg_id=ext_id,
+            source="email_reply",
+        )
+    except Exception as exc:  # noqa: BLE001
+        inbound = {"created": False, "reason": f"inbound_bridge_failed: {str(exc)[:200]}"}
+
     if result.get("created"):
-        return success_response(data=result, message="谈判会话已创建")
+        return success_response(
+            data={**result, "inbound": inbound}, message="谈判会话已创建"
+        )
+    if (inbound or {}).get("created") or (inbound or {}).get("duplicate"):
+        return success_response(
+            data={**result, "inbound": inbound}, message="邮件回复已入站（询盘已建）"
+        )
     return error_response(400, result.get("error", "无法创建谈判会话"))

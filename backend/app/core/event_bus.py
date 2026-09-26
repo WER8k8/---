@@ -437,5 +437,142 @@ def handle_system_error(event: Event) -> None:
     )
 
 
+# ============================================================
+# WhatsApp 入站事件处理器
+# ============================================================
+
+@event_bus.on(EventTypes.WHATSAPP_MESSAGE_RECEIVED)
+async def _on_whatsapp_message_received(event: Event):
+    """WhatsApp 入站消息 → 统一入站桥（询盘 + 触点 + 跟单卡，幂等）。
+
+    W3 · P0-7 实证修复：原实现只读 ``event.data["sender"]``/``["from"]``，而
+    ``whatsapp_event_bus.publish_inbound`` 实际发出的是 ``["phone"]`` → 恒
+    early-return（日志「缺少 sender」），「入站 → 建询盘」实为**静默失效**
+    （总线却回报 emitted=True、无 error）。现：① 发起方字段兜底扩展到
+    ``phone``/``from_phone``；② 统一委托 ``inbound_bridge.handle_inbound_message``
+    （可重放幂等，写 inquiries + contact_events + OpsCard）。
+    """
+    try:
+        from app.core.database import SessionLocal
+
+        data = event.data or {}
+        tenant_id = data.get("tenant_id") or event.tenant_id
+        sender = (
+            data.get("sender") or data.get("from")
+            or data.get("phone") or data.get("from_phone") or ""
+        )
+        body = data.get("body") or data.get("text", "")
+        msg_id = data.get("message_id") or data.get("msg_id") or data.get("id", "")
+
+        if not sender and not body:
+            log.warning("[EventBus] WhatsApp 入站缺少 sender/body")
+            return
+
+        db = SessionLocal()
+        try:
+            # W3 · P0-7：统一入站桥（询盘 + 触点 + 跟单卡 + 既有线索置 engaged，幂等）
+            from app.services.acquisition.inbound_bridge import handle_inbound_message
+            res = handle_inbound_message(
+                db,
+                tenant_id=str(tenant_id or ""),
+                channel="whatsapp",
+                phone=sender,
+                body=body,
+                sender_name=data.get("from_name") or "",
+                external_msg_id=str(msg_id or ""),
+                source=data.get("source") or "whatsapp_plugin",
+                payload={
+                    "message_type": data.get("message_type"),
+                    "account_id": data.get("account_id"),
+                },
+            )
+            if res.get("created"):
+                log.info("[EventBus] WhatsApp 入站 → 自动创建询盘: sender=%s, id=%s",
+                         sender, res.get("inquiry_id"))
+            elif res.get("duplicate"):
+                log.info("[EventBus] WhatsApp 入站重复跳过: msg=%s", msg_id)
+            else:
+                log.warning("[EventBus] WhatsApp 入站未生成询盘: %s", res.get("reason"))
+
+            # 触发线索评分（LEAD_CREATED handler 会自动评分）
+            if res.get("created") and hasattr(event_bus, "emit_sync"):
+                event_bus.emit_sync(Event(
+                    event_type=EventTypes.LEAD_CREATED,
+                    data={
+                        "phone": sender,
+                        "tenant_id": str(tenant_id) if tenant_id else "",
+                        "source": "whatsapp_inbound",
+                        "inquiry_id": str(res.get("inquiry_id") or ""),
+                    },
+                    source="whatsapp_event_handler",
+                ))
+        finally:
+            db.close()
+
+        # 3. AI 自动回复（best-effort）
+        try:
+            from app.services.whatsapp_bridge import WhatsAppBridge
+            bridge = WhatsAppBridge()
+            auto_reply = "您好！我们已收到您的消息，业务员将尽快回复。如有紧急需求请拨打客服电话。"
+            import asyncio
+            if asyncio.iscoroutinefunction(bridge.send_message):
+                await bridge.send_message(sender, auto_reply)
+            else:
+                bridge.send_message(sender, auto_reply)
+            log.info("[EventBus] WhatsApp 自动回复已发送: sender=%s", sender)
+        except Exception as e:
+            log.debug("[EventBus] WhatsApp 自动回复跳过（Bridge 未配置或不可用）: %s", e)
+
+    except Exception as e:
+        log.warning("[EventBus] WhatsApp 入站处理失败: %s", e)
+
+
+# ============================================================
+# WhatsApp 消息状态事件处理器
+# ============================================================
+
+@event_bus.on(EventTypes.WHATSAPP_MESSAGE_ACK)
+async def _on_whatsapp_message_ack(event: Event):
+    """WhatsApp 消息回执 → 记录投递状态。"""
+    try:
+        data = event.data or {}
+        msg_id = data.get("message_id") or data.get("id", "")
+        status = data.get("status", "")
+        log.info("[EventBus] WhatsApp 消息回执: msg=%s status=%s", msg_id, status)
+    except Exception as e:
+        log.debug("[EventBus] WhatsApp ack 处理失败: %s", e)
+
+
+@event_bus.on(EventTypes.WHATSAPP_MESSAGE_FAILED)
+async def _on_whatsapp_message_failed(event: Event):
+    """WhatsApp 消息发送失败 → 告警。"""
+    data = event.data or {}
+    log.warning("[EventBus] WhatsApp 消息发送失败: msg=%s error=%s",
+                data.get("message_id"), data.get("error"))
+
+
+# ============================================================
+# Browser 证据分析事件处理器
+# ============================================================
+
+@event_bus.on(EventTypes.EVIDENCE_ANOMALY)
+async def _on_evidence_anomaly(event: Event):
+    """Browser 证据异常 → 合规告警。"""
+    try:
+        data = event.data or {}
+        severity = data.get("severity", "info")
+        anomaly_type = data.get("anomaly_type", "unknown")
+        tenant_id = data.get("tenant_id", "")
+        if severity in ("critical", "high"):
+            log.warning(
+                "[EventBus] Browser 证据异常 [%s]: type=%s tenant=%s",
+                severity, anomaly_type, tenant_id,
+            )
+        else:
+            log.info("[EventBus] Browser 证据分析: type=%s tenant=%s", anomaly_type, tenant_id)
+    except Exception as e:
+        log.debug("[EventBus] 证据异常处理失败: %s", e)
+
+
 # 为了更优雅的装饰器语法暴露的别名
 subscribe = event_bus.on
