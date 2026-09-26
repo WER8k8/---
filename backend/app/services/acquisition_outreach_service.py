@@ -254,6 +254,41 @@ def confirm_and_enqueue(
     }
 
 
+def _record_outreach_touch(
+    db: Session,
+    row: EmailOutreach,
+    *,
+    ok: bool,
+    detail: dict[str, Any] | None = None,
+) -> None:
+    """W3：邮件外发触达统一留痕 ``contact_events``；失败必写原因与证据（不静默）。
+
+    best-effort：留痕失败不影响发送主链（但会记 logger 告警）。
+    """
+    try:
+        from app.services.acquisition.inbound_bridge import record_contact_event
+
+        detail = detail or {}
+        summary = (
+            f"邮件外发成功 → {row.to_email}: {row.subject}"
+            if ok
+            else f"邮件外发失败 → {row.to_email}: {detail.get('error_code') or detail.get('error') or 'unknown'}"
+        )
+        record_contact_event(
+            db,
+            tenant_id=str(row.tenant_id) if row.tenant_id else "",
+            channel="email",
+            event_type="message",
+            direction="outbound",
+            lead_id=str(row.prospect_id) if getattr(row, "prospect_id", None) else "",
+            summary=summary[:500],
+            payload={"ok": ok, "sequence_id": row.sequence_id, "step": row.sequence_step, **detail},
+            provenance_metadata={"bus": "acquisition_outreach", "outreach_id": str(row.id)},
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("outreach contact_event 留痕失败 id=%s: %s", getattr(row, "id", ""), exc)
+
+
 def send_outreach_step(db: Session, *, outreach_id: str) -> dict[str, Any]:
     """执行单步发送（Celery/JobGateway worker 调用）。"""
     row = db.query(EmailOutreach).filter(EmailOutreach.id == outreach_id).first()
@@ -270,6 +305,7 @@ def send_outreach_step(db: Session, *, outreach_id: str) -> dict[str, Any]:
             "provider_message_id": row.provider_message_id,
         }
     if status == "cancelled":
+        _record_outreach_touch(db, row, ok=False, detail={"error_code": "OUTREACH_CANCELLED", "stage": "cancelled"})
         return {"ok": False, "error_code": "OUTREACH_CANCELLED", "outreach_id": outreach_id}
 
     row.status = EmailStatus.SENDING
@@ -294,6 +330,7 @@ def send_outreach_step(db: Session, *, outreach_id: str) -> dict[str, Any]:
         row.outreach_metadata = meta
         db.add(row)
         db.commit()
+        _record_outreach_touch(db, row, ok=False, detail={"error": str(exc)[:300], "stage": "send_exception"})
         return {"ok": False, "error_code": "EMAIL_SEND_FAILED", "error": str(exc)[:300]}
 
     if not result.get("success"):
@@ -304,6 +341,15 @@ def send_outreach_step(db: Session, *, outreach_id: str) -> dict[str, Any]:
         row.outreach_metadata = meta
         db.add(row)
         db.commit()
+        _record_outreach_touch(
+            db, row, ok=False,
+            detail={
+                "error_code": result.get("error_code"),
+                "error": result.get("error"),
+                "mode": result.get("mode"),
+                "stage": "send_result_not_success",
+            },
+        )
         return {
             "ok": False,
             "error_code": result.get("error_code") or "EMAIL_SEND_FAILED",
@@ -328,6 +374,10 @@ def send_outreach_step(db: Session, *, outreach_id: str) -> dict[str, Any]:
     row.outreach_metadata = meta
     db.add(row)
     db.commit()
+    _record_outreach_touch(
+        db, row, ok=True,
+        detail={"mode": mode, "provider": row.provider, "provider_message_id": row.provider_message_id},
+    )
     return {
         "ok": True,
         "outreach_id": outreach_id,

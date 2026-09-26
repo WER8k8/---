@@ -698,11 +698,48 @@ def ops_card_win(
 
 @router.get("/win-loss")
 def acquisition_win_loss(
-    tenant_id: str = "demo",
+    tenant_id: str = "",
     current_user: User = Depends(get_current_user),
 ):
-    """P2-2 Win/Loss 汇总（傻子能看懂）。"""
-    return ops_card_store.win_loss_stats(tenant_id=tenant_id)
+    """P2-2 Win/Loss 汇总（傻子能看懂）。默认按登录租户；显式传 tenant_id 可覆盖。"""
+    tid = tenant_id or str(getattr(current_user, "tenant_id", "") or "")
+    stats = ops_card_store.win_loss_stats(tenant_id=tid)
+    if not stats.get("won_count") and not stats.get("lost_count"):
+        try:
+            from app.models.order import Order
+            from app.models.enums import OrderStatus
+            from app.db.session import SessionLocal
+            db = SessionLocal()
+            try:
+                q_w = db.query(Order).filter(Order.status == OrderStatus.COMPLETED)
+                q_l = db.query(Order).filter(Order.status == OrderStatus.CANCELLED)
+                if tid:
+                    q_w = q_w.filter(Order.tenant_id == tid)
+                    q_l = q_l.filter(Order.tenant_id == tid)
+                won = q_w.all()
+                lost = q_l.all()
+                if won or lost:
+                    stats = {
+                        **stats,
+                        "won_count": len(won),
+                        "lost_count": len(lost),
+                        "won_amount": sum(float(o.total_amount or 0) for o in won),
+                        "won_items": [
+                            {
+                                "inquiry_id": getattr(o, "inquiry_id", "") or "",
+                                "buyer_display": getattr(o, "customer_name", "") or o.order_number,
+                                "amount": float(o.total_amount or 0),
+                                "note": getattr(o, "product_summary", "") or "",
+                            }
+                            for o in won[:10]
+                        ],
+                        "plain_summary": f"成交 {len(won)} 单，流失 {len(lost)} 单。",
+                    }
+            finally:
+                db.close()
+        except Exception:
+            pass
+    return stats
 
 
 @router.get("/onboarding")

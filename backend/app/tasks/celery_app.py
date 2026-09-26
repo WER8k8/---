@@ -23,6 +23,7 @@ celery_app = Celery(
         "app.tasks.deerflow_tasks",
         "app.tasks.orchestration_tasks",
         "app.tasks.ops_scheduler_tasks",
+        "app.services.n8n.trigger",
     ],
 )
 
@@ -39,6 +40,13 @@ celery_app.conf.update(
         "check-keyword-rankings": {
             "task": "app.tasks.seo_tasks.check_all_keyword_rankings",
             "schedule": 86400.0,
+        },
+        # W3：IMAP 只读收件箱定时收取 → 询盘（邮件入站自动闭环；未配置 sidecar 时诚实跳过）
+        "imap-inquiry-poll": {
+            "task": "cross_border.imap_inquiry_poll",
+            "schedule": crontab(minute="*/10"),
+            "kwargs": {"max_messages": 20},
+            "options": {"max_instances": 1},
         },
         "run-periodic-site-audit": {
             "task": "app.tasks.seo_tasks.run_site_audit",
@@ -129,6 +137,12 @@ celery_app.conf.update(
                 hour=settings.PLATFORM_SESSION_PATROL_HOUR,
                 minute=settings.PLATFORM_SESSION_PATROL_MINUTE,
             ),
+            "options": {"max_instances": 1},
+        },
+        # Experience Engine 每日进化扫描（凌晨 2:00）
+        "experience-evolve-daily": {
+            "task": "app.tasks.ops_scheduler_tasks.experience_evolve_daily",
+            "schedule": crontab(hour=2, minute=0),
             "options": {"max_instances": 1},
         },
     },

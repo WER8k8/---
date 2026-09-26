@@ -660,7 +660,7 @@ class OpsCardStore:
         cards = [
             c
             for c in self._by_inquiry.values()
-            if (not tenant_id or c.tenant_id == tenant_id)
+            if (not tenant_id or c.tenant_id == tenant_id or not c.tenant_id)
             and (c.stage in ("won", "lost") or c.loss_reasons or c.won_at)
         ]
         return win_loss_summary(None, tenant_id=tenant_id, cards=cards)

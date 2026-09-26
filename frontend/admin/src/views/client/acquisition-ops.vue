@@ -176,7 +176,7 @@
 
           <!-- P1-2 履约节点 + 提醒 -->
           <div v-if="fulfillment && fulfillment.nodes && fulfillment.nodes.length" class="mt-3">
-            <div class="font-semibold mb-1">报价 / PI / 收款节点</div>
+            <div class="font-medium mb-1">报价 / PI / 收款节点</div>
             <div class="acq-nodes">
               <div
                 v-for="n in fulfillment.nodes"
@@ -260,16 +260,16 @@
 
           <div class="mt-4 grid gap-3 md:grid-cols-2">
             <div>
-              <div class="font-semibold mb-1">记一笔跟进</div>
+              <div class="font-medium mb-1">记一笔跟进</div>
               <a-textarea v-model:value="touch.summary" :rows="2" placeholder="例如：已读未回 / 已发报价 / 要求 CIF 吉达" />
               <a-input v-model:value="touch.next_action" class="mt-2" placeholder="下一步做什么" />
               <a-button class="mt-2" type="primary" :loading="loading" @click="onTouch">保存跟进</a-button>
             </div>
             <div>
-              <div class="font-semibold mb-1">交代 / 备注</div>
+              <div class="font-medium mb-1">交代 / 备注</div>
               <a-textarea v-model:value="note.body" :rows="2" placeholder="客户要求、承诺事项…" />
               <a-button class="mt-2" :loading="loading" @click="onNote">添加备注</a-button>
-              <div class="mt-3 font-semibold mb-1">流失原因（聊跑了）</div>
+              <div class="mt-3 font-medium mb-1">流失原因（聊跑了）</div>
               <a-select
                 v-model:value="loss.reasons"
                 mode="multiple"
@@ -279,7 +279,7 @@
               />
               <a-input v-model:value="loss.note" class="mt-2" placeholder="补充说明（可空）" />
               <a-button class="mt-2" danger :loading="loading" @click="onLoss">登记流失</a-button>
-              <div class="mt-3 font-semibold mb-1">成交（赢单）</div>
+              <div class="mt-3 font-medium mb-1">成交（赢单）</div>
               <a-input v-model:value="win.amount" size="small" placeholder="成交金额" />
               <a-input v-model:value="win.note" size="small" class="mt-1" placeholder="赢的原因/备注" />
               <a-button class="mt-2" type="primary" :loading="loading" @click="onWin">登记成交</a-button>
@@ -288,7 +288,7 @@
 
           <!-- P1-5 样品流程 -->
           <div class="mt-4">
-            <div class="font-semibold mb-1">样品寄样（防黑洞）</div>
+            <div class="font-medium mb-1">样品寄样（防黑洞）</div>
             <div v-if="sampleView" class="text-sm text-gray-700 mb-2">
               当前：<b>{{ sampleView.label }}</b>
               <span v-if="sampleView.fee_status"> · 费用{{ sampleView.fee_status }}</span>
@@ -330,14 +330,14 @@
           </div>
 
           <div v-if="card.notes && card.notes.length" class="mt-4">
-            <div class="font-semibold mb-1">交代记录</div>
+            <div class="font-medium mb-1">交代记录</div>
             <div v-for="(n, i) in card.notes" :key="i" class="acq-note">
               <b>{{ n.author }}</b> · {{ n.at }}：{{ n.body }}
             </div>
           </div>
 
           <div class="mt-4">
-            <div class="font-semibold mb-1">收款 / 物流 / 货（可编辑）</div>
+            <div class="font-medium mb-1">收款 / 物流 / 货（可编辑）</div>
             <div class="grid gap-2 md:grid-cols-3">
               <div>
                 <div class="text-xs text-gray-500 mb-1">收款</div>
@@ -397,7 +397,7 @@
       <a-card size="small" title="5. 内容归因 / IP槽位（只读）">
         <div class="grid gap-3 md:grid-cols-2">
           <div>
-            <div class="font-semibold mb-1">内容带来多少询盘</div>
+            <div class="font-medium mb-1">内容带来多少询盘</div>
             <div class="text-sm text-gray-700 mb-2">{{ attrReport?.plain_summary || '暂无数据' }}</div>
             <div v-if="attrReport && attrReport.items.length">
               <div v-for="it in attrReport.items.slice(0, 5)" :key="it.content_id" class="text-xs text-gray-600 mb-1">
@@ -411,7 +411,7 @@
             </div>
           </div>
           <div>
-            <div class="font-semibold mb-1">IP / 指纹槽位</div>
+            <div class="font-medium mb-1">IP / 指纹槽位</div>
             <div class="text-sm text-gray-700 mb-2">{{ ipSlots?.plain_summary || '暂无数据' }}</div>
             <div v-if="ipSlots">
               <div v-for="s in ipSlots.slots" :key="s.slot_id" class="text-xs text-gray-600 mb-1">
@@ -427,7 +427,7 @@
       <a-card size="small" title="6. 成交/流失 · 开通五步">
         <div class="grid gap-3 md:grid-cols-2">
           <div>
-            <div class="font-semibold mb-1">成交 vs 流失</div>
+            <div class="font-medium mb-1">成交 vs 流失</div>
             <div class="text-sm text-gray-700 mb-2">{{ winLoss?.plain_summary || '暂无数据' }}</div>
             <div class="flex gap-2 flex-wrap text-xs text-gray-600">
               <a-tag v-if="winLoss" color="success">成交 {{ winLoss.won_count }}</a-tag>
@@ -436,7 +436,7 @@
             <a-button size="small" class="mt-2" :loading="p2Loading" @click="loadP2">刷新</a-button>
           </div>
           <div>
-            <div class="font-semibold mb-1">开通引导 {{ onboarding?.done_count || 0 }}/{{ onboarding?.total || 5 }}</div>
+            <div class="font-medium mb-1">开通引导 {{ onboarding?.done_count || 0 }}/{{ onboarding?.total || 5 }}</div>
             <div class="text-sm text-gray-700 mb-2">{{ onboarding?.plain_summary || '暂无' }}</div>
             <div v-if="onboarding">
               <div v-for="s in onboarding.steps" :key="s.id" class="text-xs mb-1">
@@ -452,7 +452,7 @@
       <a-card size="small" title="7. 经验真源 · 航道权重建议（人审）">
         <div class="grid gap-3 md:grid-cols-2">
           <div>
-            <div class="font-semibold mb-1">经验真源</div>
+            <div class="font-medium mb-1">经验真源</div>
             <div class="text-sm text-gray-700">{{ expSource?.plain_summary || '—' }}</div>
             <div class="text-xs text-gray-500 mt-1">
               主源：{{ expSource?.primary_source || 'evolution_pg' }}
@@ -460,7 +460,7 @@
             </div>
           </div>
           <div>
-            <div class="font-semibold mb-1">航道权重建议 {{ weightView?.plain_summary || '' }}</div>
+            <div class="font-medium mb-1">航道权重建议 {{ weightView?.plain_summary || '' }}</div>
             <div v-if="weightView && weightView.suggestions">
               <div v-for="s in weightView.suggestions.slice(0, 6)" :key="s.intent" class="text-xs mb-1">
                 {{ s.label }}：{{ s.base_weight }} → <b>{{ s.suggested_weight }}</b>
@@ -480,26 +480,26 @@
       <a-card size="small" title="8. 账单说明 · 撞单 · 手机待办 · 建站卡壳补救">
         <div class="grid gap-3 md:grid-cols-2">
           <div>
-            <div class="font-semibold mb-1">账单（大白话）</div>
+            <div class="font-medium mb-1">账单（大白话）</div>
             <div class="text-sm text-gray-700 mb-1">{{ billing?.plain_summary || '—' }}</div>
             <div v-if="billing && billing.items.length" class="acq-bill-list">
               <div v-for="(b, i) in billing.items.slice(0, 6)" :key="i" class="text-xs text-gray-600">
                 {{ b.plain }}
               </div>
             </div>
-            <div class="font-semibold mt-3 mb-1">撞单规则</div>
+            <div class="font-medium mt-3 mb-1">撞单规则</div>
             <div class="text-xs text-gray-600">{{ collision?.rule || '无主可认领；有主须确认交接并留痕。' }}</div>
             <div class="text-xs text-gray-500">{{ collision?.plain_summary || '' }}</div>
           </div>
           <div>
-            <div class="font-semibold mb-1">手机今日待办</div>
+            <div class="font-medium mb-1">手机今日待办</div>
             <div class="text-sm text-gray-700">{{ mobileBrief?.brief || '—' }}</div>
             <div v-if="mobileBrief && mobileBrief.top.length" class="text-xs text-gray-600 mt-1">
               <div v-for="m in mobileBrief.top" :key="m.inquiry_id" class="acq-mobile-item">
                 <b>{{ m.display }}</b> · {{ m.next }} · {{ m.sla }}
               </div>
             </div>
-            <div class="font-semibold mt-3 mb-1">建站卡壳 → 补救</div>
+            <div class="font-medium mt-3 mb-1">建站卡壳 → 补救</div>
             <div class="text-sm text-gray-700">{{ rescue?.plain_summary || '—' }}</div>
             <div v-if="rescue?.blocked && rescue.next_steps?.length" class="text-xs text-gray-600 mt-1">
               <div v-for="(s, i) in rescue.next_steps" :key="i">· {{ s }}</div>
@@ -508,7 +508,7 @@
                 建议意图：<b>{{ rescue.suggested_intent }}</b>（可回上方智能拆解派发）
               </div>
             </div>
-            <div class="font-semibold mt-3 mb-1">NPS / 挽回</div>
+            <div class="font-medium mt-3 mb-1">NPS / 挽回</div>
             <div class="text-sm text-gray-700">{{ npsView?.plain_summary || '—' }}</div>
             <div v-if="npsView?.rescue_actions?.length" class="text-xs text-gray-600 mt-1">
               <div v-for="(a, i) in npsView.rescue_actions" :key="i">· {{ a }}</div>
@@ -521,14 +521,14 @@
       <a-card size="small" title="9. 报价有效期 · 交期门禁 · 退订 · 付款风险">
         <div class="grid gap-3 md:grid-cols-2">
           <div>
-            <div class="font-semibold mb-1">报价有效期</div>
+            <div class="font-medium mb-1">报价有效期</div>
             <div class="text-sm text-gray-700">{{ cardQuote?.plain || '打开跟单卡后显示' }}</div>
             <div class="flex gap-2 mt-2">
               <a-input v-model:value="p3Form.quote_at" size="small" placeholder="报价日 YYYY-MM-DD" />
               <a-input v-model:value="p3Form.valid_days" size="small" placeholder="有效天数" style="width:90px" />
               <a-button size="small" @click="onQuoteValidity">登记报价</a-button>
             </div>
-            <div class="font-semibold mt-3 mb-1">交期门禁</div>
+            <div class="font-medium mt-3 mb-1">交期门禁</div>
             <div class="text-sm text-gray-700">{{ cardLead?.plain || '无证据不得保证交期' }}</div>
             <div class="flex flex-wrap gap-2 mt-2">
               <a-input v-model:value="p3Form.leadtime_days" size="small" placeholder="承诺天数" style="width:90px" />
@@ -538,13 +538,13 @@
             </div>
           </div>
           <div>
-            <div class="font-semibold mb-1">退订 / 抑制</div>
+            <div class="font-medium mb-1">退订 / 抑制</div>
             <div class="text-sm text-gray-700">{{ suppression?.plain_summary || '—' }}</div>
             <div class="flex gap-2 mt-2">
               <a-input v-model:value="p3Form.sup_email" size="small" placeholder="邮箱" />
               <a-button size="small" danger @click="onSuppress">加入抑制</a-button>
             </div>
-            <div class="font-semibold mt-3 mb-1">付款风险（自动 PI 闸）</div>
+            <div class="font-medium mt-3 mb-1">付款风险（自动 PI 闸）</div>
             <div class="text-sm text-gray-700">{{ payRisk?.plain || '—' }}</div>
             <div class="text-xs text-gray-500" v-if="payRisk">
               等级 {{ payRisk.level }} · 自动PI {{ payRisk.auto_pi_allowed ? '允许' : '禁止' }}
@@ -562,7 +562,7 @@
       <a-card size="small" title="10. 必读知识 · 名单重扫">
         <div class="grid gap-3 md:grid-cols-2">
           <div>
-            <div class="font-semibold mb-1">合规/知识待读</div>
+            <div class="font-medium mb-1">合规/知识待读</div>
             <div class="text-sm text-gray-700 mb-2">{{ know?.plain_summary || '—' }}</div>
             <div v-if="know?.next_item" class="text-xs text-gray-600 mb-2">
               下一题：<b>{{ know.next_item.title }}</b>
@@ -577,7 +577,7 @@
             </div>
           </div>
           <div>
-            <div class="font-semibold mb-1">名单重扫（制裁/风险）</div>
+            <div class="font-medium mb-1">名单重扫（制裁/风险）</div>
             <div class="text-sm text-gray-700">{{ riskRescan?.plain_summary || '—' }}</div>
             <div class="text-xs text-gray-500 mt-1">{{ riskRescan?.source_plain }}</div>
             <div v-if="riskRescan?.items?.length" class="mt-2">
@@ -647,7 +647,7 @@
       <div class="space-y-3">
         <a-alert type="info" show-icon :message="dictSummary || '已验证航道词典'" />
         <div v-for="r in dictRoutes" :key="r.id" class="acq-dict-item">
-          <div class="font-semibold">{{ r.name }} <span class="text-gray-400 text-xs">{{ r.intent }}</span></div>
+          <div class="font-medium">{{ r.name }} <span class="text-gray-400 text-xs">{{ r.intent }}</span></div>
           <div class="text-sm text-gray-700">{{ r.order_label }}</div>
           <div class="text-xs text-gray-500">{{ r.plain }}</div>
           <div class="text-xs text-gray-400 mt-1">
@@ -658,7 +658,7 @@
       </div>
     </a-modal>
 
-    <!-- 🌐 全网外贸主动拓客 (Hermes GP-B) 抽屉 -->
+    <!--  全网外贸主动拓客 (Hermes GP-B) 抽屉 -->
     <a-drawer v-model:open="outreachDrawerOpen" title="谷歌商机大数据与全球主动拓客 · 极智出海工作舱" width="820">
       <a-tabs v-model:activeKey="activeOutreachTab" type="card">
         <!-- Tab 1: 全球直采商发现 -->
@@ -693,14 +693,14 @@
                   </a-radio-group>
                 </a-form-item>
                 <a-button type="primary" :loading="outreachLoading" @click="runGlobalOutreach">
-                  🚀 启动 Hermes GP-B 拓客任务
+                   启动 Hermes GP-B 拓客任务
                 </a-button>
               </a-form>
             </a-card>
 
             <a-card v-if="outreachProspects.length" size="small" title="发现的全球买家线索">
               <div class="mb-3 flex justify-between items-center">
-                <span class="text-sm font-semibold">命中海外采购商: {{ outreachProspects.length }} 家</span>
+                <span class="text-sm font-medium">命中海外采购商: {{ outreachProspects.length }} 家</span>
                 <a-button size="small" @click="exportOutreachCsv">导出为 CSV</a-button>
               </div>
               <a-table
@@ -779,10 +779,10 @@
                   </a-descriptions-item>
                 </a-descriptions>
 
-                <div class="mt-3 font-semibold text-xs text-gray-700">关键决策树 (Buying Committee)</div>
+                <div class="mt-3 font-medium text-xs text-gray-700">关键决策树 (Buying Committee)</div>
                 <div class="space-y-2 mt-1">
                   <div v-for="(m, idx) in buyer360Result.buying_committee" :key="idx" class="p-2 bg-gray-50 rounded border text-xs">
-                    <div class="font-semibold text-gray-800">{{ m.role }}</div>
+                    <div class="font-medium text-gray-800">{{ m.role }}</div>
                     <div class="text-gray-600 mt-1">关注点: {{ m.focus }}</div>
                     <div class="text-amber-700 mt-0.5">核心痛点: {{ m.pain_point }}</div>
                     <div class="text-xs text-blue-600 mt-0.5">推荐通道: {{ m.contact_channel }}</div>
@@ -836,24 +836,24 @@
                 </a-select>
               </div>
               <a-button type="primary" class="mt-3" :loading="pitchLoading" @click="runGeneratePitch">
-                ⚡ 生成多渠道破冰矩阵
+                 生成多渠道破冰矩阵
               </a-button>
             </a-card>
 
             <div v-if="pitchResult" class="space-y-3">
               <!-- Cold Email -->
-              <a-card size="small" title="📧 高转化冷开发信 (Cold Email)">
+              <a-card size="small" title=" 高转化冷开发信 (Cold Email)">
                 <template #extra>
                   <a-button size="small" type="link" @click="copyPitchEmail">
                     复制整封邮件
                   </a-button>
                 </template>
-                <div class="text-xs font-semibold text-gray-700 mb-1">主题：{{ pitchResult.channel_artifacts.cold_email.subject }}</div>
+                <div class="text-xs font-medium text-gray-700 mb-1">主题：{{ pitchResult.channel_artifacts.cold_email.subject }}</div>
                 <pre class="bg-gray-50 p-2.5 rounded text-xs text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{{ pitchResult.channel_artifacts.cold_email.body }}</pre>
               </a-card>
 
               <!-- WhatsApp -->
-              <a-card size="small" title="📱 WhatsApp 黄金 3 行破冰">
+              <a-card size="small" title=" WhatsApp 黄金 3 行破冰">
                 <template #extra>
                   <a-button size="small" type="link" @click="copyText(pitchResult.channel_artifacts.whatsapp_hook.text)">
                     复制 WhatsApp 话术
@@ -863,7 +863,7 @@
               </a-card>
 
               <!-- LinkedIn -->
-              <a-card size="small" title="💼 LinkedIn 决策人 InMail 邀约">
+              <a-card size="small" title=" LinkedIn 决策人 InMail 邀约">
                 <template #extra>
                   <a-button size="small" type="link" @click="copyText(pitchResult.channel_artifacts.linkedin_inmail.text)">
                     复制 LinkedIn 附言
@@ -899,7 +899,7 @@
                 </template>
                 <a-timeline class="mt-3">
                   <a-timeline-item v-for="t in cadenceResult.touches" :key="t.touch_number" color="green">
-                    <div class="font-semibold text-xs text-gray-800">
+                    <div class="font-medium text-xs text-gray-800">
                       第 {{ t.touch_number }} 轮 (Day {{ t.day_offset }} · {{ t.scheduled_date }}): {{ t.action_title }}
                       <a-tag size="small" color="cyan" class="ml-2">{{ t.channel }}</a-tag>
                     </div>
@@ -942,13 +942,13 @@
                   <b>买家心理学实质：</b> {{ selectedObjectionDetail.psychology }}
                 </div>
 
-                <div class="font-semibold text-xs text-gray-800 mb-1">谈判底牌与等价置换条件 (Red Lines)：</div>
+                <div class="font-medium text-xs text-gray-800 mb-1">谈判底牌与等价置换条件 (Red Lines)：</div>
                 <ul class="list-disc list-inside text-xs text-gray-600 space-y-1 mb-3">
                   <li v-for="(rule, i) in selectedObjectionDetail.bottom_line_rules" :key="i">{{ rule }}</li>
                 </ul>
 
                 <div class="flex justify-between items-center mb-1">
-                  <span class="font-semibold text-xs text-gray-800">地道外贸反击英语范本：</span>
+                  <span class="font-medium text-xs text-gray-800">地道外贸反击英语范本：</span>
                   <a-button size="small" type="link" @click="copyText(selectedObjectionDetail.response_en)">复制话术</a-button>
                 </div>
                 <pre class="bg-gray-50 p-2.5 rounded text-xs text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{{ selectedObjectionDetail.response_en }}</pre>
@@ -1892,7 +1892,7 @@ const translateResult = ref<{
   message: string
 } | null>(null)
 
-// ── 🌐 全网主动海外拓客 (Hermes GP-B) 状态 ──
+// ──  全网主动海外拓客 (Hermes GP-B) 状态 ──
 const outreachDrawerOpen = ref(false)
 const outreachLoading = ref(false)
 const outreachProspects = ref<any[]>([])
@@ -1902,7 +1902,7 @@ const outreachForm = reactive({
   channel: 'omni',
 })
 
-// ── 🌟 外贸获客全链路极智升维状态 ──
+// ──  外贸获客全链路极智升维状态 ──
 const buyer360Form = reactive({
   company_name: 'Al Fozan Industrial Group',
   country: 'SA',
@@ -2202,7 +2202,7 @@ function exportOutreachCsv() {
 }
 .acq-value {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #111827;
   word-break: break-all;
   line-height: 1.4;
@@ -2264,7 +2264,7 @@ function exportOutreachCsv() {
 .acq-score-letter.g-c { background: #f59e0b; }
 .acq-score-letter.g-d { background: #ef4444; }
 .acq-score-meta { flex: 1; min-width: 180px; }
-.acq-score-reason { font-weight: 600; color: #111827; }
+.acq-score-reason { font-weight: 500; color: #111827; }
 .acq-score-action { font-size: 12px; color: #6b7280; margin-top: 2px; }
 .acq-nodes {
   display: grid;
@@ -2281,7 +2281,7 @@ function exportOutreachCsv() {
 .acq-node.st-done { border-color: #10b981; background: #ecfdf5; }
 .acq-node.st-active { border-color: #4a9b8c; background: #f0faf7; }
 .acq-node.st-overdue { border-color: #ef4444; background: #fef2f2; }
-.acq-node-label { font-size: 13px; font-weight: 600; color: #111827; }
+.acq-node-label { font-size: 13px; font-weight: 500; color: #111827; }
 .acq-node-status { font-size: 12px; color: #6b7280; margin-top: 2px; }
 .acq-node-ref { font-size: 11px; color: #4a9b8c; margin-top: 2px; word-break: break-all; }
 .acq-loss-row { margin-bottom: 10px; }

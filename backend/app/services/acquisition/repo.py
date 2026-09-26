@@ -94,28 +94,52 @@ def persist_inquiry(
     channel: str = "inbound",
     assigned_to: str = "",
     attribution_channel: str = "acquisition_ops",
+    # ── W3 扩展（入站总线收口用）：全部可选，向后兼容 ──
+    phone: str = "",
+    name: str = "",
+    status: str = "",
+    session_id: str = "",
+    source_channel: str = "",
+    priority_score: Optional[int] = None,
+    provenance_metadata: Optional[dict] = None,
 ) -> dict[str, Any]:
-    """尽力写入 inquiries 表。返回 {persisted, id, reason}。"""
+    """尽力写入 inquiries 表。返回 {persisted, id, reason}。
+
+    W3 扩展：入站渠道（WhatsApp / 邮件 / 表单）可显式传 ``phone``/``name``/
+    ``status``/``session_id``/``source_channel``/``priority_score``/``provenance_metadata``；
+    缺省时保持既有行为不变（``phone`` 回落 ``inquiry_id``、``status='pending'``）。
+    """
     if db is None:
         return {"persisted": False, "id": None, "reason": "db_unavailable"}
     tid_resolved = resolve_tenant_uuid(db, tenant_id) if _safe_str(tenant_id) else None
+
+    def _common_kwargs(tid_try: Any) -> dict[str, Any]:
+        kw: dict[str, Any] = {
+            "name": _safe_str(name) or _safe_str(contact_name, _safe_str(company_name, "unknown")),
+            "phone": (_safe_str(phone)[:50] or _safe_str(inquiry_id, "n/a")[:50]),
+            "email": _safe_str(email) or None,
+            "product": _safe_str(product) or None,
+            "message": _safe_str(message, "(acquisition reply)")[:4000],
+            "status": _safe_str(status) or "pending",
+            "source_channel": (_safe_str(source_channel) or _safe_str(channel, "inbound"))[:50],
+            "tenant_id": tid_try,
+            "assigned_to": _safe_str(assigned_to) or None,
+            "attribution_channel": _safe_str(attribution_channel)[:50],
+            "attribution_data": (f'{{"ops_inquiry_id":"{_safe_str(inquiry_id)}","country":"{_safe_str(country)}"}}'
+                                 if inquiry_id or country else None),
+        }
+        if session_id:
+            kw["session_id"] = _safe_str(session_id)[:64]
+        if priority_score is not None:
+            kw["priority_score"] = max(0, min(100, int(priority_score)))
+        if provenance_metadata:
+            kw["provenance_metadata"] = provenance_metadata
+        return kw
+
     try:
         from app.models.inquiry import Inquiry
         # inquiries.tenant_id 在本库为 varchar：优先写业务串；若列是 UUID 则用解析结果
-        row = Inquiry(
-            name=_safe_str(contact_name, _safe_str(company_name, "unknown")),
-            phone=_safe_str(inquiry_id, "n/a")[:50],
-            email=_safe_str(email) or None,
-            product=_safe_str(product) or None,
-            message=_safe_str(message, "(acquisition reply)")[:4000],
-            status="pending",
-            source_channel=_safe_str(channel, "inbound")[:50],
-            tenant_id=tid_resolved or _safe_str(tenant_id) or None,
-            assigned_to=_safe_str(assigned_to) or None,
-            attribution_channel=_safe_str(attribution_channel)[:50],
-            attribution_data=(f'{{"ops_inquiry_id":"{_safe_str(inquiry_id)}","country":"{_safe_str(country)}"}}'
-                              if inquiry_id or country else None),
-        )
+        row = Inquiry(**_common_kwargs(tid_resolved or _safe_str(tenant_id) or None))
         db.add(row)
         db.commit()
         rid = getattr(row, "id", None) or inquiry_id
@@ -139,20 +163,7 @@ def persist_inquiry(
                 if not tid_try:
                     continue
                 try:
-                    row = Inquiry(
-                        name=_safe_str(contact_name, _safe_str(company_name, "unknown")),
-                        phone=_safe_str(inquiry_id, "n/a")[:50],
-                        email=_safe_str(email) or None,
-                        product=_safe_str(product) or None,
-                        message=_safe_str(message, "(acquisition reply)")[:4000],
-                        status="pending",
-                        source_channel=_safe_str(channel, "inbound")[:50],
-                        tenant_id=tid_try,
-                        assigned_to=None,
-                        attribution_channel=_safe_str(attribution_channel)[:50],
-                        attribution_data=(f'{{"ops_inquiry_id":"{_safe_str(inquiry_id)}","country":"{_safe_str(country)}"}}'
-                                          if inquiry_id or country else None),
-                    )
+                    row = Inquiry(**_common_kwargs(tid_try))
                     db.add(row)
                     db.commit()
                     rid = getattr(row, "id", None) or inquiry_id

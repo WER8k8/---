@@ -108,14 +108,17 @@ def poll_and_ingest_imap_inquiries(
             errors.append(f"skip {mid}: missing email or body")
             continue
         name = str(msg.get("from_name") or from_email.split("@")[0] or "Email Lead")[:120]
-        phone = f"email:{from_email}"[:50]
+        # W3：不再把 phone 写成 "email:<addr>" 占位。该占位会污染电话字段，
+        # 误导外呼/去重/展示（把邮箱当成手机号）。邮件入站只有邮箱真值，
+        # phone 留空（Inquiry.phone 可空 legacy 允许）；联系方式以 email 为准。
+        phone = ""
         subject = str(msg.get("subject") or "").strip()
         try:
             row = svc.create_public_lead(
                 name=name,
                 message=_build_stored_message(msg),
                 email=from_email,
-                phone=phone,
+                phone=phone or None,
                 product=subject[:100] if subject else None,
                 source_channel="imap_readonly",
                 tenant_id=str(tenant.id),

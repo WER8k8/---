@@ -292,6 +292,30 @@ class WhatsAppInboundEventBus:
             result["error"] = f"emit_failed: {exc}"
             logger.warning("whatsapp inbound emit failed: %s", exc)
 
+        # W3 · P0-7：入站 → 可跟进询盘（同步、可靠、幂等；不再依赖事件循环时序）
+        if db is not None:
+            try:
+                from app.services.acquisition.inbound_bridge import handle_inbound_message
+
+                result["inbound"] = handle_inbound_message(
+                    db,
+                    tenant_id=norm.get("tenant_id") or "",
+                    channel="whatsapp",
+                    phone=phone,
+                    email=norm.get("email") or "",
+                    body=body,
+                    sender_name=norm.get("from_name") or "",
+                    external_msg_id=norm.get("msg_id") or "",
+                    source=norm.get("source") or SOURCE_PLUGIN,
+                    payload={
+                        "message_type": norm.get("message_type"),
+                        "account_id": norm.get("account_id"),
+                    },
+                )
+            except Exception as exc:  # noqa: BLE001
+                result["error"] = f"inbound_bridge_failed: {exc}"
+                logger.warning("whatsapp inbound bridge failed: %s", exc)
+
         result["accepted"] = True
         result["emitted"] = emitted
         result["event_id"] = event.event_id
