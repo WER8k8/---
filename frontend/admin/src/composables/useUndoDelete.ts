@@ -69,7 +69,7 @@ export function useUndoDelete() {
         return h('span', [
           `已删除 ${opts.label}，`,
           h('a', {
-            style: 'color: #4a9b8c; font-weight: 600; cursor: pointer; text-decoration: underline;',
+            style: 'color: #4a9b8c; font-weight: 500; cursor: pointer; text-decoration: underline;',
             onClick: async () => {
               message.destroy(key)
               clearTimeout(timer)

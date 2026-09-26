@@ -16,7 +16,7 @@
               </a-tag>
             </template>
             <template v-if="column.key==='en'">
-              <a-switch :checked="record.enabled" size="small" :loading="togglingId===record.id" @change="(v:boolean)=>toggle(record,v)" />
+              <a-switch :checked="record.enabled" size="small" :loading="togglingId===record.id" @change="(v: any) => toggle(record, Boolean(v))" />
             </template>
             <template v-if="column.key==='ac'">
               <a-space>

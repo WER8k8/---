@@ -1,0 +1,966 @@
+{
+  "meta": {
+    "scanned_at": "2026-09-22T11:09:12.714Z",
+    "counts": {
+      "errors": 2,
+      "warnings": 234,
+      "info": 0,
+      "platform_menu_items": 162,
+      "missing_routes": 2,
+      "status_no_explain": 0,
+      "emoji_files": 0,
+      "bold_hits": 0
+    }
+  },
+  "errors": [
+    {
+      "cat": "菜单无路由",
+      "msg": "菜单「一键建站」/admin/sites/build 在 router 中未命中",
+      "file": "frontend/admin/src/constants/platformShellMenu.ts"
+    },
+    {
+      "cat": "菜单无路由",
+      "msg": "菜单「DeerFlow 监控」/admin/deerflow/monitor 在 router 中未命中",
+      "file": "frontend/admin/src/constants/platformShellMenu.ts"
+    }
+  ],
+  "warnings": [
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-center\\article-to-video.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-engine\\token.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-engine\\token.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-engine\\token.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-engine\\token.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-engine\\token.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\ai-engine\\token.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\finance\\payment-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\hierarchy\\index.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\hierarchy\\index.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\hierarchy\\index.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\hierarchy\\index.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\hierarchy\\index.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\paperclip\\org-chart.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\paperclip\\org-chart.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\paperclip\\org-chart.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\paperclip\\org-chart.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\projects\\overview.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\projects\\overview.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\projects\\overview.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\projects\\overview.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\projects\\overview.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\projects\\overview.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\command-center.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\command-center.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\command-center.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\command-center.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\command-center.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\command-center.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\ecc-hangar.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\ecc-hangar.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\ecc-hangar.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-cumulative.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-cumulative.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-cumulative.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-cumulative.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-cumulative.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-cumulative.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\greedy-expert-memory.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\license.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\storage-provision.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\admin\\system\\survival-dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\agent-hub\\execution-review.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\ai-learning\\auto-ab-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\ai-learning\\auto-ab-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\ai-learning\\auto-ab-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\ai-learning\\auto-ab-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\ai-learning\\auto-ab-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\ai-learning\\auto-ab-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\acquisition-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\acquisition-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\acquisition-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\acquisition-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\acquisition-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\acquisition-ops.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\export-quote.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\export-quote.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\export-quote.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\export-quote.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\export-quote.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\export-quote.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\hermes-tasks.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\hermes-tasks.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\hermes-tasks.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\hermes-tasks.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\hermes-tasks.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\queues\\fulfillment.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\queues\\fulfillment.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\queues\\fulfillment.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\queues\\fulfillment.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\queues\\fulfillment.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\queues\\fulfillment.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio-project-panel.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio-project-panel.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio-project-panel.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio-project-panel.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio-project-panel.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\client\\video-studio.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\edge-cdn\\protocol.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\edge-cdn\\protocol.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\edge-cdn\\protocol.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\edge-cdn\\protocol.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\edge-cdn\\protocol.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\edge-cdn\\protocol.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\freight-calc.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\lbs-routing.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\lbs-routing.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\lbs-routing.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\lbs-routing.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\lbs-routing.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\lbs-routing.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\logistics\\quotation.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\sales\\AutoNegotiator.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\baidu-tools.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\baidu-tools.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\compliance.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\compliance.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\compliance.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\compliance.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo\\compliance.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo-matrix\\publish.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo-matrix\\publish.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\seo-matrix\\publish.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\backup.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\backup.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\backup.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\backup.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\system-health\\stress-test.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\tenants\\dashboard.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\workspace\\ProspectingWorkspace.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\workspace\\ProspectingWorkspace.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\workspace\\ProspectingWorkspace.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\workspace\\ProspectingWorkspace.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\workspace\\ProspectingWorkspace.vue"
+    },
+    {
+      "cat": "布局空列",
+      "msg": "a-descriptions 未设 column（默认 3 易出空列）：C:\\Users\\Administrator\\Documents\\上线网站开发完成\\上线网站.worktrees\\agents-install-vscode-cline-deploy-strix\\frontend\\admin\\src\\views\\workspace\\ProspectingWorkspace.vue"
+    },
+    {
+      "cat": "字重超标",
+      "msg": "font-weight 600/700 共 0 处 / 0 文件（规范仅 400/500）"
+    }
+  ],
+  "info": []
+}

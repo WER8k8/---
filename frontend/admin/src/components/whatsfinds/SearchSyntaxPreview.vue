@@ -21,7 +21,7 @@
           @click="copySyntax"
           :type="copied ? 'primary' : 'default'"
         >
-          {{ copied ? '✓ 已复制' : '复制' }}
+          {{ copied ? ' 已复制' : '复制' }}
         </a-button>
       </div>
     </div>
@@ -255,7 +255,7 @@ watch(generatedSyntax, (newSyntax) => {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: #1890ff;
   }
 

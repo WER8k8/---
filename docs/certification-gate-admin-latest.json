@@ -1,223 +1,88 @@
 {
-  "generatedAt": "2026-09-18T11:36:30.696Z",
+  "generatedAt": "2026-09-25T12:20:27.223Z",
   "target": "省级软件评测 — 管理端功能门禁",
-  "ready": true,
-  "blocked": false,
+  "ready": false,
+  "blocked": true,
   "gates": [
     {
       "script": "check-login-entry-lock",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "ok",
-      "raw": {
-        "ok": true,
-        "decision_id": "LOGIN-LOCK-01",
-        "login_route": "/login",
-        "checked_files": 4,
-        "legacy_redirects": 5
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "check-role-shell-lock",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "ok",
-      "raw": {
-        "ok": true,
-        "decision_id": "ROLE-SHELL-LOCK-01",
-        "personas": [
-          "platform",
-          "tenant",
-          "partner",
-          "agent"
-        ],
-        "shell_entries": [
-          "login",
-          "tenant_client",
-          "platform_saas_tenants",
-          "platform_admin"
-        ],
-        "worktab_keys": [
-          "uj-worktabs-platform-v1",
-          "uj-worktabs-client-v1",
-          "uj-worktabs-partner-v1",
-          "uj-worktabs-agent-v1",
-          "uj-worktabs-v1"
-        ]
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "check-console-regression-lock",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "ok",
-      "raw": {
-        "ok": true,
-        "decision_id": "CONSOLE-REGRESSION-LOCK-01",
-        "checked": {
-          "vue_files": 417,
-          "formily": "frontend/admin/src/components/youding/YdFormilyForm.vue",
-          "billing": "frontend/admin/src/views/tenants/billing.vue"
-        }
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "audit-page-stubs",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "P0=0 P1=0 P2=0",
-      "raw": {
-        "totalVue": 322,
-        "flagged": 0,
-        "P0": 0,
-        "P1": 0,
-        "P2": 0,
-        "items": []
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "check-nav-routes",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "missing=0/96",
-      "raw": {
-        "total": 96,
-        "missing": [],
-        "source": "platformShellMenu.ts"
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "check-nested-routes",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "issues=0",
-      "raw": {
-        "nestedParents": 0,
-        "issues": [],
-        "menuMissing": [],
-        "ok": true
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "find-corrupt-vue",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "corrupt=0",
-      "raw": {
-        "corrupt": 0,
-        "files": []
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "check-interactive-stubs",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "menuLinked=0 flagged=0",
-      "raw": {
-        "menuLinked": 0,
-        "total": 22,
-        "items": []
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "check-demo-rehearsal-path",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "issues=0",
-      "raw": {
-        "ok": true,
-        "spec": "youding-omni-pro-design-LOCKED.md §10",
-        "steps": 6,
-        "issues": []
-      }
+      "ok": false,
+      "blocking": null,
+      "exitCode": 1,
+      "summary": "parse failed",
+      "raw": null
     },
     {
       "script": "no-fake-delivery",
-      "ok": true,
-      "blocking": false,
-      "exitCode": 0,
-      "summary": "ok",
-      "raw": {
-        "ok": true,
-        "task": "NO-FAKE-DELIVERY-DEEP",
-        "scanned": {
-          "backend_py": 1292,
-          "frontend_vue": 417,
-          "frontend_ts": 155
-        },
-        "p0_count": 0,
-        "p1_count": 0,
-        "p2_count": 8,
-        "findings": [
-          {
-            "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-            "line": 80,
-            "label": "注释承认模拟实现但未门控",
-            "severity": "P2",
-            "snippet": "# 返回模拟余额（后续接入真实积分表）"
-          },
-          {
-            "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-            "line": 107,
-            "label": "注释承认模拟实现但未门控",
-            "severity": "P2",
-            "snippet": "\"\"\"购买积分包（模拟接口，后续接入真实支付）。\"\"\""
-          },
-          {
-            "file": "backend\\app\\api\\v1\\routes\\product_commerce.py",
-            "line": 138,
-            "label": "注释承认模拟实现但未门控",
-            "severity": "P2",
-            "snippet": "\"total_earned\": 0,  # 后续接入真实数据"
-          },
-          {
-            "file": "backend\\app\\api\\v1\\routes\\super_agent.py",
-            "line": 734,
-            "label": "桥接层返回演示客户",
-            "severity": "P2",
-            "snippet": "- \"mock\": 尚未实现，返回演示数据（前端应标注\"演示\"或隐藏）"
-          },
-          {
-            "file": "backend\\app\\services\\ubrain\\channel_status.py",
-            "line": 92,
-            "label": "桥接层返回演示客户",
-            "severity": "P2",
-            "snippet": "return ChannelInfo(\"tiktok\", \"TikTok\", \"mock\", \"TikTok 渠道尚在开发中，当前返回演示数据\")"
-          },
-          {
-            "file": "backend\\app\\services\\ubrain\\channel_status.py",
-            "line": 99,
-            "label": "桥接层返回演示客户",
-            "severity": "P2",
-            "snippet": "return ChannelInfo(\"quora\", \"Quora\", \"mock\", \"Quora 渠道尚在开发中，当前返回演示数据\")"
-          },
-          {
-            "file": "backend\\app\\services\\ubrain\\channel_status.py",
-            "line": 106,
-            "label": "桥接层返回演示客户",
-            "severity": "P2",
-            "snippet": "return ChannelInfo(\"reddit\", \"Reddit\", \"mock\", \"Reddit 渠道尚在开发中，当前返回演示数据\")"
-          },
-          {
-            "file": "backend\\app\\services\\ubrain\\whatsapp_prospect_service.py",
-            "line": 466,
-            "label": "响应体含 mock:true（须确认生产门控）",
-            "severity": "P2",
-            "snippet": "\"mock\": True,"
-          }
-        ],
-        "p0_findings": [],
-        "p1_findings": []
-      },
+      "ok": false,
+      "blocking": true,
+      "exitCode": 1,
+      "summary": "P0=0 exit=null",
+      "raw": null,
       "skipped": false
     },
     {
@@ -243,5 +108,5 @@
       "skipped": true
     }
   ],
-  "recommendation": "管理端门禁通过；继续完成后端 preflight、测试报告实填、PM 签字与性能/安全附件"
+  "recommendation": "存在阻断项：须清零 P0/P1、路由缺失、Vue 损坏后再提交评测"
 }

@@ -42,36 +42,266 @@ router = APIRouter()
 TEMPLATE_STORE: list[dict[str, Any]] = [
     {
         "id": "tpl_cold_outreach_en",
-        "name": "Cold Outreach (EN)",
-        "description": "英文冷开发信模板",
+        "name": "Cold Intro · Building Materials",
+        "description": "英文冷开发·建材首次破冰（专业简洁）",
         "language": "en",
         "type": "cold_outreach",
         "usageCount": 0,
         "isDefault": True,
         "color": "#4a9b8c",
-        "content": "Dear {name},\n\nWe specialize in {product} supply...",
+        "tags": ["建材", "首封", "英文"],
+        "subject": "{product} manufacturer from China — quick intro",
+        "content": (
+            "Dear {name},\n\n"
+            "This is {sender} from {company}, a manufacturer of {product} "
+            "for contractors and distributors in {market}.\n\n"
+            "We help buyers like {buyer_company} get:\n"
+            "- Stable quality with export packing\n"
+            "- Clear lead time and competitive FOB/CIF quotes\n"
+            "- One-stop docs: PI / CI / PL / CO\n\n"
+            "If you are sourcing {product} this quarter, may I send a short quote "
+            "based on your usual specs?\n\n"
+            "Best regards,\n{sender}\n{company}"
+        ),
+    },
+    {
+        "id": "tpl_cold_outreach_zh",
+        "name": "冷开发信 · 建材出海",
+        "description": "中文冷开发·结构清晰、降低回复成本",
+        "language": "zh",
+        "type": "cold_outreach",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#2f6a5f",
+        "tags": ["建材", "首封", "中文"],
+        "subject": "{product} 供应商介绍 · 可提供样品与完整单证",
+        "content": (
+            "{name} 您好：\n\n"
+            "我是 {company} 的 {sender}，我们专业生产 {product}，长期服务 {market} 的工程商与批发客户。\n\n"
+            "我们可以提供：\n"
+            "1. 稳定品质与出口包装\n"
+            "2. 明确交期，FOB/CIF 可报价\n"
+            "3. PI / 发票 / 装箱单 / 原产地证等全套单证\n\n"
+            "如贵司本季有 {product} 采购计划，回复规格与数量即可，我 24 小时内给到报价。\n\n"
+            "此致\n{sender}\n{company}"
+        ),
     },
     {
         "id": "tpl_follow_up_en",
-        "name": "Follow-up (EN)",
-        "description": "英文跟进邮件模板",
+        "name": "Follow-up · Soft",
+        "description": "英文二次跟进·不施压、给价值",
         "language": "en",
         "type": "follow_up",
         "usageCount": 0,
         "isDefault": False,
-        "color": "#1890ff",
-        "content": "Hi {name},\n\nFollowing up on our previous email...",
+        "color": "#3d7ea6",
+        "tags": ["跟进", "英文"],
+        "subject": "Re: {product} — spec sheet & FOB range",
+        "content": (
+            "Hi {name},\n\n"
+            "Just floating this back up in case it got buried.\n\n"
+            "I can send:\n"
+            "- Spec sheet for {product}\n"
+            "- FOB range based on {quantity}\n"
+            "- Sample / packing photos\n\n"
+            "If timing is not right, a one-line reply is enough and I will follow up later.\n\n"
+            "Best,\n{sender}"
+        ),
+    },
+    {
+        "id": "tpl_follow_up_zh",
+        "name": "跟进信 · 温和",
+        "description": "中文二次跟进·一句话可回",
+        "language": "zh",
+        "type": "follow_up",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#3d7ea6",
+        "tags": ["跟进", "中文"],
+        "subject": "跟进：{product} 规格书与离岸价区间",
+        "content": (
+            "{name} 您好：\n\n"
+            "上次关于 {product} 的邮件可能被淹了，简单跟进一下。\n\n"
+            "可立即提供：规格书、{quantity} 对应 FOB 区间、包装图。\n"
+            "若时间不合适，回一个字「暂缓」即可，我改日再联系。\n\n"
+            "{sender}"
+        ),
+    },
+    {
+        "id": "tpl_quote_en",
+        "name": "Quotation · Clear Next Step",
+        "description": "英文报价信·报价+条款+下一步",
+        "language": "en",
+        "type": "quote",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#d18b2f",
+        "tags": ["报价", "英文"],
+        "subject": "Quotation — {product} / {quantity}",
+        "content": (
+            "Dear {name},\n\n"
+            "Thank you for your inquiry. Please find our quotation below.\n\n"
+            "Product: {product}\n"
+            "Quantity: {quantity}\n"
+            "Price: {price} (FOB {port})\n"
+            "Lead time: {lead_time}\n"
+            "Payment: {payment_terms}\n"
+            "Validity: 14 days\n\n"
+            "If this works, we can issue PI today. "
+            "Need a different spec or CIF? Reply with destination port.\n\n"
+            "Best regards,\n{sender}\n{company}"
+        ),
     },
     {
         "id": "tpl_quote_zh",
-        "name": "报价邮件（中）",
-        "description": "中文报价邮件模板",
+        "name": "报价邮件 · 条款清晰",
+        "description": "中文报价信·避免来回扯皮",
         "language": "zh",
         "type": "quote",
         "usageCount": 0,
         "isDefault": False,
-        "color": "#faad14",
-        "content": "{name} 您好：\n\n随附贵司产品报价单，请查收。",
+        "color": "#d18b2f",
+        "tags": ["报价", "中文"],
+        "subject": "报价单 — {product} / {quantity}",
+        "content": (
+            "{name} 您好：\n\n"
+            "感谢询价，报价如下：\n\n"
+            "产品：{product}\n"
+            "数量：{quantity}\n"
+            "单价：{price}（FOB {port}）\n"
+            "交期：{lead_time}\n"
+            "付款：{payment_terms}\n"
+            "有效期：14 天\n\n"
+            "如条款可接受，今日可出形式发票（PI）。若需 CIF，请告知目的港。\n\n"
+            "{sender} / {company}"
+        ),
+    },
+    {
+        "id": "tpl_pi_ready_en",
+        "name": "PI Ready · Close",
+        "description": "英文催签 PI·促成定金",
+        "language": "en",
+        "type": "follow_up",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#2f6a5f",
+        "tags": ["成单", "英文"],
+        "subject": "PI for your order — {product}",
+        "content": (
+            "Hi {name},\n\n"
+            "Attached is the PI for {product} / {quantity}.\n\n"
+            "To lock production slot:\n"
+            "1) Sign the PI\n"
+            "2) Arrange {deposit_ratio} deposit\n"
+            "3) We confirm ship date within 24h\n\n"
+            "Any wording you need changed? I can update immediately.\n\n"
+            "Regards,\n{sender}"
+        ),
+    },
+    {
+        "id": "tpl_pi_ready_zh",
+        "name": "形式发票催签",
+        "description": "中文 PI 催签·锁档期",
+        "language": "zh",
+        "type": "follow_up",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#2f6a5f",
+        "tags": ["成单", "中文"],
+        "subject": "形式发票 PI — {product}",
+        "content": (
+            "{name} 您好：\n\n"
+            "PI 已备好（{product} / {quantity}）。\n\n"
+            "锁定档期：\n"
+            "1）确认 PI 条款\n"
+            "2）安排 {deposit_ratio} 定金\n"
+            "3）24 小时内确认出货日\n\n"
+            "条款需改动请直接批注，我马上改。\n\n"
+            "{sender}"
+        ),
+    },
+    {
+        "id": "tpl_welcome_en",
+        "name": "Welcome · Catalog",
+        "description": "英文欢迎信·给目录与下一步",
+        "language": "en",
+        "type": "welcome",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#7c6dd8",
+        "tags": ["欢迎", "英文"],
+        "subject": "Welcome — how we can help with {product}",
+        "content": (
+            "Hello {name},\n\n"
+            "Glad to connect. Quick overview of {company}:\n"
+            "- Main line: {product}\n"
+            "- Markets: {market}\n"
+            "- Docs: PI / CI / PL / CO / B/L support\n\n"
+            "I can share catalog + price list today. "
+            "What spec do buyers ask for most often in your market?\n\n"
+            "Best,\n{sender}"
+        ),
+    },
+    {
+        "id": "tpl_welcome_zh",
+        "name": "欢迎信 · 目录切入",
+        "description": "中文欢迎信·降低破冰成本",
+        "language": "zh",
+        "type": "welcome",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#7c6dd8",
+        "tags": ["欢迎", "中文"],
+        "subject": "认识一下：{product} 一站式供应",
+        "content": (
+            "{name} 您好：\n\n"
+            "很高兴对接上。{company} 简介：\n"
+            "- 主营：{product}\n"
+            "- 市场：{market}\n"
+            "- 单证：PI / 发票 / 箱单 / 原产地证 / 提单配合\n\n"
+            "今日可发目录与价格表。贵司市场里客户最常问哪种规格？\n\n"
+            "{sender}"
+        ),
+    },
+    {
+        "id": "tpl_reengage_en",
+        "name": "Re-engage · 30 Days",
+        "description": "英文沉默激活·给新价值点",
+        "language": "en",
+        "type": "marketing",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#a44f3a",
+        "tags": ["激活", "英文"],
+        "subject": "New specs / better packing for {product}",
+        "content": (
+            "Hi {name},\n\n"
+            "It has been a while. Two updates that may help your buyers:\n"
+            "1) Improved export packing for {product}\n"
+            "2) Wider spec range at stable FOB\n\n"
+            "Worth a 5-minute look? I can send the new spec sheet only.\n\n"
+            "{sender}"
+        ),
+    },
+    {
+        "id": "tpl_reengage_zh",
+        "name": "沉默激活 · 有新料",
+        "description": "中文激活信·给理由再开口",
+        "language": "zh",
+        "type": "marketing",
+        "usageCount": 0,
+        "isDefault": False,
+        "color": "#a44f3a",
+        "tags": ["激活", "中文"],
+        "subject": "{product} 新规格 / 包装升级",
+        "content": (
+            "{name} 您好：\n\n"
+            "有一阵没联系了，两个可能对您有用的更新：\n"
+            "1）{product} 出口包装升级\n"
+            "2）规格更全，FOB 稳定\n\n"
+            "若方便，只发您新版规格书也可。需要我发吗？\n\n"
+            "{sender}"
+        ),
     },
 ]
 
@@ -215,6 +445,32 @@ def resume_campaign(
         data=_apply_campaign_status(db, campaign_id, "active"),
         message="活动已继续",
     )
+
+
+class CampaignScheduleRequest(BaseModel):
+    """定时发送请求体（EmailAutomation.vue scheduleEmail 实调字段）"""
+    subject: str = ""
+    content: str = ""
+    recipients: str = ""
+    type: str = "cold_outreach"
+    language: str = "en"
+
+
+@router.post("/campaigns/{campaign_id}/schedule")
+def schedule_campaign(
+    campaign_id: str,
+    body: CampaignScheduleRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),  # SECURITY: 强制认证
+):
+    """定时发送邮件活动"""
+    data = _apply_campaign_status(db, campaign_id, "scheduled")
+    data["schedule"] = {
+        "subject": body.subject,
+        "type": body.type,
+        "language": body.language,
+    }
+    return success_response(data=data, message="定时发送已设置")
 
 
 # ========== 邮件端点 ==========

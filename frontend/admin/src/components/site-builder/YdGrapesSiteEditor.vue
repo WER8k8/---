@@ -33,7 +33,7 @@
         </a-space>
 
         <div class="flex items-center gap-2">
-          <span class="text-xs text-slate-400">💡 提示：在页面上直接点击文字打字修改，双击图片更换素材</span>
+          <span class="text-xs text-slate-400"> 提示：在页面上直接点击文字打字修改，双击图片更换素材</span>
           <a-button size="small" type="primary" ghost @click="emit('request-save')">
             保存修改
           </a-button>

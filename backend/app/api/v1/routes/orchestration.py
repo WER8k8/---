@@ -93,14 +93,19 @@ def create_orchestration_task(
     except Exception as exc:  # noqa: BLE001
         logger.warning("orchestration: seed_default_skills 失败（已忽略）: %s", exc)
     ctl = TaskControlService(db)
-    task = ctl.create_task(
-        tenant_id=tenant_id,
-        task_type=req.task_type,
-        input_data=req.input_data,
-        idempotency_key=req.idempotency_key,
-        priority=req.priority,
-        source="orchestration_api",
-    )
+    try:
+        task = ctl.create_task(
+            tenant_id=tenant_id,
+            task_type=req.task_type,
+            input_data=req.input_data,
+            idempotency_key=req.idempotency_key,
+            priority=req.priority,
+            source="orchestration_api",
+        )
+    except Exception as exc:
+        if type(exc).__name__ in ("WalletBlockedError", "QuotaGateDenied"):
+            raise HTTPException(status_code=402, detail=str(exc)) from exc
+        raise
     if req.auto_dispatch:
         process_ai_task.delay(str(task.id))
     return OrchestrationTaskResponse(
@@ -148,6 +153,15 @@ async def create_task_from_intent(
     )
 
     tenant_id = _resolve_tenant_id(db, current_user, req.tenant_id)
+
+    # 商业计费总闸硬拦截（防白嫖）
+    try:
+        from app.services.acquisition.wallet_guard import enforce_wallet_gate  # noqa: PLC0415
+        enforce_wallet_gate(tenant_id, db)
+    except Exception as exc:
+        if type(exc).__name__ in ("WalletBlockedError", "QuotaGateDenied"):
+            raise HTTPException(status_code=402, detail=str(exc)) from exc
+        raise
 
     # best-effort：确保技能注册表有内容（幂等，失败不影响）
     try:
@@ -468,3 +482,54 @@ async def ingest_webhook_intent(
         graph_source=result["graph_source"],
         node_count=result["node_count"],
     )
+
+
+class IntentsResolveRequest(BaseModel):
+    intent: str = Field(..., description="意图标识，如 prospect_search")
+    payload: Dict[str, Any] = Field(default_factory=dict)
+
+
+class IntentsResolveResponse(BaseModel):
+    status: str
+    output: Dict[str, Any] = Field(default_factory=dict)
+
+
+@router.post("/intents/resolve", response_model=IntentsResolveResponse)
+async def resolve_intent(
+    req: IntentsResolveRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> IntentsResolveResponse:
+    """最小意图解析端点（acquisition-ops 前端实调路径）。
+
+    prospect_search 走 BuyerProspectLead 真实查询；其余意图无 LLM Key 返 needs_config。
+    """
+    if req.intent == "prospect_search":
+        from app.services.ubrain.accio_sales_service import list_prospects
+
+        tenant_id = _resolve_tenant_id(db, current_user, None)
+        data = list_prospects(db, tenant_id, limit=50)
+        items = data.get("items") if isinstance(data, dict) else []
+        prospects = [
+            {
+                "company_name": it.get("title") or "",
+                "country": it.get("country_code") or "",
+                "email": "",
+                "phone": "",
+                "industry": it.get("buyer_type") or "",
+                "source": "prospect_lead",
+            }
+            for it in (items or [])
+        ]
+        return IntentsResolveResponse(
+            status="ok",
+            output={"prospects": prospects},
+        )
+
+    from app.core.config import settings as _settings
+
+    has_llm = bool(
+        (_settings.AI_OPENAI_API_KEY or "").strip()
+        or (_settings.AI_ANTHROPIC_API_KEY or "").strip()
+    )
+    return IntentsResolveResponse(status="needs_config", output={})

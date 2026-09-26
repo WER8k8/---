@@ -9,7 +9,9 @@ import { performSilentTokenRefresh } from '@/api/authRefresh';
 const baseURL = import.meta.env.VITE_API_BASE || '/api/v1';
 
 /**
- * 灏?FastAPI `APIResponse` 鎴愬姛浣擄紙code=0锛夎浆涓虹鐞嗙鎯敤鐨勬墎骞崇粨鏋勩€? * axios 鎷︽埅鍣ㄤ笌 fetch 鍏辩敤锛涢潪 0 / 闈炰俊灏佸垯鍘熸牱杩斿洖銆? */
+ * 封装 FastAPI `APIResponse` 成功响应（code=0）转换为客户端适用的统一结构。
+ * axios 拦截器与 fetch 共用；非 0 / 非信封则原样返回。
+ */
 export function normalizeApiSuccessBody(body: Record<string, unknown>): unknown {
   if (
     typeof body.code !== 'number' ||
@@ -54,7 +56,7 @@ export function normalizeApiSuccessBody(body: Record<string, unknown>): unknown 
   return inner;
 }
 
-/** `fetch` + `await res.json()` 鍚庝笌 axios 涓€鑷寸殑鎵佸钩鍖?*/
+/** `fetch` + `await res.json()` 之后，与 axios 一致的扁平化结构 */
 export function unwrapFetchedJson<T = unknown>(raw: unknown): T {
   if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
     return normalizeApiSuccessBody(raw as Record<string, unknown>) as T;
@@ -62,7 +64,7 @@ export function unwrapFetchedJson<T = unknown>(raw: unknown): T {
   return raw as T;
 }
 
-/** 瑙ｆ瀽 FastAPI `APIResponse`锛坈ode=0 涓斿惈 data锛夋垨宸茬敱鎷︽埅鍣ㄦ墎骞冲寲鍚庣殑 body */
+/** 解析 FastAPI `APIResponse`（code=0 且含 data）或已由拦截器扁平化后的 body */
 export function unwrapApiData<T = unknown>(response: AxiosResponse): T {
   const body = response?.data as Record<string, unknown> | null | undefined;
   if (
@@ -106,7 +108,7 @@ function redirectToLogin() {
   window.location.assign(`/login?redirect=${encodeURIComponent(full)}`);
 }
 
-/** access 澶辨晥涓旀棤娉曠画鏈燂細娓呬細璇濆苟鏁撮〉鍘荤櫥褰曪紙鐧诲綍椤典笉璺宠浆锛?*/
+/** access 失效且无法续期：清会话并整页去登录（登录页不跳转） */
 async function hardLogout401() {
   const path = window.location.pathname;
   if (path === '/login') return;
@@ -359,7 +361,7 @@ export const usersAPI = {
   delete: (id: string) => api.delete(`/users/${id}`),
 };
 
-/** SEO 鐭╅樀 `/api/v1/seo-matrix/*`锛屼笌 FastAPI `seo_matrix.py` 瀵归綈 */
+/** SEO 矩阵 `/api/v1/seo-matrix/*`，与 FastAPI `seo_matrix.py` 对齐 */
 // PC-01：凭证字段必须原样透传给后端 apply_credentials（cookie / cookie_data /
 // token_data / credentials / configs 以及指引登记的平铺字段名）。
 // 旧实现只挑 5 个字段发送，把 cookie 与 token 整个丢掉，面板填了也存不下。
@@ -558,7 +560,7 @@ export const growthToolsAPI = {
   getAgentRun: (runId: string) => api.get(`/growth-tools/agent/runs/${runId}`),
 };
 
-/** 鏂伴椈 `/api/v1/news`锛堣 docs/4-API鎺ュ彛瀹氫箟.md 搂6锛?*/
+/** 新闻 `/api/v1/news`（见 docs/4-API接口定义.md §6） */
 export const newsAPI = {
   list: (params?: Record<string, unknown>) => api.get('/news', { params }),
   get: (id: string) => api.get(`/news/${id}`),
@@ -567,7 +569,7 @@ export const newsAPI = {
   remove: (id: string) => api.delete(`/news/${id}`),
 };
 
-/** 鍏ㄥ眬鍚堣 `/api/v1/compliance`锛埪?3锛屼笌 SEO 鍐呭悎瑙勬壂鎻忓尯鍒嗭級 */
+/** 全局合规 `/api/v1/compliance`（§3，与 SEO 内合规扫描区分） */
 export const complianceHubAPI = {
   overview: () => api.get('/compliance'),
   audit: () => api.get('/compliance/audit'),
@@ -577,7 +579,7 @@ export const complianceHubAPI = {
   report: (params?: { format?: string }) => api.get('/compliance/report', { params }),
 };
 
-/** AI 閰嶇疆 `/api/v1/ai-config`锛埪?1锛?*/
+/** AI 配置 `/api/v1/ai-config`（§1） */
 export const aiConfigAPI = {
   get: () => api.get('/ai-config'),
   update: (data: Record<string, unknown>) => api.put('/ai-config', data),
@@ -586,7 +588,7 @@ export const aiConfigAPI = {
   stats: () => api.get('/ai-config/stats'),
 };
 
-/** A/B 娴嬭瘯 `/api/v1/ab-test`锛埪?2锛?*/
+/** A/B 测试 `/api/v1/ab-test`（§2） */
 export const abTestAPI = {
   list: (params?: Record<string, unknown>) => api.get('/ab-test', { params }),
   get: (id: string) => api.get(`/ab-test/${id}`),
@@ -597,7 +599,7 @@ export const abTestAPI = {
   stop: (id: string) => api.post(`/ab-test/${id}/pause`),
 };
 
-/** 椋炰功 `/api/v1/feishu`锛埪?5锛?*/
+/** 飞书 `/api/v1/feishu`（§5） */
 export const feishuAPI = {
   getBind: () => api.get('/feishu/bind'),
   bind: (data: Record<string, unknown>) => api.post('/feishu/bind', data),
@@ -606,7 +608,7 @@ export const feishuAPI = {
   dailyReport: () => api.get('/feishu/report/daily'),
 };
 
-/** 鏁版嵁鍒嗘瀽 `/api/v1/analytics`锛埪?锛?*/
+/** 数据分析 `/api/v1/analytics`（看板与统计接口） */
 export const dataAnalyticsAPI = {
   list: (params?: Record<string, unknown>) => api.get('/analytics', { params }),
   dashboard: () => api.get('/analytics/dashboard'),
@@ -615,7 +617,7 @@ export const dataAnalyticsAPI = {
   exportData: (params?: Record<string, unknown>) => api.get('/analytics/export', { params }),
 };
 
-/** 绔欑偣璁剧疆 `/api/v1/settings`锛埪?0锛?*/
+/** 站点设置 `/api/v1/settings`（站点与偏好配置） */
 export const siteSettingsAPI = {
   get: () => api.get('/settings'),
   updateSite: (data: Record<string, unknown>) => api.put('/settings/site', data),
@@ -625,9 +627,9 @@ export const siteSettingsAPI = {
 
 export default api;
 
-// ========== 鏂板妯″潡 API 瀹㈡埛绔?==========
+// ========== 新增模块 API 客户端 ==========
 
-/** 鏅鸿兘浣撳崗鍚?`/api/v1/agent-hub/*` */
+/** 智能体协作 `/api/v1/agent-hub/*` */
 export const agentHubAPI = {
   overview: () => api.get('/agent-hub'),
   mcpBridgeStatus: () => api.get('/agent-hub/mcp-bridge'),
@@ -637,7 +639,7 @@ export const agentHubAPI = {
     api.get('/agent-hub/execution-review', { params }),
 };
 
-/** 澶氬獟浣撳伐鍘?`/api/v1/media-factory/*` */
+/** 多媒体工厂 `/api/v1/media-factory/*` */
 export const mediaFactoryAPI = {
   overview: () => api.get('/media-factory'),
   ttsStatus: () => api.get('/media-factory/tts'),
@@ -646,7 +648,7 @@ export const mediaFactoryAPI = {
     api.get('/media-factory/render-queue', { params }),
 };
 
-/** 鍏ㄧ悆鍖栧璇█ `/api/v1/globalization/*` */
+/** 全球化多语言 `/api/v1/globalization/*` */
 export const globalizationAPI = {
   overview: () => api.get('/globalization'),
   glossary: (params?: Record<string, unknown>) => api.get('/globalization/glossary', { params }),
@@ -663,7 +665,7 @@ export const logisticsAPI = {
   createQuotation: (data: Record<string, unknown>) => api.post('/logistics/quotation', data),
 };
 
-/** 绯荤粺鍋ュ悍鍘嬫祴 `/api/v1/system-health/*` */
+/** 系统健康压测 `/api/v1/system-health/*` */
 export const systemHealthAPI = {
   overview: () => api.get('/system-health'),
   stressTestStatus: () => api.get('/system-health/stress-test'),
@@ -683,7 +685,7 @@ export const aiLearningAPI = {
   createAutoABTest: (data: Record<string, unknown>) => api.post('/ai-learning/auto-ab-test', data),
 };
 
-/** SaaS绉熸埛 `/api/v1/tenants/*` */
+/** SaaS租户 `/api/v1/tenants/*` */
 export const tenantsAPI = {
   overview: () => api.get('/tenants'),
   plans: () => api.get('/tenants/plans'),
@@ -737,7 +739,7 @@ export const filesAPI = {
     api.get('/files/storage-profile', { params }),
 };
 
-/** 寮€鍙戣€呯敓鎬?`/api/v1/developer/*` */
+/** 开发者生态 `/api/v1/developer/*` */
 export const developerAPI = {
   overview: () => api.get('/developer'),
   sdkList: () => api.get('/developer/sdk'),
@@ -778,10 +780,7 @@ export const v2rayAPI = {
     api.delete(`/super-admin/v2ray/routing/${id}`),
 };
 
-export * from './ubrain/conversation';
-export * from './ubrain/skill';
-export * from './ubrain/task';
-export * from './ubrain/invitation';
+// ubrain/conversation|skill|task|invitation 已于 2026-09-26 隔离至 _archive（后端无对应端点，@deprecated 死代码）
 export * from './ubrain/sales';
 export * from './founderOps';
 export * from './oauthBindings';

@@ -396,6 +396,17 @@ log_step "Step 6/8: 启动全部服务"
 log_info "启动所有生产服务..."
 docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans 2>&1 | tail -5
 
+# 启动可选服务（n8n, Ollama）
+if [[ "${ENABLE_N8N:-true}" == "true" ]]; then
+    log_info "启动 n8n 工作流引擎..."
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d n8n 2>&1 | tail -3
+fi
+
+if [[ "${ENABLE_OLLAMA:-false}" == "true" ]]; then
+    log_info "启动 Ollama 本地 AI..."
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" --profile ai-local up -d ollama 2>&1 | tail -3
+fi
+
 log_info "等待服务健康检查 (最多 120s)..."
 sleep 5
 
@@ -420,6 +431,17 @@ if curl -sf http://localhost:80/healthz &>/dev/null; then
     log_info "✓ Nginx 健康检查通过"
 else
     log_warn "Nginx 健康检查失败 (可能在启动中)"
+fi
+
+# 等待 n8n
+if [[ "${ENABLE_N8N:-true}" == "true" ]]; then
+    for i in $(seq 1 12); do
+        if curl -sf http://localhost:5678/healthz &>/dev/null; then
+            log_info "✓ n8n 健康检查通过"
+            break
+        fi
+        sleep 5
+    done
 fi
 
 # ============================================================
@@ -516,10 +538,43 @@ echo "    - 定期备份数据库"
 echo ""
 
 # ============================================================
-# Step 9: 云上自动展开（Agency LLM + Hermes 首巡站）
+# Step 9: n8n 工作流导入（可选）
+# ============================================================
+if [[ "${ENABLE_N8N:-true}" == "true" ]]; then
+    log_step "Step 9/9: n8n 工作流配置"
+
+    N8N_WORKFLOWS_DIR="$PROJECT_ROOT/deploy/examples/n8n"
+    if [[ -d "$N8N_WORKFLOWS_DIR" ]]; then
+        log_info "导入 n8n 工作流..."
+        for wf in "$N8N_WORKFLOWS_DIR"/*.json; do
+            if [[ -f "$wf" ]]; then
+                wf_name=$(basename "$wf" .json)
+                log_info "  导入工作流: $wf_name"
+                # 通过 n8n CLI 导入（需要进入容器）
+                docker exec youding-n8n n8n import:workflow --input="/home/node/.n8n/import/$wf_name.json" 2>/dev/null || \
+                    log_warn "  工作流 $wf_name 导入失败（可稍后手动导入）"
+            fi
+        done
+    fi
+fi
+
+# ============================================================
+# Step 10: Ollama 模型拉取（可选）
+# ============================================================
+if [[ "${ENABLE_OLLAMA:-false}" == "true" ]]; then
+    log_step "Step 10/10: Ollama 模型配置"
+
+    OLLAMA_MODEL="${OLLAMA_MODEL:-qwen2.5:7b}"
+    log_info "拉取 Ollama 模型: $OLLAMA_MODEL"
+    docker exec youding-ollama ollama pull "$OLLAMA_MODEL" 2>&1 | tail -5 || \
+        log_warn "Ollama 模型拉取失败（可稍后手动: docker exec youding-ollama ollama pull $OLLAMA_MODEL）"
+fi
+
+# ============================================================
+# Step 11: 云上自动展开（Agency LLM + Hermes 首巡站）
 # ============================================================
 if [[ "${SKIP_POST_DEPLOY:-0}" != "1" ]] && [[ -f "$PROJECT_ROOT/scripts/cloud-post-deploy.sh" ]]; then
-    log_step "Step 9/9: 云上自动展开（Agency LLM + Hermes 自愈齿轮）"
+    log_step "Step 11: 云上自动展开（Agency LLM + Hermes 自愈齿轮）"
     chmod +x "$PROJECT_ROOT/scripts/cloud-post-deploy.sh" 2>/dev/null || true
     export HERMES_AGENCY_AUTO_DOCKER_OLLAMA="${HERMES_AGENCY_AUTO_DOCKER_OLLAMA:-1}"
     bash "$PROJECT_ROOT/scripts/cloud-post-deploy.sh" || log_warn "cloud-post-deploy 部分步骤失败（可稍后手动 bash scripts/cloud-post-deploy.sh）"

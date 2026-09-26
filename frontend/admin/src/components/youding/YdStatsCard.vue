@@ -26,7 +26,7 @@ const props = withDefaults(
     value?: string | number;
     hint?: string;
     compact?: boolean;
-    tone?: 'blue' | 'green' | 'amber' | 'purple' | 'default';
+    tone?: 'blue' | 'green' | 'amber' | 'purple' | 'red' | 'default';
     /** 载入时数字滚动 */
     animate?: boolean;
     /** 点击后跳转的路由路径 */
@@ -72,6 +72,7 @@ const toneColors: Record<string, string> = {
   green: '#10b981',
   amber: '#d97706',
   purple: '#6366f1',
+  red: '#e11d48',
   default: '#0f172a',
 };
 
@@ -91,14 +92,14 @@ const valueStyle = computed(() =>
 }
 .yd-stats-card__label {
   font-size: var(--uj-font-size-sm, 13px);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--uj-text-muted);
 }
 .yd-stats-card__value {
   margin-top: 8px;
   font-family: var(--uj-font-display);
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   line-height: 1.15;
   color: var(--uj-text-secondary, #0f2924);

@@ -1,240 +1,182 @@
 /**
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
+ * 履约队列 · 傻子都行版
+ * 原则：用户只确认；一单一步；状态说人话；专家能力收进「更多」
  */
 <template>
-  <YdPage title="履约队列" subtitle="外贸7步履约生命周期与单证工作室" surface="elevated">
-    <YdSearchBar @search="onSearch" @reset="onReset">
-      <a-input v-model:value="query.search" placeholder="订单号/客户" allow-clear style="width: 180px" />
-      <a-select v-model:value="query.status" placeholder="状态" allow-clear style="width: 130px">
-        <a-select-option value="pending">待付款/待处理</a-select-option>
-        <a-select-option value="deposit_received">定金已核销</a-select-option>
-        <a-select-option value="in_production">生产排产中</a-select-option>
-        <a-select-option value="shipped">已发货/海运中</a-select-option>
-        <a-select-option value="completed">履约结清完成</a-select-option>
-      </a-select>
-      <template #extra>
-        <a-button
-          type="primary"
-          :loading="hermesLoading"
-          :disabled="!items.length"
-          @click="dispatchGoldenPathFulfillment((items[0] as Record<string, unknown>) || undefined)"
-        >
-          <template #icon><ThunderboltOutlined /></template>
-          一键履约 · Hermes
-        </a-button>
-        <a-button type="default" @click="router.push('/client/tasks')">
-          Hermes 任务
-        </a-button>
-        <a-button type="default" @click="goToGoodJobAnnex">
-          <template #icon><LinkOutlined /></template>
-          打开履约工作台
-        </a-button>
-        <YdTableColumnSettings
-          :columns="orderedColumns"
-          :hidden-keys="hiddenColumnKeys"
-          @toggle="toggleColumnVisibility"
-          @move-up="moveColumnUp"
-          @move-down="moveColumnDown"
-          @reset="resetColumnLayout"
-        />
-        <YdTableToolbar
-          :loading="loading"
-          :target-ref="tablePanelRef"
-          show-export
-          @refresh="reload"
-          @export="exportCsv"
-        />
-      </template>
-    </YdSearchBar>
+  <YdPage title="履约队列" subtitle="外贸 7 步：询盘 → 核价 → 形式发票 → 定金 → 生产 → 单证 → 尾款" surface="elevated">
+    <template #actions>
+      <a-button type="primary" size="large" :loading="hermesLoading" @click="dispatchGoldenPathFulfillment(pickTopOrder())">
+        一键推进履约
+      </a-button>
+    </template>
 
-    <YdEmptyState
-      v-if="!loading && !items.length"
-      variant="inquiry"
-      title="暂无履约任务"
-      @action="goInquiries"
-    />
-
-    <div v-else ref="tablePanelRef" class="yd-panel yd-table-panel">
-      <YdDataTable
-        :columns="visibleColumns"
-        :data-source="items"
-        :loading="loading"
-        :pagination="pagination"
-        @page-change="(p) => onPageChange(p.current, p.pageSize)"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'status'">
-            <a-tag :color="getStatusTagColor(record.status)">
-              {{ formatStatusLabel(record.status) }}
-            </a-tag>
-          </template>
-          <template v-else-if="column.key === 'total_amount'">
-            <span class="font-medium">
-              {{ record.currency || 'USD' }} {{ Number(record.total_amount || 0).toLocaleString() }}
-            </span>
-          </template>
-          <template v-else-if="column.key === 'action'">
-            <a-space size="small">
-              <a-button type="link" size="small" @click="openOrderDetail(record)">
-                履约详情
-              </a-button>
-              <a-dropdown>
-                <template #overlay>
-                  <a-menu @click="({ key }) => handleDocumentAction(record, key as string)">
-                    <a-menu-item key="pi">生成形式发票 (PI)</a-menu-item>
-                    <a-menu-item key="ci">生成商业发票 (CI)</a-menu-item>
-                    <a-menu-item key="pl">生成装箱单 (PL)</a-menu-item>
-                    <a-menu-item key="co">生成原产地证 (CO)</a-menu-item>
-                  </a-menu>
-                </template>
-                <a-button type="link" size="small">
-                  单证工作室 <DownOutlined />
-                </a-button>
-              </a-dropdown>
-            </a-space>
-          </template>
-        </template>
-      </YdDataTable>
+    <!-- ① 今日要处理 -->
+    <div class="ff-hero">
+      <div class="ff-hero-text">
+        <div class="ff-eyebrow">今天先处理这些</div>
+        <h2 class="ff-title">{{ summaryHeadline }}</h2>
+        <p class="ff-sub">{{ summarySub }}</p>
+      </div>
+      <div class="ff-stats">
+        <div class="ff-stat">
+          <b>{{ items.length }}</b>
+          <span>在途订单</span>
+        </div>
+        <div class="ff-stat warn">
+          <b>{{ needActionCount }}</b>
+          <span>要你点一下</span>
+        </div>
+        <div class="ff-stat ok">
+          <b>{{ doneCount }}</b>
+          <span>已结清</span>
+        </div>
+      </div>
     </div>
 
-    <!-- 履约跟进与外贸7步操作抽屉 -->
-    <a-drawer v-model:open="drawerOpen" title="外贸7步履约详情与单证套打" width="560">
-      <template v-if="activeOrder">
-        <a-descriptions bordered size="small" :column="2">
-          <a-descriptions-item label="订单号" :span="2">
-            <span class="font-bold text-gray-800">{{ activeOrder.order_number || activeOrder.id }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="当前状态">
-            <a-tag :color="getStatusTagColor(activeOrder.status)">
-              {{ formatStatusLabel(activeOrder.status) }}
-            </a-tag>
-          </a-descriptions-item>
-          <a-descriptions-item label="总金额">
-            {{ activeOrder.currency || 'USD' }} {{ Number(activeOrder.total_amount || 0).toLocaleString() }}
-          </a-descriptions-item>
-          <a-descriptions-item label="贸易术语">
-            {{ activeOrder.incoterms || 'FOB Shenzhen' }}
-          </a-descriptions-item>
-          <a-descriptions-item label="定金状态">
-            {{ activeOrder.deposit_amount ? `${activeOrder.currency || 'USD'} ${activeOrder.deposit_amount}` : '未核销' }}
-          </a-descriptions-item>
-          <a-descriptions-item label="提单号" :span="2">
-            {{ activeOrder.bl_number || activeOrder.tracking_number || '待装船' }}
-          </a-descriptions-item>
-        </a-descriptions>
+    <!-- 筛选（极简） -->
+    <div class="ff-filter">
+      <a-input
+        v-model:value="query.search"
+        placeholder="搜订单号或客户"
+        allow-clear
+        size="large"
+        style="max-width: 280px"
+        @pressEnter="onSearch"
+      />
+      <a-select
+        v-model:value="query.status"
+        placeholder="全部阶段"
+        allow-clear
+        size="large"
+        style="width: 180px"
+        @change="onSearch"
+      >
+        <a-select-option value="pending">待付款 / 待处理</a-select-option>
+        <a-select-option value="deposit_received">定金已收</a-select-option>
+        <a-select-option value="in_production">生产中</a-select-option>
+        <a-select-option value="shipped">已出运</a-select-option>
+        <a-select-option value="completed">已结清</a-select-option>
+      </a-select>
+      <a-button size="large" @click="onReset">清空</a-button>
+      <a-button size="large" :loading="loading" @click="reload">刷新</a-button>
+      <span class="ff-hint">不懂状态？看每条右边的色点说明</span>
+    </div>
 
-        <a-divider style="margin: 16px 0 12px">外贸7步履约流转</a-divider>
-
-        <a-space direction="vertical" style="width: 100%" size="middle">
-          <!-- 步骤 ④：定金核销 -->
-          <div class="p-3 bg-gray-50 rounded border border-gray-200">
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-semibold text-sm">④ 阶段：定金核销 (Verify Deposit)</span>
-              <a-tag v-if="['deposit_received', 'in_production', 'shipped', 'completed'].includes(String(activeOrder.status))" color="success">
-                已核销
-              </a-tag>
+    <!-- ② 订单卡列表 -->
+    <a-spin :spinning="loading">
+      <div v-if="!items.length" class="ff-empty">
+        <YdEmptyState description="还没有履约订单。先在询盘里成单，或点「一键推进履约」试跑。" />
+      </div>
+      <div v-else class="ff-list">
+        <article v-for="(row, idx) in items" :key="String(row.id || idx)" class="ff-card">
+          <div class="ff-card-main">
+            <div class="ff-card-top">
+              <div class="ff-order-no">{{ row.order_number || row.id || '订单' }}</div>
+              <span class="ff-badge" :class="statusLevel(row.status)">{{ formatStatusLabel(row.status) }}</span>
             </div>
-            <p class="text-xs text-gray-500 mb-2">核验买家支付定金银行水单 (T/T SWIFT MT103)，确认后转入生产排期。</p>
-            <div class="flex gap-2 items-center mb-2">
-              <a-input v-model:value="verifyForm.deposit_ref" placeholder="输入真实 SWIFT/银行流水号 (选填)" size="small" style="width: 260px" />
-              <a-button
-                type="primary"
-                size="small"
-                :loading="actionLoading === 'deposit'"
-                :disabled="['deposit_received', 'in_production', 'shipped', 'completed'].includes(String(activeOrder.status))"
-                @click="submitVerifyDeposit"
-              >
-                核销 30% 定金
-              </a-button>
+            <div class="ff-card-meta">
+              <span>{{ row.customer_name || row.buyer_name || '客户未填' }}</span>
+              <span class="ff-dot">·</span>
+              <span class="ff-money">{{ formatMoney(row.total_amount) }}</span>
+              <span class="ff-dot">·</span>
+              <span class="ff-muted">{{ formatDate(row.created_at) }}</span>
             </div>
+            <div class="ff-steps" :aria-label="'进度 ' + progressLabel(row)">
+              <span v-for="(st, si) in stepList" :key="st.key" class="ff-step" :class="stepClass(row, si)">
+                <i></i>{{ st.label }}
+              </span>
+            </div>
+            <p class="ff-next">{{ nextHint(row) }}</p>
           </div>
-
-          <!-- 步骤 ⑤：工厂排产 -->
-          <div class="p-3 bg-gray-50 rounded border border-gray-200">
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-semibold text-sm">⑤ 阶段：生产排期与跟单 (Production)</span>
-              <a-tag v-if="['in_production', 'shipped', 'completed'].includes(String(activeOrder.status))" color="processing">
-                已排产
-              </a-tag>
-            </div>
-            <p class="text-xs text-gray-500 mb-2">通知工厂启动大货生产并设定预计出货交期。</p>
-            <a-button
-              type="primary"
-              size="small"
-              :loading="actionLoading === 'production'"
-              :disabled="!['deposit_received', 'confirmed'].includes(String(activeOrder.status))"
-              @click="submitStartProduction"
-            >
-              启动大货生产排期
+          <div class="ff-card-actions">
+            <a-button type="primary" size="large" :loading="hermesLoading" @click="dispatchGoldenPathFulfillment(row)">
+              下一步
             </a-button>
+            <a-button size="large" @click="openOrderDetail(row)">看详情</a-button>
+            <a-dropdown>
+              <a-button size="large">更多</a-button>
+              <template #overlay>
+                <a-menu @click="({ key }: any) => onMore(key as string, row)">
+                  <a-menu-item key="pi">生成形式发票</a-menu-item>
+                  <a-menu-item key="pl">装箱单</a-menu-item>
+                  <a-menu-item key="co">原产地证草案</a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
           </div>
+        </article>
+      </div>
+    </a-spin>
 
-          <!-- 步骤 ⑥：发货装箱与提单 -->
-          <div class="p-3 bg-gray-50 rounded border border-gray-200">
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-semibold text-sm">⑥ 阶段：发运装船与提单绑定 (Dispatch)</span>
-              <a-tag v-if="['shipped', 'completed'].includes(String(activeOrder.status))" color="cyan">
-                已发货
-              </a-tag>
-            </div>
-            <p class="text-xs text-gray-500 mb-2">绑定集装箱柜号与正本海运提单 (B/L) 号码。</p>
-            <div class="grid grid-cols-2 gap-2 mb-2">
-              <a-input v-model:value="verifyForm.bl_number" placeholder="海运提单号 (如 COSU632891)" size="small" />
-              <a-input v-model:value="verifyForm.container_no" placeholder="集装箱号 (如 CSXU882319)" size="small" />
-            </div>
-            <a-button
-              type="primary"
-              size="small"
-              :loading="actionLoading === 'dispatch'"
-              :disabled="!['in_production', 'deposit_received'].includes(String(activeOrder.status))"
-              @click="submitDispatch"
-            >
-              签发海运提单与出运
-            </a-button>
-          </div>
-
-          <!-- 步骤 ⑦：尾款与结清 -->
-          <div class="p-3 bg-gray-50 rounded border border-gray-200">
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-semibold text-sm">⑦ 阶段：尾款核销与全链路闭环 (Settle)</span>
-              <a-tag v-if="activeOrder.status === 'completed'" color="green">已结清完成</a-tag>
-            </div>
-            <p class="text-xs text-gray-500 mb-2">收回 70% 见提单副本尾款，全单履约交付完成。</p>
-            <div class="flex gap-2 items-center mb-2">
-              <a-input v-model:value="verifyForm.settle_ref" placeholder="尾款银行流水号 (选填)" size="small" style="width: 260px" />
-              <a-button
-                type="primary"
-                size="small"
-                :loading="actionLoading === 'settle'"
-                :disabled="String(activeOrder.status) !== 'shipped'"
-                @click="submitSettleBalance"
-              >
-                核销尾款并结清全单
-              </a-button>
-            </div>
-          </div>
-        </a-space>
-
-        <!-- 单证预览与套打卡片 -->
-        <a-divider style="margin: 16px 0 12px">外贸单证套打</a-divider>
-        <div class="flex flex-wrap gap-2 mb-3">
-          <a-button size="small" :loading="docLoading === 'pi'" @click="fetchOrderDoc('pi')">形式发票 (PI)</a-button>
-          <a-button size="small" :loading="docLoading === 'ci'" @click="fetchOrderDoc('ci')">商业发票 (CI)</a-button>
-          <a-button size="small" :loading="docLoading === 'pl'" @click="fetchOrderDoc('packing-list')">装箱单 (PL)</a-button>
-          <a-button size="small" :loading="docLoading === 'co'" @click="fetchOrderDoc('certificate-of-origin')">原产地证 (CO)</a-button>
+    <!-- ③ 详情 / 单证（浮层，仍只留主按钮） -->
+    <a-drawer
+      v-model:open="drawerOpen"
+      :width="560"
+      :title="activeOrder?.order_number || '订单详情'"
+      placement="right"
+    >
+      <div v-if="activeOrder" class="ff-drawer">
+        <div class="ff-kv">
+          <div><span>客户</span><b>{{ (activeOrder as any).customer_name || '—' }}</b></div>
+          <div><span>金额</span><b>{{ formatMoney((activeOrder as any).total_amount) }}</b></div>
+          <div><span>阶段</span><b>{{ formatStatusLabel(activeOrder.status) }}</b></div>
+          <div><span>提单/运单</span><b>{{ (activeOrder as any).tracking_number || '—' }}</b></div>
         </div>
 
-        <div v-if="currentDocResult" class="p-3 bg-blue-50 border border-blue-200 rounded text-xs">
-          <div class="flex justify-between items-center mb-2">
-            <span class="font-bold text-blue-900">{{ currentDocTitle }}</span>
-            <a-space size="small">
-              <a-button size="small" type="link" @click="exportDocFile('html')">导出打印 HTML</a-button>
-              <a-button size="small" type="link" @click="exportDocFile('docx')">导出 Word</a-button>
-            </a-space>
-          </div>
-          <pre class="bg-white p-2 rounded border border-blue-100 text-gray-700 max-h-48 overflow-y-auto font-mono text-xs">{{ currentDocFormatted }}</pre>
+        <a-alert type="info" show-icon class="ff-alert" message="下一步做什么" :description="nextHint(activeOrder)" />
+
+        <div class="ff-primary-row">
+          <a-button
+            type="primary"
+            size="large"
+            block
+            :loading="hermesLoading"
+            @click="dispatchGoldenPathFulfillment(activeOrder)"
+          >
+            推进这一步（Hermes）
+          </a-button>
         </div>
-      </template>
+
+        <a-divider orientation="left" plain>单证（要出再点）</a-divider>
+        <div class="ff-docs">
+          <a-button size="large" :loading="docLoading==='pi'" @click="handleDocumentAction(activeOrder, 'pi')">形式发票 PI</a-button>
+          <a-button size="large" :loading="docLoading==='packing-list'" @click="handleDocumentAction(activeOrder, 'pl')">装箱单</a-button>
+          <a-button size="large" :loading="docLoading==='certificate-of-origin'" @click="handleDocumentAction(activeOrder, 'co')">原产地证草案</a-button>
+        </div>
+
+        <div v-if="currentDocResult" class="ff-doc-result">
+          <div class="ff-doc-title">{{ currentDocTitle }}</div>
+          <pre class="code-block">{{ currentDocFormatted }}</pre>
+          <div class="ff-doc-actions">
+            <a-button @click="exportDocFile('html')">导出网页</a-button>
+            <a-button @click="exportDocFile('docx')">导出 Word</a-button>
+          </div>
+        </div>
+
+        <a-divider orientation="left" plain>状态推进（黄金单）</a-divider>
+        <div class="ff-verify golden-actions">
+          <a-button size="large" :loading="actionLoading==='deposit'" @click="markDeposit">1 · 记定金已收</a-button>
+          <a-button size="large" :loading="actionLoading==='ship'" @click="markShipped">2 · 登记已发货</a-button>
+          <a-button size="large" :loading="actionLoading==='balance'" @click="markBalance">3 · 记尾款已收</a-button>
+          <a-button type="primary" size="large" :loading="actionLoading==='win'" @click="markWon">4 · 结案成单</a-button>
+        </div>
+
+        <a-divider orientation="left" plain>核销登记（可选）</a-divider>
+        <div class="ff-verify">
+          <a-input v-model:value="verifyForm.deposit_ref" placeholder="定金水单号（可选）" />
+          <a-input-number
+            v-model:value="verifyForm.deposit_ref_amount"
+            placeholder="定金金额（默认 30%）"
+            :min="0"
+            style="width: 100%"
+          />
+          <a-input v-model:value="verifyForm.bl_number" placeholder="提单号" />
+          <a-input v-model:value="verifyForm.container_no" placeholder="柜号" />
+          <a-input v-model:value="verifyForm.settle_ref" placeholder="尾款凭证号" />
+          <a-button size="large" :loading="actionLoading==='verify'" @click="verifyFulfillment">保存核销信息</a-button>
+        </div>
+      </div>
     </a-drawer>
   </YdPage>
 </template>
@@ -243,24 +185,13 @@
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import { DownOutlined, LinkOutlined, ThunderboltOutlined } from '@ant-design/icons-vue';
 
-import {
-  YdDataTable,
-  YdEmptyState,
-  YdPage,
-  YdSearchBar,
-  YdTableColumnSettings,
-  YdTableToolbar,
-} from '@/components/youding';
+import { YdEmptyState, YdPage } from '@/components/youding';
 import { useYoudingTable } from '@/composables/useYoudingTableBridge';
 import { apiGet, apiPost } from '@/utils/api';
-import { downloadTableCsv } from '@/utils/exportCsv';
 import { adaptPaginatedResponse } from '@/utils/ydTableUtils';
 
 const router = useRouter();
-const tablePanelRef = ref<HTMLElement | null>(null);
-
 const drawerOpen = ref(false);
 const activeOrder = ref<Record<string, unknown> | null>(null);
 const actionLoading = ref('');
@@ -268,8 +199,11 @@ const docLoading = ref('');
 const currentDocTitle = ref('');
 const currentDocResult = ref<Record<string, unknown> | null>(null);
 const currentDocType = ref('');
+const hermesLoading = ref(false);
+
 const verifyForm = ref({
   deposit_ref: '',
+  deposit_ref_amount: undefined as number | undefined,
   bl_number: '',
   container_no: '',
   settle_ref: '',
@@ -284,35 +218,50 @@ const baseColumns = [
   { key: 'action', title: '操作', align: 'center', width: 220 },
 ];
 
-const {
-  loading,
-  items,
-  pagination,
-  orderedColumns,
-  visibleColumns,
-  hiddenColumnKeys,
-  query,
-  search,
-  reset,
-  reload,
-  onPageChange,
-  toggleColumnVisibility,
-  moveColumnUp,
-  moveColumnDown,
-  resetColumnLayout,
-} = useYoudingTable<Record<string, unknown>, { search?: string; status?: string }>({
+const { loading, items, query, search, reset, reload } = useYoudingTable<
+  Record<string, unknown>,
+  { search?: string; status?: string }
+>({
   columnOrderKey: 'client-fulfillment-queue-cols-v2',
   columns: baseColumns,
   fetcher: async (q) => {
     const raw = await apiGet<Record<string, unknown>[]>('/orders', {
-      skip: ((q.page || 1) - 1) * (q.pageSize || 10),
-      limit: q.pageSize || 10,
+      skip: ((q.page || 1) - 1) * (q.pageSize || 50),
+      limit: q.pageSize || 50,
       status: q.status || undefined,
     });
     const { rows, total } = adaptPaginatedResponse<Record<string, unknown>>(raw);
     return { items: rows, total };
   },
 });
+
+const doneCount = computed(
+  () => items.value.filter((r) => String(r.status || '').toLowerCase() === 'completed').length,
+);
+const needActionCount = computed(
+  () =>
+    items.value.filter((r) => {
+      const s = String(r.status || '').toLowerCase();
+      return s === 'pending' || s === 'deposit_received';
+    }).length,
+);
+const summaryHeadline = computed(() => {
+  if (needActionCount.value > 0) return `有 ${needActionCount.value} 单等你点「下一步」`;
+  if (items.value.length === 0) return '暂无履约订单';
+  return '履约都在正常推进';
+});
+const summarySub = computed(() =>
+  needActionCount.value > 0
+    ? '点「下一步」系统会自动推：核价、形式发票、单证、状态。'
+    : '出问题会标红；正常会标绿。',
+);
+
+function pickTopOrder(): Record<string, unknown> | undefined {
+  return items.value.find((r) => {
+    const s = String(r.status || '').toLowerCase();
+    return s === 'pending' || s === 'deposit_received';
+  }) || items.value[0];
+}
 
 function onSearch() {
   void search();
@@ -324,17 +273,88 @@ function onReset() {
   void reset();
 }
 
-function goInquiries() {
-  router.push('/client/inquiries');
+function formatMoney(v: unknown): string {
+  const n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) return '金额待填';
+  return `¥ ${n.toLocaleString()}`;
 }
 
-function goToGoodJobAnnex() {
-  router.push('/client/tasks');
+function formatDate(v: unknown): string {
+  if (!v) return '';
+  const d = new Date(String(v));
+  if (Number.isNaN(d.getTime())) return String(v).slice(0, 10);
+  return d.toLocaleDateString();
 }
 
-/** GP-A：任务面走 Hermes（功能域无特权；交互列表仍走同步 API） */
-const hermesLoading = ref(false);
-const lastHermesPlan = ref<{ plan_id?: string; graph_source?: string; node_count?: number } | null>(null);
+function formatStatusLabel(status: unknown): string {
+  const s = String(status || '').toLowerCase();
+  const map: Record<string, string> = {
+    pending: '待处理',
+    deposit_received: '定金已收',
+    in_production: '生产中',
+    shipped: '已出运',
+    completed: '已结清',
+    cancelled: '已取消',
+  };
+  return map[s] || '待确认';
+}
+
+/** 绿=正常 黄=要注意 红=出问题 灰=还没开/未知 */
+function statusLevel(status: unknown): string {
+  const s = String(status || '').toLowerCase();
+  if (s === 'completed') return 'ok';
+  if (s === 'shipped' || s === 'in_production') return 'info';
+  if (s === 'deposit_received') return 'warn';
+  if (s === 'cancelled') return 'bad';
+  return 'warn';
+}
+
+function nextHint(row: Record<string, unknown> | null): string {
+  const s = String(row?.status || '').toLowerCase();
+  if (s === 'pending') return '下一步：确认定金或收款，然后生成形式发票。';
+  if (s === 'deposit_received') return '下一步：排产跟进；需要时可出装箱单。';
+  if (s === 'in_production') return '下一步：盯交期；出运前补齐提单与装箱单。';
+  if (s === 'shipped') return '下一步：登记尾款，做结清。';
+  if (s === 'completed') return '这单已结清，可点「结案成单」写入经营结果。';
+  return '点「下一步」让系统自动推进当前阶段。';
+}
+
+const stepList = [
+  { key: 'deposit', label: '定金' },
+  { key: 'ship', label: '出运' },
+  { key: 'balance', label: '尾款' },
+  { key: 'win', label: '成单' },
+];
+
+function stepClass(row: Record<string, unknown> | null, idx: number): string {
+  const s = String(row?.status || '').toLowerCase();
+  const map: Record<string, number> = {
+    pending: 0,
+    deposit_received: 1,
+    in_production: 1,
+    shipped: 2,
+    completed: 3,
+    cancelled: -1,
+  };
+  const stage = map[s] ?? 0;
+  if (s === 'cancelled') return 'is-bad';
+  if (idx < stage) return 'is-done';
+  if (idx === stage) return 'is-active';
+  return '';
+}
+
+function progressLabel(row: Record<string, unknown> | null): string {
+  const s = String(row?.status || '').toLowerCase();
+  const map: Record<string, string> = {
+    pending: '1/4 待定金',
+    deposit_received: '2/4 已定金',
+    in_production: '2/4 生产中',
+    shipped: '3/4 已出运',
+    completed: '4/4 已结清',
+    cancelled: '已取消',
+  };
+  return map[s] || '1/4';
+}
 
 async function dispatchGoldenPathFulfillment(record?: Record<string, unknown>) {
   hermesLoading.value = true;
@@ -345,8 +365,6 @@ async function dispatchGoldenPathFulfillment(record?: Record<string, unknown>) {
       plan_id?: string;
       graph_source?: string;
       node_count?: number;
-      dispatched?: boolean;
-      node_tasks?: string[];
     }>('/orchestration/golden-path/fulfillment', {
       intent: '履约推进与形式发票',
       payload: {
@@ -355,59 +373,21 @@ async function dispatchGoldenPathFulfillment(record?: Record<string, unknown>) {
           ? `订单 ${orderNo} 履约推进与 PI`
           : orderId
             ? `订单 ${orderId} 履约推进与 PI`
-            : '履约推进与 PI（请在列表行操作以带上订单上下文）',
+            : '履约推进与 PI',
         product: String(record?.product || ''),
       },
       channel: 'web',
       context: { golden_path: 'GP-A', plane: 'task', order_id: orderId || undefined },
       auto_dispatch: true,
     });
-    lastHermesPlan.value = {
-      plan_id: res?.plan_id,
-      graph_source: res?.graph_source,
-      node_count: res?.node_count,
-    };
     const planId = res?.plan_id || '';
-    message.success({
-      content: `已提交 Hermes 履约任务（${res?.graph_source || 'L1'}，节点 ${res?.node_count ?? '-'}）· plan ${planId}`,
-      duration: 6,
-    });
-    if (planId) {
-      // SEAM-P0：任务平面闭环 → 优丁 Hermes 任务中心（完整体，非附属台）
-      void router.push({ path: '/client/tasks', query: { plan: planId } });
-    }
+    message.success(`已提交：系统开始推进履约${planId ? `（任务 ${planId}）` : ''}`);
+    if (planId) void router.push({ path: '/client/tasks', query: { plan: planId } });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    message.error(`Hermes 履约任务提交失败：${msg}`);
+    message.error(e instanceof Error ? e.message : '提交失败，请重试');
   } finally {
     hermesLoading.value = false;
   }
-}
-
-function formatStatusLabel(status: unknown): string {
-  const s = String(status || '').toLowerCase();
-  const map: Record<string, string> = {
-    pending: '待付款/待处理',
-    deposit_received: '定金已核销',
-    in_production: '生产排产中',
-    shipped: '已出运/提单已签发',
-    completed: '7步履约完成',
-    cancelled: '已取消',
-  };
-  return map[s] || s || '未知';
-}
-
-function getStatusTagColor(status: unknown): string {
-  const s = String(status || '').toLowerCase();
-  const map: Record<string, string> = {
-    pending: 'orange',
-    deposit_received: 'blue',
-    in_production: 'purple',
-    shipped: 'cyan',
-    completed: 'green',
-    cancelled: 'default',
-  };
-  return map[s] || 'default';
 }
 
 async function openOrderDetail(record: Record<string, unknown>) {
@@ -419,15 +399,12 @@ async function openOrderDetail(record: Record<string, unknown>) {
     const data = (full as { data?: Record<string, unknown> })?.data || full;
     activeOrder.value = { ...record, ...data };
   } catch {
-    // 保留列表传入的基础数据
+    /* 用列表数据 */
   }
 }
 
 async function handleDocumentAction(record: Record<string, unknown>, docType: string) {
-  // 任务面：PI 同步走 Hermes GP-A（功能域无特权驱动）；单证预览仍走交互 API
-  if (docType === 'pi') {
-    void dispatchGoldenPathFulfillment(record);
-  }
+  if (docType === 'pi') void dispatchGoldenPathFulfillment(record);
   await openOrderDetail(record);
   await fetchOrderDoc(docType === 'co' ? 'certificate-of-origin' : docType === 'pl' ? 'packing-list' : docType);
 }
@@ -441,8 +418,8 @@ async function fetchOrderDoc(endpointDoc: string) {
     const res = await apiPost<Record<string, unknown>>(`/orders/${id}/documents/${endpointDoc}`);
     const data = (res as { data?: Record<string, unknown> })?.data || res;
     currentDocResult.value = data;
-    currentDocTitle.value = String(data.doc_type || endpointDoc.toUpperCase()) + ' 单据数据';
-    message.success(`${currentDocTitle.value} 生成成功`);
+    currentDocTitle.value = `${String(data.doc_type || endpointDoc.toUpperCase())} 单据`;
+    message.success(`${currentDocTitle.value} 已生成`);
   } catch (err: unknown) {
     message.error(err instanceof Error ? err.message : '单据生成失败');
   } finally {
@@ -450,109 +427,417 @@ async function fetchOrderDoc(endpointDoc: string) {
   }
 }
 
-const currentDocFormatted = computed(() => {
-  if (!currentDocResult.value) return '';
-  return JSON.stringify(currentDocResult.value, null, 2);
-});
+const currentDocFormatted = computed(() =>
+  currentDocResult.value ? JSON.stringify(currentDocResult.value, null, 2) : '',
+);
 
 function exportDocFile(format: 'html' | 'docx') {
   if (!activeOrder.value?.id) return;
   const id = String(activeOrder.value.id);
-  const typeKey = currentDocType.value === 'packing-list' ? 'pl' : currentDocType.value === 'certificate-of-origin' ? 'co' : (currentDocType.value || 'pi');
+  const typeKey =
+    currentDocType.value === 'packing-list'
+      ? 'pl'
+      : currentDocType.value === 'certificate-of-origin'
+        ? 'co'
+        : currentDocType.value || 'pi';
   window.open(`/api/v1/orders/${id}/documents/${typeKey}/export?format=${format}`, '_blank');
 }
 
-async function submitVerifyDeposit() {
+async function verifyFulfillment() {
   if (!activeOrder.value?.id) return;
+  actionLoading.value = 'verify';
+  try {
+    await apiPost(`/orders/${String(activeOrder.value.id)}/fulfillment/verify`, {
+      ...verifyForm.value,
+    });
+    message.success('已登记');
+    void reload();
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : '登记失败');
+  } finally {
+    actionLoading.value = '';
+  }
+}
+
+
+function inquiryIdOf(row: Record<string, unknown> | null): string {
+  return String(row?.inquiry_id || row?.lead_id || '');
+}
+
+function orderIdOf(row: Record<string, unknown> | null): string {
+  return String(row?.id || '');
+}
+
+async function markDeposit() {
+  const orderId = orderIdOf(activeOrder.value);
+  const inquiryId = inquiryIdOf(activeOrder.value);
+  const total = Number((activeOrder.value as any)?.total_amount || 0);
+  const depositAmount = Number(verifyForm.value.deposit_ref_amount || 0) || (total ? round2(total * 0.3) : 0);
+  if (!orderId) return message.warning('缺少订单编号');
   actionLoading.value = 'deposit';
   try {
-    await apiPost(`/orders/${activeOrder.value.id}/verify-deposit`, {
-      deposit_ratio: 30,
-      payment_reference: verifyForm.value.deposit_ref || `TT-DEP-${Date.now()}`,
-    });
-    message.success('定金核销成功，已更新为 deposit_received');
-    await openOrderDetail(activeOrder.value);
+    if (orderId) {
+      await apiPost(`/orders/${orderId}/verify-deposit`, {
+        deposit_amount: depositAmount,
+        payment_reference: verifyForm.value.deposit_ref || undefined,
+      });
+    }
+    if (inquiryId) {
+      await apiPost(`/acquisition/ops-card/${inquiryId}/payment`, {
+        deposit_amount: depositAmount,
+        deposit_paid_at: new Date().toISOString(),
+        note: verifyForm.value.deposit_ref || '定金已收（制单后履约推进）',
+      });
+    }
+    message.success('已记定金 → 进入生产/备货');
     await reload();
-  } catch (err: unknown) {
-    message.error(err instanceof Error ? err.message : '定金核销失败');
+    if (activeOrder.value?.id) await openOrderDetail(activeOrder.value as Record<string, unknown>);
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : '定金登记失败');
   } finally {
     actionLoading.value = '';
   }
 }
 
-async function submitStartProduction() {
-  if (!activeOrder.value?.id) return;
-  actionLoading.value = 'production';
+async function markShipped() {
+  const orderId = orderIdOf(activeOrder.value);
+  const inquiryId = inquiryIdOf(activeOrder.value);
+  if (!orderId) return message.warning('缺少订单编号');
+  actionLoading.value = 'ship';
   try {
-    const dateStr = new Date(Date.now() + 25 * 86400000).toISOString().slice(0, 10);
-    await apiPost(`/orders/${activeOrder.value.id}/start-production`, {
-      estimated_delivery: dateStr,
-      production_notes: '工厂已确认原料备齐，安排在1号线生产',
-    });
-    message.success('生产排产已启动，已更新为 in_production');
-    await openOrderDetail(activeOrder.value);
+    if (orderId) {
+      await apiPost(`/orders/${orderId}/dispatch`, {
+        bl_number: verifyForm.value.bl_number || undefined,
+        container_no: verifyForm.value.container_no || undefined,
+        tracking_number: verifyForm.value.bl_number || undefined,
+      });
+    }
+    if (inquiryId) {
+      await apiPost(`/acquisition/ops-card/${inquiryId}/logistics`, {
+        bl_no: verifyForm.value.bl_number || '',
+        container_no: verifyForm.value.container_no || '',
+        milestone: 'shipped',
+      });
+    }
+    message.success('已登记发货');
     await reload();
-  } catch (err: unknown) {
-    message.error(err instanceof Error ? err.message : '生产排期失败');
+    if (activeOrder.value?.id) await openOrderDetail(activeOrder.value as Record<string, unknown>);
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : '发货登记失败');
   } finally {
     actionLoading.value = '';
   }
 }
 
-async function submitDispatch() {
-  if (!activeOrder.value?.id) return;
-  actionLoading.value = 'dispatch';
+async function markBalance() {
+  const orderId = orderIdOf(activeOrder.value);
+  const inquiryId = inquiryIdOf(activeOrder.value);
+  if (!orderId) return message.warning('缺少订单编号');
+  actionLoading.value = 'balance';
   try {
-    await apiPost(`/orders/${activeOrder.value.id}/dispatch`, {
-      bl_number: verifyForm.value.bl_number || `COSCO-${Date.now().toString().slice(-8)}`,
-      container_no: verifyForm.value.container_no || `CSXU${Date.now().toString().slice(-7)}`,
-      carrier: 'COSCO SHIPPING',
-      gross_weight: 18500.0,
-      volume: 48.5,
-    });
-    message.success('出运与海运提单已绑定，已更新为 shipped');
-    await openOrderDetail(activeOrder.value);
+    if (orderId) {
+      await apiPost(`/orders/${orderId}/settle-balance`, {
+        payment_reference: verifyForm.value.settle_ref || undefined,
+      });
+    }
+    if (inquiryId) {
+      await apiPost(`/acquisition/ops-card/${inquiryId}/payment`, {
+        balance_status: 'paid',
+        note: verifyForm.value.settle_ref || '尾款已收',
+      });
+    }
+    message.success('已记尾款 → 可结案成单');
     await reload();
-  } catch (err: unknown) {
-    message.error(err instanceof Error ? err.message : '出运签发失败');
+    if (activeOrder.value?.id) await openOrderDetail(activeOrder.value as Record<string, unknown>);
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : '尾款登记失败');
   } finally {
     actionLoading.value = '';
   }
 }
 
-async function submitSettleBalance() {
-  if (!activeOrder.value?.id) return;
-  actionLoading.value = 'settle';
+async function markWon() {
+  const inquiryId = inquiryIdOf(activeOrder.value) || orderIdOf(activeOrder.value);
+  const orderId = orderIdOf(activeOrder.value);
+  if (!inquiryId && !orderId) return message.warning('缺少订单编号');
+  actionLoading.value = 'win';
   try {
-    await apiPost(`/orders/${activeOrder.value.id}/settle-balance`, {
-      payment_reference: verifyForm.value.settle_ref || `TT-FINAL-${Date.now()}`,
+    const key = inquiryId || orderId;
+    await apiPost(`/acquisition/ops-card/${key}/win`, {
+      amount: Number((activeOrder.value as any)?.total_amount || 0),
+      currency: (activeOrder.value as any)?.currency || 'USD',
+      note: '黄金单闭环成单',
+      reasons: ['报价清晰', '响应快'],
     });
-    message.success('尾款核销结清，订单7步全链路履约完成！');
-    await openOrderDetail(activeOrder.value);
-    await reload();
-  } catch (err: unknown) {
-    message.error(err instanceof Error ? err.message : '尾款核销失败');
+    if (orderId) {
+      try {
+        await apiPost(`/orders/${orderId}/confirm-receipt`, {});
+      } catch {
+        /* 订单侧已结清时忽略 */
+      }
+    }
+    message.success('已结案成单 → 经营概览可见');
+    void router.push('/client/dashboard');
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : '结案失败');
   } finally {
     actionLoading.value = '';
   }
 }
 
-function exportCsv() {
-  if (!items.value.length) {
-    message.warning('暂无数据可导出');
-    return;
-  }
-  downloadTableCsv(
-    `fulfillment_queue_${new Date().toISOString().slice(0, 10)}.csv`,
-    ['订单号', '金额', '状态', '提单号', '创建时间'],
-    items.value.map((r) => [
-      String(r.order_number ?? r.id ?? ''),
-      String(r.total_amount ?? ''),
-      String(r.status ?? ''),
-      String(r.tracking_number ?? ''),
-      String(r.created_at ?? ''),
-    ]),
-  );
-  message.success(`已导出 ${items.value.length} 条`);
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+function onMore(key: string, row: Record<string, unknown>) {
+  void handleDocumentAction(row, key);
 }
 </script>
+
+<style scoped>
+.ff-hero {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e8f5f0, #f7fbfa 55%, #eef7f3);
+  border: 1px solid #e3efea;
+  margin-bottom: 14px;
+}
+.ff-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: #2f6a5f;
+  margin-bottom: 6px;
+}
+.ff-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #122622;
+  margin: 0 0 6px;
+}
+.ff-sub {
+  margin: 0;
+  color: #55706b;
+  font-size: 0.9rem;
+}
+.ff-stats {
+  display: flex;
+  gap: 10px;
+}
+.ff-stat {
+  min-width: 96px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #e3efea;
+  text-align: center;
+}
+.ff-stat b {
+  display: block;
+  font-family: var(--font-num, ui-monospace, Consolas, monospace);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #122622;
+}
+.ff-stat span {
+  font-size: 0.75rem;
+  color: #55706b;
+}
+.ff-stat.ok b { color: #24705a; }
+.ff-stat.warn b { color: #8a6212; }
+
+.ff-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.ff-hint {
+  font-size: 12px;
+  color: #7a918d;
+  margin-left: 4px;
+}
+
+.ff-list {
+  display: grid;
+  gap: 10px;
+}
+.ff-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e3efea;
+  box-shadow: 0 1px 2px rgba(31, 74, 66, 0.05);
+}
+.ff-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.ff-order-no {
+  font-family: var(--font-num, ui-monospace, Consolas, monospace);
+  font-weight: 500;
+  color: #122622;
+}
+.ff-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.ff-badge.ok { background: #eaf7f2; color: #24705a; }
+.ff-badge.warn { background: #fef7e6; color: #8a6212; }
+.ff-badge.bad { background: #fdecec; color: #ae3830; }
+.ff-badge.info { background: #eff6fd; color: #2b6295; }
+
+.ff-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #1c322d;
+  margin-bottom: 6px;
+}
+.ff-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.ff-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f3faf7;
+  color: #7a918d;
+}
+.ff-step i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c5d6d1;
+}
+.ff-step.is-done {
+  background: #eaf7f2;
+  color: #24705a;
+}
+.ff-step.is-done i { background: #4a9b8c; }
+.ff-step.is-active {
+  background: #fef7e6;
+  color: #8a6212;
+}
+.ff-step.is-active i { background: #d29b52; }
+.ff-step.is-bad {
+  background: #fdecec;
+  color: #ae3830;
+}
+.ff-step.is-bad i { background: #ae3830; }
+.ff-dot { color: #a9beba; }
+.ff-money { font-family: var(--font-num, ui-monospace, Consolas, monospace); }
+.ff-muted { color: #7a918d; font-size: 0.82rem; }
+.ff-next {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #55706b;
+}
+.ff-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.ff-empty {
+  padding: 32px 12px;
+  text-align: center;
+}
+
+.ff-kv {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.ff-kv > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e3efea;
+  font-size: 0.92rem;
+}
+.ff-kv span { color: #55706b; }
+.ff-kv b { font-weight: 500; color: #122622; }
+
+.ff-alert { margin-bottom: 12px; }
+.ff-primary-row { margin: 12px 0 18px; }
+.ff-docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.ff-doc-result {
+  background: #f7fbfa;
+  border: 1px solid #e3efea;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.ff-doc-title {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #122622;
+}
+.ff-doc-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.ff-verify {
+  display: grid;
+  gap: 8px;
+}
+.code-block {
+  background: #10192a;
+  color: #d7e2ef;
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow: auto;
+  max-height: 240px;
+  font-family: var(--font-num, ui-monospace, Consolas, monospace);
+  font-size: 0.78rem;
+}
+
+/* 按压微反馈（#8） */
+.ff-card-actions .ant-btn,
+.ff-primary-row .ant-btn,
+.ff-docs .ant-btn {
+  transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 160ms ease;
+}
+.ff-card-actions .ant-btn:active,
+.ff-primary-row .ant-btn:active,
+.ff-docs .ant-btn:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 2px 6px rgba(31, 74, 66, 0.12);
+}
+
+@media (max-width: 720px) {
+  .ff-stats { width: 100%; }
+  .ff-stat { flex: 1; }
+  .ff-card-actions { width: 100%; }
+  .ff-card-actions .ant-btn { flex: 1; }
+}
+</style>

@@ -2,7 +2,7 @@
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """SEO Backend 反向代理 — 统一 API 网关
 
-将 seo-backend (Express/Node.js :3000) 的请求代理到 FastAPI，
+将 seo-backend (Express/Node.js :3001) 的请求代理到 FastAPI，
 前端只需访问一个后端地址。
 """
 
@@ -16,7 +16,8 @@ from app.core.response import success_response
 
 router = APIRouter()
 
-SEO_BACKEND_URL = os.getenv("SEO_BACKEND_URL", "http://localhost:3000")
+# 默认 3001：Node SEO 矩阵服务；3000 常被官网 Vite 占用，禁止默认指向官网
+SEO_BACKEND_URL = os.getenv("SEO_BACKEND_URL", "http://localhost:3001")
 
 
 @router.get("/health")

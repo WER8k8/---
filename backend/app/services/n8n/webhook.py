@@ -231,6 +231,31 @@ class N8nWebhookService:
         log.info("内容分发完成回调: workflow=%s, platform=%s, content=%s",
                  workflow_id, platform, content_id)
 
+        # 写回 PublishTask 状态
+        try:
+            from app.core.database import SessionLocal
+            from app.models.models import PublishTask
+            from datetime import datetime, timezone
+            db = SessionLocal()
+            try:
+                task = db.query(PublishTask).filter(PublishTask.id == content_id).first()
+                if task:
+                    task.status = "distributed"
+                    results = getattr(task, "platform_results", None) or {}
+                    if isinstance(results, dict):
+                        results[platform] = {
+                            "url": distribution_url,
+                            "workflow_id": workflow_id,
+                            "distributed_at": datetime.now(timezone.utc).isoformat(),
+                        }
+                        task.platform_results = results
+                    db.commit()
+                    log.info("n8n 回调写回 PublishTask: id=%s → distributed", content_id)
+            finally:
+                db.close()
+        except Exception as exc:
+            log.warning("n8n 回调写回 PublishTask 失败: %s", exc)
+
         # 发布内容发布事件
         if self._event_bus:
             await self._event_bus.emit(Event(

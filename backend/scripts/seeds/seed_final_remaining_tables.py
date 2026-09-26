@@ -42,13 +42,16 @@ def run_seeding():
         print("✓ merchant_im_routing 填充完成")
 
         # 2. paperclip_agents & paperclip_heartbeats
-        comp_id = db.execute(text("SELECT id FROM paperclip_companies LIMIT 1")).scalar()
-        if not comp_id:
+        comp_row = db.execute(text("SELECT id, tenant_id FROM paperclip_companies LIMIT 1")).fetchone()
+        if comp_row:
+            comp_id = comp_row[0]
+        else:
             comp_id = uuid.uuid4()
+            tenant_id = db.execute(text("SELECT id FROM tenants LIMIT 1")).scalar() or "tenant_default"
             db.execute(text("""
-                INSERT INTO paperclip_companies (id, name, created_at, updated_at)
-                VALUES (:id, 'Al-Yamama Building Supply Co.', :now, :now)
-            """), {"id": comp_id, "now": NOW})
+                INSERT INTO paperclip_companies (id, tenant_id, name, mission, status, created_at, updated_at)
+                VALUES (:id, :tid, 'Al-Yamama Building Supply Co.', 'Global B2B procurement automation', 'active', :now, :now)
+            """), {"id": comp_id, "tid": tenant_id, "now": NOW})
 
         agent_id = uuid.uuid4()
         db.execute(text("""

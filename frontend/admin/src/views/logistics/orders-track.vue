@@ -3,89 +3,89 @@
  */
 <template>
 
-  <YdPage title="订单运单回填" subtitle="填写运单号并同步轨迹至订单状态" surface="elevated">
+ <YdPage title="订单运单回填" subtitle="填写运单号并同步轨迹至订单状态" surface="elevated">
 
-    <div ref="tablePanelRef" class="yd-panel yd-table-panel">
+ <div ref="tablePanelRef" class="yd-panel yd-table-panel">
 
-      <div class="panel-head mb-3">
+ <div class="panel-head mb-3">
 
-        <YdTableToolbar
+ <YdTableToolbar
 
-          :loading="loading"
+ :loading="loading"
 
-          :target-ref="tablePanelRef"
+ :target-ref="tablePanelRef"
 
-          :show-export="false"
+ :show-export="false"
 
-          @refresh="load"
+ @refresh="load"
 
-        />
+ />
 
-      </div>
+</div>
 
-      <YdDataTable
+ <YdDataTable
 
-        :columns="cols"
+ :columns="cols"
 
-        :data-source="rows"
+ :data-source="rows"
 
-        :loading="loading"
+ :loading="loading"
 
-        :pagination="false"
+ :pagination="false"
 
-        :table-props="{ size: tableSize, rowKey: 'id' }"
+ :table-props="{ size: tableSize, rowKey: 'id' }"
 
-      >
+ >
 
-        <template #bodyCell="{ column, record }">
+ <template #bodyCell="{ column, record }">
 
-          <template v-if="column.key === 'tracking'">
+ <template v-if="column.key === 'tracking'">
 
-            <a-input
+ <a-input
 
-              v-model:value="record._tracking"
+ v-model:value="record._tracking"
 
-              size="small"
+ size="small"
 
-              placeholder="运单号"
+ placeholder="运单号"
 
-              style="width: 140px"
+ style="width: 140px"
 
-            />
+ />
 
-          </template>
+</template>
 
-          <template v-if="column.key === 'actions'">
+ <template v-if="column.key === 'actions'">
 
-            <a-space>
+ <a-space>
 
-              <a-button size="small" type="primary" @click="saveTracking(record)">保存</a-button>
+ <a-button size="small" type="primary" @click="saveTracking(record)">保存</a-button>
 
-              <a-button
+ <a-button
 
-                size="small"
+ size="small"
 
-                :disabled="!record.tracking_number && !record._tracking"
+ :disabled="!record.tracking_number && !record._tracking"
 
-                @click="syncTracking(record)"
+ @click="syncTracking(record)"
 
-              >
+ >
 
-                同步轨迹
+ 同步轨迹
 
-              </a-button>
+</a-button>
 
-            </a-space>
+</a-space>
 
-          </template>
+</template>
 
-        </template>
+</template>
 
-      </YdDataTable>
+</YdDataTable>
 
-    </div>
+</div>
 
-  </YdPage>
+</YdPage>
 
 </template>
 
@@ -109,15 +109,15 @@ import { apiGet, apiPost, authHeaders } from '@/utils/api'
 
 type Row = {
 
-  id: string
+ id: string
 
-  order_number: string
+ order_number: string
 
-  status: string
+ status: string
 
-  tracking_number?: string
+ tracking_number?: string
 
-  _tracking?: string
+ _tracking?: string
 
 }
 
@@ -137,13 +137,13 @@ const { antTableSize: tableSize } = storeToRefs(ui)
 
 const cols = [
 
-  { title: '订单号', dataIndex: 'order_number', key: 'order_number', width: 140 },
+ { title: '订单号', dataIndex: 'order_number', key: 'order_number', width: 140 },
 
-  { title: '状态', dataIndex: 'status', key: 'status', width: 100 },
+ { title: '状态', dataIndex: 'status', key: 'status', width: 100 },
 
-  { title: '运单号', key: 'tracking', width: 160 },
+ { title: '运单号', key: 'tracking', width: 160 },
 
-  { title: '操作', key: 'actions', width: 180 },
+ { title: '操作', key: 'actions', width: 180 },
 
 ]
 
@@ -151,29 +151,29 @@ const cols = [
 
 async function load() {
 
-  loading.value = true
+ loading.value = true
 
-  try {
+ try {
 
-    const list = (await apiGet('/orders/?limit=50')) as Row[]
+ const list = (await apiGet('/orders/?limit=50')) as Row[]
 
-    rows.value = (Array.isArray(list) ? list : []).map((r) => ({
+ rows.value = (Array.isArray(list) ? list : []).map((r) => ({
 
-      ...r,
+ ...r,
 
-      _tracking: r.tracking_number || '',
+ _tracking: r.tracking_number || '',
 
-    }))
+ }))
 
-  } catch (e: unknown) {
+ } catch (e: unknown) {
 
-    message.error((e as Error)?.message || '加载失败')
+ message.error((e as Error)?.message || '加载失败')
 
-  } finally {
+ } finally {
 
-    loading.value = false
+ loading.value = false
 
-  }
+ }
 
 }
 
@@ -181,39 +181,39 @@ async function load() {
 
 async function saveTracking(record: Row) {
 
-  const num = (record._tracking || '').trim()
+ const num = (record._tracking || '').trim()
 
-  if (!num) {
+ if (!num) {
 
-    message.warning('请填写运单号')
+ message.warning('请填写运单号')
 
-    return
+ return
 
-  }
+ }
 
-  try {
+ try {
 
-    const res = await fetch(`/api/v1/orders/${record.id}/tracking`, {
+ const res = await fetch(`/api/v1/orders/${record.id}/tracking`, {
 
-      method: 'PATCH',
+ method: 'PATCH',
 
-      headers: authHeaders(),
+ headers: authHeaders(),
 
-      body: JSON.stringify({ tracking_number: num }),
+ body: JSON.stringify({ tracking_number: num }),
 
-    })
+ })
 
-    if (!res.ok) throw new Error('patch failed')
+ if (!res.ok) throw new Error('patch failed')
 
-    message.success('运单号已保存')
+ message.success('运单号已保存')
 
-    await load()
+ await load()
 
-  } catch {
+ } catch {
 
-    message.error('保存失败')
+ message.error('保存失败')
 
-  }
+ }
 
 }
 
@@ -221,29 +221,29 @@ async function saveTracking(record: Row) {
 
 async function syncTracking(record: Row) {
 
-  const num = (record._tracking || record.tracking_number || '').trim()
+ const num = (record._tracking || record.tracking_number || '').trim()
 
-  if (!num) {
+ if (!num) {
 
-    message.warning('请先填写运单号')
+ message.warning('请先填写运单号')
 
-    return
+ return
 
-  }
+ }
 
-  try {
+ try {
 
-    await apiPost(`/logistics/orders/${record.id}/sync-tracking`, {})
+ await apiPost(`/logistics/orders/${record.id}/sync-tracking`, {})
 
-    message.success('轨迹已同步')
+ message.success('轨迹已同步')
 
-    await load()
+ await load()
 
-  } catch (e: unknown) {
+ } catch (e: unknown) {
 
-    message.error((e as Error)?.message || '同步失败')
+ message.error((e as Error)?.message || '同步失败')
 
-  }
+ }
 
 }
 
@@ -259,11 +259,11 @@ onMounted(load)
 
 .panel-head {
 
-  display: flex;
+ display: flex;
 
-  justify-content: flex-end;
+ justify-content: flex-end;
 
-  margin-bottom: 8px;
+ margin-bottom: 8px;
 
 }
 

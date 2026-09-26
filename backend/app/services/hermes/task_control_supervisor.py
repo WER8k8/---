@@ -24,9 +24,20 @@ def _validate_dag_topology(nodes: List[TaskNode]) -> None:
     engine = get_engine()
     historical_exp = engine.query("dag_validation", top_k=3)
 
-    if len(nodes) > MAX_DAG_NODES:
+    # 使用历史经验调整节点上限：如果历史上 DAG 校验失败率高，收紧限制
+    effective_max = MAX_DAG_NODES
+    if historical_exp:
+        failure_count = sum(1 for r in historical_exp if not r.get("success", True))
+        if failure_count >= 2:
+            effective_max = max(MAX_DAG_NODES // 2, 20)
+            logger.info(
+                "[DAG Governor] 历史经验显示 DAG 校验失败率较高，收紧节点上限: %d → %d",
+                MAX_DAG_NODES, effective_max,
+            )
+
+    if len(nodes) > effective_max:
         raise ValueError(
-            f"DAG Governor: TaskGraph 超过最大节点数限制 (上限 {MAX_DAG_NODES}，当前 {len(nodes)})"
+            f"DAG Governor: TaskGraph 超过最大节点数限制 (上限 {effective_max}，当前 {len(nodes)})"
         )
 
     node_ids = {n.id for n in nodes}

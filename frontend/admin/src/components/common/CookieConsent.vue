@@ -11,7 +11,7 @@
     >
       <div class="cookie-banner__inner">
         <div class="cookie-banner__text">
-          <h3 class="cookie-banner__title">🍪 我们使用 Cookie</h3>
+          <h3 class="cookie-banner__title"> 我们使用 Cookie</h3>
           <p class="cookie-banner__desc">
             优丁使用 Cookie 提升您的体验(记住登录、个性化设置、流量统计)。
             继续浏览即表示您同意我们的
@@ -103,7 +103,7 @@ function reject() {
 }
 .cookie-banner__title {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0 0 4px;
   color: var(--uj-text, #0f172a);
 }

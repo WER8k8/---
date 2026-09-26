@@ -16,6 +16,7 @@ import hashlib
 import logging
 import os
 import secrets
+import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -93,9 +94,10 @@ def create_email(
     tracking_pixel_id = _make_tracking_id()
     html_with_tracking = _inject_tracking_pixel(html_body, tracking_pixel_id)
     email = EmailOutreach(
+        id=str(uuid.uuid4()),
         idempotency_key=idempotency_key,
-        tenant_id=tenant_id,
-        user_id=user_id,
+        tenant_id=str(tenant_id) if tenant_id else None,
+        user_id=str(user_id) if user_id else None,
         from_email=from_email or settings.RESEND_FROM_EMAIL or settings.FROM_EMAIL or "noreply@youding.pro",
         from_name=from_name,
         to_email=to_email.lower().strip(),
@@ -109,7 +111,7 @@ def create_email(
         sequence_total_steps=sequence_total_steps,
         tracking_pixel_id=tracking_pixel_id,
         tags=tags or [],
-        metadata=metadata or {},
+        outreach_metadata=metadata or {},
         scheduled_at=scheduled_at,
     )
     db.add(email)

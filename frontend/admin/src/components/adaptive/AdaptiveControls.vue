@@ -126,7 +126,7 @@ const quickScenarios = [
   &:disabled { opacity: 0.3; cursor: not-allowed; }
 }
 
-.font-label { font-weight: 700; font-size: 12px; }
+.font-label { font-weight: 500; font-size: 12px; }
 .font-indicator { font-size: 11px; color: var(--uj-text-muted, #728696); margin: 0 4px; min-width: 28px; text-align: center; }
 .persona-btn, .scenario-btn { font-size: 14px; width: 30px; }
 

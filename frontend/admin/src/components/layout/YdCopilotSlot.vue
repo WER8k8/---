@@ -229,7 +229,7 @@ function goAssistant() {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: calc(14px * var(--uj-adaptive-scale, 1));
 }
 
@@ -336,7 +336,7 @@ function goAssistant() {
 
 .quick-title {
   font-size: calc(13px * var(--uj-adaptive-scale, 1));
-  font-weight: 600;
+  font-weight: 500;
   color: #0f172a;
 }
 

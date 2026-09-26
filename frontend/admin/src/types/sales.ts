@@ -176,6 +176,7 @@ export interface EmailTemplate {
   usageCount: number;
   isDefault: boolean;
   color: string;
+  tags?: string[];
   content?: string;
 }
 

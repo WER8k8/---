@@ -137,7 +137,7 @@ const usageHint = computed(() => {
   &__kicker {
     margin: 0;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--uj-brand, #2563eb);
   }
 
@@ -145,7 +145,7 @@ const usageHint = computed(() => {
   &__title {
     margin: 4px 0 0;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
     color: #0f172a;
   }
 
@@ -224,14 +224,14 @@ const usageHint = computed(() => {
   &__tile--ok &__tile-value {
     color: #059669;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 500;
   }
 
   &__tile-label {
     display: block;
     margin-top: 4px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: #334155;
   }
 

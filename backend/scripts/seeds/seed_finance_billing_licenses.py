@@ -253,30 +253,38 @@ def run_seeding() -> None:
         print("✓ payment_ops_audit, payment_compensation_tasks 填充完成")
 
         # 9. licenses, license_codes, license_orders
-        lic_code_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO license_codes (id, code, plan_type, user_id, status, created_at)
-            VALUES (:id, 'YD-PRO-2026-SAAS-KEY', 'enterprise', :uid, 'activated', :now)
-        """), {"id": lic_code_id, "uid": u_id, "now": NOW})
+        lic_code_row = db.execute(text("SELECT id FROM license_codes WHERE code = 'YD-PRO-2026-SAAS-KEY'")).fetchone()
+        if lic_code_row:
+            lic_code_id = lic_code_row[0]
+        else:
+            lic_code_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO license_codes (id, code, plan_type, user_id, status, created_at)
+                VALUES (:id, 'YD-PRO-2026-SAAS-KEY', 'enterprise', :uid, 'activated', :now)
+            """), {"id": lic_code_id, "uid": u_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO licenses (
-                id, license_key, tenant_id, plan_code, status, activated_at, expires_at, max_devices, ai_quota, created_by, created_at, updated_at
-            ) VALUES (
-                :id, 'LIC-YOUDING-GLOBAL-ENT-2026', :tid, 'enterprise', 'active', :now, :exp, 10, 50000000, :uid, :now, :now
-            )
-        """), {
-            "id": uuid.uuid4(), "tid": t_id, "exp": NOW + datetime.timedelta(days=365),
-            "uid": u_id, "now": NOW
-        })
+        lic_row = db.execute(text("SELECT id FROM licenses WHERE license_key = 'LIC-YOUDING-GLOBAL-ENT-2026'")).fetchone()
+        if not lic_row:
+            db.execute(text("""
+                INSERT INTO licenses (
+                    id, license_key, tenant_id, plan_code, status, activated_at, expires_at, max_devices, ai_quota, created_by, created_at, updated_at
+                ) VALUES (
+                    :id, 'LIC-YOUDING-GLOBAL-ENT-2026', :tid, 'enterprise', 'active', :now, :exp, 10, 50000000, :uid, :now, :now
+                )
+            """), {
+                "id": uuid.uuid4(), "tid": t_id, "exp": NOW + datetime.timedelta(days=365),
+                "uid": u_id, "now": NOW
+            })
 
-        db.execute(text("""
-            INSERT INTO license_orders (
-                id, user_id, license_code_id, plan_type, amount_cents, payment_method, status, created_at, updated_at
-            ) VALUES (
-                :id, :uid, :lcid, 'enterprise', 480000, 'bank_wire', 'completed', :now, :now
-            )
-        """), {"id": uuid.uuid4(), "uid": u_id, "lcid": lic_code_id, "now": NOW})
+        lic_ord_row = db.execute(text("SELECT id FROM license_orders WHERE license_code_id = :lcid"), {"lcid": lic_code_id}).fetchone()
+        if not lic_ord_row:
+            db.execute(text("""
+                INSERT INTO license_orders (
+                    id, user_id, license_code_id, plan_type, amount_cents, payment_method, status, created_at, updated_at
+                ) VALUES (
+                    :id, :uid, :lcid, 'enterprise', 480000, 'bank_wire', 'completed', :now, :now
+                )
+            """), {"id": uuid.uuid4(), "uid": u_id, "lcid": lic_code_id, "now": NOW})
         print("✓ licenses, license_codes, license_orders 填充完成")
 
         # 10. agent_nodes & agent_scorecards & agent_commission_settlements

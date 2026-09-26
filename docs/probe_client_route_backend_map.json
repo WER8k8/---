@@ -880,7 +880,7 @@
     {
       "path": "/client/skills",
       "raw": "skills",
-      "title": "Meoo专属技能",
+      "title": "专属技能",
       "name": "ClientSkillsMarket",
       "component": "@/views/client/skills-market.vue",
       "candidate_modules": [

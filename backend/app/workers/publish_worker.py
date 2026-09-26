@@ -284,4 +284,18 @@ def _process_single_publish_task(db, task, svc, now: datetime) -> str:
         tenant_id=str(getattr(account, "tenant_id", "") or "") or None,
     )
     task.error_message = None
+
+    # 触发 n8n 多渠道路由出站分发
+    try:
+        from app.services.n8n.trigger import trigger_n8n_workflow
+        trigger_n8n_workflow.delay("content_publish_dispatch", {
+            "tenant_id": str(getattr(task, "tenant_id", "") or ""),
+            "task_id": str(task.id),
+            "platform": str(plat_code or ""),
+            "status": "success",
+            "published_url": task.published_url,
+        })
+    except Exception as exc:
+        logger.warning("publish_worker n8n 触发失败（已忽略）: %s", exc)
+
     return "success"

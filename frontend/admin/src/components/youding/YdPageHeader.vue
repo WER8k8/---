@@ -33,7 +33,7 @@ defineProps<{
   margin: 0;
   font-family: var(--uj-font-display);
   font-size: var(--uj-font-size-h1, 24px);
-  font-weight: 700;
+  font-weight: 500;
   color: var(--uj-text-secondary, #0f172a);
   letter-spacing: -0.02em;
 }

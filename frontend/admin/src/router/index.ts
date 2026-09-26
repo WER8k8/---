@@ -186,6 +186,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'egress', name: 'ClientEgress', component: () => import('@/views/client/egress.vue'), meta: { title: 'IP 槽位' } },
       { path: 'referral', name: 'ClientReferral', component: () => import('@/views/client/referral.vue'), meta: { title: '邀请好友' } },
       { path: 'content', name: 'ClientContent', component: () => import('@/views/content/index.vue'), meta: { title: '内容管理' } },
+      { path: 'content/edit/:id', name: 'ClientContentEdit', component: () => import('@/views/content/edit.vue'), meta: { title: '编辑内容' } },
       { path: 'seo', name: 'ClientSEO', component: () => import('@/views/seo/index.vue'), meta: { title: 'SEO优化' } },
       { path: 'invoices', name: 'ClientInvoices', component: () => import('@/views/client/invoices.vue'), meta: { title: '开票申请' } },
       {
@@ -555,14 +556,12 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'system-health',
             name: 'AdminSystemHealthAlias',
-            component: () => import('@/views/system-health/index.vue'),
             redirect: { name: 'SystemHealthDashboard' },
             meta: { title: '系统健康压测', icon: 'HeartOutlined' },
           },
           {
             path: 'logistics',
             name: 'AdminLogisticsAlias',
-            component: () => import('@/views/logistics/index.vue'),
             redirect: { name: 'LogisticsDashboard' },
             meta: { title: '智能物流', icon: 'CarOutlined' },
           },

@@ -11,6 +11,17 @@ from app.api.v1.routes.auto_discovery import auto_register_routes
 
 router = APIRouter(prefix="/v1")
 
+# 路由挂载失败注册表（P1-c 可观测性）：任何子包/顶层模块挂失败都记录此处，
+# 并由 /ops/router-mount-failures 暴露，避免「导入异常被吞 → 整段路由静默 404」。
+ROUTER_MOUNT_FAILURES: list[dict] = []
+
+
+def _record_mount_failure(phase: str, module: str, exc: Exception) -> None:
+    ROUTER_MOUNT_FAILURES.append(
+        {"phase": phase, "module": module, "error": str(exc), "type": type(exc).__name__}
+    )
+    logging.getLogger(__name__).error("路由挂载失败[%s] %s: %s", phase, module, exc)
+
 # 注意：不在包 __init__ 执行期直接调用 auto_register_routes，否则会因循环 import
 # （路由子模块回引 app.api.v1.routes / app.main 等尚未完成初始化的包）导致逐模块导入
 # 被静默跳过，最终业务路由全部丢失（仅剩 /v1/health）。
@@ -49,7 +60,7 @@ def register_routes():
         router.include_router(invoice_finance_router)
         logging.getLogger(__name__).info("FIX-30: 已挂载 invoice_applications client/finance 双子路由")
     except Exception as _inv_exc:  # noqa: BLE001
-        logging.getLogger(__name__).error("FIX-30: 挂载 invoice_applications 失败: %s", _inv_exc)
+        _record_mount_failure("invoice_applications", "app.api.v1.routes.invoice_applications", _inv_exc)
 
     # 2) 手动挂载 admin_bff（它是子包，auto_discovery 不会扫子包；且 prefix/tags 内部自管）
     from app.api.v1.admin_bff import router as admin_bff_router
@@ -64,7 +75,7 @@ def register_routes():
         router.include_router(seo_router, prefix="/seo", tags=["SEO 高阶"])
         logging.getLogger(__name__).info("P0-03: 已挂载 seo 子包（prefix=/seo）")
     except Exception as _seo_exc:  # noqa: BLE001
-        logging.getLogger(__name__).error("P0-03: 挂载 seo 子包失败: %s", _seo_exc)
+        _record_mount_failure("seo", "app.api.v1.seo", _seo_exc)
     try:
         from app.api.v1.super_admin import router as super_admin_router
 
@@ -72,26 +83,26 @@ def register_routes():
         router.include_router(super_admin_router)
         logging.getLogger(__name__).info("P0-02: 已挂载 super_admin 子包（prefix=/super-admin）")
     except Exception as _sa_exc:  # noqa: BLE001
-        logging.getLogger(__name__).error("P0-02: 挂载 super_admin 子包失败: %s", _sa_exc)
+        _record_mount_failure("super_admin", "app.api.v1.super_admin", _sa_exc)
     try:
         from app.api.v1.marketing import router as marketing_router
         router.include_router(marketing_router)
         logging.getLogger(__name__).info("MarTech: 已挂载 marketing 子包")
     except Exception as _mkt_exc:  # noqa: BLE001
-        logging.getLogger(__name__).error("MarTech: 挂载 marketing 子包失败: %s", _mkt_exc)
+        _record_mount_failure("marketing", "app.api.v1.marketing", _mkt_exc)
     try:
         from app.api.v1.geo import router as geo_router
         router.include_router(geo_router)
         logging.getLogger(__name__).info("GEO: 已挂载 geo 子包")
     except Exception as _geo_exc:  # noqa: BLE001
-        logging.getLogger(__name__).error("GEO: 挂载 geo 子包失败: %s", _geo_exc)
+        _record_mount_failure("geo", "app.api.v1.geo", _geo_exc)
     try:
         from app.api.v1.chat import router as chat_im_router
         # chat 子包 router 自带 prefix=/chat（IM 会话/WebSocket）
         router.include_router(chat_im_router)
         logging.getLogger(__name__).info("ChatIM: 已挂载 chat 子包（prefix=/chat）")
     except Exception as _chat_exc:  # noqa: BLE001
-        logging.getLogger(__name__).error("ChatIM: 挂载 chat 子包失败: %s", _chat_exc)
+        _record_mount_failure("chat", "app.api.v1.chat", _chat_exc)
 
     # 3) 扫描 app.api.v1 顶层散落 .py 模块（不在 routes/ 下的独立文件）
     #    显式排除：routes（已扫）、admin_bff（已手动）、ai/seo/super_admin/system/marketing/geo（子包）
@@ -133,9 +144,7 @@ def register_routes():
                             "FIX-30-TOP: 挂载顶层 %s (prefix=%s)", full, prefix,
                         )
                 except Exception as e:
-                    logging.getLogger(__name__).warning(
-                        "FIX-30-TOP: 跳过顶层 %s: %s", full, e,
-                    )
+                    _record_mount_failure("top_level", full, e)
     except Exception as e:
         logging.getLogger(__name__).error("FIX-30-TOP: 顶层扫描失败: %s", e)
 

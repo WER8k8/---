@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
-"""Client「今日三步」状态 — 填产品 → 发内容 → 看询盘。"""
+"""Client「今日三步」状态 — 填产品 → 发内容 → 看询盘。数据只取真源，不注水。"""
 
 from __future__ import annotations
 
@@ -51,97 +51,130 @@ def build_today_three_payload(db: Session, tenant: Tenant) -> dict[str, Any]:
         {
             "id": "product",
             "order": 1,
-            "title": "出海商品库与规格建模",
-            "subtitle": "录入标准外贸 SKU、材质属性与 HS 编码",
+            "title": "把产品放上去",
+            "subtitle": "客户才能看到你在卖什么",
             "done": has_product,
             "route": "/client/products",
-            "cta": "管理品类库" if not has_product else "完善产品规格",
-            "hint": "完善规格参数与出海认证，为精准核价与独立站建站提供底座" if not has_product else "品类底座已就绪，可继续完善参数与多语种质检认证",
-            "alt_route": "/client/product-candidates",
+            "cta": "去发品" if not has_product else "完善产品",
+            "hint": "产品少也可以先发 1 个，不求全。" if not has_product else "可以继续补规格和图片。",
         },
         {
             "id": "content",
             "order": 2,
-            "title": "全域社媒分发与多语研报",
-            "subtitle": "生成高权重 EEAT 工业内容与多语种短视频",
+            "title": "让别人找到你",
+            "subtitle": "发内容 / 分发到多端",
             "done": has_content_action,
-            "route": "/client/video-overseas",
-            "cta": "分发总控中心" if not has_content_action else "排期新内容",
-            "hint": "支持 12 语种原声口型同步并自动化分发至约 40 个海外社媒平台",
+            "route": "/client/distribute",
+            "cta": "去分发" if not has_content_action else "再发一条",
+            "hint": "有内容才有人进站、来询盘。",
         },
         {
             "id": "inquiry",
             "order": 3,
-            "title": "高价值 RFQ 询盘与买家直连",
-            "subtitle": "实时响应全球买家采购意向并加速成单",
+            "title": "回复客户询盘",
+            "subtitle": "有人问了就回，回了才可能成单",
             "done": weekly.get("followed", 0) > 0 and pending_all == 0,
             "route": "/client/inquiries",
-            "cta": "处理意向询盘",
-            "hint": f"本周已捕获 {weekly.get('received', 0)} 条询盘，待响应 {pending_all} 条；支持 WhatsApp 实时双向翻译与 PI 套打",
+            "cta": "去回复",
+            "hint": f"本周收到 {weekly.get('received', 0)} 条，待回复 {pending_all} 条。不会写就让系统起一版。",
         },
     ]
     done_count = sum(1 for s in steps if s["done"])
     next_step = next((s for s in steps if not s["done"]), steps[-1])
 
     recent_inquiries = []
-    real_active_inquiries = 36
-    real_active_orders = 12
     try:
-        from sqlalchemy import text
-        rows = db.execute(text("""
-            SELECT id, customer_name, company, region, product_interest, budget, phone, status, created_at
-            FROM international_inquiries
-            ORDER BY created_at DESC
-            LIMIT 10
-        """)).fetchall()
-
-        order_count = db.execute(text("SELECT count(*) FROM orders")).scalar() or 0
-        inq_count = db.execute(text("SELECT count(*) FROM inquiries")).scalar() or 0
-        intl_count = len(rows)
-        real_active_inquiries = max(inq_count + intl_count, 36)
-        real_active_orders = max(order_count, 12)
-
-        flag_map = {
-            "SA": "🇸🇦", "AE": "🇦🇪", "KZ": "🇰🇿", "VN": "🇻🇳",
-            "US": "🇺🇸", "DE": "🇩🇪", "GLOBAL": "🌐"
-        }
-        country_name_map = {
-            "SA": "沙特阿拉伯 (Riyadh)",
-            "AE": "阿联酋 (Dubai)",
-            "KZ": "哈萨克斯坦 (Astana)",
-            "VN": "越南 (Da Nang)",
-            "US": "美国 (Houston)",
-            "DE": "德国 (Frankfurt)",
-        }
+        rows = (
+            db.query(Inquiry)
+            .order_by(Inquiry.created_at.desc())
+            .limit(8)
+            .all()
+        )
         for r in rows:
-            reg = str(r[3] or "GLOBAL").upper()
-            flag = flag_map.get(reg, "🌐")
-            c_name = country_name_map.get(reg, f"国际市场 ({reg})")
-            budget_str = str(r[5] or "$50,000")
-            est_val = 50000
-            try:
-                clean_val = budget_str.replace("$", "").replace(",", "").strip()
-                est_val = int(float(clean_val))
-            except Exception:
-                pass
-
             recent_inquiries.append({
-                "id": str(r[0]),
-                "buyer_name": r[1] or "海外采购负责人",
-                "company": r[2] or "International Trading Corp",
-                "country_code": reg,
-                "country_name": c_name,
-                "flag": flag,
-                "category": r[4] or "高密度外墙复合夹芯板",
-                "spec": "CE EN 13501-1 Class A · 定制出口规格",
-                "est_value_usd": est_val,
-                "channel": "whatsapp" if r[6] else "website",
-                "status": "new" if (r[7] in ("new", "pending", None)) else "quoted",
-                "status_label": "新商机待响应" if (r[7] in ("new", "pending", None)) else "已核价 / 发 PI",
-                "time": "15 分钟前",
-                "unread": True,
-                "whatsapp_number": r[6] or "",
+                "id": str(r.id),
+                "buyer_name": r.name or "客户",
+                "company": getattr(r, "company", "") or "",
+                "email": r.email or "",
+                "category": r.product or "产品",
+                "status": r.status or "pending",
+                "status_label": "新商机待响应" if (r.status in ("new", "pending", None, "")) else "跟进中",
+                "time": r.created_at.isoformat() if r.created_at else "",
+                "channel": r.source_channel or "website",
             })
+    except Exception:
+        pass
+
+    # 真源：询盘数 / 在途订单数 / 成单结果（不写死最小值）
+    inq_count = 0
+    order_count = 0
+    active_orders = 0
+    try:
+        inq_count = db.query(Inquiry).count()
+        from app.models.order import Order
+        from app.models.enums import OrderStatus
+        order_count = db.query(Order).count()
+        active_orders = (
+            db.query(Order)
+            .filter(Order.status.in_([
+                OrderStatus.PENDING,
+                OrderStatus.DEPOSIT_RECEIVED,
+                OrderStatus.IN_PRODUCTION,
+                OrderStatus.SHIPPED,
+            ]))
+            .count()
+        )
+    except Exception:
+        pass
+
+    win_loss: dict[str, Any] = {}
+    recent_wins: list[dict[str, Any]] = []
+    try:
+        from app.services.acquisition import ops_card_store
+        win_loss = ops_card_store.win_loss_stats(tenant_id=tid or "demo")
+        if not win_loss.get("won_count"):
+            win_loss = ops_card_store.win_loss_stats(tenant_id="")
+        for w in (win_loss.get("won_items") or [])[:3]:
+            recent_wins.append({
+                "buyer": w.get("buyer_display") or w.get("inquiry_id") or "客户",
+                "amount": w.get("amount") or 0,
+                "currency": "USD",
+                "note": w.get("note") or "",
+            })
+    except Exception:
+        pass
+
+    # 订单侧成单（持久）：已结清 = 成单金额来源
+    won_amount = float(win_loss.get("won_amount") or 0) or 0.0
+    won_count = int(win_loss.get("won_count") or 0)
+    try:
+        from app.models.order import Order
+        from app.models.enums import OrderStatus
+        from sqlalchemy import func
+        row = db.query(
+            func.count(Order.id),
+            func.coalesce(func.sum(Order.total_amount), 0),
+        ).filter(Order.status == OrderStatus.COMPLETED).first()
+        if row:
+            if not won_count:
+                won_count = int(row[0] or 0)
+            if not won_amount:
+                won_amount = float(row[1] or 0)
+            if won_count and not recent_wins:
+                done_orders = (
+                    db.query(Order)
+                    .filter(Order.status == OrderStatus.COMPLETED)
+                    .order_by(Order.updated_at.desc())
+                    .limit(3)
+                    .all()
+                )
+                for o in done_orders:
+                    recent_wins.append({
+                        "buyer": getattr(o, "customer_name", "") or o.order_number,
+                        "amount": float(o.total_amount or 0),
+                        "currency": o.currency or "USD",
+                        "note": getattr(o, "product_summary", "") or "",
+                    })
     except Exception:
         pass
 
@@ -156,22 +189,24 @@ def build_today_three_payload(db: Session, tenant: Tenant) -> dict[str, Any]:
         "region_label": profile.get("region_label_zh"),
         "weekly_inquiries": weekly,
         "recent_inquiries": recent_inquiries if recent_inquiries else None,
+        "win_loss": {
+            "won_count": won_count,
+            "lost_count": int(win_loss.get("lost_count") or 0),
+            "won_amount": won_amount,
+            "plain_summary": win_loss.get("plain_summary") or "",
+        },
+        "recent_wins": recent_wins,
         "trade_stats": {
-            "active_inquiries": real_active_inquiries,
-            "active_inquiries_growth": 18.4,
-            "pending_response": pending_all if pending_all > 0 else 8,
-            "pipeline_value_usd": 284500,
-            "countries_count": 14,
-            "conversion_rate": 4.6,
-            "multichannel_reach": 92400,
-            "platforms_count": 38,
-            "active_fulfillment_orders": real_active_orders,
-            "production_count": 3,
-            "readiness_score": 92 if has_product else 70,
+            "active_inquiries": inq_count,
+            "pending_response": pending_all,
+            "active_fulfillment_orders": active_orders,
+            "total_orders": order_count,
+            "won_count": won_count,
+            "won_amount": won_amount,
         },
         "headline": (
-            "外贸出海三步核心闭环已就绪，保持日常获客节奏"
+            "今天该做的都做完了"
             if done_count >= 3
-            else f"外贸全链路闭环 · 建议推进：{next_step['title']}"
+            else f"先做「{next_step['title']}」就行"
         ),
     }

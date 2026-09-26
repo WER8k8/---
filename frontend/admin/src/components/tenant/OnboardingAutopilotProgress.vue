@@ -51,7 +51,7 @@ const percent = computed(() => {
 });
 
 function stepIcon(step: AutopilotStep) {
-  if (step.ok || step.skipped) return '✓';
+  if (step.ok || step.skipped) return '';
   if (step.error) return '!';
   if (props.running && props.activeId === step.id) return '…';
   return '○';
@@ -97,7 +97,7 @@ function stepDetail(step: AutopilotStep): string {
   &__icon {
     width: 24px;
     text-align: center;
-    font-weight: 700;
+    font-weight: 500;
     color: #0f766e;
   }
   &__body {
@@ -106,7 +106,7 @@ function stepDetail(step: AutopilotStep): string {
   }
   &__label {
     margin: 0;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 14px;
     color: #0f172a;
   }

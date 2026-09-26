@@ -6,6 +6,10 @@
     v-if="!lProMode"
     :visual-page="legacyPage"
   />
+  <TenantLProCarrier
+    v-else-if="isCarrier"
+    :page="carrierPage"
+  />
   <component
     v-else
     :is="lProComponent"
@@ -21,17 +25,44 @@ import TenantLProAbout from './premium/TenantLProAbout.vue';
 import TenantLProContact from './premium/TenantLProContact.vue';
 import TenantLProSolutions from './premium/TenantLProSolutions.vue';
 import TenantLProDownloads from './premium/TenantLProDownloads.vue';
+import TenantLProCarrier from './premium/TenantLProCarrier.vue';
 
 const props = defineProps<{
-  page: 'home' | 'products' | 'about' | 'contact' | 'solutions' | 'downloads';
+  page: 'home' | 'products' | 'about' | 'contact' | 'solutions' | 'downloads'
+    | 'test-reports' | 'parameters' | 'certifications' | 'supplier-onboarding' | 'brand-guide' | 'faq';
 }>();
 
 const { lProMode, ensureLoaded } = useTenantSiteBootstrap();
 await ensureLoaded();
 
+const CARRIER_PAGES = [
+  'test-reports',
+  'parameters',
+  'certifications',
+  'supplier-onboarding',
+  'brand-guide',
+  'faq',
+] as const;
+
+const isCarrier = computed(() => (CARRIER_PAGES as readonly string[]).includes(props.page));
+
+const carrierPage = computed(
+  () =>
+    props.page as
+      | 'test-reports'
+      | 'parameters'
+      | 'certifications'
+      | 'supplier-onboarding'
+      | 'brand-guide'
+      | 'faq',
+);
+
 const legacyPage = computed(() => {
-  if (props.page === 'solutions' || props.page === 'downloads') return 'home';
-  return props.page;
+  const legacyValid = ['home', 'contact', 'about', 'products'] as const;
+  if ((legacyValid as readonly string[]).includes(props.page)) {
+    return props.page as (typeof legacyValid)[number];
+  }
+  return 'home';
 });
 
 const lProComponent = computed(() => {

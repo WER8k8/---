@@ -83,7 +83,7 @@ function onRowClick(item: QueueItem) {
   }
   &__title {
     font-size: var(--uj-text-title);
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
   }
   &__count {
@@ -135,7 +135,7 @@ function onRowClick(item: QueueItem) {
   &__chevron {
     font-size: 12px;
     color: var(--uj-brand, #4a9b8c);
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 </style>

@@ -81,6 +81,7 @@
 </a-button>
  </a-space>
 </template>
+</template>
  </YdDataTable>
  </div>
 
@@ -175,14 +176,14 @@
 </template>
  <template v-else-if="column.key === 'actions'">
  <a-space v-if="record.status === 'pending_review'">
- <a-button size="small" type="primary" @click="reviewRefund(record, 'approve')">批准</a-button>
- <a-button size="small" danger @click="openRefundReview(record, 'reject')">驳回</a-button>
- <a-button size="small" @click="openRefundReview(record, 'cancel')">取消</a-button>
+ <a-button size="small" type="primary" @click="reviewRefund(record as RefundRow, 'approve')">批准</a-button>
+ <a-button size="small" danger @click="openRefundReview(record as RefundRow, 'reject')">驳回</a-button>
+ <a-button size="small" @click="openRefundReview(record as RefundRow, 'cancel')">取消</a-button>
  </a-space>
  <a-button
  v-else-if="record.status === 'failed'"
  size="small"
- @click="reviewRefund(record, 'approve')"
+ @click="reviewRefund(record as RefundRow, 'approve')"
  >
  重试批准
 </a-button>

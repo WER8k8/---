@@ -72,26 +72,26 @@ const form = reactive<Record<string, string>>({
 
 const guideBubble = computed(() => {
   const map: Record<string, string> = {
-    whatsapp: '🐾 海外客户最爱 WhatsApp！填国际号码，官网挂件一键跳转聊天。',
-    wechat: '🐾 微信给华人/国内客户；挂件会一键复制微信号。',
-    qq: '🐾 QQ 是国内客户常用方式；填 QQ 号，挂件一键复制。',
-    telegram: '🐾 Telegram 在俄语区/中东很常用，可填 @用户名。',
-    line: '🐾 LINE 适合日本/泰国/台湾市场。',
-    phone: '🐾 国际电话格式，如 +86-138xxxx。',
-    email: '🐾 正式报价与开发信用邮箱。',
+    whatsapp: ' 海外客户最爱 WhatsApp！填国际号码，官网挂件一键跳转聊天。',
+    wechat: ' 微信给华人/国内客户；挂件会一键复制微信号。',
+    qq: ' QQ 是国内客户常用方式；填 QQ 号，挂件一键复制。',
+    telegram: ' Telegram 在俄语区/中东很常用，可填 @用户名。',
+    line: ' LINE 适合日本/泰国/台湾市场。',
+    phone: ' 国际电话格式，如 +86-138xxxx。',
+    email: ' 正式报价与开发信用邮箱。',
   };
   return map[focusField.value] || map.whatsapp;
 });
 
 function iconFor(key: string): string {
   const icons: Record<string, string> = {
-    whatsapp: '💬',
-    wechat: '🟢',
-    qq: '🐧',
-    telegram: '✈️',
-    line: '💚',
-    phone: '📞',
-    email: '✉️',
+    whatsapp: '',
+    wechat: '',
+    qq: '',
+    telegram: '',
+    line: '',
+    phone: '',
+    email: '',
   };
   return icons[key] || '•';
 }
@@ -201,7 +201,7 @@ onMounted(load);
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: #1e293b;
     margin-bottom: 4px;
   }
@@ -214,7 +214,7 @@ onMounted(load);
     border-radius: 999px;
     background: #dcfce7;
     color: #15803d;
-    font-weight: 600;
+    font-weight: 500;
   }
   &__hint {
     margin: 0 0 8px;

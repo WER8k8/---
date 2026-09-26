@@ -48,7 +48,7 @@
  type="link"
  size="small"
  :loading="togglingId === record.id"
- @click="toggle(record)"
+ @click="toggle(record as CheckRow)"
  >
  {{ record.status === 'done' ? '标为待办' : '标为完成' }}
  </a-button>

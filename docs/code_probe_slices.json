@@ -4470,7 +4470,7 @@
       {
         "path": "skills",
         "name": "ClientSkillsMarket",
-        "title": "Meoo专属技能",
+        "title": "专属技能",
         "component": "@/views/client/skills-market.vue",
         "redirect": "",
         "shell": "public"

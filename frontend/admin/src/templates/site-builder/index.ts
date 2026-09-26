@@ -20,7 +20,7 @@ export const SITE_BUILDER_TEMPLATES: SiteBuilderTemplateMeta[] = [
     industry: 'export',
     category: 'portal',
     categoryLabel: '外贸官网',
-    author: 'Meoo出海精研室',
+    author: '优丁出海精研室',
     authorAvatar: 'https://gw.alicdn.com/imgextra/i4/O1CN01MxUXzS1xYRjMwA2la_!!6000000006455-2-tps-184-184.png',
     views: '18.6k',
     likes: 192,

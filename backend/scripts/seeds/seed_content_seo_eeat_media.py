@@ -53,24 +53,35 @@ def run_seeding() -> None:
         acc_id = accounts[0][0] if accounts else None
 
         # 1. provinces, cities, districts
-        prov_id = uuid.uuid4()
-        city_id = uuid.uuid4()
-        dist_id = uuid.uuid4()
+        prov_row = db.execute(text("SELECT id FROM provinces WHERE code = 'HEBEI'")).fetchone()
+        if prov_row:
+            prov_id = prov_row[0]
+        else:
+            prov_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO provinces (id, code, name, name_en, is_active, created_at, updated_at)
+                VALUES (:id, 'HEBEI', '河北省', 'Hebei Province', true, :now, :now)
+            """), {"id": prov_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO provinces (id, code, name, name_en, is_active, created_at, updated_at)
-            VALUES (:id, 'HEBEI', '河北省', 'Hebei Province', true, :now, :now)
-        """), {"id": prov_id, "now": NOW})
+        city_row = db.execute(text("SELECT id FROM cities WHERE code = 'SJZ'")).fetchone()
+        if city_row:
+            city_id = city_row[0]
+        else:
+            city_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO cities (id, code, name, name_en, province_id, is_active, created_at, updated_at)
+                VALUES (:id, 'SJZ', '石家庄市', 'Shijiazhuang', :pid, true, :now, :now)
+            """), {"id": city_id, "pid": prov_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO cities (id, code, name, name_en, province_id, is_active, created_at, updated_at)
-            VALUES (:id, 'SJZ', '石家庄市', 'Shijiazhuang', :pid, true, :now, :now)
-        """), {"id": city_id, "pid": prov_id, "now": NOW})
-
-        db.execute(text("""
-            INSERT INTO districts (id, code, name, name_en, city_id, province_id, is_active, is_disabled, created_at, updated_at)
-            VALUES (:id, 'ZD', '正定县', 'Zhengding County', :cid, :pid, true, false, :now, :now)
-        """), {"id": dist_id, "cid": city_id, "pid": prov_id, "now": NOW})
+        dist_row = db.execute(text("SELECT id FROM districts WHERE code = 'ZD'")).fetchone()
+        if dist_row:
+            dist_id = dist_row[0]
+        else:
+            dist_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO districts (id, code, name, name_en, city_id, province_id, is_active, is_disabled, created_at, updated_at)
+                VALUES (:id, 'ZD', '正定县', 'Zhengding County', :cid, :pid, true, false, :now, :now)
+            """), {"id": dist_id, "cid": city_id, "pid": prov_id, "now": NOW})
         print("✓ provinces, cities, districts 填充完成")
 
         # 2. combinatorial_rules, content_templates
@@ -156,17 +167,25 @@ def run_seeding() -> None:
         print("✓ glossary_terms, industry_insights, industry_patterns 填充完成")
 
         # 7. news_categories, news_articles
-        ncat_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO news_categories (id, name, slug, description, sort_order, is_active, created_at)
-            VALUES (:id, '海外工程动态', 'overseas-projects', '中东、东南亚、中亚重点建材项目追踪', 1, true, :now)
-        """), {"id": ncat_id, "now": NOW})
+        ncat_row = db.execute(text("SELECT id FROM news_categories WHERE slug = 'overseas-projects'")).fetchone()
+        if ncat_row:
+            ncat_id = ncat_row[0]
+        else:
+            ncat_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO news_categories (id, name, slug, description, sort_order, is_active, created_at)
+                VALUES (:id, '海外工程动态', 'overseas-projects', '中东、东南亚、中亚重点建材项目追踪', 1, true, :now)
+            """), {"id": ncat_id, "now": NOW})
 
-        art_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO news_articles (id, title, slug, summary, content, category, author, is_published, published_at, is_active, created_at, updated_at)
-            VALUES (:id, '优丁新型石墨聚苯一体板批量交付沙特利雅得商业中心', 'youding-seps-riyadh-delivery', '首批42,000平米高耐候一体板经天津港启运吉达港...', '详细工程交付记录与耐候测试...', 'overseas-projects', '优丁外贸海外部', true, :now, true, :now, :now)
-        """), {"id": art_id, "now": NOW})
+        art_row = db.execute(text("SELECT id FROM news_articles WHERE slug = 'youding-seps-riyadh-delivery'")).fetchone()
+        if art_row:
+            art_id = art_row[0]
+        else:
+            art_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO news_articles (id, title, slug, summary, content, category, author, is_published, published_at, is_active, created_at, updated_at)
+                VALUES (:id, '优丁新型石墨聚苯一体板批量交付沙特利雅得商业中心', 'youding-seps-riyadh-delivery', '首批42,000平米高耐候一体板经天津港启运吉达港...', '详细工程交付记录与耐候测试...', 'overseas-projects', '优丁外贸海外部', true, :now, true, :now, :now)
+            """), {"id": art_id, "now": NOW})
         print("✓ news_categories, news_articles 填充完成")
 
         # 8. eeat_authors, eeat_author_certifications, eeat_article_authors, eeat_scores, eeat_trust_signals
@@ -215,26 +234,30 @@ def run_seeding() -> None:
             VALUES (:id, 'product', 'youding-rockwool-board', 'Rockwool Insulation Board Manufacturer | YouDing Factory Direct', 'High density A1 fireproof rockwool decorative wall panels from certified Chinese manufacturer. Fast export shipping to Middle East.', 'rockwool board, external wall insulation, fireproof cladding', 'https://youding-materials.com/products/youding-rockwool-board', false, :now, :now)
         """), {"id": uuid.uuid4(), "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO seo_competitors (domain, name, authority_score, backlinks_count, organic_keywords, organic_traffic, is_active, created_at, updated_at)
-            VALUES ('rockwool.com', 'Rockwool Global', 82, 1250000, 48000, 320000, true, :now, :now)
-        """), {"now": NOW})
+        comp_seo = db.execute(text("SELECT domain FROM seo_competitors WHERE domain = 'rockwool.com'")).fetchone()
+        if not comp_seo:
+            db.execute(text("""
+                INSERT INTO seo_competitors (domain, name, authority_score, backlinks_count, organic_keywords, organic_traffic, is_active, created_at, updated_at)
+                VALUES ('rockwool.com', 'Rockwool Global', 82, 1250000, 48000, 320000, true, :now, :now)
+            """), {"now": NOW})
 
         db.execute(text("""
             INSERT INTO serp_snapshots (id, keyword, platform, rank_position, title, url, snippet, crawl_status, crawled_at)
             VALUES (:id, 'rockwool insulation panel china supplier', 'google', 3, 'Top China Rockwool Panel Manufacturer - YouDing B2B', 'https://youding-materials.com/products/rockwool-board', 'Direct factory prices for rockwool exterior panels with ASTM and EN certifications...', 'success', :now)
         """), {"id": uuid.uuid4(), "now": NOW})
 
-        rk_id = db.execute(text("""
-            INSERT INTO keyword_rankings (keyword, search_engine, target_url, current_position, previous_position, best_position, search_volume, is_tracking, created_at, updated_at, last_checked_at)
-            VALUES ('exterior wall insulation panels factory', 'google', 'https://youding-materials.com/products', 4, 7, 3, 14200, true, :now, :now, :now)
-            RETURNING id
-        """), {"now": NOW}).scalar()
+        rk_id = db.execute(text("SELECT id FROM keyword_rankings WHERE keyword = 'exterior wall insulation panels factory' AND search_engine = 'google'")).scalar()
+        if not rk_id:
+            rk_id = db.execute(text("""
+                INSERT INTO keyword_rankings (keyword, search_engine, target_url, current_position, previous_position, best_position, search_volume, is_tracking, created_at, updated_at, last_checked_at)
+                VALUES ('exterior wall insulation panels factory', 'google', 'https://youding-materials.com/products', 4, 7, 3, 14200, true, :now, :now, :now)
+                RETURNING id
+            """), {"now": NOW}).scalar()
 
-        db.execute(text("""
-            INSERT INTO keyword_ranking_history (keyword_ranking_id, keyword, search_engine, position, search_volume, checked_at)
-            VALUES (:rkid, 'exterior wall insulation panels factory', 'google', 4, 14200, :now)
-        """), {"rkid": rk_id, "now": NOW})
+            db.execute(text("""
+                INSERT INTO keyword_ranking_history (keyword_ranking_id, keyword, search_engine, position, search_volume, checked_at)
+                VALUES (:rkid, 'exterior wall insulation panels factory', 'google', 4, 14200, :now)
+            """), {"rkid": rk_id, "now": NOW})
         print("✓ seo_metadata, competitors, serp_snapshots, keyword_rankings 填充完成")
 
         # 11. media_render_tasks, publish_tasks, publish_logs, scheduled_publishes

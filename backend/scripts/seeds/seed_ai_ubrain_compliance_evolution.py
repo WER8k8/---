@@ -53,11 +53,15 @@ def run_seeding() -> None:
         plat_id = platforms[0][0] if platforms else None
 
         # 1. ai_model_providers, ai_model_configs, model_capabilities, llms_config, ai_generation_configs, ai_templates, ai_usage_logs
-        prov_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO ai_model_providers (id, name, provider_type, api_key, base_url, default_model, is_active, is_default, description, created_at, updated_at)
-            VALUES (:id, 'DeepSeek Official', 'deepseek', 'sk-dsh-encrypted-token', 'https://api.deepseek.com/v1', 'deepseek-reasoner', true, true, 'DeepSeek R1 reasoning and V3 general model upstream', :now, :now)
-        """), {"id": prov_id, "now": NOW})
+        prov_row = db.execute(text("SELECT id FROM ai_model_providers WHERE name = 'DeepSeek Official'")).fetchone()
+        if prov_row:
+            prov_id = prov_row[0]
+        else:
+            prov_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO ai_model_providers (id, name, provider_type, api_key, base_url, default_model, is_active, is_default, description, created_at, updated_at)
+                VALUES (:id, 'DeepSeek Official', 'deepseek', 'sk-dsh-encrypted-token', 'https://api.deepseek.com/v1', 'deepseek-reasoner', true, true, 'DeepSeek R1 reasoning and V3 general model upstream', :now, :now)
+            """), {"id": prov_id, "now": NOW})
 
         cfg_id = uuid.uuid4()
         db.execute(text("""
@@ -70,15 +74,19 @@ def run_seeding() -> None:
             VALUES (:id, :tid, 'deepseek', 'deepseek-reasoner', 'l1_planning', 1, 0.001, 0.002, 65536, true, :now, :now)
         """), {"id": uuid.uuid4(), "tid": t_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO llms_config (id, section, content, is_active, version, created_at, updated_at)
-            VALUES (:id, 'system_instruction_prompt', 'You are YouDing AI B2B Trade Engine. Always output verified trade terms and CE/ASTM compliant specifications.', true, 'v2.6', :now, :now)
-        """), {"id": uuid.uuid4(), "now": NOW})
+        llm_cfg_row = db.execute(text("SELECT id FROM llms_config WHERE section = 'system_instruction_prompt'")).fetchone()
+        if not llm_cfg_row:
+            db.execute(text("""
+                INSERT INTO llms_config (id, section, content, is_active, version, created_at, updated_at)
+                VALUES (:id, 'system_instruction_prompt', 'You are YouDing AI B2B Trade Engine. Always output verified trade terms and CE/ASTM compliant specifications.', true, 'v2.6', :now, :now)
+            """), {"id": uuid.uuid4(), "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO ai_generation_configs (id, config_name, model_name, max_tokens, temperature, creativity_level, similarity_threshold, compliance_check, created_at, updated_at)
-            VALUES (:id, 'B2B_Technical_Spec_Writer', 'deepseek-reasoner', 4000, 0.3, 'low', 0.85, true, :now, :now)
-        """), {"id": uuid.uuid4(), "now": NOW})
+        gen_cfg_row = db.execute(text("SELECT id FROM ai_generation_configs WHERE config_name = 'B2B_Technical_Spec_Writer'")).fetchone()
+        if not gen_cfg_row:
+            db.execute(text("""
+                INSERT INTO ai_generation_configs (id, config_name, model_name, max_tokens, temperature, creativity_level, similarity_threshold, compliance_check, created_at, updated_at)
+                VALUES (:id, 'B2B_Technical_Spec_Writer', 'deepseek-reasoner', 4000, 0.3, 'low', 0.85, true, :now, :now)
+            """), {"id": uuid.uuid4(), "now": NOW})
 
         db.execute(text("""
             INSERT INTO ai_templates (id, name, task_type, system_prompt, user_prompt_template, variables_json, default_params_json, is_active, sort_order, created_at, updated_at)
@@ -242,10 +250,12 @@ def run_seeding() -> None:
             VALUES (:id, :sid, :rid, '新广告法绝对化用语检测', 'ad_law', 'medium', '顶级品质', true, :now)
         """), {"id": uuid.uuid4(), "sid": str(scan_id), "rid": str(rule_id), "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO ad_law_keywords (id, keyword, category, severity, alternative, is_active, created_at, updated_at)
-            VALUES (:id, '顶级', 'advertising_law', 'high', '高品质 / 优质', true, :now, :now)
-        """), {"id": uuid.uuid4(), "now": NOW})
+        ad_row = db.execute(text("SELECT id FROM ad_law_keywords WHERE keyword = '顶级'")).fetchone()
+        if not ad_row:
+            db.execute(text("""
+                INSERT INTO ad_law_keywords (id, keyword, category, severity, alternative, is_active, created_at, updated_at)
+                VALUES (:id, '顶级', 'advertising_law', 'high', '高品质 / 优质', true, :now, :now)
+            """), {"id": uuid.uuid4(), "now": NOW})
 
         if plat_id:
             db.execute(text("""
@@ -264,23 +274,31 @@ def run_seeding() -> None:
             )
         """), {"id": exp_id, "now": NOW})
 
-        sk_ver_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO evolution_skill_versions (
-                id, skill_id, skill_name, version, major, minor, patch, status, changelog, success_rate, avg_duration_ms, total_invocations, created_at, updated_at
-            ) VALUES (
-                :id, 'trade_outreach_arabia', '沙特阿联酋中东拓客定制技能', '2.1.0', 2, 1, 0, 'active', '融入沙特商会正式商务礼仪模板', 0.92, 1420, 240, :now, :now
-            )
-        """), {"id": sk_ver_id, "now": NOW})
+        sk_ver_row = db.execute(text("SELECT id FROM evolution_skill_versions WHERE skill_id = 'trade_outreach_arabia' AND version = '2.1.0'")).fetchone()
+        if sk_ver_row:
+            sk_ver_id = sk_ver_row[0]
+        else:
+            sk_ver_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO evolution_skill_versions (
+                    id, skill_id, skill_name, version, major, minor, patch, status, changelog, success_rate, avg_duration_ms, total_invocations, created_at, updated_at
+                ) VALUES (
+                    :id, 'trade_outreach_arabia', '沙特阿联酋中东拓客定制技能', '2.1.0', 2, 1, 0, 'active', '融入沙特商会正式商务礼仪模板', 0.92, 1420, 240, :now, :now
+                )
+            """), {"id": sk_ver_id, "now": NOW})
 
-        sop_ver_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO evolution_sop_versions (
-                id, sop_id, sop_name, version, major, minor, patch, status, changelog, completion_rate, total_executions, created_at, updated_at
-            ) VALUES (
-                :id, 'sop_gcc_tender_bidding', '海湾大区工程招标投标全流程SOP', '1.3.0', 1, 3, 0, 'active', '追加SASO能效证书提前校验节点', 0.96, 58, :now, :now
-            )
-        """), {"id": sop_ver_id, "now": NOW})
+        sop_ver_row = db.execute(text("SELECT id FROM evolution_sop_versions WHERE sop_id = 'sop_gcc_tender_bidding' AND version = '1.3.0'")).fetchone()
+        if sop_ver_row:
+            sop_ver_id = sop_ver_row[0]
+        else:
+            sop_ver_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO evolution_sop_versions (
+                    id, sop_id, sop_name, version, major, minor, patch, status, changelog, completion_rate, total_executions, created_at, updated_at
+                ) VALUES (
+                    :id, 'sop_gcc_tender_bidding', '海湾大区工程招标投标全流程SOP', '1.3.0', 1, 3, 0, 'active', '追加SASO能效证书提前校验节点', 0.96, 58, :now, :now
+                )
+            """), {"id": sop_ver_id, "now": NOW})
 
         db.execute(text("""
             INSERT INTO evolution_approvals (

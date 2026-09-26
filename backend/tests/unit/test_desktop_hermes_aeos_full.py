@@ -64,7 +64,9 @@ def test_l1_templates_count_and_new_lanes():
     assert len(g_c.nodes) >= 6
     g_d = ps._composite_super_graph("p", "e", {"keyword": "rockwool", "country": "SA"})
     execs = {n.executor for n in g_d.nodes}
-    assert {"deerflow", "lead", "accio", "trade_ops", "billing"}.issubset(execs)
+    # lead 已由 trade_ai_agent（本项目拓客）承接；两套命名都接受
+    assert {"deerflow", "accio", "trade_ops", "billing"}.issubset(execs)
+    assert ("lead" in execs) or ("trade_ai_agent" in execs)
     assert "outreach.letter" in g_d.policies.approval_required
 
     g_aeos = ps._aeos_readiness_graph("p", "e", {})

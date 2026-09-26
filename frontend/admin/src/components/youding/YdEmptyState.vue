@@ -66,7 +66,7 @@ const displayCta = computed(() => props.ctaLabel ?? preset.value.cta);
   }
   &__title {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
     margin: 0 0 8px;
   }
   &__desc {

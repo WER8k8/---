@@ -8,20 +8,20 @@
     width="1120px"
     :footer="null"
     destroy-on-close
-    class="meoo-template-modal"
+    class="uj-template-modal"
     :body-style="{ padding: '0px' }"
   >
-    <!-- Modal 顶栏：Meoo 沉浸式标题与宣传条 -->
-    <div class="meoo-modal-header">
+    <!-- Modal 顶栏：沉浸式标题与宣传条 -->
+    <div class="uj-modal-header">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <div class="meoo-avatar-brand">
-            <span class="text-xl">🐱</span>
+          <div class="uj-avatar-brand">
+            <span class="text-xl"></span>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h2 class="text-lg font-bold text-slate-900 m-0">秒悟 · 外贸独立站灵感模板库</h2>
-              <span class="meoo-badge-top20">
+              <h2 class="text-lg font-medium text-slate-900 m-0">外贸独立站灵感模板库</h2>
+              <span class="uj-badge-top20">
                 Top20 优选 · Google EEAT 满分架构
               </span>
             </div>
@@ -32,20 +32,20 @@
         </div>
       </div>
 
-      <!-- Meoo 风格：分类胶囊导航 + 搜索与排序栏 -->
-      <div class="meoo-filter-bar mt-5 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+      <!-- 分类胶囊导航 + 搜索与排序栏 -->
+      <div class="uj-filter-bar mt-5 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
         <!-- 分类切换 -->
         <div class="flex items-center gap-1.5 overflow-x-auto py-1">
           <button
             v-for="cat in categories"
             :key="cat.key"
             type="button"
-            class="meoo-chip-btn"
+            class="uj-chip-btn"
             :class="{ active: currentCategory === cat.key }"
             @click="currentCategory = cat.key"
           >
             {{ cat.label }}
-            <span v-if="cat.count !== undefined" class="meoo-chip-count">{{ cat.count }}</span>
+            <span v-if="cat.count !== undefined" class="uj-chip-count">{{ cat.count }}</span>
           </button>
         </div>
 
@@ -56,9 +56,9 @@
               v-model="searchQuery"
               type="text"
               placeholder="搜索模板、关键词或行业..."
-              class="meoo-search-input"
+              class="uj-search-input"
             />
-            <span class="absolute left-3 top-2 text-slate-400 text-xs">🔍</span>
+            <span class="absolute left-3 top-2 text-slate-400 text-xs"></span>
             <button
               v-if="searchQuery"
               type="button"
@@ -84,29 +84,29 @@
     </div>
 
     <!-- 模板卡片展示区 -->
-    <div class="meoo-modal-body">
-      <div v-if="filteredTemplates.length" class="meoo-card-grid">
+    <div class="uj-modal-body">
+      <div v-if="filteredTemplates.length" class="uj-card-grid">
         <div
           v-for="tpl in filteredTemplates"
           :key="tpl.id"
-          class="meoo-card group"
-          :class="{ 'meoo-card--selected': tpl.id === selectedId }"
+          class="uj-card group"
+          :class="{ 'uj-card--selected': tpl.id === selectedId }"
           @click="pick(tpl.id)"
         >
           <!-- 封面图容器 -->
-          <div class="meoo-cover-wrap">
+          <div class="uj-cover-wrap">
             <img
               :src="tpl.coverUrl || fallbackCover(tpl.id)"
               :alt="tpl.name"
-              class="meoo-cover-img"
+              class="uj-cover-img"
               loading="lazy"
             />
-            <div class="meoo-cover-overlay">
+            <div class="uj-cover-overlay">
               <div class="flex items-center gap-2">
                 <a-button
                   size="small"
                   type="primary"
-                  class="meoo-overlay-btn"
+                  class="uj-overlay-btn"
                   @click.stop="pick(tpl.id)"
                 >
                   套用此模板
@@ -114,7 +114,7 @@
                 <a-button
                   v-if="tpl.prompt"
                   size="small"
-                  class="meoo-overlay-prompt-btn"
+                  class="uj-overlay-prompt-btn"
                   @click.stop="showPromptModal(tpl)"
                 >
                   查看 Prompt
@@ -123,50 +123,50 @@
             </div>
 
             <!-- 角标 -->
-            <div class="meoo-card-badges">
-              <span class="meoo-badge-cat">{{ tpl.categoryLabel || 'B2B 官网' }}</span>
-              <span v-if="tpl.id === selectedId" class="meoo-badge-active">正在使用</span>
+            <div class="uj-card-badges">
+              <span class="uj-badge-cat">{{ tpl.categoryLabel || 'B2B 官网' }}</span>
+              <span v-if="tpl.id === selectedId" class="uj-badge-active">正在使用</span>
             </div>
           </div>
 
-          <!-- 卡片正文与作者信息 (对齐秒悟) -->
-          <div class="meoo-card-info">
+          <!-- 卡片正文与作者信息 -->
+          <div class="uj-card-info">
             <div class="flex items-start justify-between gap-2">
-              <h3 class="meoo-card-title truncate" :title="tpl.name">
+              <h3 class="uj-card-title truncate" :title="tpl.name">
                 {{ tpl.name }}
               </h3>
             </div>
-            <p class="meoo-card-desc" :title="tpl.description">
+            <p class="uj-card-desc" :title="tpl.description">
               {{ tpl.description }}
             </p>
 
             <!-- 标签行 -->
-            <div v-if="tpl.tags?.length" class="meoo-tags-row">
-              <span v-for="tag in tpl.tags" :key="tag" class="meoo-mini-tag">
+            <div v-if="tpl.tags?.length" class="uj-tags-row">
+              <span v-for="tag in tpl.tags" :key="tag" class="uj-mini-tag">
                 #{{ tag }}
               </span>
             </div>
 
             <!-- 底栏：创作者 + 热度/点赞统计 -->
-            <div class="meoo-card-footer">
-              <div class="meoo-author-box">
+            <div class="uj-card-footer">
+              <div class="uj-author-box">
                 <img
                   :src="tpl.authorAvatar || defaultAvatar"
                   alt=""
-                  class="meoo-author-avatar"
+                  class="uj-author-avatar"
                 />
-                <span class="meoo-author-name truncate">{{ tpl.author || '出海创新团队' }}</span>
+                <span class="uj-author-name truncate">{{ tpl.author || '出海创新团队' }}</span>
               </div>
-              <div class="meoo-stats-box">
-                <span class="meoo-stat-item">
-                  <span class="text-[11px]">👁</span> {{ tpl.views || '12.5k' }}
+              <div class="uj-stats-box">
+                <span class="uj-stat-item">
+                  <span class="text-[11px]"></span> {{ tpl.views || '12.5k' }}
                 </span>
                 <span
-                  class="meoo-stat-item meoo-like-btn"
+                  class="uj-stat-item uj-like-btn"
                   :class="{ liked: likedMap[tpl.id] }"
                   @click.stop="toggleLike(tpl.id)"
                 >
-                  <span class="text-[11px]">{{ likedMap[tpl.id] ? '❤️' : '🤍' }}</span>
+                  <span class="text-[11px]">{{ likedMap[tpl.id] ? '' : '' }}</span>
                   {{ (tpl.likes || 60) + (likedMap[tpl.id] ? 1 : 0) }}
                 </span>
               </div>
@@ -176,11 +176,11 @@
       </div>
 
       <!-- 空状态 -->
-      <div v-else class="meoo-empty-box">
-        <span class="text-4xl mb-3">🔍</span>
-        <h4 class="text-sm font-semibold text-slate-700">未找到相关建站模板</h4>
+      <div v-else class="uj-empty-box">
+        <span class="text-4xl mb-3"></span>
+        <h4 class="text-sm font-medium text-slate-700">未找到相关建站模板</h4>
         <p class="text-xs text-slate-400 mt-1">换个搜索词或点击“全部”查看全部精选模板</p>
-        <button type="button" class="meoo-reset-btn" @click="resetFilters">
+        <button type="button" class="uj-reset-btn" @click="resetFilters">
           清空搜索条件
         </button>
       </div>
@@ -189,7 +189,7 @@
     <!-- AI 提示词与构建参数详情弹窗 -->
     <a-modal
       v-model:open="promptModalOpen"
-      title="阿里秒悟 · 谷歌 Top-3 智能建站提示词"
+      title="谷歌 Top-3 智能建站提示词"
       width="640px"
       :footer="null"
       destroy-on-close
@@ -197,7 +197,7 @@
       <div v-if="activeTpl" class="p-2 space-y-4">
         <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-slate-700">模板架构: {{ activeTpl.name }}</span>
+            <span class="text-xs font-medium text-slate-700">模板架构: {{ activeTpl.name }}</span>
             <span class="text-[11px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-medium">已验证 EEAT 权威度</span>
           </div>
           <p class="text-xs text-slate-600 leading-relaxed m-0 font-sans select-all whitespace-pre-wrap">
@@ -352,17 +352,17 @@ function resetFilters() {
 </script>
 
 <style scoped lang="scss">
-.meoo-template-modal {
+.uj-template-modal {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.meoo-modal-header {
+.uj-modal-header {
   padding: 24px 28px 16px;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   border-bottom: 1px solid #f1f5f9;
 }
 
-.meoo-avatar-brand {
+.uj-avatar-brand {
   width: 44px;
   height: 44px;
   border-radius: 12px;
@@ -373,11 +373,11 @@ function resetFilters() {
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
-.meoo-badge-top20 {
+.uj-badge-top20 {
   display: inline-flex;
   align-items: center;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
   color: #1d4ed8;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
@@ -385,7 +385,7 @@ function resetFilters() {
   border-radius: 999px;
 }
 
-.meoo-chip-btn {
+.uj-chip-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -408,16 +408,16 @@ function resetFilters() {
   &.active {
     background: #0f172a;
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 
-.meoo-chip-count {
+.uj-chip-count {
   font-size: 10.5px;
   opacity: 0.7;
 }
 
-.meoo-search-input {
+.uj-search-input {
   width: 100%;
   height: 32px;
   padding: 0 28px 0 28px;
@@ -435,20 +435,20 @@ function resetFilters() {
   }
 }
 
-.meoo-modal-body {
+.uj-modal-body {
   padding: 24px 28px 32px;
   max-height: 64vh;
   overflow-y: auto;
   background: #f8fafc;
 }
 
-.meoo-card-grid {
+.uj-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
-.meoo-card {
+.uj-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
@@ -471,7 +471,7 @@ function resetFilters() {
   }
 }
 
-.meoo-cover-wrap {
+.uj-cover-wrap {
   position: relative;
   width: 100%;
   padding-top: 56.25%; /* 16:9 黄金视效比例 */
@@ -479,7 +479,7 @@ function resetFilters() {
   overflow: hidden;
 }
 
-.meoo-cover-img {
+.uj-cover-img {
   position: absolute;
   top: 0;
   left: 0;
@@ -488,12 +488,12 @@ function resetFilters() {
   object-fit: cover;
   transition: transform 0.3s ease;
 
-  .meoo-card:hover & {
+  .uj-card:hover & {
     transform: scale(1.04);
   }
 }
 
-.meoo-cover-overlay {
+.uj-cover-overlay {
   position: absolute;
   inset: 0;
   background: rgba(15, 23, 42, 0.55);
@@ -504,30 +504,30 @@ function resetFilters() {
   opacity: 0;
   transition: opacity 0.2s ease;
 
-  .meoo-card:hover & {
+  .uj-card:hover & {
     opacity: 1;
   }
 }
 
-.meoo-overlay-btn {
+.uj-overlay-btn {
   background: #2563eb;
   border: none;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
   border-radius: 6px;
   padding: 0 14px;
 }
 
-.meoo-overlay-prompt-btn {
+.uj-overlay-prompt-btn {
   background: rgba(255, 255, 255, 0.92);
   color: #0f172a;
   border: none;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
   border-radius: 6px;
 }
 
-.meoo-card-badges {
+.uj-card-badges {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -538,9 +538,9 @@ function resetFilters() {
   pointer-events: none;
 }
 
-.meoo-badge-cat {
+.uj-badge-cat {
   font-size: 10.5px;
-  font-weight: 600;
+  font-weight: 500;
   background: rgba(15, 23, 42, 0.72);
   backdrop-filter: blur(4px);
   color: #ffffff;
@@ -548,9 +548,9 @@ function resetFilters() {
   border-radius: 6px;
 }
 
-.meoo-badge-active {
+.uj-badge-active {
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 500;
   background: #2563eb;
   color: #ffffff;
   padding: 2px 8px;
@@ -558,21 +558,21 @@ function resetFilters() {
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
 }
 
-.meoo-card-info {
+.uj-card-info {
   padding: 14px 16px 12px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.meoo-card-title {
+.uj-card-title {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   color: #0f172a;
   margin: 0 0 4px;
 }
 
-.meoo-card-desc {
+.uj-card-desc {
   font-size: 12px;
   color: #64748b;
   margin: 0 0 10px;
@@ -584,14 +584,14 @@ function resetFilters() {
   height: 35px;
 }
 
-.meoo-tags-row {
+.uj-tags-row {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   margin-bottom: 12px;
 }
 
-.meoo-mini-tag {
+.uj-mini-tag {
   font-size: 10px;
   color: #3b82f6;
   background: #eff6ff;
@@ -600,7 +600,7 @@ function resetFilters() {
   font-weight: 500;
 }
 
-.meoo-card-footer {
+.uj-card-footer {
   margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid #f1f5f9;
@@ -610,7 +610,7 @@ function resetFilters() {
   font-size: 11.5px;
 }
 
-.meoo-author-box {
+.uj-author-box {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -618,7 +618,7 @@ function resetFilters() {
   max-width: 55%;
 }
 
-.meoo-author-avatar {
+.uj-author-avatar {
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -626,27 +626,27 @@ function resetFilters() {
   flex-shrink: 0;
 }
 
-.meoo-author-name {
+.uj-author-name {
   color: #475569;
   font-size: 11.5px;
   font-weight: 500;
 }
 
-.meoo-stats-box {
+.uj-stats-box {
   display: flex;
   align-items: center;
   gap: 10px;
   color: #94a3b8;
 }
 
-.meoo-stat-item {
+.uj-stat-item {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   font-size: 11px;
 }
 
-.meoo-like-btn {
+.uj-like-btn {
   cursor: pointer;
   transition: color 0.15s;
 
@@ -656,11 +656,11 @@ function resetFilters() {
 
   &.liked {
     color: #ef4444;
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 
-.meoo-empty-box {
+.uj-empty-box {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -669,14 +669,14 @@ function resetFilters() {
   text-align: center;
 }
 
-.meoo-reset-btn {
+.uj-reset-btn {
   margin-top: 14px;
   padding: 6px 14px;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1e293b;
   cursor: pointer;
 
@@ -686,13 +686,13 @@ function resetFilters() {
 }
 
 @media (max-width: 900px) {
-  .meoo-card-grid {
+  .uj-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 600px) {
-  .meoo-card-grid {
+  .uj-card-grid {
     grid-template-columns: 1fr;
   }
 }

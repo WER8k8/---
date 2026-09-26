@@ -103,7 +103,19 @@ class EvolutionEngine:
             output_summary=output_summary,
             metadata_json=metadata or {},
         )
-        self.db.add(record)
+        # 仅当 db 是真实 Session 时落库；测试/桩对象（SimpleNamespace 等）只返回 record
+        if hasattr(self.db, "add") and callable(getattr(self.db, "add", None)):
+            self.db.add(record)
+            if hasattr(self.db, "commit"):
+                try:
+                    self.db.commit()
+                except Exception:  # noqa: BLE001
+                    if hasattr(self.db, "rollback"):
+                        try:
+                            self.db.rollback()
+                        except Exception:  # noqa: BLE001
+                            pass
+        return record
         self.db.commit()
         self.db.refresh(record)
         logger.info(

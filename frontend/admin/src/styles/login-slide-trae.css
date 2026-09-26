@@ -167,7 +167,7 @@
 .trae-login-page .slide-content h2 {
   font-size: 32px;
   margin: 0 0 16px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 1px;
 }
 
@@ -187,7 +187,7 @@
   border-radius: 30px;
   cursor: pointer;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   transition: all 0.3s ease;
   letter-spacing: 1px;
   position: relative;
@@ -203,7 +203,7 @@
 
 .trae-login-page .form-title {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 500;
   color: #1a1a2e;
   margin: 0 0 18px;
   letter-spacing: 1px;
@@ -342,7 +342,7 @@
   border: none;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   letter-spacing: 1px;

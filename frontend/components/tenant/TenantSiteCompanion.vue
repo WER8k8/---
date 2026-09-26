@@ -164,7 +164,7 @@
       </div>
     </Transition>
 
-    <!-- 旺财 mascot（活泼灵动 · 参考 meoo 挂件） -->
+    <!-- 旺财 mascot（活泼灵动） -->
     <button
       type="button"
       class="site-companion-mascot"

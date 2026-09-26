@@ -2,9 +2,9 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <YdPage surface="default" class="today-three-page-wrap">
-    <ClientTodayThreeBoard />
-  </YdPage>
+ <YdPage surface="default" class="today-three-page-wrap">
+ <ClientTodayThreeBoard />
+</YdPage>
 </template>
 
 <script setup lang="ts">
@@ -17,10 +17,10 @@ useClientTodayThree();
 
 <style scoped lang="scss">
 .today-three-page-wrap {
-  width: 100%;
+ width: 100%;
 }
 
 .today-three-page-wrap :deep(.yd-page-body) {
-  padding: 0;
+ padding: 0;
 }
 </style>

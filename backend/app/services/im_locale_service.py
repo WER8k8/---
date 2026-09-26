@@ -111,6 +111,56 @@ CHANNEL_LABELS: dict[str, dict[str, str]] = {
         "ja": "お問い合わせ",
         "ko": "문의하기",
     },
+    "wechat": {
+        "zh": "微信咨询",
+        "en": "Chat on WeChat",
+        "ar": "تواصل عبر ويشات",
+        "es": "Chatear por WeChat",
+        "pt": "Conversar no WeChat",
+        "ru": "Написать в WeChat",
+        "th": "แชทผ่าน WeChat",
+        "vi": "Nhắn qua WeChat",
+        "id": "Obrolan di WeChat",
+        "ms": "Sembang WeChat",
+        "ja": "WeChatで相談",
+        "ko": "WeChat 상담",
+    },
+    "qq": {
+        "zh": "QQ 咨询",
+        "en": "Chat on QQ",
+        "ar": "تواصل عبر QQ",
+        "es": "Chatear por QQ",
+        "pt": "Conversar no QQ",
+        "ru": "Написать в QQ",
+        "th": "แชทผ่าน QQ",
+        "vi": "Nhắn qua QQ",
+        "id": "Obrolan di QQ",
+        "ms": "Sembang QQ",
+        "ja": "QQで相談",
+        "ko": "QQ 상담",
+    },
+    "phone": {
+        "zh": "电话咨询",
+        "en": "Call Us",
+        "ar": "اتصل بنا",
+        "es": "Llámenos",
+        "pt": "Ligue para nós",
+        "ru": "Позвоните нам",
+        "th": "โทรหาเรา",
+        "vi": "Gọi cho chúng tôi",
+        "id": "Telepon kami",
+        "ms": "Telefon kami",
+        "ja": "お電話ください",
+        "ko": "전화 문의",
+    },
+    "wecom_inquiry": {
+        "zh": "企业微信咨询",
+        "en": "Chat on WeCom",
+    },
+    "douyin_inquiry": {
+        "zh": "抖音咨询",
+        "en": "Chat on Douyin",
+    },
 }
 
 COUNTRY_DEFAULT_LANG: dict[str, str] = {
@@ -185,6 +235,10 @@ def generate_im_link(channel_type: str, account_id: str) -> str:
         return f"tencent://message/?uin={account_id}" if account_id else "#inquiry-form"
     if channel_type == "phone":
         return f"tel:{account_id}" if account_id else "#inquiry-form"
+    if channel_type == "wecom_inquiry":
+        return "#inquiry-form"
+    if channel_type == "douyin_inquiry":
+        return "#inquiry-form"
     if channel_type == "form":
         return "#inquiry-form"
     if channel_type == "live_chat":

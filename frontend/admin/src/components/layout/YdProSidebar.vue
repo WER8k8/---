@@ -10,7 +10,7 @@
         @click="emit('brand-click')"
       >
         <div class="sidebar-brand-mark flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center">
-          <span class="text-white font-bold text-xs">{{ brandMark }}</span>
+          <span class="text-white font-medium text-xs">{{ brandMark }}</span>
         </div>
         <transition name="brand-fade">
           <div v-show="!collapsed" class="flex flex-col">
@@ -125,7 +125,7 @@
 
     <div class="sidebar-footer">
       <div v-show="!collapsed" class="flex items-center gap-2 px-1 mb-2">
-        <div class="w-7 h-7 rounded-md sidebar-user-avatar text-white flex items-center justify-center font-semibold text-xs flex-shrink-0">
+        <div class="w-7 h-7 rounded-md sidebar-user-avatar text-white flex items-center justify-center font-medium text-xs flex-shrink-0">
           {{ username.charAt(0) || 'A' }}
         </div>
         <div class="flex flex-col min-w-0">
@@ -278,7 +278,7 @@ const emit = defineEmits<{
 
 .nav-group-title {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #94a3b8;
@@ -394,7 +394,7 @@ const emit = defineEmits<{
   justify-content: space-between;
   padding: 6px 12px 4px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.5px;

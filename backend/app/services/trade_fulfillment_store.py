@@ -38,6 +38,38 @@ def _new_id() -> str:
     return str(uuid.uuid4())
 
 
+def _safe_uuid(val: Optional[Any]) -> Optional[str]:
+    if not val:
+        return None
+    s = str(val).strip()
+    if not s:
+        return None
+    try:
+        return str(uuid.UUID(s))
+    except (ValueError, AttributeError):
+        return None
+
+
+def _resolve_tenant_uuid(db: Optional[Session], tenant_id: Optional[str]) -> Optional[str]:
+    valid = _safe_uuid(tenant_id)
+    if valid:
+        return valid
+    if db is not None and tenant_id:
+        try:
+            from app.models.tenant import Tenant
+
+            t = (
+                db.query(Tenant.id)
+                .filter((Tenant.domain == str(tenant_id)) | (Tenant.name == str(tenant_id)))
+                .first()
+            )
+            if t:
+                return str(t[0])
+        except Exception:
+            pass
+    return None
+
+
 def persist_whatsapp_message(
     db: Optional[Session],
     *,
@@ -62,8 +94,8 @@ def persist_whatsapp_message(
     try:
         row = WhatsappMessage(
             id=_new_id(),
-            tenant_id=tenant_id,
-            inquiry_id=inquiry_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
+            inquiry_id=_safe_uuid(inquiry_id),
             lead_id=lead_id,
             phone_e164=phone_e164 or "",
             direction=direction or "outbound",
@@ -118,9 +150,9 @@ def persist_logistics_shipment(
 
         row = LogisticsShipment(
             id=_new_id(),
-            tenant_id=tenant_id,
-            order_id=order_id,
-            purchase_order_id=purchase_order_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
+            order_id=_safe_uuid(order_id),
+            purchase_order_id=_safe_uuid(purchase_order_id),
             tracking_no=tracking_no,
             carrier=carrier,
             origin_port=origin_port,
@@ -164,7 +196,7 @@ def persist_experience_record(
 
         row = ExperienceRecord(
             id=_new_id(),
-            tenant_id=tenant_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
             source_type=source_type,
             source_id=source_id,
             experience_type=experience_type,
@@ -209,8 +241,8 @@ def persist_contact_event(
 
         row = ContactEvent(
             id=_new_id(),
-            tenant_id=tenant_id,
-            inquiry_id=inquiry_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
+            inquiry_id=_safe_uuid(inquiry_id),
             lead_id=lead_id,
             channel=channel or "web",
             event_type=event_type or "view",
@@ -253,8 +285,8 @@ def persist_purchase_order(
     try:
         row = PurchaseOrder(
             id=_new_id(),
-            tenant_id=tenant_id,
-            order_id=order_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
+            order_id=_safe_uuid(order_id),
             po_number=po_number,
             supplier_name=supplier_name,
             product_desc=product_desc,
@@ -305,8 +337,8 @@ def persist_invoice(
             return {"persisted": True, "id": existing.id, "invoice_no": existing.invoice_no, "created": False}
         row = Invoice(
             id=_new_id(),
-            tenant_id=tenant_id,
-            order_id=order_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
+            order_id=_safe_uuid(order_id),
             invoice_no=invoice_no,
             invoice_type=invoice_type or "pi",
             buyer_name=buyer_name,
@@ -350,9 +382,9 @@ def persist_business_payment(
     try:
         row = BusinessPayment(
             id=_new_id(),
-            tenant_id=tenant_id,
-            order_id=order_id,
-            invoice_id=invoice_id,
+            tenant_id=_resolve_tenant_uuid(db, tenant_id),
+            order_id=_safe_uuid(order_id),
+            invoice_id=_safe_uuid(invoice_id),
             amount=amount or 0,
             currency=currency or "USD",
             method=method or "tt",
@@ -387,6 +419,7 @@ def ensure_default_pipeline(
     if db is None:
         return {"persisted": False, "reason": "no_db"}
     try:
+        resolved_t_id = _resolve_tenant_uuid(db, tenant_id)
         stages = stages or [
             "询盘捕获",
             "需求核算",
@@ -397,7 +430,7 @@ def ensure_default_pipeline(
             "尾款与物流",
         ]
         q = db.query(Pipeline).filter(
-            Pipeline.tenant_id == tenant_id,
+            Pipeline.tenant_id == resolved_t_id,
             Pipeline.name == name,
             Pipeline.pipeline_type == pipeline_type,
         )
@@ -408,7 +441,7 @@ def ensure_default_pipeline(
 
         row = Pipeline(
             id=_new_id(),
-            tenant_id=tenant_id,
+            tenant_id=resolved_t_id,
             name=name,
             pipeline_type=pipeline_type,
             stage_count=len(stages),
@@ -443,16 +476,17 @@ def ensure_knowledge_base(
     if db is None:
         return {"persisted": False, "reason": "no_db"}
     try:
+        resolved_t_id = _resolve_tenant_uuid(db, tenant_id)
         existing = (
             db.query(KnowledgeBase)
-            .filter(KnowledgeBase.tenant_id == tenant_id, KnowledgeBase.name == name)
+            .filter(KnowledgeBase.tenant_id == resolved_t_id, KnowledgeBase.name == name)
             .first()
         )
         if existing:
             return {"persisted": True, "id": existing.id, "created": False}
         row = KnowledgeBase(
             id=_new_id(),
-            tenant_id=tenant_id,
+            tenant_id=resolved_t_id,
             name=name,
             description=description,
             kb_type=kb_type or "product",

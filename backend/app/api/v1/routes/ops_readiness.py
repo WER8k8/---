@@ -54,3 +54,23 @@ def ops_readiness(
     except Exception as exc:  # noqa: BLE001
         logger.exception("就绪度检查执行失败")
         return error_response(500, f"就绪度检查执行失败：{type(exc).__name__}: {exc}")
+
+
+@router.get("/router-mount-failures")
+def router_mount_failures(
+    current_user: User = Depends(get_current_user),
+):
+    """路由挂载失败清单（P1-c 可观测性）。
+
+    返回 register_routes() 期间所有被捕获的挂载异常明细，
+    让「子包导入失败 → 整段路由静默 404」从不可见变为可探测。
+    """
+    from app.api.v1.routes import ROUTER_MOUNT_FAILURES
+
+    return success_response(
+        data={
+            "failures": ROUTER_MOUNT_FAILURES,
+            "count": len(ROUTER_MOUNT_FAILURES),
+            "healthy": len(ROUTER_MOUNT_FAILURES) == 0,
+        }
+    )

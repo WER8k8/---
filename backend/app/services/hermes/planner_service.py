@@ -73,7 +73,8 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "order.create", "order.sync",
     "billing.meter", "billing.invoice",
     "trade.docs", "document.generate_pi", "document.generate_trade_docs",
-    "crm.sync_stage", "order.fulfill", "logistics.track", "dispatch.notify",
+    "crm.sync_stage", "crm.sync_lead", "crm.update_opportunity",
+    "order.fulfill", "logistics.track", "dispatch.notify",
     "publish.multi", "publish.single",
     "nurture.create", "nurture.advance",
     "egress.assign", "egress.provision",
@@ -630,7 +631,7 @@ def _composite_super_graph(plan_id: str, event_id: str, payload: dict[str, Any])
             TaskNode(
                 id="n3", executor="accio", capability="prospect.enrich",
                 depends_on=["n2"],
-                input_from={"prospects": "n2.output.leads"},
+                input_from={"prospects": "n2.output.prospects"},
                 input={"country": country, "research_depth": "standard"},
                 on_fail="skip",
             ),
@@ -669,6 +670,13 @@ def _composite_super_graph(plan_id: str, event_id: str, payload: dict[str, Any])
                 id="n7", executor="billing", capability="billing.meter",
                 depends_on=["n6"],
                 input={"event_type": "composite_super_run", "scene": "lane_d_composite", "keyword": keyword},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n8", executor="goodjob_crm", capability="crm.sync_lead",
+                depends_on=["n4"],
+                input_from={"prospects": "n4.output.qualified"},
+                input={"auto_create_inquiry": True},
                 on_fail="skip",
             ),
         ],
@@ -1152,6 +1160,7 @@ def _enrich_with_experience(intent_event: IntentEvent, db: Session) -> dict:
     """经验注入 + 技能包召回 → payload._experience_hints / _skill_refs。
 
     P2-1：唯一真源 = Evolution PG（unified_experience）；JSON 仅兜底且标注。
+    另并入 DSH 本地经验引擎建议（get_experience_suggestions），避免双源各自为政。
     """
     payload = dict(intent_event.payload or {})
     try:
@@ -1177,16 +1186,40 @@ def _enrich_with_experience(intent_event: IntentEvent, db: Session) -> dict:
                 for e in experiences[:3]
             ]
             payload["_experience_source"] = experiences[0].get("source") or "evolution_pg"
-    except Exception:  # noqa: BLE001
-        pass
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("planner: unified_experience 注入失败: %s", exc)
+    # DSH 本地经验引擎建议（BP-15：原先零外部调用）
+    try:
+        from app.services.deepseek_harness.client import get_experience_suggestions
+
+        scene = intent_event.scene_type or intent_event.intent or "intent"
+        local_hints = get_experience_suggestions(f"intent:{scene}", top_k=3) or []
+        if local_hints:
+            existing = list(payload.get("_experience_hints") or [])
+            for h in local_hints:
+                if not isinstance(h, dict):
+                    continue
+                existing.append(
+                    {
+                        "id": h.get("id"),
+                        "type": h.get("type") or "local_experience",
+                        "summary": h.get("summary") or h.get("key") or str(h)[:200],
+                        "score": h.get("score", 0),
+                        "source": "deepseek_local_engine",
+                    }
+                )
+            payload["_experience_hints"] = existing[:6]
+            payload.setdefault("_experience_source", "deepseek_local_engine")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("planner: DSH 本地经验建议注入失败: %s", exc)
     # DSH 技能召回进 payload，供 L1 Hybrid / L2 使用
     try:
         query = f"{intent_event.intent} {json.dumps(payload, ensure_ascii=False)}"
         skills = _recall_skills(query, top_k=3)
         if skills:
             payload["_skill_refs"] = skills
-    except Exception:  # noqa: BLE001
-        pass
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("planner: 技能召回失败: %s", exc)
     return payload
 
 

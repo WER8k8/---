@@ -111,19 +111,8 @@ const emit = defineEmits<{
   (e: 'reply', email: Email & { thread?: unknown }): void;
 }>();
 
-const defaultBody = `
-<p>Dear ${props.email.recipientName},</p>
-<p>I hope this email finds you well. I am writing to introduce our premium building materials that could greatly benefit your projects.</p>
-<p>We are a leading manufacturer with over 15 years of experience in the industry. Our products are certified by CE, ASTM, and ISO standards.</p>
-<p>Key advantages:</p>
-<ul>
-  <li>Excellent quality with competitive pricing</li>
-  <li>Fast delivery within 30 days</li>
-  <li>Professional after-sales support</li>
-</ul>
-<p>Would you be available for a brief call to discuss your requirements?</p>
-<p>Best regards,<br/>Your Name</p>
-`;
+// 仅当邮件确实没有正文时展示的诚实占位（不再伪造一封示例信）
+const defaultBody = `<p style="color:#8c8c8c">（该邮件暂无正文内容）</p>`;
 
 const trackingEvents = ref([
   {
@@ -244,7 +233,7 @@ async function handleViewInThread() {
 .email-subject h3 {
   margin: 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .email-meta {

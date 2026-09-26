@@ -287,7 +287,7 @@ def create_from_inquiry(
         except ValueError as exc:
             return error_response(400, f"valid_until 格式错误: {exc}")
 
-    p_name = req.product_name or getattr(inquiry, "product_name", None) or "Standard Industrial Supplies"
+    p_name = req.product_name or getattr(inquiry, "product", None) or "Standard Industrial Supplies"
     qty = req.quantity if req.quantity and req.quantity > 0 else 1.0
     u_price = req.unit_price if req.unit_price and req.unit_price >= 0 else 0.0
     total = round(qty * u_price, 2)
@@ -359,6 +359,7 @@ def convert_to_order(
     order_number = f"ORD-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{secrets.token_hex(2).upper()}"
     access_token = secrets.token_hex(32)
 
+    item0 = (quote.items or [None])[0]
     new_order = Order(
         order_number=order_number,
         buyer_id=buyer_id,
@@ -375,7 +376,20 @@ def convert_to_order(
         payment_terms=quote.payment_terms or "T/T 30/70",
         deposit_ratio=dep_ratio,
         deposit_amount=dep_amount,
+        inquiry_id=str(quote.inquiry_id) if quote.inquiry_id else None,
+        customer_name=None,
+        product_summary=(getattr(item0, "product_name", None) or "") or None,
     )
+    if quote.inquiry_id:
+        try:
+            from app.models.inquiry import Inquiry
+            inq = db.query(Inquiry).filter(Inquiry.id == quote.inquiry_id).first()
+            if inq is not None:
+                new_order.customer_name = getattr(inq, "name", None) or getattr(inq, "company", None) or ""
+                if not new_order.product_summary:
+                    new_order.product_summary = getattr(inq, "product", None) or ""
+        except Exception:
+            pass
     db.add(new_order)
     quote.status = "converted"
     db.commit()

@@ -40,12 +40,12 @@ onUnmounted(() => observer?.disconnect())
 <style scoped>
 .yd-rt__table { width: 100%; border-collapse: collapse; }
 .yd-rt__table th, .yd-rt__table td { padding: 12px 16px; text-align: start; border-block-end: 1px solid #e5e7eb; }
-.yd-rt__table th { font-weight: 600; background: #f9fafb; }
+.yd-rt__table th { font-weight: 500; background: #f9fafb; }
 .yd-rt__cards { display: flex; flex-direction: column; gap: 12px; }
 .yd-rt__card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
 .yd-rt__field { display: flex; justify-content: space-between; padding: 6px 0; border-block-end: 1px solid #f3f4f6; }
 .yd-rt__field:last-child { border-block-end: none; }
-.yd-rt__label { font-weight: 600; color: #6b7280; font-size: 13px; flex-shrink: 0; margin-inline-end: 12px; }
+.yd-rt__label { font-weight: 500; color: #6b7280; font-size: 13px; flex-shrink: 0; margin-inline-end: 12px; }
 .yd-rt__value { text-align: end; word-break: break-all; }
 .yd-rt__empty { text-align: center; padding: 32px; color: #9ca3af; }
 </style>

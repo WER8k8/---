@@ -173,6 +173,10 @@ if ($ForceRestart) {
   Stop-PortListener $TenantPort
   Stop-PortListener $NuxtPreviewPort
   Clear-NuxtDevLock $TenantDir
+  $celeryStop = Join-Path $Root 'scripts\start-celery-local.ps1'
+  if (Test-Path -LiteralPath $celeryStop) {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File $celeryStop -Stop
+  }
   Start-Sleep -Seconds 2
 }
 
@@ -261,6 +265,15 @@ if (Test-TcpPortLocal $RedisPort) {
 } else {
   Write-Host "WARN redis-server.exe not found: $RedisExe" -ForegroundColor Yellow
 }
+
+# ── Celery Worker（异步任务队列，依赖 Redis 6379）──────────────────────
+if (Test-TcpPortLocal $RedisPort) {
+  $CeleryScript = Join-Path $Root 'scripts\start-celery-local.ps1'
+  if (Test-Path -LiteralPath $CeleryScript) {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File $CeleryScript -Daemon
+  }
+}
+
 
 if ($needBackend) {
   Write-Host "Starting backend on :$ApiPort" -ForegroundColor Cyan
@@ -367,6 +380,7 @@ Write-Host ''
 Write-Host "Backend : http://127.0.0.1:$ApiPort/docs" -ForegroundColor Green
 Write-Host "Login   : http://127.0.0.1:$AdminPort/login  (LOGIN-LOCK-01)" -ForegroundColor Green
 Write-Host "Admin   : http://127.0.0.1:$AdminPort/admin" -ForegroundColor Green
+Write-Host "Celery  : Worker daemon active (Redis :6379/1)" -ForegroundColor Green
 if ($Lan -and $LanIp) {
   Write-Host "LAN     : http://${LanIp}:$AdminPort/login" -ForegroundColor Cyan
   Write-Host "Tip     : same WiFi; allow TCP $AdminPort in firewall" -ForegroundColor DarkGray

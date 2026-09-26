@@ -182,7 +182,7 @@ function formatOutput(output: unknown): string {
 
 .agent-task-tree__goal-text {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #0f172a;
   margin: 4px 0 0;
 }

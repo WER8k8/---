@@ -498,6 +498,19 @@
   .uj-stagger > * { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
+/* ══════════ 全站字重上限（马卡龙：仅 400/500）══════════ */
+h1, h2, h3, h4, h5, h6,
+.nav-item, .nav-text, .submenu-item,
+.ant-btn, .ant-tag, .ant-card-head-title,
+.sidebar-brand span, .brand-text strong {
+  font-weight: 500 !important;
+}
+/* 覆盖历史 600/700：标签与强调不再用粗体破坏奶感 */
+.ant-descriptions-item-label,
+th, label, .check-label {
+  font-weight: 500 !important;
+}
+
 /* 键盘焦点可见 */
 .shell .nav-item:focus-visible,
 .shell .submenu-item:focus-visible,

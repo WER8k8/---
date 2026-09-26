@@ -433,3 +433,22 @@ def paperclip_heartbeat_tick(self):
     from app.services.paperclip.agent import PaperclipAgent
     agent = PaperclipAgent()
     _safe_run("paperclip_heartbeat", agent.heartbeat)
+
+
+@shared_task(
+    name="app.tasks.ops_scheduler_tasks.experience_evolve_daily",
+    max_retries=1,
+)
+def experience_evolve_daily():
+    """每日扫描低成功率任务类型，生成改进建议并记录告警。"""
+    from app.services.hermes.experience_engine import get_engine
+    engine = get_engine()
+    alerts = engine.evolve()
+    if alerts:
+        logger.warning("[Experience] 发现 %d 个低成功率任务类型:", len(alerts))
+        for a in alerts:
+            logger.warning(
+                "  - %s: 成功率 %.1f%%, 平均耗时 %.1fs",
+                a["task_type"], a["success_rate"] * 100, a["avg_duration"],
+            )
+    return {"alerts_count": len(alerts)}

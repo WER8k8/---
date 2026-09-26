@@ -49,3 +49,28 @@ repos:
         args: [--maxkb=1024]
       - id: no-commit-to-branch
         args: [--branch, main, --branch, master]
+
+  # ── 本地软门禁（提示但不阻断提交；硬门禁在 CI）──
+  - repo: local
+    hooks:
+      - id: router-registration-drift
+        name: Router Registration Drift (warn-only)
+        description: 本地提交时提示后端路由注册漂移，不阻断提交；合入门禁在 CI router-drift 作业。
+        entry: python backend/scripts/router_drift_precommit.py
+        language: system
+        pass_filenames: false
+        files: ^backend/app/api/
+      - id: db-model-drift
+        name: ORM Model ↔ DB Drift (warn-only)
+        description: 本地提交涉及 models/ 或 alembic 迁移时，提示 ORM 模型与物理库漂移；不阻断提交（需活 DB，无活 DB 时仅提示）。
+        entry: python backend/scripts/db_model_drift_precommit.py
+        language: system
+        pass_filenames: false
+        files: ^backend/(app/models/|alembic_migrations/versions/)
+      - id: orchestration-selfcheck
+        name: Orchestration Self-Check (warn-only)
+        description: 本地提交涉及后端编排链路时，提示编排自检(19项)结果；不阻断提交（需活 PG/Celery/n8n，无活服务时仅提示）。
+        entry: python backend/scripts/orchestration_selfcheck_precommit.py
+        language: system
+        pass_filenames: false
+        files: ^backend/

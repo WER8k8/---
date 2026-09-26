@@ -3,135 +3,135 @@
  */
 <template>
 
-  <YdPage title="评论互动" subtitle="拉评 · AI 草稿 · AiToEarn 真回复" surface="elevated">
+ <YdPage title="评论互动" subtitle="拉评 · AI 草稿 · AiToEarn 真回复" surface="elevated">
 
-    <AitoearnCapabilityBar ref="capabilityRef" />
+ <AitoearnCapabilityBar ref="capabilityRef" />
 
 
 
-    <a-space class="mb-4" wrap>
+ <a-space class="mb-4" wrap>
 
-      <a-button :loading="pulling" type="primary" @click="pullComments">拉取抖音评论</a-button>
+ <a-button :loading="pulling" type="primary" @click="pullComments">拉取抖音评论</a-button>
 
-      <a-button @click="loadInteractions">刷新列表</a-button>
+ <a-button @click="loadInteractions">刷新列表</a-button>
 
-      <router-link to="/client/distribute">← 内容分发</router-link>
+ <router-link to="/client/distribute">← 内容分发</router-link>
 
-    </a-space>
+</a-space>
 
 
 
-    <a-empty
+ <a-empty
 
-      v-if="!loading && !items.length"
+ v-if="!loading && !items.length"
 
-      :description="emptyHint"
+ :description="emptyHint"
 
-    >
+ >
 
-      <a-button type="primary" @click="pullComments">拉取评论</a-button>
+ <a-button type="primary" @click="pullComments">拉取评论</a-button>
 
-    </a-empty>
+</a-empty>
 
 
 
-    <a-table
+ <a-table
 
-      v-else
+ v-else
 
-      :loading="loading"
+ :loading="loading"
 
-      :columns="columns"
+ :columns="columns"
 
-      :data-source="items"
+ :data-source="items"
 
-      row-key="id"
+ row-key="id"
 
-      :pagination="{ pageSize: 10 }"
+ :pagination="{ pageSize: 10 }"
 
-    >
+ >
 
-      <template #bodyCell="{ column, record }">
+ <template #bodyCell="{ column, record }">
 
-        <template v-if="column.key === 'content'">
+ <template v-if="column.key === 'content'">
 
-          <div class="engage-content">{{ record.content }}</div>
+ <div class="engage-content">{{ record.content }}</div>
 
-          <a-textarea
+ <a-textarea
 
-            v-if="canEditReply(record)"
+ v-if="canEditReply(record)"
 
-            v-model:value="replyEdits[record.id]"
+ v-model:value="replyEdits[record.id]"
 
-            :rows="2"
+ :rows="2"
 
-            class="engage-reply-edit"
+ class="engage-reply-edit"
 
-            placeholder="编辑回复后发送"
+ placeholder="编辑回复后发送"
 
-          />
+ />
 
-          <div v-else-if="record.draft_reply || record.final_reply" class="engage-draft">
+ <div v-else-if="record.draft_reply || record.final_reply" class="engage-draft">
 
-            草稿：{{ record.final_reply || record.draft_reply }}
+ 草稿：{{ record.final_reply || record.draft_reply }}
 
-          </div>
+</div>
 
-        </template>
+</template>
 
-        <template v-else-if="column.key === 'status'">
+ <template v-else-if="column.key === 'status'">
 
-          <a-tag>{{ record.status }}</a-tag>
+ <a-tag>{{ record.status }}</a-tag>
 
-        </template>
+</template>
 
-        <template v-else-if="column.key === 'actions'">
+ <template v-else-if="column.key === 'actions'">
 
-          <a-space>
+ <a-space>
 
-            <a-button
+ <a-button
 
-              size="small"
+ size="small"
 
-              :disabled="!canRegenerate(record)"
+ :disabled="!canRegenerate(record)"
 
-              :loading="regeneratingId === record.id"
+ :loading="regeneratingId === record.id"
 
-              @click="regenerateDraft(record)"
+ @click="regenerateDraft(record)"
 
-            >
+ >
 
-              重生成
+ 重生成
 
-            </a-button>
+</a-button>
 
-            <a-button
+ <a-button
 
-              size="small"
+ size="small"
 
-              type="primary"
+ type="primary"
 
-              :disabled="!canAutoSend(record)"
+ :disabled="!canAutoSend(record)"
 
-              :loading="sendingId === record.id"
+ :loading="sendingId === record.id"
 
-              @click="approveAndSend(record)"
+ @click="approveAndSend(record)"
 
-            >
+ >
 
-              AiToEarn 发送
+ AiToEarn 发送
 
-            </a-button>
+</a-button>
 
-          </a-space>
+</a-space>
 
-        </template>
+</template>
 
-      </template>
+</template>
 
-    </a-table>
+</a-table>
 
-  </YdPage>
+</YdPage>
 
 </template>
 
@@ -155,17 +155,17 @@ import { unwrapFetchedJson } from '@/api'
 
 type InteractionRow = {
 
-  id: string
+ id: string
 
-  content?: string
+ content?: string
 
-  draft_reply?: string
+ draft_reply?: string
 
-  final_reply?: string
+ final_reply?: string
 
-  status?: string
+ status?: string
 
-  platform?: string
+ platform?: string
 
 }
 
@@ -191,11 +191,11 @@ const engageAvailable = ref(false)
 
 const emptyHint = computed(() =>
 
-  engageAvailable.value
+ engageAvailable.value
 
-    ? '暂无待处理评论，可点击「拉取抖音评论」同步'
+ ? '暂无待处理评论，可点击「拉取抖音评论」同步'
 
-    : 'AiToEarn 未配置或未分配矩阵号 — 自动回评不可用，请先完成运维配置',
+ : 'AiToEarn 未配置或未分配矩阵号 — 自动回评不可用，请先完成运维配置',
 
 )
 
@@ -203,13 +203,13 @@ const emptyHint = computed(() =>
 
 const columns = [
 
-  { title: '平台', dataIndex: 'platform', width: 90 },
+ { title: '平台', dataIndex: 'platform', width: 90 },
 
-  { title: '内容', key: 'content' },
+ { title: '内容', key: 'content' },
 
-  { title: '状态', key: 'status', width: 120 },
+ { title: '状态', key: 'status', width: 120 },
 
-  { title: '操作', key: 'actions', width: 200 },
+ { title: '操作', key: 'actions', width: 200 },
 
 ]
 
@@ -217,7 +217,7 @@ const columns = [
 
 function canAutoSend(record: { status?: string }) {
 
-  return ['draft_ready', 'failed'].includes(String(record.status || ''))
+ return ['draft_ready', 'failed'].includes(String(record.status || ''))
 
 }
 
@@ -225,7 +225,7 @@ function canAutoSend(record: { status?: string }) {
 
 function canRegenerate(record: { status?: string }) {
 
-  return !['sent', 'skipped', 'sending'].includes(String(record.status || ''))
+ return !['sent', 'skipped', 'sending'].includes(String(record.status || ''))
 
 }
 
@@ -233,7 +233,7 @@ function canRegenerate(record: { status?: string }) {
 
 function canEditReply(record: { status?: string }) {
 
-  return canAutoSend(record)
+ return canAutoSend(record)
 
 }
 
@@ -241,7 +241,7 @@ function canEditReply(record: { status?: string }) {
 
 function replyText(record: { id: string; final_reply?: string; draft_reply?: string }) {
 
-  return replyEdits[record.id] || record.final_reply || record.draft_reply || ''
+ return replyEdits[record.id] || record.final_reply || record.draft_reply || ''
 
 }
 
@@ -249,33 +249,33 @@ function replyText(record: { id: string; final_reply?: string; draft_reply?: str
 
 async function loadInteractions() {
 
-  loading.value = true
+ loading.value = true
 
-  try {
+ try {
 
-    const data = await apiGet<{ items?: InteractionRow[] }>('/social-interactions/')
+ const data = await apiGet<{ items?: InteractionRow[] }>('/social-interactions/')
 
-    items.value = data?.items || []
+ items.value = data?.items || []
 
-    for (const row of items.value) {
+ for (const row of items.value) {
 
-      if (!replyEdits[row.id]) {
+ if (!replyEdits[row.id]) {
 
-        replyEdits[row.id] = row.final_reply || row.draft_reply || ''
+ replyEdits[row.id] = row.final_reply || row.draft_reply || ''
 
-      }
+ }
 
-    }
+ }
 
-  } catch (e: unknown) {
+ } catch (e: unknown) {
 
-    message.error(e instanceof Error ? e.message : '加载失败')
+ message.error(e instanceof Error ? e.message : '加载失败')
 
-  } finally {
+ } finally {
 
-    loading.value = false
+ loading.value = false
 
-  }
+ }
 
 }
 
@@ -283,37 +283,37 @@ async function loadInteractions() {
 
 async function pullComments() {
 
-  pulling.value = true
+ pulling.value = true
 
-  try {
+ try {
 
-    const res = await fetch('/api/v1/client/douyin-comments/pull', {
+ const res = await fetch('/api/v1/client/douyin-comments/pull', {
 
-      method: 'POST',
+ method: 'POST',
 
-      headers: { Authorization: `Bearer ${getAuthToken()}` },
+ headers: { Authorization: `Bearer ${getAuthToken()}` },
 
-    })
+ })
 
-    const body = await res.json()
+ const body = await res.json()
 
-    if (body.code && body.code !== 0) throw new Error(body.message || '拉取失败')
+ if (body.code && body.code !== 0) throw new Error(body.message || '拉取失败')
 
-    const data = unwrapFetchedJson<{ ingested?: number; hint?: string }>(body)
+ const data = unwrapFetchedJson<{ ingested?: number; hint?: string }>(body)
 
-    message.success(data?.hint || `已入库 ${data?.ingested ?? 0} 条`)
+ message.success(data?.hint || `已入库 ${data?.ingested ?? 0} 条`)
 
-    await loadInteractions()
+ await loadInteractions()
 
-  } catch (e: unknown) {
+ } catch (e: unknown) {
 
-    message.error(e instanceof Error ? e.message : '拉取失败')
+ message.error(e instanceof Error ? e.message : '拉取失败')
 
-  } finally {
+ } finally {
 
-    pulling.value = false
+ pulling.value = false
 
-  }
+ }
 
 }
 
@@ -321,35 +321,35 @@ async function pullComments() {
 
 async function regenerateDraft(record: Record<string, unknown>) {
 
-  const id = String(record.id || '')
+ const id = String(record.id || '')
 
-  regeneratingId.value = id
+ regeneratingId.value = id
 
-  try {
+ try {
 
-    const row = await apiPost<InteractionRow>(
+ const row = await apiPost<InteractionRow>(
 
-      `/social-interactions/${id}/regenerate-draft`,
+ `/social-interactions/${id}/regenerate-draft`,
 
-      {},
+ {},
 
-    )
+ )
 
-    replyEdits[id] = row?.draft_reply || row?.final_reply || ''
+ replyEdits[id] = row?.draft_reply || row?.final_reply || ''
 
-    message.success('草稿已重新生成')
+ message.success('草稿已重新生成')
 
-    await loadInteractions()
+ await loadInteractions()
 
-  } catch (e: unknown) {
+ } catch (e: unknown) {
 
-    message.error(e instanceof Error ? e.message : '重生成失败')
+ message.error(e instanceof Error ? e.message : '重生成失败')
 
-  } finally {
+ } finally {
 
-    regeneratingId.value = ''
+ regeneratingId.value = ''
 
-  }
+ }
 
 }
 
@@ -357,43 +357,43 @@ async function regenerateDraft(record: Record<string, unknown>) {
 
 async function approveAndSend(record: Record<string, unknown>) {
 
-  const id = String(record.id || '')
+ const id = String(record.id || '')
 
-  sendingId.value = id
+ sendingId.value = id
 
-  try {
+ try {
 
-    await apiPost(`/social-interactions/${id}/approve`, {
+ await apiPost(`/social-interactions/${id}/approve`, {
 
-      final_reply: replyText({
+ final_reply: replyText({
 
-        id,
+ id,
 
-        final_reply: record.final_reply as string | undefined,
+ final_reply: record.final_reply as string | undefined,
 
-        draft_reply: record.draft_reply as string | undefined,
+ draft_reply: record.draft_reply as string | undefined,
 
-      }),
+ }),
 
-      auto_send_via_aitoearn: true,
+ auto_send_via_aitoearn: true,
 
-    })
+ })
 
-    message.success('已通过 AiToEarn 发送')
+ message.success('已通过 AiToEarn 发送')
 
-    await loadInteractions()
+ await loadInteractions()
 
-    void capabilityRef.value?.reload?.()
+ void capabilityRef.value?.reload?.()
 
-  } catch (e: unknown) {
+ } catch (e: unknown) {
 
-    message.error(e instanceof Error ? e.message : '发送失败')
+ message.error(e instanceof Error ? e.message : '发送失败')
 
-  } finally {
+ } finally {
 
-    sendingId.value = ''
+ sendingId.value = ''
 
-  }
+ }
 
 }
 
@@ -401,21 +401,21 @@ async function approveAndSend(record: Record<string, unknown>) {
 
 async function loadEngageCapability() {
 
-  try {
+ try {
 
-    const data = await apiGet<{ modules?: { engage?: { available?: boolean } } }>(
+ const data = await apiGet<{ modules?: { engage?: { available?: boolean } } }>(
 
-      '/aitoearn/hub/capabilities',
+ '/aitoearn/hub/capabilities',
 
-    )
+ )
 
-    engageAvailable.value = Boolean(data?.modules?.engage?.available)
+ engageAvailable.value = Boolean(data?.modules?.engage?.available)
 
-  } catch {
+ } catch {
 
-    engageAvailable.value = false
+ engageAvailable.value = false
 
-  }
+ }
 
 }
 
@@ -423,9 +423,9 @@ async function loadEngageCapability() {
 
 onMounted(() => {
 
-  void loadEngageCapability()
+ void loadEngageCapability()
 
-  void loadInteractions()
+ void loadInteractions()
 
 })
 

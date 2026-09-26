@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-01',
   devtools: { enabled: false },
 
+  devServer: {
+    host: '127.0.0.1',
+    port: 3002,
+  },
+
   modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxt/image', '@vite-pwa/nuxt', '@nuxtjs/i18n'],
 
   i18n: {
@@ -486,9 +491,10 @@ export default defineNuxtConfig({
     },
   },
 
+  // 端口锁定：Nuxt 预览必须走 3002（见《官网启动强制索引-必读.md》），禁止占用 3000（3000 = 主要备份 Vite 官网）
   devServer: {
     host: '127.0.0.1',
-    port: 3000,
+    port: 3002,
   },
 
   // Build optimizations
@@ -542,7 +548,7 @@ export default defineNuxtConfig({
     },
     server: {
       host: '127.0.0.1',
-      port: 3000,
+      port: 3003, // HMR 端口与 app(3002) 错开，更不得占用 3000
       proxy: {
         '/api': {
           target: process.env.API_HOST || 'http://127.0.0.1:8001',

@@ -52,7 +52,7 @@
  type="link"
  size="small"
  :loading="retryingId === record.id"
- @click="retry(record)"
+ @click="retry(record as PublishTaskRow)"
  >
  重试
  </a-button>

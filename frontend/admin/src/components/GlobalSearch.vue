@@ -317,7 +317,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKey, true))
 }
 .search-quick-title {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;

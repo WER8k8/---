@@ -8,37 +8,27 @@
     "backend/app",
     "backend/scripts"
   ],
-  "files_scanned": 1355,
-  "findings_total": 524,
+  "files_scanned": 1447,
+  "findings_total": 594,
   "by_severity": {
-    "major": 287,
-    "minor": 217,
-    "blocking": 20
+    "major": 338,
+    "minor": 234,
+    "blocking": 22
   },
   "by_rule": {
-    "silent-except": 273,
-    "perf-log-fstring": 217,
-    "security-sql-fstring": 13,
+    "silent-except": 322,
+    "perf-log-fstring": 234,
+    "security-sql-fstring": 15,
     "security-md5": 10,
+    "resource-open": 5,
     "security-eval": 4,
     "security-shell": 3,
-    "resource-open": 2,
-    "route-duplicate": 1,
     "env-cwd-trap": 1
   },
-  "priority_findings_count": 109,
-  "blocking_count": 20,
+  "priority_findings_count": 133,
+  "blocking_count": 22,
   "ocr_preview_hermes_files": 119,
   "findings": [
-    {
-      "file": "backend/app/api/v1/routes/acquisition.py",
-      "line": 0,
-      "rule": "route-duplicate",
-      "severity": "major",
-      "message": "acquisition.py 中 /ops/reconcile 装饰器重复声明",
-      "evidence": "",
-      "priority": true
-    },
     {
       "file": "backend/.env",
       "line": 0,
@@ -64,42 +54,6 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except ImportError: /     pass  # sentry_sdk 未安装时静默跳过",
-      "priority": false
-    },
-    {
-      "file": "backend/app/main.py",
-      "line": 69,
-      "rule": "silent-except",
-      "severity": "major",
-      "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /         pass",
-      "priority": false
-    },
-    {
-      "file": "backend/app/main.py",
-      "line": 78,
-      "rule": "silent-except",
-      "severity": "major",
-      "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /         pass",
-      "priority": false
-    },
-    {
-      "file": "backend/app/main.py",
-      "line": 98,
-      "rule": "silent-except",
-      "severity": "major",
-      "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /         pass  # 种子失败不阻塞启动",
-      "priority": false
-    },
-    {
-      "file": "backend/app/main.py",
-      "line": 105,
-      "rule": "silent-except",
-      "severity": "major",
-      "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /         pass",
       "priority": false
     },
     {
@@ -230,7 +184,7 @@
     },
     {
       "file": "backend/app/core/admin_auth.py",
-      "line": 254,
+      "line": 266,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -262,6 +216,15 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/core/audit_logger.py",
+      "line": 66,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Failed to write audit log: {e}\")",
       "priority": false
     },
     {
@@ -383,7 +346,7 @@
     },
     {
       "file": "backend/app/core/config.py",
-      "line": 110,
+      "line": 115,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -392,7 +355,7 @@
     },
     {
       "file": "backend/app/core/csrf_middleware.py",
-      "line": 136,
+      "line": 146,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -1543,6 +1506,42 @@
       "priority": false
     },
     {
+      "file": "backend/app/services/client_today_three_service.py",
+      "line": 105,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/client_today_three_service.py",
+      "line": 127,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/client_today_three_service.py",
+      "line": 144,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/client_today_three_service.py",
+      "line": 178,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/services/egress_jit_provision_service.py",
       "line": 245,
       "rule": "silent-except",
@@ -1751,7 +1750,7 @@
     },
     {
       "file": "backend/app/services/inquiries_unified_service.py",
-      "line": 389,
+      "line": 396,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -1760,7 +1759,7 @@
     },
     {
       "file": "backend/app/services/inquiries_unified_service.py",
-      "line": 407,
+      "line": 414,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -1769,7 +1768,16 @@
     },
     {
       "file": "backend/app/services/inquiries_unified_service.py",
-      "line": 500,
+      "line": 509,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/inquiries_unified_service.py",
+      "line": 542,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -1792,6 +1800,42 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/integrations_status_service.py",
+      "line": 36,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/integrations_status_service.py",
+      "line": 43,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/integrations_status_service.py",
+      "line": 57,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/integrations_status_service.py",
+      "line": 70,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
       "priority": false
     },
     {
@@ -1931,12 +1975,48 @@
     },
     {
       "file": "backend/app/services/oauth_login.py",
-      "line": 279,
+      "line": 318,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except Exception: /                 pass",
       "priority": true
+    },
+    {
+      "file": "backend/app/services/ollama_adapter.py",
+      "line": 40,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Ollama list models failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ollama_adapter.py",
+      "line": 68,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Ollama chat failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ollama_adapter.py",
+      "line": 99,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Ollama generate failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/ollama_adapter.py",
+      "line": 118,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"Ollama embeddings failed: {e}\")",
+      "priority": false
     },
     {
       "file": "backend/app/services/onboarding_autopilot_job.py",
@@ -1954,6 +2034,51 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except ValueError: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/oss_service.py",
+      "line": 61,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"OSS uploaded: {key} -> {url}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/oss_service.py",
+      "line": 79,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"OSS uploaded: {key} -> {url}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/oss_service.py",
+      "line": 86,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"OSS deleted: {key}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/outreach_batch_compensate_service.py",
+      "line": 191,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/outreach_batch_compensate_service.py",
+      "line": 195,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
       "priority": false
     },
     {
@@ -2128,6 +2253,15 @@
       "priority": false
     },
     {
+      "file": "backend/app/services/trade_fulfillment_store.py",
+      "line": 68,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/services/trade_intel_service.py",
       "line": 177,
       "rule": "silent-except",
@@ -2161,6 +2295,96 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except OSError: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 69,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"WhatsApp text sent to {to}: {result.get('messages', [{}])[0].get('id')}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 72,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp API error: {e.response.status_code} - {e.response.text}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 75,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp send failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 100,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.info(f\"WhatsApp template sent to {to}: {result.get('messages', [{}])[0].get('id')}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 103,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp API error: {e.response.status_code} - {e.response.text}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 106,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp template send failed: {e}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 127,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp API error: {e.response.status_code} - {e.response.text}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 148,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp API error: {e.response.status_code} - {e.response.text}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 165,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp mark read error: {e.response.status_code} - {e.response.text}\")",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/whatsapp_cloud.py",
+      "line": 183,
+      "rule": "perf-log-fstring",
+      "severity": "minor",
+      "message": "logging 使用 f-string（禁用级别时仍格式化）",
+      "evidence": "logger.error(f\"WhatsApp action error: {e.response.status_code} - {e.response.text}\")",
       "priority": false
     },
     {
@@ -2218,6 +2442,15 @@
       "priority": false
     },
     {
+      "file": "backend/app/tasks/quote_wake_tasks.py",
+      "line": 212,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                         pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/tasks/seo_tasks.py",
       "line": 33,
       "rule": "perf-log-fstring",
@@ -2254,6 +2487,24 @@
       "priority": false
     },
     {
+      "file": "backend/app/tasks/sla_tasks.py",
+      "line": 143,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/tasks/sla_tasks.py",
+      "line": 261,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                         pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/workers/publish_worker.py",
       "line": 55,
       "rule": "perf-log-fstring",
@@ -2282,16 +2533,7 @@
     },
     {
       "file": "backend/app/api/v1/orders.py",
-      "line": 90,
-      "rule": "silent-except",
-      "severity": "major",
-      "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /         pass",
-      "priority": false
-    },
-    {
-      "file": "backend/app/api/v1/orders.py",
-      "line": 611,
+      "line": 624,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2300,7 +2542,16 @@
     },
     {
       "file": "backend/app/api/v1/orders.py",
-      "line": 667,
+      "line": 680,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/api/v1/quotes.py",
+      "line": 391,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2471,7 +2722,16 @@
     },
     {
       "file": "backend/app/api/v1/routes/acquisition.py",
-      "line": 1231,
+      "line": 740,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/acquisition_pipeline.py",
+      "line": 151,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2524,8 +2784,26 @@
       "priority": true
     },
     {
+      "file": "backend/app/api/v1/routes/file_scans.py",
+      "line": 72,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except OSError: /                     pass",
+      "priority": true
+    },
+    {
       "file": "backend/app/api/v1/routes/inquiries.py",
       "line": 121,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/inquiries.py",
+      "line": 711,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2597,7 +2875,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/negotiation.py",
-      "line": 253,
+      "line": 259,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2606,11 +2884,74 @@
     },
     {
       "file": "backend/app/api/v1/routes/negotiation.py",
-      "line": 340,
+      "line": 346,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except ValueError: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/ops_aggregate.py",
+      "line": 98,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/payment.py",
+      "line": 795,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/payment.py",
+      "line": 843,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/payment.py",
+      "line": 873,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/payment.py",
+      "line": 922,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/payment.py",
+      "line": 935,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/payment.py",
+      "line": 991,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
       "priority": true
     },
     {
@@ -2669,7 +3010,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 314,
+      "line": 323,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2678,7 +3019,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 353,
+      "line": 362,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2687,7 +3028,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 361,
+      "line": 370,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2696,7 +3037,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 446,
+      "line": 455,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2705,7 +3046,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 565,
+      "line": 574,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2714,7 +3055,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 652,
+      "line": 661,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2723,7 +3064,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 721,
+      "line": 730,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2732,7 +3073,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 818,
+      "line": 827,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2741,7 +3082,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 833,
+      "line": 842,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2750,7 +3091,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 855,
+      "line": 864,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2759,7 +3100,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 958,
+      "line": 967,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2768,7 +3109,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 996,
+      "line": 1005,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2777,7 +3118,16 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 1076,
+      "line": 1136,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/api/v1/routes/super_agent.py",
+      "line": 1174,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2786,7 +3136,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 1105,
+      "line": 1203,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2795,7 +3145,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 1124,
+      "line": 1222,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2804,7 +3154,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 1179,
+      "line": 1279,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2813,7 +3163,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 1209,
+      "line": 1309,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2822,7 +3172,7 @@
     },
     {
       "file": "backend/app/api/v1/routes/super_agent.py",
-      "line": 1224,
+      "line": 1324,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2867,7 +3217,7 @@
     },
     {
       "file": "backend/app/api/v1/super_admin/geo_engine.py",
-      "line": 790,
+      "line": 791,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -2920,6 +3270,33 @@
       "priority": true
     },
     {
+      "file": "backend/app/services/acquisition/company_autofill.py",
+      "line": 167,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "text(f\"UPDATE companies SET {', '.join(sets)} WHERE id = :id\"), params",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/company_autofill.py",
+      "line": 211,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/company_autofill.py",
+      "line": 218,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
       "file": "backend/app/services/acquisition/dispatch_service.py",
       "line": 46,
       "rule": "silent-except",
@@ -2929,12 +3306,12 @@
       "priority": true
     },
     {
-      "file": "backend/app/services/acquisition/nps_rescue.py",
-      "line": 43,
+      "file": "backend/app/services/acquisition/objection_copilot.py",
+      "line": 210,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /             pass",
+      "evidence": "except Exception: /                 pass",
       "priority": true
     },
     {
@@ -2984,7 +3361,7 @@
     },
     {
       "file": "backend/app/services/acquisition/ops_card_pg.py",
-      "line": 126,
+      "line": 140,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -2993,7 +3370,7 @@
     },
     {
       "file": "backend/app/services/acquisition/ops_card_pg.py",
-      "line": 177,
+      "line": 191,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3002,7 +3379,7 @@
     },
     {
       "file": "backend/app/services/acquisition/ops_card_pg.py",
-      "line": 181,
+      "line": 195,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3011,7 +3388,7 @@
     },
     {
       "file": "backend/app/services/acquisition/ops_card_pg.py",
-      "line": 207,
+      "line": 221,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3020,7 +3397,7 @@
     },
     {
       "file": "backend/app/services/acquisition/ops_card_pg.py",
-      "line": 228,
+      "line": 242,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3029,7 +3406,7 @@
     },
     {
       "file": "backend/app/services/acquisition/ops_card_pg.py",
-      "line": 247,
+      "line": 261,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3064,6 +3441,15 @@
       "priority": true
     },
     {
+      "file": "backend/app/services/acquisition/rfm_service.py",
+      "line": 243,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except (TypeError, ValueError): /                 pass",
+      "priority": true
+    },
+    {
       "file": "backend/app/services/acquisition/risk_rescan.py",
       "line": 158,
       "rule": "silent-except",
@@ -3075,6 +3461,78 @@
     {
       "file": "backend/app/services/acquisition/sanctions_source.py",
       "line": 33,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 62,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 69,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 105,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 112,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 133,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 140,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 165,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/acquisition/suppression_pg.py",
+      "line": 199,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3097,15 +3555,6 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except Exception: /             pass",
-      "priority": true
-    },
-    {
-      "file": "backend/app/services/acquisition/__init__.py",
-      "line": 915,
-      "rule": "silent-except",
-      "severity": "major",
-      "message": "except 后直接 pass，错误被静默",
-      "evidence": "except Exception: /     pass",
       "priority": true
     },
     {
@@ -3253,12 +3702,39 @@
       "priority": false
     },
     {
+      "file": "backend/app/services/ai_sales_ops/ai_budget.py",
+      "line": 52,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except TypeError: /                     pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/services/annex/ticket_service.py",
       "line": 96,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except Exception: /             pass  # Redis 异常降级内存（安全侧：宁可两处都记一次）",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/billing/commission_settlement_service.py",
+      "line": 129,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/billing/commission_settlement_service.py",
+      "line": 161,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
       "priority": false
     },
     {
@@ -3451,6 +3927,15 @@
       "priority": false
     },
     {
+      "file": "backend/app/services/deepseek_harness/client.py",
+      "line": 118,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/services/deerflow/executor.py",
       "line": 217,
       "rule": "silent-except",
@@ -3520,6 +4005,33 @@
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except (json.JSONDecodeError, TypeError): /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/domestic/domestic_deal_pipeline.py",
+      "line": 61,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/domestic/domestic_inquiry_service.py",
+      "line": 109,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
+      "file": "backend/app/services/domestic/domestic_inquiry_service.py",
+      "line": 169,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
       "priority": false
     },
     {
@@ -3712,6 +4224,15 @@
       "priority": false
     },
     {
+      "file": "backend/app/services/goodjob/native_fulfillment.py",
+      "line": 394,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                             pass",
+      "priority": true
+    },
+    {
       "file": "backend/app/services/hermes/a2a_skill_marketplace_service.py",
       "line": 410,
       "rule": "silent-except",
@@ -3731,7 +4252,7 @@
     },
     {
       "file": "backend/app/services/hermes/biz_bot_actions.py",
-      "line": 354,
+      "line": 361,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -3911,7 +4432,7 @@
     },
     {
       "file": "backend/app/services/hermes/task_control_supervisor.py",
-      "line": 415,
+      "line": 426,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -3920,7 +4441,7 @@
     },
     {
       "file": "backend/app/services/hermes/task_control_supervisor.py",
-      "line": 442,
+      "line": 453,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -4072,6 +4593,15 @@
       "priority": true
     },
     {
+      "file": "backend/app/services/platforms/b2b_platform_inbox_hub.py",
+      "line": 73,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": false
+    },
+    {
       "file": "backend/app/services/platforms/baijiahao.py",
       "line": 199,
       "rule": "security-md5",
@@ -4160,6 +4690,15 @@
       "message": "except 后直接 pass，错误被静默",
       "evidence": "except Exception: /             pass",
       "priority": false
+    },
+    {
+      "file": "backend/app/services/tradeai/native_acquisition.py",
+      "line": 230,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                     pass",
+      "priority": true
     },
     {
       "file": "backend/app/services/ubrain/chat_context_service.py",
@@ -4253,7 +4792,7 @@
     },
     {
       "file": "backend/app/services/ubrain/email_outreach_service.py",
-      "line": 89,
+      "line": 90,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -4262,7 +4801,7 @@
     },
     {
       "file": "backend/app/services/ubrain/email_outreach_service.py",
-      "line": 323,
+      "line": 325,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -4478,16 +5017,7 @@
     },
     {
       "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
-      "line": 463,
-      "rule": "perf-log-fstring",
-      "severity": "minor",
-      "message": "logging 使用 f-string（禁用级别时仍格式化）",
-      "evidence": "logger.info(f\"[Mock WhatsApp] 发送给 {to}: {message[:50]}...\")",
-      "priority": false
-    },
-    {
-      "file": "backend/app/services/ubrain/whatsapp_prospect_service.py",
-      "line": 479,
+      "line": 553,
       "rule": "perf-log-fstring",
       "severity": "minor",
       "message": "logging 使用 f-string（禁用级别时仍格式化）",
@@ -4514,7 +5044,7 @@
     },
     {
       "file": "backend/app/services/adapters/tradeai/__init__.py",
-      "line": 145,
+      "line": 149,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -4577,7 +5107,7 @@
     },
     {
       "file": "backend/app/services/hermes/executors/data_ops_executor.py",
-      "line": 120,
+      "line": 133,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -4596,6 +5126,15 @@
     {
       "file": "backend/app/services/hermes/executors/inquiry_executor.py",
       "line": 83,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": true
+    },
+    {
+      "file": "backend/app/services/hermes/executors/platform_ops_executor.py",
+      "line": 207,
       "rule": "silent-except",
       "severity": "major",
       "message": "except 后直接 pass，错误被静默",
@@ -4627,6 +5166,24 @@
       "severity": "blocking",
       "message": "subprocess shell=True",
       "evidence": "has_shell_true = \"shell=True\" in matched_content",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/check_density.py",
+      "line": 13,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/check_density.py",
+      "line": 21,
+      "rule": "security-sql-fstring",
+      "severity": "blocking",
+      "message": "SQL 使用 f-string 拼接风险",
+      "evidence": "cnt = db.execute(text(f'SELECT count(*) FROM \"{t}\"')).scalar()",
       "priority": false
     },
     {
@@ -4685,7 +5242,16 @@
     },
     {
       "file": "backend/scripts/orchestration_selfcheck.py",
-      "line": 248,
+      "line": 577,
+      "rule": "resource-open",
+      "severity": "major",
+      "message": "open() 可能未用 with 管理",
+      "evidence": "ts = open(ts_path, encoding=\"utf-8\").read()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/orchestration_selfcheck.py",
+      "line": 249,
       "rule": "resource-open",
       "severity": "major",
       "message": "open() 可能未用 with 管理",
@@ -4745,6 +5311,69 @@
       "message": "SQL 使用 f-string 拼接风险",
       "evidence": "return int(db.execute(text(f'select count(*) from \"{table}\"')).scalar() or 0)",
       "priority": true
+    },
+    {
+      "file": "backend/scripts/system_deep_audit.py",
+      "line": 35,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /                 pass",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/system_deep_audit.py",
+      "line": 68,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/test_trade_fulfillment_ops.py",
+      "line": 8,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/verify_design_locks.py",
+      "line": 100,
+      "rule": "resource-open",
+      "severity": "major",
+      "message": "open() 可能未用 with 管理",
+      "evidence": "lines = open(router, encoding=\"utf-8\").readlines()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/verify_design_locks.py",
+      "line": 69,
+      "rule": "resource-open",
+      "severity": "major",
+      "message": "open() 可能未用 with 管理",
+      "evidence": "s = open(p, encoding=\"utf-8\", errors=\"ignore\").read()",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/seeds/seed_final_24_tables.py",
+      "line": 15,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /         pass",
+      "priority": false
+    },
+    {
+      "file": "backend/scripts/seeds/seed_final_remaining_tables.py",
+      "line": 31,
+      "rule": "silent-except",
+      "severity": "major",
+      "message": "except 后直接 pass，错误被静默",
+      "evidence": "except Exception: /             pass",
+      "priority": false
     }
   ],
   "note": "本报告 = OpenCodeReview 官方规则集 + CLI 范围/规则解析 + 宿主代理静态检测；非 OCR 内置 LLM 自动评审（端点不可用）。"

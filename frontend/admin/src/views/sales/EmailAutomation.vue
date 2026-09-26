@@ -628,8 +628,7 @@ const transferData = computed(() => {
  }));
 });
 
-type TransferItem = { key: string; title: string };
-const transferRender = (item: TransferItem) => item.title;
+const transferRender = (item: { title?: string }) => item.title ?? '';
 
 // 计算属性
 const filteredEmails = computed(() => {

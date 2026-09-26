@@ -81,7 +81,7 @@ const doneCount = computed(
 .jtbd-checklist__head h3 {
   margin: 0;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 500;
   color: #0f172a;
 }
 .jtbd-checklist__head p {
@@ -93,7 +93,7 @@ const doneCount = computed(
 .jtbd-checklist__progress {
   margin-left: auto;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #0369a1;
 }
 .jtbd-checklist__list {
@@ -154,7 +154,7 @@ const doneCount = computed(
   display: inline-block;
   margin-top: 0.25rem;
   font-size: 0.65rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #0369a1;

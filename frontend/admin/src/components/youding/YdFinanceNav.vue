@@ -123,7 +123,7 @@ function go(path: string) {
 
   font-size: 13px;
 
-  font-weight: 600;
+  font-weight: 500;
 
   line-height: 1.2;
 

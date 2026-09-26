@@ -37,7 +37,7 @@
  <a-popconfirm
  title="确认删除该角色？"
  :disabled="record.is_system"
- @confirm="deleteRole(record)"
+ @confirm="deleteRole(record as Role)"
  >
  <a-button size="small" danger :disabled="record.is_system">
  删除
@@ -94,7 +94,7 @@
  <a-switch
  :checked="record.permission"
  :disabled="!selectedRole"
- @change="toggleActionPermission(record)"
+ @change="toggleActionPermission(record as Action)"
  />
  </template>
  </template>

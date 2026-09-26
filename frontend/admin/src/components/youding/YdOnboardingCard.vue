@@ -61,7 +61,7 @@ function goCta() {
   padding: var(--uj-space-card);
   &__title {
     font-size: var(--uj-text-title);
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 12px;
   }
   &__cta {

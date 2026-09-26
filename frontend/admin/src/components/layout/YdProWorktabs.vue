@@ -117,7 +117,7 @@ watch(
   padding: 0 8px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--uj-brand-deep, #2a6b60);
   background: var(--uj-brand-muted, rgb(74 155 140 / 0.14));
@@ -217,7 +217,7 @@ watch(
 
 .yd-pro-worktabs__tab.active {
   color: var(--uj-brand-deep, #2a6b60);
-  font-weight: 600;
+  font-weight: 500;
   background: var(--uj-surface-active, rgb(74 155 140 / 0.14));
   border-color: color-mix(in srgb, var(--uj-brand, #4a9b8c) 25%, transparent);
   box-shadow: inset 0 1px 0 var(--uj-surface-inset, rgb(255 255 255 / 0.65));

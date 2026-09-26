@@ -58,7 +58,7 @@ const visible = computed(() => props.visible !== false);
 
 <style scoped>
 .site-editor-publish-gate__title {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .site-editor-publish-gate__desc {

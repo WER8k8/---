@@ -1,140 +1,128 @@
 # OpenCodeReview 全面检测报告 · 优丁工作树
 
-> **工具**：`alibaba/open-code-review`（GitHub 35k+ stars）CLI **v1.12.5**  
-> **安装**：`npm install -g @alibaba-group/open-code-review` → `ocr --version`  
-> **仓库**：https://github.com/alibaba/open-code-review  
-> **模式**：CLI 安装 + 内置规则解析 + `ocr scan --preview` 范围 + **宿主代理静态检测**  
-> **LLM 状态**：不可用（NVIDIA `integrate.api.nvidia.com` → **410 Gone**；Ollama 模型拉取 TLS 超时）  
-> **规则源**：`ocr rules check <file>` → System built-in `**/*.{py,pyi,ipynb}`  
-> **扫描**：`backend/app` + `backend/scripts` · 文件 **1355**  
-> **机读**：`docs/opencode-review-report.json`
+- 工具：`alibaba/open-code-review` CLI **v1.12.5**（`ocr` 已全局安装）
+- 规则源：`ocr rules check` 内置 Python 规则（精确优先、安全/正确性 blocking）
+- LLM：**不可用**（NVIDIA `410 Gone`；Ollama 模型拉取 TLS 超时）→ 采用 **Delegation/宿主代理** 模式
+- 扫描：`backend/app` + `backend/scripts`，文件 **1447**
+- 发现合计 **594**（blocking 22 / major 338 / minor 234）
+- 关键路径命中 **133** 条
 
----
+## 按规则统计
 
-## 1. 总览
+| 规则 | 数量 |
+|------|-----:|
+| `silent-except` | 322 |
+| `perf-log-fstring` | 234 |
+| `security-sql-fstring` | 15 |
+| `security-md5` | 10 |
+| `resource-open` | 5 |
+| `security-eval` | 4 |
+| `security-shell` | 3 |
+| `env-cwd-trap` | 1 |
 
-| 指标 | 值 |
-|------|-----|
-| 发现合计 | **524** |
-| blocking（工具标级） | 20 |
-| major | 287 |
-| minor | 217 |
-| 关键路径命中 | 109 |
-| 硬锁 LOGIN/薄荷 | **通过**（无 client/login.vue；主色 #4a9b8c 在位） |
+## Blocking（须优先处理）
 
-### 按规则分布
+- **backend/app/core/login_bruteforce.py:200** · `security-eval` · 存在 eval/exec 调用
+  - `pipe.eval(_LUA_RECORD, 1, _redis_key_id(ik),`
+- **backend/app/core/login_bruteforce.py:202** · `security-eval` · 存在 eval/exec 调用
+  - `pipe.eval(_LUA_RECORD, 1, _redis_key_ip(client_ip),`
+- **backend/app/db/schema_healer.py:60** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `cursor.execute(f"PRAGMA table_info({table})")`
+- **backend/app/db/schema_healer.py:92** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `conn.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}")`
+- **backend/app/db/schema_healer.py:102** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `conn.execute(f"ALTER TABLE {table} ADD COLUMN tenant_id {tenant_col}")`
+- **backend/app/db/schema_healer.py:111** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `conn.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}")`
+- **backend/app/services/acquisition/company_autofill.py:167** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `text(f"UPDATE companies SET {', '.join(sets)} WHERE id = :id"), params`
+- **backend/app/services/ubrain/skill_audit_service.py:107** · `security-eval` · 存在 eval/exec 调用
+  - `("exec(", "危险：动态代码执行", "high"),`
+- **backend/app/services/ubrain/skill_audit_service.py:108** · `security-eval` · 存在 eval/exec 调用
+  - `("eval(", "警告：动态表达式求值", "medium"),`
+- **backend/app/services/talking_stick/agents/verify_agent.py:204** · `security-shell` · subprocess shell=True
+  - `has_shell_true = "shell=True" in matched_content`
+- **backend/scripts/check_density.py:21** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `cnt = db.execute(text(f'SELECT count(*) FROM "{t}"')).scalar()`
+- **backend/scripts/greenchain_p0b_verify.py:33** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `cur.execute(f"DROP DATABASE IF EXISTS {GREEN_DB} WITH (FORCE)")`
+- **backend/scripts/greenchain_p0b_verify.py:34** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `cur.execute(f"CREATE DATABASE {GREEN_DB}")`
+- **backend/scripts/greenchain_p0b_verify.py:131** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `conn.cursor().execute(f"DROP DATABASE {GREEN_DB} WITH (FORCE)")`
+- **backend/scripts/opencodereview_host_detect.py:79** · `security-shell` · subprocess shell=True
+  - `if "shell=True" in line or "shell = True" in line:`
+- **backend/scripts/opencodereview_host_detect.py:80** · `security-shell` · subprocess shell=True
+  - `add(path, i, "security-shell", "blocking", "subprocess shell=True", line)`
+- **backend/scripts/patch_sqlite_content_pages.py:22** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `cur.execute(f"PRAGMA table_info({table})")`
+- **backend/scripts/probe_code_slices.py:140** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `n = db.execute(text(f'select count(*) from "{tname}"')).scalar()`
+- **backend/scripts/probe_db_engine.py:50** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `n = db.execute(text(f"select count(*) from {t}")).scalar()`
+- **backend/scripts/probe_empty_tables_by_domain.py:87** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `n = db.execute(text(f'select count(*) from "{t}"')).scalar()`
+- **backend/scripts/probe_pg_density.py:41** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `n = db.execute(text(f"select count(*) from {t}")).scalar()`
+- **backend/scripts/seed_acquisition_main_chain_demo.py:51** · `security-sql-fstring` · SQL 使用 f-string 拼接风险
+  - `return int(db.execute(text(f'select count(*) from "{table}"')).scalar() or 0)`
 
-| 规则 | 数量 | OCR 含义 |
-|------|-----:|----------|
-| `silent-except` | 273 | except 后 pass，错误静默 |
-| `perf-log-fstring` | 217 | logging 用 f-string |
-| `security-sql-fstring` | 13 | SQL 字符串拼接 |
-| `security-md5` | 10 | 使用 MD5 |
-| `security-eval` | 4 | eval/exec 字样 |
-| `security-shell` | 3 | shell=True 字样 |
-| `resource-open` | 2 | open 可能无 with |
-| `route-duplicate` | 1 | acquisition 路由重复 |
-| `env-cwd-trap` | 1 | PG/SQLite cwd 陷阱 |
+## 关键路径 Major（节选）
 
----
+- **backend/app/core/admin_auth.py:266** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/core/config.py:115** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/oauth_login.py:318** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/payment_service.py:241** · `security-md5` · 使用 MD5（安全场景不推荐）
+- **backend/app/services/payment_service.py:644** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/acquisition.py:740** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/acquisition_pipeline.py:151** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/client.py:225** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/client.py:362** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/domain.py:69** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/domain.py:270** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/domain.py:275** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/file_scans.py:72** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/inquiries.py:121** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/inquiries.py:711** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/mcp_sse.py:40** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/mobile_public.py:32** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/negotiation.py:259** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/negotiation.py:346** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/ops_aggregate.py:98** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/payment.py:795** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/payment.py:843** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/payment.py:873** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/payment.py:922** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/payment.py:935** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/payment.py:991** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/public_tenant_geo.py:111** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/super_agent.py:842** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/super_agent.py:1136** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/tenants.py:1447** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/api/v1/routes/video_publish.py:219** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/billing_explain.py:114** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/billing_explain.py:137** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/company_autofill.py:211** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/company_autofill.py:218** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/dispatch_service.py:46** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/objection_copilot.py:210** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/onboarding.py:86** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/ops_card_pg.py:49** · `silent-except` · except 后直接 pass，错误被静默
+- **backend/app/services/acquisition/ops_card_pg.py:56** · `silent-except` · except 后直接 pass，错误被静默
 
-## 2. 发现分诊（人工按 OCR「精确优先」原则复核）
+## 项目硬锁/一致性
 
-### 2.1 真问题 / 须处理（工程有效）
+- **env-cwd-trap** · backend/.env · env 声明 PG，但脚本 cwd≠backend 时会落到 SQLite（运行时陷阱）
 
-| 级别 | 位置 | 问题 | 建议 |
-|------|------|------|------|
-| **P0** | `api/v1/routes/acquisition.py` | `GET /ops/reconcile` **装饰器重复声明** | 删重复，加路由测试 |
-| **P0** | 环境 | env 写 PG，**cwd≠backend 时落 SQLite** | 启动脚本锁 cwd；探针告警 |
-| **P0** | 前端 engage | 调用 `/api/v1/client/douyin-comments/pull`，**后端无 douyin 路由** | 补路由或前端下线 |
-| **P1** | `db/schema_healer.py:60,92,102,111` | `ALTER/PRAGMA` 使用 **f-string 拼表名/列名** | 表名白名单校验；禁止外部输入进 DDL |
-| **P1** | `services/acquisition/billing_explain.py` `ops_card_pg.py` `dispatch_service.py` 等 | **`except Exception: pass`** 静默 | 至少 `logger.warning`；业务关键路径禁止吞异常 |
-| **P1** | `routes/tenants.py` `inquiries.py` `payment_service.py` 等 | 同上，关键路径 silent except | 按 OCR Error Handling 规则收敛 |
-| **P1** | 支付/物流签名 | `payment_service.py` `wechat_pay.py` `logistics_provider.py` 使用 **MD5 签名** | 若上游要求 MD5 则文档标明「通道协议」；新通道用 HMAC-SHA256 |
-| **P2** | `core/cache_decorator.py` 等 | MD5 做 cache key | 非安全场景可接受；可换 blake2/sha256 |
-| **P2** | 关键路径大量 `logger.info(f"...")` | 性能/规范 minor | 热路径逐步改 `%s` 懒格式化 |
-| **P2** | `scripts/probe_*.py` `seed_*.py` | `count(*) from {table}` f-string | 表名来自 `information_schema`/白名单则风险低；仍应白名单 |
-
-### 2.2 误报（工具字符串误判，非真 eval/shell）
-
-| 位置 | 工具结论 | 实际 |
-|------|----------|------|
-| `core/login_bruteforce.py:200,202` | eval/exec | **Redis Lua `pipe.eval`**，合法 |
-| `ubrain/skill_audit_service.py:107-108` | eval/exec | 审计规则**字符串字面量** |
-| `talking_stick/verify_agent.py` | shell=True | 源码扫描器**检测字符串** |
-| `scripts/opencodereview_host_detect.py` | shell=True | **本检测脚本自身**的规则匹配代码 |
-| `scripts/greenchain_p0b_verify.py` | SQL 拼接 | 本地验证脚本 DROP/CREATE 固定库名 |
-
-### 2.3 项目硬锁（OCR 范围 + 本仓契约）
-
-| 锁 | 结果 |
-|----|------|
-| LOGIN-LOCK-01 | ✅ 无 `client/login.vue`；`/login` 唯一组件 |
-| DESIGN-TOKEN-LOCK-01 | ✅ `PLATFORM_BRAND_DEFAULT = '#4a9b8c'`；admin tailwind 含薄荷 |
-| ROLE-SHELL | ✅ router 壳路径在（此前代码探测已核） |
-| ENV-LOCK | ⚠️ 配置在，**运行时 cwd 陷阱仍在** |
-
----
-
-## 3. OCR CLI 本身能做什么（已验证）
-
-```text
-ocr --version          → v1.12.5 windows/amd64 ✅
-ocr rules check <py>   → 输出完整内置 Python 评审规则 ✅
-ocr scan --preview     → hermes 目录 119 文件 / ~3 万行（全文件扫描范围）✅
-ocr review/scan 真评审 → 需可用 LLM ❌（当前 provider 410/TLS）
-ocr delegate           → 无 LLM 时导出规则给宿主代理 ✅（本轮采用）
-```
-
-内置规则覆盖：死代码、可变默认参、边界/None、异常处理、身份比较、资源管理、并发、安全敏感代码等——与上表分诊一致。
-
----
-
-## 4. 关键路径 silent-except 抽样（major · 优先修）
-
-```
-backend/app/core/admin_auth.py:254
-backend/app/services/oauth_login.py:279
-backend/app/services/payment_service.py:644
-backend/app/api/v1/routes/acquisition.py:1231
-backend/app/services/acquisition/billing_explain.py:114,137
-backend/app/services/acquisition/dispatch_service.py:46
-backend/app/services/acquisition/ops_card_pg.py:49
-backend/app/services/acquisition/onboarding.py:86
-backend/app/services/acquisition/nps_rescue.py:43
-backend/app/api/v1/routes/tenants.py:1447
-backend/app/api/v1/routes/inquiries.py:121
-```
-
-全量 major **273** 条见 JSON。
-
----
-
-## 5. 复跑命令
+## 如何复跑
 
 ```powershell
-npm install -g @alibaba-group/open-code-review
 ocr --version
 ocr rules check backend/app/services/acquisition/payment_risk.py
 ocr scan --preview --repo . --path backend/app/services/hermes
-# LLM 配好后：
-ocr config set provider <provider>
-ocr config set model <model>
+# LLM 可用后：
+ocr config set provider openai  # 或自定义
 ocr scan --path backend/app/services/acquisition --format json -o docs/ocr-scan.json
-# 本轮宿主检测：
-cd backend
-.venv\Scripts\python.exe scripts\opencodereview_host_detect.py
 ```
 
----
-
-## 6. 结论（主理人可读）
-
-1. **OpenCodeReview 已安装可用**（阿里官方 CLI），内置规则与扫描范围已接入本仓。  
-2. **自动 LLM 全库扫描未跑通**：现有 NVIDIA Key 已 **410**，本机 Ollama **拉不动模型**——不假装「AI 已扫完全库」。  
-3. **按 OCR 官方规则做了全量静态检测**（1355 文件）：真问题集中在 **异常静默、SQL/DDL 拼接、MD5 签名约定、路由重复、环境 cwd 陷阱**；登录/主色硬锁 **未破**。  
-4. **下一步最有价值**：修 P0 三项 + 关键路径 silent-except；你提供可用 LLM Key 后即可 `ocr scan` 出官方 JSON 评审。
-
----
-
-*报告生成：OpenCodeReview host-agent · 2026-09-18*
+机读全量：`docs/opencode-review-report.json`

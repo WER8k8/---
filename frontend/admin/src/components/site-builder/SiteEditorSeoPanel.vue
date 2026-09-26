@@ -5,8 +5,8 @@
   <aside class="site-editor-seo-panel uj-glass-panel">
     <header class="site-editor-seo-panel__head">
       <div class="flex items-center justify-between">
-        <h3 class="font-bold text-slate-800 text-sm">Google 搜索前3名权重</h3>
-        <span class="px-2 py-0.5 text-xs bg-emerald-100 text-emerald-800 rounded-full font-bold">冲顶分 95/100</span>
+        <h3 class="font-medium text-slate-800 text-sm">Google 搜索前3名权重</h3>
+        <span class="px-2 py-0.5 text-xs bg-emerald-100 text-emerald-800 rounded-full font-medium">冲顶分 95/100</span>
       </div>
       <p class="text-xs text-slate-500 mt-1">
         DSH + SEO 引擎全托管：已自动注入 Schema 工业实体、EEAT 背书与 AI Overviews 知识索引。
@@ -36,7 +36,7 @@
     <!-- SERP 实时效果预览（折叠多语种） -->
     <div class="site-editor-seo-panel__preview">
       <div class="site-editor-seo-panel__preview-label flex items-center justify-between">
-        <span class="font-bold text-slate-700">Google 搜索前3名直观效果 (AI 托管)</span>
+        <span class="font-medium text-slate-700">Google 搜索前3名直观效果 (AI 托管)</span>
         <a-tag color="success" class="m-0 font-mono text-[10px]">Rank #1</a-tag>
       </div>
       <div class="seo-serp-mock">
@@ -191,7 +191,7 @@ const yandexSerpDesc = computed(() =>
   h3 {
     margin: 0 0 4px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 500;
     color: #1e293b;
   }
   p {
@@ -232,7 +232,7 @@ const yandexSerpDesc = computed(() =>
 
 .site-editor-seo-panel__preview-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   color: #64748b;
   margin-bottom: 6px;
 }

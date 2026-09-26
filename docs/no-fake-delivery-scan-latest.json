@@ -2,9 +2,9 @@
   "ok": true,
   "task": "NO-FAKE-DELIVERY-DEEP",
   "scanned": {
-    "backend_py": 1348,
-    "frontend_vue": 417,
-    "frontend_ts": 157
+    "backend_py": 1367,
+    "frontend_vue": 419,
+    "frontend_ts": 156
   },
   "p0_count": 0,
   "p1_count": 0,
@@ -33,7 +33,7 @@
     },
     {
       "file": "backend\\app\\api\\v1\\routes\\super_agent.py",
-      "line": 734,
+      "line": 743,
       "label": "桥接层返回演示客户",
       "severity": "P2",
       "snippet": "- \"mock\": 尚未实现，返回演示数据（前端应标注\"演示\"或隐藏）"

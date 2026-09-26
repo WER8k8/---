@@ -2,175 +2,175 @@
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
 <template>
-  <YdPage title="客户开户" subtitle="提交开户并生成收款二维码" surface="elevated">
-  <div class="agent-account-opening coachpro-tertiary coachpro-tertiary--agent">
+ <YdPage title="客户开户" subtitle="提交开户并生成收款二维码" surface="elevated">
+ <div class="agent-account-opening coachpro-tertiary coachpro-tertiary--agent">
 
-    <div class="coachpro-panel p-6 mb-4">
+ <div class="coachpro-panel p-6 mb-4">
 
-      <h3 class="text-lg font-semibold text-gray-900 mb-2">提交开户并收款</h3>
+ <h3 class="text-lg font-semibold text-gray-900 mb-2">提交开户并收款</h3>
 
-      <p class="text-sm text-gray-500 mb-6">开户成功后可在本页生成微信/支付宝收款二维码，客户扫码付款后自动开通并多级分润。</p>
+ <p class="text-sm text-gray-500 mb-6">开户成功后可在本页生成微信/支付宝收款二维码，客户扫码付款后自动开通并多级分润。</p>
 
-      <a-form :model="form" :label-col="{ span: 4 }" :wrapper-col="{ span: 16 }" @finish="handleSubmit">
+ <a-form :model="form" :label-col="{ span: 4 }" :wrapper-col="{ span: 16 }" @finish="handleSubmit">
 
-        <a-form-item label="客户公司名称" name="companyName" :rules="[{ required: true, message: '请输入公司名称' }]">
+ <a-form-item label="客户公司名称" name="companyName" :rules="[{ required: true, message: '请输入公司名称' }]">
 
-          <a-input v-model:value="form.companyName" placeholder="请输入客户公司全称" />
+ <a-input v-model:value="form.companyName" placeholder="请输入客户公司全称" />
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item label="联系人姓名" name="contactName" :rules="[{ required: true, message: '请输入联系人姓名' }]">
+ <a-form-item label="联系人姓名" name="contactName" :rules="[{ required: true, message: '请输入联系人姓名' }]">
 
-          <a-input v-model:value="form.contactName" placeholder="请输入联系人姓名" />
+ <a-input v-model:value="form.contactName" placeholder="请输入联系人姓名" />
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item label="联系电话" name="phone" :rules="[{ required: true, message: '请输入联系电话' }]">
+ <a-form-item label="联系电话" name="phone" :rules="[{ required: true, message: '请输入联系电话' }]">
 
-          <a-input v-model:value="form.phone" placeholder="请输入联系电话" />
+ <a-input v-model:value="form.phone" placeholder="请输入联系电话" />
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item label="联系邮箱" name="email">
+ <a-form-item label="联系邮箱" name="email">
 
-          <a-input v-model:value="form.email" placeholder="请输入联系邮箱（选填）" />
+ <a-input v-model:value="form.email" placeholder="请输入联系邮箱（选填）" />
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item label="选择套餐" name="package" :rules="[{ required: true, message: '请选择套餐' }]">
+ <a-form-item label="选择套餐" name="package" :rules="[{ required: true, message: '请选择套餐' }]">
 
-          <a-select v-model:value="form.package" placeholder="请选择客户套餐" style="width: 100%">
+ <a-select v-model:value="form.package" placeholder="请选择客户套餐" style="width: 100%">
 
-            <a-select-option v-for="pkg in packages" :key="pkg.value" :value="pkg.value">
+ <a-select-option v-for="pkg in packages" :key="pkg.value" :value="pkg.value">
 
-              {{ pkg.label }} — ¥{{ pkg.price }}/年
+ {{ pkg.label }} — ¥{{ pkg.price }}/年
 
-            </a-select-option>
+</a-select-option>
 
-          </a-select>
+</a-select>
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item label="计费周期">
+ <a-form-item label="计费周期">
 
-          <a-radio-group v-model:value="billingCycle" button-style="solid">
+ <a-radio-group v-model:value="billingCycle" button-style="solid">
 
-            <a-radio-button value="yearly">年付</a-radio-button>
+ <a-radio-button value="yearly">年付</a-radio-button>
 
-            <a-radio-button value="monthly">月付</a-radio-button>
+ <a-radio-button value="monthly">月付</a-radio-button>
 
-          </a-radio-group>
+</a-radio-group>
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item label="备注" name="remark">
+ <a-form-item label="备注" name="remark">
 
-          <a-textarea v-model:value="form.remark" placeholder="备注信息（选填）" :rows="3" />
+ <a-textarea v-model:value="form.remark" placeholder="备注信息（选填）" :rows="3" />
 
-        </a-form-item>
+</a-form-item>
 
-        <a-form-item :wrapper-col="{ offset: 4, span: 16 }">
+ <a-form-item :wrapper-col="{ offset: 4, span: 16 }">
 
-          <a-space>
+ <a-space>
 
-            <a-button type="primary" html-type="submit" :loading="submitting">提交开户</a-button>
+ <a-button type="primary" html-type="submit" :loading="submitting">提交开户</a-button>
 
-            <a-button :disabled="!lastTenantId" @click="openCollectQr(lastTenantId)">生成收款码</a-button>
+ <a-button :disabled="!lastTenantId" @click="openCollectQr(lastTenantId)">生成收款码</a-button>
 
-          </a-space>
+</a-space>
 
-        </a-form-item>
+</a-form-item>
 
-      </a-form>
+</a-form>
 
-    </div>
+</div>
 
 
 
-    <div class="coachpro-panel p-6">
+ <div class="coachpro-panel p-6">
 
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">开户记录</h3>
+ <h3 class="text-lg font-semibold text-gray-900 mb-4">开户记录</h3>
 
-      <a-table :data-source="records" :columns="columns" :pagination="{ pageSize: 8 }" size="small" row-key="id">
+ <a-table :data-source="records" :columns="columns" :pagination="{ pageSize: 8 }" size="small" row-key="id">
 
-        <template #bodyCell="{ column, record }">
+ <template #bodyCell="{ column, record }">
 
-          <template v-if="column.key === 'status'">
+ <template v-if="column.key === 'status'">
 
-            <a-tag :color="statusTagColor(record.status)">{{ record.status }}</a-tag>
+ <a-tag :color="statusTagColor(record.status)">{{ record.status }}</a-tag>
 
-          </template>
+</template>
 
-          <template v-if="column.key === 'action'">
+ <template v-if="column.key === 'action'">
 
-            <a-button type="link" size="small" :disabled="!record.tenantId" @click="openCollectQr(record.tenantId, record.package)">
+ <a-button type="link" size="small" :disabled="!record.tenantId" @click="openCollectQr(record.tenantId, record.package)">
 
-              收款二维码
+ 收款二维码
 
-            </a-button>
+</a-button>
 
-          </template>
+</template>
 
-        </template>
+</template>
 
-      </a-table>
+</a-table>
 
-    </div>
+</div>
 
 
 
-    <a-modal v-model:open="qrVisible" title="客户扫码支付" :footer="null" width="400px" centered>
+ <a-modal v-model:open="qrVisible" title="客户扫码支付" :footer="null" width="400px" centered>
 
-      <div class="text-center py-4">
+ <div class="text-center py-4">
 
-        <a-spin v-if="paying" tip="正在生成支付二维码..." />
+ <a-spin v-if="paying" tip="正在生成支付二维码..." />
 
-        <template v-else>
+ <template v-else>
 
-          <div v-if="currentCodeUrl && !currentMock" class="mb-3">
+ <div v-if="currentCodeUrl && !currentMock" class="mb-3">
 
-            <img
+ <img
 
-              :src="`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(currentCodeUrl)}`"
+ :src="`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(currentCodeUrl)}`"
 
-              alt="支付二维码"
+ alt="支付二维码"
 
-              class="mx-auto w-60 h-60"
+ class="mx-auto w-60 h-60"
 
-            />
+ />
 
-          </div>
+</div>
 
-          <div v-else-if="currentMock" class="mx-auto mb-3 w-60 h-60 flex flex-col items-center justify-center bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl text-blue-600">
+ <div v-else-if="currentMock" class="mx-auto mb-3 w-60 h-60 flex flex-col items-center justify-center bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl text-blue-600">
 
-            <YdIllustration icon="CreditCardOutlined" size="lg" />
+ <YdIllustration icon="CreditCardOutlined" size="lg" />
 
-            <div class="font-semibold mt-2">演示环境 · 模拟支付</div>
+ <div class="font-semibold mt-2">演示环境 · 模拟支付</div>
 
-          </div>
+</div>
 
-          <div class="font-semibold">{{ currentSubject }}</div>
+ <div class="font-semibold">{{ currentSubject }}</div>
 
-          <div class="text-gray-500 mt-1">¥{{ formatYuan(currentAmount) }}</div>
+ <div class="text-gray-500 mt-1">¥{{ formatYuan(currentAmount) }}</div>
 
-          <div class="text-xs text-gray-400 mt-1">订单号 {{ currentOrderNo }}</div>
+ <div class="text-xs text-gray-400 mt-1">订单号 {{ currentOrderNo }}</div>
 
-          <a-button v-if="currentMock && currentOrderId" type="primary" block class="mt-4" :loading="mockPaying" @click="mockPay">
+ <a-button v-if="currentMock && currentOrderId" type="primary" block class="mt-4" :loading="mockPaying" @click="mockPay">
 
-            模拟支付成功（自动开通+分润）
+ 模拟支付成功（自动开通+分润）
 
-          </a-button>
+</a-button>
 
-          <p class="text-xs text-gray-400 mt-3">请客户使用微信扫一扫；支付成功后自动开通服务并按代理链分润</p>
+ <p class="text-xs text-gray-400 mt-3">请客户使用微信扫一扫；支付成功后自动开通服务并按代理链分润</p>
 
-        </template>
+</template>
 
-      </div>
+</div>
 
-    </a-modal>
+</a-modal>
 
-  </div>
-  </YdPage>
+</div>
+</YdPage>
 </template>
 
 
@@ -190,17 +190,17 @@ interface PlanOption { value: string; label: string; price: string; planId?: str
 
 interface OpeningRecord {
 
-  id: number | string
+ id: number | string
 
-  applyTime: string
+ applyTime: string
 
-  clientName: string
+ clientName: string
 
-  package: string
+ package: string
 
-  status: string
+ status: string
 
-  tenantId?: string
+ tenantId?: string
 
 }
 
@@ -208,11 +208,11 @@ interface OpeningRecord {
 
 const packages = ref<PlanOption[]>([
 
-  { value: 'basic', label: '基础版', price: '6,000' },
+ { value: 'basic', label: '基础版', price: '6,000' },
 
-  { value: 'standard', label: '标准版', price: '12,000' },
+ { value: 'standard', label: '标准版', price: '12,000' },
 
-  { value: 'pro', label: '高级版', price: '24,000' },
+ { value: 'pro', label: '高级版', price: '24,000' },
 
 ])
 
@@ -220,17 +220,17 @@ const billingCycle = ref<'monthly' | 'yearly'>('yearly')
 
 const form = reactive({
 
-  companyName: '',
+ companyName: '',
 
-  contactName: '',
+ contactName: '',
 
-  phone: '',
+ phone: '',
 
-  email: '',
+ email: '',
 
-  package: undefined as string | undefined,
+ package: undefined as string | undefined,
 
-  remark: '',
+ remark: '',
 
 })
 
@@ -264,15 +264,15 @@ const records = ref<OpeningRecord[]>([])
 
 const columns = [
 
-  { title: '申请时间', dataIndex: 'applyTime', key: 'applyTime' },
+ { title: '申请时间', dataIndex: 'applyTime', key: 'applyTime' },
 
-  { title: '客户名称', dataIndex: 'clientName', key: 'clientName' },
+ { title: '客户名称', dataIndex: 'clientName', key: 'clientName' },
 
-  { title: '套餐', dataIndex: 'package', key: 'package' },
+ { title: '套餐', dataIndex: 'package', key: 'package' },
 
-  { title: '状态', dataIndex: 'status', key: 'status' },
+ { title: '状态', dataIndex: 'status', key: 'status' },
 
-  { title: '操作', key: 'action' },
+ { title: '操作', key: 'action' },
 
 ]
 
@@ -280,7 +280,7 @@ const columns = [
 
 function formatYuan(cents: number) {
 
-  return (cents / 100).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+ return (cents / 100).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 }
 
@@ -288,27 +288,27 @@ function formatYuan(cents: number) {
 
 async function loadPlans() {
 
-  try {
+ try {
 
-    const data = await apiGet<Array<{ id: string; code: string; name: string; price_yearly: number }>>('/agent/plans')
+ const data = await apiGet<Array<{ id: string; code: string; name: string; price_yearly: number }>>('/agent/plans')
 
-    if (data?.length) {
+ if (data?.length) {
 
-      packages.value = data.map((p) => ({
+ packages.value = data.map((p) => ({
 
-        value: p.code,
+ value: p.code,
 
-        label: p.name,
+ label: p.name,
 
-        price: (p.price_yearly / 100).toLocaleString('zh-CN'),
+ price: (p.price_yearly / 100).toLocaleString('zh-CN'),
 
-        planId: p.id,
+ planId: p.id,
 
-      }))
+ }))
 
-    }
+ }
 
-  } catch { /* 保留默认 */ }
+ } catch { /* 保留默认 */ }
 
 }
 
@@ -316,71 +316,71 @@ async function loadPlans() {
 
 async function handleSubmit() {
 
-  submitting.value = true
+ submitting.value = true
 
-  try {
+ try {
 
-    const data = await apiPost<{ tenant_id: string; name: string; plan: string; package_code: string }>('/agent/account-opening', {
+ const data = await apiPost<{ tenant_id: string; name: string; plan: string; package_code: string }>('/agent/account-opening', {
 
-      company_name: form.companyName,
+ company_name: form.companyName,
 
-      contact_name: form.contactName,
+ contact_name: form.contactName,
 
-      phone: form.phone,
+ phone: form.phone,
 
-      email: form.email || undefined,
+ email: form.email || undefined,
 
-      package: form.package,
+ package: form.package,
 
-      remark: form.remark || undefined,
+ remark: form.remark || undefined,
 
-    })
+ })
 
-    const pkg = packages.value.find((p) => p.value === form.package)
+ const pkg = packages.value.find((p) => p.value === form.package)
 
-    lastTenantId.value = data.tenant_id
+ lastTenantId.value = data.tenant_id
 
-    records.value.unshift({
+ records.value.unshift({
 
-      id: data.tenant_id,
+ id: data.tenant_id,
 
-      applyTime: new Date().toLocaleString('zh-CN'),
+ applyTime: new Date().toLocaleString('zh-CN'),
 
-      clientName: data.name || form.companyName,
+ clientName: data.name || form.companyName,
 
-      package: pkg?.label || data.plan || '',
+ package: pkg?.label || data.plan || '',
 
-      status: '待收款',
+ status: '待收款',
 
-      tenantId: data.tenant_id,
+ tenantId: data.tenant_id,
 
-    })
+ })
 
-    message.success('开户成功，请生成收款二维码')
+ message.success('开户成功，请生成收款二维码')
 
-    form.companyName = ''
+ form.companyName = ''
 
-    form.contactName = ''
+ form.contactName = ''
 
-    form.phone = ''
+ form.phone = ''
 
-    form.email = ''
+ form.email = ''
 
-    form.package = undefined
+ form.package = undefined
 
-    form.remark = ''
+ form.remark = ''
 
-    await openCollectQr(data.tenant_id, pkg?.value || data.package_code)
+ await openCollectQr(data.tenant_id, pkg?.value || data.package_code)
 
-  } catch {
+ } catch {
 
-    message.error('提交失败，请稍后重试')
+ message.error('提交失败，请稍后重试')
 
-  } finally {
+ } finally {
 
-    submitting.value = false
+ submitting.value = false
 
-  }
+ }
 
 }
 
@@ -388,67 +388,67 @@ async function handleSubmit() {
 
 async function openCollectQr(tenantId?: string, packageCode?: string) {
 
-  if (!tenantId) return
+ if (!tenantId) return
 
-  qrVisible.value = true
+ qrVisible.value = true
 
-  paying.value = true
+ paying.value = true
 
-  currentCodeUrl.value = ''
+ currentCodeUrl.value = ''
 
-  currentMock.value = false
+ currentMock.value = false
 
-  try {
+ try {
 
-    const data = await apiPost<{
+ const data = await apiPost<{
 
-      id: string
+ id: string
 
-      order_no: string
+ order_no: string
 
-      amount: number
+ amount: number
 
-      subject: string
+ subject: string
 
-      code_url: string
+ code_url: string
 
-      mock: boolean
+ mock: boolean
 
-    }>('/agent/collect-payment', {
+ }>('/agent/collect-payment', {
 
-      tenant_id: tenantId,
+ tenant_id: tenantId,
 
-      package: packageCode,
+ package: packageCode,
 
-      billing_cycle: billingCycle.value,
+ billing_cycle: billingCycle.value,
 
-      channel: 'wechat',
+ channel: 'wechat',
 
-    })
+ })
 
-    currentOrderId.value = data.id
+ currentOrderId.value = data.id
 
-    currentOrderNo.value = data.order_no
+ currentOrderNo.value = data.order_no
 
-    currentSubject.value = data.subject
+ currentSubject.value = data.subject
 
-    currentAmount.value = data.amount
+ currentAmount.value = data.amount
 
-    currentCodeUrl.value = data.code_url || ''
+ currentCodeUrl.value = data.code_url || ''
 
-    currentMock.value = !!data.mock
+ currentMock.value = !!data.mock
 
-  } catch {
+ } catch {
 
-    message.error('生成收款码失败')
+ message.error('生成收款码失败')
 
-    qrVisible.value = false
+ qrVisible.value = false
 
-  } finally {
+ } finally {
 
-    paying.value = false
+ paying.value = false
 
-  }
+ }
 
 }
 
@@ -456,31 +456,31 @@ async function openCollectQr(tenantId?: string, packageCode?: string) {
 
 async function mockPay() {
 
-  if (!currentOrderId.value) return
+ if (!currentOrderId.value) return
 
-  mockPaying.value = true
+ mockPaying.value = true
 
-  try {
+ try {
 
-    await apiPost('/payment/mock-pay', { order_id: currentOrderId.value })
+ await apiPost('/payment/mock-pay', { order_id: currentOrderId.value })
 
-    message.success('支付成功：已自动开通并按代理链分润')
+ message.success('支付成功：已自动开通并按代理链分润')
 
-    qrVisible.value = false
+ qrVisible.value = false
 
-    const rec = records.value.find((r) => r.tenantId === lastTenantId.value)
+ const rec = records.value.find((r) => r.tenantId === lastTenantId.value)
 
-    if (rec) rec.status = '已开通'
+ if (rec) rec.status = '已开通'
 
-  } catch {
+ } catch {
 
-    message.error('模拟支付失败')
+ message.error('模拟支付失败')
 
-  } finally {
+ } finally {
 
-    mockPaying.value = false
+ mockPaying.value = false
 
-  }
+ }
 
 }
 
@@ -488,9 +488,9 @@ async function mockPay() {
 
 function statusTagColor(status: string) {
 
-  const map: Record<string, string> = { 待收款: 'orange', 已开通: 'green', 已提交: 'blue' }
+ const map: Record<string, string> = { 待收款: 'orange', 已开通: 'green', 已提交: 'blue' }
 
-  return map[status] || 'default'
+ return map[status] || 'default'
 
 }
 

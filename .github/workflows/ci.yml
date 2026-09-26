@@ -43,3 +43,22 @@ jobs:
       - run: npx vitest run
       - run: npm run cert:gate
       - run: npx vue-tsc --noEmit
+
+  router-drift:
+    name: Router Registration Drift Gate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements.lock
+      - run: pip install --no-deps -r requirements.lock
+      # 就地导入 app.main 取运行态真值（与 check_openapi.py 同口径）；
+      # 发现 D1 模块漂移或 D3 重复端点即退出 1，阻断合入。
+      - name: 运行路由注册漂移门禁
+        run: python scripts/check_router_registration_drift.py

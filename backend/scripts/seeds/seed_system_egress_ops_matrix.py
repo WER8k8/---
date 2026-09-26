@@ -73,10 +73,12 @@ def run_seeding() -> None:
         nc_id = nurture_cycles[0][0] if nurture_cycles else None
 
         # 1. system_config, platform_configs, tenant_capability_toggles, tenant_ai_provider_configs, cc_switch_configs
-        db.execute(text("""
-            INSERT INTO system_config (id, key, value, value_type, description, is_public, created_at, updated_at)
-            VALUES (:id, 'site_brand_name', '优丁 YouDing Global B2B SaaS', 'string', '平台全局展示名称', true, :now, :now)
-        """), {"id": uuid.uuid4(), "now": NOW})
+        cfg_row = db.execute(text("SELECT id FROM system_config WHERE key = 'site_brand_name'")).fetchone()
+        if not cfg_row:
+            db.execute(text("""
+                INSERT INTO system_config (id, key, value, value_type, description, is_public, created_at, updated_at)
+                VALUES (:id, 'site_brand_name', '优丁 YouDing Global B2B SaaS', 'string', '平台全局展示名称', true, :now, :now)
+            """), {"id": uuid.uuid4(), "now": NOW})
 
         if plat_id:
             db.execute(text("""
@@ -130,26 +132,34 @@ def run_seeding() -> None:
             VALUES (:id, :tid, :epid, '利雅得社媒指纹环境 (Chrome 122 / Win11)', :accid, :now, :now)
         """), {"id": bp_id, "tid": t_id, "epid": ep_id, "accid": acc_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO device_fingerprints (id, user_id, fingerprint_hash, device_info, first_seen_at, last_seen_at)
-            VALUES (:id, :uid, 'fp_sha256_9a8b7c6d5e4f3a2b', '{\"browser\": \"Chrome\", \"os\": \"Windows 11\"}', :now, :now)
-        """), {"id": uuid.uuid4(), "uid": u_id, "now": NOW})
+        dfp = db.execute(text("SELECT id FROM device_fingerprints WHERE fingerprint_hash = 'fp_sha256_9a8b7c6d5e4f3a2b'")).fetchone()
+        if not dfp:
+            db.execute(text("""
+                INSERT INTO device_fingerprints (id, user_id, fingerprint_hash, device_info, first_seen_at, last_seen_at)
+                VALUES (:id, :uid, 'fp_sha256_9a8b7c6d5e4f3a2b', '{"browser": "Chrome", "os": "Windows 11"}', :now, :now)
+            """), {"id": uuid.uuid4(), "uid": u_id, "now": NOW})
 
         db.execute(text("""
             INSERT INTO app_devices (id, user_id, tenant_id, device_token, platform, created_at, updated_at)
             VALUES (:id, :uid_str, :tid_str, 'fcm_token_device_youding_2026', 'android', :now, :now)
         """), {"id": uuid.uuid4(), "uid_str": str(u_id), "tid_str": str(t_id), "now": NOW})
 
-        cred_id = uuid.uuid4()
-        db.execute(text("""
-            INSERT INTO credentials (id, tenant_id, owner_type, owner_id, connection_type, connection_id, artifact_type, name, ciphertext, aad_fingerprint, crypto_backend, key_version, status, created_at, updated_at)
-            VALUES (:id, :tid_str, 'tenant', :tid_str, 'whatsapp', 'wa_01', 'api_key', 'WhatsApp Business API Key', 'enc:v1:aes-gcm:sample', 'aad:01', 'aes_gcm', 1, 'active', :now, :now)
-        """), {"id": cred_id, "tid_str": str(t_id), "now": NOW})
+        cred_row = db.execute(text("SELECT id FROM credentials WHERE connection_type = 'whatsapp' AND connection_id = 'wa_01'")).fetchone()
+        if cred_row:
+            cred_id = cred_row[0]
+        else:
+            cred_id = uuid.uuid4()
+            db.execute(text("""
+                INSERT INTO credentials (id, tenant_id, owner_type, owner_id, connection_type, connection_id, artifact_type, name, ciphertext, aad_fingerprint, crypto_backend, key_version, status, created_at, updated_at)
+                VALUES (:id, :tid_str, 'tenant', :tid_str, 'whatsapp', 'wa_01', 'api_key', 'WhatsApp Business API Key', 'enc:v1:aes-gcm:sample', 'aad:01', 'aes_gcm', 1, 'active', :now, :now)
+            """), {"id": cred_id, "tid_str": str(t_id), "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO credential_grants (id, tenant_id, credential_id, grantee_type, grantee_id, granted_at, status)
-            VALUES (:id, :tid_str, :cid_str, 'agent', 'trade_ai_agent', :now, 'active')
-        """), {"id": uuid.uuid4(), "tid_str": str(t_id), "cid_str": str(cred_id), "now": NOW})
+        cg_row = db.execute(text("SELECT id FROM credential_grants WHERE credential_id = :cid"), {"cid": str(cred_id)}).fetchone()
+        if not cg_row:
+            db.execute(text("""
+                INSERT INTO credential_grants (id, tenant_id, credential_id, grantee_type, grantee_id, granted_at, status)
+                VALUES (:id, :tid_str, :cid_str, 'agent', 'trade_ai_agent', :now, 'active')
+            """), {"id": uuid.uuid4(), "tid_str": str(t_id), "cid_str": str(cred_id), "now": NOW})
         print("✓ browser_profiles, device_fingerprints, app_devices, credentials 填充完成")
 
         # 4. mcp_servers, mcp_tools, plugins, plugin_versions
@@ -177,10 +187,12 @@ def run_seeding() -> None:
         print("✓ mcp_servers, mcp_tools, plugins, plugin_versions 填充完成")
 
         # 5. n8n_workflows, pipeline_runs, pipeline_steps, step_evidence, review_tasks
-        db.execute(text("""
-            INSERT INTO n8n_workflows (id, tenant_id, workflow_id, name, endpoint_url, enabled, created_at, updated_at)
-            VALUES (:id, :tid, 'wf_site_publish_hook', '独立站一键分发与通知流', 'http://127.0.0.1:5678/webhook/site-publish', true, :now, :now)
-        """), {"id": uuid.uuid4(), "tid": t_id, "now": NOW})
+        wf_row = db.execute(text("SELECT id FROM n8n_workflows WHERE workflow_id = 'wf_site_publish_hook'")).fetchone()
+        if not wf_row:
+            db.execute(text("""
+                INSERT INTO n8n_workflows (id, tenant_id, workflow_id, name, endpoint_url, enabled, created_at, updated_at)
+                VALUES (:id, :tid, 'wf_site_publish_hook', '独立站一键分发与通知流', 'http://127.0.0.1:5678/webhook/site-publish', true, :now, :now)
+            """), {"id": uuid.uuid4(), "tid": t_id, "now": NOW})
 
         pipe_run_id = uuid.uuid4()
         db.execute(text("""
@@ -252,20 +264,24 @@ def run_seeding() -> None:
             ON CONFLICT (user_id) DO UPDATE SET status='online'
         """), {"uid": u_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO feishu_bindings (id, feishu_open_id, feishu_user_name, bound_user_id, bound_username, is_active, created_at, updated_at)
-            VALUES (:id, 'ou_youding_feishu_001', '吕博旺', :uid_str, 'admin', true, :now, :now)
-        """), {"id": uuid.uuid4(), "uid_str": str(u_id), "now": NOW})
+        fs_row = db.execute(text("SELECT id FROM feishu_bindings WHERE feishu_open_id = 'ou_youding_feishu_001'")).fetchone()
+        if not fs_row:
+            db.execute(text("""
+                INSERT INTO feishu_bindings (id, feishu_open_id, feishu_user_name, bound_user_id, bound_username, is_active, created_at, updated_at)
+                VALUES (:id, 'ou_youding_feishu_001', '吕博旺', :uid_str, 'admin', true, :now, :now)
+            """), {"id": uuid.uuid4(), "uid_str": str(u_id), "now": NOW})
 
         db.execute(text("""
             INSERT INTO feishu_message_logs (id, feishu_open_id, message_type, content, direction, status, created_at)
             VALUES (:id, 'ou_youding_feishu_001', 'card', '【定金到账通知】沙特订单已成功核销', 'outgoing', 'sent', :now)
         """), {"id": uuid.uuid4(), "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO third_party_logins (id, user_id, provider, provider_id, created_at, updated_at)
-            VALUES (:id, :uid, 'google', 'oauth2_google_admin_2026', :now, :now)
-        """), {"id": uuid.uuid4(), "uid": u_id, "now": NOW})
+        tpl_row = db.execute(text("SELECT id FROM third_party_logins WHERE provider = 'google' AND provider_id = 'oauth2_google_admin_2026'")).fetchone()
+        if not tpl_row:
+            db.execute(text("""
+                INSERT INTO third_party_logins (id, user_id, provider, provider_id, created_at, updated_at)
+                VALUES (:id, :uid, 'google', 'oauth2_google_admin_2026', :now, :now)
+            """), {"id": uuid.uuid4(), "uid": u_id, "now": NOW})
         print("✓ super_admin_login_logs, user_status, feishu, third_party_logins 填充完成")
 
         # 8. campaign_recipients, campaign_events, email_verifications, email_tracking_events
@@ -387,11 +403,12 @@ def run_seeding() -> None:
             """), {"id": uuid.uuid4(), "tid": pub_task_id, "now": NOW})
         print("✓ reviews, release_guards, skill_performance, visibility, inclusion 填充完成")
 
-        # 13. merchant_profiles, platform_survival_ledger_entries, platform_tenant_origins, international_crawl_logs, data_source_providers, competitor_mentions, engagement_records, push_events, ssl_certificates, building_material_specs
-        db.execute(text("""
-            INSERT INTO merchant_profiles (id, user_id, company_name, country, city, verified, created_at, updated_at)
-            VALUES (:id, :uid, '优丁全球外贸建材供应链', 'China', 'Shijiazhuang', true, :now, :now)
-        """), {"id": uuid.uuid4(), "uid": u_id, "now": NOW})
+        mp_row = db.execute(text("SELECT id FROM merchant_profiles WHERE user_id = :uid"), {"uid": u_id}).fetchone()
+        if not mp_row:
+            db.execute(text("""
+                INSERT INTO merchant_profiles (id, user_id, company_name, country, city, verified, created_at, updated_at)
+                VALUES (:id, :uid, '优丁全球外贸建材供应链', 'China', 'Shijiazhuang', true, :now, :now)
+            """), {"id": uuid.uuid4(), "uid": u_id, "now": NOW})
 
         db.execute(text("""
             INSERT INTO platform_survival_ledger_entries (id, wallet_scope, entry_type, channel, amount_minor, currency, amount_base_minor, base_currency, fx_rate_to_base, status, recorded_at, created_at)
@@ -410,10 +427,12 @@ def run_seeding() -> None:
                 VALUES (:id, :sid, 'success', 24, 6, :now)
             """), {"id": uuid.uuid4(), "sid": site_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO data_source_providers (id, name, data_class, license_basis, tos_verified, review_status, created_at, updated_at)
-            VALUES (:id, 'Global Trade Atlas Customs Feed', 'public_corporate', 'licensed_service', true, 'approved', :now, :now)
-        """), {"id": uuid.uuid4(), "now": NOW})
+        dsp_row = db.execute(text("SELECT id FROM data_source_providers WHERE name = 'Global Trade Atlas Customs Feed'")).fetchone()
+        if not dsp_row:
+            db.execute(text("""
+                INSERT INTO data_source_providers (id, name, data_class, license_basis, tos_verified, review_status, created_at, updated_at)
+                VALUES (:id, 'Global Trade Atlas Customs Feed', 'public_corporate', 'licensed_service', true, 'approved', :now, :now)
+            """), {"id": uuid.uuid4(), "now": NOW})
 
         if query_id and run_id:
             db.execute(text("""
@@ -432,15 +451,19 @@ def run_seeding() -> None:
             VALUES (:id, :tid_str, 'order_milestone', 'order', 'ORD-2026-001', 'websocket', '沙特订单生产完成', '一体板已装箱打托，等待海运验货', 'delivered', 0, :now, :now)
         """), {"id": uuid.uuid4(), "tid_str": str(t_id), "now": naive_now})
 
-        db.execute(text("""
-            INSERT INTO ssl_certificates (id, tenant_id, domain, is_active, created_at, updated_at)
-            VALUES (:id, :tid, 'youding-materials.com', 'true', :now, :now)
-        """), {"id": uuid.uuid4(), "tid": t_id, "now": NOW})
+        ssl_row = db.execute(text("SELECT id FROM ssl_certificates WHERE tenant_id = :tid AND domain = 'youding-materials.com'"), {"tid": t_id}).fetchone()
+        if not ssl_row:
+            db.execute(text("""
+                INSERT INTO ssl_certificates (id, tenant_id, domain, is_active, created_at, updated_at)
+                VALUES (:id, :tid, 'youding-materials.com', 'true', :now, :now)
+            """), {"id": uuid.uuid4(), "tid": t_id, "now": NOW})
 
-        db.execute(text("""
-            INSERT INTO building_material_specs (product_id, spec_key, spec_value, metric_unit, created_at, updated_at)
-            VALUES (1, 'thermal_conductivity', 0.038, 'W/(m·K)', :now, :now)
-        """), {"now": naive_now})
+        bms_row = db.execute(text("SELECT product_id FROM building_material_specs WHERE product_id = 1 AND spec_key = 'thermal_conductivity'")).fetchone()
+        if not bms_row:
+            db.execute(text("""
+                INSERT INTO building_material_specs (product_id, spec_key, spec_value, metric_unit, created_at, updated_at)
+                VALUES (1, 'thermal_conductivity', 0.038, 'W/(m·K)', :now, :now)
+            """), {"now": naive_now})
         print("✓ merchant_profiles, survival_ledger, origins, crawl_logs, competitors, building_material_specs 填充完成")
 
         db.commit()

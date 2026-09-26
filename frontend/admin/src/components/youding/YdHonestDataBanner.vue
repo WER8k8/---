@@ -114,7 +114,7 @@ function onAction() {
   border-radius: 8px;
 }
 .yd-honest-banner__title {
-  font-weight: 600;
+  font-weight: 500;
 }
 .yd-honest-banner__desc {
   margin: 0;

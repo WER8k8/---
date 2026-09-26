@@ -69,8 +69,8 @@ class Settings(BaseSettings):
     # 记账号门（wallet_guard / acquisition）：硬拦开关显式声明为 Settings 字段，使
     # pydantic 能从 env_file 解析为 bool 并在 settings 内可读（此前仅靠 os.getenv，
     # 而 env_file 不注入 os.environ → 硬拦在真实运行时从未生效，P2-1b 修正）。
-    ACQ_HARD_BLOCK_TOKEN: bool = False
-    TOKEN_WALLET_HARD_BLOCK: bool = False
+    ACQ_HARD_BLOCK_TOKEN: bool = True
+    TOKEN_WALLET_HARD_BLOCK: bool = True
     # 轮24 双记账防护：model_call_ledger→token_ledger 聚合闸门（默认关）。
     # 与 TASK_CONTROL_ENABLED（meter_events 计量路径）互斥启用，防止 token_ledger
     # 双重扣减；切换记账主路径时先关 TASK_CONTROL_ENABLED 再开本开关。
@@ -829,6 +829,9 @@ class Settings(BaseSettings):
     # 零成本获客：Resend 免费版（3000 封/月免费）
     RESEND_API_KEY: str = ""
     RESEND_FROM_EMAIL: str = ""
+    # WhatsApp 官方 Cloud API 配置（Trade AI / GoodJob 触达）
+    WHATSAPP_ACCESS_TOKEN: str = ""
+    WHATSAPP_PHONE_NUMBER_ID: str = ""
     # SMTP 兼容字段（email_send_service 使用）
     @property
     def SMTP_HOST(self) -> str:

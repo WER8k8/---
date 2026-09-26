@@ -91,7 +91,7 @@ const editing = ref<any | null>(null)
 const form = reactive({
   name: '',
   address: '',
-  port: null as number | null,
+  port: undefined as number | undefined,
   protocol: 'vmess',
   uuid: '',
   remarks: '',
@@ -115,7 +115,7 @@ function openCreate() {
   editing.value = null
   form.name = ''
   form.address = ''
-  form.port = null
+  form.port = undefined
   form.protocol = 'vmess'
   form.uuid = ''
   form.remarks = ''
@@ -126,7 +126,7 @@ function openEdit(row: any) {
   editing.value = row
   form.name = String(row.name ?? '')
   form.address = String(row.address ?? '')
-  form.port = row.port ?? null
+  form.port = row.port ?? undefined
   form.protocol = String(row.protocol ?? 'vmess')
   form.uuid = String(row.uuid ?? '')
   form.remarks = String(row.remarks ?? '')
@@ -143,7 +143,7 @@ async function save() {
     const payload = {
       name: form.name.trim(),
       address: form.address.trim(),
-      port: form.port,
+      port: form.port ?? null,
       protocol: form.protocol.trim() || 'vmess',
       uuid: form.uuid.trim(),
       remarks: form.remarks.trim(),

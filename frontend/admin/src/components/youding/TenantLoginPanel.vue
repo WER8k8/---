@@ -110,7 +110,7 @@ withDefaults(
   border-radius: 12px;
   background: linear-gradient(135deg, var(--login-primary), var(--login-primary-hover));
   color: #fff;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -118,13 +118,13 @@ withDefaults(
 }
 .brand-col__name {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.04em;
 }
 .brand-col__title {
   margin: 0 0 12px;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.25;
   letter-spacing: -0.02em;
 }
@@ -152,7 +152,7 @@ withDefaults(
 .brand-col__feat strong {
   display: block;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 2px;
 }
 .brand-col__feat p {

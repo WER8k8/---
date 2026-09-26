@@ -109,6 +109,16 @@ def run_turn(
     with harness:
         result = harness.run(prompt, session_id=session_id)
 
+    # 记录意图识别结果到经验引擎（best-effort）
+    try:
+        record_intent_result(
+            intent=prompt[:100] if prompt else "unknown",
+            success=result.finish_reason != "error",
+        )
+    except Exception as exc:  # noqa: BLE001
+        import logging
+        logging.getLogger("uj-admin.deepseek").warning("record_intent_result failed: %s", exc)
+
     return {
         "session_id": result.session_id,
         "final_response": result.final_response,

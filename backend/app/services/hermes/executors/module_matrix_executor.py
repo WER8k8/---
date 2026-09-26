@@ -82,6 +82,9 @@ class ModuleMatrixExecutor(BaseExecutor):
     def _surface(self, module: str) -> dict[str, Any]:
         if not module:
             raise ValueError("module required")
+        # 模块名白名单：防路径穿越 / 空段（如 ../etc/passwd）
+        if not module.replace("_", "").isalnum() or module != module.strip():
+            raise ValueError(f"invalid module name: {module!r}")
         # parents: executors -> hermes -> services -> app
         app_root = Path(__file__).resolve().parents[3]
         path = app_root / "api" / "v1" / "routes" / f"{module}.py"

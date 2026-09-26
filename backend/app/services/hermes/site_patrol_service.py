@@ -344,6 +344,22 @@ def _probe_agency_llm(db: Session) -> dict[str, Any]:
     }
 
 
+def _probe_admin_ui_quality() -> dict[str, Any]:
+    """超管 UI 质量：emoji/字重/空列/状态说明/过时叙事（只读源码扫描）。"""
+    assert_maintenance_action("read_probe")
+    try:
+        from app.services.admin_ui_quality_probe import probe_admin_ui_quality
+
+        return probe_admin_ui_quality()
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "id": "admin_ui_quality",
+            "title": "超管 UI 质量",
+            "status": "warn",
+            "message": f"UI 质量探针异常：{exc}"[:200],
+        }
+
+
 def _probe_deerflow_queue(db: Session) -> dict[str, Any]:
     """_probe_deerflow_queue。
 
@@ -369,6 +385,7 @@ def _probe_deerflow_queue(db: Session) -> dict[str, Any]:
 
 PROBE_REGISTRY: list[Callable[..., dict[str, Any]]] = [
     _probe_readiness,
+    _probe_admin_ui_quality,
     _probe_ai_connect,
     _probe_scenario_health,
     _probe_nvidia_customer,

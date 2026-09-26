@@ -6,7 +6,7 @@
     <div class="today-strip__main">
       <div class="today-strip__head">
         <span class="today-strip__badge">外贸开店关键进展</span>
-        <h2>{{ payload.headline || '建站上线 ➔ 首发推广 ➔ 捕获海外询盘' }}</h2>
+        <h2>{{ payload.headline || '建站上线  首发推广  捕获海外询盘' }}</h2>
       </div>
       <div
         class="today-strip__progress"
@@ -80,7 +80,7 @@ onMounted(() => {
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1e40af;
   background: #eff6ff;
 }
@@ -89,7 +89,7 @@ onMounted(() => {
   margin: 0;
   font-family: var(--uj-font-display);
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.02em;
   color: #0f172a;
 }
@@ -142,7 +142,7 @@ onMounted(() => {
 }
 
 .today-strip__actions :deep(.ant-btn-primary) {
-  font-weight: 600;
+  font-weight: 500;
   border-radius: 8px !important;
   background: var(--color-primary, #4a9b8c) !important;
   border-color: var(--color-primary, #4a9b8c) !important;

@@ -160,7 +160,7 @@ function handleRetry() {
 
 .progress-percentage {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 

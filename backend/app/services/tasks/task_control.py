@@ -69,7 +69,18 @@ TRANSITIONS: dict[str, frozenset[str]] = {
 MAX_RETRY = 3  # §4.8/R6：有界重试
 
 # AI 类任务前缀（create 时自动过预算门；显式传 quota_gate 可覆盖）
-AI_TASK_TYPE_PREFIXES = ("ai_",)
+AI_TASK_TYPE_PREFIXES = (
+    "ai_",
+    "hermes_node:",
+    "deerflow",
+    "site_builder",
+    "content",
+    "publish",
+    "nurture",
+    "accio",
+    "trade_ai",
+    "goodjob",
+)
 
 
 def _utcnow() -> datetime:
@@ -195,6 +206,12 @@ class TaskControlService:
             quota_gate = task_type.startswith(AI_TASK_TYPE_PREFIXES)
         if quota_gate:
             self._check_quota(tenant_id, tenant)
+            try:
+                from app.services.acquisition.wallet_guard import enforce_wallet_gate  # noqa: PLC0415
+                enforce_wallet_gate(tenant_id, self.db)
+            except Exception as e:
+                if type(e).__name__ == "WalletBlockedError":
+                    raise
 
         task = AiTask(
             id=str(uuid.uuid4()),

@@ -3,25 +3,25 @@
  */
 <template>
   <div
-    class="meoo-cat-mascot-wrapper"
+    class="uj-cat-mascot-wrapper"
     :class="[`mood-${mood}`, { 'is-thinking': mood === 'think' }]"
     :style="{ width: typeof size === 'number' ? `${size}px` : size, height: typeof size === 'number' ? `${size}px` : size }"
     aria-hidden="true"
   >
-    <div class="meoo-cat-glow-halo" />
+    <div class="uj-cat-glow-halo" />
     <img
-      :src="meooCatImg"
-      alt="小 Me"
-      class="meoo-cat-img"
+      :src="ujCatImg"
+      alt="小优"
+      class="uj-cat-img"
       draggable="false"
     />
     <!-- 思考状态微光指示晶片 -->
-    <span v-if="mood === 'think'" class="meoo-think-sparkle" />
+    <span v-if="mood === 'think'" class="uj-think-sparkle" />
   </div>
 </template>
 
 <script setup lang="ts">
-import meooCatImg from '@/assets/images/meoo-cat.png'
+import ujCatImg from '@/assets/images/uj-cat.png'
 
 withDefaults(
   defineProps<{
@@ -36,7 +36,7 @@ withDefaults(
 </script>
 
 <style scoped>
-.meoo-cat-mascot-wrapper {
+.uj-cat-mascot-wrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -46,11 +46,11 @@ withDefaults(
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.meoo-cat-mascot-wrapper:hover {
+.uj-cat-mascot-wrapper:hover {
   transform: translateY(-2px) scale(1.04);
 }
 
-.meoo-cat-glow-halo {
+.uj-cat-glow-halo {
   position: absolute;
   inset: -15%;
   border-radius: 50%;
@@ -61,7 +61,7 @@ withDefaults(
   transition: opacity 0.3s ease;
 }
 
-.meoo-cat-img {
+.uj-cat-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -69,12 +69,12 @@ withDefaults(
   filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.35));
 }
 
-.mood-think .meoo-cat-glow-halo {
+.mood-think .uj-cat-glow-halo {
   opacity: 1;
   background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(99, 102, 241, 0.2) 50%, transparent 70%);
 }
 
-.meoo-think-sparkle {
+.uj-think-sparkle {
   position: absolute;
   top: 4px;
   right: 4px;

@@ -97,7 +97,7 @@
       </div>
 
       <div class="user-chip" @click="emit('navigate', brandHome)">
-        <div class="sidebar-brand-mark w-6 h-6 rounded-md text-white flex items-center justify-center font-semibold text-[11px]">
+        <div class="sidebar-brand-mark w-6 h-6 rounded-md text-white flex items-center justify-center font-medium text-[11px]">
           {{ username.charAt(0) || 'A' }}
         </div>
         <span class="hidden sm:inline text-[13px] text-gray-600 font-medium">{{ username }}</span>
@@ -319,7 +319,7 @@ onUnmounted(() => {
   background: var(--uj-brand, #0d9488);
   color: #fff;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
   font-family: inherit;
@@ -386,7 +386,7 @@ onUnmounted(() => {
   background: #ef4444;
   color: white;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 500;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -413,7 +413,7 @@ onUnmounted(() => {
   padding: 12px 16px;
   border-bottom: 1px solid var(--uj-border-soft, #f1f5f9);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--uj-text-secondary, #1e293b);
 }
 .notify-list { max-height: 300px; overflow-y: auto; }

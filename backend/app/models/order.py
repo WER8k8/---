@@ -70,6 +70,9 @@ class Order(Base):
     shipping_marks = Column(Text, nullable=True)               # 唛头
     container_no = Column(String(50), nullable=True)           # 集装箱号
     bl_number = Column(String(50), nullable=True)              # 海运提单号
+    inquiry_id = Column(String(36), nullable=True, index=True)  # 来源询盘（黄金单闭环）
+    customer_name = Column(String(200), nullable=True)          # 买家展示名
+    product_summary = Column(String(300), nullable=True)        # 品名摘要
     created_at = Column(DateTime(timezone=True), default=func.now(), index=True)
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
     # 关系

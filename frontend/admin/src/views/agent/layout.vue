@@ -7,5 +7,5 @@ import ProLayout from '@/layout/index.vue';
 </script>
 
 <template>
-  <ProLayout />
+ <ProLayout />
 </template>

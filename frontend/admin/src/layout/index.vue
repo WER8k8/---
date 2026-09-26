@@ -709,7 +709,7 @@ async function handleLogout() { await auth.logout(); router.push('/login') }
 .sidebar-brand-mark {
   background: var(--uj-brand, #55778f);
   color: #fff;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.02em;
 }
 

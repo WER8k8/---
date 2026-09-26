@@ -176,7 +176,7 @@ async function handleAction(key: string, conversationId: string) {
 .title {
   margin: 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 

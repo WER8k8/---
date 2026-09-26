@@ -187,7 +187,7 @@
               <a-statistic title="调整后单价 (Adjusted Unit Price)" :value="boqResult.adjusted_unit_price" prefix="$" suffix="/ ㎡" />
             </a-col>
             <a-col :xs="24" :sm="8">
-              <a-statistic title="订单总货值 (Total FOB/CIF)" :value="boqResult.total" prefix="$" :precision="2" value-style="color: #4a9b8c" />
+              <a-statistic title="订单总货值 (Total FOB/CIF)" :value="boqResult.total" prefix="$" :precision="2" :value-style="{ color: '#4a9b8c' }" />
             </a-col>
             <a-col :xs="24" :sm="8">
               <a-statistic title="预估 20GP 重柜数" :value="boqResult.breakdown?.estimated_20gp_containers || 1" suffix="个集装箱" />

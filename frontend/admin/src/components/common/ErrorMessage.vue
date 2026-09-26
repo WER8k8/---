@@ -145,7 +145,7 @@ function handleDismiss() {
 
 .error-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
   margin-bottom: 4px;
 }

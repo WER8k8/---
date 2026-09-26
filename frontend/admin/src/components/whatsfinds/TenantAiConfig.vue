@@ -399,7 +399,7 @@ function getTestStatusText(status?: string) {
     align-items: center;
     gap: 8px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   .config-list {

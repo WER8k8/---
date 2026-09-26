@@ -56,7 +56,7 @@ defineEmits<{
   align-items: center;
   margin-bottom: 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: #334155;
 }
 .yd-col-settings__list {

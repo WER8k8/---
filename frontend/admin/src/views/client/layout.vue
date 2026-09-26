@@ -7,5 +7,5 @@ import ClientShellLayout from '@/layout/ClientShellLayout.vue';
 </script>
 
 <template>
-  <ClientShellLayout />
+ <ClientShellLayout />
 </template>

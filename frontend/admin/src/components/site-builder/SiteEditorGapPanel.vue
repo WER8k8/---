@@ -171,7 +171,7 @@ onMounted(async () => {
   h3 {
     margin: 0 0 4px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 500;
     color: #1e293b;
   }
 

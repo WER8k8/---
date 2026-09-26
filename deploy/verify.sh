@@ -371,6 +371,40 @@ else
 fi
 
 # ============================================================
+# 11. n8n 工作流引擎
+# ============================================================
+echo ""
+echo -e "${CYAN}═══ 11. n8n 工作流引擎 ═══${NC}"
+
+if docker ps -q --filter "name=youding-n8n" 2>/dev/null | grep -q .; then
+    HTTP_CODE=$(http_get "http://localhost:5678/healthz" 200 0)
+    check "n8n 健康检查" $? "响应码: $HTTP_CODE"
+else
+    check "n8n 容器" 1 "n8n 未运行 (可选服务)" false
+fi
+
+# ============================================================
+# 12. Ollama 本地 AI
+# ============================================================
+echo ""
+echo -e "${CYAN}═══ 12. Ollama 本地 AI ═══${NC}"
+
+if docker ps -q --filter "name=youding-ollama" 2>/dev/null | grep -q .; then
+    HTTP_CODE=$(http_get "http://localhost:11434/api/tags" 200 0)
+    check "Ollama API 可达" $? "响应码: $HTTP_CODE"
+    
+    # 检查可用模型
+    MODELS=$(curl -s --max-time 5 "http://localhost:11434/api/tags" 2>/dev/null | python3 -c "import sys,json; models=json.load(sys.stdin).get('models',[]); print(', '.join([m['name'] for m in models]))" 2>/dev/null || echo "")
+    if [[ -n "$MODELS" ]]; then
+        check "Ollama 可用模型" 0 "$MODELS"
+    else
+        check "Ollama 模型" 1 "无可用模型 (运行: docker exec youding-ollama ollama pull qwen2.5:7b)" false
+    fi
+else
+    check "Ollama 容器" 1 "Ollama 未运行 (可选服务)" false
+fi
+
+# ============================================================
 # 总结
 # ============================================================
 TOTAL=$((PASS + FAIL + WARN))

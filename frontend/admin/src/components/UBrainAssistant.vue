@@ -11,7 +11,7 @@
       aria-label="悬浮卖货智能助手"
       :style="rootStyle"
     >
-      <div v-if="!open" class="ubrain-meoo-bubble" @click="togglePanel">
+      <div v-if="!open" class="ubrain-bubble" @click="togglePanel">
         <span class="bubble-text">{{ ASSISTANT_MASCOT.bubbleTip }}</span>
         <span class="bubble-arrow" />
       </div>
@@ -224,7 +224,7 @@ async function send() {
 .ubrain-root.dragging * {
   cursor: grabbing !important;
 }
-.ubrain-meoo-bubble {
+.ubrain-bubble {
   pointer-events: auto;
   position: relative;
   display: inline-flex;
@@ -241,7 +241,7 @@ async function send() {
   transition: all 0.2s ease;
   margin-right: 4px;
 }
-.ubrain-meoo-bubble:hover {
+.ubrain-bubble:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 22px rgba(15, 23, 42, 0.12);
   border-color: rgba(203, 213, 225, 0.9);

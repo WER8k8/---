@@ -254,12 +254,21 @@ class AutoNegotiatorRequest(BaseModel):
 
 class EmailAutomationRequest(BaseModel):
     """开发信撰写请求"""
-    action: str = Field("generate_email", description="操作类型: generate_email, create_campaign")
+    action: str = Field("generate_email", description="操作类型: generate_email, save_draft, send_emails, create_campaign")
     customer_data: Dict[str, Any] = Field(default_factory=dict, description="客户数据")
     email_type: str = Field("cold_outreach", description="邮件类型")
     language: str = Field("en", description="语言")
     campaign_name: Optional[str] = Field(None, description="活动名称")
     customer_list: List[Dict[str, Any]] = Field(default_factory=list, description="客户列表")
+    draft_id: Optional[str] = Field(None, description="草稿 ID（更新用）")
+    recipients: List[str] = Field(default_factory=list, description="收件人邮箱列表")
+    subject: str = Field("", description="邮件主题")
+    content: str = Field("", description="邮件正文")
+    status: str = Field("draft", description="draft/sent")
+    customer_ids: List[str] = Field(default_factory=list, description="活动客户 ID 列表")
+    schedule_type: str = Field("immediate", description="发送计划")
+    scheduled_at: Optional[str] = Field(None, description="定时发送时间")
+    auto_follow_up: bool = Field(False, description="是否自动跟进")
 
 
 class PerformanceRequest(BaseModel):
@@ -1058,7 +1067,100 @@ async def automate_email(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """开发信撰写 - 个性化邮件生成、自动跟进"""
+    """开发信撰写 - save_draft / send_emails 持久化到 EmailOutreach，generate_email 走 AI。"""
+    tenant_id = str(getattr(current_user, "tenant_id", "") or "")
+    user_id = str(getattr(current_user, "id", "") or "")
+    action = (request.action or "generate_email").strip()
+
+    if action in ("save_draft", "send_emails"):
+        try:
+            from app.models.email_outreach import EmailStatus
+            from app.services.ubrain.email_outreach_service import create_email
+
+            subject = (request.subject or "").strip() or "（无主题）"
+            content = request.content or ""
+            to_list = [r for r in (request.recipients or []) if r]
+            if not to_list:
+                to_list = [str((request.customer_data or {}).get("email") or "draft@local")]
+            results = []
+            for to_email in to_list:
+                row = create_email(
+                    db,
+                    to_email=to_email,
+                    subject=subject,
+                    html_body=content.replace("\n", "<br/>"),
+                    tenant_id=tenant_id or None,
+                    user_id=user_id or None,
+                    metadata={
+                        "email_type": request.email_type,
+                        "language": request.language,
+                        "action": action,
+                    },
+                )
+                if action == "send_emails":
+                    sent = False
+                    try:
+                        from app.services.ubrain.email_tracking_service import send_tracked_email
+                        send_tracked_email(
+                            db=db,
+                            to=to_email,
+                            subject=subject,
+                            body=content,
+                            user_id=user_id,
+                            tenant_id=tenant_id,
+                            track_opens=True,
+                            track_clicks=True,
+                        )
+                        row.transition(EmailStatus.SENT)
+                        db.commit()
+                        sent = True
+                    except Exception:
+                        sent = False
+                    results.append({
+                        "email_id": str(row.id),
+                        "to": to_email,
+                        "status": "sent" if sent else "draft",
+                        "note": "" if sent else "未配置发信通道，已存为草稿（未假装已发送）",
+                    })
+                else:
+                    results.append({
+                        "email_id": str(row.id),
+                        "to": to_email,
+                        "status": "draft",
+                    })
+            return success_response(data={
+                "action": action,
+                "email_id": results[0]["email_id"] if results else "",
+                "results": results,
+                "status": results[0]["status"] if results else "draft",
+            }, message="草稿已保存" if action == "save_draft" else "已提交发送")
+        except Exception as exc:
+            try:
+                db.rollback()
+            except Exception:
+                pass
+            return success_response(data={"ok": False, "error": str(exc), "action": action}, message=f"邮件保存失败: {exc}")
+
+    if action == "create_campaign":
+        from app.models.campaign import Campaign
+        camp = Campaign(
+            name=request.campaign_name or "未命名活动",
+            campaign_type="outbound",
+            status="active" if request.schedule_type == "immediate" else "draft",
+            target_count=len(request.customer_ids or request.customer_list or request.recipients or []),
+            tenant_id=tenant_id or None,
+        )
+        db.add(camp)
+        db.commit()
+        db.refresh(camp)
+        return success_response(data={
+            "campaign_id": str(camp.id),
+            "name": camp.name,
+            "status": camp.status,
+            "total_emails": camp.target_count or 0,
+            "action": action,
+        }, message="活动已创建")
+
     acciowork = get_acciowork_engine()
     if acciowork is None:
         return error_response(code=500, message="AccioWork引擎未初始化")
@@ -1070,10 +1172,6 @@ async def automate_email(
             "email_type": request.email_type,
             "language": request.language,
         })
-        if request.action == "create_campaign":
-            params["campaign_name"] = request.campaign_name
-            params["customer_list"] = request.customer_list
-
         result = await acciowork.execute_skill("email_automation", params)
         return success_response(data=result)
     except Exception as e:
@@ -1154,6 +1252,8 @@ async def list_sales_emails(
                 "recipientName": "",
                 "recipientEmail": e.to_email,
                 "subject": e.subject,
+                "body": e.html_body or e.text_body or "",
+                "content": e.text_body or e.html_body or "",
                 "type": (e.outreach_metadata or {}).get("email_type") or "cold_outreach",
                 "status": e.status.value if hasattr(e.status, "value") else str(e.status),
                 "sentAt": e.sent_at.isoformat() if e.sent_at else None,

@@ -77,7 +77,7 @@ onMounted(() => refresh());
   }
   &__pill {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     padding: 2px 8px;
     border-radius: 999px;
     background: #e2e8f0;

@@ -66,8 +66,8 @@ def _lifespan_init_core():
     try:
         from app.core.executable_resolver import bootstrap_executable_env
         bootstrap_executable_env()
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("CLI 路径引导失败（ffmpeg 等可能不可用）: %s", exc)
 
     # 启动时初始化数据库
     init_db()
@@ -75,8 +75,8 @@ def _lifespan_init_core():
     try:
         from app.core.database import mount_rls_pilot_if_enabled
         mount_rls_pilot_if_enabled()
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("RLS 试点表挂载失败: %s", exc)
     # SECURITY: 生产环境 DEBUG=True 时阻止启动
     if settings.ENVIRONMENT == "production" and settings.DEBUG:
         logger.error(
@@ -95,15 +95,15 @@ def _lifespan_init_core():
             seed_super_admin(db)
         finally:
             db.close()
-    except Exception:
-        pass  # 种子失败不阻塞启动
+    except Exception as exc:
+        logger.warning("种子数据执行失败: %s", exc)
 
     # 自动启动数据库备份（每日凌晨3点）
     try:
         from app.services.auto_backup import backup_service
         backup_service.start()
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("自动备份服务启动失败: %s", exc)
 
 
 def _lifespan_start_basic_schedulers():
@@ -417,89 +417,34 @@ def _lifespan_stop_schedulers(
     nurture_worker_scheduler,
 ):
     """按启动顺序反向停止所有已启动的调度器。"""
-    if rank_scheduler is not None:
-        try:
-            rank_scheduler.stop()
-        except Exception:
-            pass
 
-    if scenario_health_scheduler is not None:
-        try:
-            scenario_health_scheduler.stop()
-        except Exception:
-            pass
+    def _stop_schedulers_logged(named: tuple) -> None:
+        for name, scheduler in named:
+            if scheduler is None:
+                continue
+            try:
+                scheduler.stop()
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Scheduler %s stop failed: %s", name, exc)
 
-    if media_cleanup_scheduler is not None:
-        try:
-            media_cleanup_scheduler.stop()
-        except Exception:
-            pass
-
-    if nvidia_probe_scheduler is not None:
-        try:
-            nvidia_probe_scheduler.stop()
-        except Exception:
-            pass
-
-    if hermes_patrol_scheduler is not None:
-        try:
-            hermes_patrol_scheduler.stop()
-        except Exception:
-            pass
-
-    if greedy_revenue_scheduler is not None:
-        try:
-            greedy_revenue_scheduler.stop()
-        except Exception:
-            pass
-
-    if greedy_endurance_scheduler is not None:
-        try:
-            greedy_endurance_scheduler.stop()
-        except Exception:
-            pass
-
-    if greedy_survival_digest_scheduler is not None:
-        try:
-            greedy_survival_digest_scheduler.stop()
-        except Exception:
-            pass
-
-    if ops_autopilot_scheduler is not None:
-        try:
-            ops_autopilot_scheduler.stop()
-        except Exception:
-            pass
-
-    if command_center_prewarm_scheduler is not None:
-        try:
-            command_center_prewarm_scheduler.stop()
-        except Exception:
-            pass
-
-    if deerflow_scheduler is not None:
-        try:
-            deerflow_scheduler.stop()
-        except Exception:
-            pass
-
-    if trade_intel_scheduler is not None:
-        try:
-            trade_intel_scheduler.stop()
-        except Exception:
-            pass
-
-    if daily_autonomous_cycle_scheduler is not None:
-        try:
-            daily_autonomous_cycle_scheduler.stop()
-        except Exception:
-            pass
-
-    if nurture_worker_scheduler is not None:
-        try:
-            nurture_worker_scheduler.stop()
-        except Exception:
-            pass
+    _stop_schedulers_logged(
+        (
+            ("rank", rank_scheduler),
+            ("scenario_health", scenario_health_scheduler),
+            ("media_cleanup", media_cleanup_scheduler),
+            ("nvidia_probe", nvidia_probe_scheduler),
+            ("hermes_patrol", hermes_patrol_scheduler),
+            ("greedy_revenue", greedy_revenue_scheduler),
+            ("greedy_endurance", greedy_endurance_scheduler),
+            ("greedy_survival_digest", greedy_survival_digest_scheduler),
+            ("ops_autopilot", ops_autopilot_scheduler),
+            ("command_center_prewarm", command_center_prewarm_scheduler),
+            ("deerflow", deerflow_scheduler),
+            ("trade_intel", trade_intel_scheduler),
+            ("daily_autonomous_cycle", daily_autonomous_cycle_scheduler),
+            ("nurture_worker", nurture_worker_scheduler),
+        )
+    )
 
 
 @asynccontextmanager

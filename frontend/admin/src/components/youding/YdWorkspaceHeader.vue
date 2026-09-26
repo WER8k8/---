@@ -61,12 +61,12 @@ withDefaults(
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: 500;
     box-shadow: 0 4px 12px rgb(37 99 235 / 0.3);
   }
   &__name {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: -0.01em;
   }
   &__actions {

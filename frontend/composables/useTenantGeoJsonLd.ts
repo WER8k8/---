@@ -13,7 +13,6 @@ export interface TenantGeoJsonLdInput {
   products: ComputedRef<TenantCatalogProduct[]>
   faqs?: ComputedRef<Array<{ question: string; answer: string }>>
   services?: ComputedRef<Array<{ name: string; description: string; url?: string }>>
-  reviews?: ComputedRef<Array<{ author: string; rating: number; reviewBody: string; datePublished?: string }>>
   address?: ComputedRef<{
     streetAddress?: string
     addressLocality?: string
@@ -43,6 +42,7 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
 
     const org: Record<string, unknown> = {
       '@type': 'Organization',
+      '@id': origin || undefined,
       name: input.companyName?.value || '',
       url: origin || undefined,
       description: input.description?.value || undefined,
@@ -88,22 +88,27 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
         description: p.summary || p.description || undefined,
         url: p.slug && origin ? `${origin}/tenant/products/${p.slug}` : undefined,
       }
-      if (p.image_url) {
-        product.image = p.image_url
+      if (p.image) {
+        product.image = p.image
       }
-      if (p.specifications) {
-        const props: Array<Record<string, unknown>> = []
-        Object.entries(p.specifications).forEach(([key, value]) => {
-          if (value) {
-            props.push({
-              '@type': 'PropertyValue',
-              name: key,
-              value: String(value),
-            })
-          }
-        })
+      if (p.specs && p.specs.length > 0) {
+        const props = p.specs
+          .filter((s) => s.label && s.value)
+          .map((s) => ({
+            '@type': 'PropertyValue',
+            name: s.label,
+            value: String(s.value),
+          }))
         if (props.length > 0) {
           product.additionalProperty = props
+        }
+      }
+      if (!product.offers) {
+        product.offers = {
+          '@type': 'Offer',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: (product.url as string) || origin || undefined,
         }
       }
       return product
@@ -144,40 +149,6 @@ export function useTenantGeoJsonLd(input: TenantGeoJsonLdInput) {
             : `${origin}${service.url}`
         }
         graph.push(serviceSchema)
-      })
-    }
-
-    const reviews = read(input.reviews)
-    if (reviews && reviews.length > 0) {
-      const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-      const aggregateRating: Record<string, unknown> = {
-        '@type': 'AggregateRating',
-        ratingValue: avgRating.toFixed(1),
-        reviewCount: reviews.length,
-        worstRating: 1,
-        bestRating: 5,
-      }
-      org.aggregateRating = aggregateRating
-
-      reviews.forEach((review) => {
-        const reviewSchema: Record<string, unknown> = {
-          '@type': 'Review',
-          author: {
-            '@type': 'Person',
-            name: review.author,
-          },
-          reviewRating: {
-            '@type': 'Rating',
-            ratingValue: review.rating,
-            worstRating: 1,
-            bestRating: 5,
-          },
-          reviewBody: review.reviewBody,
-        }
-        if (review.datePublished) {
-          reviewSchema.datePublished = review.datePublished
-        }
-        graph.push(reviewSchema)
       })
     }
 
@@ -248,7 +219,8 @@ export function generateWebPageSchema(
 }
 
 export function generateBreadcrumbSchema(
-  items: ComputedRef<Array<{ name: string; url: string }>>
+  items: ComputedRef<Array<{ name: string; url: string }>>,
+  baseUrl: string = ''
 ) {
   const schema = computed(() => ({
     '@context': 'https://schema.org',
@@ -257,7 +229,7 @@ export function generateBreadcrumbSchema(
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: item.url.startsWith('http') ? item.url : item.url,
+      item: item.url.startsWith('http') ? item.url : `${baseUrl}${item.url}`,
     })),
   }))
 

@@ -102,4 +102,10 @@ if ($env:DB_TYPE -eq 'sqlite') {
   .\.venv\Scripts\python.exe scripts/repair_dev_inquiry_columns.py
 }
 
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host $BindHost --port $ApiPort
+# 开发默认 --reload：改 .py 即生效，避免「怎么老是旧代码」
+# 生产/门禁脚本请用不带 reload 的启动方式
+if ($env:YOUDING_UVICORN_RELOAD -eq '0') {
+  .\.venv\Scripts\python.exe -m uvicorn app.main:app --host $BindHost --port $ApiPort
+} else {
+  .\.venv\Scripts\python.exe -m uvicorn app.main:app --host $BindHost --port $ApiPort --reload --reload-dir app
+}

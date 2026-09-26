@@ -202,7 +202,7 @@ function viewDetails() {
 .status-title {
   margin: 0 0 8px 0;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 
@@ -221,7 +221,7 @@ function viewDetails() {
 .status-error h4 {
   margin: 0 0 12px 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 

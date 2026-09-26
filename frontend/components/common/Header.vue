@@ -1,26 +1,24 @@
-/**
- * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
- */
 <template>
   <header
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out"
     :class="[
-      isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent',
+      isScrolled ? 'bg-white shadow-sm' : 'bg-transparent',
       isHidden ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100',
       isMobileMenuOpen
-        ? 'fixed inset-0 h-auto min-h-screen bg-white/95 backdrop-blur-lg'
+        ? 'fixed inset-0 h-auto min-h-screen bg-white overflow-y-auto'
         : 'h-auto',
     ]"
+    role="banner"
   >
-    <nav class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-      <div class="flex justify-between h-14 sm:h-16 lg:h-20 items-center">
-        <NuxtLink
+    <nav class="max-w-[1480px] mx-auto px-3 sm:px-4 lg:px-6" aria-label="主导航">
+      <div class="flex justify-between h-14 sm:h-16 lg:h-20 items-center gap-2 sm:gap-4">
+        <router-link
           to="/"
-          class="flex items-center space-x-2 sm:space-x-3 group"
+          class="flex items-center space-x-2 sm:space-x-3 group flex-shrink-0"
           @click="isMobileMenuOpen = false"
         >
           <div
-            class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
+            class="w-9 h-9 sm:w-10 sm:h-10 rounded bg-primary flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
           >
             <svg
               class="w-5 h-5 sm:w-6 sm:h-6 text-white"
@@ -37,31 +35,34 @@
             </svg>
           </div>
           <span class="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary">{{ $t('common.companyNameShort') }}</span>
-        </NuxtLink>
+        </router-link>
 
-        <div class="hidden lg:flex items-center space-x-1">
+        <div class="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-0.5">
           <div
             v-for="item in mainNav"
             :key="navKey(item)"
-            class="relative"
+            class="relative min-w-0"
             :class="item.children?.length ? 'group' : ''"
           >
             <template v-if="item.children?.length">
-              <NuxtLink
+              <router-link
                 :to="item.to"
-                class="relative px-3 sm:px-4 py-2 text-text-secondary font-medium rounded-lg transition-all duration-200 cursor-pointer inline-flex items-center gap-1"
+                class="relative px-2 sm:px-3 py-2 text-text-secondary font-medium rounded-lg transition-all duration-200 cursor-pointer inline-flex items-center gap-1 max-w-[140px] overflow-hidden"
                 :class="
                   isNavGroupActive(item)
                     ? 'text-primary bg-primary/5'
                     : 'hover:text-primary hover:bg-surface-hover'
                 "
+                :aria-expanded="desktopOpenGroup === navKey(item)"
+                @click="onDesktopGroupClick($event, item)"
               >
-                {{ item.label }}
+                <span class="truncate">{{ item.label }}</span>
                 <svg
                   class="w-4 h-4 text-text-muted group-hover:text-primary transition-transform group-hover:rotate-180"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     stroke-linecap="round"
@@ -74,14 +75,15 @@
                   v-if="isNavGroupActive(item)"
                   class="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full"
                 />
-              </NuxtLink>
+              </router-link>
               <div
-                class="absolute left-0 top-full pt-2 w-56 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-200 z-50"
+                class="absolute left-0 top-full pt-2 w-56 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:visible group-focus-within:pointer-events-auto transition-all duration-200 z-50"
+                :class="desktopOpenGroup === navKey(item) ? 'opacity-100 visible pointer-events-auto' : ''"
               >
                 <div
-                  class="rounded-xl border border-border bg-white/95 backdrop-blur-md shadow-lg py-2"
+                  class="rounded-xl border border-border bg-white shadow-lg py-2"
                 >
-                  <NuxtLink
+                  <router-link
                     v-for="child in item.children"
                     :key="child.to"
                     :to="child.to"
@@ -93,57 +95,68 @@
                       v-if="child.description"
                       class="block text-xs text-text-muted font-normal mt-0.5"
                     >{{ child.description }}</span>
-                  </NuxtLink>
+                  </router-link>
                 </div>
               </div>
             </template>
-            <NuxtLink
+            <router-link
               v-else
               :to="item.to"
-              class="relative px-3 sm:px-4 py-2 text-text-secondary font-medium rounded-lg transition-all duration-200 cursor-pointer"
+              class="relative px-2 sm:px-3 py-2 text-text-secondary font-medium rounded-lg transition-all duration-200 cursor-pointer max-w-[140px] overflow-hidden"
               :class="
                 isActive(item.to)
                   ? 'text-primary bg-primary/5'
                   : 'hover:text-primary hover:bg-surface-hover'
               "
             >
-              {{ item.label }}
+              <span class="truncate block">{{ item.label }}</span>
               <span
                 v-if="isActive(item.to)"
                 class="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full"
               />
-            </NuxtLink>
+            </router-link>
           </div>
         </div>
 
-        <div class="flex items-center space-x-1 sm:space-x-2">
+        <div class="flex items-center space-x-1 sm:space-x-2 min-w-0">
           <LanguageSwitcher />
 
-          <a
-            :href="'tel:' + phone"
-            class="hidden lg:flex items-center gap-1.5 text-primary font-semibold text-sm ml-2"
+          <!-- 订单查询快速入口 -->
+          <router-link
+            to="/orders"
+            class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-primary rounded-lg border border-border hover:border-primary transition-all duration-200"
+            @click="isMobileMenuOpen = false"
           >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-              />
+            <svg class="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            {{ $t('nav.orders') }}
+          </router-link>
+
+          <!-- 右侧常驻 Get a Quote（设计系统唯一强调色） -->
+          <router-link
+            to="/quote"
+            class="header-quote-btn hidden lg:inline-flex"
+            @click="isMobileMenuOpen = false"
+          >
+            {{ $t('nav.quote') }}
+          </router-link>
+
+          <a :href="'tel:' + phone" class="hidden lg:flex items-center gap-1.5 text-primary font-semibold text-sm ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
             </svg>
             {{ phone }}
           </a>
 
           <button
-            class="lg:hidden p-2 sm:p-3 text-text-secondary hover:text-primary hover:bg-surface-hover rounded-lg transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            class="lg:hidden p-2 sm:p-3 text-text-secondary hover:text-primary hover:bg-surface-hover rounded-lg transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center touch-ripple"
             @click="toggleMobileMenu"
             @touchstart="handleTouchStart"
             @touchend="handleTouchEnd"
+            :aria-expanded="isMobileMenuOpen"
+            aria-controls="mobile-menu"
+            :aria-label="isMobileMenuOpen ? '关闭菜单' : '打开菜单'"
           >
             <svg
               class="w-6 h-6"
@@ -172,7 +185,10 @@
 
       <div
         v-if="isMobileMenuOpen"
+        id="mobile-menu"
         class="lg:hidden pb-8 animate-slide-up"
+        role="navigation"
+        aria-label="移动端导航"
       >
         <div class="flex flex-col space-y-2 px-2 pt-4 border-t border-border">
           <div
@@ -184,6 +200,7 @@
               <button
                 type="button"
                 class="flex w-full items-center px-4 py-3 text-text-secondary font-medium rounded-xl transition-all duration-200 min-h-[52px] text-left"
+                :aria-expanded="mobileOpenGroup === item.label || childActive(item)"
                 :class="
                   isNavGroupActive(item)
                     ? 'text-primary bg-primary/5'
@@ -213,7 +230,7 @@
                 v-show="mobileOpenGroup === item.label || childActive(item)"
                 class="ml-3 pl-3 border-l border-border space-y-1 mb-1"
               >
-                <NuxtLink
+                <router-link
                   v-for="child in item.children"
                   :key="child.to"
                   :to="child.to"
@@ -226,10 +243,10 @@
                   @click="isMobileMenuOpen = false"
                 >
                   {{ child.label }}
-                </NuxtLink>
+                </router-link>
               </div>
             </template>
-            <NuxtLink
+            <router-link
               v-else
               :to="item.to"
               class="flex items-center px-4 py-3 text-text-secondary font-medium rounded-xl transition-all duration-200 cursor-pointer min-h-[52px]"
@@ -256,7 +273,7 @@
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </NuxtLink>
+            </router-link>
             <span
               v-if="isNavGroupActive(item) && !item.children?.length"
               class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-lg"
@@ -266,7 +283,14 @@
               class="absolute left-0 top-6 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-lg"
             />
           </div>
-          <div class="mt-4 pt-4 border-t border-border">
+          <div class="mt-4 pt-4 border-t border-border space-y-2">
+            <router-link
+              to="/quote"
+              class="header-quote-btn flex w-full justify-center"
+              @click="isMobileMenuOpen = false"
+            >
+              {{ $t('nav.quote') }}
+            </router-link>
             <a
               :href="'tel:' + phone"
               class="flex items-center justify-center px-4 py-4 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl active:opacity-90 min-h-[52px]"
@@ -302,6 +326,8 @@ import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { siteMainNavigation, navKey, type SiteNavItem } from '~/config/site-navigation';
 import { SITE_CONFIG } from '~/config/site';
+import { getAppScrollY, onAppScroll } from '~/composables/useAppScroll';
+import LanguageSwitcher from '~/components/LanguageSwitcher.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -346,12 +372,31 @@ function toggleMobileGroup(label: string) {
   mobileOpenGroup.value = mobileOpenGroup.value === label ? null : label;
 }
 
+/** 桌面/平板导航子菜单展开状态（触屏点击展开，桌面仍保留 hover） */
+const desktopOpenGroup = ref<string | null>(null);
+
+function isCoarsePointer(): boolean {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(hover: none)').matches;
+}
+
+function onDesktopGroupClick(e: MouseEvent, item: SiteNavItem & { label: string }) {
+  if (!item.children?.length) return;
+  const key = navKey(item);
+  // 触屏设备（hover 不可用）：首次点击只展开子菜单，再次点击才跳转
+  if (isCoarsePointer() && desktopOpenGroup.value !== key) {
+    e.preventDefault();
+    desktopOpenGroup.value = key;
+  } else {
+    desktopOpenGroup.value = null;
+  }
+}
+
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
 }
 
 function handleScroll() {
-  const currentScrollTop = window.scrollY;
+  const currentScrollTop = getAppScrollY();
 
   if (currentScrollTop > scrollThreshold) {
     isScrolled.value = true;
@@ -379,12 +424,13 @@ function handleTouchEnd(e: TouchEvent) {
   if (target) target.style.transform = 'scale(1)';
 }
 
+let offAppScroll: (() => void) | null = null;
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  offAppScroll = onAppScroll(handleScroll);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
+  offAppScroll?.();
 });
 
 watch(
@@ -392,6 +438,28 @@ watch(
   () => {
     isMobileMenuOpen.value = false;
     mobileOpenGroup.value = null;
+    desktopOpenGroup.value = null;
   }
 );
 </script>
+
+<style scoped>
+/* Get a Quote 常驻按钮：工业风深墨底（白字对比度 > 15:1），圆角 ≤ 4px */
+.header-quote-btn {
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  margin-left: 8px;
+  border-radius: 2px;
+  background: #17191c;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 200ms ease-out;
+}
+.header-quote-btn:hover {
+  background: #000000;
+}
+</style>

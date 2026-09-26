@@ -1,9 +1,9 @@
 /**
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
+import axios from '@/api';
 import { apiV1Base } from '@/api/authPaths';
 import { unwrapFetchedJson } from '@/api';
-import { apiFetch } from '@/api/fetchWrapper';
 
 export type OAuthProvider = 'qq' | 'wechat' | 'feishu' | 'dingtalk';
 
@@ -69,7 +69,8 @@ export async function fetchOAuthProvidersStatus(): Promise<{
   dev_bypass?: boolean;
   checklist?: string;
 }> {
-  const { data: raw } = await apiFetch('/auth/oauth/providers');
+  const res = await axios.get('/auth/oauth/providers');
+  const raw = res.data;
   const data = unwrapFetchedJson<{
     providers: Record<string, boolean>;
     detail?: Record<string, OAuthProviderDetail>;
@@ -95,14 +96,8 @@ export async function fetchOAuthAuthorizeUrl(
   state?: string
 ): Promise<{ authorize_url: string; state: string }> {
   const q = state ? `?state=${encodeURIComponent(state)}` : '';
-  const { data: raw, status } = await apiFetch(`/auth/oauth/${provider}/authorize${q}`);
-  if (status !== 200) {
-    const msg =
-      typeof (raw as { message?: string }).message === 'string'
-        ? (raw as { message: string }).message
-        : `${oauthProviderLabel(provider)} 登录暂不可用`;
-    throw new Error(msg);
-  }
+  const res = await axios.get(`/auth/oauth/${provider}/authorize${q}`);
+  const raw = res.data;
   if (raw && typeof raw === 'object' && 'code' in raw && (raw as { code: number }).code !== 0) {
     throw new Error((raw as { message?: string }).message || '无法获取授权地址');
   }
@@ -121,19 +116,8 @@ export async function exchangeThirdPartyLogin(
   user?: { username?: string };
   new_user?: boolean;
 }> {
-  const res = await fetch(`${apiV1Base()}/auth/third-party-login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ provider, code, state: state ?? null }),
-  });
-  const raw = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(
-      typeof (raw as { message?: string }).message === 'string'
-        ? (raw as { message: string }).message
-        : '第三方登录失败'
-    );
-  }
+  const res = await axios.post('/auth/third-party-login', { provider, code, state: state ?? null });
+  const raw = res.data;
   if (raw && typeof raw === 'object' && 'code' in raw && (raw as { code: number }).code !== 0) {
     throw new Error((raw as { message?: string }).message || '第三方登录失败');
   }

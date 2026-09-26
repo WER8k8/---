@@ -179,7 +179,7 @@ function handlePageChange(page: number) {
 .grid-title {
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 
