@@ -162,12 +162,14 @@ def run_seeding() -> None:
         print("✓ model_call_ledger 填充完成")
 
         # 6. finance_ledger_entries (总账财务科目明细)
+        # entry_type 只允许标准词表 revenue|cost（R-4 裁定：历史 income/expense 为脏数据，
+        # 已由数据订正脚本修复；种子侧同步改为标准词防复发）
         ledger_entries = [
-            ("income", "saas_subscription", 480000, "YouDing Annual Pro Subscription"),
-            ("income", "ai_token_pack", 50000, "Prepaid 50M AI Tokens Pack"),
-            ("income", "ip_slot_rental", 24000, "Dedicated Static Residential IP Slot 30-Day"),
-            ("expense", "llm_api_cogs", 4500, "DeepSeek & Claude Upstream Billing"),
-            ("expense", "proxy_traffic_cogs", 2800, "Oxylabs Residential Proxy Bandwidth"),
+            ("revenue", "saas_subscription", 480000, "YouDing Annual Pro Subscription"),
+            ("revenue", "ai_token_pack", 50000, "Prepaid 50M AI Tokens Pack"),
+            ("revenue", "ip_slot_rental", 24000, "Dedicated Static Residential IP Slot 30-Day"),
+            ("cost", "llm_api_cogs", 4500, "DeepSeek & Claude Upstream Billing"),
+            ("cost", "proxy_traffic_cogs", 2800, "Oxylabs Residential Proxy Bandwidth"),
         ]
         for etype, cat, amt, note in ledger_entries:
             db.execute(text("""

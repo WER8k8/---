@@ -64,7 +64,7 @@ class TestCommercialClosedLoop:
             customization=True,
             insurance_required=True,
         )
-        res = calculate_boq(req)
+        res = calculate_boq(req, db=_make_mock_db(), current_user=_make_user())
         data = res.data
         assert data["currency"] == "USD"
         assert data["quantity"] == 500.0

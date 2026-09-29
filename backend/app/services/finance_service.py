@@ -15,7 +15,12 @@ from sqlalchemy.orm import Session
 
 from app.models.ai_config import AIUsageLog
 from app.models.commission_settlement import AgentCommissionSettlement
-from app.models.finance_ledger import FinanceLedgerEntry
+from app.models.finance_ledger import (
+    ENTRY_TYPE_COST,
+    ENTRY_TYPE_REVENUE,
+    FinanceLedgerEntry,
+    normalize_entry_type,
+)
 from app.services.finance_honesty import revenue_ledger_conditions
 
 
@@ -74,7 +79,7 @@ class FinanceService:
             self.db.query(FinanceLedgerEntry.id)
             .filter(
                 FinanceLedgerEntry.reference_id == ref,
-                FinanceLedgerEntry.entry_type == "cost",
+                FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_COST),
             )
             .first()
         )
@@ -183,7 +188,7 @@ class FinanceService:
         )
         cost = (
             self.db.query(func.coalesce(func.sum(FinanceLedgerEntry.amount_cents), 0))
-            .filter(FinanceLedgerEntry.entry_type == "cost")
+            .filter(FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_COST))
             .scalar()
         )
         commission_settled = (
@@ -371,6 +376,7 @@ class FinanceService:
         entry_type: Optional[str] = None,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
+        tenant_id: Optional[str] = None,
     ) -> str:
         """export_ledger_csv。
 
@@ -379,11 +385,18 @@ class FinanceService:
         :param entry_type: 参数 entry_type
         :param from_date: 参数 from_date
         :param to_date: 参数 to_date
+        :param tenant_id: 可选，按租户过滤（对账导出 scope=tenant 时使用）
         :return: 返回处理结果。
         """
         q = self.db.query(FinanceLedgerEntry)
         if entry_type:
-            q = q.filter(FinanceLedgerEntry.entry_type == entry_type)
+            canonical = normalize_entry_type(entry_type)
+            allowed = (
+                ENTRY_TYPE_REVENUE if canonical == "revenue" else ENTRY_TYPE_COST
+            )
+            q = q.filter(FinanceLedgerEntry.entry_type.in_(allowed))
+        if tenant_id:
+            q = q.filter(FinanceLedgerEntry.tenant_id == tenant_id)
         if from_date:
             q = q.filter(FinanceLedgerEntry.recorded_at >= from_date)
         if to_date:

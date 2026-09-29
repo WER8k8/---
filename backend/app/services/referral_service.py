@@ -2,6 +2,7 @@
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """客户裂变推荐系统服务"""
 
+import logging
 import secrets
 import string
 
@@ -9,6 +10,8 @@ from sqlalchemy.orm import Session
 
 from app.models.referral import ReferralCode, ReferralRecord
 from app.models.tenant import Tenant
+
+logger = logging.getLogger(__name__)
 
 
 class ReferralService:
@@ -213,6 +216,44 @@ class ReferralService:
                 code.total_earned = (code.total_earned or 0) + (rec.reward_amount or 1)
             updated += 1
         self.db.commit()
+
+        # ── 模块9/11 轨6：裂变收入计量（referral.revenue）──
+        # 计费时点 = 邀请被判定为有效并发放奖励（pending→rewarded = 收入确认），
+        # **不是邀请创建时**（避免「未付费即确认收入」）。
+        # 归属裁定：计量落在 inviter_tenant_id（推荐人 = 裂变行为主体，奖励记其名下）；
+        # invited_tenant_id 一并写入 metadata 以便追溯核对（口径如需调整可复盘）。
+        # meter_type 沿用既有 7 类 lead_generated（推荐带来新客户），
+        # meter_code 落七轨稳定词表 referral.revenue（设计 9.3）。
+        try:
+            from app.services.billing.meter_event import MeterEventService
+
+            for rec in rows:
+                tenant_id = str(getattr(rec, "inviter_tenant_id", "") or "").strip()
+                if not tenant_id:  # fail-closed：无租户不计量
+                    logger.warning("referral_revenue 未计量：inviter 为空 rec_id=%s", rec.id)
+                    continue
+                MeterEventService(self.db).emit(
+                    meter_type="lead_generated",
+                    tenant_id=tenant_id,
+                    event_key=f"referral:{rec.id}:rewarded",  # 幂等：同一邀请记录只计一次
+                    quantity=1,
+                    unit="reward",
+                    source_ref_type="referral",
+                    source_ref_id=str(rec.id),
+                    meter_code="referral.revenue",
+                    subject_type="referral",
+                    subject_id=str(rec.id),
+                    bill_status="unlinked",
+                    metadata={
+                        "meter_code": "referral.revenue",
+                        "reason": reason,
+                        "reward_amount": rec.reward_amount or 1,
+                        "invited_tenant_id": str(getattr(rec, "invited_tenant_id", "") or ""),
+                    },
+                )
+        except Exception:  # noqa: BLE001 —— 计量失败绝不阻断邀请发放主流程（调用方本就吞异常）
+            logger.exception("referral_revenue 计量写入失败 invited_tenant=%s", tid)
+
         return {"qualified": True, "updated": updated, "reason": reason}
 
     def get_leaderboard(self, limit: int = 20) -> list:

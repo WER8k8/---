@@ -10,7 +10,7 @@ from typing import Any
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Query, Session
 
-from app.models.finance_ledger import FinanceLedgerEntry
+from app.models.finance_ledger import ENTRY_TYPE_REVENUE, FinanceLedgerEntry
 from app.models.inquiry import Inquiry
 from app.models.payment import PaymentOrder
 
@@ -32,7 +32,7 @@ def revenue_ledger_conditions(db: Session) -> tuple:
         .all()
     ]
     conds = [
-        FinanceLedgerEntry.entry_type == "revenue",
+        FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_REVENUE),
         FinanceLedgerEntry.category.notin_(list(MOCK_REVENUE_CATEGORIES)),
     ]
     if mock_refs:

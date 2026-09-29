@@ -333,12 +333,12 @@ class PaymentService:
     def _record_revenue(self, order: PaymentOrder) -> None:
         """支付成功后自动写入财务台账（幂等，按 order_no 去重）。"""
         try:
-            from app.models.finance_ledger import FinanceLedgerEntry
+            from app.models.finance_ledger import ENTRY_TYPE_REVENUE, FinanceLedgerEntry
             exists = (
                 self.db.query(FinanceLedgerEntry.id)
                 .filter(
                     FinanceLedgerEntry.reference_id == order.order_no,
-                    FinanceLedgerEntry.entry_type == "revenue",
+                    FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_REVENUE),
                 )
                 .first()
             )

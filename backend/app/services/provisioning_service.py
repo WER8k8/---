@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
-from app.models.finance_ledger import FinanceLedgerEntry
+from app.models.finance_ledger import ENTRY_TYPE_REVENUE, FinanceLedgerEntry
 from app.models.payment import PaymentOrder
 from app.models.referral import ReferralRecord
 from app.models.tenant import Tenant, TenantPlan, TenantSubscription
@@ -56,7 +56,7 @@ class ProvisioningService:
 
         if not self.db.query(FinanceLedgerEntry).filter(
             FinanceLedgerEntry.reference_id == order.order_no,
-            FinanceLedgerEntry.entry_type == "revenue",
+            FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_REVENUE),
         ).first():
             from app.services.order_addon_service import is_addon_order, parse_token_amount
             from app.services.egress_addon_service import parse_addon_slots

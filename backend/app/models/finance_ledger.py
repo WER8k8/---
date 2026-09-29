@@ -9,6 +9,22 @@ from sqlalchemy import Column, DateTime, Integer, String, Text
 
 from app.core.database import UUID_TYPE, Base
 
+# entry_type 唯一词表真源。写侧只允许 canonical 值（revenue/cost）；
+# 读侧用 IN 元组兼容历史脏数据（income/expense，来源 seed_finance_billing_licenses，
+# R-4 裁定：读侧归一止血 + 数据订正，订正完成后历史值自然消失）。
+ENTRY_TYPE_REVENUE = ("revenue", "income")
+ENTRY_TYPE_COST = ("cost", "expense")
+
+
+def normalize_entry_type(value: str) -> str:
+    """入参/导出归一：income→revenue、expense→cost，其余原样返回（校验层负责拒非法值）。"""
+    v = (value or "").strip().lower()
+    if v == "income":
+        return "revenue"
+    if v == "expense":
+        return "cost"
+    return v
+
 
 class FinanceLedgerEntry(Base):
     __tablename__ = "finance_ledger_entries"

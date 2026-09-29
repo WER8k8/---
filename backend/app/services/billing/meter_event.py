@@ -75,8 +75,16 @@ class MeterEventService:
         model_name: Optional[str] = None,
         metadata: Optional[dict[str, Any]] = None,
         occurred_at: Optional[datetime] = None,
+        meter_code: Optional[str] = None,
+        subject_type: Optional[str] = None,
+        subject_id: Optional[str] = None,
+        bill_status: Optional[str] = None,
     ) -> MeterEvent:
-        """写入一条计量事件；event_key 重复时直接返回已存在事件（幂等，不覆盖）。"""
+        """写入一条计量事件；event_key 重复时直接返回已存在事件（幂等，不覆盖）。
+
+        模块10.2：可选写稳定 meter_code / 业务主体 / 计费状态（默认 None，兼容既有
+        7 类埋点调用方，行为不变）。
+        """
         if meter_type not in METER_TYPES:
             raise ValueError(
                 f"非法埋点类型: {meter_type}，允许: {list(METER_TYPES)}"
@@ -103,6 +111,10 @@ class MeterEventService:
             model_name=model_name,
             metadata_json=metadata or {},
             occurred_at=occurred_at or _utcnow(),
+            meter_code=meter_code,
+            subject_type=subject_type,
+            subject_id=subject_id,
+            bill_status=bill_status,
         )
         self.db.add(event)
         try:

@@ -16,7 +16,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.commission_settlement import AgentCommissionSettlement
-from app.models.finance_ledger import FinanceLedgerEntry
+from app.models.finance_ledger import ENTRY_TYPE_REVENUE, FinanceLedgerEntry
 from app.models.payment import PaymentOrder
 from app.models.tenant import Tenant, TenantPlan
 from app.models.user import User
@@ -213,7 +213,7 @@ class AgentPortalService:
                 self.db.query(func.coalesce(func.sum(FinanceLedgerEntry.amount_cents), 0))
                 .filter(
                     FinanceLedgerEntry.tenant_id.in_(tenant_ids),
-                    FinanceLedgerEntry.entry_type == "revenue",
+                    FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_REVENUE),
                     FinanceLedgerEntry.recorded_at >= month_start,
                 )
                 .scalar()
@@ -434,7 +434,7 @@ class AgentPortalService:
                     self.db.query(func.coalesce(func.sum(FinanceLedgerEntry.amount_cents), 0))
                     .filter(
                         FinanceLedgerEntry.tenant_id.in_(tenant_ids),
-                        FinanceLedgerEntry.entry_type == "revenue",
+                        FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_REVENUE),
                         FinanceLedgerEntry.recorded_at >= start,
                         FinanceLedgerEntry.recorded_at <= end,
                     )

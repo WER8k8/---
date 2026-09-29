@@ -20,7 +20,21 @@ logger = logging.getLogger(__name__)
 
 
 class CommissionSettlementService:
-    """代理商与合伙人佣金结算核心服务。"""
+    """代理商与合伙人佣金结算核心服务。
+
+    修正设计稿 模块11 状态机（Deal Won ≠ 可支付佣金）：
+        calculated → pending_settlement → settled
+                     ↘ reversed（退款/取消冲正）
+    "pending"（历史行）按 calculated 语义兼容读取。
+    """
+
+    COMMISSION_TRANSITIONS: Dict[str, tuple] = {
+        "calculated": ("pending_settlement", "reversed"),
+        "pending": ("pending_settlement", "reversed"),   # 历史状态兼容
+        "pending_settlement": ("settled", "reversed"),
+        "settled": ("reversed",),
+        "reversed": (),
+    }
 
     # 默认分润基准（万分比，1000 = 10%，300 = 3%，200 = 2%）
     DEFAULT_RATES_BP: Dict[str, int] = {
@@ -63,7 +77,7 @@ class CommissionSettlementService:
                 "commission_rate_bp": rate_bp,
                 "commission_rate_pct": round(rate_bp / 100.0, 2),
                 "currency": currency,
-                "status": "pending",
+                "status": "calculated",  # 模块11：Deal Won 仅计算，未到可支付
                 "note": note or f"市级代理订单 {order_id} 分润 (3%)",
             }
             settlements.append(settlement_item)
@@ -85,7 +99,7 @@ class CommissionSettlementService:
                 "commission_rate_bp": rate_bp,
                 "commission_rate_pct": round(rate_bp / 100.0, 2),
                 "currency": currency,
-                "status": "pending",
+                "status": "calculated",  # 模块11：Deal Won 仅计算，未到可支付
                 "note": note or f"区域合伙人订单 {order_id} 统筹分润 (2%)",
             }
             settlements.append(settlement_item)
@@ -161,3 +175,42 @@ class CommissionSettlementService:
             except Exception:
                 pass
         return []
+
+    # ── 修正设计稿 模块11：状态机推进（Deal Won ≠ 可支付） ──────────
+
+    def _load(self, settlement_id: str):
+        from app.models.commission_settlement import AgentCommissionSettlement
+
+        return (
+            self.db.query(AgentCommissionSettlement)
+            .filter(AgentCommissionSettlement.id == str(settlement_id))
+            .first()
+            if self.db is not None
+            else None
+        )
+
+    def _transition(self, settlement_id: str, to_status: str, note: str) -> Dict[str, Any]:
+        rec = self._load(settlement_id)
+        if rec is None:
+            raise ValueError(f"settlement {settlement_id} 不存在")
+        current = rec.status
+        allowed = self.COMMISSION_TRANSITIONS.get(current, ())
+        if to_status not in allowed:
+            raise ValueError(f"非法跃迁: {current} → {to_status}（重复支付/无效冲正被拦截）")
+        rec.status = to_status
+        rec.note = (f"{rec.note or ''} | {note}").strip(" |")[:255]
+        self.db.add(rec)
+        self.db.commit()
+        return {"id": str(rec.id), "status": rec.status}
+
+    def mark_pending_settlement(self, settlement_id: str, *, note: str = "") -> Dict[str, Any]:
+        """Payment Verified → 待结算（calculated/pending → pending_settlement）。"""
+        return self._transition(settlement_id, "pending_settlement", note or "payment verified")
+
+    def mark_settled(self, settlement_id: str, *, note: str = "") -> Dict[str, Any]:
+        """实际支付完成 → settled。"""
+        return self._transition(settlement_id, "settled", note or "settled")
+
+    def reverse_settlement(self, settlement_id: str, *, reason: str) -> Dict[str, Any]:
+        """退款/取消/欺诈 → reversed（设计稿 11.2；fraud_hold 随第二层 N 接入）。"""
+        return self._transition(settlement_id, "reversed", reason or "reversed")
