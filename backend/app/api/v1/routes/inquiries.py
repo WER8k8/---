@@ -70,6 +70,10 @@ from app.models.user import User
 from app.schemas import InquiryCreate, InquiryUpdate
 from app.services.inquiries_portal_service import InquiriesPortalService
 from app.services.inquiries_unified_service import InquiriesUnifiedService
+# 词表唯一真源迁至漏斗状态机（禁止在此再留副本）
+from app.services.inquiry_funnel_state_machine import VALID_STATUSES, normalize
+from app.services.inquiry_status_service import advance_inquiry_status
+from app.services.billing.reservation_service import IllegalTransition
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -169,14 +173,10 @@ class InquiryStatusUpdate(BaseModel):
     status: str = Field(..., min_length=1, max_length=20)
 
 
-# 询盘状态白名单（避免任意字符串落库，ORCH-08/09/10 同类问题修复）
-# 2026-09-13 对齐前端实际取值：views/inquiries/index.vue 的「标记处理中」发
-# quoted、「完成」发 accepted；展示层还识别 new/processing。原白名单缺这四个
-# 值导致按钮点击必 400（主链断点）。
-_VALID_INQUIRY_STATUSES = frozenset({
-    "pending", "in_progress", "resolved", "closed", "archived",
-    "new", "quoted", "accepted", "processing",
-})
+# 询盘状态白名单已迁至 services/inquiry_funnel_state_machine.py::VALID_STATUSES
+# （2026-09-27 词表唯一真源收口，此处不再保留副本）。
+# 历史说明：2026-09-13 对齐前端实际取值：views/inquiries/index.vue 的「标记处理中」发
+# quoted、「完成」发 accepted；展示层还识别 new/processing。
 
 
 class InquiryAssignRequest(BaseModel):
@@ -672,28 +672,27 @@ def update_inquiry_status(
     if denial:
         return denial
     # ORCH-08 修复：状态白名单校验，防止任意字符串落库
+    # （按「归一后」状态校验：won/deal→closed、lost/spam→archived、contacted→in_progress 均可入）
     new_status = body.status.strip().lower()
-    if new_status not in _VALID_INQUIRY_STATUSES:
-        return error_response(400, f"无效的询盘状态 '{body.status}'，允许值: {', '.join(sorted(_VALID_INQUIRY_STATUSES))}")
-    # P0-9: 统一权威漏斗状态机守卫（前进-only + 显式重开，杜绝任意互跳）
+    if normalize(new_status) not in VALID_STATUSES:
+        return error_response(400, f"无效的询盘状态 '{body.status}'，允许值: {', '.join(sorted(VALID_STATUSES))}")
+    # P0-9 + 模块10 收敛：经唯一汇聚点推进（别名归一 + 白名单 + 漏斗守卫 + 计费时点，禁止直写）
     try:
-        from app.services.inquiry_funnel_state_machine import can_transition
-        ok, reason = can_transition(inquiry.status, new_status)
-    except Exception:
-        ok, reason = True, ""
-    if not ok:
-        return error_response(
-            400,
-            f"状态流转被拒绝: {reason}（当前: {inquiry.status} → 目标: {new_status}）",
+        advance_inquiry_status(
+            db, inquiry, new_status,
+            source="inquiries_api",
+            actor_id=str(getattr(current_user, "id", "") or ""),
         )
-    inquiry.status = new_status
-    db.commit()
-    db.refresh(inquiry)
+    except (ValueError, IllegalTransition) as exc:
+        return error_response(400, str(exc))
 
     # 挂接经验环 (Evolution Engine)：成单与流失沉淀
+    # 赢/输判定必须用**归一化前的原始输入**（won/deal/converted 归一后为 closed、lost/
+    # rejected/spam 归一后为 archived，若用归一后状态判会丢失赢输语义 → 经验环断链）。
+    # converted（转化成功）与 won/deal 同义，必须一并进 win 元组，否则成单漏沉淀。
     try:
         from app.services.acquisition.experience_feed import record_ops_win, record_ops_loss
-        if new_status in ("closed", "won", "deal"):
+        if new_status in ("closed", "won", "deal", "converted"):
             record_ops_win(
                 db,
                 tenant_id=str(getattr(inquiry, "tenant_id", "") or ""),

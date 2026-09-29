@@ -656,6 +656,31 @@ async def create_sequence(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/sequence/{sequence_id}/stop")
+async def stop_sequence_endpoint(
+    sequence_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """手动停止序列（模块7 T7-b）。
+
+    红线：manual stop 后该序列禁止任何路径自动重启
+    （confirm_and_enqueue / enqueue_due_steps / send_outreach_step 三处均拦）。
+    """
+    from app.services.acquisition_outreach_service import stop_sequence
+
+    result = stop_sequence(
+        db,
+        sequence_id,
+        reason="manual",
+        stopped_by=str(current_user.id),
+        source="api",
+    )
+    if not result.get("exists"):
+        raise HTTPException(status_code=404, detail="序列不存在")
+    return success_response(data=result)
+
+
 # ── 异步搜索 + 进度推送 ──
 
 @router.post("/search-async")

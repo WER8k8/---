@@ -21,6 +21,8 @@ from app.core.response import success_response, error_response
 from app.core.security import get_current_user, get_current_user_optional
 from app.db.session import get_db
 from app.models.user import User
+from app.services.billing.reservation_service import IllegalTransition
+from app.services.inquiry_status_service import advance_inquiry_status
 from app.services.tenant_scenario_service import resolve_tenant_id_for_user
 from app.services.ubrain.channel_status import get_all_channel_statuses
 
@@ -893,11 +895,18 @@ async def update_customer_status(
     )
     if inquiry is None:
         return error_response(code=404, message="未找到该客户关联的询盘记录，无法更新状态")
-    inquiry.status = body.status
-    db.commit()
+    # 模块10 收敛：收回零校验直写，改走唯一汇聚点（白名单 + 漏斗守卫 + 计费时点）
+    try:
+        advance_inquiry_status(
+            db, inquiry, body.status,
+            source="super_agent_api",
+            actor_id=str(getattr(current_user, "id", "") or ""),
+        )
+    except (ValueError, IllegalTransition) as exc:
+        return error_response(code=400, message=str(exc))
     return success_response(data={
         "id": customer_id,
-        "status": body.status,
+        "status": inquiry.status,
         "inquiry_id": str(inquiry.id),
     })
 

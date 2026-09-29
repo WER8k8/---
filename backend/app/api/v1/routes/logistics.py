@@ -22,6 +22,8 @@ from app.services.logistics_tracking_service import (
     get_order_for_user,
     sync_order_from_tracking,
 )
+from app.models.trade_fulfillment import LogisticsShipment
+from app.services import tracking_service
 
 
 # FIX-30 自动注入：保留原有的自定义前缀与标签
@@ -29,6 +31,76 @@ ROUTE_PREFIX = "/logistics"
 ROUTE_TAGS = ["智能物流定价"]
 
 router = APIRouter()
+
+
+@router.get("/shipments/{shipment_id}/tracking")
+def shipment_tracking(
+    shipment_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """发运单轨迹视图。无真实事件 → tracking_unavailable（Gate G8 红线：不伪造状态）。"""
+    shipment = db.query(LogisticsShipment).filter(LogisticsShipment.id == str(shipment_id)).first()
+    if not shipment:
+        return error_response(404, "发运单不存在")
+    if current_user.role not in ("admin", "super_admin", "tenant_admin", "user"):
+        return error_response(403, "权限不足")
+    return success_response(data=tracking_service.current_view(db, shipment))
+
+
+@router.post("/shipments/{shipment_id}/tracking-events")
+def ingest_tracking_event(
+    shipment_id: str,
+    body: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Provider 事件入库（(provider, external_event_id) 幂等；秩序守卫拒绝回退）。"""
+    if current_user.role not in ("admin", "super_admin"):
+        return error_response(403, "权限不足")
+    shipment = db.query(LogisticsShipment).filter(LogisticsShipment.id == str(shipment_id)).first()
+    if not shipment:
+        return error_response(404, "发运单不存在")
+    try:
+        result = tracking_service.ingest_event(
+            db,
+            shipment,
+            provider=str(body.get("provider") or ""),
+            external_event_id=str(body.get("external_event_id") or ""),
+            raw_status=body.get("status"),
+            raw_text=str(body.get("description") or ""),
+            location=body.get("location"),
+            raw_payload=body.get("raw_payload") if isinstance(body.get("raw_payload"), dict) else None,
+        )
+    except tracking_service.TrackingError as exc:
+        return error_response(exc.status_code, exc.message)
+    return success_response(data={"shipment_id": str(shipment.id), **result})
+
+
+@router.post("/shipments/{shipment_id}/tracking-events/manual")
+def manual_tracking_event(
+    shipment_id: str,
+    body: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """人工录入轨迹（设计稿 8.5：允许但必须操作审计——operator/reason 落库）。"""
+    if current_user.role not in ("admin", "super_admin", "tenant_admin"):
+        return error_response(403, "权限不足")
+    shipment = db.query(LogisticsShipment).filter(LogisticsShipment.id == str(shipment_id)).first()
+    if not shipment:
+        return error_response(404, "发运单不存在")
+    if not body.get("reason"):
+        return error_response(400, "人工录入必须填写原因（审计要求）")
+    result = tracking_service.manual_event(
+        db,
+        shipment,
+        operator=str(current_user.id),
+        reason=str(body.get("reason")),
+        raw_status=str(body.get("status") or "unknown"),
+        location=body.get("location"),
+    )
+    return success_response(data={"shipment_id": str(shipment.id), **result})
 
 
 @router.get("/track")

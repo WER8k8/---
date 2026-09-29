@@ -131,3 +131,9 @@ scratch/
 backend/_*.py
 docs/ocr-*
 docs/OCR-*
+
+# 测试运行产物与框架缓存
+.mimosa/
+**/.mimosa/
+backend/_junit*.xml
+backend/tmp/

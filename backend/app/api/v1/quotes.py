@@ -231,16 +231,45 @@ class BOQCalculationRequest(BaseModel):
     inspection_required: Optional[bool] = False
     insurance_required: Optional[bool] = False
     params: Optional[dict] = None
+    industry_profile_code: Optional[str] = Field(
+        None, description="可选：显式指定生效行业参数包 code；不传则按当前用户默认租户解析"
+    )
 
 
 @router.post("/calculate-boq", summary="BOQ 22 参数工业核价")
-def calculate_boq(req: BOQCalculationRequest):
-    """根据材料规格与外贸参数计算工业级报价。"""
+def calculate_boq(
+    req: BOQCalculationRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """根据材料规格与外贸参数计算工业级报价。
+
+    模块2（Industry Profile 去行业化）：按显式 `industry_profile_code`（可选）
+    或当前用户默认租户解析生效参数包，并**显式注入** `BOQCalculator`；
+    未配置 → 建材默认，行为零漂移。
+    """
     from app.services.boq_calculator import BOQCalculator
+    from app.services.industry_profile_service import (
+        boq_overrides,
+        get_active_profile,
+        resolve_boq_overrides_for_tenant,
+    )
+    from app.services.tenant_scenario_service import resolve_tenant_id_for_user
+
     calc_params = dict(req.params or {})
-    calc_params.update(req.model_dump(exclude={"params"}))
+    calc_params.update(req.model_dump(exclude={"params", "industry_profile_code"}))
+
+    if req.industry_profile_code:
+        profile = get_active_profile(db, req.industry_profile_code)
+        if profile is None:
+            return error_response(400, "该行业参数包不存在或未激活")
+        overrides = boq_overrides(profile)
+    else:
+        tenant_id = resolve_tenant_id_for_user(db, current_user)
+        overrides = resolve_boq_overrides_for_tenant(db, tenant_id)
+
     calculator = BOQCalculator()
-    result = calculator.calculate(calc_params)
+    result = calculator.calculate(calc_params, industry_profile=overrides)
     if "error" in result:
         return error_response(400, result["error"])
     return success_response(data=result, message="BOQ 核价完成")

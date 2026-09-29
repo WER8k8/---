@@ -134,8 +134,29 @@ def test_03_indexnow_key_endpoint(client):
     assert res_api.text.strip() == res.text.strip()
 
 
-def test_04_indexnow_submit_endpoint(client, martech_test_data):
-    """测试 4: IndexNow 接收 URL 并进行提交广播处理。"""
+def test_04_indexnow_submit_endpoint(client, martech_test_data, monkeypatch):
+    """测试 4: IndexNow 接收 URL 并进行提交广播处理（mock 网络层——单测不外呼真实 API）。"""
+    from app.services.seo import indexnow_service as idx_svc
+
+    class _FakeResp:
+        status_code = 202
+        text = ""
+
+    class _FakeClient:
+        def __init__(self, *a, **kw):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def post(self, *a, **kw):
+            return _FakeResp()
+
+    monkeypatch.setattr(idx_svc.httpx, "AsyncClient", _FakeClient)
+
     p = martech_test_data["product"]
     payload = {
         "urls": [f"https://www.youdingjiancai.com/products/{p.slug}"],
@@ -145,7 +166,7 @@ def test_04_indexnow_submit_endpoint(client, martech_test_data):
     assert res.status_code == 200
     data = res.json()["data"]
     assert data["submitted_count"] == 1
-    assert data["status"] in ("success", "offline_queued")
+    assert data["status"] == "success"
 
 
 def test_05_marketing_events_collector(client, martech_test_data):

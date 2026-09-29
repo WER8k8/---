@@ -80,3 +80,8 @@ protobuf>=5.29.6,<7
 # 跨境语言桥 — 听写 + TTS
 edge-tts>=7.2.7
 
+# BOQ 文件/视觉抽取（Site/BOQ 行）：PDF 文本层 + Excel 工作表
+# CSV 走标准库 csv；图片/扫描件 OCR/VLM 未配置时保持诚实 503，不引入伪造抽取
+pypdf>=5.0.0,<7
+openpyxl>=3.1.0
+

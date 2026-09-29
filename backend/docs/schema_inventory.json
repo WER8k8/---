@@ -1,0 +1,1661 @@
+{
+  "generated_at": "2026-09-28T12:34:55.064157+00:00",
+  "database": "postgresql://youding:***@localhost:5433/youding_dev",
+  "physical_table_count": 274,
+  "orm_mapped_count": 234,
+  "orm_declared_count": 234,
+  "orm_without_physical_table": [],
+  "category_counts": {
+    "orm_mapped": 234,
+    "rls_pilot": 0,
+    "migration_infra": 1,
+    "runtime_only": 39,
+    "unknown": 0
+  },
+  "tables": [
+    {
+      "physical_table": "ab_test_conversions",
+      "orm_model": "ab_test_conversions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ab_test_events",
+      "orm_model": "ab_test_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ab_test_variants",
+      "orm_model": "ab_test_variants",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ab_tests",
+      "orm_model": "ab_tests",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_buyer_masters",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_content_inquiry_links",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_content_touches",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_ops_cards",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_quote_wake",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_sla_alerts",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "acquisition_suppression",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ad_law_keywords",
+      "orm_model": "ad_law_keywords",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "admin_menus",
+      "orm_model": "admin_menus",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "admin_permissions",
+      "orm_model": "admin_permissions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "admin_roles",
+      "orm_model": "admin_roles",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "agent_commission_rules",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "agent_commission_settlements",
+      "orm_model": "agent_commission_settlements",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "agent_nodes",
+      "orm_model": "agent_nodes",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "agent_scorecards",
+      "orm_model": "agent_scorecards",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_chat_messages",
+      "orm_model": "ai_chat_messages",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_chat_sessions",
+      "orm_model": "ai_chat_sessions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_citations",
+      "orm_model": "ai_citations",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_generation_configs",
+      "orm_model": "ai_generation_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_knowledge_base",
+      "orm_model": "ai_knowledge_base",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_mentions",
+      "orm_model": "ai_mentions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_model_configs",
+      "orm_model": "ai_model_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_model_providers",
+      "orm_model": "ai_model_providers",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_optimization_logs",
+      "orm_model": "ai_optimization_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_queries",
+      "orm_model": "ai_queries",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_query_runs",
+      "orm_model": "ai_query_runs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_recommendations",
+      "orm_model": "ai_recommendations",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_tasks",
+      "orm_model": "ai_tasks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_templates",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ai_usage_logs",
+      "orm_model": "ai_usage_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "alembic_version",
+      "orm_model": null,
+      "category": "migration_infra",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "alert_events",
+      "orm_model": "alert_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "alert_rules",
+      "orm_model": "alert_rules",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "analytics_events",
+      "orm_model": "analytics_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "api_keys",
+      "orm_model": "api_keys",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "api_products",
+      "orm_model": "api_products",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "api_subscriptions",
+      "orm_model": "api_subscriptions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "app_devices",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "billing_pricing_rules",
+      "orm_model": "billing_pricing_rules",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "billing_reservations",
+      "orm_model": "billing_reservations",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "boq_import_jobs",
+      "orm_model": "boq_import_jobs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "boq_line_items",
+      "orm_model": "boq_line_items",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "browser_profiles",
+      "orm_model": "browser_profiles",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "building_material_specs",
+      "orm_model": "building_material_specs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "buyer_prospect_leads",
+      "orm_model": "buyer_prospect_leads",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "campaign_events",
+      "orm_model": "campaign_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "campaign_recipients",
+      "orm_model": "campaign_recipients",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "campaign_steps",
+      "orm_model": "campaign_steps",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "campaigns",
+      "orm_model": "campaigns",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "case_images",
+      "orm_model": "case_images",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "case_studies",
+      "orm_model": "case_studies",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "categories",
+      "orm_model": "categories",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "cc_switch_configs",
+      "orm_model": "cc_switch_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "chat_messages",
+      "orm_model": "chat_messages",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "chat_sessions",
+      "orm_model": "chat_sessions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "cities",
+      "orm_model": "cities",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "combinatorial_rules",
+      "orm_model": "combinatorial_rules",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "companies",
+      "orm_model": "companies",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "company_contacts",
+      "orm_model": "company_contacts",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "company_signals",
+      "orm_model": "company_signals",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "competitor_mentions",
+      "orm_model": "competitor_mentions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "compliance_rules",
+      "orm_model": "compliance_rules",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "compliance_scan_results",
+      "orm_model": "compliance_scan_results",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "compliance_violations",
+      "orm_model": "compliance_violations",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "contact_events",
+      "orm_model": "contact_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "content_chunks",
+      "orm_model": "content_chunks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "content_feedback_checks",
+      "orm_model": "content_feedback_checks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "content_masters",
+      "orm_model": "content_masters",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "content_pages",
+      "orm_model": "content_pages",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "content_templates",
+      "orm_model": "content_templates",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "content_versions",
+      "orm_model": "content_versions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "cost_events",
+      "orm_model": "cost_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "credential_grants",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "credentials",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "customs_declarations",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "data_source_providers",
+      "orm_model": "data_source_providers",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "dead_letter_events",
+      "orm_model": "dead_letter_events",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "deerflow_jobs",
+      "orm_model": "deerflow_jobs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "device_fingerprints",
+      "orm_model": "device_fingerprints",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "districts",
+      "orm_model": "districts",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "domestic_inquiries",
+      "orm_model": "domestic_inquiries",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "eeat_article_authors",
+      "orm_model": "eeat_article_authors",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "eeat_author_certifications",
+      "orm_model": "eeat_author_certifications",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "eeat_authors",
+      "orm_model": "eeat_authors",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "eeat_scores",
+      "orm_model": "eeat_scores",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "eeat_trust_signals",
+      "orm_model": "eeat_trust_signals",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "egress_cost_records",
+      "orm_model": "egress_cost_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "egress_endpoints",
+      "orm_model": "egress_endpoints",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "egress_pool_replenish_jobs",
+      "orm_model": "egress_pool_replenish_jobs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "egress_provision_jobs",
+      "orm_model": "egress_provision_jobs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "egress_suppliers",
+      "orm_model": "egress_suppliers",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "email_outreachs",
+      "orm_model": "email_outreachs",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "email_tracking_events",
+      "orm_model": "email_tracking_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "email_verifications",
+      "orm_model": "email_verifications",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "engagement_records",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "evolution_approvals",
+      "orm_model": "evolution_approvals",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "evolution_canary_routes",
+      "orm_model": "evolution_canary_routes",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "evolution_experiences",
+      "orm_model": "evolution_experiences",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "evolution_skill_versions",
+      "orm_model": "evolution_skill_versions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "evolution_sop_versions",
+      "orm_model": "evolution_sop_versions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "evolution_task_records",
+      "orm_model": "evolution_task_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "exchange_rate_logs",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "experience_records",
+      "orm_model": "experience_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "feishu_bindings",
+      "orm_model": "feishu_bindings",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "feishu_message_logs",
+      "orm_model": "feishu_message_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "finance_ledger_entries",
+      "orm_model": "finance_ledger_entries",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "generated_contents",
+      "orm_model": "generated_contents",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "generated_keywords",
+      "orm_model": "generated_keywords",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "geo_alert_histories",
+      "orm_model": "geo_alert_histories",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "geo_alert_rules",
+      "orm_model": "geo_alert_rules",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "geo_alerts",
+      "orm_model": "geo_alerts",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "glossary_terms",
+      "orm_model": "glossary_terms",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "group_keywords",
+      "orm_model": "group_keywords",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "growth_agent_runs",
+      "orm_model": "growth_agent_runs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "growth_keyword_entries",
+      "orm_model": "growth_keyword_entries",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "harness_security_events",
+      "orm_model": "harness_security_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "hermes_plugin_installs",
+      "orm_model": "hermes_plugin_installs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "hs_code_mappings",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "im_messages",
+      "orm_model": "im_messages",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "im_sessions",
+      "orm_model": "im_sessions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "inbox_events",
+      "orm_model": "inbox_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "inclusion_status",
+      "orm_model": "inclusion_status",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "industry_insights",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "industry_keywords",
+      "orm_model": "industry_keywords",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "industry_patterns",
+      "orm_model": "industry_patterns",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "industry_profiles",
+      "orm_model": "industry_profiles",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "inquiries",
+      "orm_model": "inquiries",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "inquiry_attributions",
+      "orm_model": "inquiry_attributions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "inquiry_extended",
+      "orm_model": "inquiry_extended",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "intent_engine_runs",
+      "orm_model": "intent_engine_runs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "international_crawl_logs",
+      "orm_model": "international_crawl_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "international_inquiries",
+      "orm_model": "international_inquiries",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "international_target_sites",
+      "orm_model": "international_target_sites",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "invoice_applications",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "invoices",
+      "orm_model": "invoices",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "keyword_groups",
+      "orm_model": "keyword_groups",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "keyword_ranking_history",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "keyword_rankings",
+      "orm_model": "keyword_rankings",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "keywords",
+      "orm_model": "keywords",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "knowledge_bases",
+      "orm_model": "knowledge_bases",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "lead_inquiries",
+      "orm_model": "lead_inquiries",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "license_codes",
+      "orm_model": "license_codes",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "license_orders",
+      "orm_model": "license_orders",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "licenses",
+      "orm_model": "licenses",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "llms_config",
+      "orm_model": "llms_config",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "logistics_shipments",
+      "orm_model": "logistics_shipments",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "marketing_touchpoints",
+      "orm_model": "marketing_touchpoints",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "material_specs",
+      "orm_model": "material_specs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "mcp_servers",
+      "orm_model": "mcp_servers",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "mcp_tools",
+      "orm_model": "mcp_tools",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "media_render_tasks",
+      "orm_model": "media_render_tasks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "merchant_im_routing",
+      "orm_model": "merchant_im_routing",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "merchant_profiles",
+      "orm_model": "merchant_profiles",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "meter_events",
+      "orm_model": "meter_events",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "model_call_ledger",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "model_capabilities",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "n8n_workflows",
+      "orm_model": "n8n_workflows",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "news_articles",
+      "orm_model": "news_articles",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "news_categories",
+      "orm_model": "news_categories",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "notifications",
+      "orm_model": "notifications",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "nurture_cycles",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "operation_logs",
+      "orm_model": "operation_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "opportunities",
+      "orm_model": "opportunities",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "opportunity_stages",
+      "orm_model": "opportunity_stages",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "order_items",
+      "orm_model": "order_items",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "orders",
+      "orm_model": "orders",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "outbox_events",
+      "orm_model": "outbox_events",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "paperclip_agents",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "paperclip_approvals",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "paperclip_companies",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "paperclip_goals",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "paperclip_heartbeats",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "paperclip_tasks",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "payment_channels",
+      "orm_model": "payment_channels",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "payment_compensation_tasks",
+      "orm_model": "payment_compensation_tasks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "payment_ops_audit",
+      "orm_model": "payment_ops_audit",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "payment_orders",
+      "orm_model": "payment_orders",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "payment_refunds",
+      "orm_model": "payment_refunds",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "payments",
+      "orm_model": "payments",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "pipeline_runs",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "pipeline_steps",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "pipelines",
+      "orm_model": "pipelines",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "platform_accounts",
+      "orm_model": "platform_accounts",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "platform_configs",
+      "orm_model": "platform_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "platform_invoice_configs",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "platform_survival_ledger_entries",
+      "orm_model": "platform_survival_ledger_entries",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "platform_tenant_origins",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "platforms",
+      "orm_model": "platforms",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "plugin_versions",
+      "orm_model": "plugin_versions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "plugins",
+      "orm_model": "plugins",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "product_boq_profiles",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "product_categories",
+      "orm_model": "product_categories",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "product_documents",
+      "orm_model": "product_documents",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "product_faqs",
+      "orm_model": "product_faqs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "product_images",
+      "orm_model": "product_images",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "products",
+      "orm_model": "products",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "project_signals",
+      "orm_model": "project_signals",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "projects",
+      "orm_model": "projects",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "prospect_leads",
+      "orm_model": "prospect_leads",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "provinces",
+      "orm_model": "provinces",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "publish_logs",
+      "orm_model": "publish_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "publish_tasks",
+      "orm_model": "publish_tasks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "purchase_orders",
+      "orm_model": "purchase_orders",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "push_events",
+      "orm_model": "push_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "quote_items",
+      "orm_model": "quote_items",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "quotes",
+      "orm_model": "quotes",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "referral_codes",
+      "orm_model": "referral_codes",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "referral_records",
+      "orm_model": "referral_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "release_guards",
+      "orm_model": "release_guards",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "review_tasks",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "reviews",
+      "orm_model": "reviews",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "rfq_documents",
+      "orm_model": "rfq_documents",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "rfq_items",
+      "orm_model": "rfq_items",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "rfq_requirements",
+      "orm_model": "rfq_requirements",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "rfqs",
+      "orm_model": "rfqs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "risk_control_configs",
+      "orm_model": "risk_control_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "role_permissions",
+      "orm_model": "role_permissions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "sales_tasks",
+      "orm_model": "sales_tasks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "scheduled_publishes",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "schema_markups",
+      "orm_model": "schema_markups",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "schema_templates",
+      "orm_model": "schema_templates",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "seo_competitors",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "seo_metadata",
+      "orm_model": "seo_metadata",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "serp_snapshots",
+      "orm_model": "serp_snapshots",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "shipping_timeline",
+      "orm_model": "shipping_timeline",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "site_analytics_events",
+      "orm_model": "site_analytics_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "site_audits",
+      "orm_model": "site_audits",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "skill_performance",
+      "orm_model": "skill_performance",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "skill_versions",
+      "orm_model": "skill_versions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "skills",
+      "orm_model": "skills",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "social_interactions",
+      "orm_model": "social_interactions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ssl_certificates",
+      "orm_model": "ssl_certificates",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "step_evidence",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "super_admin_login_logs",
+      "orm_model": "super_admin_login_logs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "system_config",
+      "orm_model": "system_config",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "system_settings",
+      "orm_model": "system_settings",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "task_traces",
+      "orm_model": "task_traces",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenant_ai_provider_configs",
+      "orm_model": "tenant_ai_provider_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenant_capability_toggles",
+      "orm_model": "tenant_capability_toggles",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenant_domains",
+      "orm_model": "tenant_domains",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "tenant_invoice_profiles",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenant_invoices",
+      "orm_model": "tenant_invoices",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenant_plans",
+      "orm_model": "tenant_plans",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenant_subscriptions",
+      "orm_model": "tenant_subscriptions",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "tenant_wecom_push_configs",
+      "orm_model": "tenant_wecom_push_configs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tenants",
+      "orm_model": "tenants",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "third_party_logins",
+      "orm_model": "third_party_logins",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "token_ledger_entries",
+      "orm_model": "token_ledger_entries",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "tracking_accounts",
+      "orm_model": "tracking_accounts",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "tracking_events",
+      "orm_model": "tracking_events",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "trade_country_category",
+      "orm_model": null,
+      "category": "runtime_only",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "translation_records",
+      "orm_model": "translation_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "translation_tasks",
+      "orm_model": "translation_tasks",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_action_audits",
+      "orm_model": "ubrain_action_audits",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_decision_records",
+      "orm_model": "ubrain_decision_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_execution_records",
+      "orm_model": "ubrain_execution_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_feedback_records",
+      "orm_model": "ubrain_feedback_records",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_feedback_snapshots",
+      "orm_model": "ubrain_feedback_snapshots",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_pipeline_runs",
+      "orm_model": "ubrain_pipeline_runs",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_research_insights",
+      "orm_model": "ubrain_research_insights",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "ubrain_tenant_memory",
+      "orm_model": "ubrain_tenant_memory",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "user_status",
+      "orm_model": "user_status",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "user_tenants",
+      "orm_model": "user_tenants",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "users",
+      "orm_model": "users",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "visibility_scores",
+      "orm_model": "visibility_scores",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "wallet_accounts",
+      "orm_model": "wallet_accounts",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "wallet_transactions",
+      "orm_model": "wallet_transactions",
+      "category": "orm_mapped",
+      "rls_enabled": true
+    },
+    {
+      "physical_table": "wangcai_qa_log",
+      "orm_model": "wangcai_qa_log",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "wangcai_sessions",
+      "orm_model": "wangcai_sessions",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    },
+    {
+      "physical_table": "whatsapp_messages",
+      "orm_model": "whatsapp_messages",
+      "category": "orm_mapped",
+      "rls_enabled": false
+    }
+  ]
+}

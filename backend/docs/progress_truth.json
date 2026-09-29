@@ -1,0 +1,224 @@
+{
+  "generated_at": "2026-09-28T09:05:15.533707+00:00",
+  "sources": {
+    "alembic_head": {
+      "heads": [
+        "135_w5_cost_events"
+      ],
+      "single": true,
+      "source": "alembic"
+    },
+    "db_tables": 274,
+    "mounted_paths": 1883,
+    "executors": 37,
+    "orchestration_selfcheck": {
+      "ok": true,
+      "passed": 20,
+      "total": 20
+    },
+    "tests": {
+      "collected": 1401,
+      "passed": 1400,
+      "with_tests_mode": true
+    }
+  },
+  "modules": [
+    {
+      "module": "orchestration",
+      "capability": "编排内核(Hermes)",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "multi_tenant",
+      "capability": "多租户/域名",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "outbox",
+      "capability": "消息可靠性",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "billing",
+      "capability": "计费预占/计量",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "rls",
+      "capability": "行级隔离",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "tradeai",
+      "capability": "拓客(原生+技能批)",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "goodjob",
+      "capability": "履约/单证",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "deerflow",
+      "capability": "研报/内容(11意图)",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "boq",
+      "capability": "BOQ 核价",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "publish",
+      "capability": "分发",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "evidence",
+      "capability": "取证",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "evolution",
+      "capability": "自进化",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "n8n",
+      "capability": "出站触发",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "skills",
+      "capability": "技能资产",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "dsh",
+      "capability": "DSH 认知沙箱",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": true,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": true
+    },
+    {
+      "module": "frontend_admin",
+      "capability": "管理端前端",
+      "code_present": true,
+      "route_mounted": true,
+      "test_present": false,
+      "test_passed": true,
+      "runtime_verified": true,
+      "data_verified": true,
+      "last_verified_at": "2026-09-28T09:05:15.533707+00:00",
+      "production_ready": false
+    }
+  ],
+  "summary": {
+    "total": 16,
+    "production_ready_true": 15
+  },
+  "note": "production_ready 由证据布尔 AND 自动计算；本文件只能由 scripts/progress_truth.py 再生成。"
+}

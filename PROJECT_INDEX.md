@@ -1,26 +1,32 @@
 # PROJECT INDEX · 优丁 B2B 外贸 SaaS（活跃开发版）
 
 > **给任何 IDE / AI 编码工具**：本文件是代码级全貌索引，读完即可开工，无需全盘扫描。
-> 由每日自动化维护校正（规模数字 + 最近变更段）。最后更新：2026-09-06
+> 由每日自动化维护校正（规模数字 + 最近变更段）。**规模数字最后校准：2026-09-26（实测）**
+>
+> ⚠️ **2026-09-26 实测口径校准**（本文件历史数字多处过期，以下为真值，引用请以此为准）：
+> 路由模块 **176**（非 146/150/172）· 已挂载 API 路径 **1850** · 端点 **1601** · 数据表 **256**（非 200/229）· 空表 **0** ·
+> Alembic 单 head **121**（非 105）· 服务层 **333 顶层 / 838 py** · Celery 任务模块 **17 / 任务 29** ·
+> admin 页面 **323 .vue** · Nuxt 官网页 **84** · Hermes 执行器 **37**。
+> 依据：`docs/项目认知与设计全景-2026-09-26.md` §1 · 可复跑命令见该文件 §9。
 
 ## 技术栈
 
 - **后端**：FastAPI + SQLAlchemy 2.0 + Pydantic v2 + Celery + Redis + Alembic（Python venv：`backend/.venv/Scripts/python.exe`）
 - **官网前端**：Nuxt 3（`frontend/`，:3000）
-- **超管后台**：Vite + Vue3 + TS + Ant Design Vue（`frontend/admin/`，:5174）
+- **超管后台**：Vite + Vue3 + TS + Ant Design Vue（`frontend/admin/`，**:5173**）
 - **SEO 双系统**：`seo-backend/`（Node，:8000 独立实例）+ `seo-admin/`（:5173）
-- **基础设施**：PostgreSQL(:5433 Docker pgvector/pg15) + Redis(:6379) + Temporal(:7233) + n8n(:5678)
+- **基础设施**：**原生 PostgreSQL 15.8 @5433**（非 Docker；数据目录 `C:\Users\Administrator\youding-pgdata`）+ **原生 Redis 5.0 @6379** + n8n 容器 @5678（2 出站 webhook 激活）｜`Temporal @7233` 本文件历史口径，**2026-09-26 未探测，存疑待核实**
 
 ## 后端结构（backend/app/，17 个子模块）
 
 | 模块 | 职责 | 规模 |
 |------|------|------|
-| `api/v1/` | REST 路由层 | **146 个路由模块（自动发现机制）**，OpenAPI **1,240 路径 / 1,370 个操作** |
-| `services/` | 业务逻辑层 | **297 顶层项 / 660+ py 文件**（含跨境、获客闭环、U-Brain、智能建站、国际支付等） |
-| `models/` | SQLAlchemy ORM | **200 张数据表**（Base.metadata 完整定义），Alembic 单 Head `105`（迁移链 001→105 全绿；104=租户回填，105=模型兜底合流（链尾 create_all 幂等补缺表）；见 backend/.scratch/adr-002-multi-tenant-runtime/issues/10） |
+| `api/v1/` | REST 路由层 | **176 个路由模块（自动发现机制）**，已挂载 **1,850** 路径 / 能力台账口径 **1,601** 端点 |
+| `services/` | 业务逻辑层 | **333 顶层项 / 838 py 文件**（含跨境、获客闭环、U-Brain、智能建站、国际支付等） |
+| `models/` | SQLAlchemy ORM | **96 个模型文件 → 256 张数据表**（Base.metadata 完整定义），Alembic 单 Head `121_w4_identity_attribution_persistence`（2026-09-26 实查：256 表全有数据、空表 0） |
 | `schemas/` | Pydantic v2 请求/响应模型 | — |
 | `repositories/` | 数据访问层 | — |
-| `tasks/` | Celery 任务 | **12 个任务模块**，7 队列：celery,default,deerflow,cross_border,ops,seo,geo |
+| `tasks/` | Celery 任务 | **17 个任务模块 / 29 个已注册任务**，7 队列：celery,default,deerflow,cross_border,ops,seo,geo |
 | `workers/` | 后台 worker | — |
 | `core/` | 配置/安全/日志（config.py, security, logging_config） | — |
 | `db/` | 会话/RLS 策略 | — |
@@ -29,15 +35,16 @@
 | `orchestration/` | 编排（含 Temporal 工作流） | — |
 | `data/` | 静态数据（deerflow_research_brief_templates 等） | — |
 | `graduation/` `performance/` | 毕业机制/性能模块 | — |
-| `main.py` | 应用入口（lifespan 300 行，注册 4268 接口） | — |
+| `main.py` | 应用入口（lifespan 编排，挂 `/api/v1` 前缀 + CORS，实测 1,850 条路径） | — |
 
-**关键机制**：路由自动发现（`app/api/v1/routes/__init__.py` + `auto_discovery.py` 双机制）；多租户靠 Host 头识别；统一登录 `resolve_user_for_unified_login` 贯通主库 users 与 SEO 矩阵 admin_users。
+**关键机制**：路由自动发现（`app/api/v1/routes/__init__.py` + `auto_discovery.py` 双机制，**176 个路由模块**）；多租户靠 Host 头识别；统一登录 `resolve_user_for_unified_login` 贯通主库 users 与 SEO 矩阵 admin_users。
+> ⚠ 判「路由是否挂载」禁用 `app.routes`（惰性 `_IncludedRouter` 包装会恒判缺失），必须用 `app.core.route_introspection.mounted_route_paths()`。
 
 ## 前端结构
 
-- `frontend/`（官网 Nuxt 3）：components / composables / layouts / locales（i18n）/ middleware / pages
-- `frontend/admin/`（超管）：src 下 api / components / router / layout / constants；路由表 `adminSystemRoutes.ts`
-- API 客户端由 **Orval** 自动生成
+- `frontend/`（官网 Nuxt 3）：components / composables / layouts / locales（i18n）/ middleware / pages（**84 页**）
+- `frontend/admin/`（超管）：src 下 api / components / router / layout / constants；路由表 `adminSystemRoutes.ts`（**323 个 .vue 页面 / 92 组件**）
+- API 客户端是 **手写 axios（BFF Cookie + 主 API Bearer 双轨）**，**不是 Orval 自动生成**（历史口径已订正，见 `component-api.md` §6）。Cookie 模式必须走统一 axios，散落手写 fetch 会踩 403。
 
 ## 启动（三种方式任选）
 
@@ -58,7 +65,8 @@ cd backend && .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 
 
 - 开发：`backend/config/dev/.env`（真实值）
 - 生产模板：`backend/config/.env.prod.example`（**AI Key 一律留空，严禁编造**）
-- OAuth 开发模式：`OAUTH_DEV_BYPASS`（登录页 `client/login.vue`，注册页 `tenants/register.vue`）
+- OAuth 开发模式：`OAUTH_DEV_BYPASS`
+  > ⚠ 历史口径写「登录页 `client/login.vue`」——该文件**违反 LOGIN-LOCK-01，已废弃**。唯一登录组件为 `frontend/admin/src/views/login/index.vue`（路由 `/login`）。注册页 `tenants/register.vue` 仍有效。
 
 ## 顶层关键文档
 

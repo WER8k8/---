@@ -186,16 +186,39 @@ def add_domain(
         if domain in existing:
             return error_response(409, f"域名 {domain} 已被其他租户绑定")
 
+    # 修正设计稿 模块1：同步写入 tenant_domains 状态真源并签发 TXT 验证令牌。
+    # 令牌明文仅在本次响应返回一次（库存 sha256 hash），丢失走 rotate 重发。
+    from app.services import tenant_domain_service as tds
+    try:
+        state = tds.get_by_hostname(db, domain)
+        if state and str(state.tenant_id) == str(tenant.id):
+            record, token = state, tds.rotate_verification_token(db, state)
+        elif state:
+            return error_response(409, f"域名 {domain} 已被其他租户绑定")
+        else:
+            record, token = tds.create_tenant_domain(
+                db, tenant=tenant, hostname=domain, verification_method="dns_txt"
+            )
+    except tds.DomainError as exc:
+        return error_response(exc.status_code, exc.message)
+
     domains.append(domain)
     _save_domains(tenant, domains, db)
     return success_response(
-        data=DomainBindingResponse(
-            domain=domain,
-            verified=False,
-            ssl_status="none",
-            cname_target="saas.youding.com",
+        data={
+            "domain": domain,
+            "verified": False,
+            "ssl_status": record.ssl_status,
+            "cname_target": tds.CNAME_TARGET,
+            "domain_id": str(record.id),
+            "verification_method": "dns_txt",
+            "txt_host": f"_ujverify.{domain}",
+            "txt_record": token,
+        },
+        message=(
+            f"域名 {domain} 已登记；请配置 TXT 记录 _ujverify.{domain} = 令牌，"
+            f"并将 CNAME 指向 {tds.CNAME_TARGET}，然后调用 verify"
         ),
-        message=f"域名 {domain} 添加成功，请配置 CNAME 记录指向 saas.youding.com",
     )
 
 
@@ -224,6 +247,11 @@ def remove_domain(
 
     domains.remove(domain)
     _save_domains(tenant, domains, db)
+    # 修正设计稿 模块1：同步删除 tenant_domains 状态行 —— 旧 Host 立即不再解析到租户
+    from app.services import tenant_domain_service as tds
+    state = tds.get_by_hostname(db, domain)
+    if state and str(state.tenant_id) == str(tenant.id):
+        tds.delete_tenant_domain(db, state)
     return success_response(message=f"域名 {domain} 已解绑")
 
 
@@ -288,13 +316,122 @@ def verify_domain(
     if domain not in domains:
         return error_response(404, f"域名 {domain} 未绑定")
 
+    # 修正设计稿 模块1：优先走 tenant_domains 状态真源验证（TXT 令牌 → CNAME 回落），
+    # 未登记状态表的 legacy 域名保留纯 DNS 探测兼容。
+    from app.services import tenant_domain_service as tds
+    state = tds.get_by_hostname(db, domain)
+    if state and str(state.tenant_id) == str(tenant.id):
+        state = tds.verify_tenant_domain(db, state)
+        verified = state.verification_status == "verified"
+    else:
+        verified = probe_domain_dns(domain)
+
     # ⚠️ 2026-09-24 修复：原实现的 return 误缩进在 except 块内
     #    → **成功路径会掉出函数返回 None**。现改为无条件返回。
     return DomainBindingResponse(
         domain=domain,
-        verified=probe_domain_dns(domain),
+        verified=verified,
         ssl_status=ssl_status_for_domain(tenant, domain),
         cname_target="saas.youding.com",
+    )
+
+
+# ---------- 触发 SSL ----------
+
+
+def _get_domain_state(db: Session, tenant: Tenant, domain: str):
+    """取租户域名状态行；不存在或不属于该租户返回 None。"""
+    from app.services import tenant_domain_service as tds
+
+    state = tds.get_by_hostname(db, domain)
+    if state and str(state.tenant_id) == str(tenant.id):
+        return state
+    return None
+
+
+@router.post("/tenants/{tenant_id}/domains/{domain:path}/activate")
+def activate_domain(
+    tenant_id: str,
+    domain: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """激活域名（修正设计稿 模块1）。未通过所有权验证 → 409，不伪造激活。"""
+    tenant = _get_tenant_for_user(tenant_id, current_user, db)
+    if not tenant:
+        return error_response(404, "租户不存在或无权访问")
+    state = _get_domain_state(db, tenant, domain.strip().lower())
+    if not state:
+        return error_response(404, f"域名 {domain} 未登记状态（请先重新添加以签发验证令牌）")
+    from app.services import tenant_domain_service as tds
+    try:
+        state = tds.activate_tenant_domain(db, state)
+    except tds.DomainError as exc:
+        return error_response(exc.status_code, exc.message)
+    return success_response(data=tds.record_info(state), message=f"域名 {domain} 已激活")
+
+
+@router.post("/tenants/{tenant_id}/domains/{domain:path}/set-primary")
+def set_primary(
+    tenant_id: str,
+    domain: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """设为主域（verified + active 才可；同租户其余主域自动让位）。"""
+    tenant = _get_tenant_for_user(tenant_id, current_user, db)
+    if not tenant:
+        return error_response(404, "租户不存在或无权访问")
+    state = _get_domain_state(db, tenant, domain.strip().lower())
+    if not state:
+        return error_response(404, f"域名 {domain} 未登记状态")
+    from app.services import tenant_domain_service as tds
+    try:
+        state = tds.set_primary_domain(db, state)
+    except tds.DomainError as exc:
+        return error_response(exc.status_code, exc.message)
+    return success_response(data=tds.record_info(state), message=f"域名 {domain} 已设为主域")
+
+
+@router.get("/tenants/{tenant_id}/domains/{domain:path}/status")
+def domain_status(
+    tenant_id: str,
+    domain: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """域名状态总览：验证 / SSL / 主域 / 激活 + DNS 配置指引。"""
+    tenant = _get_tenant_for_user(tenant_id, current_user, db)
+    if not tenant:
+        return error_response(404, "租户不存在或无权访问")
+    state = _get_domain_state(db, tenant, domain.strip().lower())
+    if not state:
+        return error_response(404, f"域名 {domain} 未登记状态")
+    from app.services import tenant_domain_service as tds
+    info = tds.record_info(state)
+    info["ssl_provider_status"] = ssl_status_for_domain(tenant, domain)
+    return success_response(data=info)
+
+
+@router.post("/tenants/{tenant_id}/domains/{domain:path}/rotate-token")
+def rotate_domain_token(
+    tenant_id: str,
+    domain: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """重发 TXT 验证令牌（旧令牌立即失效，回到 pending）。明文仅本次返回。"""
+    tenant = _get_tenant_for_user(tenant_id, current_user, db)
+    if not tenant:
+        return error_response(404, "租户不存在或无权访问")
+    state = _get_domain_state(db, tenant, domain.strip().lower())
+    if not state:
+        return error_response(404, f"域名 {domain} 未登记状态")
+    from app.services import tenant_domain_service as tds
+    token = tds.rotate_verification_token(db, state)
+    return success_response(
+        data={"domain": state.hostname, "txt_host": f"_ujverify.{state.normalized_hostname}", "txt_record": token},
+        message="验证令牌已重发（旧令牌失效）",
     )
 
 

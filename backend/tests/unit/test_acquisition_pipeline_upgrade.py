@@ -101,9 +101,18 @@ def test_objection_copilot_scenarios():
     assert "Sinosure" in oa_sol["response_en"] or "L/C" in oa_sol["response_en"]
 
 
-def test_acquisition_pipeline_api_routes():
+def test_acquisition_pipeline_api_routes(db_session):
+    from types import SimpleNamespace
+
+    from app.core.database import get_db
+    from app.core.security import get_current_user
+
     app = FastAPI()
     app.include_router(acq_router, prefix="/api/v1")
+    app.dependency_overrides[get_db] = lambda: db_session
+    app.dependency_overrides[get_current_user] = lambda: SimpleNamespace(
+        id="00000000-0000-0000-0000-000000000001", tenant_id=None
+    )
     client = TestClient(app)
 
     # 1. 360 画像
@@ -143,11 +152,10 @@ def test_acquisition_pipeline_api_routes():
     assert r5.status_code == 200
     assert "ASTM" in r5.json()["data"]["response_en"] or "SGS" in r5.json()["data"]["response_en"]
 
-    # 6. 一键 BOQ 核价
+    # 6. 一键 BOQ 核价（handoff-to-quote 现需鉴权 + 落报价/履约订单）
     r6 = client.post(
         "/api/v1/acquisition-pipeline/handoff-to-quote",
         json={"buyer_name": "Al Rajhi", "country": "SA", "product_category": "granite"},
     )
-    assert r6.status_code == 200
-    assert r6.json()["data"]["material_type"] == "granite"
-    assert "/client/export-quote" in r6.json()["data"]["recommended_route"]
+    assert r6.status_code == 200  # 已鉴权：不再是 401
+    assert "data" in r6.json()

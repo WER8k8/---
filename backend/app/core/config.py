@@ -75,6 +75,11 @@ class Settings(BaseSettings):
     # 与 TASK_CONTROL_ENABLED（meter_events 计量路径）互斥启用，防止 token_ledger
     # 双重扣减；切换记账主路径时先关 TASK_CONTROL_ENABLED 再开本开关。
     MODEL_CALL_LEDGER_AGGREGATE_ENABLED: bool = False
+    # 轨2 预占闸门（模块9-11-14 契约 R-3 备选解耦，09-28 接线）：独立于
+    # TASK_CONTROL_ENABLED——后者同时门控 TaskTrace/终态钩子（dev 实测为 True），
+    # 严禁复用。默认关；开启后合格询盘计量成功即追加 create_reservation
+    # （幂等键同键重推不增行），预占失败只留日志不阻断询盘主链路。
+    BILLING_GATE_ENABLED: bool = False
     # 轮25-B Browser Runtime（P5）：Playwright + CDP 浏览器执行层（默认关，零回归）。
     # 启用条件：① 安装 playwright（`pip install playwright && playwright install chromium`）
     # ② BROWSER_RUNTIME_ALLOWED_TENANTS 白名单（防全量滥用，按租户灰度）
@@ -323,6 +328,10 @@ class Settings(BaseSettings):
     WAN_VIDEO_API_KEY: Optional[str] = None
     WAN_VIDEO_MODEL_T2V: str = "wanx2.1-t2v-plus"
     WAN_VIDEO_MODEL_I2V: str = "wanx2.1-i2v-plus"
+
+    # SEMrush / Google SEO 关键词热度与市场分析数据网关
+    SEMRUSH_API_KEY: Optional[str] = None
+    SEMRUSH_DATABASE: str = "us"  # 默认全球/美区数据源: us, uk, sa, ae, etc.
 
     # 多媒体工厂 / 渲染服务配置
     MEDIA_FACTORY_AUTO_RENDER: bool = True

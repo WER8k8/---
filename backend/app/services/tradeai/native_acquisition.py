@@ -506,6 +506,56 @@ def classify_inbox(
         "executor": "trade_ai_agent",
     }
 
+    # ── 序列停机联动（模块7 T7-b，契约 docs/模块7-TradeAI序列停机条件收口契约-2026-09-28.md）：
+    # ① unsubscribe → 全局 suppression（必进黑名单）+ 有 sequence_id 时停序；
+    # ② 正向回复（trade_document/pricing/sample_or_catalog/after_sales）→ 停序 + 人工接管。
+    # 无 sender_email / sequence_id 关联时保持现行为（只落 contact_event），不臆造关联。
+    stop_triggers: dict[str, Any] = {}
+    sender_email = str(
+        params.get("from_email") or params.get("sender_email") or ""
+    ).strip().lower()
+    sequence_id = str(params.get("sequence_id") or "").strip() or None
+    is_unsubscribe = intent == "nuisance" and any(
+        k in text for k in ("unsubscribe", "退订")
+    )
+    is_positive_reply = intent in (
+        "trade_document", "pricing", "sample_or_catalog", "after_sales",
+    )
+    if (is_unsubscribe or is_positive_reply) and db is not None:
+        from app.services.acquisition_outreach_service import stop_sequence
+
+        if is_unsubscribe and sender_email:
+            try:
+                from app.services.acquisition.suppression_list import suppression_store
+
+                suppression_store.add(
+                    email=sender_email,
+                    tenant_id=str(tenant_id or "demo"),
+                    reason="unsubscribe",
+                    source="inbox_classify",
+                )
+                stop_triggers["suppressed"] = True
+            except Exception as exc:  # noqa: BLE001 —— suppression 故障留痕不阻断分类
+                logger.warning(
+                    "inbox_classify suppression add failed email=%s: %s", sender_email, exc
+                )
+        if sequence_id:
+            try:
+                stop_triggers["sequence_stopped"] = stop_sequence(
+                    db,
+                    sequence_id,
+                    reason="unsubscribed" if is_unsubscribe else "replied_positive",
+                    source="inbox_classify",
+                )
+                if is_positive_reply:
+                    stop_triggers["human_handoff"] = True
+            except Exception as exc:  # noqa: BLE001 —— 停序失败留痕不阻断分类
+                logger.warning(
+                    "inbox_classify stop_sequence failed sequence=%s: %s", sequence_id, exc
+                )
+    if stop_triggers:
+        result["stop_triggers"] = stop_triggers
+
     # 可选：优丁 LLM 增强（有 Key 则用，失败回退规则）
     try:
         from app.core.config import settings

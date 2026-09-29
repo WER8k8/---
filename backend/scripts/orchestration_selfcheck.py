@@ -32,6 +32,13 @@ for _f in ("config/dev/.env", ".env"):
         load_dotenv(_f)
 import sys
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # 保证从任意 cwd 运行都能 import app.*
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -118,7 +125,7 @@ def _import_task_modules() -> None:
         "seo_tasks", "geo_tasks", "ubrain_tasks", "trade_intel_tasks",
         "cross_border_tasks", "billing_tasks", "churn_tasks", "sla_tasks",
         "quote_wake_tasks", "company_autofill_tasks", "deerflow_tasks",
-        "orchestration_tasks", "ops_scheduler_tasks",
+        "orchestration_tasks", "ops_scheduler_tasks", "outbox_tasks",
     ):
         try:
             importlib.import_module(f"app.tasks.{m}")
@@ -647,7 +654,7 @@ def main() -> int:
         print(f"[{flag}] {name.ljust(width)}  {detail}")
     print("-" * 78)
     total = len(RESULTS)
-    print(f"结果: {passed}/{total} 通过")
+    print(f"结果: {passed}/{total} 通过 (PASS: {passed}/{total})")
     print("=" * 78)
     return 0 if passed == total else 1
 

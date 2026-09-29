@@ -10,6 +10,11 @@
 
 from __future__ import annotations
 
+import os
+import tempfile
+import uuid
+from pathlib import Path
+
 import pytest
 import pytest_asyncio
 from typing import Any, AsyncGenerator, Generator
@@ -50,8 +55,22 @@ markers = [
 # 测试 Fixtures
 # ============================================================
 
-# 测试数据库 URL（使用内存 SQLite）
-TEST_DATABASE_URL = "sqlite:///./test.db"
+# 测试库路径 —— **按运行隔离**（P0-3 修复）。
+# 历史缺陷：写死相对路径 `sqlite:///./test.db`，导致①并发/连续 pytest 运行共享同一文件，
+# 一方 `Base.metadata.drop_all` 会把另一方正在用的表删掉 → 大面积 `no such table` 假失败；
+# ②在 backend/ 下遗留 test.db 供下次运行复用，污染跨会话。
+# 现改为「每进程唯一文件名（pid + uuid），落在系统临时目录」，且 env 可覆盖：
+#   TEST_DB_PATH        覆盖 db 文件绝对路径
+#   TEST_DATABASE_URL   直接覆盖整条 SQLAlchemy URL（优先级最高）
+_DEFAULT_TEST_DB_PATH = os.path.join(
+    tempfile.gettempdir(), f"uj_pytest_{os.getpid()}_{uuid.uuid4().hex}.db"
+)
+TEST_DB_PATH = os.getenv("TEST_DB_PATH", _DEFAULT_TEST_DB_PATH)
+TEST_DATABASE_URL = os.getenv(
+    "TEST_DATABASE_URL", f"sqlite:///{Path(TEST_DB_PATH).as_posix()}"
+)
+# 供同进程内其它测试模块（如 tests/unit/test_outbox.py 的独立连接）复用同一隔离库
+os.environ.setdefault("PYTEST_TEST_DB_PATH", TEST_DB_PATH)
 
 test_engine = create_engine(
     TEST_DATABASE_URL,
@@ -66,11 +85,24 @@ TestSessionLocal = sessionmaker(
 
 @pytest.fixture(scope="session")
 def db_engine():
-    """创建测试数据库引擎。"""
+    """创建测试数据库引擎（隔离库；session 结束 drop_all 并删除文件）。"""
     from app.models import Base
     Base.metadata.create_all(bind=test_engine)
     yield test_engine
     Base.metadata.drop_all(bind=test_engine)
+    try:
+        test_engine.dispose()
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        os.remove(TEST_DB_PATH)
+    except OSError:
+        # 某些沙箱/占用场景 unlink 会被拦；退化为截断，避免临时库无限膨胀
+        try:
+            with open(TEST_DB_PATH, "w"):
+                pass
+        except OSError:
+            pass
 
 
 @pytest.fixture(scope="function")

@@ -22,6 +22,16 @@ from app.models.evolution import (ApprovalRecord, CanaryRouteRecord,
                                   SkillVersion, SOPVersion)
 from app.models.deerflow_job import DeerflowJob
 from app.models.n8n_workflow import N8nWorkflow
+from app.models.outbox import DeadLetterEvent, InboxEvent, OutboxEvent
+from app.models.billing_reservation import BillingReservation
+from app.models.api_marketplace import ApiKey, ApiProduct, ApiSubscription
+from app.models.boq_import import BoqImportJob, BoqLineItem
+from app.models.pricing_rule import PricingRule
+from app.models.tenant_domain import TenantDomain
+from app.models.tracking import TrackingEvent, TrackingProviderAccount
+from app.models.harness_security import HarnessSecurityEvent
+from app.models.attribution import InquiryAttribution, MarketingTouchpoint
+from app.models.industry_profile import IndustryProfile
 from app.models.finance_ledger import FinanceLedgerEntry
 from app.models.content import (AIGenerationConfig, ContentPage,
                                 ContentTemplate, ContentVersion,
@@ -137,8 +147,10 @@ from app.models.trade_fulfillment import (
     PurchaseOrder,
     WhatsappMessage,
 )
+from app.models.cost_event import CostEvent
 
 __all__ = [
+
     "Base", "AgentNode",
     "AdminRole",
     "AdminPermission",
@@ -323,4 +335,7 @@ __all__ = [
     "BusinessPayment",
     "Pipeline",
     "DomesticInquiry",
+    "IndustryProfile",
+    "CostEvent",
 ]
+

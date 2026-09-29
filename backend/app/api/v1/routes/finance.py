@@ -15,7 +15,12 @@ from app.core.response import error_response, success_response
 from app.core.security import get_current_user
 from app.db.session import get_db
 from app.models.commission_settlement import AgentCommissionSettlement
-from app.models.finance_ledger import FinanceLedgerEntry
+from app.models.finance_ledger import (
+    ENTRY_TYPE_COST,
+    ENTRY_TYPE_REVENUE,
+    FinanceLedgerEntry,
+    normalize_entry_type,
+)
 from app.models.user import User
 from app.services.finance_service import FinanceService
 
@@ -137,7 +142,9 @@ def list_ledger(
         return err
     q = db.query(FinanceLedgerEntry)
     if entry_type:
-        q = q.filter(FinanceLedgerEntry.entry_type == entry_type)
+        canonical = normalize_entry_type(entry_type)
+        allowed = ENTRY_TYPE_REVENUE if canonical == "revenue" else ENTRY_TYPE_COST
+        q = q.filter(FinanceLedgerEntry.entry_type.in_(allowed))
     if from_date:
         q = q.filter(FinanceLedgerEntry.recorded_at >= datetime.fromisoformat(from_date))
     if to_date:
@@ -308,7 +315,7 @@ def cost_by_category(
             FinanceLedgerEntry.category,
             func.coalesce(func.sum(FinanceLedgerEntry.amount_cents), 0),
         )
-        .filter(FinanceLedgerEntry.entry_type == "cost")
+        .filter(FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_COST))
         .group_by(FinanceLedgerEntry.category)
         .all()
     )
@@ -691,7 +698,7 @@ def profit_dashboard(
             func.coalesce(func.sum(FinanceLedgerEntry.amount_cents), 0)
         ).filter(
             FinanceLedgerEntry.tenant_id.in_(tenant_ids),
-            FinanceLedgerEntry.entry_type == "revenue",
+            FinanceLedgerEntry.entry_type.in_(ENTRY_TYPE_REVENUE),
         )
         revenue = int(q.scalar() or 0)
         return success_response(

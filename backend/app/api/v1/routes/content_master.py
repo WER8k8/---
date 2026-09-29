@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 from app.core.response import error_response, success_response
 from app.core.security import get_current_user
@@ -400,7 +400,7 @@ def update_content_master(
 
     :return: 返回处理结果（或 None）。
     """
-    row = db.query(ContentMaster).options(joinedload(ContentMaster.platforms)).filter(ContentMaster.id == master_id).first()
+    row = db.query(ContentMaster).filter(ContentMaster.id == master_id).first()
     if not row:
         return error_response(404, "母版不存在")
     if not _tenant_access(current_user, row.tenant_id, db):
@@ -427,8 +427,7 @@ def publish_from_master(
     current_user: User = Depends(get_current_user),
 ):
     """从母版创建多平台发布任务。"""
-    # 优化：使用 joinedload 预加载关联数据
-    row = db.query(ContentMaster).options(joinedload(ContentMaster.platforms)).filter(ContentMaster.id == master_id).first()
+    row = db.query(ContentMaster).filter(ContentMaster.id == master_id).first()
     if not row:
         return error_response(404, "母版不存在")
     if not _tenant_access(current_user, row.tenant_id, db):

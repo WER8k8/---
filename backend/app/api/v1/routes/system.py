@@ -253,9 +253,14 @@ def submit_contact(req: InquiryCreate, db: Session = Depends(get_db), request: R
     tenant_id = None
     try:
         from app.models.tenant import Tenant
-        host = ""
-        q_domain = ""
-        if request is not None:
+        # 修正设计稿 模块1.4：公开站点租户以已验证 Host 解析为准
+        # （TenantMiddleware 已把 Host 租户注入 request.state.tenant）；
+        # __tenant/x-tenant-domain 仅在无 Host 租户时兜底（本机开发语义），
+        # 指向其他租户的情况已被中间件冲突守卫 403 拦截。
+        state_tenant = getattr(request.state, "tenant", None) if request is not None else None
+        if state_tenant and state_tenant.get("id"):
+            tenant_id = state_tenant["id"]
+        if not tenant_id and request is not None:
             host = (request.headers.get("host") or "").split(":")[0].lower()
             q_domain = (
                 request.query_params.get("__tenant")
@@ -263,11 +268,11 @@ def submit_contact(req: InquiryCreate, db: Session = Depends(get_db), request: R
                 or request.headers.get("x-tenant-domain")
                 or ""
             ).strip().lower()
-        cand = q_domain or ("" if host in ("", "127.0.0.1", "localhost") else host)
-        if cand:
-            t = db.query(Tenant).filter(Tenant.domain == cand).first()
-            if t:
-                tenant_id = t.id
+            cand = q_domain or ("" if host in ("", "127.0.0.1", "localhost") else host)
+            if cand:
+                t = db.query(Tenant).filter(Tenant.domain == cand).first()
+                if t:
+                    tenant_id = t.id
         if not tenant_id:
             # 本机/未标注域名时：默认归到 dev.local 开发租户，保证租户队列可见
             t = db.query(Tenant).filter(Tenant.domain == "dev.local").first()
@@ -288,6 +293,24 @@ def submit_contact(req: InquiryCreate, db: Session = Depends(get_db), request: R
         inquiry_kwargs["tenant_id"] = tenant_id
     inquiry = Inquiry(**inquiry_kwargs)
     db.add(inquiry)
+    # 修正设计稿 模块17（Outbox）：业务事务内追加事件，与本询盘同 commit/rollback；
+    # 消费者经 services.outbox_service.register_consumer 注册后由派发器异步投递。
+    db.flush()
+    from app.services.outbox_service import record_outbox_event
+    record_outbox_event(
+        db,
+        event_type="inquiry.created",
+        tenant_id=tenant_id,
+        aggregate_type="inquiry",
+        aggregate_id=str(inquiry.id),
+        payload={
+            "name": req.name,
+            "email": req.email,
+            "phone": req.phone,
+            "product": inquiry_kwargs.get("product"),
+            "source": "public_contact",
+        },
+    )
     db.commit()
     db.refresh(inquiry)
     body = success_response(data=InquiryResponse.model_validate(inquiry))

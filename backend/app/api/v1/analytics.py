@@ -43,7 +43,8 @@ def get_analytics_dashboard(
             func.count(
                 Inquiry.id)).filter(
             Inquiry.is_active,
-            Inquiry.status == "contacted").scalar() or 0)
+            # 归一后新数据落 in_progress；兼容存量 contacted（词表收口，2026-09-27）
+            Inquiry.status.in_(["in_progress", "contacted"])).scalar() or 0)
 
     hot_products = (
         db.query(Product).filter(

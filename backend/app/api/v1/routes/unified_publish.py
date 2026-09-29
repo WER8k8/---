@@ -332,12 +332,10 @@ def quick_publish(
     提供更友好的统一入口。
     """
     from app.services.hub_urls import build_dual_links
-    from sqlalchemy.orm import selectinload
     from app.services.geo.content_kernel_bridge import persist_kernel
     from app.services.geo.platform_content_router import PlatformGroup
     master = (
         db.query(ContentMaster)
-        .options(selectinload(ContentMaster.platforms))
         .filter(ContentMaster.id == req.master_id)
         .first()
     )

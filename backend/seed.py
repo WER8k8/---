@@ -435,23 +435,43 @@ SCENARIOS = ["S1_standard_inquiry", "S2_high_value_inquiry", "S3_missing_params"
 
 def build_synthetic_business_rows(n=None):
     """纯生成(不连库/写库)：返回 category/product/inquiry 的结构化 dict 列表，每条带 synthetic/scenario。"""
-    from faker import Faker
-    fake = Faker()
+    try:
+        from faker import Faker
+        fake = Faker()
+    except ImportError:
+        fake = None
     sc = SCENARIOS
     n = n or len(sc)
     rows = []
     for i in range(n):
         s = sc[i % len(sc)]
-        name = fake.word().title()
-        rows.append({"kind": "category", "name": f"{name} Board", "slug": fake.slug(),
+        if fake:
+            name = fake.word().title()
+            slug = fake.slug()
+            price = round(fake.random_number(digits=5) / 100, 2)
+            currency = fake.random_element(["USD", "EUR", "CNY"])
+            inq_name = fake.name()
+            inq_email = fake.email()
+            msg = fake.sentence(nb_words=8)
+            inq_curr = fake.random_element(["USD", "EUR", "GBP"])
+        else:
+            name = f"Material{i+1}"
+            slug = f"material-{i+1}"
+            price = round(100.0 + (i * 12.5), 2)
+            currency = "USD"
+            inq_name = f"Buyer {i+1}"
+            inq_email = f"buyer{i+1}@example.com"
+            msg = f"Inquiry for sample material {i+1} from overseas client."
+            inq_curr = "USD"
+        rows.append({"kind": "category", "name": f"{name} Board", "slug": slug,
                      "synthetic": True, "scenario": s})
-        rows.append({"kind": "product", "name": f"{name} {fake.word().title()}",
-                     "price_usd": round(fake.random_number(digits=5) / 100, 2),
-                     "currency": fake.random_element(["USD", "EUR", "CNY"]),
+        rows.append({"kind": "product", "name": f"{name} Panel",
+                     "price_usd": price,
+                     "currency": currency,
                      "synthetic": True, "scenario": s})
-        rows.append({"kind": "inquiry", "name": fake.name(), "email": fake.email(),
-                     "product": f"{name} Board", "message": fake.sentence(nb_words=8),
-                     "currency": fake.random_element(["USD", "EUR", "GBP"]),
+        rows.append({"kind": "inquiry", "name": inq_name, "email": inq_email,
+                     "product": f"{name} Board", "message": msg,
+                     "currency": inq_curr,
                      "missing_params": s == "S3_missing_params",
                      "agent_error": s == "S12_agent_error",
                      "synthetic": True, "scenario": s})

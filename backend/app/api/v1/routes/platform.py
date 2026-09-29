@@ -2,11 +2,11 @@
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """多平台分发 API 路由 - 平台账号管理、内容分发、会话保持"""
 
-import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 
 from fastapi import APIRouter, Body, Depends, Query
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -27,10 +27,39 @@ from app.services.platform_alignment_service import alignment_report
 from app.services.publish_service import PublishService
 
 
+def _user_tenant_ids(db: Session, user: User) -> list[str]:
+    """当前用户的活跃租户 ID 列表（凭据面/日志/统计的租户作用域）。"""
+    from app.models.tenant import UserTenant
+
+    return [
+        ut.tenant_id
+        for ut in db.query(UserTenant)
+        .filter(UserTenant.user_id == user.id, UserTenant.is_active)
+        .all()
+    ]
+
+
 # FIX-30 自动注入：保留原有的自定义前缀与标签
 ROUTE_PREFIX = ""
 
 router = APIRouter(prefix="/platforms", tags=["多平台分发"])
+
+
+def _not_implemented(reason: str, message: str) -> JSONResponse:
+    """统一「未实现」诚实 501 响应（14 个停用端点同形状，防前端出现两套解析分支）。
+
+    body 与仓库外层响应对齐：``{"code": 501, "message": ..., "data": {"reason": ...}}``。
+
+    为何不用 ``app.core.response.error_response(501, message)``：其签名为
+    ``error_response(code: int, message: str)``，**无 ``data`` 参数**，无法承载机器可读的
+    ``reason``；而 ``app.core.exceptions.error_response(code, message, data)`` 虽带 ``data``
+    却返回普通 ``dict``（经路由即 HTTP 200），**不能承载真 501**。故此处直接用
+    ``JSONResponse``，仅在 status_code 与 body 形状上对齐仓库约定。
+    """
+    return JSONResponse(
+        status_code=501,
+        content={"code": 501, "message": message, "data": {"reason": reason}},
+    )
 
 
 # ==================== Pydantic 模型 ====================
@@ -217,23 +246,31 @@ def connect_platform(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """连接平台账号"""
+    """连接平台账号（模块5 M6 实装）。
+
+    凭据只进 Vault（AAD 四元绑定），platform_accounts 明文列恒 NULL；
+    login_status 恒 logged_out —— 凭据已存 ≠ 会话已验证（契约 §2.5）。
+    """
+    tenant_ids = _user_tenant_ids(db, current_user)
+    if not tenant_ids:
+        return error_response(403, "当前用户无活跃租户，不能绑定平台账号")
     service = PublishService(db)
     try:
-        account = service.connect_platform(
+        result = service.connect_platform(
+            tenant_id=tenant_ids[0],
             platform_id=platform_id,
-            account_data=body.model_dump(exclude_none=True),
+            account_name=body.account_name or "",
+            username=body.username,
+            email=body.email,
+            cookie_data=body.cookie_data,
+            token_data=body.token_data,
+            token_expire_at=body.token_expire_at,
         )
-        return success_response(
-            data={
-                "id": account.id,
-                "account_name": account.account_name,
-                "login_status": account.login_status,
-            },
-            message="平台账号连接成功",
-        )
+    except LookupError:
+        return error_response(404, "平台不存在或未启用")
     except ValueError as e:
-        return error_response(400, str(e))
+        return error_response(422, str(e))
+    return success_response(data=result)
 
 
 @router.post("/{platform_id}/disconnect")
@@ -243,13 +280,18 @@ def disconnect_platform(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """断开平台账号连接"""
+    """断开平台账号连接（模块5 M6 实装：吊销 vault 凭据 + 清 credential_ref）。"""
+    tenant_ids = _user_tenant_ids(db, current_user)
+    if not tenant_ids:
+        return error_response(403, "当前用户无活跃租户")
     service = PublishService(db)
     try:
-        service.disconnect_platform(account_id)
-        return success_response(message="平台账号已断开")
-    except ValueError as e:
-        return error_response(404, str(e))
+        result = service.disconnect_platform(
+            tenant_id=tenant_ids[0], account_id=account_id
+        )
+    except LookupError:
+        return error_response(404, "账号不存在或不属于当前租户")
+    return success_response(data=result)
 
 
 # ==================== 账号列表与状态管理 ====================
@@ -261,10 +303,14 @@ def list_accounts(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """已连接账号列表及状态"""
-    service = PublishService(db)
-    accounts = service.list_accounts(platform_id=platform_id)
-    return success_response(data=accounts)
+    """已连接账号列表及状态（模块5 M6 实装；零明文，只给 has_credential 布尔）。"""
+    tenant_ids = _user_tenant_ids(db, current_user)
+    if not tenant_ids:
+        return success_response(data={"items": []})
+    items = PublishService(db).list_accounts(
+        tenant_ids=tenant_ids, platform_id=platform_id
+    )
+    return success_response(data={"items": items})
 
 
 @router.post("/accounts/{account_id}/refresh")
@@ -273,34 +319,33 @@ def refresh_account_session(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """刷新会话"""
-    service = PublishService(db)
-    try:
-        account = service.refresh_session(account_id)
-        return success_response(
-            data={
-                "id": account.id,
-                "login_status": account.login_status,
-                "last_login_at": account.last_login_at,
-            },
-            message="会话已刷新",
-        )
-    except ValueError as e:
-        return error_response(404, str(e))
+    """刷新会话。
+
+    ⚠ 保持诚实 501（M6 契约 §1）：平台侧会话刷新需各平台 API / Browser Runtime，
+    当前无凭据无能力，不伪造成功。
+    """
+    return _not_implemented(
+        "platform_session_refresh_unsupported",
+        "本端点已停用：平台侧会话刷新依赖 Browser Runtime / 平台 API（M6 契约登记）",
+    )
 
 
 @router.get("/accounts/{account_id}/check")
 def check_account_session(
     account_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    """检查会话是否有效"""
+    """检查会话是否有效（模块5 M6 实装：vault 凭据可解密性探测，非平台侧验证）。"""
+    tenant_ids = _user_tenant_ids(db, current_user)
+    if not tenant_ids:
+        return error_response(403, "当前用户无活跃租户")
     service = PublishService(db)
     try:
-        result = service.check_session(account_id)
-        return success_response(data=result)
-    except ValueError as e:
-        return error_response(404, str(e))
+        result = service.check_session(tenant_id=tenant_ids[0], account_id=account_id)
+    except LookupError:
+        return error_response(404, "账号不存在或不属于当前租户")
+    return success_response(data=result)
 
 
 @router.post("/accounts/{account_id}/relogin")
@@ -309,18 +354,28 @@ def auto_relogin_account(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """自动重新登录"""
-    service = PublishService(db)
-    try:
-        result = service.auto_relogin(account_id)
-        if result["success"]:
-            return success_response(data=result, message="自动重登成功")
-        return success_response(data=result, message="自动重登失败，可能需要人工介入")
-    except ValueError as e:
-        return error_response(404, str(e))
+    """自动重新登录。
+
+    ⚠ 保持诚实 501（M6 契约 §1）：自动重登属 Browser Runtime 域，当前无能力，不伪造。
+    """
+    return _not_implemented(
+        "platform_auto_relogin_unsupported",
+        "本端点已停用：自动重登依赖 Browser Runtime（M6 契约登记）",
+    )
 
 
 # ==================== 内容发布 ====================
+
+
+def _parse_iso_datetime(raw: Optional[str]):
+    """把 ISO 字符串解析为 datetime；空值返回 None，非法值返回 False（供端点区分）。"""
+    if not raw:
+        return None
+    try:
+        value = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return False
+    return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
 
 
 @router.post("/publish")
@@ -329,34 +384,36 @@ def publish_content(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """一键发布内容到多个平台"""
+    """一键发布内容到多个平台（1 Content → N Platform Attempts）。
+
+    模块5 M1 阶段二已实装：底层 `PublishService.publish_content` 真实可用，
+    故本端点**回退为真实调用**（不再返 501）。只建任务不真发，真发由执行机触发。
+    """
     if not user_has_module_permission(current_user, "content", "publish"):
         return error_response(403, "缺少 content:publish 权限")
-    service = PublishService(db)
-    sched = None
-    if body.scheduled_time:
-        try:
-            sched = datetime.fromisoformat(
-                body.scheduled_time.replace("Z", "+00:00"))
-        except (ValueError, TypeError, Exception) as e:
-            logger = logging.getLogger(__name__)
-            logger.warning("定时时间解析失败: %s", e)
-            return error_response(400, "定时时间格式无效，请使用 ISO 8601 格式")
+
+    from app.services.publish_service import PublishService
+
+    scheduled_time = _parse_iso_datetime(body.scheduled_time)
+    if scheduled_time is False:
+        return error_response(400, "scheduled_time 格式无效（需 ISO 8601）")
 
     try:
-        result = service.publish_content(
+        result = PublishService(db).publish_content(
             content_id=body.content_id,
             platform_ids=body.platform_ids,
             account_ids=body.account_ids,
-            publish_type=body.publish_type,
-            scheduled_time=sched,
+            publish_type=body.publish_type or "immediate",
+            scheduled_time=scheduled_time,
         )
-        return success_response(
-            data=result,
-            message=f"成功创建 {result['task_count']} 个发布任务",
-        )
-    except ValueError as e:
-        return error_response(400, str(e))
+    except ValueError as exc:  # 内容不存在 / 平台未登记 → 400（契约 §3.1）
+        return error_response(400, str(exc))
+
+    return success_response(
+        data=result,
+        message=f"已创建 {result.get('task_count', 0)} 条发布任务"
+        + (f"，跳过 {len(result.get('skipped') or [])} 个平台" if result.get("skipped") else ""),
+    )
 
 
 @router.post("/publish/batch")
@@ -365,15 +422,22 @@ def batch_publish(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """批量发布"""
-    service = PublishService(db)
-    results = service.batch_publish(
-        [t.model_dump() for t in body.tasks]
-    )
+    """批量发布（模块5 M1 阶段二：回退为真实调用，不再返 501）。
+
+    内部循环调 `publish_content`；返回逐条结果与合计 task_count。
+    """
+    from app.services.publish_service import PublishService
+
+    payload = [t.model_dump() for t in body.tasks]
+    try:
+        results = PublishService(db).batch_publish(payload)
+    except ValueError as exc:
+        return error_response(400, str(exc))
+
     total = sum(r.get("task_count", 0) for r in results)
     return success_response(
-        data={"results": results, "total_tasks": total},
-        message=f"批量发布完成，共 {total} 个任务",
+        data={"results": results, "task_count": total},
+        message=f"批量发布已创建 {total} 条任务",
     )
 
 
@@ -383,29 +447,30 @@ async def schedule_publish(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """定时发布"""
-    service = PublishService(db)
-    try:
-        sched = datetime.fromisoformat(
-            body.scheduled_time.replace("Z", "+00:00"))
-    except (ValueError, TypeError, Exception) as e:
-        logger = logging.getLogger(__name__)
-        logger.warning("定时时间解析失败: %s", e)
-        return error_response(400, "定时时间格式无效，请使用 ISO 8601 格式")
+    """定时发布（模块5 M1 阶段二：回退为真实调用，不再返 501）。
+
+    建 `publish_type=scheduled` 的 pending 任务，到期由执行机真发（契约 §3.3）。
+    """
+    from app.services.publish_service import PublishService
+
+    scheduled_time = _parse_iso_datetime(body.scheduled_time)
+    if scheduled_time is None or scheduled_time is False:
+        return error_response(400, "scheduled_time 必填且需为 ISO 8601 格式")
 
     try:
-        result = await service.schedule_publish(
+        result = await PublishService(db).schedule_publish(
             content_id=body.content_id,
             platform_ids=body.platform_ids,
             account_ids=body.account_ids,
-            scheduled_time=sched,
+            scheduled_time=scheduled_time,
         )
-        return success_response(
-            data=result,
-            message=f"定时发布已设置，共 {result['task_count']} 个任务",
-        )
-    except ValueError as e:
-        return error_response(400, str(e))
+    except ValueError as exc:
+        return error_response(400, str(exc))
+
+    return success_response(
+        data=result,
+        message=f"已创建 {result.get('task_count', 0)} 条定时任务",
+    )
 
 
 # ==================== 发布任务管理 ====================
@@ -422,22 +487,26 @@ def list_publish_tasks(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """发布任务列表"""
-    service = PublishService(db)
-    items, total = service.get_publish_tasks(
-        status=status,
-        platform_id=platform_id,
-        account_id=account_id,
-        content_id=content_id,
-        page=page,
-        page_size=page_size,
-    )
-    return success_response(data={
-        "items": items,
-        "total": total,
-        "page": page,
-        "page_size": page_size,
-    })
+    """发布任务列表（模块5 M1 阶段二：回退为真实调用，不再返 501）。
+
+    返回 (items, total)；items 字段与 unified-publish 的 _serialize_task 对齐
+    并补 publish_jobs 新列（content_asset_id / idempotency_key / external_id / error_code）。
+    """
+    from app.services.publish_service import PublishService
+
+    try:
+        items, total = PublishService(db).get_publish_tasks(
+            status=status,
+            platform_id=platform_id,
+            account_id=account_id,
+            content_id=content_id,
+            page=page,
+            page_size=page_size,
+        )
+    except ValueError as exc:
+        return error_response(400, str(exc))
+
+    return success_response(data={"items": items, "total": total, "page": page, "page_size": page_size})
 
 
 @router.post("/publish/tasks/{task_id}/retry")
@@ -446,18 +515,34 @@ def retry_publish_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """重试发布任务"""
+    """重试发布任务（模块5 M1 阶段二：回退为真实调用，不再返 501）。
+
+    契约 §3.5：端点**先**把任务置 `pending` 且 `retry_count += 1` 并 commit，
+    随后仅"触发"执行机（`_execute_publish_tasks` 不新造执行器）。
+    旧实现之所以改 501 是因方法不存在会导致「置 pending 却永不执行」；
+    现方法已实装，该卡死风险消除。
+    """
     task = db.query(PublishTask).filter_by(id=task_id).first()
     if not task:
         return error_response(404, "发布任务不存在")
 
+    from app.services.publish_service import PublishService
+
     task.status = "pending"
     task.retry_count = (task.retry_count or 0) + 1
+    task.error_message = None
     db.commit()
-    # 触发重新执行
-    service = PublishService(db)
-    service._execute_publish_tasks([task_id])
-    return success_response(message="已重新执行")
+
+    try:
+        PublishService(db)._execute_publish_tasks([task_id])
+    except ValueError as exc:
+        return error_response(400, str(exc))
+
+    db.refresh(task)
+    return success_response(
+        data={"task_id": task_id, "status": task.status, "retry_count": task.retry_count},
+        message="已重新入列并触发执行机",
+    )
 
 
 @router.delete("/publish/tasks/{task_id}")
@@ -525,20 +610,15 @@ def list_publish_logs(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """发布日志"""
-    service = PublishService(db)
-    items, total = service.get_publish_logs(
-        task_id=task_id,
-        level=level,
-        page=page,
-        page_size=page_size,
+    """发布日志（模块5 M6 实装：publish_logs 真查询，按租户作用域过滤）。"""
+    tenant_ids = _user_tenant_ids(db, current_user)
+    if not tenant_ids:
+        return success_response(data={"total": 0, "items": []})
+    result = PublishService(db).get_publish_logs(
+        tenant_ids=tenant_ids, task_id=task_id, level=level,
+        page=page, page_size=page_size,
     )
-    return success_response(data={
-        "items": items,
-        "total": total,
-        "page": page,
-        "page_size": page_size,
-    })
+    return success_response(data=result)
 
 
 # ==================== 会话保持（运维） ====================
@@ -549,10 +629,14 @@ def keepalive_check(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """触发会话保持检查（运维操作）"""
-    service = PublishService(db)
-    result = service.keepalive_checker()
-    return success_response(data=result, message="会话保持检查完成")
+    """触发会话保持检查（运维操作）。
+
+    ⚠ 保持诚实 501（M6 契约 §1）：会话保活依赖平台侧会话，当前无凭据无能力，不伪造。
+    """
+    return _not_implemented(
+        "platform_keepalive_unsupported",
+        "本端点已停用：会话保活依赖平台侧会话（M6 契约登记）",
+    )
 
 
 @router.get("/stats")
@@ -560,7 +644,12 @@ def publish_stats(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """发布统计"""
-    service = PublishService(db)
-    stats = service.get_publish_stats()
-    return success_response(data=stats)
+    """发布统计（模块5 M6 实装：任务状态聚合 + 账号数 + admitted_platform_count 真值）。"""
+    tenant_ids = _user_tenant_ids(db, current_user)
+    if not tenant_ids:
+        return success_response(data={
+            "tasks_by_status": {}, "accounts_total": 0,
+            "accounts_with_credential": 0, "admitted_platform_count": 0,
+        })
+    result = PublishService(db).get_publish_stats(tenant_ids=tenant_ids)
+    return success_response(data=result)

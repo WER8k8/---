@@ -78,14 +78,20 @@ def invoke(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> InvokeResponse:
-    """跑一次 dsh 外层 agent turn。需登录。prompt 为空会被拒。"""
+    """跑一次 dsh 外层 agent turn。需登录。prompt 为空会被拒。
+
+    修正设计稿 模块15：调用走沙箱治理入口 governed_run_turn——
+    生产未配 sandbox 时 fail-closed（503），开发 in_process 直跑并审计。
+    """
     if not req.prompt or not req.prompt.strip():
         raise HTTPException(status_code=400, detail="prompt_required")
-    from app.services.deepseek_harness.client import run_turn
+    from app.services.harness_sandbox_service import SandboxViolation, governed_run_turn
 
     try:
-        result = run_turn(
-            req.prompt.strip(),
+        result = governed_run_turn(
+            db,
+            tenant_id=str(current_user.id),
+            prompt=req.prompt.strip(),
             session_id=req.session_id,
             profile=req.profile,
             provider=req.provider,
@@ -93,6 +99,8 @@ def invoke(
             reasoning_effort=req.reasoning_effort,
             max_tokens=req.max_tokens,
         )
+    except SandboxViolation as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.code)
     except Exception as exc:  # noqa: BLE001
         logger.exception("deepseek-harness invoke 失败")
         raise HTTPException(status_code=502, detail=f"deepseek_harness_error: {exc}")

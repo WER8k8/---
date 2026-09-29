@@ -146,7 +146,31 @@ def calculate_boq_quote(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """报价格：基于外贸建材 22 参数（原材料、容重、芯材、海运打托配载、目的港汇率）精准核价。"""
+    """报价格：基于外贸建材 22 参数（原材料、容重、芯材、海运打托配载、目的港汇率）精准核价。
+
+    模块2 最小诚实化：本端点是**自带一套建材硬编码、不调用 BOQCalculator** 的旁路核价，
+    仅支持建材参数包（building_materials）。若当前租户生效行业包非建材（如 machinery），
+    则**诚实拒绝**（不静默用建材硬编码出价），并指向通用核价端点 /api/v1/quotes/calculate-boq。
+    生效 code == building_materials（或解析回落默认）时，行为与历史完全一致（零漂移）。
+    """
+    from app.services.industry_profile_service import (
+        _DEFAULT_PROFILE_CODE,
+        resolve_profile_for_tenant,
+    )
+    from app.services.tenant_scenario_service import resolve_tenant_id_for_user
+
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
+    effective_profile = resolve_profile_for_tenant(db, tenant_id)
+    effective_code = effective_profile.code if effective_profile is not None else _DEFAULT_PROFILE_CODE
+    if effective_code != _DEFAULT_PROFILE_CODE:
+        return error_response(
+            422,
+            "industry_profile_unsupported_by_legacy_quote_path: "
+            f"本端点仅支持建材参数包（{_DEFAULT_PROFILE_CODE}），"
+            f"当前租户生效行业包为 {effective_code}；"
+            "请改用 /api/v1/quotes/calculate-boq",
+        )
+
     qty = max(1.0, req.quantity_sqm)
 
     # 1. 材料与工厂出厂成本 (Ex-Works)

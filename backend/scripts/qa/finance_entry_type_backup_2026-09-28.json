@@ -1,0 +1,63 @@
+{
+  "captured_at": "2026-09-28T06:05:45.325087+00:00",
+  "count": 5,
+  "reverse_sql": [
+    "UPDATE finance_ledger_entries SET entry_type='income' WHERE id='e37cca51-9cfa-4fa6-b911-c1aecf3f9f16';",
+    "UPDATE finance_ledger_entries SET entry_type='income' WHERE id='8d402dc0-550a-4a33-a99e-2c0d7642c1ec';",
+    "UPDATE finance_ledger_entries SET entry_type='income' WHERE id='cacda667-c2a7-4116-8071-8036f8841ab6';",
+    "UPDATE finance_ledger_entries SET entry_type='expense' WHERE id='2a0ebef0-0c3b-4f50-9b36-157be04ba2a8';",
+    "UPDATE finance_ledger_entries SET entry_type='expense' WHERE id='76020528-08cc-4f0b-bab8-09cb1b7e5907';"
+  ],
+  "rows": [
+    {
+      "id": "e37cca51-9cfa-4fa6-b911-c1aecf3f9f16",
+      "entry_type": "income",
+      "category": "saas_subscription",
+      "amount_cents": 480000,
+      "tenant_id": "4ffe5f3d-3811-4c8e-a344-bb89da03c987",
+      "reference_id": "FIN-20db1a90",
+      "note": "YouDing Annual Pro Subscription",
+      "recorded_at": "2026-09-23T18:13:41.986779+08:00"
+    },
+    {
+      "id": "8d402dc0-550a-4a33-a99e-2c0d7642c1ec",
+      "entry_type": "income",
+      "category": "ai_token_pack",
+      "amount_cents": 50000,
+      "tenant_id": "4ffe5f3d-3811-4c8e-a344-bb89da03c987",
+      "reference_id": "FIN-771e69df",
+      "note": "Prepaid 50M AI Tokens Pack",
+      "recorded_at": "2026-09-23T18:13:41.986779+08:00"
+    },
+    {
+      "id": "cacda667-c2a7-4116-8071-8036f8841ab6",
+      "entry_type": "income",
+      "category": "ip_slot_rental",
+      "amount_cents": 24000,
+      "tenant_id": "4ffe5f3d-3811-4c8e-a344-bb89da03c987",
+      "reference_id": "FIN-d6c3368d",
+      "note": "Dedicated Static Residential IP Slot 30-Day",
+      "recorded_at": "2026-09-23T18:13:41.986779+08:00"
+    },
+    {
+      "id": "2a0ebef0-0c3b-4f50-9b36-157be04ba2a8",
+      "entry_type": "expense",
+      "category": "llm_api_cogs",
+      "amount_cents": 4500,
+      "tenant_id": "4ffe5f3d-3811-4c8e-a344-bb89da03c987",
+      "reference_id": "FIN-1ff7397c",
+      "note": "DeepSeek & Claude Upstream Billing",
+      "recorded_at": "2026-09-23T18:13:41.986779+08:00"
+    },
+    {
+      "id": "76020528-08cc-4f0b-bab8-09cb1b7e5907",
+      "entry_type": "expense",
+      "category": "proxy_traffic_cogs",
+      "amount_cents": 2800,
+      "tenant_id": "4ffe5f3d-3811-4c8e-a344-bb89da03c987",
+      "reference_id": "FIN-76c46976",
+      "note": "Oxylabs Residential Proxy Bandwidth",
+      "recorded_at": "2026-09-23T18:13:41.986779+08:00"
+    }
+  ]
+}

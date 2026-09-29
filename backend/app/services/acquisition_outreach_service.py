@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -127,6 +128,102 @@ def create_sequence(
     }
 
 
+# ── 序列停机条件（模块7 · T7-b，docs/模块7-TradeAI序列停机条件收口契约-2026-09-28.md）──
+# 判据：① suppressed（suppression 服务，全局合规闸）② manual/replied/unsubscribed/bounced
+# （metadata.sequence_stopped）③ 同序列硬退 ④ 软退 ×2（可联性降级）。
+# 红线：manual stop 后禁止任何路径自动重启（confirm/enqueue/send 三处均拦）。
+
+
+def stop_sequence(
+    db: Session,
+    sequence_id: str,
+    *,
+    reason: str,
+    stopped_by: str | None = None,
+    source: str = "manual",
+) -> dict[str, Any]:
+    """停机写入：标记序列全部步骤 + 取消非终态步骤（幂等，不覆盖首个 stop 记录）。"""
+    rows = (
+        db.query(EmailOutreach)
+        .filter(EmailOutreach.sequence_id == sequence_id)
+        .all()
+    )
+    if not rows:
+        return {
+            "sequence_id": sequence_id, "exists": False,
+            "cancelled_steps": 0, "marked_steps": 0, "reason": reason,
+        }
+    now_iso = _now().isoformat()
+    cancelled = 0
+    marked = 0
+    for row in rows:
+        meta = dict(row.outreach_metadata or {})
+        if "sequence_stopped" in meta:
+            continue
+        meta["sequence_stopped"] = {
+            "reason": reason,
+            "stopped_by": stopped_by,
+            "source": source,
+            "at": now_iso,
+        }
+        row.outreach_metadata = meta
+        marked += 1
+        status = row.status.value if hasattr(row.status, "value") else str(row.status)
+        if status in ("draft", "queued"):
+            row.transition(EmailStatus.CANCELLED)
+            cancelled += 1
+        db.add(row)
+    db.commit()
+    return {
+        "sequence_id": sequence_id,
+        "exists": True,
+        "cancelled_steps": cancelled,
+        "marked_steps": marked,
+        "reason": reason,
+    }
+
+
+def _sequence_stopped_reason(db: Session, row: EmailOutreach) -> str | None:
+    """序列停止判定（契约 §2 判定序）。命中返回停机码；未命中返回 None。"""
+    # ① 全局 suppression（tenant+email 粒度，复用既有服务，勿建第二套）
+    try:
+        from app.services.acquisition.suppression_list import suppression_store
+
+        verdict = suppression_store.check_outreach(
+            email=row.to_email,
+            tenant_id=str(row.tenant_id) if row.tenant_id else "demo",
+            channel="email",
+            mode="send",
+        )
+        if not verdict.get("allowed", True):
+            return "suppressed"
+    except Exception as exc:  # noqa: BLE001 —— suppression 基础设施故障按 fail-closed 处理？
+        # 不 fail-closed：基础设施故障不得静默吞掉全部发送能力；降级放行并留痕（P2 登记）
+        logger.warning("suppression check failed（降级放行）id=%s: %s", getattr(row, "id", ""), exc)
+
+    meta = dict(row.outreach_metadata or {})
+    # ② 序列级停止标记（manual / replied_positive / unsubscribed / bounced_*）
+    stopped = meta.get("sequence_stopped")
+    if isinstance(stopped, dict) and stopped.get("reason"):
+        return str(stopped.get("reason"))
+    if row.sequence_id:
+        # ③ 同序列存在硬退 → 停
+        hard = (
+            db.query(EmailOutreach.id)
+            .filter(
+                EmailOutreach.sequence_id == row.sequence_id,
+                EmailOutreach.bounce_type == "hard",
+            )
+            .first()
+        )
+        if hard is not None:
+            return "bounced_hard"
+    # ④ 软退 ×2 → 可联性降级停
+    if int(meta.get("soft_bounce_count") or 0) >= 2:
+        return "bounced_soft"
+    return None
+
+
 def list_sequences(db: Session, *, tenant_id: str | None, limit: int = 50) -> dict[str, Any]:
     """list_sequences。
 
@@ -185,6 +282,26 @@ def get_sequence(db: Session, *, sequence_id: str, tenant_id: str | None) -> dic
     }
 
 
+def _email_capability_status() -> dict[str, Any]:
+    """邮件序列能力状态。优先取能力注册表；该模块缺失时按 SMTP 配置诚实判定。
+
+    （2026-09-28 实测：acquisition_capability_registry 模块在仓内不存在，
+    既有 confirm_and_enqueue 一调即 ImportError——本防御分支修复该既有死路径。）
+    """
+    try:
+        from app.services.acquisition_capability_registry import _email_sequence_status
+
+        return _email_sequence_status()
+    except Exception:  # noqa: BLE001 —— 模块缺失走本地判定
+        smtp_host = (getattr(settings, "SMTP_HOST", None) or "").strip()
+        env = (os.getenv("ENVIRONMENT") or "development").strip().lower()
+        if smtp_host:
+            return {"status": "ready", "source": "smtp_env"}
+        if env == "production":
+            return {"status": "not_configured", "source": "fallback"}
+        return {"status": "mock", "source": "fallback"}
+
+
 def confirm_and_enqueue(
     db: Session,
     *,
@@ -194,8 +311,7 @@ def confirm_and_enqueue(
     enqueue: bool = True,
 ) -> dict[str, Any]:
     """将到期/首步 draft → queued，并经 JobGateway 入队。"""
-    from app.services.acquisition_capability_registry import _email_sequence_status
-    email_cap = _email_sequence_status()
+    email_cap = _email_capability_status()
     if email_cap.get("status") != "ready":
         # 生产未配 → 禁止入队；开发可入队，worker 会 stamp_mock 且不标 delivered
         import os
@@ -218,11 +334,28 @@ def confirm_and_enqueue(
     if not rows:
         raise ValueError("no_draft_steps")
 
+    # 红线（模块7 T7-b）：stopped 序列不可经确认通道重启
+    keep: list[EmailOutreach] = []
+    stop_codes: list[str] = []
+    for r in rows:
+        code = _sequence_stopped_reason(db, r)
+        if code:
+            stop_codes.append(code)
+            if r.status == EmailStatus.DRAFT:
+                r.transition(EmailStatus.CANCELLED)
+                db.add(r)
+        else:
+            keep.append(r)
+    if stop_codes:
+        db.commit()
+    if not keep:
+        raise ValueError("sequence_stopped")
+
     now = _now()
     # 仅立即入队已到点的步骤；其余保持 draft 等 Beat 扫描
-    due = [r for r in rows if r.scheduled_at is None or r.scheduled_at <= now]
+    due = [r for r in keep if r.scheduled_at is None or r.scheduled_at <= now]
     if not due:
-        due = [rows[0]]  # 至少排队第一步（允许提前确认）
+        due = [keep[0]]  # 至少排队第一步（允许提前确认）
 
     job_ids: list[str] = []
     for row in due:
@@ -248,9 +381,10 @@ def confirm_and_enqueue(
         "sequence_id": sequence_id,
         "queued_step_ids": [str(r.id) for r in due],
         "job_ids": job_ids,
-        "remaining_draft": max(0, len(rows) - len(due)),
+        "remaining_draft": max(0, len(keep) - len(due)),
         "email_capability": email_cap.get("status"),
         "mode": "live" if email_cap.get("status") == "ready" else "mock",
+        "stopped_skipped": len(stop_codes),
     }
 
 
@@ -307,6 +441,24 @@ def send_outreach_step(db: Session, *, outreach_id: str) -> dict[str, Any]:
     if status == "cancelled":
         _record_outreach_touch(db, row, ok=False, detail={"error_code": "OUTREACH_CANCELLED", "stage": "cancelled"})
         return {"ok": False, "error_code": "OUTREACH_CANCELLED", "outreach_id": outreach_id}
+
+    # 序列停机条件（模块7 T7-b）：命中即取消本步，零发送
+    stop_code = _sequence_stopped_reason(db, row)
+    if stop_code:
+        if status in ("draft", "queued"):
+            row.transition(EmailStatus.CANCELLED)
+            db.add(row)
+            db.commit()
+        _record_outreach_touch(
+            db, row, ok=False,
+            detail={"error_code": "SEQUENCE_STOPPED", "stop_reason": stop_code, "stage": "stop_check"},
+        )
+        return {
+            "ok": False,
+            "error_code": "SEQUENCE_STOPPED",
+            "stop_reason": stop_code,
+            "outreach_id": outreach_id,
+        }
 
     row.status = EmailStatus.SENDING
     db.add(row)
@@ -410,11 +562,24 @@ def enqueue_due_steps(db: Session, *, limit: int = 50) -> dict[str, Any]:
     from app.tasks.ops_scheduler_tasks import run_platform_job
     gw = JobGateway(db)
     job_ids: list[str] = []
+    skipped_stopped: list[str] = []
+    stopped_sequences: set[str] = set()
     for row in rows:
+        # 序列停机条件（模块7 T7-b）：命中即整序列标记停机（防每轮重扫），步子不入队
+        stop_code = _sequence_stopped_reason(db, row)
+        if stop_code:
+            skipped_stopped.append(str(row.id))
+            if row.sequence_id and row.sequence_id not in stopped_sequences:
+                stopped_sequences.add(row.sequence_id)
+                stop_sequence(
+                    db, row.sequence_id, reason=stop_code, source="enqueue_scan"
+                )
+            continue
         row.status = EmailStatus.QUEUED
         db.add(row)
     db.commit()
-    for row in rows:
+    enqueueable = [r for r in rows if str(r.id) not in skipped_stopped]
+    for row in enqueueable:
         jid = gw.submit(
             JOB_TYPE_EMAIL_STEP,
             tenant_id=str(row.tenant_id) if row.tenant_id else None,
@@ -423,4 +588,9 @@ def enqueue_due_steps(db: Session, *, limit: int = 50) -> dict[str, Any]:
             celery_task=run_platform_job,
         )
         job_ids.append(jid)
-    return {"queued": len(rows), "job_ids": job_ids}
+    return {
+        "queued": len(enqueueable),
+        "job_ids": job_ids,
+        "skipped_stopped": skipped_stopped,
+        "stopped_sequences": sorted(stopped_sequences),
+    }

@@ -386,15 +386,61 @@ def record_bounce(
     bounce_type: BounceType,
     reason: str,
 ) -> bool:
-    """记录邮件退回。"""
+    """记录邮件退回（含停机联动：硬退→suppression+停序；软退×2→可联性降级停序）。
+
+    模块7 T7-b 契约：bounce 是「可联性降级」判据。
+    """
     email = db.query(EmailOutreach).filter(EmailOutreach.id == email_id).first()
     if not email:
         return False
 
     email.bounce_type = bounce_type
     email.bounce_reason = reason
-    email.transition(EmailStatus.BOUNCED)
+    if email.status != EmailStatus.BOUNCED:
+        # 重复退信（同封邮件第二次 soft bounce 等）不重复跃迁，避免 bounced→bounced 非法流转
+        email.transition(EmailStatus.BOUNCED)
     db.commit()
+
+    # ── 停机联动（模块7 T7-b）：失败留痕不阻断主流程 ──
+    try:
+        from app.services.acquisition.suppression_list import suppression_store
+
+        if bounce_type == BounceType.HARD:
+            suppression_store.add(
+                email=email.to_email,
+                tenant_id=str(email.tenant_id) if email.tenant_id else "demo",
+                reason="bounce_hard",
+                source="record_bounce",
+            )
+        if email.sequence_id:
+            from app.services.acquisition_outreach_service import stop_sequence
+
+            if bounce_type == BounceType.HARD:
+                stop_sequence(
+                    db, email.sequence_id, reason="bounced_hard", source="record_bounce"
+                )
+            else:
+                meta = dict(email.outreach_metadata or {})
+                soft_count = int(meta.get("soft_bounce_count") or 0) + 1
+                meta["soft_bounce_count"] = soft_count
+                if soft_count >= 2:
+                    meta["contactability"] = "downgraded"
+                    email.outreach_metadata = meta
+                    db.add(email)
+                    db.commit()
+                    stop_sequence(
+                        db, email.sequence_id, reason="bounced_soft", source="record_bounce"
+                    )
+                else:
+                    email.outreach_metadata = meta
+                    db.add(email)
+                    db.commit()
+    except Exception:  # noqa: BLE001 —— 联动失败留证据，不改变退回记录本身
+        import logging
+
+        logging.getLogger(__name__).exception(
+            "record_bounce stop-condition linkage failed email_id=%s", email_id
+        )
     return True
 
 

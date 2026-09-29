@@ -23,6 +23,7 @@ celery_app = Celery(
         "app.tasks.deerflow_tasks",
         "app.tasks.orchestration_tasks",
         "app.tasks.ops_scheduler_tasks",
+        "app.tasks.outbox_tasks",
         "app.services.n8n.trigger",
     ],
 )
@@ -143,6 +144,13 @@ celery_app.conf.update(
         "experience-evolve-daily": {
             "task": "app.tasks.ops_scheduler_tasks.experience_evolve_daily",
             "schedule": crontab(hour=2, minute=0),
+            "options": {"max_instances": 1},
+        },
+        # 修正设计稿 模块17 收尾：Outbox 周期派发（每 2 分钟；SKIP LOCKED 多实例安全）
+        "outbox-dispatch-periodic": {
+            "task": "app.tasks.outbox_tasks.dispatch_outbox_events",
+            "schedule": 120.0,
+            "kwargs": {"batch_size": 100},
             "options": {"max_instances": 1},
         },
     },
