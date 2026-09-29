@@ -4,6 +4,7 @@
 
 import csv
 import hashlib
+import logging
 import re
 import time
 from collections import defaultdict
@@ -13,6 +14,8 @@ from typing import Optional, Any
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, field_validator, model_validator
+
+logger = logging.getLogger(__name__)
 
 # ── 询盘防刷限流器（5条/10分钟/IP） ──
 _inquiry_rate_store: dict[str, list[float]] = defaultdict(list)
@@ -708,7 +711,13 @@ def update_inquiry_status(
                 note=f"询盘标记为流失/无效 ({new_status})",
             )
     except Exception:
-        pass
+        # 复核 P3-1：经验环写入失败不得静默吞掉（原为 except: pass，无任何痕迹）
+        logger.warning(
+            "经验环记录失败（不影响询盘状态推进）inquiry_id=%s status=%s",
+            getattr(inquiry, "id", None),
+            new_status,
+            exc_info=True,
+        )
 
     return success_response(data=_safe_inquiry_dict(inquiry), message="状态已更新")
 
