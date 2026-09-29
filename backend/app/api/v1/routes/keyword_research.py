@@ -16,6 +16,7 @@ from app.services.keyword_research_service import (
     SUPPORTED_TARGET_LOCALES,
     analyze_keyword_heat,
     check_zero_volume_guard,
+    generate_full_site_seo_blueprint,
     get_google_hot_leaderboard,
     run_wangcai_deerflow_deep_research,
     save_keywords_to_tenant_library,
@@ -214,4 +215,49 @@ def wangcai_autopilot_research(
         return success_response(data=res, message="旺财 × DeerFlow 2.0 全自动深度研究与多国母语置换已就绪")
     except Exception as e:
         return error_response(500, f"自动化深度研究执行失败: {str(e)}")
+
+
+class FullSiteBlueprintRequest(BaseModel):
+    product_name: str = Field(..., min_length=1, max_length=200, description="产品名称或行业")
+    product_parameters: Optional[str] = Field(default="", description="产品核心参数/规格/型号（如密度120kg/m3、厚度50mm、耐火A1级）")
+    substitute_products: Optional[str] = Field(default="", description="被替代的传统老产品/老材料（如聚苯板EPS、传统陶粒、加气砖）")
+    industry_standards: Optional[str] = Field(default="", description="适用的国际技术标准/认证（如ASTM C578、EN 13501、ISO 9001、CE）")
+    customer_faqs: Optional[str] = Field(default="", description="真实外商常见技术疑问/痛点（如极寒耐受、MOQ、包装装箱量）")
+    competitor_urls: Optional[List[str]] = Field(default=[], description="可选：对标同行网站域名/链接")
+    target_country: str = Field(default="US", description="首选目标出口国代码: US|DE|ES|SA|RU|FR|VN")
+    target_market: str = Field(default="global", description="目标市场: global|me_sea|us_eu|cn")
+
+
+@router.post("/full-site-blueprint")
+def create_full_site_blueprint(
+    req: FullSiteBlueprintRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """【全站 SEO 关键词布局与避坑拓扑蓝图】
+    解决导航纯靠直觉、忽略型号规格长尾、页面过深权重衰减、盲目抄同行等 4 大死穴；
+    无同行时启动五维正向推演（应用方案、替代品截流、国际标准、真实FAQ、多国母语），
+    生成完整全站 10~14 个页面的扁平化拓扑与落地执行总表。
+    """
+    tenant_id = resolve_tenant_id_for_user(db, current_user)
+    target_tenant_id = tenant_id or "platform"
+
+    try:
+        res = generate_full_site_seo_blueprint(
+            db,
+            target_tenant_id,
+            req.product_name,
+            product_parameters=req.product_parameters or "",
+            substitute_products=req.substitute_products or "",
+            industry_standards=req.industry_standards or "",
+            customer_faqs=req.customer_faqs or "",
+            competitor_urls=req.competitor_urls or [],
+            target_country=req.target_country,
+            target_market=req.target_market,
+        )
+        return success_response(data=res, message="全站 SEO 关键词布局与避坑拓扑蓝图生成成功")
+    except ValueError as e:
+        return error_response(400, str(e))
+    except Exception as e:
+        return error_response(500, f"蓝图生成失败: {str(e)}")
 

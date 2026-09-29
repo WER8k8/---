@@ -259,4 +259,172 @@ export async function runWangcaiAutopilotResearch(params: {
   return (res?.data || res) as WangcaiAutopilotResult;
 }
 
+export interface PitfallDiagnostic {
+  pitfall_id: string;
+  name: string;
+  risk_level: string;
+  hazard_description: string;
+  aeos_mitigation: string;
+  status: string;
+}
+
+export interface NavigationItem {
+  item_id: string;
+  nav_title: string;
+  page_type: string;
+  slug: string;
+  target_intent: string;
+  google_search_volume: number;
+  /** 后端 A1 新增：搜索量取数来源（semrush_live_api | google_benchmark_db） */
+  data_source?: string;
+  /** 后端 A1 新增：取数状态（matched_exact | estimated | ...），estimated 表示算法估算而非真实词 */
+  raw_status?: string;
+  /** 后端 A1 新增：该导航项实际绑定的核验关键词 */
+  target_keyword?: string;
+  conversion_rationale: string;
+  sub_items?: Array<{ title: string; slug: string; intent: string }>;
+}
+
+export interface PillarSolution {
+  title: string;
+  application_scene: string;
+  target_keyword: string;
+  target_buyer: string;
+  url: string;
+  value_hook: string;
+}
+
+export interface PillarVsSubstitute {
+  vs_title: string;
+  old_material: string;
+  our_product: string;
+  target_search_term: string;
+  pain_point_resolved: string;
+  url: string;
+  comparison_points: string[];
+}
+
+export interface PillarStandard {
+  standard_code: string;
+  standard_name: string;
+  target_region: string;
+  target_keyword: string;
+  url: string;
+  compliance_highlights: string[];
+}
+
+export interface PillarFaq {
+  question: string;
+  answer: string;
+  search_trigger: string;
+  schema_type: string;
+}
+
+export interface FivePillars {
+  pillar_1_solutions: PillarSolution[];
+  pillar_2_vs_substitutes: PillarVsSubstitute[];
+  pillar_3_standards: PillarStandard[];
+  pillar_4_faqs: PillarFaq[];
+  pillar_5_multilingual_matrix: MultilingualMatrixItem[];
+}
+
+export interface PageTopologyItem {
+  page_id: string;
+  level: string;
+  page_type: string;
+  flat_url: string;
+  page_title: string;
+  primary_keyword: string;
+  secondary_keywords: string[];
+  long_tail_models: string[];
+  buyer_intent: string;
+  schema_type: string;
+  internal_link_in: string;
+  internal_link_out: string;
+  priority: string;
+}
+
+export interface ExecutionPhase {
+  day_range: string;
+  focus: string;
+  daily_page_output: string;
+  action_items: string[];
+  schema_deliverables: string[];
+}
+
+export interface ExecutionRoadmap {
+  strategy: string;
+  daily_cadence: string;
+  target_total_pages: number;
+  daily_phases: ExecutionPhase[];
+  performance_milestones: {
+    google_crawl_window: string;
+    initial_indexing_window: string;
+    monthly_inquiry_projection: string;
+    bounce_rate_reduction: string;
+  };
+}
+
+export interface CompetitorDeconstruction {
+  mode: string;
+  analyzed_sites: string[];
+  extracted_core_categories: string[];
+  extracted_selling_points: string[];
+  extracted_buyer_demands: string[];
+  differentiation_edge: string;
+}
+
+export interface FullSiteBlueprintResult {
+  status: string;
+  engine: string;
+  product_name: string;
+  english_base_keyword: string;
+  localized_keyword: string;
+  target_country: string;
+  target_country_name: string;
+  target_market: string;
+  /** 行业判定（A5）：insulation | sealing | tiles_stone | doors_windows */
+  industry_key?: string;
+  /** 模板作用域（A5）：rock_wool（建材岩棉保留模板）| generic（非建材已降级） */
+  template_scope?: string;
+  mode: 'TEMPLATE_FALLBACK_NO_CRAWL' | 'BLUE_OCEAN_FIVE_PILLARS';
+  mode_description: string;
+  /** 诚实声明（A4）：传 competitor_urls 时提示未真实抓取 */
+  honesty_note?: string;
+  pitfall_diagnostics: PitfallDiagnostic[];
+  navigation_architecture: NavigationItem[];
+  five_pillars: FivePillars;
+  competitor_deconstruction?: CompetitorDeconstruction;
+  page_topology_matrix: PageTopologyItem[];
+  execution_roadmap: ExecutionRoadmap;
+  /** 超出蓝图职责的部署/运维建议（A6），由部署侧执行 */
+  advisory_actions?: AdvisoryAction[];
+}
+
+export interface AdvisoryAction {
+  action: string;
+  owner_hint: string;
+  note: string;
+}
+
+export interface FullSiteBlueprintParams {
+  product_name: string;
+  product_parameters?: string;
+  substitute_products?: string;
+  industry_standards?: string;
+  customer_faqs?: string;
+  competitor_urls?: string[];
+  target_country?: string;
+  target_market?: string;
+}
+
+/** 生成全站 SEO 关键词布局与避坑拓扑蓝图（含 4 大避坑诊断、五维推演与扁平拓扑排期） */
+export async function getFullSiteBlueprint(
+  params: FullSiteBlueprintParams
+): Promise<FullSiteBlueprintResult> {
+  const res = await apiPost<any>('/keyword-research/full-site-blueprint', params);
+  return (res?.data || res) as FullSiteBlueprintResult;
+}
+
+
 
