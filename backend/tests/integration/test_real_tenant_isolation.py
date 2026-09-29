@@ -186,11 +186,13 @@ class TestInquiryStatusWhitelist:
     _FRONTEND_USED = {"pending", "new", "quoted", "accepted", "processing"}
 
     def _load_whitelist(self):
-        src = (_BK / "app/api/v1/routes/inquiries.py").read_text(
+        # 词表唯一真源已迁至 services/inquiry_funnel_state_machine.py::VALID_STATUSES
+        # （2026-09-27 收口；routes/inquiries.py 改为 import，不再保留副本）。
+        src = (_BK / "app/services/inquiry_funnel_state_machine.py").read_text(
             encoding="utf-8", errors="ignore")
         m = re.search(
-            r"_VALID_INQUIRY_STATUSES\s*=\s*frozenset\(\{(.*?)\}\)", src, re.S)
-        assert m, "未找到 _VALID_INQUIRY_STATUSES 定义"
+            r"VALID_STATUSES\s*=\s*frozenset\(\{(.*?)\}\)", src, re.S)
+        assert m, "未找到 VALID_STATUSES 定义"
         return {s.strip().strip('"\'') for s in m.group(1).split(",") if s.strip()}
 
     def test_frontend_status_values_all_allowed(self):

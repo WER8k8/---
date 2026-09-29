@@ -34,6 +34,7 @@ from starlette.responses import JSONResponse
 
 from app.core.config import settings
 from app.core.middleware_fastlane import is_probe_or_static
+from app.core.audit_logger import AuditLogger
 
 logger = logging.getLogger("tenant_middleware")
 
@@ -187,6 +188,59 @@ class TenantMiddleware(BaseHTTPMiddleware):
         except Exception:
             return None
 
+    # ---- 修正设计稿 模块1.4：显式租户覆盖冲突守卫（PUBLIC/ADMIN 双上下文不可篡改）----
+    _OVERRIDE_QUERY_KEYS = ("__tenant", "tenant")
+    _OVERRIDE_HEADER_KEYS = ("x-tenant-domain",)
+
+    def _resolve_explicit_override(self, request: Request) -> Optional[dict]:
+        """解析请求里的显式租户覆盖（__tenant/tenant 查询参数、x-tenant-domain 头）。
+
+        仅当调用方显式携带时才返回租户信息；解析复用 _lookup_tenant（同缓存）。
+        无覆盖参数返回 None —— 不产生任何 DB 开销。
+        """
+        value = ""
+        for key in self._OVERRIDE_QUERY_KEYS:
+            v = (request.query_params.get(key) or "").strip().lower()
+            if v:
+                value = v
+                break
+        if not value:
+            for key in self._OVERRIDE_HEADER_KEYS:
+                v = (request.headers.get(key) or "").strip().lower()
+                if v:
+                    value = v
+                    break
+        if not value:
+            return None
+        return self._lookup_tenant(value, value)
+
+    def _reject_tenant_conflict(self, request: Request, host_tenant: Optional[dict], override: dict) -> JSONResponse:
+        """租户上下文冲突：审计留痕后 403 拒绝（宁可错杀，不可跨租户放行）。"""
+        AuditLogger.log_event(
+            event_type="tenant_context_conflict",
+            actor=str(getattr(request.state, "tenant_subdomain", "") or request.headers.get("host", "")),
+            action="reject_request",
+            details={
+                "path": request.url.path,
+                "host_tenant_id": (host_tenant or {}).get("id"),
+                "override_tenant_id": override.get("id"),
+                "override_domain": override.get("domain"),
+            },
+        )
+        logger.warning(
+            "TenantMiddleware: 租户上下文冲突已拒绝 path=%s host_tenant=%s override=%s",
+            request.url.path,
+            (host_tenant or {}).get("id"),
+            override.get("id"),
+        )
+        return JSONResponse(
+            status_code=403,
+            content={
+                "code": 403,
+                "message": "租户上下文冲突：请求的域名租户与显式租户指向不一致，已拒绝",
+            },
+        )
+
     async def dispatch(self, request: Request, call_next):
         """dispatch。
 
@@ -212,6 +266,12 @@ class TenantMiddleware(BaseHTTPMiddleware):
             user_tenant = self._resolve_user_tenant_from_request(request)
             request.state.tenant = user_tenant
             request.state.tenant_subdomain = None
+            # 修正设计稿 模块1.4：ADMIN_TENANT_CONTEXT（登录态归属）与显式覆盖冲突 → 拒绝。
+            # 仅在已解析出登录态租户时校验；匿名/平台级请求不注入覆盖结果（保持既有行为）。
+            if user_tenant and user_tenant.get("id"):
+                override_tenant = self._resolve_explicit_override(request)
+                if override_tenant and override_tenant.get("id") != user_tenant.get("id"):
+                    return self._reject_tenant_conflict(request, user_tenant, override_tenant)
             if user_tenant and user_tenant.get("id"):
                 try:
                     from app.core.opentelemetry_config import set_tenant_span_attributes
@@ -225,6 +285,13 @@ class TenantMiddleware(BaseHTTPMiddleware):
 
         # ---------- 2. 查询租户 ----------
         tenant_info = self._lookup_tenant(subdomain, host)
+        # ---------- 2.5 PUBLIC_TENANT_CONTEXT 冲突守卫（修正设计稿 模块1.4）----------
+        # Host 已解析出租户时，任何显式覆盖（__tenant/tenant/x-tenant-domain）只能指向
+        # 同一租户；指向其他租户或无法解析 = 跨租户注入，直接 403 + 审计。
+        if tenant_info:
+            override_tenant = self._resolve_explicit_override(request)
+            if override_tenant and override_tenant.get("id") != tenant_info.get("id"):
+                return self._reject_tenant_conflict(request, tenant_info, override_tenant)
         # ---------- 3. 将租户信息注入 request.state ----------
         request.state.tenant = tenant_info
         request.state.tenant_subdomain = subdomain
@@ -310,7 +377,14 @@ class TenantMiddleware(BaseHTTPMiddleware):
                         .first()
                     )
 
-                # ---- 3. custom_domains JSON 数组匹配（仅在前两步失败时） ----
+                # ---- 2.5 tenant_domains 状态真源（修正设计稿 模块1 / G2 红线）----
+                # 仅 verified + active 的自定义域名解析到租户；未验证域名不进入公开解析。
+                from app.services.tenant_domain_service import resolve_verified_tenant
+                td_tenant = resolve_verified_tenant(db, full_host)
+                if td_tenant is not None:
+                    tenant = td_tenant
+
+                # ---- 3. custom_domains JSON 数组匹配（legacy 只读兼容，deprecated） ----
                 if not tenant:
                     tenant = self._lookup_by_custom_domain(db, full_host)
 

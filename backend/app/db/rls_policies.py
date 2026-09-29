@@ -173,6 +173,58 @@ WALLET_USER_POLICIES: dict[str, list[RLSPolicy]] = {
 }
 
 
+# ── 修正设计稿 模块16：RLS 第一批扩展（2026-09-27 批次5）────────────────
+# 设计稿第一批范围：tenant、membership、lead、inquiry、content、platform_account、
+# billing、wallet、orders、shipment、documents。以下为真库逐表核查后确认
+# **物理表存在且含 tenant_id 列**的扩展集（2026-09-27 实测）：
+#   inquiries / orders / platform_accounts / finance_ledger_entries / meter_events /
+#   billing_reservations / outbox_events / dead_letter_events / tenant_domains /
+#   user_tenants / tenant_subscriptions
+# 排除（无 tenant_id 列，不适用租户模板）：order_items / inbox_events / content_pages /
+#   shipping_timeline —— 归 global scope 或待补列后再议。
+# 平台级表明确 global scope：alembic_version / system_config / platforms（目录）等
+#   不进入本清单（设计稿 16.2：不能为了 RLS 把所有表都视为 tenant-owned）。
+RLS_FIRST_BATCH_TABLES: tuple[str, ...] = (
+    "inquiries",
+    "orders",
+    "platform_accounts",
+    "finance_ledger_entries",
+    "meter_events",
+    "billing_reservations",
+    "outbox_events",
+    "dead_letter_events",
+    "tenant_domains",
+    "user_tenants",
+    "tenant_subscriptions",
+)
+
+
+def generate_first_batch_policies() -> dict[str, list[RLSPolicy]]:
+    """程序化生成第一批扩展表的标准租户隔离策略（app_user 隔离 + service_role 旁路）。"""
+    policies: dict[str, list[RLSPolicy]] = {}
+    for table in RLS_FIRST_BATCH_TABLES:
+        policies[table] = [
+            RLSPolicy(
+                table=table,
+                policy_name=f"{table}_tenant_isolation",
+                role="app_user",
+                description=f"{table} 行级隔离：app_user 仅本租户（修正设计稿 模块16 第一批）",
+            ),
+            RLSPolicy(
+                table=table,
+                policy_name=f"{table}_service_bypass",
+                role="service_role",
+                using_expr="(true)",
+                with_check_expr="(true)",
+                description=f"{table}：service_role 后台任务/迁移/统计旁路（须审计）",
+            ),
+        ]
+    return policies
+
+
+FIRST_BATCH_POLICIES: dict[str, list[RLSPolicy]] = generate_first_batch_policies()
+
+
 def generate_enable_rls_sql(table: str) -> list[str]:
     """生成启用 RLS + 强制 RLS 的 SQL。
 
@@ -259,7 +311,7 @@ def generate_all_pilot_sql(
     def _keep(table: str) -> bool:
         return existing is None or table in set(existing)
 
-    # 逻辑组 → 物理表 + 该表策略（DEFAULT + WALLET_USER_POLICIES 补全）
+    # 逻辑组 → 物理表 + 该表策略（DEFAULT + WALLET_USER_POLICIES + FIRST_BATCH 补全）
     planned: list[tuple[str, list[RLSPolicy]]] = []
     for logical in RLS_PILOT_TABLES:
         for table in physical_table_names(logical):
@@ -267,7 +319,16 @@ def generate_all_pilot_sql(
                 continue
             policies = [p for p in DEFAULT_POLICIES.get(logical, []) if p.table == table]
             policies += list(WALLET_USER_POLICIES.get(table, []))
+            policies += list(FIRST_BATCH_POLICIES.get(table, []))
             planned.append((table, policies))
+
+    # 第一批扩展表（修正设计稿 模块16）：直接按物理表出标准策略
+    for table in RLS_FIRST_BATCH_TABLES:
+        if not _keep(table):
+            continue
+        if any(p[0] == table for p in planned):
+            continue
+        planned.append((table, list(FIRST_BATCH_POLICIES.get(table, []))))
 
     # 策略去重：同名同角色同操作的策略只出一次（DEFAULT 与 WALLET_USER_POLICIES 可能同表）
     seen: set[tuple[str, str, str, str]] = set()
@@ -319,6 +380,9 @@ def verify_rls_applied(table: str, inspector_dialect: str = "postgresql") -> dic
 __all__ = [
     "RLS_PILOT_TABLES",
     "RLS_PILOT_TABLE_MAPPING",
+    "RLS_FIRST_BATCH_TABLES",
+    "FIRST_BATCH_POLICIES",
+    "generate_first_batch_policies",
     "RLSPolicy",
     "DEFAULT_POLICIES",
     "WALLET_USER_POLICIES",
