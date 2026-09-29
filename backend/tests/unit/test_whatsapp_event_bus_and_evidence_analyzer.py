@@ -175,6 +175,12 @@ class TestWhatsAppInboundEventBus:
             "app.services.whatsapp_event_bus.event_bus.emit",
             lambda e: events.append(e),
         )
+        # publish_ack 优先走 emit_sync（无事件循环时会回退），两处都要拦截
+        monkeypatch.setattr(
+            "app.services.whatsapp_event_bus.event_bus.emit_sync",
+            lambda e: events.append(e),
+            raising=False,
+        )
         result = bus.publish_ack(phone="1555", msg_id="m1", ack_type="failed")
         assert result["event_type"] == EventTypes.WHATSAPP_MESSAGE_FAILED
         assert events and events[0].event_type == EventTypes.WHATSAPP_MESSAGE_FAILED

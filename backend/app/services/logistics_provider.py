@@ -142,15 +142,8 @@ def fetch_tracking(tracking_number: str, carrier: str | None = None) -> dict[str
         raise ValueError("运单号不能为空")
 
     if provider == "kuaidi100":
-        try:
-            return fetch_via_kuaidi100(number, carrier)
-        except Exception:
-            # 生产可改为直接抛出；开发/演示降级沙箱
-            if os.getenv("LOGISTICS_FALLBACK_DEMO", "true").lower() in ("1", "true", "yes"):
-                payload = _demo_payload(number, carrier)
-                payload["provider"] = "demo_fallback"
-                payload["warning"] = "kuaidi100_unavailable"
-                return payload
-            raise
+        # 修正设计稿 模块8.5 / Gate G8：真实 Provider 失败必须如实抛错，
+        # 禁止降级返回伪造轨迹（原 fallback 会编造 in_transit 假状态写回订单）。
+        return fetch_via_kuaidi100(number, carrier)
 
     return _demo_payload(number, carrier)

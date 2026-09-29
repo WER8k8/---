@@ -5,13 +5,18 @@
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime, timezone
 from typing import Any, Optional
 
 from sqlalchemy.orm import Session
 
 from app.models.inquiry import Inquiry
+from app.services.billing.reservation_service import IllegalTransition
 from app.services.foreign_trade.inquiry_meddpicc_service import load_meddpicc, save_meddpicc
+from app.services.inquiry_status_service import advance_inquiry_status
+
+logger = logging.getLogger(__name__)
 
 PIPELINE_STAGES: tuple[dict[str, str], ...] = (
     {"id": "mql", "label": "MQL", "label_zh": "营销合格线索"},
@@ -37,6 +42,28 @@ def _utcnow_iso() -> str:
     :return: 返回 str 结果
     """
     return datetime.now(timezone.utc).isoformat()
+
+
+def _advance_status_best_effort(
+    db: Session,
+    inquiry: Inquiry,
+    new_status: str,
+    *,
+    source: str,
+    actor_id: Optional[str] = None,
+) -> None:
+    """经唯一汇聚点推进询盘状态；非法跃迁记结构化日志但不阻断管道阶段落库。
+
+    管道阶段（meddpicc meta）已先落库，状态推进属附带语义；此处绝不直写
+    inquiries.status（模块10 收敛），但也不因状态守卫拒绝而抛错打挂主链。
+    """
+    try:
+        advance_inquiry_status(db, inquiry, new_status, source=source, actor_id=actor_id)
+    except (ValueError, IllegalTransition) as exc:
+        logger.warning(
+            "管道推进询盘状态被拒（不阻断阶段落库）：inquiry_id=%s target=%s reason=%s",
+            getattr(inquiry, "id", None), new_status, exc,
+        )
 
 
 def get_pipeline_stage(inquiry: Inquiry) -> str:
@@ -112,13 +139,12 @@ def set_pipeline_stage(
     meta["pipeline_history"] = history[-30:]
     save_meddpicc(db, inquiry, meta)
     if normalized in {"quote", "pi", "deposit"} and inquiry.status == "pending":
-        inquiry.status = "quoted"
-        db.commit()
-        db.refresh(inquiry)
+        # 模块10 收敛：经唯一汇聚点推进（禁止直写；含白名单/漏斗守卫/计费时点）
+        _advance_status_best_effort(
+            db, inquiry, "quoted", source="pipeline_quote", actor_id=user_id)
     if normalized == "deposit":
-        inquiry.status = "closed"
-        db.commit()
-        db.refresh(inquiry)
+        _advance_status_best_effort(
+            db, inquiry, "closed", source="pipeline_deposit", actor_id=user_id)
 
     return pipeline_stage_meta(inquiry)
 

@@ -81,6 +81,9 @@ class LogisticsShipment(Base):
     status = Column(
         String(30), nullable=False, default="pending", index=True
     )  # pending/booked/in_transit/delivered/exception
+    # 修正设计稿 模块8.2：履约子状态 shipment_stage（booking/shipped/in_transit/delivered/exception），
+    # 由 tracking_events 的规范状态推导；无真实事件时保持 NULL（展示 tracking_unavailable）。
+    shipment_stage = Column(String(30), nullable=True)
     shipped_at = Column(DateTime(timezone=True))
     eta_at = Column(DateTime(timezone=True))
     delivered_at = Column(DateTime(timezone=True))

@@ -2,7 +2,8 @@
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
 """P0-9 — 销售漏斗权威状态机（单一事实来源 + 阶段退出标准）。
 
-背景：此前 update_inquiry_status 仅做「状态白名单」校验（_VALID_INQUIRY_STATUSES），
+背景：此前 update_inquiry_status 仅做「状态白名单」校验（原 _VALID_INQUIRY_STATUSES，
+已迁入本模块作为 VALID_STATUSES 唯一真源），
 允许任意状态互跳（如 closed 直接跳回 quoted、archived 跳回 in_progress），
 漏斗数据失真、无法用于转化分析。
 
@@ -31,8 +32,27 @@ FUNNEL_STAGES: list[str] = [
     "archived",     # 无效/放弃归档
 ]
 
-# 别名归一
-_ALIASES: dict[str, str] = {"pending": "new"}
+# 别名归一（9 条：pending/contacted + 赢输/合格语义；归一后必须是 FUNNEL_STAGES 之一）
+_ALIASES: dict[str, str] = {
+    "pending": "new",            # 历史默认值 → 规范化阶段
+    "contacted": "in_progress",  # Feishu「标记为已联系」= 销售首次有效接手
+    "qualified": "in_progress",  # 销售合格线索 = 首次有效接手
+    "converted": "closed",       # 转化成功 = 关闭
+    "won": "closed",             # 成交 = 关闭
+    "deal": "closed",            # 成单 = 关闭
+    "lost": "archived",          # 丢单 = 归档
+    "rejected": "archived",      # 被拒 = 归档
+    "spam": "archived",          # 垃圾询盘 = 归档
+}
+
+# 询盘状态白名单（唯一真源，与 FUNNEL_STAGES 同处同版本）。
+# 原落点 routes/inquiries.py::_VALID_INQUIRY_STATUSES 已迁到此处，全仓仅此一份，
+# 禁止在别处再留副本。语义：允许被写入 inquiries.status 的原始取值集合
+# （含别名；归一后必须是 FUNNEL_STAGES 之一）。
+VALID_STATUSES = frozenset({
+    "pending", "in_progress", "resolved", "closed", "archived",
+    "new", "quoted", "accepted", "processing",
+})
 
 # 阶段退出标准（离开该阶段、进入下一阶段前应满足的前置）
 STAGE_EXIT_CRITERIA: dict[str, str] = {

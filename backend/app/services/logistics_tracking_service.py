@@ -62,6 +62,15 @@ def sync_order_from_tracking(
     if not order.tracking_number:
         raise ValueError("订单未填写运单号")
     payload = fetch_tracking_payload(order.tracking_number, carrier)
+    # Gate G8 红线：demo/沙箱轨迹不得写回业务状态（防止伪造 in_transit 落库）。
+    if payload.get("demo"):
+        return {
+            "order_id": str(order.id),
+            "order_number": order.order_number,
+            "persisted": False,
+            "reason": "demo_tracking_not_persisted",
+            "tracking": payload,
+        }
     ship_status = payload.get("status") or "in_transit"
     order.status = _STATUS_MAP.get(ship_status, order.status or "shipped")
     eta = _parse_estimated_delivery(payload.get("estimated_delivery"))

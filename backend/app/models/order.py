@@ -68,6 +68,16 @@ class Order(Base):
     net_weight = Column(Numeric(12, 3), nullable=True)         # 净重(kg)
     volume = Column(Numeric(12, 3), nullable=True)             # 体积(m³)
     shipping_marks = Column(Text, nullable=True)               # 唛头
+    # ── 修正设计稿 模块8.2：履约内部子状态（CRM 七阶段不扩，付款/生产/单证用子状态）──
+    payment_stage = Column(
+        String(30), nullable=True, index=True
+    )  # pending/deposit_pending/deposit_verified/final_payment_pending/paid
+    fulfillment_stage = Column(
+        String(30), nullable=True, index=True
+    )  # not_started/production_pending/in_production/qc_pending/qc_passed/ready_to_ship
+    document_stage = Column(
+        String(30), nullable=True, index=True
+    )  # pi_pending/pi_issued/ci_pending/ci_issued/pl_pending/pl_issued
     container_no = Column(String(50), nullable=True)           # 集装箱号
     bl_number = Column(String(50), nullable=True)              # 海运提单号
     inquiry_id = Column(String(36), nullable=True, index=True)  # 来源询盘（黄金单闭环）

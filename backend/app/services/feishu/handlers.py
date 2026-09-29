@@ -10,8 +10,10 @@ from app.core.database import SessionLocal
 from app.models.feishu import FeishuBinding, FeishuMessageLog
 from app.models.inquiry import Inquiry
 from app.models.product import Product
+from app.services.billing.reservation_service import IllegalTransition
 from app.services.feishu.cards import FeishuCardBuilder
 from app.services.feishu.client import FeishuClient
+from app.services.inquiry_status_service import advance_inquiry_status
 
 logger = logging.getLogger(__name__)
 
@@ -335,7 +337,8 @@ class FeishuMessageHandler:
             pending = db.query(Inquiry).filter(
                 Inquiry.is_active, Inquiry.status == "pending").count()
             contacted = db.query(Inquiry).filter(
-                Inquiry.is_active, Inquiry.status == "contacted").count()
+                Inquiry.is_active,
+                Inquiry.status.in_(["in_progress", "contacted"])).count()
             closed = db.query(Inquiry).filter(
                 Inquiry.is_active, Inquiry.status == "closed").count()
 
@@ -365,8 +368,21 @@ class FeishuMessageHandler:
             inquiry = db.query(Inquiry).filter(
                 Inquiry.id == inquiry_id).first()
             if inquiry:
-                inquiry.status = "contacted"
-                db.commit()
+                # 模块10 收敛：经唯一汇聚点推进；"contacted" 由别名归一到 in_progress
+                # （设计依据：Feishu 原文「标记为已联系」= 销售首次有效接手）
+                try:
+                    advance_inquiry_status(
+                        db, inquiry, "contacted",
+                        source="feishu_mark_contacted",
+                        actor_id=open_id,
+                    )
+                except (ValueError, IllegalTransition) as exc:
+                    logger.warning(
+                        "Feishu 标记已联系被拒：inquiry_id=%s reason=%s", inquiry_id, exc,
+                    )
+                    await self.client.send_text_message(
+                        open_id, f"⚠️ 无法将询盘标记为已联系：{exc}")
+                    return
                 await self.client.send_text_message(open_id, f'✅ 已将 {inquiry.name} 的询盘标记为"已联系"。')
             else:
                 await self.client.send_text_message(open_id, "未找到该询盘记录。")
