@@ -5,6 +5,9 @@
   · TradeAI = 优丁拓客（检索 / 触达 / 分类），不是第二套系统
   · 调度主权 Hermes；记录与真相写优丁 PG；**进程内直驱**
   · 无 Key / 无 SMTP → 诚实 failed，不伪造 sent
+  · 双路径：技能批适配器（services/adapters/tradeai，可用时优先，诚实定级）
+    优先，不可用时回落原生单发 —— 2026-09-27 实测确认技能批为**在用路径**，
+    勿按"死链"删除（此前误判已撤销）。
 """
 from __future__ import annotations
 

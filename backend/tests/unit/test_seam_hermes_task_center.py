@@ -56,7 +56,9 @@ def test_frontend_task_center_and_menu():
     assert "listHermesTasks" in page
     assert "getHermesTaskDetail" in page
     menus = (ADMIN / "constants/proShellMenus.ts").read_text(encoding="utf-8", errors="ignore")
-    assert "Hermes 任务" in menus
+    # 菜单项 name=ClientHermesTasks / path=/client/tasks；面向租户的标题为「我的任务」
+    assert "我的任务" in menus
+    assert "ClientHermesTasks" in menus
     assert "/client/tasks" in menus
     router = (ADMIN / "router/index.ts").read_text(encoding="utf-8", errors="ignore")
     assert "ClientHermesTasks" in router

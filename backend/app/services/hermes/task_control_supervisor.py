@@ -103,6 +103,11 @@ def parse_graph_to_tasks(db: Session, tenant_id: str, graph: TaskGraph) -> List[
             "input_from": node.input_from,
             "sop_ref": node.sop_ref,
             "trace_id": trace_id,
+            # 修正设计稿 模块21.2：跨模块输入溯源字段（随节点落库，执行器可回查上游版本）
+            "source_task_id": getattr(node, "source_task_id", None),
+            "source_entity_type": getattr(node, "source_entity_type", None),
+            "source_entity_id": getattr(node, "source_entity_id", None),
+            "source_version": getattr(node, "source_version", None),
         }
         status = "created" if not node.depends_on else "paused"
         

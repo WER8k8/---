@@ -390,6 +390,120 @@ class VersionControl:
             .first()
         )
 
+    def promote_skill_to_production(
+        self,
+        version_id: str,
+        *,
+        operator_id: Optional[str] = None,
+        changelog: Optional[str] = None,
+    ) -> SkillVersion:
+        """生产晋升门禁（G12 Promotion）：
+        1. 必须处于 canary 或 approved 状态；
+        2. 将旧的同 skill_id 的 production 版本归档为 archived；
+        3. 将目标版本设置为 production，canary_percentage 置为 100.0；
+        4. 记录日志与审计留痕。
+        """
+        entry = (
+            self.db.query(SkillVersion)
+            .filter(SkillVersion.id == version_id)
+            .first()
+        )
+        if not entry:
+            raise ValueError(f"Skill 版本不存在: {version_id}")
+        if entry.status not in ("canary", "approved"):
+            raise ValueError(
+                f"只有处于 canary 或 approved 状态的版本才能晋升生产，当前状态: {entry.status}"
+            )
+
+        # 归档现有生产版本
+        current_prod = (
+            self.db.query(SkillVersion)
+            .filter(
+                SkillVersion.skill_id == entry.skill_id,
+                SkillVersion.status == "production",
+                SkillVersion.id != entry.id,
+            )
+            .all()
+        )
+        for old in current_prod:
+            old.status = "archived"
+            logger.info("Old production version archived: skill=%s v=%s", old.skill_id, old.version)
+
+        entry.status = "production"
+        entry.canary_percentage = 100.0
+        if changelog:
+            entry.changelog = f"{entry.changelog or ''}\n[Promoted to Production by {operator_id or 'system'}]: {changelog}".strip()
+        self.db.commit()
+        self.db.refresh(entry)
+        logger.info("Skill promoted to production: skill=%s version=%s", entry.skill_id, entry.version)
+        return entry
+
+    def rollback_skill(
+        self,
+        skill_id: str,
+        *,
+        target_version_id: Optional[str] = None,
+        operator_id: Optional[str] = None,
+        reason: Optional[str] = None,
+    ) -> SkillVersion:
+        """生产回滚门禁（G12 Rollback）：
+        1. 找到当前 production 版本并将其置为 archived；
+        2. 若未指定 target_version_id，取其 parent_version_id 或最近的 archived 版本；
+        3. 将目标版本恢复为 production。
+        """
+        current_prod = (
+            self.db.query(SkillVersion)
+            .filter(
+                SkillVersion.skill_id == skill_id,
+                SkillVersion.status == "production",
+            )
+            .first()
+        )
+
+        target: Optional[SkillVersion] = None
+        if target_version_id:
+            target = (
+                self.db.query(SkillVersion)
+                .filter(SkillVersion.id == target_version_id, SkillVersion.skill_id == skill_id)
+                .first()
+            )
+            if not target:
+                raise ValueError(f"指定的回滚目标版本不存在: {target_version_id}")
+        elif current_prod and current_prod.parent_version_id:
+            target = (
+                self.db.query(SkillVersion)
+                .filter(SkillVersion.id == current_prod.parent_version_id)
+                .first()
+            )
+
+        if not target:
+            target = (
+                self.db.query(SkillVersion)
+                .filter(
+                    SkillVersion.skill_id == skill_id,
+                    SkillVersion.status == "archived",
+                )
+                .order_by(SkillVersion.updated_at.desc())
+                .first()
+            )
+        if not target:
+            raise ValueError(f"未找到可回滚的目标版本: skill={skill_id}")
+
+        if current_prod:
+            current_prod.status = "archived"
+
+        target.status = "production"
+        target.canary_percentage = 100.0
+        if reason:
+            target.changelog = f"{target.changelog or ''}\n[Rollback from {current_prod.version if current_prod else 'unknown'} by {operator_id or 'system'}]: {reason}".strip()
+        self.db.commit()
+        self.db.refresh(target)
+        logger.warning(
+            "Skill rolled back: skill=%s now_production=%s (was %s)",
+            skill_id, target.version, current_prod.version if current_prod else "none",
+        )
+        return target
+
     # ──────────────────────────────────────────────
     # 版本工具
     # ──────────────────────────────────────────────
@@ -422,3 +536,4 @@ class VersionControl:
         elif a_parts > b_parts:
             return 1
         return 0
+

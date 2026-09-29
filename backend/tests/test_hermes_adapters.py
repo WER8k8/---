@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
-"""Hermes External System Adapters Integration Tests.
+"""Hermes 执行器测试 —— trade_ai_agent / goodjob_crm（native + 技能批双路径）。
 
-测试 Trade AI Agent 和 GoodJob CRM 适配器的集成功能。
-验证适配器能够正确连接外部系统并执行编排任务。
+2026-09-27 重写：旧文件按已废弃的外桥 HTTP 契约（base_url + requests.post +
+deal.create / pi.send_whatsapp）编写，native 化后构造签名失效 —— 5 个用例自
+native 化起即无法运行。现按当前真实契约重写：
+  · trade_ai_agent：技能批适配器（services/adapters/tradeai）优先 + 原生单发兜底
+  · goodjob_crm：原生能力集（trade.docs / document.generate_* / crm.*）
+run() 行为验证 = patch 目标服务 + asyncio.run，不依赖 pytest-asyncio 插件。
 """
+import asyncio
+from unittest.mock import Mock, patch
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from sqlalchemy.orm import Session
 
 from app.services.hermes.executors.trade_ai_agent_executor import TradeAiAgentExecutor
@@ -15,465 +20,171 @@ from app.services.hermes.executors.base import ExecutorContext, ExecutorRegistry
 from app.schemas.hermes_orchestration import TaskNode
 
 
+def _node(capability: str, payload: dict | None = None, executor: str = "trade_ai_agent") -> TaskNode:
+    return TaskNode(
+        id="node_1",
+        executor=executor,
+        capability=capability,
+        input=payload or {},
+        sop_ref="",
+        depends_on=[],
+    )
+
+
+def _context() -> ExecutorContext:
+    return ExecutorContext(db=Mock(spec=Session), tenant_id="test_tenant", plan_id="test_plan")
+
+
 class TestTradeAiAgentExecutor:
-    """Trade AI Agent 适配器测试"""
+    """TradeAI 原生拓客执行器（检索 / 触达 / 分类；无 Key 诚实 failed）"""
 
-    @pytest.fixture
-    def executor(self):
-        """创建适配器实例"""
-        return TradeAiAgentExecutor(base_url="http://test.example.com")
+    def test_executor_name(self):
+        assert TradeAiAgentExecutor().get_executor_name() == "trade_ai_agent"
 
-    @pytest.fixture
-    def mock_context(self):
-        """模拟执行上下文"""
-        db = Mock(spec=Session)
-        return ExecutorContext(
-            db=db,
-            tenant_id="test_tenant",
-            plan_id="test_plan_123"
-        )
+    def test_capability_completeness(self):
+        caps = TradeAiAgentExecutor().get_capabilities()
+        assert set(caps) == {"prospect.scrape", "outreach.whatsapp", "outreach.email", "inbox.classify"}
+        for name, spec in caps.items():
+            assert {"desc", "input", "output", "cost", "needs_approval"} <= set(spec), name
+            assert {"tokens", "seconds"} <= set(spec["cost"]), name
 
-    @pytest.fixture
-    def sample_task_node(self):
-        """示例任务节点"""
-        return TaskNode(
-            id="node_1",
-            capability="prospect.scrape",
-            input={
-                "region": "middle_east",
-                "keywords": ["construction materials", "building supplies"],
-                "intent_criteria": "high_purchase_intent"
-            },
-            sop_ref="",
-            depends_on=[]
-        )
+    def test_approval_flags(self):
+        caps = TradeAiAgentExecutor().get_capabilities()
+        # 外联需人审；检索/分类不需
+        assert caps["outreach.whatsapp"]["needs_approval"] is True
+        assert caps["outreach.email"]["needs_approval"] is True
+        assert caps["prospect.scrape"]["needs_approval"] is False
+        assert caps["inbox.classify"]["needs_approval"] is False
 
-    def test_executor_name(self, executor):
-        """测试执行器名称"""
-        assert executor.get_executor_name() == "trade_ai_agent"
+    def test_unknown_capability_skipped_not_failed(self):
+        result = asyncio.run(TradeAiAgentExecutor().run(_node("unknown.capability"), _context()))
+        assert result.status == "skipped"
 
-    def test_get_capabilities(self, executor):
-        """测试能力声明"""
-        capabilities = executor.get_capabilities()
-        
-        # 验证关键能力存在
-        assert "prospect.scrape" in capabilities
-        assert "outreach.whatsapp" in capabilities
-        assert "outreach.email" in capabilities
-        assert "inbox.classify" in capabilities
-        
-        # 验证能力元数据完整
-        prospect_cap = capabilities["prospect.scrape"]
-        assert "desc" in prospect_cap
-        assert "input" in prospect_cap
-        assert "output" in prospect_cap
-        assert "cost" in prospect_cap
-        assert "needs_approval" in prospect_cap
-
-    @patch('requests.post')
-    async def test_successful_execution(self, mock_post, executor, mock_context, sample_task_node):
-        """测试成功执行场景"""
-        # 模拟成功响应
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "success": True,
-            "data": {
-                "prospects": [
-                    {"id": "prospect_1", "company": "ABC Corp", "country": "UAE"},
-                    {"id": "prospect_2", "company": "XYZ LLC", "country": "KSA"}
-                ],
-                "count": 2,
-                "scrape_metadata": {"timestamp": "2026-09-20T10:00:00Z"}
-            }
-        }
-        mock_post.return_value = mock_response
-
-        # 执行任务
-        result = await executor.run(sample_task_node, mock_context)
-
-        # 验证结果
+    def test_prospect_scrape_passes_through_native_result(self):
+        with patch(
+            "app.services.tradeai.native_acquisition.prospect_scrape",
+            return_value={"success": True, "prospects": [{"id": "p1"}], "hit_count": 1},
+        ) as mock_scrape:
+            result = asyncio.run(
+                TradeAiAgentExecutor().run(
+                    _node("prospect.scrape", {"keyword": "tile", "country": "UAE"}),
+                    _context(),
+                )
+            )
         assert result.status == "succeeded"
-        assert result.output["count"] == 2
-        assert len(result.output["prospects"]) == 2
-        
-        # 验证 API 调用
-        mock_post.assert_called_once()
-        call_args = mock_post.call_args
-        assert "prospect.scrape" in call_args[0][0]  # URL 包含端点
-        assert call_args[1]["json"]["region"] == "middle_east"
-        assert call_args[1]["json"]["tenant_id"] == "test_tenant"
+        assert result.output["hit_count"] == 1
+        assert result.output["executor"] == "trade_ai_agent"
+        mock_scrape.assert_called_once()
 
-    @patch('requests.post')
-    async def test_timeout_handling(self, mock_post, executor, mock_context, sample_task_node):
-        """测试超时处理"""
-        import requests
-        mock_post.side_effect = requests.exceptions.Timeout()
-
-        result = await executor.run(sample_task_node, mock_context)
-
+    def test_whatsapp_unconfigured_is_honest_failed(self):
+        with patch(
+            "app.services.tradeai.native_acquisition.outreach_whatsapp",
+            return_value={"success": False, "error": "whatsapp_not_configured"},
+        ):
+            result = asyncio.run(
+                TradeAiAgentExecutor().run(
+                    _node("outreach.whatsapp", {"whatsapp": "+1000000000", "message": "hi"}),
+                    _context(),
+                )
+            )
         assert result.status == "failed"
-        assert "timeout" in result.error.lower()
+        assert "whatsapp_not_configured" in result.error
 
-    @patch('requests.post')
-    async def test_connection_error_handling(self, mock_post, executor, mock_context, sample_task_node):
-        """测试连接错误处理"""
-        import requests
-        mock_post.side_effect = requests.exceptions.ConnectionError()
-
-        result = await executor.run(sample_task_node, mock_context)
-
-        assert result.status == "failed"
-        assert "connect" in result.error.lower()
-
-    @patch('requests.post')
-    async def test_unknown_capability(self, mock_post, executor, mock_context):
-        """测试未知能力处理"""
-        unknown_node = TaskNode(
-            id="node_1",
-            capability="unknown.capability",
-            input={},
-            sop_ref="",
-            depends_on=[]
-        )
-
-        result = await executor.run(unknown_node, mock_context)
-
-        assert result.status == "failed"
-        assert "Unknown capability" in result.error
-
-    @patch('requests.post')
-    async def test_business_logic_failure(self, mock_post, executor, mock_context, sample_task_node):
-        """测试业务逻辑失败处理"""
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "success": False,
-            "error": "Insufficient credits for scraping operation"
-        }
-        mock_post.return_value = mock_response
-
-        result = await executor.run(sample_task_node, mock_context)
-
-        assert result.status == "failed"
-        assert "Insufficient credits" in result.error
+    def test_inbox_classify_success(self):
+        with patch(
+            "app.services.tradeai.native_acquisition.classify_inbox",
+            return_value={"success": True, "detected_intent": "RFQ"},
+        ):
+            result = asyncio.run(
+                TradeAiAgentExecutor().run(
+                    _node("inbox.classify", {"message": "please quote 100 sqm tiles"}),
+                    _context(),
+                )
+            )
+        assert result.status == "succeeded"
+        assert result.output["detected_intent"] == "RFQ"
 
 
 class TestGoodJobCrmExecutor:
-    """GoodJob CRM 适配器测试"""
+    """GoodJob CRM 原生履约执行器（7 步状态机 / PI / 单证；写优丁 PG）"""
 
-    @pytest.fixture
-    def executor(self):
-        """创建适配器实例"""
-        return GoodJobCrmExecutor(
-            base_url="http://test.goodjob.com",
-            whatsapp_url="http://test.whatsapp.com"
-        )
+    # 原生能力集（目录桥能力 goodjob_crm.<family> 由共享目录派生，不在本测试断言范围）
+    _NATIVE_CAPS = (
+        "trade.docs",
+        "document.generate_pi",
+        "document.generate_trade_docs",
+        "crm.sync_stage",
+        "crm.sync_lead",
+        "crm.update_opportunity",
+    )
 
-    @pytest.fixture
-    def mock_context(self):
-        """模拟执行上下文"""
-        db = Mock(spec=Session)
-        return ExecutorContext(
-            db=db,
-            tenant_id="test_tenant",
-            plan_id="test_plan_456"
-        )
+    def test_executor_name(self):
+        assert GoodJobCrmExecutor().get_executor_name() == "goodjob_crm"
 
-    @pytest.fixture
-    def sample_deal_node(self):
-        """示例商机节点"""
-        return TaskNode(
-            id="node_2",
-            capability="deal.create",
-            input={
-                "customer_id": "customer_123",
-                "inquiry_source": "website",
-                "initial_stage": "inquiry",
-                "description": "Request for LED lighting products"
-            },
-            sop_ref="",
-            depends_on=[]
-        )
+    def test_native_capability_completeness(self):
+        caps = GoodJobCrmExecutor().get_capabilities()
+        for name in self._NATIVE_CAPS:
+            assert name in caps, name
+        for name in self._NATIVE_CAPS:
+            spec = caps[name]
+            assert {"desc", "input", "output", "cost", "needs_approval"} <= set(spec), name
+            assert {"tokens", "seconds"} <= set(spec["cost"]), name
 
-    @pytest.fixture
-    def sample_pi_node(self):
-        """示例 PI 生成节点"""
-        return TaskNode(
-            id="node_3",
-            capability="pi.generate",
-            input={
-                "deal_id": "deal_456",
-                "language": "en",
-                "currency": "USD",
-                "incoterms": "FOB",
-                "items": [
-                    {
-                        "product_id": "prod_001",
-                        "description": "LED Flood Light 200W",
-                        "quantity": 100,
-                        "unit_price": 25.50
-                    }
-                ]
-            },
-            sop_ref="",
-            depends_on=[]
-        )
-
-    def test_executor_name(self, executor):
-        """测试执行器名称"""
-        assert executor.get_executor_name() == "goodjob_crm"
-
-    def test_get_capabilities(self, executor):
-        """测试能力声明"""
-        capabilities = executor.get_capabilities()
-        
-        # 验证关键能力存在
-        assert "deal.create" in capabilities
-        assert "deal.advance" in capabilities
-        assert "pi.generate" in capabilities
-        assert "pi.send_whatsapp" in capabilities
-        assert "trade_docs.generate" in capabilities
-        assert "whatsapp.translate" in capabilities
-        
-        # 验证外贸7步履约状态映射
-        deal_advance_cap = capabilities["deal.advance"]
-        assert "desc" in deal_advance_cap
-        assert deal_advance_cap["needs_approval"] == True  # 状态变更需人工确认
-
-    @patch('requests.post')
-    async def test_successful_deal_creation(self, mock_post, executor, mock_context, sample_deal_node):
-        """测试成功创建商机"""
-        # 模拟成功响应
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "success": True,
-            "data": {
-                "deal_id": "deal_789",
-                "deal_number": "DEAL-2026-0920",
-                "stage": "inquiry",
-                "created_at": "2026-09-20T10:30:00Z"
-            }
-        }
-        mock_post.return_value = mock_response
-
-        # 执行任务
-        result = await executor.run(sample_deal_node, mock_context)
-
-        # 验证结果
-        assert result.status == "succeeded"
-        assert result.output["deal_id"] == "deal_789"
-        assert result.output["stage"] == "inquiry"
-        
-        # 验证 API 调用
-        mock_post.assert_called_once()
-        call_args = mock_post.call_args
-        assert "/api/deals" in call_args[0][0]
-        assert call_args[1]["json"]["customer_id"] == "customer_123"
-
-    @patch('requests.post')
-    async def test_successful_pi_generation(self, mock_post, executor, mock_context, sample_pi_node):
-        """测试成功生成 PI"""
-        # 模拟成功响应
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "success": True,
-            "data": {
-                "pi_id": "pi_2026_0847",
-                "pi_number": "PI-2026-0847",
-                "pdf_url": "https://storage.example.com/pi/PI-2026-0847.pdf",
-                "grand_total": 2550.00,
-                "valid_until": "2026-10-20"
-            }
-        }
-        mock_post.return_value = mock_response
-
-        # 执行任务
-        result = await executor.run(sample_pi_node, mock_context)
-
-        # 验证结果
-        assert result.status == "succeeded"
-        assert result.output["pi_number"] == "PI-2026-0847"
-        assert result.output["grand_total"] == 2550.00
-
-    @patch('requests.post')
-    async def test_path_parameter_resolution(self, mock_post, executor, mock_context):
-        """测试路径参数解析"""
-        deal_advance_node = TaskNode(
-            id="node_4",
-            capability="deal.advance",
-            input={
-                "deal_id": "deal_999",
-                "target_stage": "quoted",
-                "transition_reason": "Customer confirmed price"
-            },
-            sop_ref="",
-            depends_on=[]
-        )
-
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"success": True, "data": {}}
-        mock_post.return_value = mock_response
-
-        await executor.run(deal_advance_node, mock_context)
-
-        # 验证路径参数正确解析
-        call_args = mock_post.call_args
-        assert "/api/deals/deal_999/advance" in call_args[0][0]
-
-    @patch('requests.post')
-    async def test_whatsapp_service_routing(self, mock_post, executor, mock_context):
-        """测试 WhatsApp 服务路由"""
-        whatsapp_node = TaskNode(
-            id="node_5",
-            capability="whatsapp.translate",
-            input={
-                "message_id": "msg_123",
-                "source_language": "ar",
-                "target_language": "zh",
-                "content": "مرحبا"
-            },
-            sop_ref="",
-            depends_on=[]
-        )
-
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"success": True, "data": {}}
-        mock_post.return_value = mock_response
-
-        await executor.run(whatsapp_node, mock_context)
-
-        # 验证调用 WhatsApp Plugin 服务
-        call_args = mock_post.call_args
-        assert "test.whatsapp.com" in call_args[0][0]  # 使用 whatsapp_url
-        assert "/api/whatsapp/translate" in call_args[0][0]
-
-    @patch('requests.post')
-    async def test_missing_path_parameter(self, mock_post, executor, mock_context):
-        """测试缺失路径参数处理"""
-        invalid_node = TaskNode(
-            id="node_6",
-            capability="deal.advance",
-            input={
-                "target_stage": "quoted",
-                # 缺少 deal_id
-            },
-            sop_ref="",
-            depends_on=[]
-        )
-
-        result = await executor.run(invalid_node, mock_context)
-
-        assert result.status == "failed"
-        assert "Missing required path parameter" in result.error
+    def test_document_capabilities_require_approval(self):
+        caps = GoodJobCrmExecutor().get_capabilities()
+        # 单证/财务类需人审；阶段/建档同步不需
+        assert caps["trade.docs"]["needs_approval"] is True
+        assert caps["document.generate_pi"]["needs_approval"] is True
+        assert caps["document.generate_trade_docs"]["needs_approval"] is True
+        assert caps["crm.sync_stage"]["needs_approval"] is False
+        assert caps["crm.sync_lead"]["needs_approval"] is False
 
 
 class TestExecutorRegistryIntegration:
     """执行器注册表集成测试"""
 
-    def test_trade_ai_agent_registration(self):
-        """测试 Trade AI Agent 执行器注册"""
+    def test_native_registration(self):
         assert ExecutorRegistry.has("trade_ai_agent")
-        executor = ExecutorRegistry.get("trade_ai_agent")
-        assert isinstance(executor, TradeAiAgentExecutor)
-
-    def test_goodjob_crm_registration(self):
-        """测试 GoodJob CRM 执行器注册"""
+        assert isinstance(ExecutorRegistry.get("trade_ai_agent"), TradeAiAgentExecutor)
         assert ExecutorRegistry.has("goodjob_crm")
-        executor = ExecutorRegistry.get("goodjob_crm")
-        assert isinstance(executor, GoodJobCrmExecutor)
+        assert isinstance(ExecutorRegistry.get("goodjob_crm"), GoodJobCrmExecutor)
 
     def test_capabilities_aggregation(self):
-        """测试能力聚合"""
         all_caps = ExecutorRegistry.all_capabilities()
-        
-        # 验证 Trade AI Agent 能力
         assert "prospect.scrape" in all_caps
         assert all_caps["prospect.scrape"]["executor"] == "trade_ai_agent"
-        
-        # 验证 GoodJob CRM 能力
-        assert "deal.create" in all_caps
-        assert all_caps["deal.create"]["executor"] == "goodjob_crm"
-        assert "pi.generate" in all_caps
-        assert all_caps["pi.generate"]["executor"] == "goodjob_crm"
+        assert "document.generate_pi" in all_caps
+        assert all_caps["document.generate_pi"]["executor"] == "goodjob_crm"
 
     def test_executor_list(self):
-        """测试执行器列表"""
         executors = ExecutorRegistry.list_executors()
-        
         assert "trade_ai_agent" in executors
         assert "goodjob_crm" in executors
-        assert "accio" in executors  # 现有执行器
-        assert "deerflow" in executors  # 现有执行器
+        assert "accio" in executors
+        assert "deerflow" in executors
+
+    def test_skill_batch_adapter_available(self):
+        """修正设计稿模块7.3前提订正：services/adapters/tradeai 是在用技能批适配器（非死链），可导入"""
+        from app.services.adapters import tradeai  # noqa: F401
+
+        assert hasattr(tradeai, "is_available")
+        assert hasattr(tradeai, "tenant_orchestrator")
 
 
 class TestCapabilityValidation:
-    """能力验证测试"""
+    """能力契约校验"""
 
-    def test_trade_ai_agent_capability_completeness(self):
-        """验证 Trade AI Agent 能力声明完整性"""
+    def test_trade_ai_agent_capability_contract(self):
         executor = TradeAiAgentExecutor()
-        capabilities = executor.get_capabilities()
-        
-        for cap_name, cap_spec in capabilities.items():
-            # 每个能力必须包含基本字段
+        caps = executor.get_capabilities()
+        for cap_name, cap_spec in caps.items():
             assert "desc" in cap_spec, f"{cap_name} missing desc"
             assert "input" in cap_spec, f"{cap_name} missing input"
             assert "output" in cap_spec, f"{cap_name} missing output"
             assert "cost" in cap_spec, f"{cap_name} missing cost"
             assert "needs_approval" in cap_spec, f"{cap_name} missing needs_approval"
-            
-            # 成本必须包含 tokens 和 seconds
             assert "tokens" in cap_spec["cost"], f"{cap_name} cost missing tokens"
             assert "seconds" in cap_spec["cost"], f"{cap_name} cost missing seconds"
-
-    def test_goodjob_crm_capability_completeness(self):
-        """验证 GoodJob CRM 能力声明完整性"""
-        executor = GoodJobCrmExecutor()
-        capabilities = executor.get_capabilities()
-        
-        for cap_name, cap_spec in capabilities.items():
-            # 每个能力必须包含基本字段
-            assert "desc" in cap_spec, f"{cap_name} missing desc"
-            assert "input" in cap_spec, f"{cap_name} missing input"
-            assert "output" in cap_spec, f"{cap_name} missing output"
-            assert "cost" in cap_spec, f"{cap_name} missing cost"
-            assert "needs_approval" in cap_spec, f"{cap_name} missing needs_approval"
-
-    def test_trade_ai_agent_approval_flags(self):
-        """验证 Trade AI Agent 审批标志合理性"""
-        executor = TradeAiAgentExecutor()
-        capabilities = executor.get_capabilities()
-        
-        # 外联操作应该需要审批
-        assert capabilities["outreach.whatsapp"]["needs_approval"] == True
-        assert capabilities["outreach.email"]["needs_approval"] == True
-        assert capabilities["workflow.trigger"]["needs_approval"] == True
-        
-        # 内部分析操作不需要审批
-        assert capabilities["prospect.scrape"]["needs_approval"] == False
-        assert capabilities["inbox.classify"]["needs_approval"] == False
-
-    def test_goodjob_crm_approval_flags(self):
-        """验证 GoodJob CRM 审批标志合理性"""
-        executor = GoodJobCrmExecutor()
-        capabilities = executor.get_capabilities()
-        
-        # 财务和法务单据需要审批
-        assert capabilities["pi.generate"]["needs_approval"] == True
-        assert capabilities["pi.send_whatsapp"]["needs_approval"] == True
-        assert capabilities["trade_docs.generate"]["needs_approval"] == True
-        
-        # 状态变更需要审批
-        assert capabilities["deal.advance"]["needs_approval"] == True
-        
-        # 基础 CRUD 不需要审批
-        assert capabilities["deal.create"]["needs_approval"] == False
-        assert capabilities["customer.create"]["needs_approval"] == False
 
 
 # 运行测试的便捷函数

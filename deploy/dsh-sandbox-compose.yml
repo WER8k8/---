@@ -1,0 +1,34 @@
+# DSH 沙箱容器拓扑片段（修正设计稿 模块15.3-15.5 / Gate G10）
+# 用法：与主 docker-compose 叠加（docker compose -f docker-compose.yml -f deploy/dsh-sandbox-compose.yml up -d dsh-sandbox）
+# 红线：
+#   - 沙箱容器【不持有】DATABASE_URL / REDIS 密码 / 任何长期凭据；
+#   - 网络仅接入 sandbox-internal（默认 DENY ALL 的 egress 由网络策略/代理承接）；
+#   - 只通过 DSH_TASK_TOKEN（短期令牌，由 harness_sandbox_service.issue_task_token 签发）
+#     调用 Harness Gateway 的 validated service API；
+#   - 临时文件写 tmpfs，容器销毁即清除。
+#
+# 注：镜像请使用团队构建的 dsh-runtime（内含 deepseek-harness-sdk + bundled runtime）。
+# 本片段是拓扑声明，属部署侧资产；生产上线前需按 §15.3 完成镜像与 egress 代理实装。
+
+services:
+  dsh-sandbox:
+    image: ${DSH_SANDBOX_IMAGE:-dsh-runtime:latest}
+    container_name: dsh-sandbox
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      # 只发放短期令牌与 Gateway 地址；绝不注入 DATABASE_URL / REDIS_PASSWORD / SECRET_KEY
+      DSH_GATEWAY_URL: ${DSH_GATEWAY_URL:-http://backend:8001}
+      DSH_TASK_TOKEN: ${DSH_TASK_TOKEN}
+      DSH_EGRESS_ALLOWLIST: ${DSH_EGRESS_ALLOWLIST:-api.deepseek.com,api.openai.com}
+    networks:
+      - sandbox-internal
+    depends_on:
+      - backend
+
+networks:
+  sandbox-internal:
+    internal: true   # 无外网出口；模型端点访问须经 egress 代理（另配 allowlist 代理容器）

@@ -40,6 +40,11 @@ class TaskNode(BaseModel):
     budget: TaskBudget = Field(default_factory=TaskBudget)
     on_fail: str = Field(default="abort", description="'abort', 'skip', or 'degrade:<fallback_node_id>'")
     compensation_action: Optional[str] = Field(None, description="Saga pattern rollback action (e.g., 'site.draft.delete', 'budget.refund')")
+    # 修正设计稿 模块21.2：跨模块输入溯源（拿到数据还能知道来自哪一版）
+    source_task_id: Optional[str] = Field(None, description="产出该输入的上游 task id")
+    source_entity_type: Optional[str] = Field(None, description="上游业务实体类型（如 inquiry/order）")
+    source_entity_id: Optional[str] = Field(None, description="上游业务实体 ID")
+    source_version: Optional[str] = Field(None, description="上游数据版本标识")
 
 class GraphPolicies(BaseModel):
     max_parallel: int = 3
