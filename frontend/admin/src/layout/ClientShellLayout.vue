@@ -139,6 +139,8 @@ function isActiveMenu(path: string) {
       return exact('/client/acquisition-ops');
     case '/client/email-campaigns':
       return exact('/client/email-campaigns');
+    case '/client/keyword-research':
+      return exact('/client/keyword-research');
     case '/client/site-editor':
       return exact('/client/site-editor');
     case '/client/product-images':
@@ -254,6 +256,7 @@ const categorizedNavGroups: CategorizedNavGroup[] = [
       { label: '询盘管理', path: '/client/inquiries', icon: 'CustomerServiceOutlined' },
       { label: '询盘队列', path: '/client/queues/inquiries', icon: 'OrderedListOutlined' },
       { label: '获客作战台', path: '/client/acquisition-ops', icon: 'AimOutlined', highlight: true },
+      { label: '关键词热度', path: '/client/keyword-research', icon: 'RiseOutlined', highlight: true },
       { label: '邮件开发', path: '/client/email-campaigns', icon: 'MailOutlined' },
     ],
   },

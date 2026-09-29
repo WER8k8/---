@@ -188,6 +188,9 @@ const routes: RouteRecordRaw[] = [
       { path: 'content', name: 'ClientContent', component: () => import('@/views/content/index.vue'), meta: { title: '内容管理' } },
       { path: 'content/edit/:id', name: 'ClientContentEdit', component: () => import('@/views/content/edit.vue'), meta: { title: '编辑内容' } },
       { path: 'seo', name: 'ClientSEO', component: () => import('@/views/seo/index.vue'), meta: { title: 'SEO优化' } },
+      { path: 'keyword-research', name: 'ClientKeywordResearch', component: () => import('@/views/client/keyword-research.vue'), meta: { title: '关键词热度查询' } },
+      { path: 'seo-keywords', name: 'ClientSeoKeywords', component: () => import('@/views/client/seo-keywords.vue'), meta: { title: '产业带词库' } },
+      { path: 'growth-tools', name: 'ClientGrowthTools', component: () => import('@/views/seo-matrix/growth-tools.vue'), meta: { title: '增长工具' } },
       { path: 'invoices', name: 'ClientInvoices', component: () => import('@/views/client/invoices.vue'), meta: { title: '开票申请' } },
       {
         path: 'tokens',

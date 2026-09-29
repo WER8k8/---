@@ -26,10 +26,11 @@
 </div>
 </a-card>
 
- <a-space>
- <a-button type="primary" :loading="seeding" @click="seed">导入到 SEO 矩阵</a-button>
- <a-button @click="router.push('/client/export-quote')">去出口报价 →</a-button>
-</a-space>
+  <a-space>
+  <a-button type="primary" :loading="seeding" @click="seed">导入到 SEO 矩阵</a-button>
+  <a-button @click="router.push('/client/keyword-research')">实时热度查询 →</a-button>
+  <a-button @click="router.push('/client/export-quote')">去出口报价 →</a-button>
+ </a-space>
 </YdPage>
 </template>
 
