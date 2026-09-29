@@ -25,6 +25,28 @@ BOQ_PARAMS = [
     "inspection_required", "insurance_required",
 ]
 
+# 材料基价（USD/sqm）——引擎内置 fallback；可由 Industry Profile 的
+# material_base_prices 覆盖（合并语义 {**内置, **profile}，未覆盖键保持本表值）。
+# 真源见本常量；迁移 131_w5_industry_profiles.py 中的播种副本已冻结（仅注释指向此处）。
+_MATERIAL_BASE_PRICES: dict[str, float] = {
+    "marble": 80.0,
+    "granite": 60.0,
+    "ceramic": 25.0,
+    "wood": 45.0,
+    "metal": 120.0,
+}
+
+# 表外（未知 / porcelain / 铝复合板 …）材料的基价回落值。
+# ⚠ 零漂移硬约束：值取自 git HEAD 90ff513b 原版 `_get_base_price` 的哨兵 50.0，
+#   **禁止改动**——HS-1 判据 scripts/qa/verify_boq_zero_drift.py 以 HEAD 黄金值逐字段核对。
+_DEFAULT_BASE_PRICE: float = 50.0
+
+# MOQ 阶梯折扣默认档——引擎内置 fallback；可由 Industry Profile 的 moq_tiers 整体覆盖。
+_DEFAULT_MOQ_TIERS: list[dict[str, float]] = [
+    {"min_quantity_sqm": 1000, "discount_rate": 0.05},
+    {"min_quantity_sqm": 3000, "discount_rate": 0.08},
+]
+
 # 材料密度（kg/m³），用于算重与集装箱装载限制
 _MATERIAL_DENSITY = {
     "marble": 2700,
@@ -68,8 +90,22 @@ _GRADE_MULTIPLIER = {
 class BOQCalculator:
     """建材外贸 22 参数工业级核价引擎。"""
 
-    def calculate(self, params: dict[str, Any]) -> dict[str, Any]:
-        """核价：输入 22 参数，输出详细分项成本、集装箱配载及单证建议。"""
+    def calculate(self, params: dict[str, Any], industry_profile: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+        """核价：输入 22 参数，输出详细分项成本、集装箱配载及单证建议。
+
+        修正设计稿 模块2（Industry Profile）：可选传入行业参数包覆盖
+        （键白名单：material_base_prices / material_densities / surface_fees /
+        edge_fees / grade_multipliers / moq_tiers）。未传 → 建材默认，行为零漂移。
+        """
+        profile = industry_profile or {}
+        material_prices = {**_MATERIAL_BASE_PRICES,
+                           **(profile.get("material_base_prices") or {})}
+        density_table = {**_MATERIAL_DENSITY, **(profile.get("material_densities") or {})}
+        surface_table = {**_SURFACE_FEES, **(profile.get("surface_fees") or {})}
+        edge_table = {**_EDGE_FEES, **(profile.get("edge_fees") or {})}
+        grade_table = {**_GRADE_MULTIPLIER, **(profile.get("grade_multipliers") or {})}
+        moq_tiers = profile.get("moq_tiers") or list(_DEFAULT_MOQ_TIERS)
+
         missing = [p for p in ("material_type", "quantity_sqm", "incoterms") if not params.get(p)]
         if missing:
             return {"error": f"Missing required params: {missing}"}
@@ -78,7 +114,7 @@ class BOQCalculator:
         quantity_sqm = float(params["quantity_sqm"])
         incoterms = str(params["incoterms"]).upper()
 
-        base_unit_price = self._get_base_price(material_type)
+        base_unit_price = self._get_base_price(material_type, prices=material_prices)
 
         # 1. 厚度乘数（基准厚度 20mm）
         thickness = float(params.get("thickness_mm") or 20)
@@ -88,14 +124,14 @@ class BOQCalculator:
 
         # 2. 等级系数
         grade = str(params.get("material_grade") or "standard").lower()
-        grade_factor = _GRADE_MULTIPLIER.get(grade, 1.0)
+        grade_factor = grade_table.get(grade, 1.0)
 
         # 3. 表面工艺与磨边加工费
         surface = str(params.get("surface_finish") or "polished").lower()
-        surface_fee_sqm = _SURFACE_FEES.get(surface, 0.0)
+        surface_fee_sqm = surface_table.get(surface, 0.0)
 
         edge = str(params.get("edge_profile") or "eased").lower()
-        edge_fee_sqm = _EDGE_FEES.get(edge, 0.0)
+        edge_fee_sqm = edge_table.get(edge, 0.0)
 
         # 调整后的材料出厂基础单价 (USD/sqm)
         adjusted_unit_price = round(base_unit_price * thickness_factor * grade_factor + surface_fee_sqm + edge_fee_sqm, 2)
@@ -123,19 +159,19 @@ class BOQCalculator:
             insurance_fee = round(total * 0.02, 2)
             total += insurance_fee
 
-        # 7. 阶梯起订量折扣 (MOQ Tier Discount)
+        # 7. 阶梯起订量折扣 (MOQ Tier Discount；档位可由 Industry Profile moq_tiers 覆盖)
         discount_rate = 0.0
-        if quantity_sqm >= 3000:
-            discount_rate = 0.08
-        elif quantity_sqm >= 1000:
-            discount_rate = 0.05
+        for tier in sorted(moq_tiers, key=lambda t: t.get("min_quantity_sqm", 0), reverse=True):
+            if quantity_sqm >= float(tier.get("min_quantity_sqm") or 0):
+                discount_rate = float(tier.get("discount_rate") or 0)
+                break
         if discount_rate > 0:
             total *= (1.0 - discount_rate)
         elif params.get("small_batch_surcharge") and quantity_sqm < 50:
             total *= 1.05
 
         # 8. 物理重量与集装箱配载估算（以建材 20GP 重柜 27 吨红线）
-        density = _MATERIAL_DENSITY.get(material_type, 2600)
+        density = density_table.get(material_type, 2600)
         volume_cbm = round((quantity_sqm * thickness) / 1000.0, 3)
         net_weight_tons = round((volume_cbm * density) / 1000.0, 2)
         gross_weight_tons = round(net_weight_tons * 1.08, 2)  # 含木箱托盘重
@@ -174,7 +210,12 @@ class BOQCalculator:
             ),
         }
 
-    def _get_base_price(self, material_type: str) -> float:
-        """获取基础单价（USD/sqm），优丁标准价格库。"""
-        prices = {"marble": 80.0, "granite": 60.0, "ceramic": 25.0, "wood": 45.0, "metal": 120.0}
-        return prices.get(material_type, 50.0)
+    def _get_base_price(self, material_type: str, prices: Optional[Dict[str, float]] = None) -> float:
+        """获取基础单价（USD/sqm）；prices 允许 Industry Profile 覆盖（模块2）。
+
+        表外材料回落 `_DEFAULT_BASE_PRICE`（=50.0，HEAD 90ff513b 行为，零漂移硬约束）。
+        """
+        base = dict(_MATERIAL_BASE_PRICES)
+        if prices:
+            base = {**base, **prices}
+        return base.get(material_type, _DEFAULT_BASE_PRICE)

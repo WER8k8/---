@@ -26,6 +26,22 @@ class TestBOQCalculator:
         assert result["base_price"] == 50
         assert result["total"] == 500
 
+    def test_off_table_materials_do_not_zero_out(self, calc):
+        """回归锁（模块2 P0）：表外材料基价不得归零，回落 _DEFAULT_BASE_PRICE = 50.0。
+
+        porcelain / 铝复合板 / unknown 三个输入，`_get_base_price` 均须 == 50.0；
+        porcelain quantity=100 → base_price=50.0 / total=5000.0。
+        （HEAD 90ff513b 行为，HS-1 零漂移硬约束。）
+        """
+        from app.services.boq_calculator import _DEFAULT_BASE_PRICE
+
+        assert _DEFAULT_BASE_PRICE == 50.0
+        for material in ("porcelain", "铝复合板", "unknown"):
+            assert calc._get_base_price(material) == 50.0
+        result = calc.calculate({"material_type": "porcelain", "quantity_sqm": 100, "incoterms": "FOB"})
+        assert result["base_price"] == 50.0
+        assert result["total"] == 5000.0
+
     def test_missing_required_params(self, calc):
         result = calc.calculate({})
         assert "error" in result
