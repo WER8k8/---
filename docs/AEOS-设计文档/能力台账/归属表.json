@@ -1,0 +1,1212 @@
+{
+ "rows": [
+  {
+   "module": "ab_test",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "合规扫描与安全（能力，非后台）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "agent_bff",
+   "endpoints": 1,
+   "label": "backoffice",
+   "group": "接入层",
+   "reason": "BFF 接入层（鉴权/限流，非能力）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "agent_hub",
+   "endpoints": 9,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "Agent 与编排入口",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "agent_portal",
+   "endpoints": 9,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "agent_tree",
+   "endpoints": 8,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ai_config",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ai_generate",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ai_learning",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ai_templates",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ai_usage",
+   "endpoints": 8,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ai_visibility",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "aitoearn_hub",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "多平台分发，业务链第⑥步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "analytics",
+   "endpoints": 11,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "分析与归因",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "annex",
+   "endpoints": 2,
+   "label": "hook",
+   "group": "接入票据",
+   "reason": "附属项目短时票据签发（annex_ticket）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "app_bff",
+   "endpoints": 10,
+   "label": "backoffice",
+   "group": "接入层",
+   "reason": "BFF 接入层（鉴权/限流，非能力）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "attribution",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "分析与归因",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "auth",
+   "endpoints": 12,
+   "label": "backoffice",
+   "group": "接入层",
+   "reason": "BFF 接入层（鉴权/限流，非能力）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "auto_discovery",
+   "endpoints": 0,
+   "label": "deprecated",
+   "group": "框架文件",
+   "reason": "非业务能力（路由自动发现框架）",
+   "ledger_status": "⛔ 孤岛"
+  },
+  {
+   "module": "baidu_webmaster",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "多平台分发，业务链第⑥步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "building_wiki",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "建站能力，业务链第②步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "calculator",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "产品与核价（含 22 参数核价待建）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "campaign",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "case_studies",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "内容生产，业务链第③步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "churn",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "client",
+   "endpoints": 15,
+   "label": "backoffice",
+   "group": "接入层",
+   "reason": "BFF 接入层（鉴权/限流，非能力）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "client_bff",
+   "endpoints": 2,
+   "label": "backoffice",
+   "group": "接入层",
+   "reason": "BFF 接入层（鉴权/限流，非能力）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "code_quality",
+   "endpoints": 13,
+   "label": "hook",
+   "group": "工具",
+   "reason": "文件与工作区（横切工具）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "cognitive",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "认知智能与知识图谱（AI 知识域）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "company",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "开发信/背调/外贸工具，业务链第⑫⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "compliance",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "合规扫描与安全（能力，非后台）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "content",
+   "endpoints": 25,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "内容生产，业务链第③步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "content_master",
+   "endpoints": 8,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "内容生产，业务链第③步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "crm_pipeline",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "询盘→报价→订单→交付，业务链第⑭⑮⑯⑰步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "cross_border",
+   "endpoints": 25,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "询盘→报价→订单→交付，业务链第⑭⑮⑯⑰步",
+   "ledger_status": "🟠 已接(桩)"
+  },
+  {
+   "module": "cross_platform_dashboard",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "多平台分发，业务链第⑥步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "customer_support",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "daily_report",
+   "endpoints": 2,
+   "label": "hook",
+   "group": "任务控制",
+   "reason": "任务控制与运维编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "deepseek_harness",
+   "endpoints": 2,
+   "label": "orchestrated",
+   "group": "编排",
+   "reason": "已有 ROUTERS 条目或 executor 注册",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "developer",
+   "endpoints": 4,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "domain",
+   "endpoints": 9,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "domain_registry",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "edge_cdn",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "egress",
+   "endpoints": 26,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "静态IP/指纹环境池（第三条计费轨）",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "email_queue",
+   "endpoints": 22,
+   "label": "hook",
+   "group": "消息通知",
+   "reason": "通知/邮件/消息（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "email_tracking",
+   "endpoints": 1,
+   "label": "hook",
+   "group": "消息通知",
+   "reason": "通知/邮件/消息（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "feishu",
+   "endpoints": 10,
+   "label": "hook",
+   "group": "消息通知",
+   "reason": "通知/邮件/消息（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "files",
+   "endpoints": 7,
+   "label": "hook",
+   "group": "工具",
+   "reason": "文件与工作区（横切工具）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "finance",
+   "endpoints": 16,
+   "label": "to-orchestrate",
+   "group": "支付计费",
+   "reason": "三轨计费：订阅/Token/IP槽位",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "follow_up",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "foreign_trade",
+   "endpoints": 35,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "开发信/背调/外贸工具，业务链第⑫⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "foreign_trade_skills",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "开发信/背调/外贸工具，业务链第⑫⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "forum",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "养号与社媒互动，业务链第⑦步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "founder_ops",
+   "endpoints": 7,
+   "label": "hook",
+   "group": "任务控制",
+   "reason": "任务控制与运维编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "gdpr",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "合规扫描与安全（能力，非后台）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "gdpr_compliance",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "合规扫描与安全（能力，非后台）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "global_search",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "globalization",
+   "endpoints": 11,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "growth_loop",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "growth_tools",
+   "endpoints": 15,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "health",
+   "endpoints": 3,
+   "label": "hook",
+   "group": "可观测",
+   "reason": "健康检查与性能（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "hermes",
+   "endpoints": 82,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "Agent 与编排入口",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "hub",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "租户站公开内容/视频聚合面（SEO/GEO 收录）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "inquiries",
+   "endpoints": 15,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "询盘捕获，业务链第⑧步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "inquiry_channels",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "询盘捕获，业务链第⑧步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "integrations",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "international",
+   "endpoints": 11,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "invoice_applications",
+   "endpoints": 0,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "询盘→报价→订单→交付，业务链第⑭⑮⑯⑰步",
+   "ledger_status": "🟠 已接(桩)"
+  },
+  {
+   "module": "knowledge",
+   "endpoints": 5,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "knowledge_graph",
+   "endpoints": 11,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "knowledge_ingestion",
+   "endpoints": 9,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "lead_enrichment",
+   "endpoints": 10,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "lead_generation",
+   "endpoints": 13,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "lead_pipeline",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "lead_search",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "lead_tools",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "license",
+   "endpoints": 14,
+   "label": "to-orchestrate",
+   "group": "支付计费",
+   "reason": "三轨计费：订阅/Token/IP槽位",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "linkedin_sales",
+   "endpoints": 12,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "养号与社媒互动，业务链第⑦步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "logistics",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "询盘→报价→订单→交付，业务链第⑭⑮⑯⑰步",
+   "ledger_status": "🟠 已接(桩)"
+  },
+  {
+   "module": "matching",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "开发信/背调/外贸工具，业务链第⑫⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "mcp_sse",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "media_factory",
+   "endpoints": 27,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "媒体生产（图片/视频），业务链第④⑤步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "metrics",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "分析与归因",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "mobile_public",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "对外公开面与租户开通",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "moss_vl_clip_publish",
+   "endpoints": 9,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "媒体生产（图片/视频），业务链第④⑤步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "multimodal_studio",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "媒体生产（图片/视频），业务链第④⑤步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "news",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "内容生产，业务链第③步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "notifications",
+   "endpoints": 7,
+   "label": "hook",
+   "group": "消息通知",
+   "reason": "通知/邮件/消息（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "onboarding",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "对外公开面与租户开通",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "opportunity",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "询盘→报价→订单→交付，业务链第⑭⑮⑯⑰步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ops_jobs",
+   "endpoints": 38,
+   "label": "hook",
+   "group": "任务控制",
+   "reason": "任务控制与运维编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "orchestration",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "Agent 与编排入口",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "outreach_quality",
+   "endpoints": 10,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "p2_enhancement",
+   "endpoints": 28,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "分析与归因",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "paperclip",
+   "endpoints": 36,
+   "label": "hook",
+   "group": "审批门",
+   "reason": "审批门（设计文档要求 approval_gate 复用）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "payment",
+   "endpoints": 30,
+   "label": "to-orchestrate",
+   "group": "支付计费",
+   "reason": "三轨计费：订阅/Token/IP槽位",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "payment_international",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "支付计费",
+   "reason": "三轨计费：订阅/Token/IP槽位",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "performance",
+   "endpoints": 17,
+   "label": "hook",
+   "group": "可观测",
+   "reason": "健康检查与性能（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "platform",
+   "endpoints": 21,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "platform_bff",
+   "endpoints": 1,
+   "label": "backoffice",
+   "group": "接入层",
+   "reason": "BFF 接入层（鉴权/限流，非能力）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "product_commerce",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "产品与核价（含 22 参数核价待建）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "product_commercial",
+   "endpoints": 22,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "产品与核价（含 22 参数核价待建）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "product_faqs",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "产品与核价（含 22 参数核价待建）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "products",
+   "endpoints": 23,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "产品与核价（含 22 参数核价待建）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "project",
+   "endpoints": 4,
+   "label": "hook",
+   "group": "可观测",
+   "reason": "健康检查与性能（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "prospect_research",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "public_forum",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "养号与社媒互动，业务链第⑦步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "public_tenant_geo",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "对外公开面与租户开通",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "public_tenant_media",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "租户站公开内容/视频聚合面（SEO/GEO 收录）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "public_visitor_context",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "询盘捕获，业务链第⑧步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "public_wangcai",
+   "endpoints": 3,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "询盘捕获，业务链第⑧步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "publish_tasks",
+   "endpoints": 5,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "多平台分发，业务链第⑥步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "rank_check",
+   "endpoints": 2,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "recycle_bin",
+   "endpoints": 4,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "referral",
+   "endpoints": 10,
+   "label": "to-orchestrate",
+   "group": "获客线索",
+   "reason": "线索获取与富化，业务链第⑩⑬步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "reviews",
+   "endpoints": 9,
+   "label": "hook",
+   "group": "工具",
+   "reason": "文件与工作区（横切工具）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "rfq",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "询盘→报价→订单→交付，业务链第⑭⑮⑯⑰步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "sales_task",
+   "endpoints": 4,
+   "label": "hook",
+   "group": "任务控制",
+   "reason": "销售任务队列（管理端横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "search_strategy",
+   "endpoints": 8,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "security_advanced",
+   "endpoints": 13,
+   "label": "to-orchestrate",
+   "group": "公开合规",
+   "reason": "合规扫描与安全（能力，非后台）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "seo_diagnosis",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "seo_matrix",
+   "endpoints": 59,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "settings",
+   "endpoints": 4,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "site_ai_generator",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "建站能力，业务链第②步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "skill_store",
+   "endpoints": 8,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "social_interactions",
+   "endpoints": 9,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "养号与社媒互动，业务链第⑦步",
+   "ledger_status": "🟠 已接(桩)"
+  },
+  {
+   "module": "social_nurture",
+   "endpoints": 11,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "养号与社媒互动，业务链第⑦步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "ssl_certificates",
+   "endpoints": 5,
+   "label": "to-orchestrate",
+   "group": "域名全球化",
+   "reason": "独立域/SSL/加速/国际化",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "super_agent",
+   "endpoints": 22,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "Agent 与编排入口",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "system",
+   "endpoints": 16,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "system_health",
+   "endpoints": 9,
+   "label": "hook",
+   "group": "可观测",
+   "reason": "健康检查与性能（横切）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "talking_stick",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "媒体生产（图片/视频），业务链第④⑤步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "task_control_admin",
+   "endpoints": 5,
+   "label": "hook",
+   "group": "任务控制",
+   "reason": "任务控制与运维编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "tech_radar",
+   "endpoints": 4,
+   "label": "to-orchestrate",
+   "group": "SEO增长",
+   "reason": "SEO/GEO/AAO，业务链第⑪步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "technical_qna",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "认知智能与知识图谱（AI 知识域）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "tenant_ai_config",
+   "endpoints": 6,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "tenants",
+   "endpoints": 38,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "token_ledger",
+   "endpoints": 7,
+   "label": "to-orchestrate",
+   "group": "支付计费",
+   "reason": "三轨计费：订阅/Token/IP槽位",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "trade_intel",
+   "endpoints": 10,
+   "label": "to-orchestrate",
+   "group": "外贸交易",
+   "reason": "开发信/背调/外贸工具，业务链第⑫⑬步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "ubrain",
+   "endpoints": 17,
+   "label": "orchestrated",
+   "group": "编排",
+   "reason": "已有 ROUTERS 条目或 executor 注册",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "ubrain_analytics",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "UBrain / 旺财 租户智能面",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "ubrain_commercial_os",
+   "endpoints": 16,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "UBrain / 旺财 租户智能面",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "unified_publish",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "多平台分发，业务链第⑥步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "users",
+   "endpoints": 10,
+   "label": "backoffice",
+   "group": "平台管理",
+   "reason": "平台运营管理，明确不进编排",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "vector_search",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "AI 生成与知识库",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "video_publish",
+   "endpoints": 13,
+   "label": "to-orchestrate",
+   "group": "建站内容",
+   "reason": "媒体生产（图片/视频），业务链第④⑤步",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "wallet",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "支付计费",
+   "reason": "三轨计费：订阅/Token/IP槽位",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "wangcai_marketplace",
+   "endpoints": 6,
+   "label": "to-orchestrate",
+   "group": "AI知识",
+   "reason": "UBrain / 旺财 租户智能面",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "whatsapp_business",
+   "endpoints": 17,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "养号与社媒互动，业务链第⑦步",
+   "ledger_status": "✅ 已串联"
+  },
+  {
+   "module": "workflow_canvas",
+   "endpoints": 1,
+   "label": "to-orchestrate",
+   "group": "分发养号",
+   "reason": "工作流画布（12 引擎之一）",
+   "ledger_status": "🟡 可串联"
+  },
+  {
+   "module": "workspace",
+   "endpoints": 8,
+   "label": "hook",
+   "group": "工具",
+   "reason": "文件与工作区（横切工具）",
+   "ledger_status": "🟡 可串联"
+  }
+ ],
+ "summary": {
+  "to-orchestrate": 112,
+  "backoffice": 16,
+  "hook": 19,
+  "deprecated": 1,
+  "orchestrated": 2
+ },
+ "untagged": []
+}

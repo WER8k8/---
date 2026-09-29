@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>全节点连通性闭环报告 2026-09-06</title>
+<style>
+body{background:#0f1115;color:#e6e8ec;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;margin:0;padding:32px;line-height:1.65}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:18px;margin:32px 0 12px;padding-left:10px;border-left:4px solid #4a9eff}
+.sub{color:#8b94a7;font-size:13px;margin-bottom:24px}
+table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13px}
+th{background:#1b2028;color:#9fb4d0;text-align:left;padding:9px 10px;border:1px solid #2a3140;font-weight:600}
+td{padding:8px 10px;border:1px solid #2a3140;vertical-align:top}
+tr:nth-child(even) td{background:#141922}
+code{background:#1b2028;padding:1px 5px;border-radius:3px;color:#7fd1ff;font-size:12px}
+.ok{color:#4ade80;font-weight:600}.bad{color:#f87171;font-weight:600}.warn{color:#fbbf24;font-weight:600}
+.box{background:#141922;border:1px solid #2a3140;border-left:4px solid #4a9eff;padding:14px 16px;margin:14px 0;border-radius:4px}
+.box.warn{border-left-color:#fbbf24}.box.bad{border-left-color:#f87171}.box.ok{border-left-color:#4ade80}
+ul{margin:8px 0 8px 20px;padding:0}li{margin:4px 0}
+.note{color:#8b94a7;font-size:12px}
+</style></head><body>
+<h1>全节点连通性闭环报告</h1>
+<div class="sub">生成时间：2026-09-06 16:38 ｜ 实测基线：<code>上线网站.worktrees/agents-install-vscode-cline-deploy-strix/backend</code></div>
+
+<div class="box ok">
+<b>结论先行</b>：核心运行闭环已打通并实测通过——后端可正常启动、<b>1323 个 API 端点全量挂载</b>、
+数据库 <b>224 表可读</b>、RBAC 权限链已修复并可查、业务数据（产品/租户/线索/跨境/SEO 站点地图）端到端返回 200。
+此前认知中的"路由全部丢失/17 个模块 404"经复核为<b>测量假象</b>（FastAPI 0.139 用 <code>_IncludedRouter</code>
+包装子路由，旧统计方式看不到）+ <b>端口串台</b>（8000/8001 实际是 deer-flow 网关，不是本项目后端）。
+</div>
+
+<h2>1. 关键指标实测</h2>
+<table>
+<tr><th style="width:26%">指标</th><th style="width:18%">实测值</th><th>说明与代码位置</th></tr>
+<tr><td>已挂载 API 端点</td><td class="ok">1323</td><td>穿透 <code>_IncludedRouter.original_router</code> 递归统计；装配入口 <code>app/main.py:621</code> → <code>app/api/__init__.py</code> → <code>app/api/v1/routes/auto_discovery.py</code></td></tr>
+<tr><td>路由模块</td><td class="ok">146</td><td><code>app/api/v1/routes/*.py</code>，自动发现注册成功数 146/147</td></tr>
+<tr><td>服务层</td><td>661 .py</td><td><code>app/services/</code>（ubrain 82 / hermes 70 / foreign_trade 38 …）</td></tr>
+<tr><td>数据表</td><td class="ok">224</td><td>PostgreSQL <code>127.0.0.1:5433/youding_dev</code></td></tr>
+<tr><td>账号 / 租户</td><td class="ok">3 / 2</td><td><code>users</code> 3 条、<code>tenants</code> 2 条、<code>user_tenants</code> 2 条</td></tr>
+<tr><td>RBAC 种子</td><td class="ok">4 角色 / 30 权限 / 44 角色权限 / 31 菜单</td><td>本轮修复后灌入，二次运行返回 0（幂等 ✅）</td></tr>
+<tr><td>健康探针</td><td class="ok">200 / 200</td><td><code>/health</code> → <code>{"status":"ok","service":"优丁 B2B SaaS"}</code>；<code>/health/ready</code> → db ok</td></tr>
+<tr><td>Redis</td><td class="warn">disabled</td><td>开发环境关闭；Celery/缓存/限流相关能力待启用</td></tr>
+</table>
+
+<h2>2. 已修复的断点（本轮）</h2>
+<table>
+<tr><th style="width:22%">断点</th><th style="width:26%">根因</th><th>修复动作</th></tr>
+<tr>
+<td class="bad">开发环境数据库指向空库</td>
+<td><code>config/dev/.env</code> 钉死 <code>DB_TYPE=sqlite</code> + 空 SQLite 库，而真实数据（224 表）在 PG 5433；
+应用强制校验 <code>DB_TYPE</code> 与 <code>DATABASE_URL</code> 协议一致，覆盖环境变量会直接报
+<code>[配置错误] DB_TYPE=sqlite 但 DATABASE_URL 不含 sqlite 协议</code></td>
+<td>已改为 <code>DATABASE_URL=postgresql+psycopg2://…:5433/youding_dev</code>、<code>DB_TYPE=postgresql</code>；
+原文件备份为 <code>config/dev/.env.bak-20260906</code></td>
+</tr>
+<tr>
+<td class="bad">RBAC 种子数据全为空</td>
+<td><code>admin_roles/permissions/menus</code> 的 <code>id</code> 在 PG 下是 <code>UUID</code>，
+而 <code>app/db/seed.py</code> 写入 <code>"role-super-admin-001"</code> 这类字符串 →
+<code>InvalidTextRepresentation</code>；异常被 <code>app/main.py:96 except Exception: pass</code> 静默吞掉</td>
+<td>新增 <code>_sid()</code>（uuid5 稳定映射）+ <code>_uid()</code> 改为返回标准 UUID；
+5 处 ID 写入点全部归一；原文件备份为 <code>app/db/seed.py.bak-20260906</code></td>
+</tr>
+<tr>
+<td class="bad">用户与角色未关联</td>
+<td><code>users.role_id</code> 全部为 NULL，权限链断裂</td>
+<td>按 <code>users.role = admin_roles.name</code> 回填，admin → super_admin 已绑定</td>
+</tr>
+<tr>
+<td class="warn">误判"业务路由全丢"</td>
+<td>统计方式只数 <code>APIRoute</code>，而 FastAPI 0.139.2 把 <code>include_router</code> 的子路由
+包装为 <code>_IncludedRouter</code>（真实字段是 <code>original_router</code>）</td>
+<td>重写递归统计脚本，实测 1323 端点，结论更正</td>
+</tr>
+<tr>
+<td class="warn">端口串台</td>
+<td>8000 / 8001 上跑的是 <code>deer-flow-gateway</code>，其 <code>/api/v1/*</code> 全返回 401
+"Authentication required"，被误当作本项目后端的鉴权行为</td>
+<td>改用空闲端口 8899 启动本项目后端，返回体确认为 <code>优丁 B2B SaaS</code></td>
+</tr>
+</table>
+
+<h2>3. 端到端实测结果（端口 8899，带 token）</h2>
+<table>
+<tr><th style="width:40%">端点</th><th style="width:12%">结果</th><th>返回摘要</th></tr>
+<tr><td><code>/health</code>、<code>/health/ready</code></td><td class="ok">200</td><td>status ok / db ok、redis disabled</td></tr>
+<tr><td><code>/api/v1/products</code></td><td class="ok">200</td><td>返回产品列表（LC20轻集料混凝土…），DB 读取链通</td></tr>
+<tr><td><code>/api/v1/tenants</code></td><td class="ok">200</td><td>租户统计 total 2 / active 2</td></tr>
+<tr><td><code>/api/v1/lead-generation/capabilities</code></td><td class="ok">200</td><td>获客能力探测返回（google_cse_available=false…）</td></tr>
+<tr><td><code>/api/v1/ops/deerflow-schedule/status</code></td><td class="ok">200</td><td>调度器状态返回（running=false，未启动）</td></tr>
+<tr><td><code>/api/v1/hub/sitemap.xml</code></td><td class="ok">200</td><td>返回合法 sitemap XML</td></tr>
+<tr><td><code>/api/v1/cross-border/export-quote</code></td><td class="ok">200</td><td>跨境报价 ready=true</td></tr>
+<tr><td><code>/api/v1/permissions</code></td><td class="bad">404</td><td>未找到该路径（RBAC 数据已入库，但查询接口未暴露）</td></tr>
+<tr><td><code>/api/v1/lead-enrichment/status</code></td><td class="bad">404</td><td>线索富化状态接口未找到</td></tr>
+<tr><td><code>POST /api/v1/products</code></td><td class="warn">307</td><td>重定向（疑为路由尾斜杠规范化），写入路径需确认</td></tr>
+<tr><td>未鉴权访问 <code>/api/v1/products</code></td><td class="warn">200</td><td><b>鉴权未强制</b>：读接口无 token 也能取数，上线前必须确认是否预期公开</td></tr>
+</table>
+
+<h2>4. 剩余 Punch List（按优先级）</h2>
+<table>
+<tr><th style="width:8%">级别</th><th style="width:30%">事项</th><th>处置建议</th></tr>
+<tr><td class="bad">P0</td><td>业务读接口未强制鉴权</td><td>确认 <code>/api/v1/products</code> 等是否应为公开；若否，在路由依赖或全局中间件补 <code>get_current_user</code>，并加白名单放行 health/docs</td></tr>
+<tr><td class="bad">P0</td><td>RBAC 查询接口未暴露</td><td>已灌入 4 角色/30 权限/31 菜单，但无 <code>/api/v1/permissions|roles|menus</code> 读取端点，后台权限页拿不到数据 → 需在 <code>app/api/v1/routes/</code> 补管理端 RBAC 路由或修正前缀</td></tr>
+<tr><td class="bad">P0</td><td>写入链路未验证</td><td>POST 产品返回 307，需确认创建接口正确路径与幂等校验，并跑通"创建→回读→更新→删除"</td></tr>
+<tr><td class="warn">P1</td><td>业务表全为空</td><td><code>orders / lead_inquiries / buyer_prospect_leads / payment_orders</code> 均 0 行，需造验证数据或跑通真实业务流</td></tr>
+<tr><td class="warn">P1</td><td>Redis / Celery 未启用</td><td><code>REDIS_ENABLED=false</code>，异步任务、缓存、限流、分布式锁全部降级，上线前需启用并验证</td></tr>
+<tr><td class="warn">P1</td><td>调度器未启动</td><td>deerflow-schedule running=false；需确认哪些定时任务为上线必需</td></tr>
+<tr><td class="warn">P1</td><td>8000 端口被 deer-flow 网关占用</td><td>生产部署前统一端口规划，避免网关与业务后端抢占</td></tr>
+<tr><td class="note">P2</td><td>种子异常被静默吞掉</td><td><code>app/main.py:96</code> <code>except Exception: pass</code>，建议改为记录 error 日志，否则同类断点仍会隐形</td></tr>
+<tr><td class="note">P2</td><td>前端未纳入本轮连通验证</td><td>admin 410 .vue / portal 78 页面未做构建与接口联调</td></tr>
+</table>
+
+<h2>5. 复现方式</h2>
+<div class="box">
+<b>启动</b>：<code>cd 上线网站.worktrees/agents-install-vscode-cline-deploy-strix/backend &amp;&amp; .venv/Scripts/python.exe run.py --env dev --port 8899</code><br>
+<b>探活</b>：<code>http://127.0.0.1:8899/health</code>、<code>/health/ready</code><br>
+<b>注意</b>：环境存在 HTTP 代理（<code>http_proxy=127.0.0.1:50941</code>），脚本访问本机需
+<code>ProxyHandler({})</code> 绕过，否则返回 502 upstream connect failed。<br>
+<b>验证脚本</b>：<code>backend/audit_ready.py</code>（装配与数据体检）、<code>backend/e2e_closedloop.py</code>（端到端闭环）
+</div>
+
+<p class="note">本报告结论均基于 2026-09-06 本机实测，端口、凭据与开关状态以实际运行环境为准。</p>
+</body></html>

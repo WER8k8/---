@@ -1,0 +1,24 @@
+﻿{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-panorama-2026-09-24.architecture.json",
+  "output": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-panorama-2026-09-24.html",
+  "specification": {
+    "sha256": "e19df43bcd17394b4fb7ecf59faa5f8915a4390a0f8d456f5a0b06a1582100e7",
+    "bytes": 7538
+  },
+  "artifact": {
+    "sha256": "6791c710e6a16c9ba1177a937a6c9a013fcaa839c9321913411cc3535b00b082",
+    "bytes": 817824
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

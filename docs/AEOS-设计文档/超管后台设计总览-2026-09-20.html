@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>优丁 YouDing · SaaS 超管后台 规划与设计总览 v1.0</title>
+<!-- 本工作台通过 WorkBuddy「资料库」skill 搭建、存储和部署 -->
+<!-- 零外链：全部 CSS/JS 内联，图标与图表为内联 SVG -->
+<style>
+  :root{
+    --primary:#4a9b8c; --primary-h:#5db3a2; --primary-soft:rgba(74,155,140,.14);
+    --ok:#4fb583; --warn:#d9a441; --danger:#e06c6c; --info:#5b93c7;
+    --bg:#0e1416; --bg2:#141d20; --card:#182327; --card2:#1d2a2f;
+    --line:#243339; --line2:#2e4046;
+    --t1:#e8f0f2; --t2:#9fb4b9; --t3:#6d8388;
+    --r-s:6px; --r-m:10px; --r-l:16px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--primary);text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Topbar ---------- */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(14,20,22,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar-in{display:flex;align-items:center;gap:16px;height:58px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+  .brand svg{flex:0 0 auto}
+  .brand small{color:var(--t3);font-weight:400;font-size:12px}
+  .navlist{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+  .navlist::-webkit-scrollbar{display:none}
+  .navlist a{padding:7px 11px;border-radius:var(--r-s);color:var(--t2);font-size:13px;white-space:nowrap;transition:.15s}
+  .navlist a:hover,.navlist a.on{color:var(--primary);background:var(--primary-soft)}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--primary);background:var(--primary-soft);border:1px solid rgba(74,155,140,.3);padding:4px 11px;border-radius:100px;margin-bottom:18px}
+  .hero h1{font-size:34px;line-height:1.28;letter-spacing:-.5px;font-weight:800}
+  .hero h1 em{font-style:normal;color:var(--primary)}
+  .hero p.sub{color:var(--t2);margin-top:14px;max-width:820px;font-size:15px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{font-size:12px;color:var(--t2);border:1px solid var(--line2);border-radius:100px;padding:5px 12px}
+  .chip b{color:var(--t1);font-weight:600}
+
+  /* ---------- Layout blocks ---------- */
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+  .sec-num{font-size:12px;font-weight:700;color:var(--primary);letter-spacing:1.4px}
+  .sec-head h2{font-size:21px;letter-spacing:-.2px;font-weight:700}
+  .sec-desc{color:var(--t2);margin-bottom:24px;max-width:860px}
+
+  /* ---------- Cards ---------- */
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-m);padding:18px}
+  .card.hl{border-color:rgba(74,155,140,.36);background:linear-gradient(180deg,rgba(74,155,140,.07),transparent 60%),var(--card)}
+  .card h3{font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .card p{color:var(--t2);font-size:13px}
+  .kpi{display:flex;flex-direction:column;gap:2px}
+  .kpi .v{font-size:27px;font-weight:800;letter-spacing:-.8px;color:var(--t1);line-height:1.2}
+  .kpi .v.p{color:var(--primary)} .kpi .v.w{color:var(--warn)} .kpi .v.d{color:var(--danger)}
+  .kpi .k{font-size:12px;color:var(--t3)}
+
+  /* ---------- Table ---------- */
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-m);background:var(--card)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--card2);color:var(--t2);font-weight:600;font-size:12px;letter-spacing:.4px;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(74,155,140,.045)}
+  td code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--primary-h);background:var(--primary-soft);padding:1px 6px;border-radius:4px;white-space:nowrap}
+
+  /* ---------- Badges ---------- */
+  .b{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;white-space:nowrap;line-height:1.7}
+  .b-ok{background:rgba(79,181,131,.14);color:var(--ok);border:1px solid rgba(79,181,131,.3)}
+  .b-mid{background:rgba(217,164,65,.14);color:var(--warn);border:1px solid rgba(217,164,65,.3)}
+  .b-no{background:rgba(224,108,108,.14);color:var(--danger);border:1px solid rgba(224,108,108,.3)}
+  .b-off{background:rgba(109,131,136,.14);color:var(--t3);border:1px solid rgba(109,131,136,.28)}
+  .b-pri{background:var(--primary-soft);color:var(--primary);border:1px solid rgba(74,155,140,.34)}
+
+  /* ---------- Domain accordion ---------- */
+  details.dom{background:var(--card);border:1px solid var(--line);border-radius:var(--r-m);margin-bottom:10px;overflow:hidden}
+  details.dom[open]{border-color:var(--line2)}
+  details.dom summary{cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:12px;list-style:none;user-select:none}
+  details.dom summary::-webkit-details-marker{display:none}
+  details.dom summary:hover{background:rgba(74,155,140,.05)}
+  .dom-tag{flex:0 0 auto;width:26px;height:26px;border-radius:7px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+  .dom-t{flex:1;min-width:0}
+  .dom-t strong{font-size:14.5px}
+  .dom-t span{display:block;color:var(--t3);font-size:12px}
+  .dom-cnt{font-size:12px;color:var(--t3);white-space:nowrap}
+  .arrow{color:var(--t3);transition:.2s}
+  details[open] .arrow{transform:rotate(90deg)}
+  details.dom .body{padding:0 14px 14px}
+
+  /* ---------- Pipeline / flow ---------- */
+  .flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+  .flow-step{flex:1 1 190px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-m);padding:14px}
+  .flow-step .n{font-size:11px;font-weight:700;color:var(--primary);letter-spacing:1px;margin-bottom:6px}
+  .flow-step h4{font-size:13.5px;margin-bottom:5px}
+  .flow-step p{font-size:12px;color:var(--t2)}
+
+  /* ---------- Roadmap ---------- */
+  .rm{display:grid;gap:12px}
+  .rm-row{display:grid;grid-template-columns:118px 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--primary);border-radius:var(--r-m);padding:16px 18px}
+  .rm-row.p1{border-left-color:var(--info)} .rm-row.p2{border-left-color:var(--warn)}
+  .rm-row.p3{border-left-color:#9b7fd4} .rm-row.p4{border-left-color:var(--t3)}
+  .rm-tag{font-weight:800;font-size:17px;color:var(--primary)}
+  .rm-row.p1 .rm-tag{color:var(--info)} .rm-row.p2 .rm-tag{color:var(--warn)}
+  .rm-row.p3 .rm-tag{color:#9b7fd4} .rm-row.p4 .rm-tag{color:var(--t3)}
+  .rm-tag small{display:block;font-size:11.5px;color:var(--t3);font-weight:500;margin-top:2px}
+  .rm-row h4{font-size:14px;margin-bottom:7px}
+  .rm-row ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+  .rm-row li{font-size:12px;color:var(--t2);background:var(--bg2);border:1px solid var(--line);border-radius:100px;padding:3px 10px}
+
+  /* ---------- Tokens ---------- */
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .sw{border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;background:var(--card)}
+  .sw .c{height:56px}
+  .sw .meta{padding:9px 12px}
+  .sw .meta b{display:block;font-size:12px}
+  .sw .meta span{font-size:11px;color:var(--t3);font-family:ui-monospace,Menlo,monospace}
+
+  /* ---------- Checklist ---------- */
+  .chk{list-style:none;display:grid;gap:8px}
+  .chk li{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:var(--r-s);padding:11px 14px;font-size:13px}
+  .chk li svg{flex:0 0 auto;margin-top:3px}
+
+  /* ---------- Misc ---------- */
+  .note{background:var(--card2);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:var(--r-s);padding:13px 16px;font-size:13px;color:var(--t2);margin-top:16px}
+  .note b{color:var(--t1)}
+  .note.ok{border-left-color:var(--ok)}
+  .note.dg{border-left-color:var(--danger)}
+  .svgbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r-m);padding:16px;overflow-x:auto}
+  .svgbox svg{display:block;min-width:660px;width:100%;height:auto}
+  .cap{font-size:12px;color:var(--t3);margin-top:10px;text-align:center}
+  footer{padding:34px 0 54px;color:var(--t3);font-size:12.5px}
+  footer .fl{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .g3,.g4{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:720px){
+    .hero{padding:34px 0 26px}
+    .hero h1{font-size:24px}
+    .hero p.sub{font-size:14px}
+    .g2,.g3,.g4{grid-template-columns:1fr}
+    .rm-row{grid-template-columns:1fr}
+    section{padding:32px 0}
+    .sec-head h2{font-size:18px}
+    .navlist{display:none}
+    .mono,.tbl-scroll{font-size:12px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOPBAR ============ -->
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Z" stroke="#4a9b8c" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M12 7.5 7 10v5l5 2.5 5-2.5v-5l-5-2.5Z" fill="#4a9b8c" fill-opacity=".35" stroke="#4a9b8c" stroke-width="1.2" stroke-linejoin="round"/>
+      </svg>
+      超管后台规划与设计 <small>v1.0</small>
+    </div>
+    <nav class="navlist" id="nav">
+      <a href="#baseline">现状基线</a>
+      <a href="#roles">角色矩阵</a>
+      <a href="#modules">模块清单</a>
+      <a href="#arch">架构设计</a>
+      <a href="#dep">依赖与优先级</a>
+      <a href="#road">实施规划</a>
+      <a href="#tokens">设计规范</a>
+      <a href="#gates">验收门禁</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4a9b8c" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round"/></svg>
+      Platform Shell · <code>/admin/*</code> · 2026-09-20
+    </div>
+    <h1>超管后台不是功能大杂烩，<br/>而是 SaaS 运营方的 <em>控制面</em></h1>
+    <p class="sub">
+      它只回答三个问题：<strong>平台稳不稳、钱对不对、权限有没有失控</strong>。
+      租户的业务操作属于 <code>/client/*</code>，不属于这里。
+      本方案不新增功能域，而是完成「<strong>一收敛、二统一、三分级</strong>」。
+    </p>
+    <div class="hero-meta">
+      <span class="chip">前端实测 <b>112</b> 个超管页面</span>
+      <span class="chip">后端 <b>26</b> 个路由模块</span>
+      <span class="chip">数据表 <b>≈234</b> 张</span>
+      <span class="chip">规划模块 <b>63</b> 个 / 8 大域</span>
+      <span class="chip">Alembic head <b>118</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 核心结论 ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">体检结论</span><h2>资产极厚，治理断层</h2></div>
+    <p class="sec-desc">三句话概括现状：功能基本都在，缺的是秩序。</p>
+    <div class="grid g3">
+      <div class="card hl">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 7h18M3 12h18M3 17h12" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round"/></svg>
+          ① 资产极厚、治理断层
+        </h3>
+        <p>前端 <b>112 个页面</b>、后端 <b>26 个路由模块</b>、RBAC 五张表已建 —— 功能基本都在，缺的是秩序。</p>
+      </div>
+      <div class="card hl">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#e06c6c" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#e06c6c" stroke-width="2" stroke-linecap="round"/></svg>
+          ② 权限是「假的」
+        </h3>
+        <p>菜单 SSOT 硬编码在前端常量，后端菜单/权限接口<b>建好但未接通</b>。前端隐藏 ≠ 后端拦截，<b>越权仅靠前端自觉</b>。</p>
+      </div>
+      <div class="card hl">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M6 9h9a3 3 0 0 1 0 6H6" stroke="#d9a441" stroke-width="2" stroke-linecap="round"/></svg>
+          ③ 审计是散的
+        </h3>
+        <p>日志散落 <b>5 张互不相通的表</b>，无统一 <code>trace_id</code>。出事后无法一条线还原操作链。</p>
+      </div>
+    </div>
+
+    <div class="note ok" style="margin-top:20px">
+      <b>方案主线 —「一收敛、二统一、三分级」</b>：
+      <b>一收敛</b>＝菜单与权限 SSOT 从前端收敛到后端 <code>admin_menus</code>；
+      <b>二统一</b>＝①统一审计（单一 <code>audit_logs</code> + 分域视图）②统一鉴权入口（消除 <code>security.py</code> 与 <code>admin_auth.py</code> 双轨歧义）；
+      <b>三分级</b>＝配置分级（系统/租户/环境）、数据权限分级（全平台/按租户/按域/只读）、菜单分级（运营/商业/治理/实验室）。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 现状基线 ============ -->
+<section id="baseline">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§0</span><h2>现状基线（实测取证）</h2></div>
+    <p class="sec-desc">全部结论均带文件路径。测量方法：目录递归枚举 + 计数，非人工目测。</p>
+
+    <div class="grid g4" style="margin-bottom:22px">
+      <div class="card kpi"><span class="v p">112</span><span class="k">前端超管页面 .vue</span></div>
+      <div class="card kpi"><span class="v p">26</span><span class="k">后端 super_admin 路由模块</span></div>
+      <div class="card kpi"><span class="v">≈234</span><span class="k">物理表（95 个模型文件）</span></div>
+      <div class="card kpi"><span class="v w">1930</span><span class="k">单文件路由行数（需拆壳）</span></div>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>维度</th><th>实测结果</th><th>出处</th></tr></thead>
+        <tbody>
+          <tr><td>超管页面分布</td><td>system <b>24</b> · ai-center <b>13</b> · ai-engine <b>9</b> · code-tools <b>8</b> · finance <b>7</b> · v2ray <b>6</b>；21 子目录 + 11 根级</td><td class="mono">views/admin/</td></tr>
+          <tr><td>路由组织方式</td><td><span class="b b-no">静态硬编码</span> 按壳手工分组，靠 <code>meta.requiresAuth</code> / <code>meta.role</code> 判权</td><td class="mono">router/index.ts</td></tr>
+          <tr><td>路由守卫</td><td><code>beforeEach</code> @ L1899 + <code>decideRoleShellNavigation</code> 四壳越权跳转</td><td class="mono">router/index.ts:1899</td></tr>
+          <tr><td>菜单真源</td><td><span class="b b-no">前端硬编码</span> <code>PLATFORM_SHELL_MENU</code>，<b>未拉后端接口</b></td><td class="mono">constants/platformShellMenu.ts:21</td></tr>
+          <tr><td>菜单渲染点</td><td>直接 <code>import</code> 渲染；12 个一级组，其中「超级管理工具」含 5 个二级域组</td><td class="mono">views/admin/layout/index.vue:254</td></tr>
+          <tr><td>后端超管子路由</td><td>25 个已挂载，前缀 <code>/api/v1/super-admin/*</code></td><td class="mono">super_admin/__init__.py:33-61</td></tr>
+          <tr><td>RBAC 表</td><td><code>admin_roles</code> · <code>admin_permissions</code> · <code>role_permissions</code> · <code>admin_menus</code> · <code>super_admin_login_logs</code></td><td class="mono">models/admin.py</td></tr>
+          <tr><td>用户→角色</td><td><span class="b b-mid">单角色</span> <code>User.role_id</code> 外键，无法表达多角色兼任</td><td class="mono">models/user.py:21</td></tr>
+          <tr><td>鉴权依赖</td><td><span class="b b-mid">双轨并存</span> 枚举式 <code>require_role</code>（security.py:242）vs 权限码式 <code>require_permission_code</code>（admin_auth.py:118）</td><td class="mono">core/security.py · core/admin_auth.py</td></tr>
+          <tr><td>审计日志</td><td><span class="b b-no">5 表分散</span> <code>operation_logs</code> / <code>super_admin_login_logs</code> / <code>payment_ops_audit</code> / <code>site_audits</code> / <code>ubrain_action_audits</code></td><td class="mono">models/*.py</td></tr>
+          <tr><td>迁移体系</td><td>Alembic 单 head = <code>118_add_company_rfm_tags</code>（新迁移从 119 起）</td><td class="mono">alembic_migrations/versions/</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note dg">
+      <b>已定稿、须承接的上游决策</b>：<code>docs/四壳信息架构与菜单治理.md</code> 已规定 Platform 壳采用 <b>三区 Tab</b>（运营 / 商业 / 治理）+ <b>实验室</b>（默认 Feature Flag 关闭）。本方案将其细化为可施工规格，不推翻。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 角色矩阵 ============ -->
+<section id="roles">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§1</span><h2>核心目标与用户角色</h2></div>
+    <p class="sec-desc">
+      设计原则：<b>角色 = 权限集 + 数据范围 + 默认落地页</b>。三者必须同时定义 —— 只定义权限不定义数据范围，是越权漏洞最常见的来源。
+    </p>
+
+    <div class="grid g2" style="margin-bottom:22px">
+      <div class="card">
+        <h3>后台五大核心目标</h3>
+        <ul class="chk" style="margin-top:10px">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4a9b8c" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>G1 权限可控</b> — 每个端点可静态推导权限码；越权 100% 返回 403</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4a9b8c" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>G2 操作可溯</b> — 一次查询还原「谁·何时·从哪·改了什么」</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4a9b8c" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>G3 平台可观测</b> — 关键指标一屏可见，且口径唯一</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4a9b8c" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>G4 配置可治理</b> — 有归属、有版本、有审计、可回滚</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4a9b8c" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>G5 运营可自助</b> — 开通/续费/配额/工单 不需研发介入</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>壳边界（不可越界）</h3>
+        <div class="tbl-scroll" style="border:none;background:transparent">
+          <table style="min-width:auto">
+            <thead><tr><th>壳</th><th>前缀</th><th>与超管关系</th></tr></thead>
+            <tbody>
+              <tr><td>Client</td><td class="mono">/client/*</td><td><span class="b b-no">不可见</span></td></tr>
+              <tr><td><b>Platform</b></td><td class="mono">/admin/*</td><td><span class="b b-pri">本方案范围</span></td></tr>
+              <tr><td>Agent</td><td class="mono">/agent/*</td><td><span class="b b-no">代理不得见超管项</span></td></tr>
+              <tr><td>Login</td><td class="mono">/login</td><td><span class="b b-off">唯一登录入口</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>角色 code</th><th>角色名</th><th>权限范围</th><th>数据范围</th><th>默认落地页</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">super_admin</td><td>超级管理员</td><td><code>*:*</code> 全权限</td><td><span class="b b-pri">全平台</span></td><td class="mono">/admin</td></tr>
+          <tr><td class="mono">platform_ops</td><td>平台运营</td><td>租户/内容/发布/告警 读写；无财务写</td><td>全平台（财务只读）</td><td class="mono">/admin/tenants</td></tr>
+          <tr><td class="mono">finance</td><td>财务</td><td>计费/订单/发票/分润 读写；无用户管理</td><td>全平台（无 PII）</td><td class="mono">/admin/finance</td></tr>
+          <tr><td class="mono">support</td><td>客服</td><td>租户只读 + 工单读写 + 会话查看</td><td><span class="b b-mid">按分配租户</span></td><td class="mono">/admin/tenants</td></tr>
+          <tr><td class="mono">auditor</td><td>审计员</td><td>全模块只读 + 审计日志读写</td><td>全平台（只读）</td><td class="mono">/admin/security/audit</td></tr>
+          <tr><td class="mono">tech_support</td><td>技术支持</td><td>监控/日志/运行时/备份 读写；无业务写</td><td>全平台（技术维度）</td><td class="mono">/admin/system/command-center</td></tr>
+          <tr><td class="mono">readonly_observer</td><td>观察者</td><td>仅看板只读</td><td><span class="b b-off">仅聚合数据，无明细</span></td><td class="mono">/dashboard</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>三条必须落到代码的规则</b>：
+      ① <code>auditor</code> 的「只读」必须<b>后端强制</b>（所有写端点拒绝），不能只靠前端隐藏按钮；
+      ② <code>support</code> 的「按分配租户」需要<b>行级过滤</b>，对应新增 <code>admin_user_data_scopes</code> 表；
+      ③ <code>readonly_observer</code> 不得返回租户 PII 明细，手机号/邮箱须脱敏。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 模块清单 ============ -->
+<section id="modules">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§2</span><h2>完整功能模块清单 · 8 大域 63 模块</h2></div>
+    <p class="sec-desc">
+      组织方式：<b>8 大域（Domain）× 若干模块</b>，每模块标注 MoSCoW 优先级与建设现状。
+      点击任一域展开明细。
+    </p>
+
+    <div class="grid g3" style="margin-bottom:20px">
+      <div class="card kpi"><span class="v p">63</span><span class="k">规划模块总数</span></div>
+      <div class="card kpi"><span class="v d">37</span><span class="k">MUST 必须做</span></div>
+      <div class="card kpi"><span class="v w">23</span><span class="k">SHOULD 应该做</span></div>
+    </div>
+
+    <div class="note" style="margin-bottom:20px">
+      <b>现状图例</b>：
+      <span class="b b-ok">已有可用</span>
+      <span class="b b-mid">需改造</span>
+      <span class="b b-no">缺失需新建</span>
+      <span class="b b-off">应下沉/下线</span>
+      &nbsp;·&nbsp; 实测 112 个页面中约 <b>70% 已有雏形</b>，主要工作量在<b>改造与收敛</b>，而非从零开发。
+    </div>
+
+    <!-- 域 A -->
+    <details class="dom" open>
+      <summary>
+        <span class="dom-tag">A</span>
+        <span class="dom-t">身份与访问管理（IAM）<span>地基域 · 权限链起点</span></span>
+        <span class="dom-cnt">9 模块 · MUST 6</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>A1 管理员账号管理</td><td>列表/搜索/启停/重置密码/强制下线/登录历史</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>A2 角色管理</td><td>角色 CRUD、复制角色、系统角色保护 <code>is_system</code></td><td><span class="b b-mid">表已建·UI 待补</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>A3 权限管理</td><td>权限码分组浏览、搜索、按角色反查</td><td><span class="b b-mid">接口有·UI 待补</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>A4 角色-权限矩阵</td><td>矩阵勾选、批量授权、变更前后 diff 预览</td><td><span class="b b-no">缺失</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>A5 菜单与导航治理</td><td>菜单树 SSOT：增删改、排序、权限码绑定、显隐</td><td><span class="b b-no">接口未接通前端</span></td><td><span class="b b-pri">MUST · P0</span></td></tr>
+              <tr><td>A6 数据权限范围</td><td>按租户 / 按代理域 / 按标签授权</td><td><span class="b b-no">缺失</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>A7 会话与登录安全</td><td>在线会话列表、强制下线、登录日志、异常登录告警</td><td><span class="b b-mid">日志有·会话表缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>A8 认证增强</td><td>二次验证（TOTP）、IP 白名单、密码策略</td><td><span class="b b-no">缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>A9 审计员只读模式</td><td>全局只读开关 + 后端强制</td><td><span class="b b-no">缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 B -->
+    <details class="dom">
+      <summary>
+        <span class="dom-tag">B</span>
+        <span class="dom-t">租户与商业运营（Tenant Ops）<span>回答「客户好不好」</span></span>
+        <span class="dom-cnt">10 模块 · MUST 5</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>B1 租户总览</td><td>全量租户清单、状态/套餐/到期日筛选、健康度标记</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>B2 租户详情 360</td><td>基本信息/套餐/用量/域名/成员/订单/工单 <b>聚合一页</b></td><td><span class="b b-mid">分散·缺聚合</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>B3 套餐与定价</td><td>套餐 CRUD、功能开关矩阵、价格档位、试用策略</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>B4 配额管理</td><td>Token/存储/IP 槽位/成员数/发布条数 配额与超限策略</td><td><span class="b b-mid">分散·缺统一入口</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>B5 租户生命周期</td><td>试用→正式→欠费→冻结→注销 状态机 + 宽限期</td><td><span class="b b-no">状态机未定义</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>B6 域名与 SSL</td><td>独立域绑定、DNS 校验、证书签发与到期提醒</td><td><span class="b b-ok">已有</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>B7 白标品牌</td><td>Logo / 主色 / 域名级白标</td><td><span class="b b-ok">已有</span></td><td><span class="b b-off">MAY</span></td></tr>
+              <tr><td>B8 能力划拨</td><td>按租户开关模块（capability-hub / agent-capabilities）</td><td><span class="b b-mid">已有页面</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>B9 代理与层级</td><td>代理层级、区域归属、开户审批（超管侧只留审批+配置）</td><td><span class="b b-off">归 /agent/* 壳</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>B10 工单与支持</td><td>工单池、分配、SLA 计时、关联租户</td><td><span class="b b-no">缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 C -->
+    <details class="dom">
+      <summary>
+        <span class="dom-tag">C</span>
+        <span class="dom-t">计费与财务（Billing &amp; Finance）<span>回答「钱对不对」</span></span>
+        <span class="dom-cnt">9 模块 · MUST 7</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>C1 财务概览</td><td>MRR / ARR、回款率、欠费额、趋势图</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C2 支付运维</td><td>支付码/接口配置、渠道状态、回调重试</td><td><span class="b b-ok">已有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C3 租户支付订单</td><td>订单列表/详情/退款/补偿任务</td><td><span class="b b-ok">已有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C4 发票审核</td><td>申请→审核→开具→回执，含驳回理由</td><td><span class="b b-ok">已有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C5 分润结算</td><td>分润规则配置、结算周期、结算单生成</td><td><span class="b b-ok">已有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C6 AI Token 计费</td><td>Token 钱包、充值、消耗明细、超额拦截（三轨之一）</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C7 静态 IP / 指纹槽位</td><td>IP 池、槽位分配、按槽位计费（三轨之一）</td><td><span class="b b-ok">已有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>C8 对账与导出</td><td>对账报表、导出 CSV/Excel、凭证号</td><td><span class="b b-no">缺统一导出</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>C9 成本核算</td><td>AI 成本/带宽/IP 成本 vs 收入，租户级毛利</td><td><span class="b b-no">缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 D -->
+    <details class="dom">
+      <summary>
+        <span class="dom-tag">D</span>
+        <span class="dom-t">内容与分发（Content &amp; Distribution）<span>超管侧只保留治理视角</span></span>
+        <span class="dom-cnt">5 模块 · MUST 2</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="note" style="margin-top:0;margin-bottom:12px">
+          <b>边界说明</b>：内容<b>生产</b>属租户 <code>/client/*</code>；超管侧只保留<b>治理</b>视角（策略、母版、分发通道健康度）。
+        </div>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>D1 内容母版与模板</td><td>母版管理、模板上下架、租户分发范围</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>D2 发布通道健康</td><td>各平台账号状态、限流、失败重试、通道开关</td><td><span class="b b-mid">已有页面</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>D3 平台凭据矩阵</td><td>平台账号凭据托管、到期提醒、轮换</td><td><span class="b b-mid">已有表与页面</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>D4 SEO / GEO 治理</td><td>GEO 引擎配置、收录监测、矩阵词管理</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>D5 媒体资产治理</td><td>图片/视频空间、配额、清理</td><td><span class="b b-mid">已有页面</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 E -->
+    <details class="dom">
+      <summary>
+        <span class="dom-tag">E</span>
+        <span class="dom-t">AI 能力与成本治理（AI Governance）<span>三轨计费之一 · 失控风险最高</span></span>
+        <span class="dom-cnt">7 模块 · MUST 5</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>E1 模型接入管理</td><td>模型清单、Key 托管、连通性测试、优先级</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>E2 场景模型路由</td><td>场景→模型映射、降级链（主/备/兜底）</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>E3 调用日志与追踪</td><td>调用明细、耗时、失败原因、trace 全链路</td><td><span class="b b-mid">已有页面</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>E4 用量与成本</td><td>按租户/按模型/按场景的 Token 消耗与费用</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>E5 Prompt / 模板管理</td><td>Prompt 版本、A/B、效果对比</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>E6 知识库管理</td><td>知识库 CRUD、向量化状态、召回测试</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>E7 AI 用量闸门</td><td>预算上限、超额熔断、异常调用告警</td><td><span class="b b-no">缺统一熔断</span></td><td><span class="b b-pri">MUST</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 F -->
+    <details class="dom">
+      <summary>
+        <span class="dom-tag">F</span>
+        <span class="dom-t">数据看板与决策支持（BI）<span>「同一指标三处三个数」的根治域</span></span>
+        <span class="dom-cnt">7 模块 · MUST 4</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>F1 超管工作台</td><td>今日必处理（告警/待审/欠费）+ 核心指标卡</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-pri">MUST · P0</span></td></tr>
+              <tr><td>F2 经营看板</td><td>租户增长、活跃、询盘/成交漏斗、留存</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>F3 流量看板</td><td>全平台流量、来源、归因</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>F4 财务看板</td><td>见 C1 / C9</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>F5 系统健康看板</td><td>服务状态、队列积压、DB/Redis 指标、压测</td><td><span class="b b-mid">已有页面</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>F6 自定义报表</td><td>指标选择、维度下钻、导出、订阅</td><td><span class="b b-no">缺失</span></td><td><span class="b b-off">MAY</span></td></tr>
+              <tr><td>F7 指标口径字典</td><td>每个指标的 SQL 定义 + 归属人（<b>数据可信的根</b>）</td><td><span class="b b-no">缺失</span></td><td><span class="b b-pri">MUST · P0</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 G -->
+    <details class="dom">
+      <summary>
+        <span class="dom-tag">G</span>
+        <span class="dom-t">系统配置与运行时治理（Platform Ops）<span>回答「平台稳不稳」</span></span>
+        <span class="dom-cnt">9 模块 · MUST 4</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>G1 配置中心</td><td>分级配置、版本、变更审计、回滚</td><td><span class="b b-mid">缺版本与审计</span></td><td><span class="b b-pri">MUST · P0</span></td></tr>
+              <tr><td>G2 运行时治理</td><td>服务实例、重启、健康检查</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>G3 调度中心</td><td>Cron 管理、执行历史、手动触发、失败重试</td><td><span class="b b-ok">已有可用</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>G4 编排控制台</td><td>任务图可视化、节点状态、trace_id 透传</td><td><span class="b b-mid">需改造</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>G5 备份与恢复</td><td>备份策略、手动备份、恢复演练、保留策略</td><td><span class="b b-mid">接口有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>G6 告警规则</td><td>规则配置、阈值、通知渠道、静默期</td><td><span class="b b-mid">接口有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>G7 存储供给</td><td>对象存储配额、生命周期、清理</td><td><span class="b b-mid">接口有</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>G8 实验室（Feature Flag）</td><td>实验模块开关、二次确认、默认关闭</td><td><span class="b b-no">缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>G9 回收站</td><td>软删除实体恢复，需二次确认 + 审计</td><td><span class="b b-ok">已有</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- 域 H -->
+    <details class="dom" open>
+      <summary>
+        <span class="dom-tag">H</span>
+        <span class="dom-t">安全、审计与合规（Security &amp; Audit）<span>合规底线 · 审计链起点</span></span>
+        <span class="dom-cnt">7 模块 · MUST 4</span>
+        <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#6d8388" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </summary>
+      <div class="body">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>模块</th><th>职责 / 关键功能点</th><th>现状</th><th>优先级</th></tr></thead>
+            <tbody>
+              <tr><td>H1 统一审计日志</td><td><b>单一时间轴</b>、多条件检索、详情 diff、导出</td><td><span class="b b-no">5 表分散·无统一视图</span></td><td><span class="b b-pri">MUST · P0</span></td></tr>
+              <tr><td>H2 登录与访问日志</td><td>登录成功/失败、IP、UA、地理、异常标记</td><td><span class="b b-mid">表已有</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>H3 高危操作二次确认</td><td>删除/退款/降级/批量 强制确认 + 理由填写</td><td><span class="b b-no">缺失</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>H4 安全合规检查</td><td>弱口令、越权、未授权端点、依赖漏洞扫描</td><td><span class="b b-mid">已有 5 页面</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>H5 数据脱敏</td><td>PII 展示脱敏、导出脱敏、按角色分级</td><td><span class="b b-no">缺失</span></td><td><span class="b b-pri">MUST</span></td></tr>
+              <tr><td>H6 合规报告导出</td><td>按周期导出审计报告（操作人/时间/对象）</td><td><span class="b b-no">缺失</span></td><td><span class="b b-mid">SHOULD</span></td></tr>
+              <tr><td>H7 越权检测</td><td>异常访问模式识别、权限提升告警</td><td><span class="b b-no">缺失</span></td><td><span class="b b-off">MAY</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 架构设计 ============ -->
+<section id="arch">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§3</span><h2>整体架构设计</h2></div>
+    <p class="sec-desc">五层架构。核心架构约束：<b>L2 的菜单可见性必须由 L4 的权限计算推导，不得由前端常量决定</b> —— 这就是「一收敛」的架构含义。</p>
+
+    <div class="svgbox">
+      <svg viewBox="0 0 680 452" role="img" aria-label="超管后台五层架构图">
+        <defs>
+          <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0 0 L6 3 L0 6 z" fill="#4a9b8c"/>
+          </marker>
+        </defs>
+
+        <!-- L1 -->
+        <rect x="16" y="14" width="430" height="70" rx="9" fill="#182327" stroke="#4a9b8c" stroke-width="1.4"/>
+        <rect x="16" y="14" width="4" height="70" rx="2" fill="#4a9b8c"/>
+        <text x="34" y="38" fill="#4a9b8c" font-size="11" font-weight="700" font-family="sans-serif">L1 · 壳层 SHELL</text>
+        <text x="34" y="57" fill="#e8f0f2" font-size="12.5" font-family="sans-serif">Platform Shell (/admin/*) · 路由守卫 · 权限拦截器</text>
+        <text x="34" y="74" fill="#9fb4b9" font-size="11" font-family="sans-serif">产出：能不能进</text>
+        <text x="462" y="53" fill="#4a9b8c" font-size="11" font-family="sans-serif">L2 必须</text>
+        <text x="462" y="68" fill="#4a9b8c" font-size="11" font-family="sans-serif">由 L4 推导</text>
+
+        <!-- L2 -->
+        <rect x="16" y="100" width="430" height="70" rx="9" fill="#182327" stroke="#2e4046" stroke-width="1.2"/>
+        <rect x="16" y="100" width="4" height="70" rx="2" fill="#5b93c7"/>
+        <text x="34" y="124" fill="#5b93c7" font-size="11" font-weight="700" font-family="sans-serif">L2 · 导航层 NAVIGATION</text>
+        <text x="34" y="143" fill="#e8f0f2" font-size="12.5" font-family="sans-serif">动态菜单树（后端下发）· 三区 Tab · 面包屑 · 全局搜索</text>
+        <text x="34" y="160" fill="#9fb4b9" font-size="11" font-family="sans-serif">产出：看得到什么（菜单可见性 = 权限投影）</text>
+
+        <!-- L3 -->
+        <rect x="16" y="186" width="430" height="70" rx="9" fill="#182327" stroke="#2e4046" stroke-width="1.2"/>
+        <rect x="16" y="186" width="4" height="70" rx="2" fill="#9b7fd4"/>
+        <text x="34" y="210" fill="#9b7fd4" font-size="11" font-weight="700" font-family="sans-serif">L3 · 模块层 MODULE</text>
+        <text x="34" y="229" fill="#e8f0f2" font-size="12.5" font-family="sans-serif">A~H 八大域 63 模块 · 统一页面骨架 · 五态规范</text>
+        <text x="34" y="246" fill="#9fb4b9" font-size="11" font-family="sans-serif">产出：看得懂什么</text>
+
+        <!-- L4 -->
+        <rect x="16" y="272" width="430" height="70" rx="9" fill="#1d2a2f" stroke="#4a9b8c" stroke-width="1.6"/>
+        <rect x="16" y="272" width="4" height="70" rx="2" fill="#4fb583"/>
+        <text x="34" y="296" fill="#4fb583" font-size="11" font-weight="700" font-family="sans-serif">L4 · 领域服务层 DOMAIN SERVICE</text>
+        <text x="34" y="315" fill="#e8f0f2" font-size="12.5" font-family="sans-serif">鉴权 · 审计 · 配置 · 租户 · 计费 · AI治理 · 看板聚合</text>
+        <text x="34" y="332" fill="#9fb4b9" font-size="11" font-family="sans-serif">产出：能不能做（后端强制，前端不可绕过）</text>
+
+        <!-- L5 -->
+        <rect x="16" y="358" width="430" height="70" rx="9" fill="#182327" stroke="#2e4046" stroke-width="1.2"/>
+        <rect x="16" y="358" width="4" height="70" rx="2" fill="#d9a441"/>
+        <text x="34" y="382" fill="#d9a441" font-size="11" font-weight="700" font-family="sans-serif">L5 · 数据层 DATA</text>
+        <text x="34" y="401" fill="#e8f0f2" font-size="12.5" font-family="sans-serif">PG@5433 · Redis@6379 · ≈234 表 · RLS · 预聚合指标表</text>
+        <text x="34" y="418" fill="#9fb4b9" font-size="11" font-family="sans-serif">产出：真相存哪</text>
+
+        <!-- 右侧连线 -->
+        <path d="M452 49 C 580 49, 580 84, 580 100" fill="none" stroke="#4a9b8c" stroke-width="1.4" marker-end="url(#ar)"/>
+        <path d="M580 100 L580 372" fill="none" stroke="#4a9b8c" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <text x="590" y="240" fill="#4a9b8c" font-size="10.5" font-family="sans-serif">权限</text>
+        <text x="590" y="254" fill="#4a9b8c" font-size="10.5" font-family="sans-serif">投影</text>
+
+        <!-- 底部三个强制检查点 -->
+        <rect x="16" y="436" width="648" height="1" fill="#243339"/>
+      </svg>
+    </div>
+    <p class="cap">图 1 · 超管后台五层架构。L2→L5 的「权限投影」是本次收敛的架构关键。</p>
+
+    <h3 style="margin:30px 0 14px;font-size:16px">请求链路（写操作示例：修改租户套餐）</h3>
+    <div class="flow">
+      <div class="flow-step"><div class="n">STEP 1</div><h4>L1 壳层拦截</h4><p>路由守卫：token 有效？角色属 Platform 壳？</p></div>
+      <div class="flow-step"><div class="n">STEP 2</div><h4>L3 发起请求</h4><p><code>PATCH /super-admin/tenants/{id}/plan</code></p></div>
+      <div class="flow-step"><div class="n">STEP 3</div><h4>L4 ① 权限码校验</h4><p><code>require_permission_code("tenant:plan:write")</code> → 403 或放行</p></div>
+      <div class="flow-step"><div class="n">STEP 4</div><h4>L4 ② 数据范围校验</h4><p>该租户是否在管理员数据范围内？→ 403 或放行</p></div>
+      <div class="flow-step"><div class="n">STEP 5</div><h4>L4 ③ 业务执行</h4><p>执行业务逻辑</p></div>
+      <div class="flow-step"><div class="n">STEP 6</div><h4>L4 ④ 审计落库</h4><p>中间件写入 <code>audit_logs</code>（含 before/after diff + trace_id）</p></div>
+      <div class="flow-step"><div class="n">STEP 7</div><h4>L5 提交与聚合</h4><p>事务提交 + 预聚合指标异步更新</p></div>
+    </div>
+
+    <div class="note dg" style="margin-top:18px">
+      <b>三个必须后端强制、前端不可信的检查点</b>：<b>权限码</b>、<b>数据范围</b>、<b>审计留痕</b>。
+      前端的任何隐藏/禁用都只是体验优化，不构成安全边界。
+    </div>
+
+    <h3 style="margin:30px 0 14px;font-size:16px">三区导航 × 八大域模块</h3>
+    <div class="grid g2">
+      <div class="card hl">
+        <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#4a9b8c" stroke-width="1.8"/><path d="M3 9h18" stroke="#4a9b8c" stroke-width="1.8"/></svg> Tab 1 · 运营</h3>
+        <p style="margin-top:8px">回答「客户好不好」</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">F1 工作台 · B1–B10 租户与商业运营 · D 内容分发治理 · B10 工单</p>
+      </div>
+      <div class="card hl">
+        <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#4a9b8c" stroke-width="1.8"/><path d="M3 9h18" stroke="#4a9b8c" stroke-width="1.8"/></svg> Tab 2 · 商业</h3>
+        <p style="margin-top:8px">回答「钱对不对」</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">C1–C9 计费与财务 · F4 财务看板 · E4 AI 成本</p>
+      </div>
+      <div class="card hl">
+        <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#4a9b8c" stroke-width="1.8"/><path d="M3 9h18" stroke="#4a9b8c" stroke-width="1.8"/></svg> Tab 3 · 治理</h3>
+        <p style="margin-top:8px">回答「平台稳不稳、权限有没有失控」</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">A 身份与访问 · G 系统配置与运行时 · H 安全审计合规 · F5 系统健康</p>
+      </div>
+      <div class="card">
+        <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3" stroke="#6d8388" stroke-width="1.8" stroke-linecap="round"/></svg> 实验室</h3>
+        <p style="margin-top:8px">默认关闭，二次确认进入</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">E5–E7 Prompt/知识库 · F6 自定义报表 · H7 越权检测 · G8 Feature Flag</p>
+      </div>
+    </div>
+
+    <h3 style="margin:30px 0 14px;font-size:16px">关键架构决策（ADR 摘要）</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>#</th><th>决策</th><th>结论</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">ADR-01</td><td>菜单 SSOT 归属</td><td><span class="b b-pri">后端 admin_menus 为唯一真源</span></td><td>现状前端硬编码导致「删菜单 ≠ 后端拦截」，权限虚设</td></tr>
+          <tr><td class="mono">ADR-02</td><td>路由注册方式</td><td>先按壳拆分，再渐进动态化</td><td>一次性动态路由风险高（白屏/路径失配）</td></tr>
+          <tr><td class="mono">ADR-03</td><td>权限判定统一</td><td>统一到权限码 <code>require_permission_code</code></td><td>枚举式无法表达细粒度，双轨导致权限矩阵不可推导</td></tr>
+          <tr><td class="mono">ADR-04</td><td>审计日志模型</td><td>统一表 + 保留旧表做分域视图</td><td>旧表有业务耦合，直接废弃风险高；不删表可恢复</td></tr>
+          <tr><td class="mono">ADR-05</td><td>配置存储</td><td>DB 分级 + 加密列 + 版本快照</td><td>密钥必须加密且审计；普通配置需可回滚</td></tr>
+          <tr><td class="mono">ADR-06</td><td>指标数据来源</td><td>预聚合日表 <code>metrics_daily</code></td><td>234 表实时 JOIN 会拖垮主库</td></tr>
+          <tr><td class="mono">ADR-07</td><td>超管通配处理</td><td>显式短路标注 <code>*:*</code></td><td>隐式绕过在审计上不可见</td></tr>
+          <tr><td class="mono">ADR-08</td><td>前端组件库</td><td>维持 Ant Design Vue</td><td>换库成本极高且违反令牌锁收敛方向</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:30px 0 14px;font-size:16px">关键数据模型新增表</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>表名</th><th>用途</th><th>关键字段</th><th>迁移编号</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">audit_logs</td><td>统一审计主表（只追加不可改）</td><td><code>trace_id</code> / <code>actor_id+快照</code> / <code>before_json</code> / <code>after_json</code> / <code>changed_fields</code> / <code>severity</code> / <code>reason</code></td><td>119</td></tr>
+          <tr><td class="mono">metric_definitions</td><td>指标口径字典（唯一出处）</td><td><code>metric_key</code> / <code>definition</code> / <code>owner</code> / <code>unit</code></td><td>120</td></tr>
+          <tr><td class="mono">metrics_daily</td><td>预聚合指标日表</td><td><code>(metric_date, metric_key, dimension)</code> / <code>value_numeric</code></td><td>120</td></tr>
+          <tr><td class="mono">admin_user_roles</td><td>管理员多角色（替代单角色外键）</td><td><code>user_id</code> / <code>role_id</code> / <code>granted_by</code> / <code>expires_at</code></td><td>121</td></tr>
+          <tr><td class="mono">admin_user_data_scopes</td><td>数据权限范围（行级隔离）</td><td><code>scope_type</code>(all/tenant/agent_region/tag) / <code>scope_value</code></td><td>121</td></tr>
+          <tr><td class="mono">admin_sessions</td><td>在线会话与强制下线</td><td><code>token_jti</code> / <code>ip</code> / <code>revoked_at</code> / <code>revoked_by</code></td><td>122</td></tr>
+          <tr><td class="mono">system_config_versions</td><td>配置版本快照（diff/回滚）</td><td><code>config_key</code> / <code>version</code> / <code>value_snapshot</code></td><td>123</td></tr>
+          <tr><td class="mono">v_audit_timeline</td><td>UNION 视图，汇聚旧 5 张表</td><td>对齐 <code>audit_logs</code> 字段形状，缺失置 NULL</td><td>视图</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>写入规则（硬性）</b>：审计日志<b>只追加，不更新不删除</b>（DB 层撤销 UPDATE/DELETE 权限或加触发器拦截）；
+      高危动作（退款 / 删除 / 降级 / 授权 / 写配置 / 代登录）<b>必须</b>填 <code>reason</code>，后端校验非空；
+      敏感字段（密码/密钥/Token/身份证/银行账号）<b>入库前脱敏</b>。
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 依赖与优先级 ============ -->
+<section id="dep">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§7</span><h2>模块依赖关系与开发优先级</h2></div>
+    <p class="sec-desc">
+      三条依赖主链必须先建：<b>权限链</b>（A5 → A2/A3/A4 → A6）、<b>审计链</b>（H1，贯穿所有写操作）、<b>数据链</b>（F7 → F1 → F2/F4/F5）。
+    </p>
+
+    <div class="svgbox">
+      <svg viewBox="0 0 680 430" role="img" aria-label="模块依赖有向无环图">
+        <defs>
+          <marker id="ar2" markerWidth="7" markerHeight="7" refX="5.5" refY="2.75" orient="auto">
+            <path d="M0 0 L5.5 2.75 L0 5.5 z" fill="#4a9b8c"/>
+          </marker>
+          <marker id="ar3" markerWidth="7" markerHeight="7" refX="5.5" refY="2.75" orient="auto">
+            <path d="M0 0 L5.5 2.75 L0 5.5 z" fill="#3a4c52"/>
+          </marker>
+        </defs>
+
+        <!-- ROW 1 · P0 根节点 -->
+        <rect x="20" y="16" width="200" height="58" rx="8" fill="#1d2a2f" stroke="#4a9b8c" stroke-width="1.8"/>
+        <text x="34" y="38" fill="#4a9b8c" font-size="10" font-weight="700" font-family="sans-serif">P0 · 权限链根</text>
+        <text x="34" y="56" fill="#e8f0f2" font-size="12.5" font-weight="600" font-family="sans-serif">A5 菜单导航治理</text>
+        <text x="34" y="69" fill="#9fb4b9" font-size="10" font-family="sans-serif">菜单即权限投影</text>
+
+        <rect x="240" y="16" width="200" height="58" rx="8" fill="#1d2a2f" stroke="#4a9b8c" stroke-width="1.8"/>
+        <text x="254" y="38" fill="#4a9b8c" font-size="10" font-weight="700" font-family="sans-serif">P0 · 审计链根</text>
+        <text x="254" y="56" fill="#e8f0f2" font-size="12.5" font-weight="600" font-family="sans-serif">H1 统一审计日志</text>
+        <text x="254" y="69" fill="#9fb4b9" font-size="10" font-family="sans-serif">贯穿所有写操作</text>
+
+        <rect x="460" y="16" width="200" height="58" rx="8" fill="#1d2a2f" stroke="#4a9b8c" stroke-width="1.8"/>
+        <text x="474" y="38" fill="#4a9b8c" font-size="10" font-weight="700" font-family="sans-serif">P0 · 数据链根</text>
+        <text x="474" y="56" fill="#e8f0f2" font-size="12.5" font-weight="600" font-family="sans-serif">G1 配置中心</text>
+        <text x="474" y="69" fill="#9fb4b9" font-size="10" font-family="sans-serif">分级 · 版本 · 加密</text>
+
+        <!-- arrows row1->row2 -->
+        <path d="M120 74 L120 100" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <path d="M340 74 L340 100" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <path d="M560 74 L560 100" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <!-- ROW 2 -->
+        <rect x="20" y="100" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="34" y="124" fill="#e8f0f2" font-size="12" font-family="sans-serif">A2/A3/A4 角色·权限·矩阵</text>
+        <text x="34" y="141" fill="#9fb4b9" font-size="10" font-family="sans-serif">权限码字典 + 可视化授权</text>
+
+        <rect x="240" y="100" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="254" y="124" fill="#e8f0f2" font-size="12" font-family="sans-serif">H3 高危操作二次确认</text>
+        <text x="254" y="141" fill="#9fb4b9" font-size="10" font-family="sans-serif">依赖审计留痕 · 理由必填</text>
+
+        <rect x="460" y="100" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="474" y="124" fill="#e8f0f2" font-size="12" font-family="sans-serif">F7 指标口径字典</text>
+        <text x="474" y="141" fill="#9fb4b9" font-size="10" font-family="sans-serif">指标唯一出处（P0 必建）</text>
+
+        <path d="M120 156 L120 182" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <path d="M340 156 L340 182" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <path d="M560 156 L560 182" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <!-- ROW 3 -->
+        <rect x="20" y="182" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="34" y="206" fill="#e8f0f2" font-size="12" font-family="sans-serif">A6 数据权限范围</text>
+        <text x="34" y="223" fill="#9fb4b9" font-size="10" font-family="sans-serif">行级隔离 · 无记录=无数据</text>
+
+        <rect x="240" y="182" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="254" y="206" fill="#e8f0f2" font-size="12" font-family="sans-serif">H5 数据脱敏</text>
+        <text x="254" y="223" fill="#9fb4b9" font-size="10" font-family="sans-serif">PII 按角色分级</text>
+
+        <rect x="460" y="182" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="474" y="206" fill="#e8f0f2" font-size="12" font-family="sans-serif">F1 超管工作台首屏</text>
+        <text x="474" y="223" fill="#9fb4b9" font-size="10" font-family="sans-serif">今日必处理 + 指标卡</text>
+
+        <path d="M120 238 L120 264" stroke="#3a4c52" stroke-width="1.5" marker-end="url(#ar3)"/>
+        <path d="M340 238 L340 264" stroke="#3a4c52" stroke-width="1.5" marker-end="url(#ar3)"/>
+        <path d="M560 238 L560 264" stroke="#4a9b8c" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+        <!-- ROW 4 -->
+        <rect x="20" y="264" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="34" y="288" fill="#e8f0f2" font-size="12" font-family="sans-serif">B1–B5 租户运营</text>
+        <text x="34" y="305" fill="#9fb4b9" font-size="10" font-family="sans-serif">受数据范围过滤</text>
+
+        <rect x="240" y="264" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="254" y="288" fill="#e8f0f2" font-size="12" font-family="sans-serif">C1–C9 计费财务</text>
+        <text x="254" y="305" fill="#9fb4b9" font-size="10" font-family="sans-serif">金额计算绝不过前端</text>
+
+        <rect x="460" y="264" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="474" y="288" fill="#e8f0f2" font-size="12" font-family="sans-serif">F2 / F4 / F5 三大看板</text>
+        <text x="474" y="305" fill="#9fb4b9" font-size="10" font-family="sans-serif">数据同源同口径</text>
+
+        <path d="M340 320 L340 346" stroke="#3a4c52" stroke-width="1.5" marker-end="url(#ar3)"/>
+
+        <!-- ROW 5 -->
+        <rect x="240" y="346" width="200" height="56" rx="8" fill="#182327" stroke="#2e4046" stroke-width="1.3"/>
+        <text x="254" y="370" fill="#e8f0f2" font-size="12" font-family="sans-serif">E1–E7 AI 治理 · D2/D3 分发</text>
+        <text x="254" y="387" fill="#9fb4b9" font-size="10" font-family="sans-serif">依赖计费与配置中心</text>
+
+        <!-- 跨链虚线 -->
+        <path d="M220 128 C 236 128, 236 128, 240 128" stroke="#4a9b8c" stroke-width="1.3" stroke-dasharray="3 3"/>
+        <path d="M220 210 C 236 210, 236 292, 240 292" stroke="#243339" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="222" y="248" fill="#6d8388" font-size="9.5" font-family="sans-serif">受数据</text>
+        <text x="222" y="259" fill="#6d8388" font-size="9.5" font-family="sans-serif">范围约束</text>
+
+        <text x="20" y="420" fill="#6d8388" font-size="10.5" font-family="sans-serif">绿实线 = P0 关键路径 · 灰线 = 后续阶段依赖 · 虚箭线 = 跨链约束</text>
+      </svg>
+    </div>
+    <p class="cap">图 2 · 模块依赖有向无环图（DAG）。P0 的 9 个「链主」模块不做完，后续 54 个模块都会长在错误地基上。</p>
+
+    <h3 style="margin:30px 0 14px;font-size:16px">开发优先级分层</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>优先级</th><th>模块</th><th>判定理由</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="b b-no">P0 地基</span></td>
+            <td>A5 · A2 · A3 · A4 · A6 · H1 · G1 · F7 · F1</td>
+            <td><b>链主</b>：权限不可推导、审计不可溯、口径不统一 —— 后建的所有模块都会长在错误地基上</td>
+          </tr>
+          <tr>
+            <td><span class="b b-mid">P1 治理闭环</span></td>
+            <td>A1 · A7 · A8 · A9 · H2 · H3 · H5 · G3 · G5 · G6</td>
+            <td>补齐安全与运维闭环</td>
+          </tr>
+          <tr>
+            <td><span class="b b-pri">P2 商业闭环</span></td>
+            <td>B1–B5 · C1–C9 · F4 · E4 · B2</td>
+            <td>直接产生收入可见性与成本可见性</td>
+          </tr>
+          <tr>
+            <td><span class="b b-off">P3 智能增强</span></td>
+            <td>E1–E3 · E5–E7 · D2–D4 · F2 · F3 · F5 · F6</td>
+            <td>提升效率与决策质量</td>
+          </tr>
+          <tr>
+            <td><span class="b b-off">P4 体验打磨</span></td>
+            <td>G2 · G4 · G7–G9 · B6–B10 · C8–C9 · D1 · D5 · H4 · H6 · H7</td>
+            <td>锦上添花</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 实施规划 ============ -->
+<section id="road">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§8</span><h2>分阶段实施规划</h2></div>
+    <p class="sec-desc">每阶段设硬门禁 —— 上一阶段门禁不通过，不得进入下一阶段。这是防返工的唯一有效手段。</p>
+
+    <div class="rm">
+      <div class="rm-row">
+        <div class="rm-tag">P0<small>3 周</small></div>
+        <div>
+          <h4>地基 · 目标：权限可推导、操作可溯源、数据口径唯一</h4>
+          <ul>
+            <li>W1 <code>audit_logs</code> + 审计中间件 + 审计检索接口</li>
+            <li>W1 <code>metrics_daily</code> / <code>metric_definitions</code> + 口径字典首批 20 指标</li>
+            <li>W2 菜单树接口接通前端 + <code>usePlatformMenu()</code></li>
+            <li>W2 <code>admin_user_roles</code> / <code>admin_user_data_scopes</code></li>
+            <li>W3 角色-权限矩阵 UI + 数据范围 UI + 统一鉴权入口 <code>admin_guard.py</code></li>
+            <li>W3 F1 工作台首屏（指标全部来自 <code>metrics_daily</code>）</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-row p1">
+        <div class="rm-tag">P1<small>3 周</small></div>
+        <div>
+          <h4>治理闭环 · 目标：安全可控、运维可自助</h4>
+          <ul>
+            <li>账号管理强化（强制下线 + 登录历史）</li>
+            <li>会话治理 UI + TOTP 二次验证</li>
+            <li>高危操作二次确认 + 理由必填</li>
+            <li>数据脱敏（PII 按角色分级）</li>
+            <li>审计时间轴视图 <code>v_audit_timeline</code> 汇聚旧 5 表</li>
+            <li>备份恢复 / 告警规则 / 调度中心 / 审计员只读模式</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-row p2">
+        <div class="rm-tag">P2<small>3 周</small></div>
+        <div>
+          <h4>商业闭环 · 目标：钱算得清、客户管得住</h4>
+          <ul>
+            <li>租户生命周期状态机（试用→正式→欠费→冻结→注销）</li>
+            <li>租户 360 聚合详情页</li>
+            <li>配额管理统一入口</li>
+            <li>计费看板 + 对账导出（含凭证号）</li>
+            <li>分润结算强化 · AI 成本按租户拆分</li>
+            <li>财务看板</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-row p3">
+        <div class="rm-tag">P3<small>4 周</small></div>
+        <div>
+          <h4>智能增强 · 目标：效率与决策质量</h4>
+          <ul>
+            <li>模型接入 + 场景路由 + 降级链</li>
+            <li>AI 用量闸门（预算熔断）</li>
+            <li>Prompt 管理与 A/B</li>
+            <li>经营看板 + 流量看板 + 系统健康看板</li>
+            <li>发布通道健康 + 凭据矩阵</li>
+            <li>自定义报表</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-row p4">
+        <div class="rm-tag">P4<small>持续</small></div>
+        <div>
+          <h4>体验打磨 · 目标：锦上添花</h4>
+          <ul>
+            <li>运行时治理 · 编排控制台 · 存储供给</li>
+            <li>实验室 Feature Flag · 回收站强化</li>
+            <li>域名 SSL · 白标 · 工单 · 成本核算</li>
+            <li>内容母版 · 媒体治理 · 合规检查 · 合规报告 · 越权检测</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="note ok">
+      <b>P0 六条门禁（逐条打勾才放行 P1）</b> —— 见文末「验收门禁」。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 设计规范 ============ -->
+<section id="tokens">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§9</span><h2>UI / UX 设计规范</h2></div>
+    <p class="sec-desc">
+      硬约束：遵守 <code>DESIGN-TOKEN-LOCK-01</code> —— 平台主色 <b>锁定薄荷绿 <code>#4a9b8c</code></b>。
+      禁止改为非薄荷值、禁止硬编码其它主色、禁止恢复暗色切换。
+    </p>
+
+    <h3 style="margin:0 0 14px;font-size:15px">Design Tokens · 色彩</h3>
+    <div class="swatches" style="margin-bottom:26px">
+      <div class="sw"><div class="c" style="background:#4a9b8c"></div><div class="meta"><b>--color-primary</b><span>#4a9b8c</span></div></div>
+      <div class="sw"><div class="c" style="background:#3f8779"></div><div class="meta"><b>--color-primary-hover</b><span>#3f8779</span></div></div>
+      <div class="sw"><div class="c" style="background:rgba(74,155,140,.14);border-bottom:1px solid #243339"></div><div class="meta"><b>--color-primary-soft</b><span>rgba(74,155,140,.14)</span></div></div>
+      <div class="sw"><div class="c" style="background:#2e9e6b"></div><div class="meta"><b>--color-success</b><span>#2e9e6b</span></div></div>
+      <div class="sw"><div class="c" style="background:#d9911f"></div><div class="meta"><b>--color-warning</b><span>#d9911f</span></div></div>
+      <div class="sw"><div class="c" style="background:#d94f4f"></div><div class="meta"><b>--color-danger</b><span>#d94f4f</span></div></div>
+      <div class="sw"><div class="c" style="background:#4a7fb8"></div><div class="meta"><b>--color-info</b><span>#4a7fb8</span></div></div>
+    </div>
+
+    <div class="grid g3">
+      <div class="card">
+        <h3>字号阶梯</h3>
+        <p style="margin-top:6px">12 / 13 / <b>14（正文）</b> / 16 / 18 / 20 / 24 / 32</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">字体栈：系统字体，零外链<br/><code>-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif</code></p>
+      </div>
+      <div class="card">
+        <h3>间距与圆角</h3>
+        <p style="margin-top:6px">间距阶梯：4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 px</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">圆角：<code>4px</code> 小 / <code>8px</code> 中 / <code>12px</code> 大</p>
+      </div>
+      <div class="card">
+        <h3>颜色语义（中国习惯）</h3>
+        <p style="margin-top:6px">财务 <b style="color:#d94f4f">支出 = 红</b>、<b style="color:#2e9e6b">收入 = 绿</b>；涨红跌绿</p>
+        <p style="margin-top:8px;color:var(--t3);font-size:12px">货币统一 <code>¥</code>；日期 <code>YYYY-MM-DD</code></p>
+      </div>
+    </div>
+
+    <h3 style="margin:30px 0 14px;font-size:15px">页面五态规范（强制统一，消除自造状态）</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>状态</th><th>视觉</th><th>文案要求</th></tr></thead>
+        <tbody>
+          <tr><td>加载中</td><td>骨架屏（非转圈，减少跳变）</td><td>—</td></tr>
+          <tr><td>空数据</td><td>插画 + 说明 + 主操作按钮</td><td>「还没有租户，去创建第一个」</td></tr>
+          <tr><td>无结果</td><td>区别于空数据（有筛选条件时）</td><td>「没有符合条件的记录，试试放宽筛选」</td></tr>
+          <tr><td>出错</td><td>错误码 + 重试按钮</td><td>「加载失败（500），请重试或联系技术支持」</td></tr>
+          <tr><td><b>无权限 403</b></td><td>锁图标 + 申请入口</td><td>「你没有查看该模块的权限，如需开通请联系超级管理员」</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <b>第 5 态（403）是超管后台特有且必需的</b> —— 权限矩阵设计下，「能看到菜单但某页无权限」是常态，必须有明确出口，不能白屏或报错。
+    </div>
+
+    <div class="grid g2" style="margin-top:22px">
+      <div class="card">
+        <h3>交互与可访问性</h3>
+        <ul class="chk" style="margin-top:10px">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M12 4v16" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round"/></svg><span><b>键盘</b>：全站 Tab 可达；焦点环 2px 主色；<code>⌘K / Ctrl+K</code> 全局搜索；<code>Esc</code> 关弹层</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#4a9b8c" stroke-width="2"/><path d="M12 8v4l3 2" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round"/></svg><span><b>对比度</b>：正文 ≥ 4.5:1（WCAG AA）；主色上小字避免纯白</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 4l9 16H3z" stroke="#d94f4f" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17h.01" stroke="#d94f4f" stroke-width="2" stroke-linecap="round"/></svg><span><b>高危操作</b>：危险色 + 二次确认 + 理由必填 + 可撤销窗口</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8Z" stroke="#4a9b8c" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="#4a9b8c" stroke-width="1.8"/></svg><span><b>无损操作</b>：所有删除默认软删除进回收站</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>移动适配（<code>&lt;768px</code>）</h3>
+        <ul class="chk" style="margin-top:10px">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="2.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M11 19h2" stroke="#4a9b8c" stroke-width="1.8" stroke-linecap="round"/></svg><span>侧栏收起为汉堡菜单；Tab 变底部 Tab Bar</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="6" rx="1.6" stroke="#4a9b8c" stroke-width="1.8"/><rect x="3" y="14" width="18" height="6" rx="1.6" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>表格转卡片列表，或允许横向滚动</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="12" rx="2" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>按钮最小点击区 44×44px；输入框字号 ≥ 16px（防 iOS 缩放）</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 20h16" stroke="#4a9b8c" stroke-width="1.8" stroke-linecap="round"/><path d="M8 20V9M12 20V5M16 20v-7" stroke="#4a9b8c" stroke-width="1.8" stroke-linecap="round"/></svg><span>适配 iPhone 底部安全区 <code>env(safe-area-inset-bottom)</code></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin:30px 0 14px;font-size:15px">关键页面线框要点</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>页面</th><th>设计要点</th></tr></thead>
+        <tbody>
+          <tr><td>F1 超管工作台</td><td>首屏「今日必处理」置顶：告警 N 条 / 待审 M 条 / 欠费 K 户；每条一键直达；核心指标卡 6 个；逾期标红</td></tr>
+          <tr><td>A4 角色权限矩阵</td><td>行 = 权限码（按域分组），列 = 角色；勾选即改；顶部显示变更条数；保存前 diff 预览</td></tr>
+          <tr><td>A6 数据范围</td><td>三选一：全平台 / 按租户（多选器）/ 按标签；顶部醒目提示「无选择 = 无数据访问权」</td></tr>
+          <tr><td>H1 审计日志</td><td>左侧筛选（时间/操作人/域/动作/严重级），右侧时间轴；高危项红色标记；点击展开 before/after 并排 diff</td></tr>
+          <tr><td>G1 配置中心</td><td>按域分组折叠；密钥类显示 <code>•••• last4</code>；每项右侧「历史」看版本 diff 与回滚</td></tr>
+          <tr><td>F7 指标口径</td><td>表格：指标名 / 定义 / 单位 / 归属人 / 刷新策略；支持搜索</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 验收门禁 ============ -->
+<section id="gates">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">§10</span><h2>验收门禁与约束</h2></div>
+
+    <h3 style="margin:0 0 14px;font-size:15px">P0 门禁（六条全绿才放行 P1）</h3>
+    <ul class="chk">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>后端<b>每一条</b> <code>/super-admin/*</code> 写端点都有明确 <code>permission_code</code>（无遗漏）</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>越权测试：用 <code>auditor</code> 角色 token 调写端点，<b>100% 返回 403</b></span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>审计完整性：随机抽 10 次写操作，<b>10/10</b> 有审计记录且 diff 可读</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>菜单驱动验证：改 <code>admin_menus.visible=false</code> → 刷新后该菜单消失（无需改前端代码）</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>数据范围验证：<code>support</code> 角色看不到未分配租户</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="#4a9b8c" stroke-width="1.8"/></svg><span>指标口径验证：<code>metrics_daily</code> 数值与手工 SQL 核对一致</span></li>
+    </ul>
+
+    <h3 style="margin:30px 0 14px;font-size:15px">每次施工后的通用门禁</h3>
+    <div class="grid g2">
+      <div class="card">
+        <ul class="chk">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>后端 <code>pytest</code> 通过</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>前端 <code>vitest + typecheck + lint</code> 通过</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>越权回归：新写端点用无权限 token 测，应 403</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <ul class="chk">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>审计回归：每次写操作产生审计记录</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Alembic <b>单 head</b> 校验（新迁移从 119 起）</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4a9b8c" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>新产出登记到会话产出串联索引</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin:30px 0 14px;font-size:15px">不可违反的硬锁</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>锁 ID</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">DESIGN-TOKEN-LOCK-01</td><td>平台主色 = 薄荷绿 <code>#4a9b8c</code>；禁止改主色、禁止硬编码其它主色、禁止恢复暗色切换</td></tr>
+          <tr><td class="mono">ROLE-SHELL-LOCK-01</td><td><code>/admin/*</code> 归 Platform 壳；代理登录后不得出现超管项</td></tr>
+          <tr><td class="mono">LOGIN-LOCK-01</td><td>唯一登录 <code>/login</code>，禁止新建第二套登录页</td></tr>
+          <tr><td class="mono">ENV-LOCK-01</td><td>PG@5433 / Redis@6379；禁止用空 SQLite 掩盖迁移问题</td></tr>
+          <tr><td class="mono">SYSTEM-LOCK-02</td><td>八大子系统不可裁减 —— 超管后台须能观测全部八个</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 结语 ============ -->
+<section style="border-bottom:none">
+  <div class="wrap">
+    <div class="card hl" style="padding:26px">
+      <h3 style="font-size:17px;margin-bottom:12px">结语</h3>
+      <p style="font-size:14px;line-height:1.8">
+        超管后台的问题<b>从来不是功能不够，而是秩序不够</b>。
+        112 个页面、26 个后端模块已经证明了开发能力；缺的是让它<b>可授权、可审计、可观测、可治理</b>的那层骨头。
+      </p>
+      <p style="font-size:14px;line-height:1.8;margin-top:12px">
+        先做 <b>P0 那 9 个「链主」模块</b> —— 菜单 SSOT、权限矩阵、数据范围、统一审计、配置中心、指标口径、工作台首屏。
+        这九件事做完，后面 54 个模块才有地方长。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap fl">
+    <span>优丁 YouDing · SaaS 超管后台 规划与设计总览 <b>v1.0</b> · 2026-09-20</span>
+    <span>详细规格见 <code>docs/超管后台系统规划与设计-2026-09-20.md</code></span>
+  </div>
+</footer>
+
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+    var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function sync() {
+      var i = 0, y = window.scrollY + 120;
+      for (var k = 0; k < secs.length; k++) { if (secs[k] && secs[k].offsetTop <= y) i = k; }
+      links.forEach(function (a, idx) { a.classList.toggle('on', idx === i); });
+    }
+    window.addEventListener('scroll', sync, { passive: true });
+    sync();
+  })();
+</script>
+</body>
+</html>

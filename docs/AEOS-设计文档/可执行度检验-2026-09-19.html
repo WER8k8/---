@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>优丁 YouDing · 项目负责人可执行度检验报告（2026-09-19 实测）</title>
+<style>
+  :root {
+    --mint: #4a9b8c; --mint-dark: #2f7a6d; --mint-light: #e6f2ef;
+    --ink: #1f2937; --sub: #6b7280; --line: #e5e7eb;
+    --ok: #16a34a; --warn: #d97706; --bad: #dc2626; --info: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; color: var(--ink); background: #f8faf9; line-height: 1.65; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
+  header { background: linear-gradient(135deg, #4a9b8c 0%, #2f7a6d 100%); color: #fff; border-radius: 14px; padding: 28px 32px; margin-bottom: 28px; }
+  header h1 { font-size: 24px; margin-bottom: 6px; }
+  header p { opacity: .9; font-size: 14px; }
+  .verdict { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .verdict .chip { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); padding: 6px 14px; border-radius: 20px; font-size: 13px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 22px 26px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+  h2 { font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  h2 .tag { font-size: 12px; padding: 2px 10px; border-radius: 10px; font-weight: normal; }
+  .tag.green { background: #dcfce7; color: var(--ok); }
+  .tag.red { background: #fee2e2; color: var(--bad); }
+  .tag.amber { background: #fef3c7; color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f9fafb; font-weight: 600; white-space: nowrap; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .pill.ok { background: #dcfce7; color: var(--ok); }
+  .pill.bad { background: #fee2e2; color: var(--bad); }
+  .pill.warn { background: #fef3c7; color: var(--warn); }
+  .pill.info { background: #dbeafe; color: var(--info); }
+  code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 12.5px; font-family: Consolas, monospace; }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-top: 12px; }
+  .score-box { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; text-align: center; }
+  .score-box .num { font-size: 30px; font-weight: 700; }
+  .score-box .lbl { font-size: 13px; color: var(--sub); margin-top: 2px; }
+  .risk { border-left: 4px solid; padding: 10px 16px; margin-bottom: 12px; border-radius: 0 8px 8px 0; background: #fafbfc; }
+  .risk.p0 { border-color: var(--bad); } .risk.p1 { border-color: var(--warn); } .risk.p2 { border-color: var(--info); }
+  .risk .rt { font-weight: 700; font-size: 14px; }
+  .risk .rd { font-size: 13.5px; color: #374151; margin-top: 4px; }
+  .risk .rf { font-size: 13px; color: var(--sub); margin-top: 6px; }
+  .risk .rf code { background: #eef2f1; }
+  ul.tight { padding-left: 20px; } ul.tight li { margin-bottom: 4px; font-size: 14px; }
+  .foot { text-align: center; color: var(--sub); font-size: 12.5px; margin-top: 30px; }
+  .nav { position: sticky; top: 12px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 18px; margin-bottom: 20px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 13.5px; z-index: 5; }
+  .nav a { color: var(--mint-dark); text-decoration: none; font-weight: 600; }
+  .nav a:hover { text-decoration: underline; }
+  .hl { background: #fff8e6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>优丁 YouDing · 项目负责人可执行度检验报告</h1>
+  <p>检验日期：2026-09-19 ｜ 检验方式：全部指标实测（端口探活 / 自检脚本 / 接口调用 / 数据库直查 / 源码定位），非文档转述</p>
+  <div class="verdict">
+    <span class="chip">核心结论：<b>后端可执行 7.5/10 · 前端官网可执行 2/10 · 商业化可闭环度 4/10</b></span>
+    <span class="chip">P0 阻塞：<b>1 项</b>（3000 官网被错误进程占用且返回 426）</span>
+    <span class="chip">P1 缺陷：<b>3 项</b>（2 个接口 500 + 测试数据污染生产库）</span>
+  </div>
+</header>
+
+<div class="nav">
+  <a href="#score">总评</a><a href="#ports">六端口</a><a href="#gate">门禁</a><a href="#api">接口</a><a href="#data">数据</a><a href="#risk">风险清单</a><a href="#closed">可执行闭环</a>
+</div>
+
+<!-- 总评 -->
+<div class="card" id="score">
+  <h2>一、总评 <span class="tag green">量化口径</span></h2>
+  <div class="score-grid">
+    <div class="score-box"><div class="num" style="color:var(--mint)">7.5</div><div class="lbl">后端运行时可执行度<br>（服务/门禁/核心接口）</div></div>
+    <div class="score-box"><div class="num" style="color:var(--bad)">2</div><div class="lbl">官网 3000 可访问度<br>（426 不可访问）</div></div>
+    <div class="score-box"><div class="num" style="color:var(--warn)">4</div><div class="lbl">商业化闭环度<br>（47 租户仅 1 激活）</div></div>
+    <div class="score-box"><div class="num" style="color:var(--warn)">6.5</div><div class="lbl">业务链路可执行度<br>（含 2 个 500 + 降级组件）</div></div>
+  </div>
+  <p style="margin-top:14px; font-size:14px; color:#374151;">
+    <b>负责人一句话结论：</b>后端 19/19 门禁全绿、六端口全开、核心接口 70% 实测可用、履约数据真实存在——<b>系统骨架能跑</b>；
+    但<b>对外官网（3000）当前实际不可访问</b>（被 worktree Nuxt 旧版占用返回 426），且存在 <b>2 个真实接口 500</b> 与 <b>84 条测试桩数据污染生产库</b>，
+    商业化上 47 个租户仅 1 个激活、0 成交——<b>「能演示」≠「能卖」</b>。
+  </p>
+</div>
+
+<!-- 六端口 -->
+<div class="card" id="ports">
+  <h2>二、六端口实测 <span class="tag green">全 OPEN</span></h2>
+  <table>
+    <tr><th>端口</th><th>服务</th><th>监听进程</th><th>实测结果</th></tr>
+    <tr><td><code>3000</code></td><td>官网（应为 Vite 运行版）</td><td>node / Nuxt CLI（worktree 旧版）</td><td><span class="pill bad">426 不可访问</span> 违反官网启动强制索引</td></tr>
+    <tr><td><code>5173</code></td><td>超管前端</td><td>node / vite</td><td><span class="pill ok">200</span> <code>/admin</code> 可访问</td></tr>
+    <tr><td><code>8001</code></td><td>后端 API</td><td>python / uvicorn（16:46 启动）</td><td><span class="pill ok">200</span> <code>/health</code> 正常，连 PG@5433</td></tr>
+    <tr><td><code>6379</code></td><td>Redis</td><td>—</td><td><span class="pill ok">OPEN</span> 连接成功</td></tr>
+    <tr><td><code>5433</code></td><td>PostgreSQL 15.8</td><td>—</td><td><span class="pill ok">OPEN</span> 直查 248 表成功</td></tr>
+    <tr><td><code>5678</code></td><td>n8n</td><td>—</td><td><span class="pill ok">200</span> 服务可达（API 需认证属正常）</td></tr>
+  </table>
+  <p style="margin-top:10px; font-size:13.5px; color:var(--sub);">
+    注：3000 端口监听进程命令行 <code>nuxi dev --host 127.0.0.1 --port 3002</code>（worktree Nuxt3 薄荷旧版），对 HTTP 请求一律返回 426/400 —— 与「官网启动强制索引：3000 应为主要备份 Vite 暖白+砖橙运行版」冲突。
+  </p>
+</div>
+
+<!-- 门禁 -->
+<div class="card" id="gate">
+  <h2>三、编排自检门禁 <span class="tag green">19/19 通过</span></h2>
+  <table>
+    <tr><th>关键项</th><th>实测值</th><th>判定</th></tr>
+    <tr><td>数据库连通（脚本默认环境）</td><td>SQLite · 219 表（注意：非 PG）</td><td><span class="pill warn">口径偏差</span></td></tr>
+    <tr><td>Alembic 单 head</td><td><code>116_normalize_lead_enum_case</code></td><td><span class="pill ok">PASS</span></td></tr>
+    <tr><td>Celery 任务注册 / Beat 匹配</td><td>20 任务 / 13-13</td><td><span class="pill ok">PASS</span></td></tr>
+    <tr><td>Hermes 执行器契约</td><td>37/37 全注册（含 4 大功能域）</td><td><span class="pill ok">PASS</span></td></tr>
+    <tr><td>DeerFlow / 技能包 / 外贸技能</td><td>11/11 · 76 技能 · 9 技能</td><td><span class="pill ok">PASS</span></td></tr>
+    <tr><td>Trade AI / GoodJob 中枢</td><td>物理目录 + WhatsApp 路由 OK</td><td><span class="pill ok">PASS</span>（仅结构）</td></tr>
+    <tr><td>八子系统硬锁</td><td>8/8 注册</td><td><span class="pill ok">PASS</span></td></tr>
+  </table>
+  <p style="margin-top:10px; font-size:13.5px; color:var(--sub);">
+    <b>负责人注意</b>：自检脚本默认连 <b>SQLite</b>（219 表），与运行态真实库 <b>PG@5433（248 表）</b>存在口径差。19/19 绿是「结构完整性」门禁，不等于「PG 运行态全通」——本轮实测即在 PG 上发现了 2 个真实 500。
+  </p>
+</div>
+
+<!-- 接口 -->
+<div class="card" id="api">
+  <h2>四、接口实测（admin 真实登录 + Token）</h2>
+  <table>
+    <tr><th>接口</th><th>结果</th><th>说明</th></tr>
+    <tr><td><code>POST /api/v1/auth/login</code></td><td><span class="pill ok">200</span></td><td>admin → super_admin token（要求 <code>username_or_email</code> 字段）</td></tr>
+    <tr><td><code>GET /api/v1/skills</code></td><td><span class="pill ok">200</span></td><td>77 技能返回</td></tr>
+    <tr><td><code>GET /api/v1/tenants</code></td><td><span class="pill ok">200</span></td><td>47 租户（1 激活 + 46 trial）</td></tr>
+    <tr><td><code>GET /api/v1/orchestration/hermes/tasks</code></td><td><span class="pill ok">200</span></td><td>任务中心有真实任务</td></tr>
+    <tr><td><code>GET /api/v1/crm-pipeline/pipeline/stats</code></td><td><span class="pill ok">200</span></td><td>1 机会 · 0 成交（可执行但无业绩）</td></tr>
+    <tr><td><code>GET /api/v1/token/my-quota</code></td><td><span class="pill ok">200</span></td><td>Token 计费接口正常</td></tr>
+    <tr><td><code>GET /api/v1/lead/funnel</code></td><td><span class="pill bad">500</span></td><td>枚举缺 <code>REPLIED</code> + 字面量查询 → LookupError</td></tr>
+    <tr><td><code>GET /api/v1/workspace/prospecting/leads</code></td><td><span class="pill bad">500</span></td><td>User 模型无 <code>tenant_id</code> → AttributeError</td></tr>
+    <tr><td><code>GET /api/v1/health</code> / <code>/openapi.json</code></td><td><span class="pill ok">200</span></td><td>openapi 实测 1954 个路径</td></tr>
+  </table>
+</div>
+
+<!-- 数据 -->
+<div class="card" id="data">
+  <h2>五、数据真源实测（PG@5433 直查）</h2>
+  <table>
+    <tr><th>指标</th><th>实测值</th><th>负责人视角</th></tr>
+    <tr><td>表总数 / Alembic head</td><td><b>248 表</b> / head 116</td><td>结构完整、迁移一致</td></tr>
+    <tr><td>技能 / 租户 / 用户</td><td>77 技能 · 47 租户 · 56 用户</td><td>数据已注水</td></tr>
+    <tr><td>租户激活分布</td><td>active 1 · trial 46</td><td><span class="pill warn">商业化薄弱：仅 2.1% 激活</span></td></tr>
+    <tr><td>Hermes 任务（ai_tasks）</td><td>1034 条：done 456 · cancelled 197 · paused 171 · failed 104 · executing 40 · wait_human 37</td><td>闭环真实运转，但失败率 10%</td></tr>
+    <tr><td>履约数据</td><td>invoices 2 · purchase_orders 15 · logistics_shipments 15</td><td><span class="pill warn">真实但量极小，未成规模</span></td></tr>
+    <tr><td><b>测试桩污染</b></td><td><b>84 条 <code>fake_p0_executor</code> 任务</b>（仅存在于测试夹具）</td><td><span class="pill bad">测试数据写入生产库</span></td></tr>
+  </table>
+</div>
+
+<!-- 风险清单 -->
+<div class="card" id="risk">
+  <h2>六、风险清单（按优先级）</h2>
+
+  <div class="risk p0">
+    <div class="rt">P0-1 · 对外官网（3000）实际不可访问</div>
+    <div class="rd">3000 端口被 worktree Nuxt3 薄荷旧版进程占用（命令行 <code>--port 3002</code> 却监听 3000），对全部 HTTP 请求返回 <b>426 Upgrade Required</b>。按「官网启动强制索引」，3000 应运行 <code>主要备份/上线网站/frontend</code> 的 Vite 暖白+砖橙版。当前状态 = 潜在买家打开官网即失败。</div>
+    <div class="rf">证据：<code>Get-NetTCPConnection -LocalPort 3000</code> → PID 24736 = <code>nuxi.mjs dev</code>；curl 三次均 426，带 Upgrade 头返回 400。<br>修复：按强制索引启动脚本重启官网（Vite 版），停掉 worktree Nuxt 实例。</div>
+  </div>
+
+  <div class="risk p1">
+    <div class="rt">P1-1 · <code>/api/v1/lead/funnel</code> 返回 500（枚举契约破裂）</div>
+    <div class="rd">模型 <code>EmailStatus</code> 无 <code>REPLIED</code> 成员，但 <code>lead_tools.py</code> 用字面量 <code>"replied"</code> 做 <code>status.in_(...)</code>，列定义 <code>validate_strings=True</code> → 绑定参数即抛 <code>LookupError</code>。线索漏斗页=超管核心看板，必现崩溃。</div>
+    <div class="rf">证据：TestClient 复现 <code>LookupError: 'replied' is not among the defined enum values. Enum name: email_status_enum</code>。<br>修复：<code>EmailStatus</code> 补 <code>REPLIED="replied"</code> 成员（含迁移），或查询改用枚举成员。</div>
+  </div>
+
+  <div class="risk p1">
+    <div class="rt">P1-2 · <code>/api/v1/workspace/prospecting/leads</code> 返回 500（模型契约破裂）</div>
+    <div class="rd"><code>workspace.py list_leads</code> 访问 <code>current_user.tenant_id</code>，但鉴权返回的 <code>User</code> 模型<b>无此属性</b>（ORM 直查 PG 数据本身正常，2 行）→ <code>AttributeError</code>。社媒拓客线索列表=Trade AI 前端口碑页，必现崩溃。</div>
+    <div class="rf">证据：TestClient 复现 <code>AttributeError: 'User' object has no attribute 'tenant_id'</code>（workspace.py L65）。<br>修复：改用正确的租户归属字段（如 <code>user.tenant_id</code> 或经依赖注入取 tenant），并补契约单测。</div>
+  </div>
+
+  <div class="risk p1">
+    <div class="rt">P1-3 · 测试桩数据污染生产库（84 条）</div>
+    <div class="rd"><code>ai_tasks</code> 表中存在 84 条 <code>hermes_node:fake_p0_executor</code> 任务，该执行器只存在于 <code>tests/</code> 测试夹具——说明某轮测试直接写入了真实 PG，而非隔离测试库。任务中心会展示伪任务，破坏数据可信度。</div>
+    <div class="rf">证据：PG 直查 <code>SELECT count(*) FROM ai_tasks WHERE task_type LIKE '%fake%'</code> = 84。<br>修复：测试库与生产库隔离（测试 DATABASE_URL 指向独立库），清理 84 条脏数据。</div>
+  </div>
+
+  <div class="risk p2">
+    <div class="rt">P2-1 · 自检脚本与运行态口径不一致（SQLite vs PG）</div>
+    <div class="rd"><code>orchestration_selfcheck.py</code> 默认环境连 SQLite（219 表），与运行态 PG（248 表）不同。门禁绿 ≠ PG 运行态无错（本轮 2 个 500 即 PG 侧）。</div>
+    <div class="rf">建议：自检脚本显式加载 <code>backend/.env</code> 的 PG 连接，并加「PG 模式下接口冒烟」门禁。</div>
+  </div>
+
+  <div class="risk p2">
+    <div class="rt">P2-2 · 已知降级/待真接入组件（负责人应知晓口径）</div>
+    <div class="rd">① Trade AI 真发：需 SMTP/WhatsApp Business 凭据，当前发送技能诚实降级（draft/degraded，不静默假成功）；② visual_studio：<code>FF_INSTATIC_STUDIO=false</code> 时返回 not_ready；③ AEOS 双 executor 仍为 mock 桩，待真接入。</div>
+    <div class="rf">这些是「诚实降级」而非故障，符合交付求真原则；但对外演示时需明确「演示数据非真实发送」。</div>
+  </div>
+</div>
+
+<!-- 可执行闭环 -->
+<div class="card" id="closed">
+  <h2>七、可执行闭环判定（负责人决策视图）</h2>
+  <table>
+    <tr><th>闭环</th><th>判定</th><th>依据</th></tr>
+    <tr><td>后端启动 + 登录 + 任务中心</td><td><span class="pill ok">✅ 可执行</span></td><td>8001 健康、admin 登录、hermes/tasks 200、1034 任务真实</td></tr>
+    <tr><td>AI 编排（Hermes 37 执行器）</td><td><span class="pill ok">✅ 可执行</span></td><td>19/19 门禁 + 任务状态机真实运转（done 456）</td></tr>
+    <tr><td>履约闭环（PI/单证/物流）</td><td><span class="pill ok">✅ 可执行（小规模）</span></td><td>invoices 2 · PO 15 · 物流 15 真实数据 + 路由齐备</td></tr>
+    <tr><td>社媒拓客线索（prospecting）</td><td><span class="pill bad">❌ 当前不可用</span></td><td>接口 500（P1-2），线索页白屏</td></tr>
+    <tr><td>线索漏斗看板（lead/funnel）</td><td><span class="pill bad">❌ 当前不可用</span></td><td>接口 500（P1-1），超管看板崩溃</td></tr>
+    <tr><td>对外官网（3000）</td><td><span class="pill bad">❌ 当前不可访问</span></td><td>426（P0-1），潜在客户入口关闭</td></tr>
+    <tr><td>商业化转化（trial→付费）</td><td><span class="pill warn">⚠️ 未起步</span></td><td>47 租户仅 1 激活、CRM 0 成交</td></tr>
+  </table>
+
+  <h2 style="margin-top:24px;">修复顺序建议（负责人拍板）</h2>
+  <ul class="tight">
+    <li><b>第一批（P0，半天）</b>：重启 3000 为 Vite 运行版 → 官网可访问。</li>
+    <li><b>第二批（P1，1-2 天）</b>：补 <code>EmailStatus.REPLIED</code> + 修 <code>list_leads</code> 租户字段 → 看板与拓客页恢复；清理 84 条 fake 数据 + 测试库隔离。</li>
+    <li><b>第三批（P2，随迭代）</b>：自检脚本接 PG；Trade AI 真发送凭据接入；双 mock executor 真实现。</li>
+    <li><b>商业动作</b>：激活 46 个 trial 中的目标客户，跑通 1 单 PI→物流全链路，形成真实案例。</li>
+  </ul>
+</div>
+
+<div class="foot">
+  报告生成：2026-09-19 ｜ 检验脚本：probe_owner_exec.py / probe_owner_exec2/3.py / probe_tc.py / probe_fake.py ｜ 全部数据实测，未引用旧文档数字
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,4646 @@
+[
+  {
+    "path": "App.vue",
+    "group": "App.vue",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 90,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/DrawerDropdown.vue",
+    "group": "components",
+    "doc": "外层导航项，position: relative 给下拉菜单做定位父级",
+    "lines": 135,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/ExtModulePageShell.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 113,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/GlobalSearch.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 349,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/UBrainAssistant.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 397,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/YdResponsiveTable.vue",
+    "group": "components",
+    "doc": "桌面端：正常表格",
+    "lines": 52,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "layout/ClientShellLayout.vue",
+    "group": "layout",
+    "doc": "无 out-in 过渡，避免切页白屏闪",
+    "lines": 428,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "layout/index.vue",
+    "group": "layout",
+    "doc": "Main Area",
+    "lines": 776,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/access-denied.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 112,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/NotFound.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 43,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/PrivacyPolicy.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 252,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/TermsOfService.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 116,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/adaptive/AdaptiveControls.vue",
+    "group": "components",
+    "doc": "字体大小调整",
+    "lines": 140,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/admin/AdminAuditLogTable.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 137,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/agent/AgentTaskTree.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 254,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/assistant/AssistantMascot.vue",
+    "group": "components",
+    "doc": "思考状态微光指示晶片",
+    "lines": 94,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/client/ClientTodayThreeBoard.vue",
+    "group": "components",
+    "doc": "顶部状态栏与导航",
+    "lines": 1516,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/client/ClientTodayThreeStrip.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 171,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/common/CookieConsent.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 185,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/common/ErrorMessage.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 192,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/common/LoadingSpinner.vue",
+    "group": "components",
+    "doc": "Skeleton mode: show SkeletonCard instead of spinner",
+    "lines": 148,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/common/PageDataBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 78,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/common/SkeletonCard.vue",
+    "group": "components",
+    "doc": "Card skeleton",
+    "lines": 190,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/common/WebSocketStatus.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 145,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/conversation/ConversationList.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 260,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/conversation/MessageInput.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 247,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/conversation/MessageItem.vue",
+    "group": "components",
+    "doc": "文本消息",
+    "lines": 298,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/conversation/MessageList.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 144,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/conversation/SkillQuickBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 184,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/growth/GrowthAutopilotPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 187,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/CertWatermark.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 52,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/ThemeSettingsDrawer.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 185,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/WorkTabBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 16,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/YdCopilotSlot.vue",
+    "group": "components",
+    "doc": "外贸专属自适应快捷卡片",
+    "lines": 362,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/YdProSidebar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 469,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/YdProTopbar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 459,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/YdProWorktabs.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 269,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/layout/YdQueueEntry.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 85,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/media/VideoPlayer.vue",
+    "group": "components",
+    "doc": "Custom Controls",
+    "lines": 488,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/sales/CustomerDetail.vue",
+    "group": "components",
+    "doc": "客户基本信息",
+    "lines": 313,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/sales/CustomsBuyerResearchPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 174,
+    "apis": [
+      "foreign-trade"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "components/sales/EmailDetail.vue",
+    "group": "components",
+    "doc": "邮件头部",
+    "lines": 306,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/JtbdSiteChecklist.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 163,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/SiteEditorGapPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 186,
+    "apis": [
+      "admin-bff"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/SiteEditorLProPublishBanner.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 80,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/SiteEditorRightPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 72,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/SiteEditorSeoPanel.vue",
+    "group": "components",
+    "doc": "Google Top 3 权重健康指标仪表盘",
+    "lines": 283,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/SiteTemplatePickerModal.vue",
+    "group": "components",
+    "doc": "Modal 顶栏：Meoo 沉浸式标题与宣传条",
+    "lines": 702,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/site-builder/YdGrapesSiteEditor.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 193,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/skill/SkillCard.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 241,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/skill/SkillDetail.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 275,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/skill/SkillGrid.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 222,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/task/TaskProgress.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 211,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/task/TaskResult.vue",
+    "group": "components",
+    "doc": "客户列表类型",
+    "lines": 400,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/task/TaskStatus.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 262,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/AitoearnCapabilityBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 101,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingAutopilotProgress.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 121,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingExternalAccountsPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 181,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingImContactsPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 226,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingPlainRoadmap.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 101,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingPlatformBind.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 160,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingWangcaiGuide.vue",
+    "group": "components",
+    "doc": "狗爪指引",
+    "lines": 188,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/OnboardingWangcaiPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 174,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/PublishReadinessBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 165,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/TenantOnboardingChecklist.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 97,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/tenant/VideoPublishBindHub.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 302,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/traffic/TrafficBoardPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 290,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/whatsfinds/AppTabs.vue",
+    "group": "components",
+    "doc": "左侧滚动按钮",
+    "lines": 394,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/whatsfinds/EvidenceChain.vue",
+    "group": "components",
+    "doc": "证据列表",
+    "lines": 311,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/whatsfinds/ScoreRadar.vue",
+    "group": "components",
+    "doc": "雷达图",
+    "lines": 246,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/whatsfinds/SearchSyntaxPreview.vue",
+    "group": "components",
+    "doc": "搜索语法展示",
+    "lines": 330,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/whatsfinds/TenantAiConfig.vue",
+    "group": "components",
+    "doc": "配置列表",
+    "lines": 479,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/CoachProPageShell.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 67,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/LoginFeatureIcon.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 49,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/LoginOAuthButtons.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 168,
+    "apis": [
+      "oauth"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/TenantLoginPanel.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 170,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdCheckMark.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 48,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdClientPlanUsageBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 116,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdDataTable.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 125,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdEmptyState.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdFinanceNav.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 187,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdFormilyForm.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 66,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdHonestDataBanner.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 130,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdIllustration.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 43,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdNavIcon.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 21,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdOnboardingCard.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 73,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdPage.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 40,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdPageHeader.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 58,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdReliefIcon.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 102,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdSchemaForm.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 90,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdSearchBar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 46,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdStatsCard.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 124,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdStatsRow.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 31,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdTableColumnSettings.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 85,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdTableToolbar.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 92,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdTodayQueue.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 142,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdTodayWorkbench.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 261,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdUsageMeter.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 88,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components/youding/YdWorkspaceHeader.vue",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 82,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/aggregation.vue",
+    "group": "views",
+    "doc": "按层级汇总卡片",
+    "lines": 949,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/capability-hub.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 230,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 340,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/demo-rehearsal.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 1194,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/founder-diagnostics.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 373,
+    "apis": [
+      "founderOps",
+      "oauth"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 975,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/layout.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 9,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/platform-credentials.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 396,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/platform-registry.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 155,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/platform-zones.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 256,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/traffic-board.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 24,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/account-opening.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 513,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/churn-warning.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 598,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/commission.vue",
+    "group": "views",
+    "doc": "结算规则说明",
+    "lines": 148,
+    "apis": [
+      "index"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/daily-report.vue",
+    "group": "views",
+    "doc": "概览总结",
+    "lines": 485,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/layout.vue",
+    "group": "views",
+    "doc": "@deprecated 已迁入 YoudingProLayout；保留文件避免旧引用 404",
+    "lines": 12,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/performance.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 520,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent/traffic-board.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 118,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent-hub/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 95,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent-hub/execution-review.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 164,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent-hub/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent-hub/mcp-bridge.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 148,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent-hub/task-graph.vue",
+    "group": "views",
+    "doc": "① 提交编排任务",
+    "lines": 334,
+    "apis": [
+      "orchestration"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/agent-hub/task-orchestrator.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 166,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/analytics.vue",
+    "group": "views",
+    "doc": "Tab 1: SEO Analysis",
+    "lines": 378,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/content.vue",
+    "group": "views",
+    "doc": "Left: Generation Form",
+    "lines": 338,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/dashboard.vue",
+    "group": "views",
+    "doc": "AI Engine Health Status",
+    "lines": 298,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 18,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/logs.vue",
+    "group": "views",
+    "doc": "Cost Summary Cards",
+    "lines": 292,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/models.vue",
+    "group": "views",
+    "doc": "Provider Cards",
+    "lines": 266,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-center/skill-store.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 1185,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-learning/auto-ab-test.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 156,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-learning/behavior.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 168,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-learning/conversion-funnel.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 113,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-learning/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 80,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/ai-learning/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/annex/AnnexEmbedPage.vue",
+    "group": "views",
+    "doc": "异常状态 1: 未配置或未部署",
+    "lines": 284,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cases/edit.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 246,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cases/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 279,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/ai-config.vue",
+    "group": "views",
+    "doc": "顶部提示",
+    "lines": 154,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/ai-scenarios.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 159,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/aitoearn-engage.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 448,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/assistant.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 197,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/billing.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 216,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/chuhaiji-app.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 473,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/content-distribute.vue",
+    "group": "views",
+    "doc": "",
+    "lines": 494,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/copilot.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 2099,
+    "apis": [
+      "foreign-trade"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/dashboard.vue",
+    "group": "views",
+    "doc": "核心业务中心：左 70% 询盘与外贸转化漏斗 + 右 30% 独立站与出海进展",
+    "lines": 898,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/egress.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 325,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/export-quote.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 109,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/foreign-trade-team.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 141,
+    "apis": [
+      "foreign-trade"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/forum-qa.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 183,
+    "apis": [
+      "forum"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/geo-visibility.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 198,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/invoices.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 290,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/layout.vue",
+    "group": "views",
+    "doc": "租户轻量壳 — 实现见 layout/ClientShellLayout.vue",
+    "lines": 12,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/onboarding.vue",
+    "group": "views",
+    "doc": "Step 0: 一键开业",
+    "lines": 868,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/plan-gate.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 115,
+    "apis": [
+      "admin-bff"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/product-candidates.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 116,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/referral.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 58,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/seo-keywords.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 94,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/site-editor-lab.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 293,
+    "apis": [
+      "admin-bff"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/skills-market.vue",
+    "group": "views",
+    "doc": "页面顶栏：给 Meoo 装上专属技能",
+    "lines": 934,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/templates-explore.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 312,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/today-three.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 27,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/tokens.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 679,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/trade-tools.vue",
+    "group": "views",
+    "doc": "搜索框",
+    "lines": 1576,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/traffic-board.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 24,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/video-editor-embed.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 240,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/video-overseas.vue",
+    "group": "views",
+    "doc": "顶部状态提示与能力徽标",
+    "lines": 797,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/video-studio-project-panel.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 139,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/video-studio.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 287,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/wangcai-plugin-market.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 454,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cognitive/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 51,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cognitive/expert-system.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 55,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cognitive/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cognitive/qa-engine.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 107,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cognitive/semantic-index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 116,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/compliance/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 131,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/content/edit.vue",
+    "group": "views",
+    "doc": "编辑器加载中",
+    "lines": 394,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/content/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 314,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/cross-platform/dashboard.vue",
+    "group": "views",
+    "doc": "概览卡片",
+    "lines": 322,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/dashboard/index.vue",
+    "group": "views",
+    "doc": "Alerts for degraded/empty states",
+    "lines": 724,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/deerflow/Monitor.vue",
+    "group": "views",
+    "doc": "状态统计",
+    "lines": 225,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/developer/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 44,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/developer/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/developer/low-code.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 155,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/developer/plugins.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 131,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/developer/sdk.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 114,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/edge-cdn/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 86,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/edge-cdn/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/edge-cdn/nodes.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 107,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/edge-cdn/preheat.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 130,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/edge-cdn/protocol.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 96,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/evolution/Dashboard.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 218,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/experiments/AbTest.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/globalization/culture-adapt.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 125,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/globalization/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 117,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/globalization/glossary.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 129,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/globalization/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/globalization/translator.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 56,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/inquiries/im-routing.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 626,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/inquiries/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 738,
+    "apis": [
+      "cross-border"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/integrations/AiConfig.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 580,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/integrations/Feishu.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 130,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/international/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 273,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/international/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 7,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/international/inquiries.vue",
+    "group": "views",
+    "doc": "筛选栏",
+    "lines": 254,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/international/sites.vue",
+    "group": "views",
+    "doc": "添加/编辑弹窗",
+    "lines": 384,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/landing/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 1079,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/login/forgot-password.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 164,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/login/index.vue",
+    "group": "views",
+    "doc": "Right Form Column",
+    "lines": 1024,
+    "apis": [
+      "emailAuth",
+      "oauth"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/login/LoginBrandColumn.vue",
+    "group": "views",
+    "doc": "decorative animated layers",
+    "lines": 305,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/login/LoginOAuthRow.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 137,
+    "apis": [
+      "oauth"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/login/LoginSocialButtons.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 63,
+    "apis": [
+      "oauth"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/login/oauth-callback.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 121,
+    "apis": [
+      "oauth",
+      "oauthBindings"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/logistics/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 128,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/logistics/freight-calc.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 105,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/logistics/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/logistics/lbs-routing.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 130,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/logistics/orders-track.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 272,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/logistics/quotation.vue",
+    "group": "views",
+    "doc": "Create Modal",
+    "lines": 199,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/media-factory/charts.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 185,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/media-factory/dashboard.vue",
+    "group": "views",
+    "doc": "Stats",
+    "lines": 615,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/media-factory/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/media-factory/render-queue.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 367,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/media-factory/tts.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 143,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/n8n/Workflows.vue",
+    "group": "views",
+    "doc": "操作栏",
+    "lines": 204,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/news/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 379,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/operations/traffic-board.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 46,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/partner/performance.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 295,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/products/categories.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 399,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/products/edit.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 497,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/products/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 448,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/publish/unified.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 852,
+    "apis": [
+      "foreign-trade"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/referral/dashboard.vue",
+    "group": "views",
+    "doc": "===== 顶部 Banner =====",
+    "lines": 704,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/referral/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 11,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/referral/redemption-admin.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 115,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/referral/rules.vue",
+    "group": "views",
+    "doc": "===== 顶部 =====",
+    "lines": 259,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/AutoNegotiator.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 1240,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/CompanyAccount360.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 54,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/CustomerFinder.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 1028,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/dashboard.vue",
+    "group": "views",
+    "doc": "顶部统计卡片",
+    "lines": 282,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/EmailAutomation.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 1220,
+    "apis": [
+      "ubrain/sales"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/OpportunityBoard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 109,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/QuotesPanel.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 56,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/RfqPanel.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 95,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sales/SalesTaskCenter.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 64,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/baidu-tools.vue",
+    "group": "views",
+    "doc": "数据概览卡片",
+    "lines": 337,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/batch-seo.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 400,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/building-wiki.vue",
+    "group": "views",
+    "doc": "生成文章区域",
+    "lines": 430,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/compliance.vue",
+    "group": "views",
+    "doc": "内容扫描",
+    "lines": 415,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/content-optimizer.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 272,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/eeat.vue",
+    "group": "views",
+    "doc": "标签页切换",
+    "lines": 959,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 390,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/keyword-ranking.vue",
+    "group": "views",
+    "doc": "仪表盘卡片",
+    "lines": 805,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/llms-txt.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 355,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/performance.vue",
+    "group": "views",
+    "doc": "标签页切换",
+    "lines": 248,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/schema-markup.vue",
+    "group": "views",
+    "doc": "Schema生成器",
+    "lines": 791,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo/site-audit.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 345,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/content.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 661,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 424,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/growth-tools.vue",
+    "group": "views",
+    "doc": "总览",
+    "lines": 885,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/inclusion.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 570,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 49,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/keywords.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 619,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/publish.vue",
+    "group": "views",
+    "doc": "========== 1. AI 内容生成区 ==========",
+    "lines": 1526,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/regions.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 527,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/seo-matrix/settings.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 379,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/sites/SiteBuild.vue",
+    "group": "views",
+    "doc": "步骤指示器",
+    "lines": 297,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/analytics.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 438,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/drag-module.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 379,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/effects.vue",
+    "group": "views",
+    "doc": "背景装饰动画",
+    "lines": 462,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/performance.vue",
+    "group": "views",
+    "doc": "标签页切换",
+    "lines": 407,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/settings-main.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 348,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/settings.vue",
+    "group": "views",
+    "doc": "侧边导航",
+    "lines": 116,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system/users.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 331,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system-health/backup.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 129,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system-health/dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 198,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system-health/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 84,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system-health/resource-monitor.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 129,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/system-health/stress-test.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 149,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/templates/dashboard-data-cockpit.vue",
+    "group": "views",
+    "doc": "Top Bar: Search + Actions",
+    "lines": 1034,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/templates/dashboard-data-screen.vue",
+    "group": "views",
+    "doc": "Top Header",
+    "lines": 821,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/templates/dashboard-enterprise.vue",
+    "group": "views",
+    "doc": "Breadcrumb + User",
+    "lines": 716,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/templates/dashboard-saas.vue",
+    "group": "views",
+    "doc": "SaaS Top Bar: Tenant Switcher + Global Actions",
+    "lines": 815,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/templates/dashboard-tencent.vue",
+    "group": "views",
+    "doc": "Top Navigation",
+    "lines": 660,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/templates/index.vue",
+    "group": "views",
+    "doc": "Header",
+    "lines": 358,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/billing.vue",
+    "group": "views",
+    "doc": "租户选择器",
+    "lines": 533,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/dashboard.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 881,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/domain.vue",
+    "group": "views",
+    "doc": "主域名展示",
+    "lines": 312,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/plans.vue",
+    "group": "views",
+    "doc": "==================== 创建/编辑 Modal ====================",
+    "lines": 297,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/pricing.vue",
+    "group": "views",
+    "doc": "Header",
+    "lines": 609,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/product-showcase.vue",
+    "group": "views",
+    "doc": "==================== HERO ====================",
+    "lines": 938,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/register.vue",
+    "group": "views",
+    "doc": "Header",
+    "lines": 483,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/site-editor.vue",
+    "group": "views",
+    "doc": "Header：产品名 + 产品图 + AI 一键生成",
+    "lines": 2452,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/tenants/white-label.vue",
+    "group": "views",
+    "doc": "租户选择",
+    "lines": 209,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/workspace/OutreachEditor.vue",
+    "group": "views",
+    "doc": "左侧：画像摘要",
+    "lines": 461,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/workspace/ProspectingWorkspace.vue",
+    "group": "views",
+    "doc": "步骤条",
+    "lines": 584,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/workspace/SkillConsole.vue",
+    "group": "views",
+    "doc": "技能卡片网格",
+    "lines": 346,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/AbTestList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/AgentHubList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/AnalyticsList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/ComplianceList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/ContentList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/InquiriesList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/NewsList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/PaymentList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/ProductsList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/SeoList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/SettingsList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/_generated/UsersList.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 79,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/analytics.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 226,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/article-generator.vue",
+    "group": "views",
+    "doc": "步骤指示器",
+    "lines": 890,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/article-to-video.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 935,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/browser-companion-bridge.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 149,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/content.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 527,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/dashboard.vue",
+    "group": "views",
+    "doc": "AI引擎状态横幅",
+    "lines": 711,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 18,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/knowledge.vue",
+    "group": "views",
+    "doc": "Search Bar",
+    "lines": 521,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/logs.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 115,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/models.vue",
+    "group": "views",
+    "doc": "AI引擎状态横幅",
+    "lines": 1274,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/provider-setup.vue",
+    "group": "views",
+    "doc": "步骤条",
+    "lines": 709,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/scenario-models.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 325,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-center/usage.vue",
+    "group": "views",
+    "doc": "统计卡",
+    "lines": 367,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/analytics.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 218,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/models.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 470,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 194,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/prompts.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 506,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/tasks.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 162,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/templates.vue",
+    "group": "views",
+    "doc": "统计",
+    "lines": 242,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/token.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 220,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/ai-engine/trade-intel.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 234,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/attribution/index.vue",
+    "group": "views",
+    "doc": "KPI Cards",
+    "lines": 268,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/automation/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 12,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/automation/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 128,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/automation/scheduler.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 118,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/automation/scripts.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 150,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/automation/workflows.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 147,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/debug.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 159,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/format.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 191,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/generator.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 157,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 290,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/refactor.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 119,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/review.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 487,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/code-tools/scanner.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 370,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/components/AdminModulePlaceholder.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 110,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/file-manager/history.vue",
+    "group": "views",
+    "doc": "文件与对象变更历史",
+    "lines": 20,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/file-manager/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 14,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/file-manager/overview.vue",
+    "group": "views",
+    "doc": "统计卡片",
+    "lines": 1095,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/file-manager/scan.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 129,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/file-manager/search.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 71,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/commission-rules.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 119,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/commissions.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 175,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 228,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/invoice-applications.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 388,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/ip-pool.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 840,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/payment-ops.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 712,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/finance/payment-orders.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 155,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/geo-engine/index.vue",
+    "group": "views",
+    "doc": "Hero",
+    "lines": 232,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/hierarchy/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 850,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/hub/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 56,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/onboarding/index.vue",
+    "group": "views",
+    "doc": "Header",
+    "lines": 282,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/paperclip/approvals.vue",
+    "group": "views",
+    "doc": "待审批列表",
+    "lines": 309,
+    "apis": [
+      "paperclip"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/paperclip/dashboard.vue",
+    "group": "views",
+    "doc": "公司使命卡片",
+    "lines": 429,
+    "apis": [
+      "paperclip"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/paperclip/goals.vue",
+    "group": "views",
+    "doc": "筛选栏",
+    "lines": 418,
+    "apis": [
+      "paperclip"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/paperclip/heartbeats.vue",
+    "group": "views",
+    "doc": "引擎状态卡片",
+    "lines": 302,
+    "apis": [
+      "paperclip"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/paperclip/org-chart.vue",
+    "group": "views",
+    "doc": "组织架构可视化树",
+    "lines": 533,
+    "apis": [
+      "paperclip"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/projects/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/projects/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 141,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/recycle-bin/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 265,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/runtime/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/runtime/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 548,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/scheduler/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/scheduler/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 609,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/security/audit.vue",
+    "group": "views",
+    "doc": "安全审计",
+    "lines": 23,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/security/compliance.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 134,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/security/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/security/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 544,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/security/vulnerability.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 143,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/account-bindings.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 162,
+    "apis": [
+      "oauth",
+      "oauthBindings"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/agent-capabilities.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 709,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/command-center.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 588,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/config.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 450,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/deerflow-monitor.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 123,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/ecc-hangar.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 148,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/greedy-contest-leaderboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 469,
+    "apis": [
+      "hermesGreedy"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/greedy-cumulative.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 208,
+    "apis": [
+      "hermesGreedy"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/greedy-expert-memory.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 802,
+    "apis": [
+      "hermesGreedy"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/greedy-hub.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 318,
+    "apis": [
+      "hermesGreedy"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/greedy-publish-queue.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 262,
+    "apis": [
+      "hermesGreedy"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/integrations-stack.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 156,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/license.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 486,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/logs.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 260,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/ops-wrap.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 40,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/overview.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 776,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/permissions.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 360,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/progress-board.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 269,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/publish-history.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 46,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/rank-scheduler.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 162,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/storage-provision.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 207,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/survival-dashboard.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 312,
+    "apis": [
+      "hermesGreedy"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/system/users.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 419,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/tech-radar/index.vue",
+    "group": "views",
+    "doc": "Header",
+    "lines": 270,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/v2ray/index.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 6,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/v2ray/routing.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 49,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/v2ray/servers.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 70,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/v2ray/subscription.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 154,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/v2ray/tracker.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 66,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/admin/v2ray/traffic.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 141,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/queues/fulfillment.vue",
+    "group": "views",
+    "doc": "履约跟进与外贸7步操作抽屉",
+    "lines": 475,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/queues/inquiries.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 598,
+    "apis": [
+      "cross-border",
+      "foreign-trade"
+    ],
+    "kind": "vue"
+  },
+  {
+    "path": "views/client/queues/publish.vue",
+    "group": "views",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 217,
+    "apis": [],
+    "kind": "vue"
+  },
+  {
+    "path": "components.d.ts",
+    "group": "components.d.ts",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 185,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "main.ts",
+    "group": "main.ts",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 43,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "shims-vue.d.ts",
+    "group": "shims-vue.d.ts",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 9,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "vite-env.d.ts",
+    "group": "vite-env.d.ts",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 60,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/admin-bff.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 133,
+    "apis": [
+      "index"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "api/admin-bff.types.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 75,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/analytics.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 26,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/authPaths.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 29,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/authRefresh.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 93,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/cross-border.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 709,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/emailAuth.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 54,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/fetchWrapper.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 53,
+    "apis": [
+      "authPaths",
+      "fetchWrapper"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "api/foreign-trade.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 206,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/forum.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 58,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/founderOps.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 123,
+    "apis": [
+      "authPaths"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "api/hermesGreedy.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 479,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/index.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 776,
+    "apis": [
+      "authRefresh"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "api/oauth.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 132,
+    "apis": [
+      "authPaths",
+      "fetchWrapper"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "api/oauthBindings.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 43,
+    "apis": [
+      "oauth"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "api/orchestration.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 148,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/paperclip.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 207,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/response.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 18,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/system.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 18,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useAdaptiveLayout.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 557,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useAdminWorkspace.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 103,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useAiConnect.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 95,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useAssistantPanel.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 23,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useClientPlanSnapshot.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 92,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useClientTodayThree.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 285,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useCodeGenerator.ts",
+    "group": "composables",
+    "doc": "占位输出：接入后端模型后可替换",
+    "lines": 124,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useConversation.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 171,
+    "apis": [
+      "ubrain/conversation"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useCountUp.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 88,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useDevBackendProbe.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 55,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useEffectivePlatformRole.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 28,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useFloatingDrag.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 137,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useGlobalSearch.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 29,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useGrapesSiteEditor.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 142,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useGrowthAgentRun.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 271,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useModuleTabSync.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 67,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/usePageData.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 49,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/usePlanPayment.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 192,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useQueueBadges.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 76,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useRumBeacon.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 65,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useSanitize.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 30,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useShellNavigation.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 42,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useSkill.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 181,
+    "apis": [
+      "ubrain/skill"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useTask.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 215,
+    "apis": [
+      "ubrain/task"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useTenantBrand.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 176,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useUbrainChatContext.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 46,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useUndoDelete.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 112,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useWebSocket.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 153,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useWorkTabNavigation.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 61,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useYdTable.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 82,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useYoudingTable.spec.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 47,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "composables/useYoudingTableBridge.ts",
+    "group": "composables",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 24,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/agentLevelBlueprint.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 159,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/annexModules.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 88,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/antIconMap.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 308,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/assistant-mascot.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 14,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/countryOptions.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 26,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/extModuleNav.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 169,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/iconCatalog.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 227,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/loginPortalCopy.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 63,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/lProTier1Locales.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 25,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/navRouteRegistry.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 192,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/platformRoleDisplay.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 48,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/platformShellMenu.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 155,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/productImageSpace.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 25,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/proShellMenus.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 195,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/roleShellLock.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 246,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/sales-assistant-brand.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 104,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/stubVisibility.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 386,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/tenantMediaSpace.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 77,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/workbenchCapabilityRegistry.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 797,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/workbenchIcons.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 132,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "constants/workbenchPathCapabilities.ts",
+    "group": "constants",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 53,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "router/generated-crud-routes.ts",
+    "group": "router",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 81,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "router/index.ts",
+    "group": "router",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 2051,
+    "apis": [
+      "admin-bff"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/agentCapabilities.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 168,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/auth.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 271,
+    "apis": [
+      "admin-bff",
+      "authRefresh",
+      "emailAuth",
+      "oauth"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/conversation.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 161,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/index.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 28,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/skill.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 151,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/task.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 180,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/uiPreferences.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 205,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/user.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 146,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/websocket.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 144,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "stores/workTabs.ts",
+    "group": "stores",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 239,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/api.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 52,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/conversation.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 57,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/index.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 12,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/sales.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 227,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/shellNav.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 19,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/skill.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 53,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/task.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 60,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "types/websocket.ts",
+    "group": "types",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 84,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/aiConfigHelpers.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 52,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/aiModelCapability.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 86,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/api.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 323,
+    "apis": [
+      "authRefresh"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/exportCsv.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 23,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/flattenMenuNav.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 65,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/hermesSiteBuilder.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 92,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/index.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 170,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/jwtPayload.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 70,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/l-pro-publish-gate.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 182,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/mediaStudioHandoff.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 40,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/multipostBridge.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 60,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/noFakeDelivery.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 92,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/onboardingAutopilot.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 76,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/pageNotify.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 30,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/postLoginNavigation.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 47,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/prefetchPostLoginShell.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 62,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/productAiPrompt.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 42,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/resolveMediaAssetUrl.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 19,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/sessionAuth.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 56,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/sessionKick.spec.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 59,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/sessionKick.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 77,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/shellNavKernel.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 104,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/siteEditorLabSync.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 226,
+    "apis": [
+      "admin-bff"
+    ],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/siteProductImages.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 52,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/tenantPlanDisplay.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 240,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/tenantSitePreview.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 17,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/websocket.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 298,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/workTabPath.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 8,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/ydModal.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 26,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/ydTableUtils.spec.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "utils/ydTableUtils.ts",
+    "group": "utils",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 51,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/ubrain/conversation.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 98,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/ubrain/invitation.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 124,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/ubrain/sales.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 279,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/ubrain/skill.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 103,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "api/ubrain/task.ts",
+    "group": "api",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 113,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "components/youding/index.ts",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 32,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "components/youding/types.ts",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 31,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "components/youding/formily/antdv-bridge.ts",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 66,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "components/youding/formily/siteEditorSchema.ts",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 200,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "components/youding/formily/siteEditorSeoSchema.ts",
+    "group": "components",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 99,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/buildPageHtml.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 450,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/buildPageShell.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 100,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/buildVisualSiteBundle.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 127,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/enterpriseSiteStyles.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 242,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/grapesjsLocaleZh.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 171,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/index.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 158,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/industryPresets.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 368,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/localizeGrapesEditor.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 57,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/parseVisualHtml.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 103,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/registerYoudingBlocks.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 268,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/seoSync.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 90,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/templatePreview.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 90,
+    "apis": [],
+    "kind": "ts"
+  },
+  {
+    "path": "templates/site-builder/types.ts",
+    "group": "templates",
+    "doc": "Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.",
+    "lines": 70,
+    "apis": [],
+    "kind": "ts"
+  }
+]

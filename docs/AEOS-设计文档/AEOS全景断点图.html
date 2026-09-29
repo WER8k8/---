@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEOS 全景断点图 — 端到端串联审计</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; }
+  .header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 32px 48px; border-bottom: 1px solid #334155; }
+  .header h1 { font-size: 28px; color: #f1f5f9; margin-bottom: 8px; }
+  .header p { color: #94a3b8; font-size: 14px; }
+  .legend { display: flex; gap: 24px; padding: 16px 48px; background: #1e293b; border-bottom: 1px solid #334155; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-green { background: #22c55e; }
+  .dot-red { background: #ef4444; }
+  .dot-yellow { background: #eab308; }
+  .dot-blue { background: #3b82f6; }
+  .section { padding: 32px 48px; }
+  .section h2 { font-size: 20px; color: #f1f5f9; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #334155; }
+  .mermaid { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #334155; overflow-x: auto; }
+  .issue-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .issue-table th { background: #334155; color: #f1f5f9; padding: 12px 16px; text-align: left; font-size: 13px; }
+  .issue-table td { padding: 12px 16px; border-bottom: 1px solid #1e293b; font-size: 13px; }
+  .issue-table tr:nth-child(even) { background: #1e293b; }
+  .issue-table tr:nth-child(odd) { background: #0f172a; }
+  .p0 { color: #ef4444; font-weight: bold; }
+  .p1 { color: #eab308; font-weight: bold; }
+  .p2 { color: #3b82f6; }
+  .status-broken { color: #ef4444; }
+  .status-ok { color: #22c55e; }
+  .status-partial { color: #eab308; }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+  .summary-card { background: #1e293b; border-radius: 8px; padding: 20px; border: 1px solid #334155; text-align: center; }
+  .summary-card .number { font-size: 36px; font-weight: bold; }
+  .summary-card .label { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+  .num-red { color: #ef4444; }
+  .num-yellow { color: #eab308; }
+  .num-green { color: #22c55e; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AEOS 全景断点图</h1>
+  <p>端到端串联审计 · 2026-09-23 · 基于代码库实测</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-green"></div>链路通（正常工作）</div>
+  <div class="legend-item"><div class="legend-dot dot-red"></div>断点（P0 严重）</div>
+  <div class="legend-item"><div class="legend-dot dot-yellow"></div>半断（P1 中等）</div>
+  <div class="legend-item"><div class="legend-dot dot-blue"></div>模块/服务</div>
+</div>
+
+<div class="section">
+  <h2>总览</h2>
+  <div class="summary-grid">
+    <div class="summary-card"><div class="number num-green">8</div><div class="label">通的链路</div></div>
+    <div class="summary-card"><div class="number num-red">6</div><div class="label">P0 断点</div></div>
+    <div class="summary-card"><div class="number num-yellow">7</div><div class="label">P1 半断</div></div>
+    <div class="summary-card"><div class="number num-yellow">3</div><div class="label">孤岛模块</div></div>
+  </div>
+</div>
+
+<!-- ==================== 图1: 全局数据流 ==================== -->
+<div class="section">
+  <h2>图1 · 全局数据流与断点</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#3b82f6', 'primaryTextColor': '#fff', 'primaryBorderColor': '#60a5fa', 'lineColor': '#64748b', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'fontSize': '14px'}}}%%
+flowchart TB
+    subgraph FE["🖥️ 前端层"]
+        direction LR
+        ADMIN["Admin :5174<br/>Vite + Vue3"]
+        TENANT["Tenant :3000<br/>Nuxt3"]
+    end
+
+    subgraph API["🔌 Backend API :8001"]
+        direction LR
+        AUTH["Auth / BFF<br/>认证鉴权"]
+        ROUTES["175+ 路由<br/>auto_discovery"]
+        MIDDLEWARE["16 层中间件"]
+    end
+
+    subgraph CORE["⚙️ 核心服务层"]
+        direction TB
+        TRADEAI["TradeAI Agent<br/>拓客引擎"]
+        GOODJOB["GoodJob CRM<br/>履约引擎"]
+        DEERFLOW["DeerFlow<br/>内容引擎"]
+        BROWSER["Browser Runtime<br/>浏览器引擎"]
+        HERMES["Hermes<br/>编排引擎"]
+        WHATSAPP["WhatsApp<br/>事件总线"]
+    end
+
+    subgraph OUTBOUND["📡 出站层"]
+        direction LR
+        N8N["n8n<br/>多渠道路由"]
+        PLATFORM["40+ 平台<br/>SEO/GEO 分发"]
+    end
+
+    subgraph DATA["💾 数据层"]
+        direction LR
+        PG["PostgreSQL<br/>:5433"]
+        REDIS["Redis<br/>:6379"]
+        JSON["JSON 兜底<br/>本地文件"]
+    end
+
+    subgraph EXP["🧠 经验层"]
+        EVOLUTION["EvolutionEngine<br/>PG 真源"]
+        EXPFEED["ExperienceFeed<br/>反馈入口"]
+        EXPERIENCE["ExperienceEngine<br/>JSON 兜底"]
+    end
+
+    ADMIN -->|"Vite Proxy /api/v1"| API
+    TENANT -->|"/api/v1"| API
+    API --> CORE
+    CORE --> OUTBOUND
+    CORE --> DATA
+    CORE --> EXP
+
+    %% 断点标记
+    TRADEAI -.->|"❌ 断: 无自动同步"| GOODJOB
+    WHATSAPP -.->|"❌ 断: 无消费者"| GOODJOB
+    DEERFLOW -.->|"❌ 断: Celery 未注册"| N8N
+    N8N -.->|"❌ 断: 回调不写回"| API
+    BROWSER -.->|"⚠️ 半断: 事件无消费者"| CORE
+    EVOLUTION -.->|"❌ 断: evolve()死代码"| HERMES
+  </div>
+</div>
+
+<!-- ==================== 图2: WhatsApp 事件孤岛 ==================== -->
+<div class="section">
+  <h2>图2 · WhatsApp 事件总线 — 有发布无消费</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart LR
+    WAPlugin["WhatsApp Plugin<br/>Baileys :3100"]
+    WAEvents["/api/v1/whatsapp-events<br/>路由层"]
+    EventBus["WhatsAppInboundEventBus<br/>归一化 → 落库 → 发布"]
+    Bus["进程内 EventBus<br/>event_bus.emit_sync()"]
+    History["_history 列表<br/>只存不处理"]
+
+    WAPlugin -->|"POST /inbound"| WAEvents
+    WAEvents -->|"publish_inbound()"| EventBus
+    EventBus -->|"emit_sync()"| Bus
+    Bus --> History
+
+    subgraph 缺失的消费者["❌ 缺失的消费者"]
+        direction TB
+        CRMSync["询盘自动创建<br/>InquiryExecutor"]
+        AutoReply["AI 自动回复<br/>WhatsApp Bridge"]
+        LeadScore["线索自动评分<br/>Lead Scoring"]
+        StatusSync["消息状态同步<br/>ack/failed → CRM"]
+    end
+
+    Bus -.->|"❌ 无人订阅"| CRMSync
+    Bus -.->|"❌ 无人订阅"| AutoReply
+    Bus -.->|"❌ 无人订阅"| LeadScore
+    Bus -.->|"❌ 无人订阅"| StatusSync
+
+    style History fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style 缺失的消费者 fill:#450a0a,stroke:#ef4444,color:#fca5a5
+  </div>
+</div>
+
+<!-- ==================== 图3: DeerFlow → n8n 断裂 ==================== -->
+<div class="section">
+  <h2>图3 · DeerFlow → n8n 出站链路 — 四重断裂</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart TB
+    DF["DeerFlow Executor<br/>seo_publish / multi_channel_publish"]
+    PUBLISH["content_master_publish_service<br/>publish_auto_variants()"]
+    TASK["PublishTask<br/>status=pending"]
+    WORKER["publish_worker<br/>process_pending_tasks"]
+    NOTIFY["_notify_content_published()"]
+    CELERY["trigger_n8n_workflow.delay()<br/>@shared_task"]
+
+    subgraph BROKEN["❌ 四重断裂"]
+        direction TB
+        B1["① Celery worker 未 include<br/>app.services.n8n.trigger<br/>任务被静默丢弃"]
+        B2["② 生产环境 N8N_ENABLED=false<br/>endpoint='' 被禁用"]
+        B3["③ 发送的是 pending 状态<br/>不是实际发布结果"]
+        B4["④ n8n 回调只 emit EventBus<br/>不写回任何数据库"]
+    end
+
+    N8N["n8n 工作流<br/>content_publish_dispatch"]
+    PLATFORMS["40+ 平台<br/>分发"]
+
+    DF -->|"创建 PublishTask"| PUBLISH
+    PUBLISH --> TASK
+    TASK --> WORKER
+    DF -->|"success 后"| NOTIFY
+    NOTIFY --> CELERY
+    CELERY -.->|"❌ 断裂"| BROKEN
+    BROKEN -.->|"❌ 无法到达"| N8N
+    N8N -.->|"❌ 无法到达"| PLATFORMS
+
+    style BROKEN fill:#450a0a,stroke:#ef4444,color:#fca5a5
+    style CELERY fill:#7f1d1d,stroke:#ef4444,color:#fff
+  </div>
+</div>
+
+<!-- ==================== 图4: TradeAI → CRM 断点 ==================== -->
+<div class="section">
+  <h2>图4 · TradeAI 拓客 → GoodJob CRM — 缺少串联节点</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph TRADEAI["TradeAI Agent 拓客"]
+        SCRAPE["prospect_scrape<br/>线索检索"]
+        WA["outreach_whatsapp<br/>WhatsApp 触达"]
+        EMAIL["outreach_email<br/>邮件触达"]
+        INBOX["classify_inbox<br/>收件箱分类"]
+    end
+
+    subgraph CRM["GoodJob CRM 履约"]
+        SYNC["sync_lead<br/>线索建档"]
+        PI["generate_trade_document<br/>PI/CI/PL 生成"]
+        STAGE["sync_fulfillment_stage<br/>状态同步"]
+        OPP["update_opportunity<br/>商机更新"]
+    end
+
+    subgraph DAG["Hermes 编排 DAG"]
+        GRAPH1["outreach_graph<br/>拓客图"]
+        GRAPH2["fulfillment_graph<br/>履约图"]
+        GRAPH3["composite_super_graph<br/>复合超导图"]
+    end
+
+    SCRAPE -->|"✅ 有调用点"| TRADEAI
+    WA -->|"✅ 有调用点"| TRADEAI
+    EMAIL -->|"✅ 有调用点"| TRADEAI
+    INBOX -->|"✅ 有调用点"| TRADEAI
+
+    SYNC -->|"✅ 有调用点"| CRM
+    PI -->|"✅ 有调用点"| CRM
+    STAGE -->|"✅ 有调用点"| CRM
+    OPP -->|"✅ 有调用点"| CRM
+
+    TRADEAI -.->|"❌ 无自动同步节点"| CRM
+    GRAPH3 -.->|"❌ 缺少 goodjob_crm 节点"| CRM
+
+    GRAPH1 -->|"lead.search → lead.score"| TRADEAI
+    GRAPH2 -->|"inquiry → order → PI → CI → track"| CRM
+    GRAPH3 -->|"deerflow → trade_ai_agent → accio → trade_ops"| TRADEAI
+
+    style TRADEAI fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style CRM fill:#1e3a5f,stroke:#3b82f6,color:#fff
+  </div>
+</div>
+
+<!-- ==================== 图5: Experience Engine 断点 ==================== -->
+<div class="section">
+  <h2>图5 · Experience Engine 反馈闭环 — 消费端断点</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart TB
+    subgraph WRITE["✅ 写入端（5处调用）"]
+        direction LR
+        W1["acquisition.py<br/>OpsCard 成交/丢单"]
+        W2["inquiries.py<br/>询盘 won/lost"]
+        W3["domestic_inquiry<br/>国内询盘"]
+        W4["native_fulfillment<br/>履约完成"]
+        W5["node_terminal_hooks<br/>DAG 节点终态"]
+    end
+
+    subgraph STORE["✅ 沉淀端"]
+        direction LR
+        EV["EvolutionEngine<br/>PG 真源<br/>evolution_task_records"]
+        EE["ExperienceEngine<br/>JSON 兜底<br/>experience_records.json"]
+        UNIFIED["unified_experience<br/>优先读 PG"]
+    end
+
+    subgraph CONSUME["❌ 消费端（断点集中区）"]
+        direction TB
+        PLANNER["✅ Planner 注入<br/>_experience_hints<br/>已接通"]
+        EVOLVE["❌ evolve() 改进建议<br/>死代码 · 零调用"]
+        DAG_GOV["❌ DAG Governor<br/>查了不用<br/>historical_exp 闲置"]
+        DEEPSEEK["❌ DeepSeek Harness<br/>经验接口孤立<br/>零外部调用"]
+    end
+
+    W1 & W2 & W3 & W4 & W5 -->|"record_ops_win/loss"| EV
+    W5 -->|"ExperienceEngine.record()"| EE
+    EV --> UNIFIED
+    EE --> UNIFIED
+
+    UNIFIED -->|"✅ fetch_experience_hints()"| PLANNER
+    UNIFIED -.->|"❌ 无人调用"| EVOLVE
+    EVOLVE -.->|"❌ 无定时触发"| CONSUME
+    UNIFIED -.->|"❌ 查了不用"| DAG_GOV
+    UNIFIED -.->|"❌ 接口未接通"| DEEPSEEK
+
+    style EVOLVE fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style DAG_GOV fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style DEEPSEEK fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style PLANNER fill:#14532d,stroke:#22c55e,color:#fff
+  </div>
+</div>
+
+<!-- ==================== 图6: Browser Runtime → Evidence ==================== -->
+<div class="section">
+  <h2>图6 · Browser Runtime → 证据分析 — 分析做了白做</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart LR
+    RT["Browser Runtime<br/>runtime.execute()"]
+    EXEC["Executor<br/>Playwright 9种动作"]
+    PERSIST["persist_evidence()<br/>落盘 + 入库"]
+    ANALYZE["EvidenceAnalyzer<br/>7类异常检测"]
+    EMIT["event_bus.emit<br/>EVIDENCE_ANALYZED<br/>EVIDENCE_ANOMALY"]
+
+    subgraph MISSING["❌ 缺失的消费者"]
+        direction TB
+        ALERT["合规告警<br/>Critical 级别通知"]
+        BLOCK["阻断执行<br/>Policy deny 后续操作"]
+        REPORT["审计报表<br/>异常趋势统计"]
+    end
+
+    RT --> EXEC
+    EXEC -->|"finally 块"| PERSIST
+    PERSIST -->|"_run_analysis()"| ANALYZE
+    ANALYZE -->|"analyze_and_emit()"| EMIT
+
+    EMIT -.->|"❌ 无订阅者"| ALERT
+    EMIT -.->|"❌ 无订阅者"| BLOCK
+    EMIT -.->|"❌ 无订阅者"| REPORT
+
+    style EMIT fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style MISSING fill:#450a0a,stroke:#ef4444,color:#fca5a5
+  </div>
+</div>
+
+<!-- ==================== 图7: 前端孤岛 ==================== -->
+<div class="section">
+  <h2>图7 · 前端 API 调用 — UBrain 四模块 404</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph FE["前端 API 客户端"]
+        direction TB
+        AXIOS["主 axios 实例<br/>/api/v1 ✅"]
+        FETCH["utils/api.ts<br/>/api/v1 ✅"]
+        BFF["admin-bff.ts<br/>/api/v1/admin-bff ✅"]
+        U1["conversation.ts<br/>/api/conversations ❌"]
+        U2["skill.ts<br/>/api/skills ❌"]
+        U3["task.ts<br/>/api/tasks ❌"]
+        U4["invitation.ts<br/>/api/invitations ❌"]
+        DEPRECATED["fetchWrapper.ts<br/>@deprecated ⚠️"]
+    end
+
+    subgraph BE["后端路由"]
+        direction TB
+        R1["/api/v1/auth/* ✅"]
+        R2["/api/v1/products ✅"]
+        R3["/api/v1/inquiries ✅"]
+        R4["/api/v1/content/* ✅"]
+        R5["/api/v1/ubrain/*<br/>（无 /api/conversations）"]
+    end
+
+    AXIOS -->|"✅ 匹配"| R1
+    AXIOS -->|"✅ 匹配"| R2
+    AXIOS -->|"✅ 匹配"| R3
+    FETCH -->|"✅ 匹配"| R4
+    U1 -.->|"❌ 404"| R5
+    U2 -.->|"❌ 404"| R5
+    U3 -.->|"❌ 404"| R5
+    U4 -.->|"❌ 404"| R5
+
+    style U1 fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style U2 fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style U3 fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style U4 fill:#7f1d1d,stroke:#ef4444,color:#fff
+  </div>
+</div>
+
+<!-- ==================== 问题汇总表 ==================== -->
+<div class="section">
+  <h2>断点汇总表</h2>
+  <table class="issue-table">
+    <thead>
+      <tr><th>#</th><th>链路</th><th>断点描述</th><th>级别</th><th>文件位置</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="p0">BP-1</td><td>WhatsApp → CRM</td><td class="status-broken">whatsapp.message.received 无消费者，入站消息无法自动创建询盘</td><td class="p0">P0</td><td>event_bus.py 缺少 @on handler</td></tr>
+      <tr><td class="p0">BP-2</td><td>WhatsApp → 自动回复</td><td class="status-broken">入站消息无自动回复处理器，客户发消息后无响应</td><td class="p0">P0</td><td>event_bus.py 缺少 @on handler</td></tr>
+      <tr><td class="p0">BP-3</td><td>DeerFlow → n8n</td><td class="status-broken">@shared_task 未被 worker include/autodiscover，任务静默丢弃</td><td class="p0">P0</td><td>n8n/trigger.py:252 + celery_app.py:12</td></tr>
+      <tr><td class="p0">BP-4</td><td>DeerFlow → n8n</td><td class="status-broken">生产环境 N8N_CONTENT_PUBLISH_ENABLED 未配置，工作流被禁用</td><td class="p0">P0</td><td>workflow_registry.py + backend/.env</td></tr>
+      <tr><td class="p0">BP-5</td><td>TradeAI → CRM</td><td class="status-broken">prospect_scrape 结果不会自动推送至 CRM 建档</td><td class="p0">P0</td><td>planner_service.py _composite_super_graph 缺 CRM 节点</td></tr>
+      <tr><td class="p0">BP-6</td><td>前端 UBrain</td><td class="status-broken">conversation/skill/task/invitation 四模块 API 路径缺少 /v1，必致 404</td><td class="p0">P0</td><td>api/ubrain/*.ts 硬编码 /api/*</td></tr>
+      <tr><td class="p1">BP-7</td><td>n8n → 回调</td><td class="status-partial">n8n 回调只 emit EventBus，不写回 PublishTask/ContentMaster 状态</td><td class="p1">P1</td><td>n8n/webhook.py:220</td></tr>
+      <tr><td class="p1">BP-8</td><td>DeerFlow → n8n</td><td class="status-partial">发送 pending 状态而非实际发布结果给 n8n</td><td class="p1">P1</td><td>deerflow/executor.py:637</td></tr>
+      <tr><td class="p1">BP-9</td><td>WhatsApp → 线索评分</td><td class="status-partial">whatsapp.message.received 不触发线索评分（只有 LEAD_CREATED 才触发）</td><td class="p1">P1</td><td>event_bus.py:395</td></tr>
+      <tr><td class="p1">BP-10</td><td>WhatsApp → 状态同步</td><td class="status-partial">ack/failed 事件无消费者，消息投递状态无法更新到 CRM</td><td class="p1">P1</td><td>event_bus.py 缺少 @on handler</td></tr>
+      <tr><td class="p1">BP-11</td><td>Browser → 证据分析</td><td class="status-partial">EVIDENCE_ANALYZED/ANOMALY 事件无消费者，告警/阻断流程缺失</td><td class="p1">P1</td><td>event_bus.py 缺少 @on handler</td></tr>
+      <tr><td class="p1">BP-12</td><td>Experience → evolve</td><td class="status-partial">evolve() 改进建议生成是死代码，零生产调用</td><td class="p1">P1</td><td>experience_engine.py:125</td></tr>
+      <tr><td class="p1">BP-13</td><td>Experience → DAG</td><td class="status-partial">DAG Governor 查询 historical_exp 后未使用</td><td class="p1">P1</td><td>task_control_supervisor.py:24</td></tr>
+      <tr><td class="p2">BP-14</td><td>main.py 启动</td><td>5 处关键初始化 except Exception:pass 静默吞错</td><td class="p2">P2</td><td>main.py:66-106</td></tr>
+      <tr><td class="p2">BP-15</td><td>DeepSeek ↔ Experience</td><td>get_experience_suggestions() 和 record_intent_result() 零外部调用</td><td class="p2">P2</td><td>deepseek_harness/client.py:123</td></tr>
+      <tr><td class="p2">BP-16</td><td>orders.py → CRM</td><td>CRM 同步静默失败 try/except:pass，状态不一致无告警</td><td class="p2">P2</td><td>orders.py:94</td></tr>
+      <tr><td class="p2">BP-17</td><td>前端 fetchWrapper</td><td>已废弃但 OAuth/邮箱登录关键路径仍引用</td><td class="p2">P2</td><td>api/oauth.ts + emailAuth.ts</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 修复优先级 ==================== -->
+<div class="section">
+  <h2>修复路径建议</h2>
+  <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#2563eb', 'lineColor': '#64748b', 'fontSize': '14px'}}}%%
+flowchart TB
+    subgraph PHASE1["🔴 Phase 1 · 打通孤岛（P0 × 6）"]
+        direction TB
+        P1A["1. WhatsApp event_bus 加 @on handler<br/>入站 → 自动创建 Inquiry + AI 自动回复"]
+        P1B["2. Celery worker include n8n/trigger.py<br/>注册 trigger_n8n_workflow 任务"]
+        P1B2["3. .env 添加 N8N_CONTENT_PUBLISH_ENABLED=true<br/>+ 正确的 webhook URL"]
+        P1C["4. _composite_super_graph 加 goodjob_crm 节点<br/>拓客完成后自动 CRM 建档"]
+        P1D["5. UBrain 4 模块改用统一 axios + /api/v1/ubrain/*"]
+    end
+
+    subgraph PHASE2["🟡 Phase 2 · 补全回调（P1 × 7）"]
+        direction TB
+        P2A["6. n8n 回调写回 PublishTask.status<br/>不再只 emit EventBus"]
+        P2B["7. DeerFlow 发布成功后再触发 n8n<br/>而非创建 pending 时就触发"]
+        P2C["8. Evidence 事件加消费者<br/>Critical 异常 → 告警通知"]
+        P2D["9. evolve() 接入定时任务<br/>自动分析低成功率任务"]
+        P2E["10. DAG Governor 使用 historical_exp<br/>调整校验策略"]
+    end
+
+    subgraph PHASE3["🔵 Phase 3 · 收尾清理（P2 × 4）"]
+        direction TB
+        P3A["11. main.py 5 处 pass 改 logger.warning"]
+        P3B["12. DeepSeek Harness 接入 Experience Engine"]
+        P3C["13. orders.py CRM 同步加错误上报"]
+        P3D["14. fetchWrapper 调用方迁移到统一客户端"]
+    end
+
+    PHASE1 -->|"基础串联"| PHASE2
+    PHASE2 -->|"闭环完善"| PHASE3
+
+    style PHASE1 fill:#450a0a,stroke:#ef4444,color:#fca5a5
+    style PHASE2 fill:#422006,stroke:#eab308,color:#fef3c7
+    style PHASE3 fill:#0c4a6e,stroke:#3b82f6,color:#dbeafe
+  </div>
+</div>
+
+<div style="text-align:center; padding: 32px; color: #64748b; font-size: 13px;">
+  AEOS 全景断点图 · 自动生成 · 基于代码库实测 · 2026-09-23
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { curve: 'basis', htmlLabels: true }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "validate",
+  "stage": "render",
+  "type": "architecture",
+  "input": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-arch-v10.architecture.json",
+  "error": "Architecture layout validation failed:\n- Tag \"Token Wallet Guard · 静态 IP 槽位\" needs ~119px at the 6px legible minimum, but component \"billing\" provides 112px — shorten the tag or widen size.\n- Tag \"外贸7步 · PI/单证 · WhatsApp 翻译\" needs ~119px at the 6px legible minimum, but component \"goodjob\" provides 112px — shorten the tag or widen size.\n- [clean-flow/endpoint-side-direction] architecture connections[10] id \"hermes-tasks\" \"hermes\" -> \"tasks\" first segment 0 [622, 212] -> [622, 263] does not honor inferred fromSide \"left\" — it must run horizontal leftward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[10] id \"hermes-tasks\" \"hermes\" -> \"tasks\" final segment 2 [354, 263] -> [354, 314] does not honor inferred toSide \"right\" — it must run horizontal leftward from the right; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[18] id \"hermes-experience\" \"hermes\" -> \"experience\" first segment 0 [742, 205] -> [742, 259.5] does not honor inferred fromSide \"right\" — it must run horizontal rightward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[18] id \"hermes-experience\" \"hermes\" -> \"experience\" final segment 2 [1010, 259.5] -> [1010, 314] does not honor inferred toSide \"left\" — it must run horizontal rightward from the left; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" first segment 0 [548, 307] -> [548, 259.5] does not honor inferred fromSide \"right\" — it must run horizontal rightward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" final segment 2 [1204, 259.5] -> [1204, 212] does not honor inferred toSide \"left\" — it must run horizontal rightward from the left; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/edge-through-node] architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses component \"hermes\" (unrelated to this relationship) on segment 0 [548, 212] -> [779, 212] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses component \"goodjob\" (unrelated to this relationship) on segment 2 [779, 198] -> [1010, 198] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[4] id \"api-harness\" \"api\" -> \"harness\" crosses component \"celery\" (unrelated to this relationship) on segment 0 [495, 242] -> [495, 314] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses component \"api\" (unrelated to this relationship) on segment 0 [495, 140] -> [495, 284] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[12] id \"hermes-site\" \"hermes\" -> \"site\" crosses component \"assets\" (unrelated to this relationship) on segment 0 [689, 242] -> [689, 314] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses component \"goodjob\" (unrelated to this relationship) on segment 0 [742, 219] -> [973, 219] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses component \"whatsapp\" (unrelated to this relationship) on segment 2 [973, 423] -> [1204, 423] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" crosses component \"goodjob\" (unrelated to this relationship) on segment 1 [876, 416] -> [876, 226] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" crosses component \"trade\" (unrelated to this relationship) on segment 1 [876, 416] -> [876, 226] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" crosses component \"deerflow\" (unrelated to this relationship) on segment 0 [742, 416] -> [876, 416] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- Label \"BFF Cookie / Bearer\" overlaps component \"frontends\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [340, 192, 101, 14]\n  component \"frontends\" rect: [234, 182, 120, 60]\n  Suggested fix: labelAt [391, 256] or labelDy +54 (below); or labelAt [391, 178] or labelDy -24 (above)\n- Label \"BFF Cookie / Bearer\" overlaps component \"api\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [340, 192, 101, 14]\n  component \"api\" rect: [428, 182, 120, 60]\n  Suggested fix: labelAt [391, 256] or labelDy +54 (below); or labelAt [391, 178] or labelDy -24 (above)\n- Label \"AI 意图分解\" overlaps component \"celery\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [460, 294, 63, 14]\n  component \"celery\" rect: [428, 284, 120, 60]\n  Suggested fix: labelAt [492, 358] or labelDy +54 (below); or labelAt [492, 280] or labelDy -24 (above)\n- Label \"异步投递\" overlaps component \"api\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [457, 222, 48, 14]\n  component \"api\" rect: [428, 182, 120, 60]\n  Suggested fix: labelAt [481, 256] or labelDy +24 (below); or labelAt [481, 178] or labelDy -54 (above)\n- Label \"broker / 结果回写\" overlaps component \"redis\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [449, 120, 92, 14]\n  component \"redis\" rect: [428, 80, 120, 60]\n  Suggested fix: labelAt [495, 154] or labelDy +24 (below); or labelAt [495, 76] or labelDy -54 (above)\n- Label \"PSSP 注入\" overlaps component \"hermes\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [648, 222, 53, 14]\n  component \"hermes\" rect: [622, 182, 120, 60]\n  Suggested fix: labelAt [675, 256] or labelDy +24 (below); or labelAt [675, 178] or labelDy -54 (above)\n- Label \"建站 / 核价\" overlaps component \"assets\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [654, 294, 63, 14]\n  component \"assets\" rect: [622, 284, 120, 60]\n  Suggested fix: labelAt [686, 358] or labelDy +54 (below); or labelAt [686, 280] or labelDy -24 (above)\n- Label \"经验回流\" overlaps component \"goodjob\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [852, 240, 48, 14]\n  component \"goodjob\" rect: [816, 182, 120, 60]\n  Suggested fix: labelAt [876, 256] or labelDy +6 (below); or labelAt [876, 178] or labelDy -72 (above)\n- Label \"站点 / 核价落库\" overlaps component \"trade\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [835, 301, 82, 14]\n  component \"trade\" rect: [816, 284, 120, 60]\n  Suggested fix: labelAt [876, 358] or labelDy +47 (below); or labelAt [876, 280] or labelDy -31 (above)\n- Label \"site_built / content_pub\" overlaps component \"goodjob\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [813, 240, 125, 14]\n  component \"goodjob\" rect: [816, 182, 120, 60]\n  Suggested fix: labelAt [876, 256] or labelDy +6 (below); or labelAt [876, 178] or labelDy -72 (above)\n- Label \"Webhook 出站\" overlaps component \"n8n\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [1230, 222, 68, 14]\n  component \"n8n\" rect: [1204, 182, 120, 60]\n  Suggested fix: labelAt [1264, 256] or labelDy +24 (below); or labelAt [1264, 178] or labelDy -54 (above)",
+  "diagnostics": [
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[10] id \"hermes-tasks\" \"hermes\" -> \"tasks\" first segment 0 [622, 212] -> [622, 263] does not honor inferred fromSide \"left\" — it must run horizontal leftward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 10,
+        "id": "hermes-tasks",
+        "from": "hermes",
+        "to": "tasks"
+      },
+      "evidence": {
+        "endpoint": "source",
+        "authoredField": "fromSide",
+        "sideOrigin": "inferred",
+        "side": "left",
+        "segmentIndex": 0,
+        "from": [
+          622,
+          212
+        ],
+        "to": [
+          622,
+          263
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "leftward"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[10] id \"hermes-tasks\" \"hermes\" -> \"tasks\" final segment 2 [354, 263] -> [354, 314] does not honor inferred toSide \"right\" — it must run horizontal leftward from the right; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 10,
+        "id": "hermes-tasks",
+        "from": "hermes",
+        "to": "tasks"
+      },
+      "evidence": {
+        "endpoint": "target",
+        "authoredField": "toSide",
+        "sideOrigin": "inferred",
+        "side": "right",
+        "segmentIndex": 2,
+        "from": [
+          354,
+          263
+        ],
+        "to": [
+          354,
+          314
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "leftward from the right"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[18] id \"hermes-experience\" \"hermes\" -> \"experience\" first segment 0 [742, 205] -> [742, 259.5] does not honor inferred fromSide \"right\" — it must run horizontal rightward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 18,
+        "id": "hermes-experience",
+        "from": "hermes",
+        "to": "experience"
+      },
+      "evidence": {
+        "endpoint": "source",
+        "authoredField": "fromSide",
+        "sideOrigin": "inferred",
+        "side": "right",
+        "segmentIndex": 0,
+        "from": [
+          742,
+          205
+        ],
+        "to": [
+          742,
+          259.5
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "rightward"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[18] id \"hermes-experience\" \"hermes\" -> \"experience\" final segment 2 [1010, 259.5] -> [1010, 314] does not honor inferred toSide \"left\" — it must run horizontal rightward from the left; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 18,
+        "id": "hermes-experience",
+        "from": "hermes",
+        "to": "experience"
+      },
+      "evidence": {
+        "endpoint": "target",
+        "authoredField": "toSide",
+        "sideOrigin": "inferred",
+        "side": "left",
+        "segmentIndex": 2,
+        "from": [
+          1010,
+          259.5
+        ],
+        "to": [
+          1010,
+          314
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "rightward from the left"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" first segment 0 [548, 307] -> [548, 259.5] does not honor inferred fromSide \"right\" — it must run horizontal rightward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "endpoint": "source",
+        "authoredField": "fromSide",
+        "sideOrigin": "inferred",
+        "side": "right",
+        "segmentIndex": 0,
+        "from": [
+          548,
+          307
+        ],
+        "to": [
+          548,
+          259.5
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "rightward"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" final segment 2 [1204, 259.5] -> [1204, 212] does not honor inferred toSide \"left\" — it must run horizontal rightward from the left; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "endpoint": "target",
+        "authoredField": "toSide",
+        "sideOrigin": "inferred",
+        "side": "left",
+        "segmentIndex": 2,
+        "from": [
+          1204,
+          259.5
+        ],
+        "to": [
+          1204,
+          212
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "rightward from the left"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses component \"hermes\" (unrelated to this relationship) on segment 0 [548, 212] -> [779, 212] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "hermes",
+        "segmentIndex": 0,
+        "from": [
+          548,
+          212
+        ],
+        "to": [
+          779,
+          212
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses component \"goodjob\" (unrelated to this relationship) on segment 2 [779, 198] -> [1010, 198] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "goodjob",
+        "segmentIndex": 2,
+        "from": [
+          779,
+          198
+        ],
+        "to": [
+          1010,
+          198
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[4] id \"api-harness\" \"api\" -> \"harness\" crosses component \"celery\" (unrelated to this relationship) on segment 0 [495, 242] -> [495, 314] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 4,
+        "id": "api-harness",
+        "from": "api",
+        "to": "harness"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "celery",
+        "segmentIndex": 0,
+        "from": [
+          495,
+          242
+        ],
+        "to": [
+          495,
+          314
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses component \"api\" (unrelated to this relationship) on segment 0 [495, 140] -> [495, 284] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "api",
+        "segmentIndex": 0,
+        "from": [
+          495,
+          140
+        ],
+        "to": [
+          495,
+          284
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[12] id \"hermes-site\" \"hermes\" -> \"site\" crosses component \"assets\" (unrelated to this relationship) on segment 0 [689, 242] -> [689, 314] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 12,
+        "id": "hermes-site",
+        "from": "hermes",
+        "to": "site"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "assets",
+        "segmentIndex": 0,
+        "from": [
+          689,
+          242
+        ],
+        "to": [
+          689,
+          314
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses component \"goodjob\" (unrelated to this relationship) on segment 0 [742, 219] -> [973, 219] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 17,
+        "id": "hermes-browser",
+        "from": "hermes",
+        "to": "browser"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "goodjob",
+        "segmentIndex": 0,
+        "from": [
+          742,
+          219
+        ],
+        "to": [
+          973,
+          219
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses component \"whatsapp\" (unrelated to this relationship) on segment 2 [973, 423] -> [1204, 423] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 17,
+        "id": "hermes-browser",
+        "from": "hermes",
+        "to": "browser"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "whatsapp",
+        "segmentIndex": 2,
+        "from": [
+          973,
+          423
+        ],
+        "to": [
+          1204,
+          423
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" crosses component \"goodjob\" (unrelated to this relationship) on segment 1 [876, 416] -> [876, 226] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 19,
+        "id": "site-pg",
+        "from": "site",
+        "to": "pg"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "goodjob",
+        "segmentIndex": 1,
+        "from": [
+          876,
+          416
+        ],
+        "to": [
+          876,
+          226
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" crosses component \"trade\" (unrelated to this relationship) on segment 1 [876, 416] -> [876, 226] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 19,
+        "id": "site-pg",
+        "from": "site",
+        "to": "pg"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "trade",
+        "segmentIndex": 1,
+        "from": [
+          876,
+          416
+        ],
+        "to": [
+          876,
+          226
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" crosses component \"deerflow\" (unrelated to this relationship) on segment 0 [742, 416] -> [876, 416] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 19,
+        "id": "site-pg",
+        "from": "site",
+        "to": "pg"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "deerflow",
+        "segmentIndex": 0,
+        "from": [
+          742,
+          416
+        ],
+        "to": [
+          876,
+          416
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Tag \"Token Wallet Guard · 静态 IP 槽位\" needs ~119px at the 6px legible minimum, but component \"billing\" provides 112px — shorten the tag or widen size.",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Tag \"外贸7步 · PI/单证 · WhatsApp 翻译\" needs ~119px at the 6px legible minimum, but component \"goodjob\" provides 112px — shorten the tag or widen size.",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"BFF Cookie / Bearer\" overlaps component \"frontends\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [340, 192, 101, 14]\n  component \"frontends\" rect: [234, 182, 120, 60]\n  Suggested fix: labelAt [391, 256] or labelDy +54 (below); or labelAt [391, 178] or labelDy -24 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"BFF Cookie / Bearer\" overlaps component \"api\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [340, 192, 101, 14]\n  component \"api\" rect: [428, 182, 120, 60]\n  Suggested fix: labelAt [391, 256] or labelDy +54 (below); or labelAt [391, 178] or labelDy -24 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"AI 意图分解\" overlaps component \"celery\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [460, 294, 63, 14]\n  component \"celery\" rect: [428, 284, 120, 60]\n  Suggested fix: labelAt [492, 358] or labelDy +54 (below); or labelAt [492, 280] or labelDy -24 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"异步投递\" overlaps component \"api\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [457, 222, 48, 14]\n  component \"api\" rect: [428, 182, 120, 60]\n  Suggested fix: labelAt [481, 256] or labelDy +24 (below); or labelAt [481, 178] or labelDy -54 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"broker / 结果回写\" overlaps component \"redis\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [449, 120, 92, 14]\n  component \"redis\" rect: [428, 80, 120, 60]\n  Suggested fix: labelAt [495, 154] or labelDy +24 (below); or labelAt [495, 76] or labelDy -54 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"PSSP 注入\" overlaps component \"hermes\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [648, 222, 53, 14]\n  component \"hermes\" rect: [622, 182, 120, 60]\n  Suggested fix: labelAt [675, 256] or labelDy +24 (below); or labelAt [675, 178] or labelDy -54 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"建站 / 核价\" overlaps component \"assets\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [654, 294, 63, 14]\n  component \"assets\" rect: [622, 284, 120, 60]\n  Suggested fix: labelAt [686, 358] or labelDy +54 (below); or labelAt [686, 280] or labelDy -24 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"经验回流\" overlaps component \"goodjob\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [852, 240, 48, 14]\n  component \"goodjob\" rect: [816, 182, 120, 60]\n  Suggested fix: labelAt [876, 256] or labelDy +6 (below); or labelAt [876, 178] or labelDy -72 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"站点 / 核价落库\" overlaps component \"trade\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [835, 301, 82, 14]\n  component \"trade\" rect: [816, 284, 120, 60]\n  Suggested fix: labelAt [876, 358] or labelDy +47 (below); or labelAt [876, 280] or labelDy -31 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"site_built / content_pub\" overlaps component \"goodjob\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [813, 240, 125, 14]\n  component \"goodjob\" rect: [816, 182, 120, 60]\n  Suggested fix: labelAt [876, 256] or labelDy +6 (below); or labelAt [876, 178] or labelDy -72 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"Webhook 出站\" overlaps component \"n8n\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [1230, 222, 68, 14]\n  component \"n8n\" rect: [1204, 182, 120, 60]\n  Suggested fix: labelAt [1264, 256] or labelDy +24 (below); or labelAt [1264, 178] or labelDy -54 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    }
+  ]
+}

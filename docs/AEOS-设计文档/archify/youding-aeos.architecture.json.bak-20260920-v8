@@ -1,0 +1,887 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "优丁 YouDing · AEOS 全景架构（2026-09-20 全量补全）",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1400,
+      640
+    ],
+    "views": [
+      {
+        "id": "main-path",
+        "label": "主链路",
+        "focus": [
+          "buyers",
+          "frontends",
+          "api",
+          "pg",
+          "redis"
+        ],
+        "note": "多租户买家经官网/超管进入，BFF+Bearer 双轨鉴权，SQL 直达 PG。"
+      },
+      {
+        "id": "ai-orchestration",
+        "label": "AI 编排",
+        "focus": [
+          "harness",
+          "hermes",
+          "assets",
+          "celery",
+          "site",
+          "deerflow",
+          "goodjob",
+          "trade"
+        ],
+        "note": "L1 认知沙箱可选；Hermes 状态机 + DAG 防爆，PSSP 资产注入，Celery 执行。"
+      },
+      {
+        "id": "golden-path",
+        "label": "黄金路径",
+        "focus": [
+          "hermes",
+          "goodjob",
+          "trade",
+          "experience",
+          "celery",
+          "pg"
+        ],
+        "note": "GP-A 履约 / GP-B 拓客由 Hermes 驱动，产物回流自进化引擎沉淀经验。"
+      },
+      {
+        "id": "outbound",
+        "label": "出站取证",
+        "focus": [
+          "site",
+          "deerflow",
+          "trade",
+          "browser",
+          "n8n",
+          "platforms"
+        ],
+        "note": "功能域产物经 n8n 双 Webhook 分发 40+ 平台；Browser 双轨取证兜底。"
+      },
+      {
+        "id": "evolution-billing",
+        "label": "进化与计费",
+        "focus": [
+          "goodjob",
+          "experience",
+          "billing",
+          "celery",
+          "pg"
+        ],
+        "note": "经验提炼入 PG；计量事件追加写，Celery 批量对账核减。"
+      }
+    ],
+    "subtitle": "八子系统 + Celery + 350+ 资产 + 双轨取证 + 自进化 + 七轨计费 + 40+ 平台出站"
+  },
+  "components": [
+    {
+      "id": "buyers",
+      "type": "external",
+      "label": "多租户买家",
+      "sublabel": "访客 / 外贸客户",
+      "pos": [
+        40,
+        20
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "frontends",
+      "type": "frontend",
+      "label": "优丁产品壳",
+      "sublabel": "官网 :3000 · 超管 :5173",
+      "tag": "登录唯一 /login · 功能域菜单",
+      "pos": [
+        270,
+        20
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "后端 API",
+      "sublabel": "FastAPI :8001",
+      "tag": "159 路由 · 1496 端点",
+      "pos": [
+        540,
+        20
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": ":6379",
+      "tag": "缓存 / 队列 / 计量事件",
+      "pos": [
+        830,
+        20
+      ],
+      "size": [
+        140,
+        56
+      ]
+    },
+    {
+      "id": "billing",
+      "type": "database",
+      "label": "七轨计费账本",
+      "sublabel": "meter_events · 追加写 0 行锁",
+      "tag": "Token Wallet Guard · 静态 IP 槽位",
+      "pos": [
+        1180,
+        20
+      ],
+      "size": [
+        180,
+        56
+      ]
+    },
+    {
+      "id": "harness",
+      "type": "security",
+      "label": "L1 认知沙箱",
+      "sublabel": "DeepSeek Harness（可选）",
+      "tag": "意图分解 → DAG Spec",
+      "pos": [
+        270,
+        120
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "hermes",
+      "type": "backend",
+      "label": "L2 受控调度",
+      "sublabel": "Hermes 状态机 · DAG Governor",
+      "tag": "默认 L1 · 37 执行器 · 环路拦截",
+      "pos": [
+        270,
+        212
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "tasks",
+      "type": "frontend",
+      "label": "Hermes 任务中心",
+      "sublabel": "/client/tasks",
+      "tag": "功能域 · 任务可见性",
+      "pos": [
+        40,
+        212
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "site",
+      "type": "backend",
+      "label": "入站中枢",
+      "sublabel": "Site / Calc / BOQ",
+      "tag": "建站 · 22 参数核价",
+      "pos": [
+        640,
+        120
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "deerflow",
+      "type": "backend",
+      "label": "内容与研报",
+      "sublabel": "DeerFlow",
+      "tag": "9 意图深研 · EEAT",
+      "pos": [
+        640,
+        184
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "goodjob",
+      "type": "backend",
+      "label": "外贸履约",
+      "sublabel": "GoodJob 功能域",
+      "tag": "外贸7步 · PI/单证 · WhatsApp 翻译",
+      "pos": [
+        640,
+        248
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "trade",
+      "type": "backend",
+      "label": "社媒拓客",
+      "sublabel": "TradeAI 功能域",
+      "tag": "全域社媒 · WhatsApp 矩阵",
+      "pos": [
+        640,
+        312
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": ":5433 · PG 15.8",
+      "tag": "248 表 · 100% 注水",
+      "pos": [
+        960,
+        120
+      ],
+      "size": [
+        140,
+        340
+      ]
+    },
+    {
+      "id": "n8n",
+      "type": "cloud",
+      "label": "出站分发",
+      "sublabel": "n8n :5678",
+      "tag": "双 Webhook · 40+ 平台",
+      "pos": [
+        1180,
+        120
+      ],
+      "size": [
+        180,
+        56
+      ]
+    },
+    {
+      "id": "platforms",
+      "type": "external",
+      "label": "全球平台群",
+      "sublabel": "约 40 个国内外分发端",
+      "tag": "Google / Facebook / 领英 / 阿里国际 …",
+      "pos": [
+        1180,
+        220
+      ],
+      "size": [
+        180,
+        56
+      ]
+    },
+    {
+      "id": "assets",
+      "type": "backend",
+      "label": "350+ 智能资产",
+      "sublabel": "76 Skills + 319 AgencyZH + 898 ECC SOP",
+      "tag": "PSSP 动态组装",
+      "pos": [
+        40,
+        320
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "celery",
+      "type": "backend",
+      "label": "Celery 任务池",
+      "sublabel": "18 任务 + Beat 12 调度",
+      "tag": "异步执行器",
+      "pos": [
+        40,
+        410
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "experience",
+      "type": "backend",
+      "label": "自进化引擎",
+      "sublabel": "Experience Engine",
+      "tag": "经验提炼 · 策略回流",
+      "pos": [
+        270,
+        430
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "browser",
+      "type": "backend",
+      "label": "Browser Runtime",
+      "sublabel": "Playwright 双轨取证",
+      "tag": "audit.jsonl + TaskTrace",
+      "pos": [
+        480,
+        480
+      ],
+      "size": [
+        160,
+        56
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "业务执行引擎 · Hermes 插件位（无特权功能域）",
+      "wraps": [
+        "site",
+        "deerflow",
+        "goodjob",
+        "trade"
+      ],
+      "pad": 14
+    }
+  ],
+  "connections": [
+    {
+      "id": "buyers-frontends",
+      "from": "buyers",
+      "to": "frontends",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "frontends-api",
+      "from": "frontends",
+      "to": "api",
+      "label": "BFF Cookie / Bearer"
+    },
+    {
+      "id": "api-redis",
+      "from": "api",
+      "to": "redis",
+      "label": "缓存 / 队列",
+      "variant": "dashed"
+    },
+    {
+      "id": "api-pg",
+      "from": "api",
+      "to": "pg",
+      "label": "SQL 落库",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [
+          625,
+          10
+        ],
+        [
+          1030,
+          10
+        ]
+      ],
+      "labelAt": [
+        860,
+        10
+      ]
+    },
+    {
+      "id": "redis-billing",
+      "from": "redis",
+      "to": "billing",
+      "label": "计量事件",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [
+        1115,
+        40
+      ]
+    },
+    {
+      "id": "billing-pg",
+      "from": "billing",
+      "to": "pg",
+      "label": "账本落库",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "api-harness",
+      "from": "api",
+      "to": "harness",
+      "label": "AI 意图分解",
+      "variant": "security",
+      "fromSide": "left",
+      "toSide": "top",
+      "via": [
+        [
+          540,
+          48
+        ],
+        [
+          540,
+          96
+        ],
+        [
+          355,
+          96
+        ]
+      ]
+    },
+    {
+      "id": "harness-hermes",
+      "from": "harness",
+      "to": "hermes",
+      "label": "DAG Spec",
+      "variant": "security",
+      "labelAt": [
+        355,
+        196
+      ]
+    },
+    {
+      "id": "hermes-tasks",
+      "from": "hermes",
+      "to": "tasks",
+      "label": "任务可见性",
+      "variant": "security"
+    },
+    {
+      "id": "hermes-assets",
+      "from": "hermes",
+      "to": "assets",
+      "label": "PSSP 组装注入",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          355,
+          294
+        ],
+        [
+          120,
+          294
+        ]
+      ],
+      "labelAt": [
+        230,
+        286
+      ]
+    },
+    {
+      "id": "hermes-site",
+      "from": "hermes",
+      "to": "site",
+      "label": "建站 / 核价",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [
+          490,
+          296
+        ],
+        [
+          490,
+          148
+        ]
+      ],
+      "labelAt": [
+        490,
+        140
+      ]
+    },
+    {
+      "id": "hermes-deerflow",
+      "from": "hermes",
+      "to": "deerflow",
+      "label": "内容生成",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [
+          470,
+          296
+        ],
+        [
+          470,
+          212
+        ]
+      ],
+      "labelAt": [
+        470,
+        204
+      ]
+    },
+    {
+      "id": "hermes-goodjob",
+      "from": "hermes",
+      "to": "goodjob",
+      "label": "GP-A 履约调度",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [
+          450,
+          296
+        ],
+        [
+          450,
+          276
+        ]
+      ],
+      "labelAt": [
+        450,
+        268
+      ]
+    },
+    {
+      "id": "hermes-trade",
+      "from": "hermes",
+      "to": "trade",
+      "label": "GP-B 拓客分发",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [
+          430,
+          296
+        ],
+        [
+          430,
+          340
+        ]
+      ],
+      "labelAt": [
+        430,
+        332
+      ]
+    },
+    {
+      "id": "site-pg",
+      "from": "site",
+      "to": "pg",
+      "label": "站点 / 核价落库",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [
+        825,
+        140
+      ]
+    },
+    {
+      "id": "deerflow-pg",
+      "from": "deerflow",
+      "to": "pg",
+      "label": "研报落库",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [
+        825,
+        204
+      ]
+    },
+    {
+      "id": "goodjob-pg",
+      "from": "goodjob",
+      "to": "pg",
+      "label": "履约数据",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [
+        825,
+        268
+      ]
+    },
+    {
+      "id": "trade-pg",
+      "from": "trade",
+      "to": "pg",
+      "label": "线索落库",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [
+        825,
+        332
+      ]
+    },
+    {
+      "id": "site-n8n",
+      "from": "site",
+      "to": "n8n",
+      "label": "site_built",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [
+          720,
+          84
+        ],
+        [
+          1230,
+          84
+        ]
+      ],
+      "labelAt": [
+        850,
+        76
+      ]
+    },
+    {
+      "id": "deerflow-n8n",
+      "from": "deerflow",
+      "to": "n8n",
+      "label": "content_pub",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "top",
+      "via": [
+        [
+          860,
+          212
+        ],
+        [
+          860,
+          96
+        ],
+        [
+          1310,
+          96
+        ]
+      ],
+      "labelAt": [
+        980,
+        104
+      ]
+    },
+    {
+      "id": "n8n-platforms",
+      "from": "n8n",
+      "to": "platforms",
+      "label": "Webhook 出站",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        1270,
+        184
+      ]
+    },
+    {
+      "id": "browser-pg",
+      "from": "browser",
+      "to": "pg",
+      "label": "TaskTrace 双轨取证",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "via": [
+        [
+          560,
+          466
+        ],
+        [
+          560,
+          480
+        ],
+        [
+          1030,
+          480
+        ]
+      ],
+      "labelAt": [
+        980,
+        544
+      ]
+    },
+    {
+      "id": "goodjob-browser",
+      "from": "goodjob",
+      "to": "browser",
+      "label": "取证回写",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "top",
+      "via": [
+        [
+          610,
+          276
+        ],
+        [
+          610,
+          460
+        ],
+        [
+          560,
+          460
+        ]
+      ],
+      "labelAt": [
+        610,
+        448
+      ]
+    },
+    {
+      "id": "goodjob-experience",
+      "from": "goodjob",
+      "to": "experience",
+      "label": "询盘/成单交互",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "top",
+      "via": [
+        [
+          500,
+          276
+        ],
+        [
+          500,
+          410
+        ],
+        [
+          355,
+          410
+        ]
+      ],
+      "labelAt": [
+        355,
+        398
+      ]
+    },
+    {
+      "id": "experience-pg",
+      "from": "experience",
+      "to": "pg",
+      "label": "evolution_experiences",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [
+        870,
+        340
+      ]
+    },
+    {
+      "id": "celery-pg",
+      "from": "celery",
+      "to": "pg",
+      "label": "任务落库",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          120,
+          560
+        ],
+        [
+          1030,
+          560
+        ]
+      ],
+      "labelAt": [
+        400,
+        552
+      ]
+    },
+    {
+      "id": "celery-billing",
+      "from": "celery",
+      "to": "billing",
+      "label": "批量对账核减",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "via": [
+        [
+          120,
+          610
+        ],
+        [
+          1380,
+          610
+        ],
+        [
+          1380,
+          48
+        ]
+      ],
+      "labelAt": [
+        1380,
+        330
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "产品面 · 完整体",
+      "items": [
+        "唯一 /login；功能域菜单：社媒拓客 / 外贸履约 / Hermes 任务（无特权）",
+        "官网 :3000 · 超管 :5173 · 交互 CRUD 走同步 API（2026-09-19 六端口实测全跑）"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "八子系统 · Hermes 驱动",
+      "items": [
+        "37/37 执行器全驱动 · 248/248 表 100% 注水；PSSP 350+ 资产动态组装",
+        "Celery 18 任务 + Beat 12 调度；4 大实盘闭环接口已接通"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "出站 · 取证 · 进化 · 计费",
+      "items": [
+        "n8n :5678 双 Webhook（site_built / content_pub）→ 40+ 平台",
+        "Browser 双轨取证 audit.jsonl + TaskTrace；七轨账本追加写 0 行锁；经验库自进化闭环"
+      ]
+    }
+  ]
+}

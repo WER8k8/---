@@ -1,0 +1,51 @@
+0 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[3] id "api-pg" "api" -> "pg" final segment 2 [880, 100] -> [1050, 120] does not honor toSide "top"
+1 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[5] id "billing-pg" "billing" -> "pg" final segment 2 [1140, 100] -> [1050, 120] does not honor toS
+2 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[6] id "api-harness" "api" -> "harness" final segment 1 [625, 96] -> [355, 120] does not honor toSi
+3 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[9] id "hermes-assets" "hermes" -> "assets" final segment 2 [230, 320] -> [120, 320] does not honor
+4 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[18] id "site-n8n" "site" -> "n8n" first segment 0 [720, 120] -> [560, 90] does not honor fromSide 
+5 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[19] id "deerflow-n8n" "deerflow" -> "n8n" first segment 0 [720, 184] -> [540, 100] does not honor 
+6 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[23] id "goodjob-browser" "goodjob" -> "browser" final segment 2 [580, 410] -> [560, 410] does not 
+7 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[25] id "experience-pg" "experience" -> "pg" final segment 1 [880, 348] -> [960, 290] does not hono
+8 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[26] id "celery-pg" "celery" -> "pg" final segment 1 [860, 438] -> [960, 290] does not honor toSide
+9 clean-flow/endpoint-side-direction: [clean-flow/endpoint-side-direction] architecture connections[27] id "celery-billing" "celery" -> "billing" first segment 0 [120, 466] -> [640, 500] does not ho
+10 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[3] id "api-pg" "api" -> "pg" crosses component "redis" (unrelated to this relationship) on segment 0 [71
+11 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[19] id "deerflow-n8n" "deerflow" -> "n8n" crosses component "site" (unrelated to this relationship) on s
+12 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[20] id "trade-n8n" "trade" -> "n8n" crosses component "pg" (unrelated to this relationship) on segment 1
+13 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[25] id "experience-pg" "experience" -> "pg" crosses component "trade" (unrelated to this relationship) o
+14 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[26] id "celery-pg" "celery" -> "pg" crosses component "browser" (unrelated to this relationship) on segm
+15 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[27] id "celery-billing" "celery" -> "billing" crosses component "n8n" (unrelated to this relationship) o
+16 clean-flow/edge-through-node: [clean-flow/edge-through-node] architecture connections[27] id "celery-billing" "celery" -> "billing" crosses component "platforms" (unrelated to this relations
+17 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[3] id "api-pg" "api" -> "pg" crosses connections[18] id "site-n8n" "site" -> "n8n" at [880, 90] 
+18 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[5] id "billing-pg" "billing" -> "pg" crosses connections[18] id "site-n8n" "site" -> "n8n" at [1
+19 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[6] id "api-harness" "api" -> "harness" crosses connections[18] id "site-n8n" "site" -> "n8n" at 
+20 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[6] id "api-harness" "api" -> "harness" crosses connections[19] id "deerflow-n8n" "deerflow" -> "
+21 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[13] id "hermes-trade" "hermes" -> "trade" crosses connections[23] id "goodjob-browser" "goodjob"
+22 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[13] id "hermes-trade" "hermes" -> "trade" crosses connections[24] id "goodjob-experience" "goodj
+23 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[20] id "trade-n8n" "trade" -> "n8n" crosses connections[26] id "celery-pg" "celery" -> "pg" at [
+24 composition/proper-crossing: [composition/proper-crossing] showcase architecture connections[23] id "goodjob-browser" "goodjob" -> "browser" crosses connections[25] id "experience-pg" "expe
+25 composition/ambiguous-corridor: [composition/ambiguous-corridor] showcase architecture connections[18] id "site-n8n" "site" -> "n8n" shares a 210px corridor with connections[27] id "celery-bil
+26 composition/ambiguous-corridor: [composition/ambiguous-corridor] showcase architecture connections[19] id "deerflow-n8n" "deerflow" -> "n8n" shares a 200px corridor with connections[27] id "ce
+27 composition/ambiguous-corridor: [composition/ambiguous-corridor] showcase architecture connections[20] id "trade-n8n" "trade" -> "n8n" shares a 40px corridor with connections[27] id "celery-bi
+28 composition/ambiguous-corridor: [composition/ambiguous-corridor] showcase architecture connections[21] id "n8n-platforms" "n8n" -> "platforms" shares a 44px corridor with connections[27] id "c
+29 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "SQL 落库" on connections[3] id "api-pg" "api" -> "pg" label "SQL 落库" is 0px from connections[18] 
+30 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "账本落库" on connections[5] id "billing-pg" "billing" -> "pg" label "账本落库" is 0px from connections[
+31 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "内容生成" on connections[11] id "hermes-deerflow" "hermes" -> "deerflow" label "内容生成" is 0px from c
+32 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "GP-A 履约调度" on connections[12] id "hermes-goodjob" "hermes" -> "goodjob" label "GP-A 履约调度" is 0p
+33 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "GP-A 履约调度" on connections[12] id "hermes-goodjob" "hermes" -> "goodjob" label "GP-A 履约调度" is 0p
+34 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "GP-A 履约调度" on connections[12] id "hermes-goodjob" "hermes" -> "goodjob" label "GP-A 履约调度" is 0p
+35 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "GP-B 拓客分发" on connections[13] id "hermes-trade" "hermes" -> "trade" label "GP-B 拓客分发" is 0px fr
+36 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "GP-B 拓客分发" on connections[13] id "hermes-trade" "hermes" -> "trade" label "GP-B 拓客分发" is 0px fr
+37 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "线索落库" on connections[17] id "trade-pg" "trade" -> "pg" label "线索落库" is 0.6px from connections[2
+38 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "线索落库" on connections[17] id "trade-pg" "trade" -> "pg" label "线索落库" is 0px from connections[26]
+39 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "site_built" on connections[18] id "site-n8n" "site" -> "n8n" label "site_built" is 0px from con
+40 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "content_pub" on connections[19] id "deerflow-n8n" "deerflow" -> "n8n" label "content_pub" is 0p
+41 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "content_pub" on connections[19] id "deerflow-n8n" "deerflow" -> "n8n" label "content_pub" is 0p
+42 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "Webhook 出站" on connections[21] id "n8n-platforms" "n8n" -> "platforms" label "Webhook 出站" is 0p
+43 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "Webhook 出站" on connections[21] id "n8n-platforms" "n8n" -> "platforms" label "Webhook 出站" is 0p
+44 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "询盘/成单交互" on connections[24] id "goodjob-experience" "goodjob" -> "experience" label "询盘/成单交互" i
+45 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "evolution_experiences" on connections[25] id "experience-pg" "experience" -> "pg" label "evolut
+46 composition/label-route-clearance: [composition/label-route-clearance] showcase architecture label "evolution_experiences" on connections[25] id "experience-pg" "experience" -> "pg" label "evolut
+47 layout/constraint: Label "站点 / 核价落库" overlaps component "pg" — adjust labelDx/labelDy/labelSegment or set labelAt. |   label rect: [889, 138, 82, 14] |   component "pg" rect: [960, 12
+48 layout/constraint: Label "site_built" overlaps component "billing" — adjust labelDx/labelDy/labelSegment or set labelAt. |   label rect: [1241, 66, 58, 14] |   component "billing" rec
+49 layout/constraint: Label "Webhook 出站" overlaps component "n8n" — adjust labelDx/labelDy/labelSegment or set labelAt. |   label rect: [1236, 350, 68, 14] |   component "n8n" rect: [118
+50 layout/constraint: Label "TaskTrace 双轨取证" overlaps component "pg" — adjust labelDx/labelDy/labelSegment or set labelAt. |   label rect: [1002, 456, 96, 14] |   component "pg" rect: [9

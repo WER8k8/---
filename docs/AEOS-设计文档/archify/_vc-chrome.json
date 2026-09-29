@@ -1,0 +1,60 @@
+﻿{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "visual-check",
+  "evidenceKind": "automated-browser",
+  "status": "fail",
+  "visualReview": "pending",
+  "artifact": {
+    "path": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-panorama-2026-09-24.html",
+    "sha256": "6832a06f932f9087cdc467b426c11c79948d47be65fc9151c9e3784683f5e332",
+    "bytes": 817963
+  },
+  "state": {
+    "detail": "read",
+    "motion": "still"
+  },
+  "chrome": {
+    "status": "available",
+    "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  },
+  "diagnostics": [
+    {
+      "code": "viewer/visual-check-runtime",
+      "severity": "error",
+      "message": "visual-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-panorama-2026-09-24.html"
+      },
+      "evidence": {
+        "reason": "Error: Adaptive reader layout did not reach stable dimensions.\n    at sample (file:///C:/Users/Administrator/Documents/%E4%B8%8A%E7%BA%BF%E7%BD%91%E7%AB%99%E5%BC%80%E5%8F%91%E5%AE%8C%E6%88%90/docs/archify/youding-aeos-panorama-2026-09-24.html?theme=light:11080:22)"
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun visual-check"
+      ]
+    }
+  ],
+  "containment": {
+    "status": "fail",
+    "viewports": []
+  },
+  "readability": {
+    "status": "fail",
+    "minimumProjectedNodeTextPx": 6,
+    "viewports": []
+  },
+  "viewerChrome": {
+    "status": "fail",
+    "viewports": []
+  },
+  "captures": {
+    "status": "fail",
+    "screenshots": [],
+    "contactSheet": null
+  },
+  "sidecars": {
+    "receipt": "youding-aeos-panorama-2026-09-24.visual-check.json",
+    "contactSheet": "youding-aeos-panorama-2026-09-24.visual-check.html"
+  },
+  "error": "Error: Adaptive reader layout did not reach stable dimensions.\n    at sample (file:///C:/Users/Administrator/Documents/%E4%B8%8A%E7%BA%BF%E7%BD%91%E7%AB%99%E5%BC%80%E5%8F%91%E5%AE%8C%E6%88%90/docs/archify/youding-aeos-panorama-2026-09-24.html?theme=light:11080:22)"
+}

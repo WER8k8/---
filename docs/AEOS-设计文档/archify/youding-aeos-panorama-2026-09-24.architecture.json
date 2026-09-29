@@ -1,0 +1,430 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "优丁 YouDing · AEOS 整仓完整全景（2026-09-24 实探）",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1320,
+      540
+    ],
+    "views": [
+      {
+        "id": "main-path",
+        "label": "主链路",
+        "focus": [
+          "buyers",
+          "shells",
+          "login",
+          "api",
+          "hermes",
+          "goodjob",
+          "pg"
+        ],
+        "note": "买家→四壳→唯一登录→API→Hermes→GoodJob 履约→PG；selfcheck 20/20。"
+      },
+      {
+        "id": "ai-orchestration",
+        "label": "AI 编排",
+        "focus": [
+          "api",
+          "harness",
+          "hermes",
+          "site",
+          "deerflow",
+          "trade",
+          "goodjob"
+        ],
+        "note": "意图进 API，可选 L1 DSH 出 DAG，L2 Hermes 派 37 执行器到功能域。"
+      },
+      {
+        "id": "golden-path",
+        "label": "黄金路径",
+        "focus": [
+          "hermes",
+          "goodjob",
+          "trade",
+          "pg"
+        ],
+        "note": "GP-A 履约 PI 与 GP-B 社媒拓客由 Hermes 驱动，结果落 PG。"
+      },
+      {
+        "id": "outbound",
+        "label": "出站取证",
+        "focus": [
+          "deerflow",
+          "trade",
+          "browser",
+          "hermes"
+        ],
+        "note": "内容与触达经 Browser/n8n 出站 40+ 平台，双轨取证。"
+      },
+      {
+        "id": "runtime-gates",
+        "label": "运行与门禁",
+        "focus": [
+          "shells",
+          "api",
+          "pg",
+          "hermes"
+        ],
+        "note": "实探仅 PG:5433 OPEN；其余端口待 start-lan；串联率 100%。"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "buyers",
+      "type": "external",
+      "label": "多租户买家",
+      "sublabel": "外贸客户 / 业务员",
+      "pos": [
+        40,
+        36
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "shells",
+      "type": "frontend",
+      "label": "四壳产品面",
+      "sublabel": "官网:3000 · 后台壳",
+      "tag": "ROLE-SHELL · 薄荷 #4a9b8c",
+      "pos": [
+        260,
+        36
+      ],
+      "size": [
+        160,
+        56
+      ]
+    },
+    {
+      "id": "login",
+      "type": "security",
+      "label": "唯一登录",
+      "sublabel": "/login JWT 分流",
+      "tag": "LOGIN-LOCK-01",
+      "pos": [
+        490,
+        36
+      ],
+      "size": [
+        140,
+        56
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "核心控制面 API",
+      "sublabel": "FastAPI :8001",
+      "tag": "172 路由 · 1582 端点",
+      "pos": [
+        700,
+        36
+      ],
+      "size": [
+        180,
+        56
+      ]
+    },
+    {
+      "id": "harness",
+      "type": "backend",
+      "label": "DSH 认知沙箱",
+      "sublabel": "L1 意图分解",
+      "tag": "可选 · DAG Spec",
+      "pos": [
+        490,
+        150
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "hermes",
+      "type": "backend",
+      "label": "Hermes 编排内核",
+      "sublabel": "L2 + DAG Governor",
+      "tag": "37 执行器 · 87 能力",
+      "pos": [
+        700,
+        150
+      ],
+      "size": [
+        180,
+        56
+      ]
+    },
+    {
+      "id": "browser",
+      "type": "backend",
+      "label": "Browser + n8n",
+      "sublabel": "取证 · 40+ 平台",
+      "tag": "双 Webhook 出站",
+      "pos": [
+        960,
+        150
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "site",
+      "type": "backend",
+      "label": "Site / Calc / BOQ",
+      "sublabel": "建站 · 22 参核价",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "deerflow",
+      "type": "backend",
+      "label": "DeerFlow 内容",
+      "sublabel": "深研 · EEAT · SEO",
+      "tag": "11/11 意图",
+      "pos": [
+        250,
+        300
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "trade",
+      "type": "backend",
+      "label": "Trade AI 拓客",
+      "sublabel": "社媒 · WhatsApp",
+      "tag": "native_acquisition",
+      "pos": [
+        460,
+        300
+      ],
+      "size": [
+        150,
+        56
+      ]
+    },
+    {
+      "id": "goodjob",
+      "type": "backend",
+      "label": "GoodJob CRM 履约",
+      "sublabel": "7 步 · PI/CI/箱单",
+      "tag": "native_fulfillment",
+      "pos": [
+        700,
+        300
+      ],
+      "size": [
+        180,
+        56
+      ]
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL 15.8",
+      "sublabel": ":5433 · 253 表",
+      "tag": "OPEN · 空表 0",
+      "pos": [
+        700,
+        420
+      ],
+      "size": [
+        180,
+        56
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "登录与角色壳硬锁",
+      "wraps": [
+        "shells",
+        "login",
+        "api"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "优丁运行域 · 实探 2026-09-24",
+      "wraps": [
+        "api",
+        "harness",
+        "hermes",
+        "browser",
+        "site",
+        "deerflow",
+        "trade",
+        "goodjob",
+        "pg"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "buyers-shells",
+      "from": "buyers",
+      "to": "shells",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "shells-login",
+      "from": "shells",
+      "to": "login",
+      "label": "JWT"
+    },
+    {
+      "id": "login-api",
+      "from": "login",
+      "to": "api",
+      "label": "Bearer",
+      "variant": "security"
+    },
+    {
+      "id": "api-hermes",
+      "from": "api",
+      "to": "hermes",
+      "label": "from-intent",
+      "variant": "emphasis",
+      "labelAt": [
+        800,
+        106
+      ]
+    },
+    {
+      "id": "api-harness",
+      "from": "api",
+      "to": "harness",
+      "label": "意图",
+      "variant": "dashed",
+      "labelAt": [
+        540,
+        100
+      ]
+    },
+    {
+      "id": "harness-hermes",
+      "from": "harness",
+      "to": "hermes",
+      "label": "DAG Spec",
+      "variant": "dashed",
+      "labelAt": [
+        620,
+        220
+      ]
+    },
+    {
+      "id": "hermes-browser",
+      "from": "hermes",
+      "to": "browser",
+      "label": "出站/取证",
+      "labelDy": -24
+    },
+    {
+      "id": "hermes-site",
+      "from": "hermes",
+      "to": "site",
+      "label": "site_builder",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        115,
+        275
+      ]
+    },
+    {
+      "id": "hermes-deerflow",
+      "from": "hermes",
+      "to": "deerflow",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "hermes-trade",
+      "from": "hermes",
+      "to": "trade",
+      "label": "trade_ai",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        535,
+        275
+      ]
+    },
+    {
+      "id": "hermes-goodjob",
+      "from": "hermes",
+      "to": "goodjob",
+      "label": "goodjob_crm",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        860,
+        275
+      ]
+    },
+    {
+      "id": "goodjob-pg",
+      "from": "goodjob",
+      "to": "pg",
+      "label": "履约落库",
+      "variant": "emphasis",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "实探",
+      "items": [
+        "172 路由 · 1582 端点 · 37 执行器",
+        "253 表 · selfcheck 20/20"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "八子系统",
+      "items": [
+        "DSH · Hermes · Site · DeerFlow",
+        "Trade AI · GoodJob · 资产 · n8n"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "主链",
+      "items": [
+        "获客→内容→询盘→七步履约",
+        "SaaS · Token · IP 槽位"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "端口",
+      "items": [
+        "PG:5433 OPEN",
+        "其余 CLOSED 待 start-lan"
+      ]
+    }
+  ]
+}

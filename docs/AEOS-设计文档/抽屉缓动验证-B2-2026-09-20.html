@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>抽屉统一缓动（B2）验证 · 优丁超管后台</title>
+<style>
+  :root{
+    /* ── 统一规范·实底内容层 ── */
+    --canvas:#EAF4F0;
+    --surface:#FFFFFF;
+    --surface-2:#F4FAF8;
+    --border:#E3EFEA;
+    --border-soft:#EDF5F2;
+    /* ── 文字 ── */
+    --text:#1E3330;
+    --text-2:#55706B;
+    --text-3:#7A9691;
+    --link:#2F6A5F;
+    /* ── 品牌与功能色 ── */
+    --brand:#4a9b8c;
+    --brand-strong:#367469;
+    --mint-100:#DCF0EB;
+    --mint-300:#A0D6CB;
+    --danger:#AE3830;
+    --danger-bg:#FDEDEC;
+    --danger-border:#F3C9C5;
+    --ok:#24705A;
+    --ok-bg:#EAF7F2;
+    --warn:#8A6212;
+    --warn-bg:#FEF7E6;
+    --taro:#62509B;
+    --taro-bg:#F5F2FC;
+    --sky:#2B6295;
+    --sky-bg:#EFF6FD;
+    --radius:16px;
+    --radius-sm:10px;
+    --shadow:0 1px 2px rgba(31,74,66,.06);
+    --shadow-lg:0 8px 32px rgba(31,74,66,.10);
+    --ease-enter:cubic-bezier(.16,1,.3,1);
+    --ease-leave:cubic-bezier(.7,0,.84,0);
+    --ease-back:cubic-bezier(.34,1.56,.64,1);
+    --ease-antd:ease;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--canvas);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:14px;line-height:1.65;font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 72px}
+
+  /* ── 头部 ── */
+  header.top{
+    background:linear-gradient(140deg,#F7FBFA 0%,#E6F4F0 100%);
+    border:1px solid var(--border);border-radius:20px;
+    padding:24px 26px;margin-bottom:22px;position:relative;overflow:hidden;
+  }
+  header.top::after{
+    content:"";position:absolute;right:-70px;top:-70px;width:230px;height:230px;border-radius:50%;
+    background:radial-gradient(circle,rgba(127,201,187,.34),transparent 68%);pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;
+    color:var(--link);background:rgba(74,155,140,.10);border:1px solid rgba(74,155,140,.20);
+    border-radius:999px;padding:4px 11px;margin-bottom:12px;
+  }
+  h1{margin:0 0 6px;font-size:24px;font-weight:500;letter-spacing:-.2px}
+  .sub{margin:0;color:var(--text-2);font-size:13.5px;max-width:74ch}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .chip{
+    font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);
+    background:var(--surface);color:var(--text-2);display:inline-flex;align-items:center;gap:6px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--brand);flex:none}
+  .dot.amber{background:#D9A93A}.dot.red{background:var(--danger)}.dot.grey{background:#9AA8A5}
+
+  /* ── 通用卡 ── */
+  section{margin-bottom:20px}
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:20px 22px;
+  }
+  .sec-h{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+  .sec-n{
+    font-size:11px;font-weight:500;color:var(--brand-strong);background:var(--mint-100);
+    border-radius:7px;padding:2px 8px;letter-spacing:.4px;flex:none;
+  }
+  .sec-h h2{margin:0;font-size:16.5px;font-weight:500}
+  .sec-d{margin:0 0 16px;color:var(--text-2);font-size:13px}
+
+  /* ── 表格 ── */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border-soft);vertical-align:top}
+  th{color:var(--text-2);font-weight:500;font-size:12px;background:var(--surface-2)}
+  tr:last-child td{border-bottom:0}
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+    font-size:12px;background:var(--surface-2);border:1px solid var(--border-soft);
+    border-radius:5px;padding:1px 5px;color:var(--brand-strong);
+  }
+  .num{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .tag{display:inline-block;font-size:11.5px;padding:1.5px 8px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+  .tag.ok{color:var(--ok);background:var(--ok-bg);border-color:#C9EADF}
+  .tag.warn{color:var(--warn);background:var(--warn-bg);border-color:#F2E2B8}
+  .tag.bad{color:var(--danger);background:var(--danger-bg);border-color:var(--danger-border)}
+  .tag.info{color:var(--sky);background:var(--sky-bg);border-color:#D3E6F8}
+  .tag.neutral{color:var(--text-2);background:var(--surface-2);border-color:var(--border)}
+
+  /* ── 曲线图 ── */
+  .curves{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px}
+  .curve{border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 12px 10px;background:var(--surface)}
+  .curve h3{margin:0 0 2px;font-size:13px;font-weight:500}
+  .curve p{margin:0 0 8px;font-size:11.5px;color:var(--text-3)}
+  .curve svg{display:block;width:100%;height:auto}
+
+  /* ── 舞台对照 ── */
+  .stages{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .stagebox{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--surface)}
+  .stagehead{padding:10px 12px;border-bottom:1px solid var(--border-soft);background:var(--surface-2)}
+  .stagehead .t{font-size:13px;font-weight:500;display:flex;align-items:center;gap:7px}
+  .stagehead .m{font-size:11.5px;color:var(--text-3);margin-top:2px}
+  .stagehead.good .t{color:var(--ok)}
+  .stagehead.bad .t{color:var(--danger)}
+  .stagehead.base .t{color:var(--text-2)}
+
+  .stage{
+    position:relative;height:250px;overflow:hidden;
+    background:
+      radial-gradient(70% 60% at 12% 18%,rgba(217,205,240,.55),transparent 62%),
+      radial-gradient(70% 60% at 88% 78%,rgba(191,220,245,.55),transparent 62%),
+      linear-gradient(160deg,#F7FBFA,#E6F4F0);
+  }
+  /* 舞台内模拟的「页面内容」，让遮罩叠上去看得见 */
+  .ghost{padding:14px}
+  .ghost .bar{height:9px;border-radius:5px;background:rgba(31,74,66,.10);margin-bottom:9px}
+  .ghost .bar.w60{width:60%}.ghost .bar.w80{width:80%}.ghost .bar.w45{width:45%}
+
+  .ant-drawer-mask{
+    position:absolute;inset:0;background:rgba(30,51,48,.28);opacity:0;pointer-events:none;
+  }
+  .ant-drawer-content-wrapper{
+    position:absolute;top:0;right:0;bottom:0;width:72%;
+    transform:translateX(100%);
+  }
+  .ant-drawer-content{
+    width:100%;height:100%;background:var(--surface);padding:15px 16px;
+    box-shadow:-14px 0 34px rgba(31,74,66,.14);overflow:hidden;
+  }
+  .drawer-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .drawer-h b{font-size:13px;font-weight:500}
+  .drawer-x{
+    width:26px;height:26px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);
+    display:grid;place-items:center;cursor:pointer;flex:none;
+  }
+  .drawer-x:hover{background:var(--mint-100);border-color:var(--brand)}
+  .kv{font-size:12px;color:var(--text-2);border-top:1px solid var(--border-soft);padding-top:9px;margin-top:9px}
+  .kv div{display:flex;justify-content:space-between;padding:2.5px 0}
+
+  /* 三条轨道的 transition 定义（值取自 motion-v4-macaron.scss §4） */
+  .s-a .ant-drawer-content-wrapper{transition:transform .3s var(--ease-antd)}
+  .s-a .ant-drawer-mask{transition:opacity .3s var(--ease-antd)}
+  .s-b .ant-drawer-content-wrapper{transition:transform .34s var(--ease-enter)}
+  .s-b .ant-drawer-mask{transition:opacity .34s var(--ease-enter)}
+  .s-b.leaving .ant-drawer-content-wrapper{transition:transform .2s var(--ease-leave)}
+  .s-b.leaving .ant-drawer-mask{transition:opacity .2s var(--ease-leave)}
+  .s-c .ant-drawer-content-wrapper{transition:transform .34s var(--ease-back)}
+  .s-c .ant-drawer-mask{transition:opacity .34s var(--ease-back)}
+  .s-c.leaving .ant-drawer-content-wrapper{transition:transform .2s var(--ease-leave)}
+  .s-c.leaving .ant-drawer-mask{transition:opacity .2s var(--ease-leave)}
+
+  .stage.s-a.is-open .ant-drawer-content-wrapper,
+  .stage.s-b.is-open .ant-drawer-content-wrapper,
+  .stage.s-c.is-open .ant-drawer-content-wrapper{transform:translateX(0)}
+  .stage.is-open .ant-drawer-mask{opacity:1}
+  .stage.rm .ant-drawer-content-wrapper,
+  .stage.rm .ant-drawer-mask{transition:none !important}
+
+  /* 锚定边标线 */
+  .anchorline{
+    position:absolute;top:0;bottom:0;right:0;width:0;border-right:2px dashed rgba(174,56,48,.55);
+    pointer-events:none;z-index:6;
+  }
+  .anchorlabel{
+    position:absolute;top:6px;right:8px;font-size:10.5px;color:var(--danger);
+    background:rgba(253,237,236,.94);border:1px solid var(--danger-border);border-radius:6px;
+    padding:1px 6px;z-index:7;pointer-events:none;white-space:nowrap;
+  }
+  /* 实测缝隙高亮 */
+  .gapmark{
+    position:absolute;top:0;bottom:0;right:0;width:0;background:repeating-linear-gradient(
+      45deg,rgba(174,56,48,.34),rgba(174,56,48,.34) 5px,rgba(174,56,48,.10) 5px,rgba(174,56,48,.10) 10px);
+    pointer-events:none;z-index:5;transition:none;
+  }
+  .meter{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:9px 12px;border-top:1px solid var(--border-soft);background:var(--surface-2);font-size:12px;
+  }
+  .meter .lab{color:var(--text-2)}
+  .meter .val{font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:500}
+  .meter .val.bad{color:var(--danger)}
+  .meter .val.ok{color:var(--ok)}
+  .controls{display:flex;gap:8px;padding:11px 12px;border-top:1px solid var(--border-soft);flex-wrap:wrap}
+  button{
+    font-family:inherit;font-size:12.5px;font-weight:500;border-radius:var(--radius-sm);
+    padding:8px 13px;min-height:38px;border:1px solid var(--border);background:var(--surface);
+    color:var(--text);cursor:pointer;transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  }
+  button:hover{border-color:var(--brand);background:var(--mint-100)}
+  button:active{transform:scale(.96);box-shadow:inset 0 2px 6px rgba(31,74,66,.18)}
+  button.primary{
+    background:var(--brand-strong);border-color:var(--brand-strong);color:#fff;
+  }
+  button.primary:hover{background:var(--brand);border-color:var(--brand)}
+  button.ghost{background:transparent}
+
+  /* ── 代码块 ── */
+  pre{
+    margin:0;background:#F7FBFA;border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:14px 15px;overflow-x:auto;font-size:12px;line-height:1.75;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;color:#24443E;
+  }
+  pre .c{color:#8AA5A0}
+  pre .k{color:var(--taro)}
+  pre .v{color:var(--brand-strong)}
+  pre .bad{color:var(--danger)}
+
+  /* ── 提示条 ── */
+  .note{
+    display:flex;gap:11px;padding:13px 15px;border-radius:var(--radius-sm);font-size:13px;
+    border:1px solid var(--border);background:var(--surface-2);margin-top:14px;
+  }
+  .note .ico{flex:none;margin-top:1px}
+  .note p{margin:0}
+  .note p+p{margin-top:5px}
+  .note.danger{background:var(--danger-bg);border-color:var(--danger-border)}
+  .note.danger b{color:var(--danger)}
+  .note.ok{background:var(--ok-bg);border-color:#C9EADF}
+  .note.ok b{color:var(--ok)}
+
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .list{margin:0;padding-left:18px;color:var(--text-2);font-size:13px}
+  .list li{margin-bottom:5px}
+  .list code{font-size:11.5px}
+  .muted{color:var(--text-3);font-size:12px}
+
+  footer{margin-top:30px;color:var(--text-3);font-size:12px;text-align:center}
+
+  @media (max-width:900px){
+    .curves,.stages,.g2{grid-template-columns:1fr}
+    .wrap{padding:18px 14px 56px}
+    h1{font-size:20px}
+    table{font-size:12.5px}
+    th,td{padding:8px 8px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .stage .ant-drawer-content-wrapper,.stage .ant-drawer-mask{transition:none !important}
+    button{transition:none !important}
+    button:active{transform:none;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <span class="eyebrow">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5"/></svg>
+      B2 实施验证 · 优丁超管后台
+    </span>
+    <h1>抽屉统一缓动（a-drawer）</h1>
+    <p class="sub">
+      覆盖 AntD Vue 4 Drawer 的位移层与遮罩层，统一为「减速型不对称缓动」。本页用**实测像素**证明一件事：
+      贴边抽屉不能用过冲曲线——下面第三条泳道会当场露出缝隙。
+    </p>
+    <div class="chips">
+      <span class="chip"><span class="dot"></span>进入 340ms · expo-out</span>
+      <span class="chip"><span class="dot grey"></span>退出 200ms · expo-in</span>
+      <span class="chip"><span class="dot amber"></span>无 <code>!important</code></span>
+      <span class="chip"><span class="dot red"></span>过冲 = 缝隙（已否决）</span>
+      <span class="chip">backdrop-filter 属性数 = 0</span>
+    </div>
+  </header>
+
+  <!-- 01 判定 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">01</span><h2>为什么不用弹性过冲曲线</h2></div>
+      <p class="sec-d">
+        抽屉是<strong>贴边锚定</strong>的。曲线的过冲量作用在位移轴上时，元素会「穿过」目标位置——
+        对居中的卡片是无害的抖动，对贴边面板却是<strong>物理穿帮</strong>。
+      </p>
+
+      <div class="g2">
+        <div>
+          <svg viewBox="0 0 440 190" width="100%" height="auto" role="img" aria-label="贴边抽屉过冲产生缝隙的几何示意">
+            <defs>
+              <marker id="ar" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 z" fill="#55706B"/>
+              </marker>
+              <marker id="arR" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 z" fill="#AE3830"/>
+              </marker>
+              <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                <rect width="7" height="7" fill="#FDEDEC"/>
+                <line x1="0" y1="0" x2="0" y2="7" stroke="#EBA9A3" stroke-width="2.4"/>
+              </pattern>
+            </defs>
+
+            <rect x="0" y="0" width="440" height="190" rx="10" fill="#F7FBFA"/>
+            <!-- 视口 -->
+            <rect x="26" y="24" width="360" height="120" rx="8" fill="#FFFFFF" stroke="#E3EFEA"/>
+            <text x="34" y="42" font-size="10.5" fill="#7A9691">视口</text>
+            <!-- 遮罩被露出的部分 -->
+            <rect x="326" y="24" width="60" height="120" fill="url(#hatch)"/>
+            <!-- 抽屉本体（过冲后停在错位处） -->
+            <rect x="146" y="24" width="180" height="120" rx="6" fill="#DCF0EB" stroke="#A0D6CB"/>
+            <text x="236" y="90" font-size="11.5" fill="#1E3330" text-anchor="middle">抽屉面板</text>
+            <!-- 锚定边 -->
+            <line x1="386" y1="14" x2="386" y2="154" stroke="#AE3830" stroke-width="1.6" stroke-dasharray="4 3"/>
+            <text x="386" y="168" font-size="10.5" fill="#AE3830" text-anchor="middle">视口右边缘（锚定边）</text>
+            <!-- 缝隙标注 -->
+            <line x1="326" y1="10" x2="386" y2="10" stroke="#AE3830" stroke-width="1.4" marker-start="url(#arR)" marker-end="url(#arR)"/>
+            <text x="356" y="6" font-size="11" fill="#AE3830" text-anchor="middle">缝隙</text>
+            <!-- 过冲位移 -->
+            <line x1="326" y1="132" x2="356" y2="132" stroke="#AE3830" stroke-width="1.2" marker-end="url(#arR)"/>
+            <text x="300" y="146" font-size="10.5" fill="#AE3830">过冲 ≈ 12%×宽</text>
+            <!-- 静止位参考 -->
+            <line x1="146" y1="24" x2="146" y2="144" stroke="#55706B" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="150" y="140" font-size="10.5" fill="#55706B">静止位（translateX(0)）</text>
+          </svg>
+        </div>
+        <div>
+          <ul class="list">
+            <li><strong>右侧抽屉</strong>静止位 <code>translateX(0)</code>，面板右边缘与视口右边缘<strong>重合</strong>。</li>
+            <li>过冲意味着 <code>translateX</code> 变成<strong>负值</strong> → 面板整体左移 → 右侧露出遮罩。</li>
+            <li>幅度按抽屉宽算，不是固定像素：过冲 12% × 378px ≈ <strong>45px</strong>，肉眼极明显。</li>
+            <li>左 / 上 / 下三个方向同理，各自在锚定边露缝。<strong>这是几何必然，与曲线参数无关</strong>，只能靠「不过冲」规避。</li>
+            <li>真正需要弹性回弹的是 <strong>#5 阻尼 Bottom Sheet</strong>：那是手势驱动的，由松手速度决定吸附锚点，属于另一批次。</li>
+          </ul>
+          <div class="note danger">
+            <span class="ico">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AE3830" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+            </span>
+            <p><b>否决记录</b>：<code>cubic-bezier(.34,1.56,.64,1)</code> 这类「back-out」曲线在落地页/作品集里很好用，
+            但对本项目 14 个抽屉全部不适用。已从方案中移除，不作为备选项保留。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 曲线 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">02</span><h2>三条曲线与实测极值</h2></div>
+      <p class="sec-d">
+        下图由脚本按三次贝塞尔定义<strong>逐点采样</strong>绘制（非示意图）。
+        「最大过冲」= 曲线 y 值超出 1 的峰值，直接等于位移轴的穿帮幅度。
+      </p>
+      <div class="curves" id="curves"></div>
+      <table style="margin-top:16px">
+        <thead>
+          <tr><th>泳道</th><th>曲线</th><th>时长</th><th>最大过冲</th><th>378px 抽屉的穿帮幅度</th><th>采纳</th></tr>
+        </thead>
+        <tbody id="curveTable"></tbody>
+      </table>
+      <div class="note ok">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#24705A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <p><b>采纳依据</b>：expo-out 的 y 值恒 ≤ 1（过冲 = 0），位移轴不会越界；同时它的「起步快、收尾极慢」恰好给出<strong>有重量</strong>的手感——
+        这正是原需求里「弹性」想要的东西，只是通过<strong>减速</strong>而非<strong>越界</strong>实现。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 实景 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">03</span><h2>三条泳道实景对照（含实测缝隙）</h2></div>
+      <p class="sec-d">
+        同一结构、同一宽度、同时打开。每条泳道下方会<strong>实时采样面板右边缘与锚定边的距离</strong>，
+        记录整段动画中的最大缝隙——数字是量出来的，不是算出来的。
+      </p>
+      <div class="stages" id="stages"></div>
+      <div class="controls" style="border-top:1px solid var(--border-soft);padding-left:0;padding-right:0">
+        <button class="primary" id="openAll">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1.5px;margin-right:5px"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          同时打开三条泳道
+        </button>
+        <button id="closeAll">同时关闭</button>
+        <button class="ghost" id="replay">重放并重新量测</button>
+        <button class="ghost" id="freeze">定格峰值（复现穿帮那一帧）</button>
+        <button class="ghost" id="rmToggle">模拟 prefers-reduced-motion</button>
+        <span class="muted" id="rmState" style="align-self:center">降级未开启</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 落地代码 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">04</span><h2>落地代码（已写入仓库）</h2></div>
+      <p class="sec-d">
+        文件：<code>frontend/admin/src/styles/motion-v4-macaron.scss</code> §4。
+        机制来自实测：AntD 把缓动写死在 CSS 里，<strong>没有对应 theme token</strong>，所以只能覆盖。
+      </p>
+      <pre><span class="c">/* 单点开关：4 个变量改回 ease / 300ms 即完全复原 AntD 原生手感 */</span>
+:root {
+  <span class="v">--uj-drawer-enter-ease</span>: cubic-bezier(0.16, 1, 0.3, 1);   <span class="c">/* expo-out：进入 */</span>
+  <span class="v">--uj-drawer-enter-duration</span>: 340ms;
+  <span class="v">--uj-drawer-leave-ease</span>: cubic-bezier(0.7, 0, 0.84, 0);   <span class="c">/* expo-in：退出 */</span>
+  <span class="v">--uj-drawer-leave-duration</span>: 200ms;
+}
+
+<span class="c">/* 位移层 · 进入（html 前缀是必需的，见下方说明）*/</span>
+html .ant-drawer .ant-drawer-content-wrapper {
+  transition: transform var(--uj-drawer-enter-duration) var(--uj-drawer-enter-ease);
+}
+
+<span class="c">/* 位移层 · 退出：一个属性选择器覆盖 left/right/top/bottom 四个方向 */</span>
+html .ant-drawer .ant-drawer-content-wrapper[class*=<span class="k">'-leave-active'</span>] {
+  transition: transform var(--uj-drawer-leave-duration) var(--uj-drawer-leave-ease);
+}
+
+<span class="c">/* 初始落位那一帧必须无过渡，否则会从上一个位置滑进来 */</span>
+html .ant-drawer .ant-drawer-content-wrapper[class*=<span class="k">'-enter-start'</span>],
+html .ant-drawer .ant-drawer-content-wrapper[class*=<span class="k">'-appear-start'</span>] {
+  transition: none;
+}
+
+<span class="c">/* 动画期间才提升为合成层，类名一撤即自动释放 */</span>
+html .ant-drawer .ant-drawer-content-wrapper[class*=<span class="k">'-enter-active'</span>],
+html .ant-drawer .ant-drawer-content-wrapper[class*=<span class="k">'-leave-active'</span>] {
+  will-change: transform;
+}
+
+<span class="c">/* 遮罩层同步曲线与时长，避免「面板已到位、遮罩还在淡入」的割裂感 */</span>
+html .ant-drawer .ant-drawer-mask-motion-enter-active,
+html .ant-drawer .ant-drawer-mask-motion-appear-active {
+  transition: opacity var(--uj-drawer-enter-duration) var(--uj-drawer-enter-ease);
+}
+html .ant-drawer .ant-drawer-mask-motion-leave-active {
+  transition: opacity var(--uj-drawer-leave-duration) var(--uj-drawer-leave-ease);
+}</pre>
+
+      <div class="g2" style="margin-top:14px">
+        <div class="note">
+          <span class="ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2B6295" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+          </span>
+          <p><b>为什么选择器要加 <code>html</code> 前缀</b></p>
+          <p>1. 抽屉默认 portal 到 <code>body</code>，<code>.shell</code> / <code>.yd-page</code> 这类祖先选择器<strong>全部落空</strong>；</p>
+          <p>2. AntD 样式由 cssinjs <strong>运行时注入</strong>，位于静态样式之后，同权重时靠后者取胜；</p>
+          <p>3. 加一个元素选择器 → 特异性 <span class="num">(0,2,1)</span> 稳压 AntD 的 <span class="num">(0,2,0)</span>，<strong>无需 <code>!important</code></strong>。</p>
+        </div>
+        <div class="note">
+          <span class="ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A6212" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          </span>
+          <p><b>影响面与回滚</b></p>
+          <p>· 覆盖 <strong>14 个文件的抽屉</strong>（含 <code>ThemeSettingsDrawer.vue</code>），是<strong>行为变更</strong>而非纯增补；</p>
+          <p>· 回滚 = 把 4 个变量改回 <code>ease</code> / <code>300ms</code>，或整段删除；</p>
+          <p>· 已接入 <code>prefers-reduced-motion</code> 降级：降低动态效果时直接落位。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 边界 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">05</span><h2>未做与已知边界</h2></div>
+      <table>
+        <thead><tr><th>事项</th><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>a-modal</code> 统一缓动</td>
+            <td><span class="tag neutral">未做</span></td>
+            <td>本批次范围仅抽屉。弹窗的缓动由 <code>ant-zoom</code> 系列 keyframes 驱动，改法与抽屉不同，需单独一轮。</td>
+          </tr>
+          <tr>
+            <td>拖拽阻尼 / Bottom Sheet</td>
+            <td><span class="tag neutral">下一批次</span></td>
+            <td>属 #5，需手势与速度判定，纯 CSS 做不了；项目当前也<strong>没有底部导航容器</strong>承载它。</td>
+          </tr>
+          <tr>
+            <td>运行时观感验收</td>
+            <td><span class="tag warn">待做</span></td>
+            <td>本页为同值复现。真实 AntD 运行时需起 dev server 后目视一次（需后端数据）。</td>
+          </tr>
+          <tr>
+            <td>暗色主题下的矛盾</td>
+            <td><span class="tag info">已核查</span></td>
+            <td><code>shell-theme-dark.scss:591-615</code> 只覆盖颜色，未动 <code>transition</code>，与本层不冲突。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    优丁 YouDing · 超管后台微交互批次 B2 · motion-v4-macaron.scss §4 · 单文件零外链
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ───────── 三次贝塞尔采样 ───────── */
+  function bezier(p1x, p1y, p2x, p2y) {
+    // 解 t 使 x(t) = x，返回 y(t)
+    function cx(t){ return 3*p1x*t*(1-t)*(1-t) + 3*p2x*t*t*(1-t) + t*t*t; }
+    function cy(t){ return 3*p1y*t*(1-t)*(1-t) + 3*p2y*t*t*(1-t) + t*t*t; }
+    function solveT(x){
+      var lo = 0, hi = 1, t = x, i;
+      for (i = 0; i < 28; i++) {
+        t = (lo + hi) / 2;
+        if (cx(t) < x) lo = t; else hi = t;
+      }
+      return t;
+    }
+    return function (x) { return cy(solveT(x)); };
+  }
+
+  var TRACKS = [
+    { key:'a', name:'AntD 原生', cls:'base', ease:[0.25,0.1,0.25,1], css:'var(--ease-antd)', label:'ease',
+      enter:'300ms', leave:'300ms', adopted:false, note:'AntD 默认，0.3s 全程 ease' },
+    { key:'b', name:'B2 采纳方案', cls:'good', ease:[0.16,1,0.3,1], css:'cubic-bezier(.16,1,.3,1)', label:'expo-out',
+      enter:'340ms', leave:'200ms', adopted:true, note:'进入 expo-out / 退出 expo-in，时长不对称' },
+    { key:'c', name:'过冲曲线（否决）', cls:'bad', ease:[0.34,1.56,0.64,1], css:'cubic-bezier(.34,1.56,.64,1)', label:'back-out',
+      enter:'340ms', leave:'200ms', adopted:false, note:'末端越界 → 贴边处露缝' }
+  ];
+
+  var DRAWER_W = 378; // AntD 常见抽屉宽度，用于换算穿帮幅度
+
+  /* ───────── 1. 曲线图 ───────── */
+  function curveSvg(track) {
+    var W = 210, H = 150, PAD = 26;
+    var fn = bezier.apply(null, track.ease);
+    var i, x, y, pts = [];
+    for (i = 0; i <= 60; i++) {
+      x = i / 60;
+      y = fn(x);
+      pts.push((PAD + x * (W - PAD - 8)).toFixed(2) + ',' + (H - PAD - y * (H - PAD - 8)).toFixed(2));
+    }
+    // 采样求最大过冲
+    var maxY = 0;
+    for (i = 0; i <= 200; i++) { y = fn(i / 200); if (y > maxY) maxY = y; }
+    var overshoot = Math.max(0, maxY - 1);
+    var yTop = H - PAD - 1 * (H - PAD - 8);
+    var clr = track.adopted ? '#4a9b8c' : (track.cls === 'bad' ? '#AE3830' : '#7A9691');
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + track.name + ' 缓动曲线">';
+    svg += '<rect x="' + PAD + '" y="8" width="' + (W - PAD - 8) + '" height="' + (H - PAD - 8) + '" fill="#F7FBFA" stroke="#EDF5F2" rx="6"/>';
+    // 目标线 y=1
+    svg += '<line x1="' + PAD + '" y1="' + yTop + '" x2="' + (W - 8) + '" y2="' + yTop + '" stroke="#A0D6CB" stroke-width="1" stroke-dasharray="4 3"/>';
+    svg += '<text x="' + (W - 10) + '" y="' + (yTop - 4) + '" font-size="9" fill="#7A9691" text-anchor="end">目标 y=1</text>';
+    // 过冲阴影区
+    if (overshoot > 0.001) {
+      var yPeak = H - PAD - maxY * (H - PAD - 8);
+      svg += '<rect x="' + PAD + '" y="' + yPeak.toFixed(2) + '" width="' + (W - PAD - 8) + '" height="' + (yTop - yPeak).toFixed(2) + '" fill="#FDEDEC"/>';
+      svg += '<line x1="' + PAD + '" y1="' + yPeak.toFixed(2) + '" x2="' + (W - 8) + '" y2="' + yPeak.toFixed(2) + '" stroke="#AE3830" stroke-width="1" stroke-dasharray="3 3"/>';
+    }
+    // 坐标轴
+    svg += '<line x1="' + PAD + '" y1="8" x2="' + PAD + '" y2="' + (H - PAD) + '" stroke="#E3EFEA"/>';
+    svg += '<line x1="' + PAD + '" y1="' + (H - PAD) + '" x2="' + (W - 8) + '" y2="' + (H - PAD) + '" stroke="#E3EFEA"/>';
+    svg += '<text x="' + PAD + '" y="' + (H - PAD + 13) + '" font-size="9" fill="#7A9691">0</text>';
+    svg += '<text x="' + (W - 8) + '" y="' + (H - PAD + 13) + '" font-size="9" fill="#7A9691" text-anchor="end">1（时间）</text>';
+    svg += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + clr + '" stroke-width="2.4" stroke-linecap="round"/>';
+    svg += '</svg>';
+    return { svg: svg, overshoot: overshoot, fn: fn };
+  }
+
+  var curvesHost = document.getElementById('curves');
+  var tableHost = document.getElementById('curveTable');
+  var curveHtml = '', tableHtml = '';
+
+  TRACKS.forEach(function (t) {
+    var r = curveSvg(t);
+    t.overshoot = r.overshoot;
+    var gap = (r.overshoot * DRAWER_W);
+    var adopt = t.adopted
+      ? '<span class="tag ok">采纳</span>'
+      : (t.cls === 'bad' ? '<span class="tag bad">否决</span>' : '<span class="tag neutral">基线</span>');
+    curveHtml +=
+      '<div class="curve">' +
+        '<h3>' + t.name + '</h3>' +
+        '<p><code>' + t.css + '</code></p>' +
+        r.svg +
+        '<p style="margin-top:8px">最大过冲 <strong style="color:' + (r.overshoot > 0.001 ? '#AE3830' : '#24705A') + '">' +
+          (r.overshoot * 100).toFixed(1) + '%</strong></p>' +
+      '</div>';
+    tableHtml +=
+      '<tr>' +
+        '<td>' + t.name + '</td>' +
+        '<td><code>' + t.label + '</code></td>' +
+        '<td class="num">' + t.enter + ' / ' + t.leave + '</td>' +
+        '<td class="num" style="color:' + (r.overshoot > 0.001 ? '#AE3830' : '#24705A') + '">' + (r.overshoot * 100).toFixed(1) + '%</td>' +
+        '<td class="num"' + (gap > 0.5 ? ' style="color:#AE3830;font-weight:500"' : '') + '>' + (gap > 0.5 ? '约 ' + gap.toFixed(0) + 'px' : '0px') + '</td>' +
+        '<td>' + adopt + '</td>' +
+      '</tr>';
+  });
+  curvesHost.innerHTML = curveHtml;
+  tableHost.innerHTML = tableHtml;
+
+  /* ───────── 2. 三条泳道 ───────── */
+  var stagesHost = document.getElementById('stages');
+  var html = '';
+  TRACKS.forEach(function (t) {
+    html +=
+      '<div class="stagebox">' +
+        '<div class="stagehead ' + t.cls + '">' +
+          '<div class="t">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              (t.adopted
+                ? '<path d="M20 6 9 17l-5-5"/>'
+                : (t.cls === 'bad'
+                    ? '<path d="M18 6 6 18M6 6l12 12"/>'
+                    : '<circle cx="12" cy="12" r="9"/><path d="M12 8v8"/>')) +
+            '</svg>' +
+            t.name +
+          '</div>' +
+          '<div class="m">' + t.note + '</div>' +
+        '</div>' +
+        '<div class="stage s-' + t.key + '" id="stage-' + t.key + '">' +
+          '<div class="ghost">' +
+            '<div class="bar w80"></div><div class="bar"></div><div class="bar w60"></div>' +
+            '<div class="bar w80"></div><div class="bar w45"></div>' +
+          '</div>' +
+          '<div class="gapmark" id="gap-' + t.key + '"></div>' +
+          '<div class="ant-drawer-mask" id="mask-' + t.key + '"></div>' +
+          '<div class="ant-drawer-content-wrapper" id="wrap-' + t.key + '">' +
+            '<div class="ant-drawer-content">' +
+              '<div class="drawer-h"><b>抽屉面板</b>' +
+                '<span class="drawer-x" data-close="' + t.key + '">' +
+                  '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#55706B" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
+                '</span>' +
+              '</div>' +
+              '<div class="kv">' +
+                '<div><span>进入</span><span class="num">' + t.enter + '</span></div>' +
+                '<div><span>退出</span><span class="num">' + t.leave + '</span></div>' +
+                '<div><span>曲线</span><span class="num">' + t.label + '</span></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="anchorline"></div>' +
+          '<div class="anchorlabel">锚定边</div>' +
+        '</div>' +
+        '<div class="meter">' +
+          '<span class="lab">实测最大缝隙</span>' +
+          '<span class="val" id="meter-' + t.key + '">—</span>' +
+        '</div>' +
+      '</div>';
+  });
+  stagesHost.innerHTML = html;
+
+  /* ───────── 3. 开合与量测 ───────── */
+  var timers = {};
+  var openState = { a: false, b: false, c: false };
+  var peakGap = { a: 0, b: 0, c: 0 };
+
+  function measure(key, dur) {
+    var stage = document.getElementById('stage-' + key);
+    var wrap  = document.getElementById('wrap-' + key);
+    var gapEl = document.getElementById('gap-' + key);
+    var meter = document.getElementById('meter-' + key);
+    if (!stage || !wrap) return;
+
+    var t0 = performance.now();
+    var maxGap = 0;
+    var raf = 0;
+
+    function tick(now) {
+      var sr = stage.getBoundingClientRect();
+      var wr = wrap.getBoundingClientRect();
+      var gap = sr.right - wr.right;            // >0 表示面板右边缘离开了锚定边
+      if (gap > maxGap) maxGap = gap;
+      gapEl.style.width = Math.max(0, gap).toFixed(1) + 'px';
+
+      if (now - t0 < dur + 60) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        // 记录峰值：既是最终读数，也供「定格峰值」复现
+        peakGap[key] = maxGap;
+        stage.setAttribute('data-peakgap', maxGap.toFixed(1));
+        meter.textContent = maxGap > 0.5
+          ? '最大 ' + maxGap.toFixed(1) + 'px'
+          : '0.0px（未越界）';
+        meter.className = 'val ' + (maxGap > 0.5 ? 'bad' : 'ok');
+
+        if (maxGap > 0.5) {
+          // 把峰值保持 3s，让「动画中途的穿帮」可被截图看到
+          gapEl.style.width = maxGap.toFixed(1) + 'px';
+          gapEl.setAttribute('data-hold', '1');
+          clearTimeout(timers['hold-' + key]);
+          timers['hold-' + key] = setTimeout(function () {
+            gapEl.style.width = '0px';
+            gapEl.removeAttribute('data-hold');
+          }, 3000);
+        } else {
+          gapEl.style.width = '0px';
+        }
+      }
+    }
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(tick);
+  }
+
+  function durations(key) {
+    var t = null, i;
+    for (i = 0; i < TRACKS.length; i++) if (TRACKS[i].key === key) t = TRACKS[i];
+    var enterMs = parseFloat(t.enter) * (t.enter.indexOf('ms') > -1 ? 1 : 1000);
+    var leaveMs = parseFloat(t.leave) * (t.leave.indexOf('ms') > -1 ? 1 : 1000);
+    return { enter: enterMs, leave: leaveMs };
+  }
+
+  function open(key) {
+    var stage = document.getElementById('stage-' + key);
+    if (!stage || openState[key]) return;
+    var d = durations(key);
+    clearTimeout(timers[key]);
+    stage.classList.remove('leaving');
+    // 强制重排，确保从 translateX(100%) 起步
+    void stage.offsetWidth;
+    stage.classList.add('is-open');
+    openState[key] = true;
+    measure(key, d.enter);
+  }
+
+  function close(key) {
+    var stage = document.getElementById('stage-' + key);
+    if (!stage || !openState[key]) return;
+    var d = durations(key);
+    clearTimeout(timers[key]);
+    stage.classList.add('leaving');
+    void stage.offsetWidth;
+    stage.classList.remove('is-open');
+    openState[key] = false;
+    timers[key] = setTimeout(function () {
+      stage.classList.remove('leaving');
+    }, d.leave + 40);
+    measure(key, d.leave);
+  }
+
+  document.getElementById('openAll').addEventListener('click', function () {
+    ['a', 'b', 'c'].forEach(open);
+  });
+  document.getElementById('closeAll').addEventListener('click', function () {
+    ['a', 'b', 'c'].forEach(close);
+  });
+  document.getElementById('replay').addEventListener('click', function () {
+    ['a', 'b', 'c'].forEach(close);
+    setTimeout(function () { ['a', 'b', 'c'].forEach(open); }, 430);
+  });
+
+  stagesHost.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-close]') : null;
+    if (el) close(el.getAttribute('data-close'));
+  });
+
+  /* 定格峰值：把动画中途记录到的最大缝隙固定下来，便于截图/复核 */
+  var frozen = false;
+  document.getElementById('freeze').addEventListener('click', function () {
+    frozen = !frozen;
+    this.textContent = frozen ? '取消定格' : '定格峰值（复现穿帮那一帧）';
+    ['a', 'b', 'c'].forEach(function (k) {
+      var gapEl = document.getElementById('gap-' + k);
+      if (!gapEl) return;
+      if (frozen && peakGap[k] > 0.5) {
+        gapEl.style.width = peakGap[k].toFixed(1) + 'px';
+        gapEl.setAttribute('data-frozen', '1');
+      } else {
+        gapEl.style.width = '0px';
+        gapEl.removeAttribute('data-frozen');
+      }
+    });
+  });
+
+  /* 降级模拟 */
+  var rmOn = false;
+  document.getElementById('rmToggle').addEventListener('click', function () {
+    rmOn = !rmOn;
+    ['a', 'b', 'c'].forEach(function (k) {
+      document.getElementById('stage-' + k).classList.toggle('rm', rmOn);
+    });
+    document.getElementById('rmState').textContent = rmOn ? '降级已开启：直接落位' : '降级未开启';
+    this.textContent = rmOn ? '关闭降级模拟' : '模拟 prefers-reduced-motion';
+  });
+
+  /* 首屏自动演示一次 */
+  window.addEventListener('load', function () {
+    setTimeout(function () { ['a', 'b', 'c'].forEach(open); }, 520);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{"op": "upsert", "entity": {"id": "project_youding", "type": "Project", "properties": {"name": "优丁 UJ B2B 外贸 SaaS", "scale_files": 45350, "scale_loc": 9504246, "routes": 2055, "models": 238, "schemas": 701, "celery_tasks": 32, "completion_markers": 12681, "serialization_rate": "15.3%", "status": "engine_not_ignited", "audit_date": "2026-09-11", "source_file": "docs/ontology/优丁资产审计本体-2026-09-11.md"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_core_backend", "type": "Subsystem", "properties": {"name": "Core Backend", "path": "backend/app", "function": "多租户控制面 + API 服务（FastAPI/SQLAlchemy/PG/Celery/Redis）", "status": "active", "schedule": "全部前端/编排层/外部子系统经 adapter 接入", "depends_on": "PG229表/Redis/Celery/n8n"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_deepseek_harness", "type": "Subsystem", "properties": {"name": "DeepSeek Harness", "path": "deepseek-harness/", "function": "L1 认知推理沙箱（stdio JSON-RPC，外层规划）", "status": "integrated_available", "schedule": "Hermes（L2 调用 L1 输出 DAG）", "depends_on": "sglang/torch/transformers"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_hermes", "type": "Subsystem", "properties": {"name": "Hermes 内部编排", "path": "backend/app/services/hermes", "function": "L2 DAG 编排 + 状态机 + JsonPath 数据总线 + Saga", "status": "p0_active", "schedule": "所有执行器（site_builder/content/publish…）", "depends_on": "DeepSeek Harness/Celery/ExecutorRegistry"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_trade_ai_agent", "type": "Subsystem", "properties": {"name": "Trade AI Agent", "path": "_external/trade-ai-agent", "function": "全域社媒拓客 + WhatsApp 触达中枢", "status": "ready_for_adapter", "schedule": "经 hermes_node:trade_ai_agent 接入（未真接）", "depends_on": "WhatsApp Business API/爬虫/langgraph"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_goodjob_crm", "type": "Subsystem", "properties": {"name": "GoodJob CRM", "path": "_external/goodjob-crm", "function": "外贸 7 步履约 + WhatsApp 翻译 + PI/CI/PL 单证", "status": "ready_for_adapter", "schedule": "经 hermes_node:goodjob_crm 接入（未真接）", "depends_on": "Baileys WhatsApp/PDF 套打"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_deerflow", "type": "Subsystem", "properties": {"name": "DeerFlow", "path": "backend/app/services/deerflow", "function": "深研/SEO/多模态内容工作室", "status": "p1_target", "schedule": "Hermes executor hermes_node:deerflow", "depends_on": "模型网关/n8n 出站"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_350_assets", "type": "Subsystem", "properties": {"name": "350+ 资产", "path": "skills/ + _external/{agency,ecc}", "function": "AgencyZH 角色 + Skills 76 + ECC 286 SOP（PSSP 组装）", "status": "active", "schedule": "Hermes 经 role_loader/skill_pack_loader 调", "depends_on": "无（资产库）"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "subsystem_delivery_evidence", "type": "Subsystem", "properties": {"name": "Delivery & Evidence", "path": "backend/app/services/{browser_runtime,n8n}", "function": "取证（Disk JSONL+DB）+ n8n 出站分发", "status": "active", "schedule": "Hermes egress executor", "depends_on": "n8n@5678（2 webhook 激活）"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "doc_audit_full", "type": "Document", "properties": {"name": "资产盘点审计-全维度-2026-09-11.md", "role": "112维全量审计", "path": "docs/资产盘点审计-全维度-2026-09-11.md"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "doc_handover", "type": "Document", "properties": {"name": "开发交接记录-资产盘点审计_2026-09-11.md", "role": "自包含交接手册", "path": "docs/开发交接记录-资产盘点审计_2026-09-11.md"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "doc_index", "type": "Document", "properties": {"name": "00-会话产出串联索引-2026-09-10.md", "role": "会话产出总索引", "path": "docs/00-会话产出串联索引-2026-09-10.md"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "risk_unconnected_executors", "type": "Risk", "properties": {"name": "执行器未真接", "detail": "trade_ai_agent/goodjob_crm adapter 仍为未真接桩（Registry: ready_for_adapter）"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "risk_frontend_no_tests", "type": "Risk", "properties": {"name": "前端零测试", "detail": "前端测试文件 0，质量无门禁"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "risk_hardcoded_secrets", "type": "Risk", "properties": {"name": "硬编码凭证", "detail": "硬编码凭证命中 ~32 处 / 后端 secrets_hits 11"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "risk_placeholder_inflation", "type": "Risk", "properties": {"name": "placeholder 虚高", "detail": "placeholder 55,556 含变量名与 i18n 占位，不可直接当半成品数"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "risk_serial_debt", "type": "Risk", "properties": {"name": "串联历史欠账", "detail": "串联率 15.3% / 122 未串 / 49 孤儿页 / 42 桩平台 / 218 空表"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "task_integrate_tradeai_goodjob", "type": "Task", "properties": {"name": "真接 TradeAI/GoodJob adapter", "status": "open"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "task_frontend_tests", "type": "Task", "properties": {"name": "前端测试覆盖", "status": "open"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "task_clear_serial_debt", "type": "Task", "properties": {"name": "清串联/空表/孤儿欠账", "status": "open"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "upsert", "entity": {"id": "task_secrets_rotation", "type": "Task", "properties": {"name": "凭证外置与轮换", "status": "open"}, "updated": "2026-09-11T00:45:18.125350+00:00"}}
+{"op": "relate", "from": "subsystem_core_backend", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_core_backend"}
+{"op": "relate", "from": "subsystem_deepseek_harness", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_deepseek_harness"}
+{"op": "relate", "from": "subsystem_hermes", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_hermes"}
+{"op": "relate", "from": "subsystem_trade_ai_agent", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_trade_ai_agent"}
+{"op": "relate", "from": "subsystem_goodjob_crm", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_goodjob_crm"}
+{"op": "relate", "from": "subsystem_deerflow", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_deerflow"}
+{"op": "relate", "from": "subsystem_350_assets", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_350_assets"}
+{"op": "relate", "from": "subsystem_delivery_evidence", "rel": "part_of", "to": "project_youding"}
+{"op": "relate", "from": "project_youding", "rel": "contains", "to": "subsystem_delivery_evidence"}
+{"op": "relate", "from": "doc_audit_full", "rel": "documents", "to": "project_youding"}
+{"op": "relate", "from": "doc_handover", "rel": "documents", "to": "project_youding"}
+{"op": "relate", "from": "doc_index", "rel": "references", "to": "doc_audit_full"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_core_backend"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_deepseek_harness"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_hermes"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_trade_ai_agent"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_goodjob_crm"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_deerflow"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_350_assets"}
+{"op": "relate", "from": "doc_audit_full", "rel": "references", "to": "subsystem_delivery_evidence"}
+{"op": "relate", "from": "risk_unconnected_executors", "rel": "affects", "to": "project_youding"}
+{"op": "relate", "from": "risk_frontend_no_tests", "rel": "affects", "to": "project_youding"}
+{"op": "relate", "from": "risk_hardcoded_secrets", "rel": "affects", "to": "project_youding"}
+{"op": "relate", "from": "risk_placeholder_inflation", "rel": "affects", "to": "project_youding"}
+{"op": "relate", "from": "risk_serial_debt", "rel": "affects", "to": "project_youding"}
+{"op": "relate", "from": "task_integrate_tradeai_goodjob", "rel": "mitigates", "to": "risk_unconnected_executors"}
+{"op": "relate", "from": "task_frontend_tests", "rel": "mitigates", "to": "risk_frontend_no_tests"}
+{"op": "relate", "from": "task_clear_serial_debt", "rel": "mitigates", "to": "risk_serial_debt"}
+{"op": "relate", "from": "task_secrets_rotation", "rel": "mitigates", "to": "risk_hardcoded_secrets"}
+{"op": "relate", "from": "subsystem_trade_ai_agent", "rel": "blocked_by", "to": "risk_unconnected_executors"}
+{"op": "relate", "from": "subsystem_goodjob_crm", "rel": "blocked_by", "to": "risk_unconnected_executors"}

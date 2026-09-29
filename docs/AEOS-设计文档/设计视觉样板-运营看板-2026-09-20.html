@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>优丁 YouDing · 设计与配色视觉样板（运营看板）v1.0</title>
+<!-- 零外链：全部 CSS/JS 内联，图标与图表为内联 SVG；字体走系统栈 -->
+<style>
+/* ══ 统一 Design Tokens（唯一真源，见《统一规范》§3）══ */
+:root{
+  --mint-50:#F0F9F7; --mint-100:#DCF0EB; --mint-200:#BFE4DC; --mint-300:#A0D6CB;
+  --mint-400:#7FC9BB; --mint-500:#5FB3A3; --mint-600:#4a9b8c;
+  --mint-700:#3F8779; --mint-800:#2F6A5F; --mint-900:#245349;
+  --color-primary:#4a9b8c; --color-primary-hover:#3F8779;
+  --color-primary-strong:#367469; --color-primary-soft:rgba(74,155,140,.12);
+
+  --sakura-300:#F7C5D0; --sakura-700:#96506A;
+  --butter-300:#FBE3A8; --butter-700:#8A6212;
+  --taro-300:#D9CDF0;   --taro-700:#62509B;
+  --sky-300:#BFDCF5;    --sky-700:#2B6295;
+  --coral-300:#FBC9B8;  --coral-700:#A44F3A;
+
+  --color-success:#4CAF8E; --color-success-text:#24705A; --color-success-soft:#EAF7F2;
+  --color-warning:#E8A93C; --color-warning-text:#8A6212; --color-warning-soft:#FEF7E6;
+  --color-danger:#E8776F;  --color-danger-text:#AE3830;  --color-danger-soft:#FDEDEC;
+  --color-info:#6BA8DC;    --color-info-text:#2B6295;    --color-info-soft:#EFF6FD;
+
+  --bg-canvas:#EAF4F0; --bg-canvas-alt:#F7FBFA; --bg-surface:#FFFFFF;
+  --bg-subtle:#EFF6F4; --bg-overlay:rgba(30,51,48,.28);
+
+  --border-card:1px solid #E3EFEA;
+  --border-glass:1px solid rgba(255,255,255,.70);
+  --border-glass-thin:1px solid rgba(255,255,255,.55);
+  --border-divider:1px solid #E3EFEA;
+
+  --text-primary:#1E3330; --text-secondary:#55706B; --text-tertiary:#7A9691;
+  --text-disabled:#A9BEBA; --text-link:#2F6A5F; --text-on-primary:#FFFFFF;
+
+  --radius-btn:10px; --radius-card:16px; --radius-float:18px; --radius-pill:999px;
+
+  --shadow-card:0 1px 2px rgba(31,74,66,.06);
+  --shadow-card-hover:0 4px 12px rgba(31,74,66,.10);
+  --shadow-float:0 8px 32px rgba(31,74,66,.10), inset 0 1px 0 rgba(255,255,255,.85);
+
+  --glass-thin-bg:rgba(255,255,255,.52); --glass-thin-blur:blur(14px) saturate(160%);
+  --glass-thick-bg:rgba(255,255,255,.74); --glass-thick-blur:blur(28px) saturate(180%);
+  --glass-mint-bg:rgba(74,155,140,.14);
+
+  --grad-canvas:linear-gradient(158deg,#F1F9F6 0%,#EAF4F0 52%,#E1F0EA 100%);
+  --grad-mint:linear-gradient(135deg,#A0D6CB 0%,#7FC9BB 45%,#5FB3A3 100%);
+  --grad-area:linear-gradient(180deg,rgba(74,155,140,.28) 0%,rgba(74,155,140,.02) 100%);
+
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:14px;line-height:1.6;color:var(--text-primary);
+  background:var(--bg-canvas);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+
+/* ── 页面底：玻璃的底衬（必做） ── */
+.app{position:relative;min-height:100vh;background:var(--grad-canvas);overflow-x:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.5;pointer-events:none}
+.b1{width:520px;height:520px;background:#A0D6CB;top:-140px;left:-110px}
+.b2{width:400px;height:400px;background:#D9CDF0;top:34%;right:-130px}
+.b3{width:440px;height:440px;background:#FBE3A8;bottom:-160px;left:26%}
+
+/* ── L1 玻璃导航层 ── */
+.glass-thin{backdrop-filter:var(--glass-thin-blur);-webkit-backdrop-filter:var(--glass-thin-blur);
+  background:var(--glass-thin-bg);border-bottom:var(--border-glass-thin)}
+.topbar{position:sticky;top:0;z-index:30;height:60px;display:flex;align-items:center;gap:12px;
+  padding:0 20px;backdrop-filter:var(--glass-thin-blur);-webkit-backdrop-filter:var(--glass-thin-blur);
+  background:var(--glass-thin-bg);border-bottom:var(--border-glass-thin)}
+.logo{width:28px;height:28px;border-radius:9px;background:var(--grad-mint);display:flex;
+  align-items:center;justify-content:center;flex:0 0 auto}
+.brand{font-size:15px;font-weight:500;letter-spacing:-.1px}
+.dom{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  color:var(--mint-800);background:var(--glass-mint-bg);border:1px solid rgba(74,155,140,.26);
+  border-radius:var(--radius-pill);padding:4px 11px;margin-left:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--color-success);display:inline-block}
+.tico{margin-left:auto;display:flex;align-items:center;gap:4px}
+.ib{width:34px;height:34px;border-radius:50%;border:none;background:transparent;display:flex;
+  align-items:center;justify-content:center;position:relative;transition:.16s}
+.ib:hover{background:rgba(255,255,255,.7)}
+.ndot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;
+  background:var(--color-danger);box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.av{width:32px;height:32px;border-radius:50%;background:var(--mint-100);color:var(--mint-800);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;
+  border:1px solid var(--mint-200)}
+
+.body{display:flex;align-items:flex-start;position:relative;z-index:2}
+
+/* ── L1 玻璃侧栏 ── */
+.side{position:sticky;top:60px;width:74px;flex:0 0 74px;height:calc(100vh - 60px);
+  backdrop-filter:var(--glass-thin-blur);-webkit-backdrop-filter:var(--glass-thin-blur);
+  background:rgba(255,255,255,.42);border-right:var(--border-glass-thin);
+  display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:4px}
+.nv{width:58px;padding:8px 2px 7px;border-radius:12px;display:flex;flex-direction:column;
+  align-items:center;gap:4px;border:none;background:transparent;color:var(--text-secondary);transition:.16s}
+.nv span{font-size:10.5px;line-height:1.2;letter-spacing:.2px}
+.nv:hover{background:rgba(255,255,255,.72)}
+.nv.on{background:var(--mint-100);color:var(--mint-800);font-weight:500}
+.nv.on svg{stroke:var(--mint-700)}
+.side .sep{width:34px;height:1px;background:rgba(31,74,66,.12);margin:8px 0}
+.side .foot{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:6px}
+
+/* ── 主区 ── */
+main{flex:1 1 auto;min-width:0;padding:26px 26px 60px}
+.ph{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.ph h1{font-size:26px;font-weight:500;letter-spacing:-.4px;margin-right:auto}
+
+/* ── 按钮 ── */
+.btn{border:none;border-radius:var(--radius-btn);padding:9px 16px;font-size:13.5px;font-weight:500;
+  transition:.16s;display:inline-flex;align-items:center;gap:7px;min-height:38px}
+.btn-p{background:var(--color-primary-strong);color:#fff}
+.btn-p:hover{background:var(--mint-800)}
+.btn-s{background:var(--bg-surface);color:var(--mint-800);border:var(--border-card)}
+.btn-s:hover{background:var(--mint-50)}
+.btn:focus-visible{outline:none;box-shadow:0 0 0 3px var(--color-primary-soft)}
+
+/* ── L2 实底卡 ── */
+.card{background:var(--bg-surface);border:var(--border-card);border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);padding:18px 20px;transition:.18s}
+.card.hov:hover{box-shadow:var(--shadow-card-hover)}
+.ch{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.ch h2{font-size:17px;font-weight:500;letter-spacing:-.2px}
+.ch p{font-size:12.5px;color:var(--text-secondary);margin-top:3px}
+.ch .rt{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+/* 徽标 */
+.bdg{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;
+  border-radius:var(--radius-pill);padding:3px 10px;white-space:nowrap}
+.b-n{background:var(--bg-subtle);color:var(--text-secondary)}
+.b-m{background:var(--mint-100);color:var(--mint-800)}
+.b-s{background:var(--color-success-soft);color:var(--color-success-text)}
+.b-w{background:var(--color-warning-soft);color:var(--color-warning-text)}
+.b-d{background:var(--color-danger-soft);color:var(--color-danger-text)}
+
+/* ── 指标卡行 ── */
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
+.mc{background:var(--bg-surface);border:var(--border-card);border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);padding:14px 15px;transition:.18s}
+.mc:hover{box-shadow:var(--shadow-card-hover)}
+.mc .k{font-size:12px;color:var(--text-secondary);margin-bottom:7px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.mc .v{font-size:23px;font-weight:500;letter-spacing:-.6px;line-height:1.15;color:var(--text-primary)}
+.mc .t{font-size:11.5px;margin-top:5px;display:flex;align-items:center;gap:4px}
+.up{color:var(--color-danger-text)}   /* 涨 = 红（中国习惯） */
+.dn{color:var(--color-success-text)} /* 跌 = 绿 */
+
+/* ── 两列布局 ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+/* 同排卡片等高时，内容较少的一侧垂直居中，避免顶部堆积、下方大片留白 */
+.g2>.card{display:flex;flex-direction:column}
+.g2>.card>.pipe{margin-top:auto;margin-bottom:auto}
+.g2>.card>.rows{flex:1 1 auto;justify-content:center}
+.g2>.card>.chartwrap{margin-top:auto}
+
+/* ── 流水线 ── */
+.pipe{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;align-items:stretch;gap:0}
+.step{background:var(--bg-subtle);border-radius:12px;padding:13px 14px;border:1px solid transparent}
+.step.now{background:var(--glass-mint-bg);border-color:rgba(74,155,140,.3)}
+.step .n{font-size:12.5px;font-weight:500;margin-bottom:5px}
+.step .d{font-size:11.5px;color:var(--text-secondary);margin-bottom:9px}
+.step .a{font-size:20px;font-weight:500;letter-spacing:-.5px;color:var(--text-link);line-height:1.2}
+.step .f{font-size:11.5px;color:var(--text-secondary);margin-top:6px}
+.link{display:flex;align-items:center;justify-content:center}
+
+/* ── 图表 ── */
+.chartwrap{margin-top:2px}
+.chartwrap svg{display:block;width:100%;height:auto}
+.aria-alt{margin-top:10px;font-size:12px}
+.aria-alt summary{cursor:pointer;color:var(--text-link);font-size:12px;list-style:none}
+.aria-alt summary::-webkit-details-marker{display:none}
+.aria-alt summary::before{content:"▸ "}
+.aria-alt[open] summary::before{content:"▾ "}
+.aria-alt table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+.aria-alt th,.aria-alt td{padding:5px 8px;text-align:left;border-bottom:var(--border-divider)}
+.aria-alt th{color:var(--text-secondary);font-weight:500;font-size:11.5px}
+
+/* ── 国家 chip ── */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;
+  padding:7px 13px;border-radius:var(--radius-pill);border:var(--border-card);
+  background:var(--bg-surface);color:var(--text-secondary);min-height:36px;transition:.16s}
+.chip:hover{background:var(--mint-50)}
+.chip.on{background:var(--mint-100);color:var(--mint-800);border-color:var(--mint-300)}
+.flag{width:16px;height:11px;border-radius:2px;overflow:hidden;flex:0 0 auto;
+  box-shadow:0 0 0 1px rgba(31,74,66,.12)}
+.selrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:12px;color:var(--text-secondary)}
+.fld select{font-family:inherit;font-size:16px;padding:10px 12px;border-radius:var(--radius-btn);
+  border:var(--border-card);background:var(--bg-surface);color:var(--text-primary);
+  appearance:none;background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2355706B' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center}
+.fld select:focus{outline:none;border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-soft)}
+
+/* ── 渠道列表 ── */
+.rows{display:flex;flex-direction:column}
+.rw{display:flex;align-items:center;gap:12px;padding:12px 8px;border-bottom:var(--border-divider);
+  border-radius:10px;transition:.16s}
+.rw:last-child{border-bottom:none}
+.rw:hover{background:var(--mint-50)}
+.rw .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;font-size:12px;font-weight:500}
+.rw .nm{min-width:0;flex:1 1 auto}
+.rw .nm b{display:block;font-size:13.5px;font-weight:500}
+.rw .nm span{display:block;font-size:11.5px;color:var(--text-secondary);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.rw .qt{font-size:19px;font-weight:500;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.rw .ar{color:var(--text-tertiary);flex:0 0 auto}
+
+/* ── 裁定说明条 ── */
+.note{background:var(--bg-surface);border:var(--border-card);border-left:3px solid var(--color-primary);
+  border-radius:var(--radius-btn);padding:12px 15px;font-size:12.5px;color:var(--text-secondary);
+  box-shadow:var(--shadow-card);margin-bottom:14px}
+.note b{color:var(--text-primary);font-weight:500}
+.note code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--text-link)}
+
+/* ── 响应式 ── */
+@media (max-width:1439px){.metrics{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:1023px){
+  .g2{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:767px){
+  .side{position:fixed;left:0;bottom:0;top:auto;right:0;width:100%;height:auto;flex-direction:row;
+    justify-content:space-around;border-right:none;border-top:var(--border-glass-thin);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:40}
+  .side .sep,.side .foot{display:none}
+  main{padding:18px 14px calc(84px + env(safe-area-inset-bottom))}
+  .metrics{grid-template-columns:1fr}
+  .pipe{grid-template-columns:1fr;gap:8px}
+  .link{display:none}
+  .step{position:relative}
+  .step::after{content:"";position:absolute;left:50%;bottom:-8px;width:1px;height:8px;
+    background:var(--mint-300)}
+  .step:last-child::after{display:none}
+  .selrow{grid-template-columns:1fr}
+  .ph h1{font-size:22px}
+  .brand{font-size:14px}
+  .dom{display:none}
+  .btn{min-height:44px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+  <!-- ═ L1 玻璃顶栏 ═ -->
+  <div class="topbar">
+    <div class="logo">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 21V9M12 9c0-3.5 2.5-6 6-6 0 3.5-2.5 6-6 6Zm0 4c0-3-2-5.2-5-5.2 0 3 2 5.2 5 5.2Z"
+          stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="brand">YouDing Materials</div>
+    <span class="dom"><i class="dot"></i>Live Domain
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"
+        stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <div class="tico">
+      <button class="ib" aria-label="帮助">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9"
+          stroke="#55706B" stroke-width="1.7"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4"
+          stroke="#55706B" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16.4" r="1"
+          fill="#55706B"/></svg>
+      </button>
+      <button class="ib" aria-label="通知，有未读">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6Z"
+          stroke="#55706B" stroke-width="1.7" stroke-linejoin="round"/><path d="M10.3 19a2 2 0 0 0 3.4 0"
+          stroke="#55706B" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <i class="ndot"></i>
+      </button>
+      <div class="av" title="当前账号">Y</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <!-- ═ L1 玻璃侧栏 ═ -->
+    <nav class="side" aria-label="主导航">
+      <button class="nv on" aria-current="page">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="7" height="7" rx="2"
+          stroke="currentColor" stroke-width="1.7"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"
+          stroke="currentColor" stroke-width="1.7"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"
+          stroke="currentColor" stroke-width="1.7"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"
+          stroke="currentColor" stroke-width="1.7"/></svg><span>概览</span>
+      </button>
+      <button class="nv">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="2.5"
+          stroke="currentColor" stroke-width="1.7"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"
+          stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>内容</span>
+      </button>
+      <button class="nv">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M3.5 7.2A2 2 0 0 1 5.5 5.2h3.3l1.7 2h8A2 2 0 0 1 20.5 9.2v8A2 2 0 0 1 18.5 19.2h-13a2 2 0 0 1-2-2V7.2Z"
+          stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>文件</span>
+      </button>
+      <button class="nv">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"
+          stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5v2.2M12 18.3v2.2M4.9 7.8l1.9 1.1M17.2 15.1l1.9 1.1M4.9 16.2l1.9-1.1M17.2 8.9l1.9-1.1"
+          stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>设置</span>
+      </button>
+      <div class="sep"></div>
+      <div class="foot">
+        <button class="nv" aria-label="帮助">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9"
+            stroke="currentColor" stroke-width="1.7"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4"
+            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16.4" r="1" fill="currentColor"/></svg>
+        </button>
+        <button class="nv" aria-label="退出登录">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M14 5.5H7.5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2H14"
+            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M17 9l3 3-3 3M20 12h-8"
+            stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ═ L2 内容层 ═ -->
+    <main>
+      <div class="ph">
+        <h1>运营看板</h1>
+        <button class="btn btn-s">时间范围：本月
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"
+            stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="btn btn-p">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"
+            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          刷新数据
+        </button>
+      </div>
+
+      <div class="note">
+        <b>本页示范「实底内容层 + 玻璃导航层」分工</b>：顶栏与侧栏用玻璃（<code>blur(14px)</code> + 白高光描边），
+        内容卡用实底白 + 薄荷灰描边 <code>#E3EFEA</code> + 极轻阴影 —— 白卡配灰边、玻璃配白边，两者不混用。
+      </div>
+
+      <!-- 指标卡行 -->
+      <div class="metrics">
+        <div class="mc"><div class="k">本月营收</div><div class="v">¥1.72M</div>
+          <div class="t up">▲ 12.4% 环比</div></div>
+        <div class="mc"><div class="k">定制服务收入</div><div class="v">¥13.4K</div>
+          <div class="t up">▲ 3.1% 环比</div></div>
+        <div class="mc"><div class="k">域名服务收入</div><div class="v">¥1.28K</div>
+          <div class="t dn">▼ 1.8% 环比</div></div>
+        <div class="mc"><div class="k">已上报指标数</div><div class="v">479</div>
+          <div class="t dn">▼ 2.0% 环比</div></div>
+        <div class="mc"><div class="k">平台补贴收入</div><div class="v">¥22.22K</div>
+          <div class="t up">▲ 8.6% 环比</div></div>
+        <div class="mc"><div class="k">平均客单价</div><div class="v">¥0.73K</div>
+          <div class="t up">▲ 0.9% 环比</div></div>
+      </div>
+
+      <div class="g2">
+        <!-- 运营流水线 -->
+        <section class="card hov">
+          <div class="ch">
+            <div>
+              <h2>待处理事项</h2>
+              <p>运营流水线 · 从触达到店铺成本的推进视图</p>
+            </div>
+            <div class="rt"><button class="btn btn-p">查看全部待办</button></div>
+          </div>
+          <div class="pipe">
+            <div class="step now">
+              <div class="n">触达</div>
+              <div class="d">待触达线索</div>
+              <div class="a">19,726</div>
+              <div class="f">预算余量 ¥1,240</div>
+            </div>
+            <div class="link">
+              <svg width="34" height="18" viewBox="0 0 34 18" fill="none" aria-hidden="true">
+                <path d="M2 9h24" stroke="#A0D6CB" stroke-width="1.6" stroke-dasharray="3 3"/>
+                <path d="M26 5l5 4-5 4" stroke="#5FB3A3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="step">
+              <div class="n">资源消耗</div>
+              <div class="d">已完成 56 项</div>
+              <div class="a">¥200</div>
+              <div class="f">本月新增 56 项</div>
+            </div>
+            <div class="link">
+              <svg width="34" height="18" viewBox="0 0 34 18" fill="none" aria-hidden="true">
+                <path d="M2 9h24" stroke="#A0D6CB" stroke-width="1.6" stroke-dasharray="3 3"/>
+                <path d="M26 5l5 4-5 4" stroke="#5FB3A3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="step">
+              <div class="n">店铺成本</div>
+              <div class="d">已清理 3 家</div>
+              <div class="a">¥300</div>
+              <div class="f">待清理 2 家</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 面积折线图 -->
+        <section class="card hov">
+          <div class="ch">
+            <div>
+              <h2>店铺与域名 SEO</h2>
+              <p>近 8 个月自然流量趋势</p>
+            </div>
+            <div class="rt"><span class="bdg b-m">面积折线图</span></div>
+          </div>
+          <div class="chartwrap">
+            <svg viewBox="0 0 560 200" role="img" aria-label="近 8 个月自然流量趋势折线图，从 1 月 52 上升到 8 月 172">
+              <defs>
+                <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#4a9b8c" stop-opacity=".28"/>
+                  <stop offset="100%" stop-color="#4a9b8c" stop-opacity=".02"/>
+                </linearGradient>
+              </defs>
+              <!-- Y 网格 0/50/100/150/200 -->
+              <g stroke="#E3EFEA" stroke-width="1">
+                <line x1="44" y1="16" x2="540" y2="16"/>
+                <line x1="44" y1="53" x2="540" y2="53"/>
+                <line x1="44" y1="90" x2="540" y2="90"/>
+                <line x1="44" y1="127" x2="540" y2="127"/>
+                <line x1="44" y1="164" x2="540" y2="164"/>
+              </g>
+              <g fill="#7A9691" font-size="10.5" font-family="sans-serif" text-anchor="end">
+                <text x="36" y="19.5">200</text>
+                <text x="36" y="56.5">150</text>
+                <text x="36" y="93.5">100</text>
+                <text x="36" y="130.5">50</text>
+                <text x="36" y="167.5">0</text>
+              </g>
+              <!-- 面积 -->
+              <path d="M44,125.5 L114.9,106.3 L185.7,84.1 L256.6,73.7 L327.4,78.2 L398.3,61.9 L469.1,48.6 L540,36.7 L540,164 L44,164 Z"
+                    fill="url(#area)"/>
+              <!-- 折线 -->
+              <path d="M44,125.5 L114.9,106.3 L185.7,84.1 L256.6,73.7 L327.4,78.2 L398.3,61.9 L469.1,48.6 L540,36.7"
+                    fill="none" stroke="#4a9b8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- 数据点 -->
+              <g fill="#fff" stroke="#4a9b8c" stroke-width="2">
+                <circle cx="44" cy="125.5" r="3.4"/><circle cx="114.9" cy="106.3" r="3.4"/>
+                <circle cx="185.7" cy="84.1" r="3.4"/><circle cx="256.6" cy="73.7" r="3.4"/>
+                <circle cx="327.4" cy="78.2" r="3.4"/><circle cx="398.3" cy="61.9" r="3.4"/>
+                <circle cx="469.1" cy="48.6" r="3.4"/><circle cx="540" cy="36.7" r="3.4"/>
+              </g>
+              <!-- X 轴：1—8 月，连续无跳月 -->
+              <g fill="#7A9691" font-size="10.5" font-family="sans-serif" text-anchor="middle">
+                <text x="44" y="184">1月</text><text x="114.9" y="184">2月</text><text x="185.7" y="184">3月</text>
+                <text x="256.6" y="184">4月</text><text x="327.4" y="184">5月</text><text x="398.3" y="184">6月</text>
+                <text x="469.1" y="184">7月</text><text x="532" y="184">8月</text>
+              </g>
+            </svg>
+          </div>
+          <details class="aria-alt">
+            <summary>查看数据表格（无障碍替代）</summary>
+            <table>
+              <thead><tr><th>月份</th><th>自然流量</th></tr></thead>
+              <tbody>
+                <tr><td>1 月</td><td>52</td></tr><tr><td>2 月</td><td>78</td></tr>
+                <tr><td>3 月</td><td>108</td></tr><tr><td>4 月</td><td>122</td></tr>
+                <tr><td>5 月</td><td>116</td></tr><tr><td>6 月</td><td>138</td></tr>
+                <tr><td>7 月</td><td>156</td></tr><tr><td>8 月</td><td>172</td></tr>
+              </tbody>
+            </table>
+          </details>
+        </section>
+      </div>
+
+      <div class="g2">
+        <!-- 买家询盘 -->
+        <section class="card hov">
+          <div class="ch">
+            <div>
+              <h2>海外买家询盘</h2>
+              <p>按买家国家维度筛选</p>
+            </div>
+            <div class="rt"><span class="bdg b-m">按国家</span></div>
+          </div>
+          <div class="chips" role="group" aria-label="买家国家筛选">
+            <button class="chip" aria-pressed="false">
+              <span class="flag" aria-hidden="true">
+                <svg width="16" height="11" viewBox="0 0 16 11"><rect width="16" height="11" fill="#fff"/>
+                  <g fill="#B22234"><rect y="0" width="16" height="1.57"/><rect y="3.14" width="16" height="1.57"/><rect y="6.29" width="16" height="1.57"/><rect y="9.43" width="16" height="1.57"/></g>
+                  <rect width="6.4" height="5.5" fill="#3C3B6E"/></svg>
+              </span>USA
+            </button>
+            <button class="chip on" aria-pressed="true">
+              <span class="flag" aria-hidden="true">
+                <svg width="16" height="11" viewBox="0 0 16 11"><rect width="16" height="11" fill="#fff"/>
+                  <rect width="5.4" height="11" fill="#CE1126"/><rect x="10.6" width="5.4" height="11" fill="#CE1126"/></svg>
+              </span>UAE
+            </button>
+            <button class="chip" aria-pressed="false">
+              <span class="flag" aria-hidden="true">
+                <svg width="16" height="11" viewBox="0 0 16 11"><rect width="16" height="3.67" fill="#000"/>
+                  <rect y="3.67" width="16" height="3.67" fill="#DD0000"/><rect y="7.33" width="16" height="3.67" fill="#FFCE00"/></svg>
+              </span>Germany
+            </button>
+          </div>
+          <div class="selrow">
+            <div class="fld">
+              <label for="c1">买家国家</label>
+              <select id="c1"><option>UAE</option><option>USA</option><option>Germany</option></select>
+            </div>
+            <div class="fld">
+              <label for="c2">我方团队归属地</label>
+              <select id="c2"><option>中国 · 广州</option><option>中国 · 佛山</option></select>
+            </div>
+          </div>
+        </section>
+
+        <!-- 多渠道状态 -->
+        <section class="card hov">
+          <div class="ch">
+            <div>
+              <h2>多渠道发布状态</h2>
+              <p>各渠道账号连通与发布量</p>
+            </div>
+            <div class="rt"><span class="bdg b-m">按渠道</span></div>
+          </div>
+          <div class="rows">
+            <div class="rw">
+              <div class="ic" style="background:var(--sky-300);color:var(--sky-700)">G</div>
+              <div class="nm"><b>Google Business</b><span>google@youding.com</span></div>
+              <div class="qt">34</div>
+              <span class="bdg b-s"><i class="dot" style="background:currentColor"></i>正常</span>
+              <span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="rw">
+              <div class="ic" style="background:var(--taro-300);color:var(--taro-700)">VN</div>
+              <div class="nm"><b>越南站</b><span>vn@youding.com</span></div>
+              <div class="qt">256</div>
+              <span class="bdg b-s"><i class="dot" style="background:currentColor"></i>正常</span>
+              <span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="rw">
+              <div class="ic" style="background:var(--butter-300);color:var(--butter-700)">FB</div>
+              <div class="nm"><b>Facebook 主页</b><span>授权已过期，需重新绑定</span></div>
+              <div class="qt">128</div>
+              <span class="bdg b-w">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 4l9 16H3z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 10v4M12 17h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                待授权</span>
+              <span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

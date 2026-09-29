@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>优丁 YouDing · 磁吸游标 + 码表验证（useCountUp 修复前后对照）</title>
+<!-- 零外链：内联 SVG 图表 + 原生指针事件；补间逻辑与 src/composables/useCountUp.ts 一致 -->
+<style>
+:root{
+  --mint-100:#DCF0EB; --mint-200:#BFE4DC; --mint-300:#A0D6CB; --mint-400:#7FC9BB;
+  --mint-600:#4a9b8c; --mint-700:#3F8779; --mint-800:#2F6A5F;
+  --bg-canvas:#EAF4F0; --bg-surface:#FFFFFF; --bg-subtle:#EFF6F4;
+  --border-card:1px solid #E3EFEA;
+  --text-primary:#1E3330; --text-secondary:#55706B; --text-tertiary:#7A9691; --text-link:#2F6A5F;
+  --ok:#24705A; --ok-soft:#EAF7F2; --bad:#AE3830; --bad-soft:#FDEDEC;
+  --radius-card:16px; --radius-btn:10px; --radius-pill:999px;
+  --shadow-card:0 1px 2px rgb(31 74 66 / .06);
+  --grad-canvas:linear-gradient(158deg,#F1F9F6 0%,#EAF4F0 52%,#E1F0EA 100%);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);font-size:14px;line-height:1.6;color:var(--text-primary);background:var(--bg-canvas);-webkit-font-smoothing:antialiased}
+.wrap{position:relative;min-height:100vh;background:var(--grad-canvas);overflow-x:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.5;pointer-events:none}
+.b1{width:520px;height:520px;background:#A0D6CB;top:-150px;left:-120px}
+.b2{width:400px;height:400px;background:#D9CDF0;top:42%;right:-140px}
+.b3{width:440px;height:440px;background:#FBE3A8;bottom:-170px;left:24%}
+.inner{position:relative;z-index:2;max-width:1080px;margin:0 auto;padding:0 20px}
+header{padding:46px 0 24px}
+h1{font-size:26px;font-weight:500;letter-spacing:-.4px}
+h1 em{font-style:normal;color:var(--text-link)}
+.lead{margin-top:11px;color:var(--text-secondary);max-width:800px}
+.card{background:var(--bg-surface);border:var(--border-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:18px 20px}
+section{padding:26px 0}
+.sec-h{display:flex;align-items:baseline;gap:11px;margin-bottom:6px}
+.sec-n{font-size:12px;font-weight:500;color:var(--text-link);letter-spacing:1.2px}
+h2{font-size:18px;font-weight:500;letter-spacing:-.2px}
+.sec-d{color:var(--text-secondary);margin-bottom:16px;font-size:13px;max-width:840px}
+.hint{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--mint-800);background:var(--mint-100);border-radius:var(--radius-pill);padding:5px 12px;margin-bottom:12px}
+/* 图表 */
+.chartbox{pointer-events:auto;touch-action:none;cursor:crosshair}
+.chartbox svg{display:block;width:100%;height:auto;user-select:none}
+/* 对照读数 */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.ro{background:var(--bg-surface);border:var(--border-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:16px 18px}
+.ro.bad{border-left:3px solid var(--bad)}
+.ro.good{border-left:3px solid var(--ok)}
+.ro .t{font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.tag{font-size:10.5px;font-weight:500;border-radius:var(--radius-pill);padding:2px 8px}
+.tag-bad{background:var(--bad-soft);color:var(--bad)}
+.tag-ok{background:var(--ok-soft);color:var(--ok)}
+.ro .num{font-size:34px;font-weight:500;letter-spacing:-1px;line-height:1.1;font-variant-numeric:tabular-nums}
+.ro.bad .num{color:var(--bad)}
+.ro.good .num{color:var(--ok)}
+.ro .meta{font-size:11.5px;color:var(--text-tertiary);margin-top:6px}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.btn{border:none;border-radius:var(--radius-btn);padding:9px 15px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;background:var(--bg-surface);color:var(--mint-800);border:var(--border-card);min-height:38px;transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+.btn:active{transform:scale(.96)}
+.btn.on{background:var(--mint-600);color:#fff;border-color:var(--mint-600)}
+.ro .bar{height:4px;border-radius:2px;background:var(--bg-subtle);margin-top:10px;overflow:hidden}
+.ro .bar i{display:block;height:100%;width:0;background:currentColor;transition:width .12s linear}
+.tb{width:100%;border-collapse:collapse;font-size:12.5px}
+.tb th,.tb td{padding:9px 11px;text-align:left;border-bottom:var(--border-card);vertical-align:top}
+.tb thead th{background:var(--bg-subtle);font-weight:500;color:var(--text-secondary);font-size:11.5px}
+.tb tr:last-child td{border-bottom:none}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--text-link)}
+footer{padding:28px 0 52px;font-size:12px;color:var(--text-tertiary)}
+.fr{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:720px){
+  h1{font-size:21px}.cmp{grid-template-columns:1fr}
+  .ro .num{font-size:28px}section{padding:20px 0}
+  .blob{filter:blur(44px)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+  <div class="inner">
+    <header>
+      <h1>磁吸游标 + 码表 · <em>修复前后对照</em></h1>
+      <p class="lead">
+        把鼠标（或手指）在图上横向滑动：游标会<b>磁吸到最近数据点</b>，同一个吸附值同时喂给左右两个读数。
+        <b>左边故意保留旧算法</b>（恒从 0 插值），右边是修复后的补间 —— 差异你能直接看出来。
+      </p>
+    </header>
+
+    <section>
+      <div class="sec-h"><span class="sec-n">01</span><h2>真实交互对照</h2></div>
+      <p class="sec-d">补间逻辑与 <code>src/composables/useCountUp.ts</code> 一致；此处把时长放大到 1800ms 便于观察（真实代码更新时为 260ms）。</p>
+      <p class="sec-d" style="margin-top:-8px"><b>看差异的最快方式</b>：先滑到 <b>12 月（210，最高点）</b>停一下，再滑到 <b>11 月（198）</b>——旧算法会从 210 猛掉回 0 再爬升，修复后几乎不动。</p>
+
+      <div class="card">
+        <div class="hint">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2v20M2 12h20" stroke="#2F6A5F" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="3.2" fill="#2F6A5F"/>
+          </svg>
+          在图上滑动 → 游标磁吸最近数据点
+        </div>
+
+        <div class="chartbox" id="chartbox">
+          <svg id="chart" viewBox="0 0 900 290" role="img" aria-label="近 12 个月自然流量趋势，游标可磁吸到数据点">
+            <defs>
+              <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4a9b8c" stop-opacity=".26"/>
+                <stop offset="100%" stop-color="#4a9b8c" stop-opacity=".02"/>
+              </linearGradient>
+            </defs>
+            <g id="grid"></g>
+            <g id="ylabels"></g>
+            <path id="areaPath" fill="url(#area)"/>
+            <path id="linePath" fill="none" stroke="#4a9b8c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line id="cursorLine" x1="0" y1="24" x2="0" y2="238" stroke="#4a9b8c" stroke-width="1.4" stroke-dasharray="4 4" opacity="0"/>
+            <g id="dots"></g>
+            <circle id="halo" r="11" fill="#4a9b8c" opacity="0"/>
+            <circle id="hotdot" r="5" fill="#fff" stroke="#4a9b8c" stroke-width="2.4" opacity="0"/>
+            <g id="xlabels"></g>
+          </svg>
+        </div>
+
+        <div class="cmp">
+          <div class="ro bad">
+            <div class="t"><span class="tag tag-bad">旧算法</span> 恒从 0 插值（val = to × ease）</div>
+            <div class="num" id="oldNum">0</div>
+            <div class="meta">数值从 0 爬升 —— 游标一动就"掉底"重爬</div>
+            <div class="bar"><i id="oldBar" style="color:var(--bad)"></i></div>
+          </div>
+          <div class="ro good">
+            <div class="t"><span class="tag tag-ok">修复后</span> 从当前值补间（from + (to−from) × ease）</div>
+            <div class="num" id="newNum">0</div>
+            <div class="meta">数值从当前位置平滑接续 —— 不跳回 0</div>
+            <div class="bar"><i id="newBar" style="color:var(--ok)"></i></div>
+          </div>
+        </div>
+
+        <div class="ctrl">
+          <button class="btn" id="freezeBtn">定格对照（30% 进度）</button>
+          <button class="btn" id="rmBtn">模拟 prefers-reduced-motion</button>
+          <button class="btn" id="resetBtn">复位</button>
+          <span style="font-size:12px;color:var(--text-tertiary)">当前吸附值：<b id="snapVal">—</b></span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-h"><span class="sec-n">02</span><h2>代码级证据</h2></div>
+      <p class="sec-d">用 esbuild 打包真实 TS 源码后跑断言（stub 掉 vue 与 rAF），7/7 通过。</p>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tb">
+          <thead><tr><th>断言</th><th>结果</th></tr></thead>
+          <tbody>
+            <tr><td>首次载入仍从 0 爬升（载入效果保留）</td><td>PASS</td></tr>
+            <tr><td>目标 52→78，变化后第 1 帧显示 <b>57</b>（未跳回 0）</td><td>PASS</td></tr>
+            <tr><td>对照：旧算法同刻显示 <b>4</b>（证明缺陷真实存在）</td><td>PASS</td></tr>
+            <tr><td>补间收敛到目标值</td><td>PASS</td></tr>
+            <tr><td>连续第二次变化（78→30）起点仍接近 78</td><td>PASS</td></tr>
+            <tr><td>同值时不重跑动画（不空转 60fps）</td><td>PASS</td></tr>
+            <tr><td>TypeScript 5.9.3 strict 校验</td><td>exit 0，零错误</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-h"><span class="sec-n">03</span><h2>接入方式</h2></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tb">
+          <thead><tr><th>环节</th><th>做法</th></tr></thead>
+          <tbody>
+            <tr><td>磁吸配置</td><td><code>buildSnapCursor()</code> 返回 <code>tooltip / xAxis / seriesEmphasis</code> 片段，<b>浅合并</b>进既有 option，不整体替换</td></tr>
+            <tr><td>游标值订阅</td><td><code>useChartCursor(resolve)</code> 给出 <code>activeIndex</code> / <code>activeValue</code>，绑定 <code>&lt;v-chart ref&gt;</code> 实例</td></tr>
+            <tr><td>码表联动</td><td><code>activeValue</code> 直接喂给 <code>useCountUp</code>（已修复为补间）</td></tr>
+            <tr><td>配色</td><td>读设计令牌 <code>--uj-brand</code>，<b>不硬编码</b>（项目主色按壳切换，硬编码会破坏 agent 壳）</td></tr>
+            <tr><td>无障碍</td><td>降低动态效果时自动关闭吸附动画与呼吸光晕</td></tr>
+            <tr><td><b>接入前必做</b></td><td>8 个图表文件用 <code>use([...])</code> 按需注册，<b>均未注册 <code>AxisPointerComponent</code></b>：仅 tooltip 驱动可用；若要<b>常驻</b>指示线须补注册</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <div class="fr">
+        <span>优丁 YouDing · 磁吸游标 + 码表验证 <b>v1.0</b> · 2026-09-20</span>
+        <span>代码：src/composables/useCountUp.ts（改）· useChartCursor.ts（新）</span>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var DATA = [52, 78, 108, 122, 116, 138, 156, 172, 165, 184, 198, 210];
+  var MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  var PLOT = { x0: 48, x1: 858, y0: 24, y1: 238 };
+  var Y_MAX = 240;
+  var DURATION = 1800;   // 演示放大到 1800ms，便于肉眼/截图观察差异（真实代码为 260ms）
+
+  var state = {
+    snapped: -1,
+    prevTarget: 0,   // 上一次吸附的目标值（作为"修复后"的补间起点）
+    curTarget: 0,
+    old: { from: 0, to: 0, start: 0, raf: 0, cur: 0 },
+    neu: { from: 0, to: 0, start: 0, raf: 0, cur: 0, started: false },
+    reduced: false
+  };
+
+  /* ---- 绘图 ---- */
+  function px(i) { return PLOT.x0 + (PLOT.x1 - PLOT.x0) * (i / (DATA.length - 1)); }
+  function py(v) { return PLOT.y1 - (PLOT.y1 - PLOT.y0) * (v / Y_MAX); }
+
+  function buildChart() {
+    var grid = '', ylab = '', xlab = '', dots = '';
+    var ticks = [0, 60, 120, 180, 240];
+    for (var t = 0; t < ticks.length; t++) {
+      var yy = py(ticks[t]);
+      grid += '<line x1="' + PLOT.x0 + '" y1="' + yy + '" x2="' + PLOT.x1 + '" y2="' + yy +
+        '" stroke="#E3EFEA" stroke-width="1"/>';
+      ylab += '<text x="' + (PLOT.x0 - 10) + '" y="' + (yy + 3.5) +
+        '" font-size="10.5" font-family="sans-serif" fill="#7A9691" text-anchor="end">' + ticks[t] + '</text>';
+    }
+    var line = '', area = '';
+    for (var i = 0; i < DATA.length; i++) {
+      var x = px(i), y = py(DATA[i]);
+      line += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) +
+        '" r="3.2" fill="#fff" stroke="#4a9b8c" stroke-width="2"/>';
+      xlab += '<text x="' + x.toFixed(1) + '" y="' + (PLOT.y1 + 20) +
+        '" font-size="10.5" font-family="sans-serif" fill="#7A9691" text-anchor="middle">' + MONTHS[i] + '</text>';
+    }
+    area = line + 'L' + PLOT.x1 + ',' + PLOT.y1 + ' L' + PLOT.x0 + ',' + PLOT.y1 + ' Z';
+    document.getElementById('grid').innerHTML = grid;
+    document.getElementById('ylabels').innerHTML = ylab;
+    document.getElementById('xlabels').innerHTML = xlab;
+    document.getElementById('dots').innerHTML = dots;
+    document.getElementById('linePath').setAttribute('d', line.trim());
+    document.getElementById('areaPath').setAttribute('d', area.trim());
+  }
+
+  function moveCursor(i) {
+    if (i === state.snapped) return;
+    state.snapped = i;
+    var x = px(i), y = py(DATA[i]);
+    var cl = document.getElementById('cursorLine');
+    cl.setAttribute('x1', x); cl.setAttribute('x2', x); cl.setAttribute('opacity', '1');
+    var halo = document.getElementById('halo');
+    halo.setAttribute('cx', x); halo.setAttribute('cy', y);
+    halo.setAttribute('opacity', state.reduced ? '0.18' : '0.22');
+    var hd = document.getElementById('hotdot');
+    hd.setAttribute('cx', x); hd.setAttribute('cy', y); hd.setAttribute('opacity', '1');
+    document.getElementById('snapVal').textContent = DATA[i] + '（' + MONTHS[i] + '）';
+
+    // 记录补间起点：上一次吸附的目标值
+    state.prevTarget = state.curTarget;
+    state.curTarget = DATA[i];
+
+    // 同一个吸附值，分别喂给两套算法
+    startOld(DATA[i]);
+    startNew(DATA[i]);
+  }
+
+  /**
+   * 定格对照：不做动画，直接把两套算法渲染到同一进度。
+   * 用途：动画太快看不清时，用于确定性比对（也给自动化截图用）。
+   */
+  function freezeCompare(progress) {
+    var p = typeof progress === 'number' ? progress : 0.3;
+    cancelAnimationFrame(state.old.raf);
+    cancelAnimationFrame(state.neu.raf);
+    var to = state.curTarget;
+    var from = state.prevTarget;
+    var e = ease(p);
+    paintOld(to * e);                        // 旧算法：恒从 0 起
+    paintNew(from + (to - from) * e);        // 修复后：从上次目标值起
+    return { from: from, to: to, progress: p, old: Math.round(to * e), neu: Math.round(from + (to - from) * e) };
+  }
+  window.__ujFreeze = freezeCompare;   // 供无头截图/外部验证调用
+
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+
+  /* ---- 旧算法：恒从 0 插值（复刻修复前的 useCountUp） ---- */
+  function startOld(to) {
+    if (state.reduced) { state.old.cur = to; paintOld(to); return; }
+    cancelAnimationFrame(state.old.raf);
+    state.old.to = to;
+    state.old.start = performance.now();
+    var tick = function (now) {
+      var t = Math.min(1, (now - state.old.start) / DURATION);
+      var v = to * ease(t);          // ← 缺陷所在
+      state.old.cur = v;
+      paintOld(v);
+      if (t < 1) state.old.raf = requestAnimationFrame(tick);
+    };
+    state.old.raf = requestAnimationFrame(tick);
+  }
+
+  /* ---- 修复后：首次从 0，后续从当前值补间 ---- */
+  function startNew(to) {
+    if (state.reduced) { state.neu.cur = to; state.neu.started = true; paintNew(to); return; }
+    var from = state.neu.started ? state.neu.cur : 0;
+    cancelAnimationFrame(state.neu.raf);
+    if (from === to) { state.neu.cur = to; paintNew(to); return; }
+    state.neu.started = true;
+    state.neu.start = performance.now();
+    var tick = function (now) {
+      var t = Math.min(1, (now - state.neu.start) / DURATION);
+      var v = from + (to - from) * ease(t);   // ← 修复
+      state.neu.cur = v;
+      paintNew(v);
+      if (t < 1) state.neu.raf = requestAnimationFrame(tick);
+    };
+    state.neu.raf = requestAnimationFrame(tick);
+  }
+
+  function paintOld(v) {
+    document.getElementById('oldNum').textContent = Math.round(v);
+    document.getElementById('oldBar').style.width = Math.min(100, v / Y_MAX * 100) + '%';
+  }
+  function paintNew(v) {
+    document.getElementById('newNum').textContent = Math.round(v);
+    document.getElementById('newBar').style.width = Math.min(100, v / Y_MAX * 100) + '%';
+  }
+
+  /* ---- 指针交互（pointermove 同时覆盖鼠标与触摸） ---- */
+  function nearestIndex(clientX) {
+    var svg = document.getElementById('chart');
+    var r = svg.getBoundingClientRect();
+    var ratio = 900 / r.width;
+    var vx = (clientX - r.left) * ratio;
+    var best = 0, bestD = Infinity;
+    for (var i = 0; i < DATA.length; i++) {
+      var d = Math.abs(px(i) - vx);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+
+  function bindPointer() {
+    var box = document.getElementById('chartbox');
+    box.addEventListener('pointermove', function (e) { moveCursor(nearestIndex(e.clientX)); });
+    box.addEventListener('pointerdown', function (e) { moveCursor(nearestIndex(e.clientX)); });
+    box.addEventListener('pointerleave', function () {
+      document.getElementById('cursorLine').setAttribute('opacity', '0');
+      document.getElementById('halo').setAttribute('opacity', '0');
+      document.getElementById('hotdot').setAttribute('opacity', '0');
+      document.getElementById('snapVal').textContent = '—';
+      state.snapped = -1;
+    });
+  }
+
+  function bindControls() {
+    var fz = document.getElementById('freezeBtn');
+    fz.addEventListener('click', function () {
+      var r = freezeCompare(0.3);
+      document.getElementById('snapVal').textContent =
+        r.to + '（由 ' + r.from + ' 滑入 · 定格 ' + Math.round(r.progress * 100) + '%）';
+    });
+    var rm = document.getElementById('rmBtn');
+    rm.addEventListener('click', function () {
+      state.reduced = !state.reduced;
+      rm.classList.toggle('on', state.reduced);
+      rm.textContent = state.reduced ? '已开启降低动态效果' : '模拟 prefers-reduced-motion';
+      if (state.reduced) {
+        cancelAnimationFrame(state.old.raf);
+        cancelAnimationFrame(state.neu.raf);
+      }
+    });
+    var rs = document.getElementById('resetBtn');
+    rs.addEventListener('click', function () {
+      cancelAnimationFrame(state.old.raf); cancelAnimationFrame(state.neu.raf);
+      state.snapped = -1;
+      state.old.from = 0; state.old.to = 0; state.old.cur = 0;
+      state.neu.from = 0; state.neu.to = 0; state.neu.cur = 0; state.neu.started = false;
+      paintOld(0); paintNew(0);
+      document.getElementById('snapVal').textContent = '—';
+      document.getElementById('cursorLine').setAttribute('opacity', '0');
+      document.getElementById('halo').setAttribute('opacity', '0');
+      document.getElementById('hotdot').setAttribute('opacity', '0');
+    });
+  }
+
+  function init() {
+    buildChart();
+    bindPointer();
+    bindControls();
+    // 载入时先跑一次首次动画（两套都从 0 起，此时表现一致）
+    startOld(DATA[0]);
+    startNew(DATA[0]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>

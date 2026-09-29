@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>优丁官网像素级盘点报告 · 2026-09-10</title>
+<style>
+  :root{
+    --ink:#17191c; --ink2:#34383d; --ink3:#55585d; --faint:#7a776e;
+    --bg:#f5f4f0; --bg-alt:#ebe9e3; --line:#ddd8cc; --line-strong:#c8c3b4;
+    --accent:#9a3412; --accent-soft:#f5e6dd;
+    --ok:#047857; --ok-bg:#e3ede9; --warn:#b45309; --warn-bg:#f3ead9; --bad:#b91c1c; --bad-bg:#f5e3e3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter","Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  h1{font-size:30px;letter-spacing:-.02em;margin:0 0 4px}
+  h2{font-size:22px;letter-spacing:-.01em;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:17px;margin:24px 0 8px}
+  .sub{color:var(--ink3);font-size:14px;margin-bottom:24px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 8px}
+  .chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:2px;background:var(--bg-alt);border:1px solid var(--line);color:var(--ink2)}
+  .chip.good{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+  .chip.warn{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+  .chip.bad{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+  /* scorecard */
+  .score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+  .score-card{background:#fff;border:1px solid var(--line);border-radius:4px;padding:14px 16px}
+  .score-card .dim{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .score-card .val{font-size:30px;font-weight:600;letter-spacing:-.02em;margin:2px 0 4px}
+  .score-card .finding{font-size:12.5px;color:var(--ink3)}
+  .total{display:flex;align-items:center;gap:16px;background:var(--ink);color:#fff;border-radius:4px;padding:16px 20px;margin:16px 0}
+  .total .big{font-size:34px;font-weight:700;letter-spacing:-.02em}
+  .total .label{font-size:13px;opacity:.75}
+  .band{font-size:15px;font-weight:600;padding:4px 12px;border-radius:2px;background:var(--accent);color:#fff}
+  /* findings */
+  .finding{background:#fff;border:1px solid var(--line);border-left:4px solid var(--line-strong);border-radius:4px;padding:14px 16px;margin:10px 0}
+  .finding.p0{border-left-color:#b91c1c}
+  .finding.p1{border-left-color:#b45309}
+  .finding.p2{border-left-color:#eab308}
+  .finding.p3{border-left-color:#a3a38f}
+  .finding .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .finding .sev{font-size:12px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:2px;color:#fff}
+  .sev.p0{background:#b91c1c}.sev.p1{background:#b45309}.sev.p2{background:#a16207}.sev.p3{background:#78716c}
+  .finding .name{font-weight:600;font-size:15px}
+  .finding .loc{font-family:Consolas,Menlo,monospace;font-size:12px;color:var(--faint);background:var(--bg-alt);padding:1px 6px;border-radius:2px}
+  .finding .cat{font-size:12px;color:var(--ink3)}
+  .finding .impact{font-size:13.5px;color:var(--ink2);margin:6px 0 0}
+  .finding .fix{font-size:13.5px;margin:4px 0 0}
+  .finding .fix b{color:var(--accent)}
+  .finding .std{font-size:12px;color:var(--faint);margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff}
+  th{background:var(--bg-alt);font-weight:600;text-align:left;padding:8px 10px;border-bottom:2px solid var(--line-strong)}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.mono{font-family:Consolas,Menlo,monospace;font-size:12px}
+  ul{margin:6px 0;padding-left:20px}
+  li{margin:3px 0}
+  .ok-note{background:var(--ok-bg);border:1px solid #bcd9cd;border-radius:4px;padding:12px 16px;margin:10px 0;font-size:14px}
+  .ok-note b{color:var(--ok)}
+  .legend{font-size:12.5px;color:var(--ink3);margin-top:6px}
+  .toc{background:#fff;border:1px solid var(--line);border-radius:4px;padding:16px 20px;font-size:14px}
+  .toc a{color:var(--accent);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .toc ol{margin:0;padding-left:20px}
+  code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:var(--bg-alt);padding:1px 5px;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>优丁官网 · 像素级代码盘点报告</h1>
+<div class="sub">审查对象：<code>主要备份\上线网站\frontend</code>（3000 实跑官网，Vite+Vue3 SPA，暖米白 #f5f4f0 + 建筑橙 #9a3412）<br>
+审查日期：2026-09-10 ｜ 方法：UICraft audit 五维扫描 + 源码逐文件盘点 + 浏览器运行时实测（首页/联系/报价 × 桌面/移动视口）</div>
+<div class="meta">
+  <span class="chip">审查范围：85 页面 / 106 组件 / 7 CSS / 24 注册路由</span>
+  <span class="chip good">首页实测：0 console error</span>
+  <span class="chip bad">首页锚点跳转实测失效</span>
+  <span class="chip bad">联系页首屏实测被遮挡</span>
+</div>
+
+<div class="toc">
+  <b>目录</b>
+  <ol>
+    <li><a href="#score">健康评分卡（五维）</a></li>
+    <li><a href="#verdict">反模式裁决 & 执行摘要</a></li>
+    <li><a href="#p0">P0 阻塞项（3）</a></li>
+    <li><a href="#p1">P1 严重项（9）</a></li>
+    <li><a href="#p2">P2 次要项（12）</a></li>
+    <li><a href="#p3">P3 打磨项（8）</a></li>
+    <li><a href="#systemic">系统性模式 & 死代码清点</a></li>
+    <li><a href="#works">已达标 & 既往清单核对</a></li>
+    <li><a href="#plan">修复路线图</a></li>
+  </ol>
+</div>
+
+<h2 id="score">1. 健康评分卡（五维）</h2>
+<div class="score-grid">
+  <div class="score-card"><div class="dim">Accessibility</div><div class="val" style="color:#b45309">2</div><div class="finding">锚点移动端失效、首屏遮挡、表单 label 缺口</div></div>
+  <div class="score-card"><div class="dim">Performance</div><div class="val" style="color:#047857">3</div><div class="finding">chunk 拆分良好；全局残留 CSS 未剔除</div></div>
+  <div class="score-card"><div class="dim">Theming</div><div class="val" style="color:#b45309">2</div><div class="finding">两套真相源、secondary 蓝色系、薄荷残留</div></div>
+  <div class="score-card"><div class="dim">Responsive</div><div class="val" style="color:#b45309">2</div><div class="finding">#app 滚动容器特例多处 window.scroll 失效</div></div>
+  <div class="score-card"><div class="dim">Anti-Patterns</div><div class="val" style="color:#047857">3</div><div class="finding">工业风克制统一；孤儿蓝绿组件污染残留</div></div>
+</div>
+<div class="total">
+  <div class="big">12<span style="font-size:16px;opacity:.5">/20</span></div>
+  <div class="label">综合评级：<b>Acceptable</b>（可接受，有实质工作要做）<br>健康分主要被 A11y 锚点失效 / 主题双真相源 / 移动端滚动三处拉低</div>
+</div>
+<div class="legend">评分标准：0=不可用 → 4=优秀。详见各维度发现。</div>
+
+<h2 id="verdict">2. 反模式裁决 & 执行摘要</h2>
+<h3>反模式裁决：不读作"AI 一眼假"</h3>
+<p>主站（sb-page 系 + Tailwind 系首页/产品/联系）视觉语言**克制、统一、有工业工程感**：暖白底、单强调色建筑橙、2-4px 圆角、描边卡片、hover 仅加深阴影——未落入"紫蓝渐变 + 玻璃拟态 + 通用卡片 + 漂浮数字"的 AI 模板陷阱。反模式扣分全部来自**未清理的历史残留**（薄荷绿 fallback、蓝色移动组件、大圆角 CSS），而非当前设计取向。</p>
+<h3>执行摘要</h3>
+<ul>
+  <li><b>P0×3 / P1×9 / P2×12 / P3×8，共 32 项</b>；其中 P0 为 1 个品牌令牌硬违规（#2563eb）+ 2 个实测可复现的交互缺陷。</li>
+  <li>最该先修的三件事：① request-quote.vue 蓝渐变（P0 令牌违规）；② 首页/报价锚点改用 <code>useAppScroll</code>（移动端实测失效）；③ 删除 mobile.css 暗色块（暗色系统下"亮底白字"对比失效）。</li>
+  <li>既往 2026-09-07 清单核对：<b>P0 两项已修、P1 四项已修三项</b>；仍存移动端回到顶部缺失、部分圆角/焦点环残留（详见 §8）。</li>
+</ul>
+
+<h2 id="p0">3. P0 阻塞项</h2>
+
+<div class="finding p0">
+  <div class="head"><span class="sev p0">P0</span><span class="name">Hero 蓝渐变硬编码 #2563eb — 撞 DESIGN-TOKEN-LOCK</span><span class="loc">pages/request-quote.vue:353</span><span class="cat">Theming / Anti-Pattern</span></div>
+  <div class="impact">蓝色渐变 Hero 与全站建筑橙工业风断裂，且是 AGENTS.md §3「禁止硬编码 #2563eb」的明文违规项（lint:tokens 应拦截）。</div>
+  <div class="fix"><b>修复：</b>改为墨色底 <code>bg-[#17191c]</code> 或暖白 <code>bg-[#f5f4f0]</code>（同 contact.vue 工业 Hero），删除线性蓝渐变。</div>
+  <div class="std">违反：DESIGN-TOKEN-LOCK-01 / DESIGN.md 令牌单真源</div>
+</div>
+
+<div class="finding p0">
+  <div class="head"><span class="sev p0">P0</span><span class="name">首页 Product Finder 锚点跳转实测失效（window.scroll 与 #app 滚动容器不匹配）</span><span class="loc">pages/index.vue:416-421</span><span class="cat">Accessibility / Responsive</span></div>
+  <div class="impact">桌面实测点击"按应用领域选型 →"后 <code>window.scrollY</code> 与 <code>#app.scrollTop</code> 均为 0，页面纹丝不动；移动端（滚动容器 = #app）同样失效。用户在转化路径上无法跳转，等于三个选型入口全部死链。</div>
+  <div class="fix"><b>修复：</b>改用 <code>useAppScroll</code>（getAppScrollY/scrollAppToTop/onAppScroll，项目已封装），对 #app 滚动容器做动画跳转；锚点区已配 <code>scroll-margin-top:88px</code> 可保留。</div>
+  <div class="std">违反：WCAG 2.4.4 链接目的；记忆规则「移动端滚动容器=#app」</div>
+</div>
+
+<div class="finding p0">
+  <div class="head"><span class="sev p0">P0</span><span class="name">联系页首屏被 fixed 顶栏遮挡（实测 top=-100px）</span><span class="loc">pages/contact.vue:5（页面根无顶距）</span><span class="cat">Accessibility / Responsive</span></div>
+  <div class="impact">浏览器实测首个可交互元素 getBoundingClientRect().top = -100px，页面 Hero（py-12=48px）被 56-80px 固定头盖住。桌面已可见遮挡，移动端更严重。</div>
+  <div class="fix"><b>修复：</b>页面根容器加 <code>padding-top:56/64/80px</code>（同 index.vue .flagship-home 三段式避让），或给首屏 Hero 补足顶距。</div>
+  <div class="std">违反：WCAG 1.4.10 / 内容可用性</div>
+</div>
+
+<h2 id="p1">4. P1 严重项</h2>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">报价页移动端滚动失效</span><span class="loc">pages/quote.vue:327</span><span class="cat">Accessibility / Responsive</span></div>
+  <div class="impact">直接 <code>window.scrollTo</code>，<768px 恒失效（滚动容器是 #app）。</div>
+  <div class="fix"><b>修复：</b>改 <code>useAppScroll</code>。</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">request-quote.vue 整页中文硬编码，12 语种 i18n 断裂</span><span class="loc">pages/request-quote.vue（全页）</span><span class="cat">Theming / i18n</span></div>
+  <div class="impact">该页零 <code>$t()</code>，多语言访客看到中文页面，破坏外贸官网核心价值（且该页是询盘转化页）。</div>
+  <div class="fix"><b>修复：</b>全部文案迁入 locales，复用 <code>quote.*</code> / <code>contact.*</code> 键。</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">mobile.css 暗色块全端生效，暗色系统下"亮底白字"对比失效</span><span class="loc">assets/css/mobile.css:454-511</span><span class="cat">Theming</span></div>
+  <div class="impact"><code>@media(prefers-color-scheme:dark)</code> 把 <code>--color-surface/--color-text-primary</code> 翻暗，但 main.css 的 <code>body{background:#f5f4f0}</code> 未覆盖——暗色系统用户看到暖白底 + 被翻白的文本变量，对比失效。main.css 已声明 <code>color-scheme:light</code>，此块与之直接矛盾。</div>
+  <div class="fix"><b>修复：</b>整块删除（主站锁定浅色工业风），或加 <code>and (max-width:767px)</code> 并同步覆盖 body 背景。</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">secondary 色板为完整蓝色系 — 令牌级品牌色冲突</span><span class="loc">tailwind.config.ts（secondary 50-900）</span><span class="cat">Theming</span></div>
+  <div class="impact">DESIGN.md 明确"secondary 仅限信息展示与链接，禁止作为品牌强调"，但 <code>contact.vue:237</code> select 焦点环用 <code>secondary-500</code>（#3b82f6），实测联系页出现 64 个蓝色焦点环元素；蓝色系与"单强调色"哲学并存。</div>
+  <div class="fix"><b>修复：</b>删除 secondary 蓝色阶或全部改指向 primary 橙阶；contact.vue:237 焦点环改 <code>focus:border-primary focus:ring-primary/20</code>。</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">搜索框缺 label/name/autocomplete（三页同病）</span><span class="loc">pages/products/index.vue:48-53 ｜ pages/cases/index.vue:46 ｜ pages/logistics/index.vue:24-53</span><span class="cat">Accessibility</span></div>
+  <div class="impact">屏幕阅读器无字段名；自动填充失效；无 name 的表单提交语义残缺。</div>
+  <div class="fix"><b>修复：</b>加 <code>&lt;label for&gt;</code>/<code>aria-label</code> + <code>name="q"</code> + <code>autocomplete="off"</code>（搜索语义）；logistics 的 label 补 <code>for</code>、input 补 id。</div>
+  <div class="std">违反：WCAG 1.3.1 / 3.3.2</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">StickyImBar 品牌色违规 + 表单无障碍 + alert()</span><span class="loc">components/StickyImBar.vue:207-209, 85, 54-81, 276</span><span class="cat">Theming / Accessibility</span></div>
+  <div class="impact">移动端吸底条（真实可见）：WhatsApp 主按钮 <code>bg-emerald-700</code>（薄荷绿）、Telegram <code>bg-blue-500</code>（蓝）、提交按钮 <code>rounded-xl</code>（12px 大圆角）、表单 4 个 input 全无 label、提交/失败用 <code>alert()</code>。</div>
+  <div class="fix"><b>修复：</b>主按钮统一 <code>bg-[#17191c]</code>（同 header-quote-btn）或建筑橙；表单加 aria-label/placeholder 组合；alert 改页内 <code>role="status"</code> 提示；圆角 4px。</div>
+  <div class="std">违反：DESIGN-TOKEN-LOCK / WCAG 1.3.1 / 4.1.2</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">products/index.vue 数据拉取失败显示误导空态</span><span class="loc">pages/products/index.vue:320</span><span class="cat">UX</span></div>
+  <div class="impact"><code>dataError</code> 解构后未渲染，接口失败时用户看到"空列表"而非错误说明，误判为无货。</div>
+  <div class="fix"><b>修复：</b>失败渲染 <code>EmptyState</code> + 重试按钮。</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">分类筛选/翻页按钮触控不足</span><span class="loc">pages/products/index.vue:36（≈28px）｜ certifications（certs-filter 34px）｜ cases/index.vue:32（36px）</span><span class="cat">Accessibility</span></div>
+  <div class="impact">低于 44px 触控最小目标，拇指误触/难触。</div>
+  <div class="fix"><b>修复：</b>min-h-[44px]（或 40px+8px 间距）。</div>
+  <div class="std">违反：WCAG 2.5.5（AAA）/ 2.5.8 间距</div>
+</div>
+
+<div class="finding p1">
+  <div class="head"><span class="sev p1">P1</span><span class="name">卡片 hover translateY 跳动违反设计契约</span><span class="loc">components/ResponsiveCard.vue:5</span><span class="cat">Anti-Pattern</span></div>
+  <div class="impact">site-tokens 明确"卡片 hover 仅加深阴影，禁止 translateY 跳动"，此处 <code>hover:-translate-y-1</code> 默认开启。</div>
+  <div class="fix"><b>修复：</b>移除 translateY，仅保留 shadow/border 变化。</div>
+</div>
+
+<h2 id="p2">5. P2 次要项</h2>
+
+<table>
+  <tr><th style="width:220px">位置</th><th>问题</th><th style="width:200px">修复建议</th></tr>
+  <tr><td class="mono">components/ShippingTimeline.vue:95</td><td>API 路径 <code>/api/v1/v1/shipping/timeline</code> 双 v1，疑似 404</td><td>改为 <code>/api/v1/shipping/timeline</code> 并验证</td></tr>
+  <tr><td class="mono">assets/css/b2b-industrial.css</td><td>薄荷绿 <code>--b2b-primary:#4a9b8c</code> 被 main.ts:28 全局引入，但 .b2b-* 类仅被租户 PremiumB2bShell 消费——3000 主站死代码 + 全局 bundle 污染</td><td>从 main.ts 移除 import；如需保留给租户，改由租户壳按需引入</td></tr>
+  <tr><td class="mono">assets/css/saas-marketing.css</td><td>完全死代码：仅 layouts/marketing.vue 引入，而 marketing 布局无路由使用</td><td>整文件删除 + 删除 marketing.vue 布局</td></tr>
+  <tr><td class="mono">pages/mobile/*（30 页）、pages/[lang]/*、publish/industries/inquiries/logistics/projects/resources/standards/user 子页</td><td>全部孤儿：router 未注册，不可达；MobileNavbar/TabBar/Expandable/PerformanceLayer/OnboardingGuide/SEO 组件群只被孤儿页消费（蓝色类、window.scroll 失效、大圆角均锁死在死代码里）</td><td>决策：并入主站（推荐）或移入 _archive 并删除孤儿组件</td></tr>
+  <tr><td class="mono">pages/logistics/index.vue</td><td>整页中文硬编码；Hero py-10（40px）移动端顶距不足；24px 圆角卡片</td><td>i18n 化 + 顶距修复 + 圆角收敛</td></tr>
+  <tr><td class="mono">pages/products/index.vue:146</td><td><code>bg-emerald-700</code> 硬编码绿（在售/认证徽章）</td><td>改语义色 token（success 或 primary）</td></tr>
+  <tr><td class="mono">pages/cases/index.vue:119</td><td>n-tag type="success" 绿 + 骨架 24px 圆角</td><td>改语义 token；圆角收敛</td></tr>
+  <tr><td class="mono">pages/quote.vue</td><td>9 个表单字段全部缺 autocomplete（移动端实测）</td><td>姓名/tel/email/organization/company 等补 autocomplete</td></tr>
+  <tr><td class="mono">pages/contact.vue:134, request-quote.vue:378, news/index.vue:90, logistics 多处</td><td>CSS 字面量 12-24px 大圆角（Tailwind 层已把 rounded-xl 映射 4px，但这些是 literal 值）</td><td>统一收敛到 var(--radius-lg)=4px</td></tr>
+  <tr><td class="mono">pages/products/index.vue:131/85, cases:79, news:90</td><td>骨架屏/卡片 <code>rounded-xl/2xl</code>（Tailwind 已映射 4px，若容忍可忽略；CSS 字面量仍超）</td><td>统一 4px</td></tr>
+  <tr><td class="mono">components/common/{ErrorBoundary,LoadingState}.vue, ParticleBackground.vue:21, ScrollProgress.vue:49</td><td>薄荷绿 <code>#4a9b8c</code> fallback（当前 --color-primary 已橙，fallback 永不生效，属隐患）；ScrollProgress 的 window.scroll 移动端本就失效</td><td>fallback 改为 <code>#9a3412</code>；ScrollProgress 组件若要复用改 useAppScroll</td></tr>
+  <tr><td class="mono">package.json dependencies</td><td><code>redis</code>（前端包）疑似后端误入；naive-ui/ant-design-vue/echarts 等大库仅部分页面使用</td><td>移除 redis；核查 naive/antd 是否仍被可达页消费，按需瘦身</td></tr>
+</table>
+
+<h2 id="p3">6. P3 打磨项</h2>
+
+<table>
+  <tr><th style="width:220px">位置</th><th>问题</th><th style="width:200px">修复建议</th></tr>
+  <tr><td class="mono">pages/index.vue（移动端）</td><td>长页无回到顶部按钮（既往清单 #16 仍未修）</td><td>FloatingContact 内加 back-top（已有实现）或全页滚动监听</td></tr>
+  <tr><td class="mono">components/FloatingContact.vue</td><td>微信/WhatsApp/电话仅 title 无 aria-label；back-top 有 aria-label ✓</td><td>补 aria-label</td></tr>
+  <tr><td class="mono">components/StickyImBar.vue:8</td><td>渠道切换 pill 按钮 <code>text-[10px] px-2 py-0.5</code> ≈20px 触控目标</td><td>min-h-[44px] 或移除</td></tr>
+  <tr><td class="mono">components/LanguageSwitcher.vue:33</td><td>下拉 rounded-xl（12px）；emoji 国旗 Windows 渲染为字母</td><td>4px；改用文字码（EN/DE/…）</td></tr>
+  <tr><td class="mono">layouts/default.vue:38 / mobile.css:178</td><td>skip-link 两套重复实现</td><td>保留其一</td></tr>
+  <tr><td class="mono">pages/certifications.vue:34, technical.vue:35</td><td>h1→h4 跳级</td><td>补 h2 或提升层级</td></tr>
+  <tr><td class="mono">pages/news/index.vue:27,107</td><td>按钮 40px 触控略低；emoji 兜底</td><td>44px；换图标</td></tr>
+  <tr><td class="mono">pages/contact.vue:102</td><td>电话按钮移动端 40px</td><td>44px</td></tr>
+</table>
+
+<h2 id="systemic">7. 系统性模式 & 死代码清点</h2>
+<h3>四类重复模式（指向结构性缺口）</h3>
+<ul>
+  <li><b>滚动 API 误用</b>：首页/quote/ScrollProgress 直用 <code>window.scroll*</code>，与 #app 滚动容器契约冲突（项目已有 useAppScroll 却未全量接入）。</li>
+  <li><b>双真相源</b>：backup 的 <code>DESIGN.md</code> 仍是薄荷绿版（#4a9b8c）旧契约，与工作区砖橙单真源打架 → 解释了薄荷 fallback 的存留。需在 backup 内同步收敛文档。</li>
+  <li><b>孤儿页面/组件群</b>：router 只注册 24 条桌面路由，但 pages 下 85 个文件中有大量不可达页面，连带 Mobile*/SEO/Onboarding 组件群成为死代码载体（蓝色、大圆角、错误滚动全锁死其中）。</li>
+  <li><b>表单 autocomplete 缺失</b>：quote（9 字段全缺）、contact（2 缺）、搜索框、RFQ 部分字段。</li>
+</ul>
+<h3>死代码/污染清单</h3>
+<table>
+  <tr><th>文件</th><th>状态</th></tr>
+  <tr><td class="mono">assets/css/b2b-industrial.css</td><td>全局引入但类无人消费（3000 主站）→ 移出 main.ts</td></tr>
+  <tr><td class="mono">assets/css/saas-marketing.css</td><td>完全死代码 → 删除</td></tr>
+  <tr><td class="mono">pages/mobile/* 等约 30+ 页</td><td>不可达孤儿 → 并入主站或归档</td></tr>
+  <tr><td class="mono">components/MobileNavbar / MobileTabBar / MobileExpandable / MobilePerformanceLayer / MobileScrollReveal / MobileSwipeGesture</td><td>仅孤儿页消费 → 随孤儿页处理</td></tr>
+  <tr><td class="mono">components/onboarding/OnboardingGuide, components/seo/*</td><td>仅孤儿页消费 → 随孤儿页处理</td></tr>
+  <tr><td class="mono">package.json: redis</td><td>前端依赖误入 → 移除</td></tr>
+</table>
+
+<h2 id="works">8. 已达标 & 既往清单核对</h2>
+<div class="ok-note"><b>实测通过：</b>首页 0 console error；<code>--color-primary</code> 计算值为 #9a3412 ✓；首页 RFQ 表单全部字段有 name ✓；标题唯一 h1 ✓；无横向溢出 ✓；汉堡按钮 44x44 ✓；#app 为滚动容器（body hidden + #app auto）✓；Tailwind 层 <code>rounded-xl/2xl</code> 已映射为 4px（令牌层合规）✓；全站对比度（nav 16:1 / 按钮 7.3:1 / 页脚 17.6:1）✓；hover 子菜单已加触屏点击展开与 <code>group-focus-within</code> ✓；微信页脚已改 button + 页内提示 ✓；社交图标 44px + aria-label ✓；skip-link / touch-action / color-scheme 均已落地 ✓。</div>
+
+<table>
+  <tr><th>既往清单（2026-09-07）</th><th style="width:140px">状态</th><th>说明</th></tr>
+  <tr><td>P0-1 viewport 禁用缩放</td><td><b class="ok">已修</b></td><td>viewport-fit=cover 保留，maximum-scale 已删</td></tr>
+  <tr><td>P0-2 theme-color 旧绿</td><td><b class="ok">已修</b></td><td>现为 #f5f4f0</td></tr>
+  <tr><td>P1-3 静态 title 不一致</td><td><b class="ok">已修</b></td><td>index.html 与运行时均为「优丁建材有限公司」</td></tr>
+  <tr><td>P1-4 社交图标缺 aria-label</td><td><b class="ok">已修</b></td><td>已补 + svg aria-hidden</td></tr>
+  <tr><td>P1-5 微信 javascript:void(0)</td><td><b class="ok">已修</b></td><td>button + 页内 role="status" 提示</td></tr>
+  <tr><td>P1-6 表单缺 name/autocomplete</td><td><b class="warn">部分</b></td><td>contact 已修；quote 9 字段仍缺 autocomplete；搜索框缺 label/name</td></tr>
+  <tr><td>P2-7 transition:all</td><td><b class="warn">部分</b></td><td>main.css 已列举属性；组件内仍有个别 all</td></tr>
+  <tr><td>P2-8 :focus 而非 :focus-visible</td><td><b class="warn">部分</b></td><td>main.css 已改；mobile.css skip-link 仍 :focus</td></tr>
+  <tr><td>P2-9 skip-link</td><td><b class="ok">已修</b></td><td>default.vue 已加（与 mobile.css 重复一套）</td></tr>
+  <tr><td>P2-10 touch-action</td><td><b class="ok">已修</b></td><td>body 已全局声明 manipulation</td></tr>
+  <tr><td>P2-11 color-scheme</td><td><b class="ok">已修</b></td><td>html 已声明 light（与 mobile.css 暗色块矛盾，见 P1）</td></tr>
+  <tr><td>P2-12 i18n legacy 告警</td><td><b class="ok">已修</b></td><td>legacy:false，实测 0 warning</td></tr>
+  <tr><td>移动-13 主 CTA 42px</td><td><b class="ok">已修</b></td><td>sb-hero-actions 移动端 min-height:52px</td></tr>
+  <tr><td>移动-14 页脚图标 40px</td><td><b class="ok">已修</b></td><td>w-11 h-11 = 44px</td></tr>
+  <tr><td>移动-15 hover 子菜单触屏不可达</td><td><b class="ok">已修</b></td><td>isCoarsePointer 点击展开 + group-focus-within</td></tr>
+  <tr><td>移动-16 无回到顶部</td><td><b class="warn">未修</b></td><td>P3 保留</td></tr>
+  <tr><td>移动-17 表单 14px 自动放大</td><td><b class="ok">已修</b></td><td>mobile.css 已锁 input/textarea/select 16px</td></tr>
+</table>
+
+<h2 id="plan">9. 修复路线图</h2>
+<table>
+  <tr><th style="width:70px">批次</th><th>动作</th><th>对应问题</th></tr>
+  <tr><td><b>批 1</b></td><td>request-quote.vue 蓝渐变 → 墨/暖白 Hero + 全页 i18n 化；页根加顶距</td><td>P0-1 / P1-2 / P1 首屏</td></tr>
+  <tr><td><b>批 2</b></td><td>首页/quote/ScrollProgress 滚动改用 useAppScroll</td><td>P0-2 / P1-1</td></tr>
+  <tr><td><b>批 3</b></td><td>mobile.css 删除暗色块；StickyImBar 品牌色/圆角/表单/alert 修复</td><td>P1-3 / P1-6</td></tr>
+  <tr><td><b>批 4</b></td><td>secondary 蓝阶收敛到橙；contact 焦点环改 primary；搜索框 label/name/autocomplete；quote autocomplete 补齐</td><td>P1-4 / P1-5 / P2</td></tr>
+  <tr><td><b>批 5</b></td><td>死代码清理：b2b/saas CSS 移出全局、孤儿页决策归档、redis 依赖移除、双 v1 路径修复</td><td>P2 系统性</td></tr>
+  <tr><td><b>批 6</b></td><td>P3 打磨：回到顶部、aria-label、触控补齐、skip-link 去重、圆角收敛</td><td>P3</td></tr>
+</table>
+<div class="legend">每批完成后重跑：<code>npm run typecheck</code>、<code>npm run lint</code>、<code>npm run lint:tokens</code>，并在 3000 端口按「首页锚点 / 联系首屏 / 移动视口」回归；涉及登录/壳/令牌的改动按工作区 development.md 回归清单执行。</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>地毯式扫描报告 · 上线网站开发完成</title>
+<style>
+:root{--bg:#0f1320;--card:#171c2c;--card2:#1d2438;--line:#2a3350;--txt:#e6ebff;--mut:#8b95b5;--acc:#5b8cff;--grn:#3ecf8e;--org:#ffb454;--red:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:20px;margin:34px 0 12px;padding-left:11px;border-left:4px solid var(--acc)}
+h3{font-size:16px;color:var(--acc);margin:20px 0 8px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+.kpis{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:130px}
+.kpi b{display:block;font-size:24px;color:var(--acc)}
+.kpi span{font-size:12px;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+th{background:var(--card2);color:var(--acc);font-weight:600}
+tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.t-live{background:rgba(62,207,142,.16);color:var(--grn)}
+.t-bak{background:rgba(255,180,84,.16);color:var(--org)}
+.t-ext{background:rgba(91,140,255,.16);color:var(--acc)}
+.t-arc{background:rgba(139,149,181,.18);color:var(--mut)}
+.box{max-height:340px;overflow:auto;background:#0b0f1a;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.box span{display:inline-block;margin:2px 6px 2px 0;padding:2px 7px;background:#1a2236;border:1px solid var(--line);border-radius:5px;color:#bcd0ff}
+.note{border-left:3px solid var(--org);background:rgba(255,180,84,.08);padding:10px 14px;border-radius:6px;margin:12px 0;font-size:13.5px}
+.ok{color:var(--grn)} .warn{color:var(--org)} .bad{color:var(--red)}
+ul{margin:6px 0 6px 18px} li{margin:3px 0}
+</style></head><body><div class="wrap">
+<h1>项目地毯式扫描报告</h1>
+<div class="sub">工作区：上线网站开发完成 ｜ 扫描日期：2026-09-06 ｜ 方法：Python 单次遍历全树（剔除 node_modules/.git/venv/.nuxt/.output/dist 及 vendored 大模型库 sglang/flash-attention）</div>
+
+<div class="kpis">
+  <div class="kpi"><b>230</b><span>后端 API 模块 (v1)</span></div>
+  <div class="kpi"><b>661</b><span>服务层 .py</span></div>
+  <div class="kpi"><b>94</b><span>模型 .py</span></div>
+  <div class="kpi"><b>488</b><span>前端页面 (admin+portal)</span></div>
+  <div class="kpi"><b>5</b><span>外部仓库</span></div>
+  <div class="kpi"><b>~225</b><span>数据表</span></div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:4px">结论：为什么"数 GB"却"功能数偏少"？</h3>
+<p>体积主要由<b>重复副本 + 依赖 + 构建产物</b>撑大，而非独特功能代码：</p>
+<ul>
+<li><b>重复备份占大头</b>：<code>主要备份/</code> 含 <b>66,234</b> 个文件（主项目完整 git 历史含多 worktree 快照），<code>_archive/</code> 含 3,172 个文件。这些都是<b>同一套代码的副本</b>，不应重复计入活体功能。</li>
+<li><b>依赖/构建产物被剔除后仍大</b>：vendored 大模型推理库（sglang、flash-attention）、<code>.nuxt/.output/node_modules</code> 已排除，否则体积再翻数倍。</li>
+<li><b>真正独特的活体功能代码</b>集中在单一目录 <code>上线网站.worktrees/agents-install-vscode-cline-deploy-strix/</code>，规模即上方 KPI（约 230 API 模块 + 661 服务 + 94 模型 + 前端）。</li>
+</ul>
+<p class="note">⚠️ <b>之前的拓扑全景统计并非"漏扫主项目"，而是扫描范围被限定在"主项目活跃副本"，且前端/外部仓库只做估算未逐模块枚举。</b>本报告显示的真实遗漏/少算项见 §5。</p>
+</div>
+
+<h2>1. 顶层目录分类与文件类型</h2>
+<table>
+<tr><th>目录</th><th>总文件</th><th>.py</th><th>.ts</th><th>.js</th><th>.vue</th><th>.md</th><th>分类 / 说明</th></tr>
+<tr><td><code>上线网站.worktrees</code></td><td>13,000</td><td>2,025</td><td>292</td><td>756</td><td>576</td><td>2,589</td><td><span class='tag t-live'>活体</span> [活体源码] 活跃开发 worktree（主项目当前状态）</td></tr>
+<tr><td><code>主要备份</code></td><td>66,234</td><td>9,818</td><td>4,326</td><td>4,129</td><td>4,100</td><td>22,314</td><td><span class='tag t-live'>活体</span> [备份副本] 主项目完整 git 历史（含多 worktree 快照，重复不计活体功能）</td></tr>
+<tr><td><code>_archive</code></td><td>3,172</td><td>3,015</td><td>0</td><td>8</td><td>0</td><td>6</td><td><span class='tag t-bak'>备份</span> [备份副本] 工作树/修复历史归档快照（重复不计）</td></tr>
+<tr><td><code>_external</code></td><td>7,731</td><td>1,740</td><td>935</td><td>553</td><td>0</td><td>3,243</td><td><span class='tag t-ext'>外部</span> [外部仓库] 5 个预置件仓库（deer-flow/ecc/agency-agents-zh/goodjob-crm/trade-ai-agent）</td></tr>
+<tr><td><code>cloudflare-ai-gateway</code></td><td>6</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td><span class='tag '>归档/其他</span> [卫星系统] Cloudflare Worker AI 网关</td></tr>
+<tr><td><code>上线网站</code></td><td>51</td><td>27</td><td>0</td><td>0</td><td>0</td><td>0</td><td><span class='tag t-arc'>归档/其他</span> [Agent沙盒] AI Agent 临时文件+交付HTML（非生产源码）</td></tr>
+<tr><td><code>总定稿开发文件不在扩张-镜像</code></td><td>1,713</td><td>336</td><td>131</td><td>5</td><td>176</td><td>104</td><td><span class='tag t-arc'>归档/其他</span> [交付归档] 各 AI 工具产出文档/快照（非生产源码）</td></tr>
+<tr><td><code>00-文档中心</code></td><td>88</td><td>0</td><td>0</td><td>12</td><td>0</td><td>36</td><td><span class='tag t-arc'>归档/其他</span> [文档] 设计/审计/交付/计划</td></tr>
+<tr><td><code>docs</code></td><td>50</td><td>0</td><td>0</td><td>0</td><td>0</td><td>44</td><td><span class='tag t-arc'>归档/其他</span> [文档] 规划/测试/架构文档</td></tr>
+<tr><td><code>audit</code></td><td>33</td><td>4</td><td>0</td><td>0</td><td>0</td><td>25</td><td><span class='tag t-arc'>归档/其他</span> [文档] 审计文档</td></tr>
+<tr><td><code>gui-test-screenshots</code></td><td>7</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td><span class='tag t-arc'>归档/其他</span> [产物] GUI 测试截图</td></tr>
+<tr><td><code>启动脚本</code></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td><span class='tag t-arc'>归档/其他</span> [脚本] 启停脚本</td></tr>
+</table>
+<h2>2. 后端 API 全景（app/api/v1，活体）</h2>
+<div class="card">
+<table>
+<tr><th>层级</th><th>模块数</th><th>说明</th></tr>
+<tr><td><code>routes/</code> 子目录</td><td>147</td><td>auto_discovery 自动挂载的路由模块（API 主力）</td></tr>
+<tr><td>v1 顶层扁平</td><td>30</td><td>直接注册于 v1 的模块；其中 <b class="bad">17 个确认 404 未挂载</b>（n8n/deerflow/sitemap/quotes/seo_metadata/site_builder/content_pages/merchant_profiles/evolution/product_categories/product_images/products_mobile/commercial_loop/system_config/building_specs/ai_recommendations/chat_sessions）</td></tr>
+<tr><td>子包 admin_bff</td><td>14</td><td>管理端 BFF（登录/菜单/权限）</td></tr>
+<tr><td>子包 ai</td><td>2</td><td>AI 相关路由</td></tr>
+<tr><td>子包 seo</td><td>11</td><td>SEO 域路由</td></tr>
+<tr><td>子包 super_admin</td><td>25</td><td>超管域路由</td></tr>
+<tr><td>子包 system</td><td>1</td><td>系统域路由</td></tr>
+<tr><td><b>合计</b></td><td><b>230</b></td><td>后端对外 API 模块总数（去 __init__）</td></tr>
+</table>
+<p class="note">对比拓扑全景 V2 的"routes/ 约 130 + 子包 50 ≈ 180"：本扫描在<b>同一活跃副本</b>实测为 <b>147+30+53=230</b>，说明活跃分支较拓扑统计时已有增长。</p>
+</div>
+
+<h3>2.1 routes/ 子目录完整模块清单（147 个）</h3>
+<div class="box"><span>ab_test</span><span>agent_bff</span><span>agent_hub</span><span>agent_portal</span><span>agent_tree</span><span>ai_config</span><span>ai_generate</span><span>ai_learning</span><span>ai_templates</span><span>ai_usage</span><span>ai_visibility</span><span>aitoearn_hub</span><span>analytics</span><span>annex</span><span>app_bff</span><span>attribution</span><span>auth</span><span>auto_discovery</span><span>baidu_webmaster</span><span>building_wiki</span><span>calculator</span><span>campaign</span><span>case_studies</span><span>churn</span><span>client</span><span>client_bff</span><span>code_quality</span><span>cognitive</span><span>company</span><span>compliance</span><span>content</span><span>content_master</span><span>crm_pipeline</span><span>cross_border</span><span>cross_platform_dashboard</span><span>customer_support</span><span>daily_report</span><span>developer</span><span>domain</span><span>domain_registry</span><span>edge_cdn</span><span>egress</span><span>email_queue</span><span>email_tracking</span><span>feishu</span><span>files</span><span>finance</span><span>follow_up</span><span>foreign_trade</span><span>foreign_trade_skills</span><span>forum</span><span>founder_ops</span><span>gdpr</span><span>gdpr_compliance</span><span>global_search</span><span>globalization</span><span>growth_loop</span><span>growth_tools</span><span>health</span><span>hermes</span><span>hub</span><span>inquiries</span><span>inquiry_channels</span><span>integrations</span><span>international</span><span>invoice_applications</span><span>knowledge</span><span>knowledge_graph</span><span>knowledge_ingestion</span><span>lead_enrichment</span><span>lead_generation</span><span>lead_pipeline</span><span>lead_search</span><span>lead_tools</span><span>license</span><span>linkedin_sales</span><span>logistics</span><span>matching</span><span>media_factory</span><span>metrics</span><span>mobile_public</span><span>moss_vl_clip_publish</span><span>multimodal_studio</span><span>news</span><span>notifications</span><span>onboarding</span><span>opportunity</span><span>ops_jobs</span><span>outreach_quality</span><span>p2_enhancement</span><span>paperclip</span><span>payment</span><span>payment_international</span><span>performance</span><span>platform</span><span>platform_bff</span><span>product_commerce</span><span>product_commercial</span><span>product_faqs</span><span>products</span><span>project</span><span>prospect_research</span><span>public_forum</span><span>public_tenant_geo</span><span>public_tenant_media</span><span>public_visitor_context</span><span>public_wangcai</span><span>publish_tasks</span><span>rank_check</span><span>recycle_bin</span><span>referral</span><span>reviews</span><span>rfq</span><span>sales_task</span><span>search_strategy</span><span>security_advanced</span><span>seo_diagnosis</span><span>seo_matrix</span><span>settings</span><span>site_ai_generator</span><span>skill_store</span><span>social_interactions</span><span>social_nurture</span><span>ssl_certificates</span><span>super_agent</span><span>system</span><span>system_health</span><span>talking_stick</span><span>task_control_admin</span><span>tech_radar</span><span>technical_qna</span><span>tenant_ai_config</span><span>tenants</span><span>token_ledger</span><span>trade_intel</span><span>ubrain</span><span>ubrain_analytics</span><span>ubrain_commercial_os</span><span>unified_publish</span><span>users</span><span>vector_search</span><span>video_publish</span><span>wallet</span><span>wangcai_marketplace</span><span>whatsapp_business</span><span>workflow_canvas</span><span>workspace</span></div>
+
+<h2>3. 服务层与数据模型</h2>
+<div class="card">
+<table>
+<tr><th>服务子包</th><th>.py 数</th><th>服务子包</th><th>.py 数</th></tr>
+<tr><td><code>(root)</code></td><td>256</td><td><code>evolution</code></td><td>5</td></tr>
+<tr><td><code>ubrain</code></td><td>82</td><td><code>feishu</code></td><td>5</td></tr>
+<tr><td><code>hermes</code></td><td>70</td><td><code>model_gateway</code></td><td>5</td></tr>
+<tr><td><code>foreign_trade</code></td><td>38</td><td><code>ai</code></td><td>4</td></tr>
+<tr><td><code>cross_border</code></td><td>30</td><td><code>n8n</code></td><td>4</td></tr>
+<tr><td><code>talking_stick</code></td><td>19</td><td><code>payment_pkg</code></td><td>4</td></tr>
+<tr><td><code>registry</code></td><td>10</td><td><code>tasks</code></td><td>4</td></tr>
+<tr><td><code>geo</code></td><td>9</td><td><code>trace</code></td><td>4</td></tr>
+<tr><td><code>publish_workers</code></td><td>9</td><td><code>goodjob</code></td><td>3</td></tr>
+<tr><td><code>platforms</code></td><td>8</td><td><code>matching_engine</code></td><td>3</td></tr>
+<tr><td><code>browser_runtime</code></td><td>7</td><td><code>site_builder</code></td><td>3</td></tr>
+<tr><td><code>moss_vl</code></td><td>7</td><td><code>vault</code></td><td>3</td></tr>
+<tr><td><code>paperclip</code></td><td>7</td><td><code>adapters</code></td><td>2</td></tr>
+<tr><td><code>pipeline</code></td><td>7</td><td><code>annex</code></td><td>2</td></tr>
+<tr><td><code>seo</code></td><td>7</td><td><code>billing</code></td><td>2</td></tr>
+<tr><td><code>wangcai</code></td><td>7</td><td><code>calculators</code></td><td>2</td></tr>
+<tr><td><code>crawlers</code></td><td>6</td><td><code>orchestrator</code></td><td>2</td></tr>
+<tr><td><code>deerflow</code></td><td>6</td><td><code>policy</code></td><td>2</td></tr>
+<tr><td><code>agent_loop</code></td><td>5</td><td><code>facade</code></td><td>1</td></tr>
+<tr><td><code>analytics</code></td><td>5</td><td><code>media</code></td><td>1</td></tr>
+<tr><td><code>egress</code></td><td>5</td><td></td><td></td></tr>
+</table><p>服务层文件总数 <b>661</b>（含 ubrain 82、hermes 70、foreign_trade 38、cross_border 30 等 20+ 子包）。模型文件 <b>94</b> 个，对应约 225 张数据表。</p></div>
+<h2>4. 前端、外部仓库与卫星系统</h2>
+<div class="card">
+<table>
+<tr><th>板块</th><th>规模</th><th>说明</th></tr>
+<tr><td>管理端 admin</td><td>410 .vue</td><td>管理后台页面组件（拓扑原估 111 页 → 实际 <b class="warn">410</b>，显著少算）</td></tr>
+<tr><td>门户 portal (Nuxt)</td><td>78 页面</td><td>含 [lang] 多语 / tenant 租户站 / mobile（拓扑原估 30 → 实际 <b class="warn">78</b>）</td></tr>
+<tr><td>seo-backend (卫星)</td><td>73 .js 路由</td><td>Express+BullMQ，县域 SEO 矩阵执行后端（端口 3001）</td></tr>
+<tr><td>cloudflare-ai-gateway</td><td>2 .ts</td><td>Cloudflare Worker AI 网关（其余 1400+ 文件为 node_modules）</td></tr>
+</table>
+</div>
+
+<h3>4.1 外部仓库（5 个预置件仓库，功能模块已逐仓量化）</h3>
+<table>
+<tr><th>仓库</th><th>.py</th><th>.ts</th><th>.js</th><th>.md</th><th>真实角色 / 功能规模</th></tr>
+<tr><td><code>agency-agents-zh</code></td><td>0</td><td>0</td><td>0</td><td>323</td><td>276 个中文本地化智能体人设/角色库（20 部门）</td></tr>
+<tr><td><code>deer-flow</code></td><td>1,393</td><td>404</td><td>12</td><td>222</td><td>深度研究执行引擎 + Agent 运行时（harness 452 模块/12 渠道/20 技能）</td></tr>
+<tr><td><code>ecc</code></td><td>63</td><td>19</td><td>538</td><td>2,521</td><td>专家知识/SOP/命令库（68 agents + 94 commands + 286 skills，面向 Claude Code 生态）</td></tr>
+<tr><td><code>goodjob-crm</code></td><td>0</td><td>413</td><td>2</td><td>61</td><td>重型外贸 CRM 原型（Express 单体，获客流水线 40 模块 + 8 贸易数据源 provider）</td></tr>
+<tr><td><code>trade-ai-agent</code></td><td>141</td><td>49</td><td>0</td><td>58</td><td>轻量营销自动化参考（FastAPI+React，13 路由约 100 端点 + 可视化工作流引擎）</td></tr>
+<tr><td><code>trade-ai-agent.local-snapshot-nogit</code></td><td>143</td><td>50</td><td>1</td><td>58</td><td>trade-ai-agent 的无 git 快照副本（与上游重复，不计入活体）</td></tr>
+</table><p class='note'>拓扑全景将外部仓库仅按「仓库」点名（§6），未拆成功能模块。本表给出各仓实际代码量：deer-flow 共 <b>1393</b> 个 .py + <b>404</b> .ts（harness 452 模块），ecc 含 <b>286 skills / 68 agents</b>，agency-agents-zh 含 <b>323</b> 个 markdown 智能体——这些都是可领取的「预置功能」，但属独立仓库，不并入主项目活体计数。</p>
+<h2>5. 扫描范围排查结论：之前"偏少"的真实原因</h2>
+<table>
+<tr><th>项</th><th>拓扑全景统计</th><th>本地毯式扫描实测</th><th>判定</th></tr>
+<tr><td>后端 API 模块</td><td>~130+子包≈180</td><td><b>230</b>（同活跃副本）</td><td><span class="ok">基本一致，略有增长</span></td></tr>
+<tr><td>服务层</td><td>500+</td><td><b>661</b></td><td><span class="ok">已覆盖</span></td></tr>
+<tr><td>管理端页面</td><td>111</td><td><b>410</b> .vue</td><td><span class="bad">少算 ~300（仅估算未枚举）</span></td></tr>
+<tr><td>门户页面</td><td>30</td><td><b>78</b></td><td><span class="bad">少算 ~48</span></td></tr>
+<tr><td>外部仓库</td><td>5 仓点名</td><td>各仓逐模块量化</td><td><span class="warn">未拆功能模块</span></td></tr>
+<tr><td>未挂载路由</td><td>3（V2）→17（§7.1校勘）</td><td>17 个 404 顶层模块确认</td><td><span class="ok">已校勘</span></td></tr>
+<tr><td>体积来源</td><td>—</td><td>重复备份 66k+3k + vendored ML 库</td><td><span class="warn">"数GB"主因是副本与依赖，非独特功能</span></td></tr>
+</table>
+
+<div class="card">
+<h3 style="margin-top:4px">🔎 排查发现的 3 类"看似遗漏实为可解释"的情况</h3>
+<ul>
+<li><b>① 重复副本（不计入活体）</b>：<code>主要备份/</code>（66,234 文件）、<code>_archive/</code>（3,172 文件）、<code>trade-ai-agent.local-snapshot-nogit</code> 是 trade-ai-agent 的无 git 副本 → 均为同源代码副本。</li>
+<li><b>② Agent 沙盒误判</b>：<code>上线网站/</code> 含 51 文件（27 .py），但实为 <code>.ohmyagent/tmp/</code> 分析脚本 + 交付 HTML + <code>data/mcp.db</code>，<b>非生产源码</b>（开场结构快照误记为"仅 3 文件"，已澄清）。</li>
+<li><b>③ 依赖/构建产物</b>：node_modules、.nuxt、.output、sglang、flash-attention、venv 已剔除，避免虚高。</li>
+</ul>
+</div>
+
+<h2>6. 完整功能清单索引（代码位置）</h2>
+<div class="card">
+<h3>6.1 活体主项目（唯一真相源）</h3>
+<ul>
+<li>后端根：<code>上线网站.worktrees/agents-install-vscode-cline-deploy-strix/backend/app/</code></li>
+<li>API 层：<code>app/api/v1/</code> → <code>routes/</code>(147) + 扁平(30) + 子包 admin_bff/seo/super_admin/system/ai</li>
+<li>服务层：<code>app/services/</code>（661 .py，20+ 子包）</li>
+<li>模型层：<code>app/models/</code>（94 .py，~225 表）</li>
+<li>管理端：<code>frontend/admin/src/</code>（410 .vue）</li>
+<li>门户：<code>frontend/pages/</code>、<code>frontend/server/</code>（78 页面）</li>
+<li>SEO 卫星：<code>seo-backend/src/</code>（73 .js 路由）、<code>seo-admin/</code></li>
+</ul>
+<h3>6.2 外部预置件仓库（独立收编，非活体）</h3>
+<ul>
+<li><code>_external/deer-flow/</code> — 深度执行引擎（harness 452 模块）</li>
+<li><code>_external/goodjob-crm/</code> — 外贸 CRM（抽 8 数据源 provider）</li>
+<li><code>_external/trade-ai-agent/</code> — 营销自动化参考</li>
+<li><code>_external/ecc/</code> — 286 skills / 68 agents 知识库</li>
+<li><code>_external/agency-agents-zh/</code> — 323 智能体人设</li>
+</ul>
+<h3>6.3 备份/归档（重复，不计入功能）</h3>
+<ul>
+<li><code>主要备份/上线网站/</code> — 完整 git 历史（查历史/迁移链用）</li>
+<li><code>_archive/</code> — 工作树/修复快照</li>
+<li><code>总定稿开发文件不在扩张-镜像/</code> — 各 AI 工具交付物归档</li>
+<li><code>00-文档中心/ docs/ audit/</code> — 设计/规划/审计文档</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-top:4px">✅ 建议的下一步</h3>
+<ol>
+<li><b>前端补枚举</b>：把 410 个 admin .vue 与 78 个 portal 页面按业务域归类，补齐"功能清单"前端部分（当前最大少算项）。</li>
+<li><b>17 个未挂载路由接线</b>：n8n/deerflow/site_builder 等 404 模块按拓扑 §7.1 处置，使 API 面从 147 增至 230。</li>
+<li><b>外部仓库功能映射</b>：将 deer-flow/ecc/agency 的模块按"可领取任务"登记进主项目规划，避免"仓库级"模糊统计。</li>
+<li><b>去重基线</b>：以 <code>上线网站.worktrees/.../backend</code> 为唯一活体基线，<code>主要备份/</code> 仅作历史溯源，统计时不再重复计入。</li>
+</ol>
+</div>
+
+<p class="sub" style="margin-top:30px">报告由地毯式扫描脚本自动生成 · 数据源自对 上线网站开发完成 全树的单次遍历（已剔除第三方依赖与构建产物）。所有模块数均为实测计数。</p>
+</div></body></html>

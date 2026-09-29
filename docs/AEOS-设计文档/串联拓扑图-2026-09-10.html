@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>优丁 · 串联拓扑图 2026-09-10</title>
+<style>
+  :root{color-scheme:light}
+  *{box-sizing:border-box}
+  body{margin:0;background:#f8f7f4;color:#1f2330;line-height:1.65;
+    font-family:"Noto Sans SC","Segoe UI",-apple-system,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+  header{border-bottom:3px solid #4a9b8c;padding-bottom:16px;margin-bottom:8px}
+  .kicker{color:#9a3412;font-weight:600;letter-spacing:.06em;font-size:13px}
+  h1{font-size:28px;margin:6px 0 4px}
+  .sub{color:#6b7280;font-size:14px}
+  h2{font-size:20px;margin:38px 0 8px;padding-left:12px;border-left:5px solid #4a9b8c}
+  .lead{font-size:14.5px;color:#374151;margin:6px 0 14px}
+  .card{background:#fff;border:1px solid #e5e3dd;border-radius:12px;padding:16px 18px;margin:14px 0;overflow-x:auto}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin:10px 0 0}
+  .lg{display:flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  table{border-collapse:collapse;width:100%;background:#fff;font-size:13.5px;margin:12px 0}
+  th,td{border:1px solid #e5e3dd;padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f5f2;color:#2a6b60;font-weight:600}
+  code{background:#f1f3f1;border:1px solid #e5e7e9;border-radius:5px;padding:1px 6px;
+    font-size:12.5px;font-family:ui-monospace,Consolas,monospace}
+  .warn{background:#fff7ed;border-left:4px solid #9a3412;padding:12px 16px;
+    border-radius:0 8px 8px 0;margin:12px 0}
+  .ok{background:#ecfdf5;border-left:4px solid #10b981;padding:12px 16px;
+    border-radius:0 8px 8px 0;margin:12px 0}
+  .mermaid{background:#fff}
+  .foot{margin-top:44px;padding-top:14px;border-top:1px solid #e5e3dd;color:#6b7280;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">优丁 YouDing · 串联拓扑</div>
+  <h1>调度关系点对点 · 全链路拓扑图</h1>
+  <div class="sub">2026-09-10 ｜ 依据源码实测，每条边均已核实（非推断）</div>
+</header>
+
+<div class="legend">
+  <div class="lg"><span class="dot" style="background:#6bcf7f"></span>✅ 真实现</div>
+  <div class="lg"><span class="dot" style="background:#ffe066"></span>🟡 部分/骨架</div>
+  <div class="lg"><span class="dot" style="background:#ff6b6b"></span>🔴 桩 / mock</div>
+  <div class="lg"><span class="dot" style="background:#4a9b8c"></span>核心中枢</div>
+  <div class="lg">⋯ 虚线 = 未接通</div>
+</div>
+
+<h2>图 1 · 五层主链路（完整调度关系）</h2>
+<p class="lead">① 入口 → ② 拆解 → ③ 调度 → ④ 执行 → ⑤ 回流。<strong>红色虚线段是全链路唯一缺口。</strong></p>
+<div class="card"><pre class="mermaid">
+flowchart TB
+    subgraph L1["① 入口层"]
+        FE["前端 admin"]
+        API["POST /orchestration/tasks<br/>routes/orchestration.py:68"]
+        WH["n8n webhook 入口<br/>harness_gateway.process_inbound_webhook"]
+    end
+
+    subgraph L2["② 拆解层"]
+        HG["harness_gateway.ingest_user_intent<br/>🔴 桩 · 全库无调用方"]
+        TPL["templates/*_scenario.py<br/>🟡 硬编码场景图"]
+        TGS{{"TaskGraph<br/>plan_id · event_id · nodes · policies"}}
+    end
+
+    subgraph L3["③ 调度层"]
+        CTL["TaskControlService.create_task<br/>tasks/task_control.py:197"]
+        PGT["parse_graph_to_tasks()<br/>task_control_supervisor.py:51<br/>⚠️ 函数在 · 无调用方"]
+        GOV["_validate_dag_topology()<br/>L19 节点≤100 + DFS环检测"]
+        AP["advance_plan()<br/>L156 依赖判定 + JsonPath注入"]
+        CP["compensate_plan()<br/>L285 Saga逆补偿"]
+    end
+
+    subgraph L4["④ 执行层"]
+        CEL["Celery process_ai_task<br/>tasks/orchestration_tasks.py:22"]
+        DISP["dispatch_ai_task()<br/>hermes_task_bridge.py:230"]
+        RT["ROUTERS 派发表<br/>L198"]
+        HN["_run_hermes_node()<br/>L153"]
+        REG["ExecutorRegistry.get()<br/>executors/base.py:35"]
+    end
+
+    subgraph L5["④b 执行器插件（复刻项目）"]
+        P1["deerflow ✅"]
+        P2["accio 🟡 骨架"]
+        P3["trade_ai_agent 🔴 mock"]
+        P4["goodjob_crm 🔴 mock"]
+    end
+
+    subgraph L6["⑤ 回流层"]
+        WB["AiTask.output_json 回写"]
+        N8N["_notify_site_built<br/>→ services/n8n/trigger.py"]
+    end
+
+    FE --> API
+    API --> CTL
+    WH -.->|"🔴 桩，未接"| HG
+    HG -.->|"⛔ 唯一缺口：意图→任务图"| TGS
+    TPL --> TGS
+    TGS -.->|"⚠️ 缺调用"| PGT
+    CTL --> PGT
+    PGT --> GOV
+    GOV --> AP
+    AP --> CEL
+    CEL --> DISP
+    DISP --> RT
+    RT --> HN
+    HN --> REG
+    REG --> P1
+    REG --> P2
+    REG --> P3
+    REG --> P4
+    P1 --> WB
+    P2 --> WB
+    P3 --> WB
+    P4 --> WB
+    WB -->|"递归推进下游"| AP
+    WB --> N8N
+    AP -->|"abort 策略触发"| CP
+
+    style HG fill:#ff6b6b,color:#fff
+    style TGS fill:#ffd93d,color:#000
+    style PGT fill:#ffd93d,color:#000
+    style P1 fill:#6bcf7f,color:#000
+    style P2 fill:#ffe066,color:#000
+    style P3 fill:#ff6b6b,color:#fff
+    style P4 fill:#ff6b6b,color:#fff
+</pre></div>
+<div class="warn"><b>读图要点</b>：绿色=真跑，黄色=待接，红色=桩。<b>红色虚线那一段是唯一缺口</b>——意图进不来，下游再通也没用。</div>
+
+<h2>图 2 · 调度内核细节（递归派发环）</h2>
+<p class="lead">节点执行完 → 写回 → 回 <code>advance_plan</code> 推进下一批。<strong>这条回边是整条链能自动跑下去的原因。</strong></p>
+<div class="card"><pre class="mermaid">
+flowchart LR
+    A["advance_plan(plan_task_id)"] --> B{"父计划是否终态?"}
+    B -->|是| Z["退出"]
+    B -->|否| C["读全部子任务<br/>建 DAG 状态图"]
+    C --> D{"有依赖节点 failed?"}
+    D -->|是| E{"on_fail 策略"}
+    E -->|abort| F["compensate_plan()<br/>Saga 逆序回滚"]
+    E -->|skip| G["标记跳过 · 继续"]
+    D -->|否| H["筛就绪节点<br/>依赖全 done/skipped"]
+    H --> I["_resolve_input_from()<br/>JsonPath 取上游 output"]
+    I --> J["翻转状态 → 派发<br/>process_ai_task.delay"]
+    J --> K["Celery 执行"]
+    K --> L["dispatch_ai_task"]
+    L --> M["写回 output_json"]
+    M -->|"hermes_node:* 且有父任务"| A
+    M -->|"site_build 类"| N["_notify_site_built → n8n"]
+    G --> A
+
+    style F fill:#ff6b6b,color:#fff
+    style A fill:#4a9b8c,color:#fff
+</pre></div>
+
+<h2>图 3 · 12 个编排引擎的现状（谁归谁）</h2>
+<p class="lead">只有 Hermes 是法定派发口；<strong>5 个绕过它自己开路由</strong>。</p>
+<div class="card"><pre class="mermaid">
+flowchart TB
+    H["👑 Hermes<br/>services/hermes/<br/>法定派发口 · 81文件/20K行"]
+
+    subgraph BYPASS["⚠️ 绕过 Hermes · 各自开路由"]
+        U["UBrain<br/>82文件/31K行 · 3个路由"]
+        PP["Paperclip<br/>审批门"]
+        W["Wangcai 旺财"]
+        VP["video_publish"]
+        WC["workflow_canvas"]
+    end
+
+    subgraph ATTACH["✅ 可挂进 ROUTERS（无独立路由）"]
+        D["DeerFlow ✅已挂"]
+        AL["agent_loop"]
+        PL["pipeline"]
+        OR["orchestrator 商业闭环"]
+        GL["growth_loop"]
+    end
+
+    subgraph MECH["🔧 机制类（应是钩子，非引擎）"]
+        EV["Evolution 自进化"]
+        PIPE["Pipeline 四链路关卡"]
+    end
+
+    D -->|"ROUTERS 注册"| H
+
+    style H fill:#4a9b8c,color:#fff
+    style BYPASS fill:#fff3cd
+    style ATTACH fill:#d4edda
+    style MECH fill:#e2e3e5
+</pre></div>
+<div class="ok"><b>收敛判据</b>：同时有「自己的路由 + 自己的状态机 + 自己的对外入口」= <b>平行系统</b>（该降级）；只有前两者 = <b>执行器</b>（该挂进 ROUTERS）。</div>
+
+<h2>图 4 · 收敛目标态（终局）</h2>
+<p class="lead">现状是「1 中枢 + 5 平行系统 + 5 散件」；<strong>目标态是「1 中枢 + 1 插座 + N 执行器」</strong>。</p>
+<div class="card"><pre class="mermaid">
+flowchart TB
+    IN["外部触发<br/>API / n8n / 前端"]
+
+    subgraph CORE["唯一编排中枢"]
+        DEC["拆解器 decompose()<br/>🆕 待建<br/>模板优先 + LLM兜底<br/>+ 三道安全阀"]
+        HER["Hermes<br/>DAG Governor + JsonPath总线<br/>+ Saga补偿 + 预算闸"]
+    end
+
+    REG["ExecutorRegistry<br/>（万能插座）"]
+
+    subgraph EXECS["执行器（统一挂载）"]
+        E1["deerflow"]
+        E2["accio"]
+        E3["trade_ai"]
+        E4["goodjob"]
+        E5["ubrain"]
+        E6["paperclip"]
+        E7["wangcai"]
+        E8["video_publish"]
+    end
+
+    OUT["结果回写 + n8n 出站"]
+
+    IN --> DEC
+    DEC -->|"IntentEvent → TaskGraph"| HER
+    HER --> REG
+    REG --> E1
+    REG --> E2
+    REG --> E3
+    REG --> E4
+    REG --> E5
+    REG --> E6
+    REG --> E7
+    REG --> E8
+    E1 --> OUT
+    E2 --> OUT
+    E3 --> OUT
+    E4 --> OUT
+    E5 --> OUT
+    E6 --> OUT
+    E7 --> OUT
+    E8 --> OUT
+    OUT -->|"递归推进"| HER
+
+    style DEC fill:#ffd93d,color:#000
+    style HER fill:#4a9b8c,color:#fff
+    style REG fill:#4a9b8c,color:#fff
+</pre></div>
+
+<h2>图 5 · 大模型驱动链路（补漏）</h2>
+<p class="lead">这一层之前漏了，而它决定「谁有智能」。<strong>43 个调用点里，只有 3 个走了统一网关。</strong></p>
+<div class="card"><pre class="mermaid">
+flowchart TB
+    subgraph CALLERS["调用点（实测 43 处）"]
+        C1["拆解层<br/>🆕 待建（未来的大脑）"]
+        C2["执行器插件<br/>deerflow / accio / trade_ai / goodjob"]
+        C3["内容与 SEO<br/>content / seo_matrix / batch_seo"]
+        C4["Hermes 运维<br/>ecc_expert_panel / ai_lanes / patrol"]
+        C5["租户侧<br/>wangcai / ubrain / chat"]
+    end
+
+    subgraph ENTRY["入口层 · 三条路，只有一条是设计意图"]
+        G["ModelGateway.generate()<br/>✅ 设计入口 · 仅 3 处使用"]
+        I["ai_invocation_service<br/>场景解析+用量落库+降级 · 19 处"]
+        D["直连 get_ai_engine()<br/>❌ 绕过网关 · 24 处"]
+    end
+
+    E["ai_engine 单例<br/>llms = tier : ChatOpenAI"]
+
+    subgraph TIER["四个 tier（四维评分：质量/速度/成本/隐私）"]
+        T1["general"]
+        T2["high_quality"]
+        T3["cost_optimized"]
+        T4["deepseek<br/>境内 · privacy=strict 白名单"]
+    end
+
+    PR["真实 provider"]
+    MK["mock 兜底<br/>无 Key 时"]
+
+    C1 --> G
+    C2 --> G
+    C2 --> D
+    C3 --> D
+    C3 --> I
+    C4 --> G
+    C4 --> I
+    C5 --> G
+    C5 --> I
+    C5 --> D
+    G --> E
+    I --> E
+    D --> E
+    E --> T1
+    E --> T2
+    E --> T3
+    E --> T4
+    T1 --> PR
+    T2 --> PR
+    T3 --> PR
+    T4 --> PR
+    PR -.->|"无 Key 降级"| MK
+
+    style G fill:#6bcf7f,color:#000
+    style D fill:#ff6b6b,color:#fff
+    style T4 fill:#4a9b8c,color:#fff
+</pre></div>
+
+<h2>回答 · 用 DeepSeek 驱动，是驱动一个还是全部？</h2>
+<table>
+<thead><tr><th>层</th><th>答案</th><th>依据</th></tr></thead>
+<tbody>
+<tr><td><b>引擎层</b></td><td><b>是「一个」</b> —— 43 个调用点共享同一实例，配置全局生效</td><td><code>get_ai_engine()</code> 是单例</td></tr>
+<tr><td><b>路由层</b></td><td><b>不是「全部用同一个模型」</b> —— 单例内部按 tier 分槽</td><td><code>llms = {tier: ChatOpenAI}</code></td></tr>
+<tr><td><b>网关层</b></td><td><b>本该统一，实际形同虚设</b> —— 43 处只有 3 处走它</td><td>实测 3 / 19 / 24</td></tr>
+</tbody>
+</table>
+<div class="warn">
+<b>DeepSeek 注册进的是 <code>llms["deepseek"]</code> 和 <code>llms["cost_optimized"]</code></b>（兼任成本优化档）。所以：<br/>
+· 场景命中 <code>deepseek</code> / <code>cost_optimized</code> → 走 DeepSeek<br/>
+· 场景命中 <code>logic</code>（推理）→ 走逻辑模型<br/>
+· 场景命中 <code>multilingual</code> → 走多语言模型<br/>
+<b>配了 DeepSeek ≠ 全部用 DeepSeek。</b>
+</div>
+<div class="warn">
+<b>⚠️ 而且 DeepSeek 现在根本没启用</b>：<code>_init_deepseek_llm()</code> 只在 <code>AI_DEEPSEEK_API_KEY</code> 存在时才注册，而实测该 key <b>为空</b>（<code>AI_DEEPSEEK_API_KEY=</code>）。当前实际走的是 bankofai 网关的 qwen3.8-flash + NVIDIA。
+</div>
+<div class="ok">
+<b>对设计的修正</b>：拆解器<b>必须走 <code>ModelGateway</code></b>，不能直连 <code>ai_engine</code>。理由三条：<b>成本记账</b>（拆解高频，须进 <code>model_call_ledger</code>）、<b>合规闸门</b>（<code>privacy=strict</code> 只允许境内 provider）、<b>预算控制</b>（<code>GraphPolicies.budget_cap</code> 靠 ledger 落地）。用 <code>reasoning</code> 能力标签，不是 <code>general</code>。
+</div>
+
+<h2>图 6 · 控制脊柱（谁接命令 → 谁指挥 → 谁干活）</h2>
+<p class="lead">你要的「一个接收命令、指挥背后干活」的关系。<strong>结论：那个位置现在是空的。</strong></p>
+<div class="card"><pre class="mermaid">
+flowchart TB
+    EXT["外部<br/>人 / 系统 / n8n / 前端"]
+
+    subgraph G1["① 接入点 · 唯一的门"]
+        DOOR["POST /orchestration/tasks<br/>⚠️ 现状：有 3-4 个并行的门<br/>（+ super_agent / ubrain_commercial_os / task_control_admin）"]
+    end
+
+    subgraph G2["② 大脑 · LLM 主插入点"]
+        BRAIN["decompose()<br/>⛔ 现在是空的<br/>意图 → 任务图<br/>（harness_gateway 是桩）"]
+    end
+
+    subgraph G3["③ 指挥中枢 · 决策者"]
+        CMD["advance_plan()<br/>✅ 真实现<br/>谁先跑 / 依赖判定 / 失败策略 / Saga"]
+    end
+
+    subgraph G4["④ 血脉总线"]
+        BUS["AiTask 表 + Celery<br/>✅ 真<br/>状态与数据都在这条表上"]
+    end
+
+    subgraph G5["⑤ 手脚 · 执行器（LLM 次插入点）"]
+        HANDS["ExecutorRegistry<br/>deerflow ✅ / accio 🟡 / trade_ai 🔴 / goodjob 🔴<br/>（各自内部可按需调 LLM）"]
+    end
+
+    EYES["⑥ 眼睛 · 只读态势<br/>command_center.py ✅（只汇报，不下令）"]
+
+    EXT -->|命令| DOOR
+    DOOR --> BRAIN
+    BRAIN -->|TaskGraph| CMD
+    CMD -->|建/派 AiTask| BUS
+    BUS -->|Celery 派发| HANDS
+    HANDS -->|ExecutorResult| BUS
+    BUS -->|递归推进| CMD
+    CMD -.->|汇报| EYES
+
+    style BRAIN fill:#ff6b6b,color:#fff
+    style DOOR fill:#ffd93d,color:#000
+    style CMD fill:#4a9b8c,color:#fff
+    style BUS fill:#4a9b8c,color:#fff
+</pre></div>
+
+<h3 style="font-size:15px;color:#2a6b60;margin:20px 0 6px">六个角色，现在各是谁</h3>
+<table>
+<thead><tr><th>角色</th><th>应是什么</th><th>现在是谁</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td><b>① 接入点</b></td><td>唯一的门</td><td><code>POST /orchestration/tasks</code>（<b>另有 3 个并行门</b>：<code>super_agent</code> / <code>ubrain_commercial_os</code> / <code>task_control_admin</code>）</td><td>⚠️ <b>不唯一</b></td></tr>
+<tr style="background:#fff1f0"><td><b>② 大脑</b></td><td>LLM 把需求变任务图</td><td><b>无</b>（<code>harness_gateway</code> 是桩、无人调用）</td><td>⛔ <b>空</b></td></tr>
+<tr><td><b>③ 指挥中枢</b></td><td>决定谁跑 / 先后 / 失败怎么办</td><td><code>advance_plan()</code> + <code>dispatch_ai_task()</code></td><td>✅ 真</td></tr>
+<tr><td><b>④ 血脉总线</b></td><td>承载状态与数据</td><td><code>AiTask</code> 表 + Celery</td><td>✅ 真</td></tr>
+<tr><td><b>⑤ 手脚</b></td><td>干活</td><td><code>ExecutorRegistry</code>（4 执行器）</td><td>🟡 2/4 mock</td></tr>
+<tr><td><b>⑥ 眼睛</b></td><td>只读态势</td><td><code>command_center.py</code></td><td>✅ 真（<b>但只读，不是指挥</b>）</td></tr>
+</tbody>
+</table>
+
+<h3 style="font-size:15px;color:#2a6b60;margin:22px 0 6px">回答你的三个问题</h3>
+<div class="ok">
+<b>Q：这一整条链路是谁？</b><br/>
+<b><code>AiTask</code> 表就是这条链路的本身。</b>所有节点都是 <code>AiTask</code> 记录，状态存在表里，Celery 消费它，<code>advance_plan()</code> 遍历它推进。<b>这不是比喻——链路就是这张表。</b>
+</div>
+<div class="ok">
+<b>Q：从哪驱动插入？</b><br/>
+· 想驱动<b>一个任务</b> → <code>POST /api/v1/orchestration/tasks</code>（<b>现在就能用</b>，无需改代码）<br/>
+· 想驱动<b>一个需求 → 自动带出全部</b> → 插在 <b>② 大脑</b> 位置（<code>decompose()</code>，<b>待建</b>）
+</div>
+<div class="card">
+<b>Q：大模型从哪插入？</b>
+<table>
+<thead><tr><th>插入点</th><th>位置</th><th>作用</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td><b>主插入点（大脑）</b></td><td>② <code>decompose()</code></td><td>把「一句话需求」拆成 <code>TaskGraph</code>，<b>一个大脑驱动全部下游</b></td><td>⛔ 待建</td></tr>
+<tr><td>次插入点（手脚）</td><td>⑤ 各执行器内部</td><td>按需调用：写文案、翻译、生成视频脚本</td><td>🟡 部分</td></tr>
+</tbody>
+</table>
+</div>
+<div class="warn">
+<b>你描述的「驱动一个，连带着自动驱动全部」——这是对的</b>，而且那个"一个"就是 ② 的 <code>decompose()</code>。它产出 <code>TaskGraph</code> 后，③→④→⑤ 会自动跑起来（递归派发环保证）。<b>现在缺的就是这个大脑。</b>
+</div>
+<div class="ok">
+<b>为什么必须补在 ②，不能补在别处：</b><br/>
+· 补在 ① → 只是多一个门，还是不会拆解<br/>
+· 补在 ③ → <code>advance_plan()</code> 只能处理<b>已有</b>的图，不会造图<br/>
+· 补在 ⑤ → 那是"手脚自己想办法"，不叫大脑，且违背「一切执行经 Hermes」<br/>
+<b>只有 ② 能让「一个命令 → 自动带出全部」。</b>
+</div>
+
+<h2>附 · 关键连接点速查（点对点）</h2>
+<table>
+<thead><tr><th>从</th><th>到</th><th>位置</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>前端 / 外部</td><td><code>POST /orchestration/tasks</code></td><td><code>routes/orchestration.py:68</code></td><td>✅</td></tr>
+<tr><td>路由</td><td><code>TaskControlService.create_task</code></td><td><code>tasks/task_control.py:197</code></td><td>✅</td></tr>
+<tr><td>create_task</td><td>AiTask（写库）</td><td>—</td><td>✅</td></tr>
+<tr><td>AiTask</td><td><code>process_ai_task.delay</code></td><td><code>routes/orchestration.py:93</code></td><td>✅</td></tr>
+<tr><td>Celery</td><td><code>dispatch_ai_task</code></td><td><code>tasks/orchestration_tasks.py:22</code></td><td>✅</td></tr>
+<tr><td>dispatch</td><td><code>ROUTERS[task_type]</code></td><td><code>hermes_task_bridge.py:244</code></td><td>✅</td></tr>
+<tr><td>dispatch</td><td><code>_run_hermes_node</code></td><td><code>hermes_task_bridge.py:245</code></td><td>✅</td></tr>
+<tr><td><code>_run_hermes_node</code></td><td><code>ExecutorRegistry.get()</code></td><td><code>hermes_task_bridge.py:160</code></td><td>✅</td></tr>
+<tr><td>执行器</td><td>写回 <code>output_json</code></td><td><code>hermes_task_bridge.py:262</code></td><td>✅</td></tr>
+<tr><td>写回</td><td><code>advance_plan(父)</code></td><td><code>hermes_task_bridge.py:276</code></td><td>✅</td></tr>
+<tr><td><code>advance_plan</code></td><td>派发下游</td><td><code>task_control_supervisor.py:257</code></td><td>✅</td></tr>
+<tr><td>site_build 完成</td><td><code>_notify_site_built</code> → n8n</td><td><code>hermes_task_bridge.py:272</code></td><td>✅</td></tr>
+<tr><td>节点失败 abort</td><td><code>compensate_plan</code></td><td><code>task_control_supervisor.py:212</code></td><td>✅</td></tr>
+<tr style="background:#fff1f0"><td><b>IntentEvent</b></td><td><b>TaskGraph</b></td><td>—</td><td>⛔ <b>缺口</b></td></tr>
+<tr style="background:#fffbe6"><td><b>TaskGraph</b></td><td><b><code>parse_graph_to_tasks</code></b></td><td><code>task_control_supervisor.py:51</code></td><td>⚠️ <b>无调用方</b></td></tr>
+<tr style="background:#fff1f0"><td>n8n webhook</td><td><code>harness_gateway</code></td><td>—</td><td>🔴 <b>桩</b></td></tr>
+</tbody>
+</table>
+<p class="lead">共 16 条边：<b>13 条 ✅、1 条 ⚠️、2 条 ⛔/🔴</b>——这就是全部的断点。</p>
+
+<div class="foot">
+  优丁 YouDing · 串联拓扑图 · 2026-09-10 ｜ 依据源码实测绘制 ｜ 配套：<code>串联驱动设计-2026-09-10.md</code>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.15.0/dist/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, securityLevel: "strict", theme: "base",
+    themeVariables: { primaryColor: "#e8f4f1", primaryTextColor: "#1f2330",
+      primaryBorderColor: "#4a9b8c", lineColor: "#6b7280", fontFamily: "Noto Sans SC, sans-serif" } });
+</script>
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEOS全域企业级AI操作系统架构全景图 · 修复版</title>
+  <meta name="description" content="优丁YouDing AEOS 架构交互全景：根据原报告问题清单完成技术缺陷修复与状态对账。">
+  <link rel="stylesheet" href="aeos-architecture.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">AEOS Architecture Console · Fixed Build</div>
+      <h1>AEOS全域企业级AI操作系统架构全景图</h1>
+      <p class="subtitle">
+        优丁 YouDing 多租户 B2B 外贸 SaaS — 八大子系统全景。
+        本页依据 <code>AEOS_ARCHITECTURE_INTERACTIVE.html</code> 问题清单，
+        对页面技术缺陷与 6 处架构缺口完成「代码实证对账 + 页面修复」。
+      </p>
+      <div class="meta-row">
+        <span class="chip">审计基准 <strong>AEOS_GLOBAL_SYSTEM_REGISTRY.json</strong></span>
+        <span class="chip">代码提交基线 <strong>556b79f9</strong></span>
+        <span class="chip">渲染方式 <strong>纯 SVG · 无 CDN</strong></span>
+        <span class="chip">问题项 <strong id="problem-count">6</strong> / 6 可筛选</span>
+      </div>
+    </header>
+
+    <section class="stats-grid" aria-label="系统规模与修复统计">
+      <div class="stat-card">
+        <div class="stat-number">8</div>
+        <div class="stat-label">核心子系统</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">350+</div>
+        <div class="stat-label">智能资产</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">229</div>
+        <div class="stat-label">数据库表</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1207+</div>
+        <div class="stat-label">API 端点</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number ok">5</div>
+        <div class="stat-label">已修复 / 基本修复</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number warn">0</div>
+        <div class="stat-label">代码级架构断点</div>
+      </div>
+    </section>
+
+    <section class="callout corrected" aria-label="架构模型修正：原生直驱">
+      <div class="callout-title">
+        <h2>最关键的发现（按 2026-09-19 去桥接后的真实模型）</h2>
+        <span class="badge fixed">已深度融合</span>
+        <span class="runtime-pill ok">Hermes 进程内原生直驱</span>
+        <span class="runtime-pill">无需外挂桥 / 外部适配器</span>
+      </div>
+      <p>
+        旧报告把 Trade AI / GoodJob 写成「外部系统缺少 Hermes 适配器 = 架构断点」——
+        <strong>该模型已过时</strong>。主理人拍板并已落地：
+        <strong>TradeAI = 本项目拓客、GoodJob = 本项目 CRM</strong>，并入优丁能力域，
+        由爱马仕 Hermes <strong>进程内直驱</strong>，删除一切桥接脚本与 HTTP 外挂路径。
+      </p>
+      <div class="split-two">
+        <div class="split-card ok">
+          <h3>✅ 当前正确模型：原生直驱</h3>
+          <ul>
+            <li>拓客：<code>services/tradeai/native_acquisition.py</code>（写优丁 PG）</li>
+            <li>CRM/履约：<code>services/goodjob/native_fulfillment.py</code>（PI/CI/PL 原生）</li>
+            <li>编排插槽：<code>orchestration/executors/native_crm_executor.py</code>（无外桥）</li>
+            <li>Hermes 执行器只走原生服务层，不再依赖 <code>GOODJOB_BASE_URL</code> / <code>TRADEAI_BASE_URL</code></li>
+            <li>已删除：HTTP 桥执行器、投影脚本、<code>connect_external_bridges.py</code> 等</li>
+            <li>门禁：契约测试 + selfcheck 19/19 按「原生直驱」口径通过</li>
+          </ul>
+        </div>
+        <div class="split-card warn">
+          <h3>⚠️ 不要把这些再当「缺适配器」</h3>
+          <ul>
+            <li><code>trade_ai_agent_executor</code> / <code>goodjob_crm_executor</code> 是 Hermes <strong>契约执行器插槽</strong>，不是外挂适配器</li>
+            <li>文件名里的 executor ≠ 需要外部系统才能跑</li>
+            <li>不是「修适配器」优先级问题，而是已融合的能力域</li>
+            <li>双平面：交互 CRUD 走 UJ API；多步/单证/外发走 Hermes 任务平面</li>
+            <li>仍诚实处理：无 WA Key/SMTP → failed；账户未配置 → 单证 degraded，不编造</li>
+          </ul>
+        </div>
+      </div>
+      <div class="trust-grid" aria-label="读图可信依据">
+        <div class="trust-item">
+          <strong>定位问题环节</strong>
+          <span>看双平面与能力域是否被 Hermes 直驱；不要再找「外部适配器断点」。</span>
+        </div>
+        <div class="trust-item">
+          <strong>350+ 资产组装</strong>
+          <span>PSSP 在进程内装配；拓客/CRM 已是本项目能力域⑤⑥。</span>
+        </div>
+        <div class="trust-item">
+          <strong>外贸 7 步数据流</strong>
+          <span>询盘→PI→履约真相落优丁 PG；无外桥投影。</span>
+        </div>
+        <div class="trust-item">
+          <strong>优先关注什么</strong>
+          <span>代码级断点已清零；剩余是 Plugin webhook 接线与 WA/SMTP 真环境凭证。</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="架构视图">
+      <button class="tab active" role="tab" aria-selected="true" data-tab="full-diagram" type="button">完整架构图</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="missing-connections" type="button">缺口修复对账</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="trade-flow" type="button">外贸履约流程</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="orchestration" type="button">编排层架构</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="data-flow" type="button">数据流分析</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="page-fixes" type="button">页面技术修复</button>
+    </nav>
+
+    <!-- 完整架构图 -->
+    <section id="full-diagram" class="tab-content active" role="tabpanel">
+      <div class="callout" aria-label="读图提示">
+        <div class="callout-title">
+          <h2>读图前先记住</h2>
+          <span class="runtime-pill ok">绿 = 本项目能力域 · Hermes 原生直驱</span>
+          <span class="runtime-pill">黄 = 部分修复 / 通道侧缺口</span>
+          <span class="badge open">红 = 仍缺口</span>
+        </div>
+        <p>
+          Trade AI（本项目拓客）与 GoodJob（本项目 CRM）在图中位于 <strong>Hermes 进程内能力域</strong>，
+          不是外部挂载系统；不需要外挂桥或外部适配器。执行契约仍用 executor 名（如
+          <code>trade_ai_agent</code> / <code>goodjob_crm</code>），但路径是
+          <code>native_acquisition</code> / <code>native_fulfillment</code>。
+        </p>
+      </div>
+      <div class="controls" aria-label="架构图模式">
+        <button class="btn primary active" type="button" data-diagram-mode="full" aria-pressed="true">完整架构</button>
+        <button class="btn" type="button" data-diagram-mode="simplified" aria-pressed="false">简化视图</button>
+        <button class="btn" type="button" data-diagram-mode="component" aria-pressed="false">组件详解</button>
+        <button class="btn" type="button" id="export-svg">导出 SVG</button>
+        <button class="btn" type="button" id="export-png">导出 PNG</button>
+        <button class="btn" type="button" id="print-view">打印视图</button>
+      </div>
+      <div id="diagram-host"></div>
+    </section>
+
+    <!-- 缺口修复对账 -->
+    <section id="missing-connections" class="tab-content" role="tabpanel">
+      <div class="callout corrected">
+        <div class="callout-title">
+          <h2>先看原生直驱模型，再看 6 项对账</h2>
+          <span class="badge fixed">无外挂桥</span>
+        </div>
+        <p>
+          若你仍在按「Trade AI / GoodJob 缺 Hermes 适配器 = 最高优先级」排期，请先回到页首。
+          2026-09-19 已深度融合：两者为本项目能力域，Hermes <strong>进程内原生直驱</strong>。
+          下表 01 / 02 标 <strong>已原生直驱</strong>；03 / 04 于本轮代码落地后标 <strong>已修复</strong>。
+          代码级架构断点已清零，剩余主要是环境凭证与 Plugin webhook 运维接线。
+        </p>
+      </div>
+      <div class="fix-summary" aria-label="修复结果摘要">
+        <div class="fix-summary-card ok">
+          <strong>4</strong>
+          <span>已修复：原生直驱×2、WhatsApp 入站总线、证据自动分析</span>
+        </div>
+        <div class="fix-summary-card warn">
+          <strong>2</strong>
+          <span>基本闭环 / 运维细化：Experience 反馈、内容发布链</span>
+        </div>
+        <div class="fix-summary-card gap">
+          <strong>0</strong>
+          <span>代码级架构断点（本轮已清零；仅剩环境凭证与 Plugin webhook 接线）</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">缺口修复对账（原问题 → 代码实证 → 修复判定）</div>
+        <div class="panel-desc">
+          原页面将 6 处连接全部标红为“缺失”。按 2026-09-19 去桥接后的真实模型：
+          Trade AI / GoodJob 已成为本项目能力域，Hermes <strong>进程内原生直驱</strong>，无外挂适配器；
+          Experience 反馈与 n8n 发布链已挂接。仍偏弱的是 WhatsApp 入站、证据自动分析等通道侧。
+        </div>
+        <div class="filter-bar" role="group" aria-label="问题筛选">
+          <button class="btn active" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="btn" type="button" data-filter="fixed" aria-pressed="false">已修复</button>
+          <button class="btn" type="button" data-filter="partial" aria-pressed="false">部分修复</button>
+          <button class="btn" type="button" data-filter="open" aria-pressed="false">仍缺口</button>
+          <button class="btn" type="button" data-filter="p0" aria-pressed="false">P0</button>
+          <button class="btn" type="button" data-filter="p1" aria-pressed="false">P1</button>
+          <button class="btn" type="button" data-filter="p2" aria-pressed="false">P2</button>
+        </div>
+
+        <div class="problem-grid">
+          <article class="problem-card" data-status="fixed" data-priority="p0">
+            <div class="problem-head">
+              <span class="problem-index">01</span>
+              <h3 class="problem-title">Trade AI Agent → Hermes（旧表述：缺适配器）</h3>
+              <span class="badge p0">P0·旧</span>
+              <span class="badge fixed">已原生直驱</span>
+            </div>
+            <div class="problem-body">
+              <div class="problem-block">
+                <h4>原报告问题</h4>
+                <p>称缺少 <code>hermes_node:trade_ai_agent</code> 正式适配器，无法调度社媒拓客。</p>
+              </div>
+              <div class="problem-block">
+                <h4>代码实证现状（去桥接后）</h4>
+                <ul>
+                  <li>主理人拍板：TradeAI = <strong>本项目拓客</strong>，非外挂</li>
+                  <li>主路径：<code>app/services/tradeai/native_acquisition.py</code>（Hermes 直驱，写优丁 PG）</li>
+                  <li>Hermes 执行器名 <code>trade_ai_agent</code> 保留为契约插槽，走原生服务层</li>
+                  <li><strong>无</strong> vendor HTTP 适配器主路径；外挂桥脚本已删除</li>
+                  <li>GP-B 黄金路径验收：「仅从优丁发起，Hermes 原生直驱（无外挂管理台）」</li>
+                </ul>
+              </div>
+              <div class="problem-block wide">
+                <h4>修复判定</h4>
+                <p>旧「缺适配器」问题关闭。正确理解是：<strong>能力域已并入 + 进程内直驱</strong>，不是去补外挂桥。</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="problem-card" data-status="fixed" data-priority="p0">
+            <div class="problem-head">
+              <span class="problem-index">02</span>
+              <h3 class="problem-title">GoodJob CRM → Hermes（旧表述：缺适配器）</h3>
+              <span class="badge p0">P0·旧</span>
+              <span class="badge fixed">已原生直驱</span>
+            </div>
+            <div class="problem-body">
+              <div class="problem-block">
+                <h4>原报告问题</h4>
+                <p>称缺少 <code>hermes_node:goodjob_crm</code>，7 步履约无法被调度。</p>
+              </div>
+              <div class="problem-block">
+                <h4>代码实证现状（去桥接后）</h4>
+                <ul>
+                  <li>主理人拍板：GoodJob = <strong>本项目 CRM</strong>，真相在优丁 PG</li>
+                  <li>主路径：<code>native_fulfillment.py</code>（PI/CI/PL/履约阶段，无外桥）</li>
+                  <li>编排插槽：<code>native_crm_executor.py</code> 进程内 submit/poll，幂等</li>
+                  <li>已删除：<code>trade_document_bridge.py</code>、HTTP <code>goodjob_executor</code> 等</li>
+                  <li>账户未配置 → 单证 <code>degraded</code>，不编造银行号</li>
+                </ul>
+              </div>
+              <div class="problem-block wide">
+                <h4>修复判定</h4>
+                <p>旧「缺适配器」问题关闭。履约走 Hermes → 原生 CRM 能力域 → 优丁 PG，无外部桥。</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="problem-card" data-status="fixed" data-priority="p0">
+            <div class="problem-head">
+              <span class="problem-index">03</span>
+              <h3 class="problem-title">WhatsApp → 核心后端 入站事件总线</h3>
+              <span class="badge p0">P0</span>
+              <span class="badge fixed">本轮已修复</span>
+            </div>
+            <div class="problem-body">
+              <div class="problem-block">
+                <h4>原报告问题</h4>
+                <p>Plugin 独立运行 Node.js @3100，与主后端缺少实时事件同步，CRM 无法实时感知入站消息。</p>
+              </div>
+              <div class="problem-block">
+                <h4>本轮代码落地</h4>
+                <ul>
+                  <li><code>app/services/whatsapp_event_bus.py</code>：入站归一化 + event_bus 发布 + 落库</li>
+                  <li>API：<code>/api/v1/whatsapp-events/inbound|ack|connection|stats|recent</code></li>
+                  <li>EventTypes 增补：<code>whatsapp.message.received/sent/failed/ack</code></li>
+                  <li>支持 Baileys / Cloud API / 通用三种载荷；可选 <code>WHATSAPP_INBOUND_TOKEN</code></li>
+                  <li>CSRF 豁免机器 webhook 路径；单测 <code>test_whatsapp_event_bus_and_evidence_analyzer.py</code></li>
+                </ul>
+              </div>
+              <div class="problem-block wide">
+                <h4>修复判定与接线说明</h4>
+                <p>
+                  系统内入站事件总线已打通：Plugin 只需 POST 到
+                  <code>/api/v1/whatsapp-events/inbound</code>，后端即时发布事件并可写
+                  <code>whatsapp_messages(direction=inbound)</code>。
+                  这是<strong>系统内通道总线</strong>，不是外挂业务桥。Plugin 侧 webhook 地址配置属运维接线。
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="problem-card" data-status="fixed" data-priority="p1">
+            <div class="problem-head">
+              <span class="problem-index">04</span>
+              <h3 class="problem-title">Browser Runtime → 证据自动分析管道</h3>
+              <span class="badge p1">P1</span>
+              <span class="badge fixed">本轮已修复</span>
+            </div>
+            <div class="problem-body">
+              <div class="problem-block">
+                <h4>原报告问题</h4>
+                <p>双轨取证已收集证据，但缺少自动分析、异常检测、合规检查管道。</p>
+              </div>
+              <div class="problem-block">
+                <h4>本轮代码落地</h4>
+                <ul>
+                  <li><code>browser_runtime/evidence_analyzer.py</code>：失败/阻断/降级/超时/合规检测</li>
+                  <li>合规项：submit 无审批、敏感动作无截图、可疑 URL、Policy deny</li>
+                  <li><code>persist_evidence</code> 默认自动分析（<code>EVIDENCE_AUTO_ANALYZE</code>）</li>
+                  <li>API：<code>/api/v1/evidence/analyze|analyze/persisted|analyze/jsonl</code></li>
+                  <li>EventTypes：<code>browser.evidence.analyzed / anomaly</code>；单测全绿</li>
+                </ul>
+              </div>
+              <div class="problem-block wide">
+                <h4>修复判定</h4>
+                <p>
+                  证据链从「只采集」升级为「采集 → 分析 → 事件告警」。
+                  分析失败不阻断主链路；结果分级 info/warn/critical，可被 CRM/Hermes/告警订阅。
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="problem-card" data-status="fixed" data-priority="p1">
+            <div class="problem-head">
+              <span class="problem-index">05</span>
+              <h3 class="problem-title">Experience Engine → 业务决策反馈闭环</h3>
+              <span class="badge p1">P1</span>
+              <span class="badge fixed">基本修复</span>
+            </div>
+            <div class="problem-body">
+              <div class="problem-block">
+                <h4>原报告问题</h4>
+                <p>进化引擎收集经验，但缺少把经验自动反馈到业务策略的闭环。</p>
+              </div>
+              <div class="problem-block">
+                <h4>代码实证现状</h4>
+                <ul>
+                  <li><code>hermes/experience_engine.py</code> 经验引擎存在</li>
+                  <li><code>experience_feed.record_ops_win / record_ops_loss</code> 已挂接询盘/国内漏斗/履约</li>
+                  <li>异议谈判、订单履约均有经验沉淀入口</li>
+                  <li><code>content_feedback_loop.py</code> 覆盖 SEO 内容反馈与 tactics changelog</li>
+                </ul>
+              </div>
+              <div class="problem-block wide">
+                <h4>修复判定</h4>
+                <p>页面状态更正为「基本修复」：经验采集与业务回写已贯通；深度策略自动改写可作为后续增强，不再标为完全缺失。</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="problem-card" data-status="partial" data-priority="p2">
+            <div class="problem-head">
+              <span class="problem-index">06</span>
+              <h3 class="problem-title">SEO/GEO 内容 → 官网发布自动化部署</h3>
+              <span class="badge p2">P2</span>
+              <span class="badge partial">基本修复 / 运维细化</span>
+            </div>
+            <div class="problem-body">
+              <div class="problem-block">
+                <h4>原报告问题</h4>
+                <p>内容生成与发布分离，缺少自动部署到官网 Vite 运行源的 CI/CD。</p>
+              </div>
+              <div class="problem-block">
+                <h4>代码实证现状</h4>
+                <ul>
+                  <li>n8n 工作流 <code>content-publish-dispatch</code> 已注册</li>
+                  <li>DeerFlow 发布后触发 <code>trigger_n8n_workflow("content_publish_dispatch")</code></li>
+                  <li>registry / selfcheck 校验 n8n webhook 激活</li>
+                  <li><strong>仍需</strong>：官网 Vite 源级自动构建/回流的环境接线确认</li>
+                </ul>
+              </div>
+              <div class="problem-block wide">
+                <h4>修复判定与剩余动作</h4>
+                <p>页面状态从「缺失自动化部署」更正为「发布链路已挂接」。剩余为生产环境工作流参数与官网源同步策略的运维校验。</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel light">
+        <div class="panel-title">修复前后对照总表</div>
+        <div class="panel-desc">用于替代原页面中已过时的“3 个缺失关键连接”统计。旧版「最关键发现」中的两个适配器断点，已按源码对账关闭。</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>问题</th>
+                <th>原页面状态</th>
+                <th>代码实证</th>
+                <th>本页修复后状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Trade AI Agent Hermes 适配器</td>
+                <td>缺失 / P0</td>
+                <td>本项目拓客 · 原生直驱 native_acquisition</td>
+                <td><strong>已原生直驱（无外桥）</strong></td>
+              </tr>
+              <tr>
+                <td>GoodJob CRM Hermes 适配器</td>
+                <td>缺失 / P0</td>
+                <td>本项目 CRM · native_fulfillment + native_crm_executor</td>
+                <td><strong>已原生直驱（无外桥）</strong></td>
+              </tr>
+              <tr>
+                <td>WhatsApp 事件总线</td>
+                <td>缺失 / P0</td>
+                <td>whatsapp_event_bus + /api/v1/whatsapp-events + 单测</td>
+                <td><strong>本轮已修复</strong></td>
+              </tr>
+              <tr>
+                <td>证据自动分析</td>
+                <td>缺失 / P1</td>
+                <td>evidence_analyzer + persist 自动分析 + /api/v1/evidence</td>
+                <td><strong>本轮已修复</strong></td>
+              </tr>
+              <tr>
+                <td>Experience 反馈闭环</td>
+                <td>缺失 / P1</td>
+                <td>win/loss 与 content feedback 已挂接</td>
+                <td><strong>基本修复</strong></td>
+              </tr>
+              <tr>
+                <td>内容自动部署</td>
+                <td>缺失 / P2</td>
+                <td>n8n dispatch + DeerFlow notify 已接</td>
+                <td><strong>基本修复</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 外贸履约 -->
+    <section id="trade-flow" class="tab-content" role="tabpanel">
+      <div id="trade-flow-diagram" class="diagram-shell" style="margin-bottom:16px"></div>
+      <div class="panel light">
+        <div class="panel-title">外贸 7 步履约闭环详情</div>
+        <div class="panel-desc">履约模板已扩展至 8 节点，覆盖定金核销、发运单证与尾款。</div>
+        <div class="flow-list">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div>
+              <h4>询盘捕获 Inquiry Capture</h4>
+              <p>海外买家经官网/社媒提交 RFQ；本项目拓客（trade_ai）原生收件箱与意图分类；UTM 归因绑定来源渠道。</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div>
+              <h4>需求核算 Requirement Calculation</h4>
+              <p>BOQ 标书解析 + 22 参数核价计算器，输出动态报价。</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div>
+              <h4>形式发票 Proforma Invoice</h4>
+              <p>GoodJob = 本项目 CRM：PI Generator / Trade Docs Studio 原生能力域，Hermes 直驱，真相落优丁 PG。</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div>
+              <h4>定金核销 Deposit Verification</h4>
+              <p>状态机支持 <code>DEPOSIT_RECEIVED</code>；支付验证与定金确认写入履约链。</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div>
+              <h4>生产跟单 Production Tracking</h4>
+              <p>订单状态推进、生产进度跟踪与异常预警。</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div>
+              <h4>发运单证 Shipping Documentation</h4>
+              <p>本项目 CRM 单证工作室：CI / PL / 报关草单 / 产地证草案成套输出（native_fulfillment）。</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div>
+              <h4>尾款物流 Final Payment &amp; Logistics</h4>
+              <p>尾款状态、物流追踪回执、双轨证据链持久化；三轨计费（SaaS / AI Token / IP 槽位）。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 编排层 -->
+    <section id="orchestration" class="tab-content" role="tabpanel">
+      <div id="orchestration-diagram" class="diagram-shell" style="margin-bottom:16px"></div>
+      <div class="panel light">
+        <div class="panel-title">编排层架构详解（原生直驱模型）</div>
+        <div class="code-block">DeepSeek Harness (外层认知沙箱 · 非每单必经)
+├── Cordis JSON-RPC 协议
+├── Python SDK + dsh.exe 子进程
+├── 意图解析与任务拆解
+└── 输出: TaskGraph Spec JSON
+
+Hermes Control Plane (调度主权 · 进程内直驱)
+├── DAG Supervisor (拓扑推进)
+├── JsonPath 数据总线 ($.node_id.output.path)
+├── Saga 补偿机制
+└── ExecutorRegistry (契约执行器插槽注册表)
+
+DAG Governor (拓扑防爆)
+├── DFS 环路检测算法
+├── Kahn 算法拓扑排序
+├── 100节点硬上限
+└── 静态拓扑安全校验
+
+本项目能力域（深度融合 · 无外挂桥）
+├── ⑤ 本项目拓客 trade_ai_agent
+│     主路径: services/tradeai/native_acquisition.py
+├── ⑥ 本项目 CRM goodjob_crm
+│     主路径: services/goodjob/native_fulfillment.py
+│     编排插槽: orchestration/executors/native_crm_executor.py
+├── DeerFlow: 研报/内容/SEO 发布
+└── Site/Calc: 独立站 / 22 参数核价
+
+双平面契约 (annex_work_mode)
+├── interactive: 列表/详情/CRUD → UJ API 同步
+└── task: 多步/外发/PI·CI·PL → Hermes 原生直驱
+
+PSSP 组装协议
+└── Agent Container = Persona ⊕ Skill ⊕ SOP ⊕ Context
+
+L1 黄金路径（原生直驱验收）
+├── GP-A 履约 PI：仅从优丁发起，无外挂桥/无第二管理台
+└── GP-B 拓客触达：无 WA Key → 诚实 failed，禁止假 sent</div>
+      </div>
+    </section>
+
+    <!-- 数据流 -->
+    <section id="data-flow" class="tab-content" role="tabpanel">
+      <div id="data-flow-diagram" class="diagram-shell" style="margin-bottom:16px"></div>
+      <div class="panel">
+        <div class="panel-title">数据流修复说明</div>
+        <div class="panel-desc">
+          绿色实线表示已接通链路（适配器、经验反哺、n8n 发布）；
+          橙色/红色虚线表示仍有残余缺口的链路（WhatsApp 入站、证据自动分析）。
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot ok"></span>已接通数据流</div>
+          <div class="legend-item"><span class="legend-dot warn"></span>部分修复 / 待自动化</div>
+          <div class="legend-item"><span class="legend-dot gap"></span>仍缺口</div>
+          <div class="legend-item"><span class="legend-dot storage"></span>存储/中间件</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页面技术修复 -->
+    <section id="page-fixes" class="tab-content" role="tabpanel">
+      <div class="panel">
+        <div class="panel-title">原交互页技术缺陷与修复清单</div>
+        <div class="panel-desc">
+          以下问题均来自原 <code>AEOS_ARCHITECTURE_INTERACTIVE.html</code>，本交付页已全部修复。
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>缺陷</th>
+                <th>原状</th>
+                <th>修复方式</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mermaid 依赖 CDN</td>
+                <td>jsDelivr 外链，离线/弱网白屏</td>
+                <td>改为内联 SVG 渲染，零外网依赖</td>
+              </tr>
+              <tr>
+                <td>Mermaid API 误用</td>
+                <td><code>mermaid.contentLoaded()</code>（v10 非正确入口）</td>
+                <td>移除错误调用，改用确定性 SVG 生成</td>
+              </tr>
+              <tr>
+                <td>图源注入方式错误</td>
+                <td>直接 <code>innerHTML</code> 写入 mermaid 源码文本</td>
+                <td>由 JS 构建可渲染 SVG 节点</td>
+              </tr>
+              <tr>
+                <td>Tab 激活依赖全局 event</td>
+                <td><code>event.target.classList</code> 不可靠</td>
+                <td>显式绑定按钮，传递 <code>btn</code> 更新状态</td>
+              </tr>
+              <tr>
+                <td>节点双重 class 冲突</td>
+                <td>J1 同时被标 missing 与 external</td>
+                <td>统一状态语义：ok / partial / gap / normal / storage</td>
+              </tr>
+              <tr>
+                <td>统计与内容不一致</td>
+                <td>统计写“3 缺失”，正文列 6 项</td>
+                <td>统计与筛选计数对齐真实修复结果</td>
+              </tr>
+              <tr>
+                <td>内容状态过时</td>
+                <td>仍写「外部系统缺适配器 / runtime@外挂端口」</td>
+                <td>改为本项目能力域 + Hermes 原生直驱（2026-09-19 去桥接）</td>
+              </tr>
+              <tr>
+                <td>导出功能空壳</td>
+                <td>仅 alert 占位</td>
+                <td>实现 SVG/PNG 导出与打印视图</td>
+              </tr>
+              <tr>
+                <td>可访问性与焦点态</td>
+                <td>按钮缺少 aria / focus-visible</td>
+                <td>补全 role、aria-selected/pressed、焦点环</td>
+              </tr>
+              <tr>
+                <td>动效未考虑 reduced-motion</td>
+                <td>强制动画</td>
+                <td>增加 <code>prefers-reduced-motion</code> 分支</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel light">
+        <div class="panel-title">关键端口与服务（修复后状态）</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>端口</th>
+                <th>服务</th>
+                <th>状态</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3000</td><td>官网 Vite</td><td>活跃</td><td>运行源 / 内容回流目标</td></tr>
+              <tr><td>5174</td><td>超管后台</td><td>活跃</td><td>Nuxt3</td></tr>
+              <tr><td>5173</td><td>SEO 管理后台</td><td>活跃</td><td>独立 Node</td></tr>
+              <tr><td>8001</td><td>主后端 API</td><td>活跃</td><td>FastAPI</td></tr>
+              <tr><td>5678</td><td>n8n</td><td>活跃</td><td>content-publish-dispatch</td></tr>
+              <tr><td>5433</td><td>PostgreSQL</td><td>活跃</td><td>229 表</td></tr>
+              <tr><td>6379</td><td>Redis</td><td>活跃</td><td>缓存/队列</td></tr>
+              <tr><td>3100 / 5193</td><td>WhatsApp 通道（可选）</td><td>通道侧</td><td>出站可选；CRM/拓客主路径不依赖外挂桥</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      <strong>交付说明：</strong>
+      本页为修复后的 AEOS 架构交互全景（入口 <code>index.html</code> + <code>styles.css</code> + <code>app.js</code>）。
+      架构真相：TradeAI / GoodJob 已并入优丁能力域，Hermes 进程内原生直驱（无外挂桥）。
+      <strong>2026-09-20 本轮代码修复</strong>：
+      ① WhatsApp 入站事件总线 <code>whatsapp_event_bus.py</code> + <code>/api/v1/whatsapp-events/*</code>；
+      ② Browser 证据自动分析 <code>evidence_analyzer.py</code> + <code>persist_evidence</code> 自动钩子 + <code>/api/v1/evidence/*</code>。
+      单测 <code>test_whatsapp_event_bus_and_evidence_analyzer.py</code> 23 passed。
+      代码级架构断点已清零；剩余为 Plugin webhook 运维接线、WA/SMTP 真环境凭证、官网源 CI/CD 确认。
+    </footer>
+  </div>
+
+  <script src="aeos-architecture.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "优丁 YouDing · AEOS 架构（功能域 + Hermes 任务中心）",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [1260, 480],
+    "views": [
+      { "id": "main-path", "label": "主链路", "focus": ["buyers", "frontends", "api", "pg"], "note": "多租户买家从官网/超管进入，经 API 落库。" },
+      { "id": "ai-orchestration", "label": "AI 编排", "focus": ["harness", "hermes", "site", "deerflow", "goodjob", "trade", "tasks"], "note": "DSH 可选；默认 L1 → Hermes → 功能域执行器（无特权）。" },
+      { "id": "golden-path", "label": "黄金路径", "focus": ["hermes", "goodjob", "trade", "tasks", "pg"], "note": "GP-A 履约 PI / GP-B 社媒拓客由 Hermes 驱动，任务中心可见。" },
+      { "id": "outbound", "label": "出站分发", "focus": ["trade", "n8n"], "note": "社媒拓客与内容经 n8n Webhook 分发到约 40 个平台。" }
+    ]
+  },
+  "components": [
+    { "id": "buyers", "type": "external", "label": "多租户买家", "sublabel": "访客 / 外贸客户", "pos": [40, 20], "size": [150, 56] },
+    { "id": "frontends", "type": "frontend", "label": "优丁产品壳", "sublabel": "官网 :3000 · 超管 :5173", "tag": "登录唯一 /login · 功能域菜单", "pos": [270, 20], "size": [170, 56] },
+    { "id": "api", "type": "backend", "label": "后端 API", "sublabel": "FastAPI :8001", "tag": "157 路由 · 1481 端点", "pos": [540, 20], "size": [170, 56] },
+    { "id": "redis", "type": "database", "label": "Redis", "sublabel": ":6379", "tag": "缓存 / 队列", "pos": [830, 20], "size": [140, 56] },
+    { "id": "tasks", "type": "frontend", "label": "Hermes 任务中心", "sublabel": "/client/tasks", "tag": "功能域 · 无特权", "pos": [40, 210], "size": [160, 56] },
+    { "id": "harness", "type": "security", "label": "L1 认知沙箱", "sublabel": "DeepSeek Harness（可选）", "tag": "意图分解 → DAG Spec", "pos": [270, 118], "size": [170, 56] },
+    { "id": "hermes", "type": "backend", "label": "L2 爱马仕调度", "sublabel": "Hermes 状态机", "tag": "默认 L1 · 任务中心驱动", "pos": [270, 210], "size": [170, 56] },
+    { "id": "site", "type": "backend", "label": "入站中枢", "sublabel": "Site / Calc / BOQ", "tag": "建站 · 22 参数核价", "pos": [640, 126], "size": [160, 56] },
+    { "id": "deerflow", "type": "backend", "label": "内容与研报", "sublabel": "DeerFlow", "tag": "9 意图深研 · EEAT", "pos": [640, 190], "size": [160, 56] },
+    { "id": "goodjob", "type": "backend", "label": "外贸履约", "sublabel": "GoodJob 功能域", "tag": "无特权 · 外贸7步 · PI/单证", "pos": [640, 254], "size": [160, 56] },
+    { "id": "trade", "type": "backend", "label": "社媒拓客", "sublabel": "TradeAI 功能域", "tag": "无特权 · WhatsApp 矩阵", "pos": [640, 318], "size": [160, 56] },
+    { "id": "pg", "type": "database", "label": "PostgreSQL", "sublabel": ":5433 · PG 15.8", "tag": "唯一数据真相 · 229+ 表", "pos": [980, 108], "size": [170, 290] },
+    { "id": "n8n", "type": "cloud", "label": "出站分发", "sublabel": "n8n :5678 · Browser", "tag": "site_built / content_pub", "pos": [830, 318], "size": [140, 56] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "业务执行引擎 · Hermes 插件位（无特权功能域）", "wraps": ["site", "deerflow", "goodjob", "trade"], "pad": 16 }
+  ],
+  "connections": [
+    { "id": "buyers-frontends", "from": "buyers", "to": "frontends", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "frontends-api", "from": "frontends", "to": "api", "label": "BFF Cookie / Bearer" },
+    { "id": "api-pg", "from": "api", "to": "pg", "label": "SQL", "fromSide": "bottom", "toSide": "top", "labelSegment": 2 },
+    { "id": "api-redis", "from": "api", "to": "redis", "label": "缓存 / 队列", "variant": "dashed", "fromSide": "right", "toSide": "left" },
+    { "id": "api-harness", "from": "api", "to": "harness", "label": "AI 意图分解", "variant": "security", "fromSide": "bottom", "toSide": "top" },
+    { "id": "harness-hermes", "from": "harness", "to": "hermes", "label": "DAG Spec", "variant": "security", "fromSide": "bottom", "toSide": "top", "labelAt": [355, 188] },
+    { "id": "hermes-tasks", "from": "hermes", "to": "tasks", "label": "任务可见性", "variant": "security" },
+    { "id": "hermes-site", "from": "hermes", "to": "site", "label": "建站 / 核价", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[510, 238], [510, 154]], "labelAt": [575, 154] },
+    { "id": "hermes-deerflow", "from": "hermes", "to": "deerflow", "label": "内容生成", "fromSide": "right", "toSide": "left", "via": [[530, 238], [530, 218]], "labelAt": [585, 218] },
+    { "id": "hermes-goodjob", "from": "hermes", "to": "goodjob", "label": "GP-A 履约调度", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[570, 238], [570, 282]], "labelAt": [605, 282] },
+    { "id": "hermes-trade", "from": "hermes", "to": "trade", "label": "GP-B 拓客分发", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[550, 238], [550, 346]], "labelAt": [595, 346] },
+    { "id": "site-pg", "from": "site", "to": "pg", "label": "站点 / 核价落库", "variant": "dashed", "fromSide": "right", "toSide": "left", "via": [[920, 154], [920, 253]] },
+    { "id": "deerflow-pg", "from": "deerflow", "to": "pg", "label": "研报落库", "variant": "dashed", "fromSide": "right", "toSide": "left" },
+    { "id": "goodjob-pg", "from": "goodjob", "to": "pg", "label": "履约数据", "variant": "dashed", "fromSide": "right", "toSide": "left" },
+    { "id": "trade-pg", "from": "trade", "to": "pg", "label": "线索落库", "variant": "dashed", "fromSide": "bottom", "toSide": "bottom", "via": [[720, 410], [1065, 410]] },
+    { "id": "trade-n8n", "from": "trade", "to": "n8n", "label": "分发", "variant": "dashed", "fromSide": "right", "toSide": "left", "labelDy": 42 }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "产品面 · 完整体", "items": ["唯一 /login；功能域菜单：社媒拓客 / 外贸履约 / Hermes 任务（无特权）", "官网 :3000 · 超管 :5173 · 交互 CRUD 走同步 API"] },
+    { "dot": "emerald", "title": "八子系统 · Hermes 驱动", "items": ["DSH 可选；默认 L1 → Hermes 状态机（GP-A 履约 / GP-B 拓客）", "Site·BOQ / DeerFlow / GoodJob / TradeAI 功能域受控调度 → PG"] },
+    { "dot": "rose", "title": "出站与计费", "items": ["n8n :5678 出站至约 40 平台；附属 login/超管生产 410", "SaaS 订阅 + Token Wallet Guard + 静态 IP 槽位；无 Key 诚实 failed"] }
+  ]
+}

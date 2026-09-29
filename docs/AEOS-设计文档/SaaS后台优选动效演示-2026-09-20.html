@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>优丁 AEOS · 企业级增长控制台</title>
+  <meta name="description" content="一眼专业的 AI 操作系统控制台：真实编排/获客/履约能力 + 高级视觉，驱动付费决策。" />
+  <link rel="stylesheet" href="SaaS后台优选动效演示-2026-09-20.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">优</div>
+        <div class="brand-text">
+          <strong>优丁 YouDing</strong>
+          <small>AEOS Control Plane</small>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="uj-press btn-ghost" id="btn-login">登录控制台</button>
+        <button type="button" class="uj-press btn-primary" id="btn-cta">预约方案演示</button>
+      </div>
+    </header>
+
+    <!-- HERO：3秒专业 + 付费理由 -->
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><i></i> Enterprise AI Operating System</div>
+        <h1>不是又一个后台，<br />是能直接<em>带来订单与利润</em>的控制面</h1>
+        <p class="hero-lead">
+          国内工程集采 + 全球外贸出海双轨并行。Hermes 原生直驱获客、履约、内容与计费——
+          <strong>一眼企业级，点开就能干活</strong>，让增长团队愿意为结果付费。
+        </p>
+        <ul class="hero-points">
+          <li><span>01</span>统一编排：AI 任务图驱动拓客 / PI / 单证 / 分发，不靠人肉拼系统</li>
+          <li><span>02</span>钱看得见：三轨计费、分润、套餐与 Token，经营数字与业务同屏</li>
+          <li><span>03</span>风险可控：人审闸、诚实 failed、证据链与权限壳，可审计可交付</li>
+          <li><span>04</span>专业观感：马卡龙控制台视觉 + 真实数据密度，第一眼建立信任</li>
+        </ul>
+        <div class="cta-row">
+          <button type="button" class="uj-press btn-primary" id="btn-cta-2">查看适合我的方案</button>
+          <button type="button" class="uj-press btn-soft" id="btn-scroll-plans">对比套餐</button>
+          <span class="cta-note">控制台已运行：API / 后台 / 编排链路可验证</span>
+        </div>
+        <div class="trust-strip" aria-label="可信基线">
+          <div class="trust"><b>8</b><span>不可裁减子系统</span></div>
+          <div class="trust"><b>350+</b><span>技能/SOP/角色资产</span></div>
+          <div class="trust"><b>1207+</b><span>API 端点</span></div>
+          <div class="trust"><b>229</b><span>业务数据表</span></div>
+        </div>
+      </div>
+
+      <!-- 产品壳：真功能感，不是空卡片 -->
+      <div class="product-shell" id="product-shell" aria-label="运营控制台预览">
+        <nav class="shell-nav" id="shell-nav">
+          <div class="g">运营</div>
+          <button type="button" class="nav-item active" data-view="ops"><span class="ic">今</span>今日作战</button>
+          <button type="button" class="nav-item" data-view="money"><span class="ic">¥</span>经营与计费</button>
+          <button type="button" class="nav-item" data-view="ai"><span class="ic">AI</span>编排与 AI</button>
+          <div class="g">履约</div>
+          <button type="button" class="nav-item" data-view="trade"><span class="ic">贸</span>外贸 7 步</button>
+          <button type="button" class="nav-item" data-view="risk"><span class="ic">控</span>风控与证据</button>
+        </nav>
+        <div class="shell-main">
+          <div class="shell-head">
+            <div>
+              <h2 id="view-title">今日作战台</h2>
+              <p id="view-sub">待办置顶 · 数字其次 · 趋势再次 · 明细可下钻</p>
+            </div>
+            <div class="live-pill"><i></i>系统在线</div>
+          </div>
+
+          <div class="kpi-grid" id="kpi-grid"></div>
+
+          <div class="split-grid">
+            <div class="panel">
+              <h3 id="list-title">优先处理 <span>与收入/风险直接相关</span></h3>
+              <div class="task-list" id="task-list"></div>
+            </div>
+            <div class="panel">
+              <h3 id="money-title">经营摘要 <span>付费决策相关</span></h3>
+              <div class="money-rows" id="money-rows"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 价值：驱动付费 -->
+    <section class="section">
+      <div class="sec-head">
+        <h2>为什么值得付费：不是功能堆砌，是结果系统</h2>
+        <p>每一块都对应钱、时间、风险或增长——这才产生购买冲动。</p>
+      </div>
+      <div class="value-grid">
+        <article class="value-card">
+          <div class="ico">增</div>
+          <h3>获客与成单加速</h3>
+          <p>社媒拓客、统一收件箱、BOQ 核价、PI/单证一体推进，询盘到履约不再散落多套工具。</p>
+          <div class="metric">目标：询盘响应与报价周期显著缩短</div>
+        </article>
+        <article class="value-card">
+          <div class="ico">省</div>
+          <h3>人效与系统成本下降</h3>
+          <p>Hermes 编排 + PSSP 资产复用，减少重复建站、内容、跟单与对表的人力消耗。</p>
+          <div class="metric">目标：同一团队覆盖双轨业务</div>
+        </article>
+        <article class="value-card">
+          <div class="ico">控</div>
+          <h3>经营与风险同屏可控</h3>
+          <p>套餐/Token/分润/人审闸/证据链/权限壳，老板能看见钱和风险，而不是「黑盒 AI」。</p>
+          <div class="metric">目标：可审计、可止损、可放量</div>
+        </article>
+        <article class="value-card">
+          <div class="ico">续</div>
+          <h3>可持续订阅的理由</h3>
+          <p>内容矩阵、SEO/GEO、WhatsApp 通道、经验反哺会持续产生资产，而不是一次性交付。</p>
+          <div class="metric">目标：月费对应持续产能，而非空壳账号</div>
+        </article>
+      </div>
+
+      <div class="proof">
+        <h3>能力真源（付费前最想核对的部分）</h3>
+        <table class="proof-table">
+          <thead>
+            <tr>
+              <th>能力域</th>
+              <th>你能得到什么</th>
+              <th>交付形态</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>原生控制面</td>
+              <td>超管/租户/代理分壳，菜单与权限可治理</td>
+              <td>Platform Shell · 登录即用</td>
+            </tr>
+            <tr>
+              <td>AI 编排</td>
+              <td>Hermes 直驱任务图，拓客与履约链路可调度</td>
+              <td>L1 模板 + 人审闸 + 诚实状态</td>
+            </tr>
+            <tr>
+              <td>外贸履约</td>
+              <td>询盘 → 核价 → PI → 单证 → 物流状态</td>
+              <td>本项目 CRM 原生路径</td>
+            </tr>
+            <tr>
+              <td>经营计费</td>
+              <td>套餐、订单、分润、IP 池与 Token 账本</td>
+              <td>财务板块同屏</td>
+            </tr>
+            <tr>
+              <td>增长中台</td>
+              <td>SEO 矩阵、多平台分发、内容反馈闭环</td>
+              <td>n8n + DeerFlow 挂接</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 套餐：付费冲动的落点 -->
+    <section class="section" id="plans">
+      <div class="sec-head">
+        <h2>方案分层：按增长阶段买，不为用不到的堆料买单</h2>
+        <p>示意档位（可按实际报价替换）——专业感来自清晰边界，而不是「全包含糊」。</p>
+      </div>
+      <div class="plans">
+        <article class="plan">
+          <h3>启动版 · 单团队验证</h3>
+          <div class="price">¥1,980<small> /月起</small></div>
+          <ul>
+            <li>租户控制台 + 获客基础链</li>
+            <li>官网/SEO 基础矩阵</li>
+            <li>有限 AI Token 与标准模板</li>
+            <li>工单支持</li>
+          </ul>
+          <button type="button" class="uj-press btn-ghost btn" data-plan="启动版">适合先跑通</button>
+        </article>
+        <article class="plan featured">
+          <div class="flag">最常选择</div>
+          <h3>增长版 · 双轨经营</h3>
+          <div class="price">¥4,980<small> /月起</small></div>
+          <ul>
+            <li>Platform 多角色协作</li>
+            <li>外贸 7 步 + 国内集采双轨</li>
+            <li>Hermes 编排与人审闸</li>
+            <li>计费/分润/经营看板</li>
+          </ul>
+          <button type="button" class="uj-press btn-primary btn" data-plan="增长版">立刻评估 ROI</button>
+        </article>
+        <article class="plan">
+          <h3>企业版 · 多租户放量</h3>
+          <div class="price">定制<small> /年框</small></div>
+          <ul>
+            <li>多租户隔离与白标</li>
+            <li>审计/权限/私有化选项</li>
+            <li>专属编排与行业资产</li>
+            <li>联合运营与 SLA</li>
+          </ul>
+          <button type="button" class="uj-press btn-ghost btn" data-plan="企业版">预约架构评审</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- 动效作为工艺证明，不再喧宾夺主 -->
+    <section class="section">
+      <div class="sec-head">
+        <h2>工艺细节：动效只服务「专业感」</h2>
+        <p>弹簧按压、交错入场、底层流光、软转场——全部为可读性与信任服务。</p>
+      </div>
+      <div class="motion-note">
+        本页已内置：侧栏选中细指示条、KPI 交错入场、按钮物理按压、壳层底层流光（不压字）。
+        更完整的 8 类动效对照与图标/滚动条方案，仍可参考会话内「优选动效演示」页；
+        <strong>产品页原则：功能密度优先，装饰让位。</strong>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      设计目标：3 秒建立专业信任 → 10 秒看懂可购能力 → 30 秒产生咨询/付费动作。
+      数据基线来自项目架构实测；套餐数字为示意，正式报价以商务版本为准。
+    </footer>
+  </div>
+
+  <script src="SaaS后台优选动效演示-2026-09-20.js"></script>
+</body>
+</html>

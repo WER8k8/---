@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>读数联动验证 · 优丁超管后台 F1</title>
+<style>
+  :root{
+    --canvas:#EAF4F0;
+    --surface:#FFFFFF;
+    --surface-2:#F4FAF8;
+    --border:#E3EFEA;
+    --border-soft:#EDF5F2;
+    --text:#1E3330;
+    --text-2:#55706B;
+    --text-3:#7A9691;
+    --brand:#4a9b8c;
+    --brand-strong:#367469;
+    --mint-100:#DCF0EB;
+    --mint-300:#A0D6CB;
+    --danger:#AE3830;
+    --danger-bg:#FDEDEC;
+    --danger-border:#F3C9C5;
+    --ok:#24705A;
+    --ok-bg:#EAF7F2;
+    --warn:#8A6212;
+    --warn-bg:#FEF7E6;
+    --sky:#2B6295;
+    --sky-bg:#EFF6FD;
+    --radius:16px;
+    --radius-sm:10px;
+    --shadow:0 1px 2px rgba(31,74,66,.06);
+    /* 真实页面里的令牌（此处给出亮色取值的字面量，便于本页自洽） */
+    --uj-text:#1f2937;
+    --uj-text-secondary-strong:#55706b;
+    --uj-brand-strong:#367469;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--canvas);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:14px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 72px}
+
+  header.top{
+    background:linear-gradient(140deg,#F7FBFA 0%,#E6F4F0 100%);
+    border:1px solid var(--border);border-radius:20px;padding:24px 26px;margin-bottom:22px;
+    position:relative;overflow:hidden;
+  }
+  header.top::after{
+    content:"";position:absolute;right:-70px;top:-70px;width:230px;height:230px;border-radius:50%;
+    background:radial-gradient(circle,rgba(127,201,187,.34),transparent 68%);pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;
+    color:var(--brand-strong);background:rgba(74,155,140,.10);border:1px solid rgba(74,155,140,.20);
+    border-radius:999px;padding:4px 11px;margin-bottom:12px;
+  }
+  h1{margin:0 0 6px;font-size:24px;font-weight:500;letter-spacing:-.2px}
+  .sub{margin:0;color:var(--text-2);font-size:13.5px;max-width:76ch}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .chip{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-2)}
+  .chip b{color:var(--brand-strong);font-weight:500}
+
+  section{margin-bottom:20px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px}
+  .sec-h{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+  .sec-n{font-size:11px;font-weight:500;color:var(--brand-strong);background:var(--mint-100);border-radius:7px;padding:2px 8px;flex:none}
+  .sec-h h2{margin:0;font-size:16.5px;font-weight:500}
+  .sec-d{margin:0 0 16px;color:var(--text-2);font-size:13px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border-soft);vertical-align:top}
+  th{color:var(--text-2);font-weight:500;font-size:12px;background:var(--surface-2)}
+  tr:last-child td{border-bottom:0}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;font-size:12px;
+    background:var(--surface-2);border:1px solid var(--border-soft);border-radius:5px;padding:1px 5px;color:var(--brand-strong)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+  .tag{display:inline-block;font-size:11.5px;padding:1.5px 8px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+  .tag.ok{color:var(--ok);background:var(--ok-bg);border-color:#C9EADF}
+  .tag.bad{color:var(--danger);background:var(--danger-bg);border-color:var(--danger-border)}
+  .tag.info{color:var(--sky);background:var(--sky-bg);border-color:#D3E6F8}
+  .tag.warn{color:var(--warn);background:var(--warn-bg);border-color:#F2E2B8}
+
+  /* ══════════════════════════════════════════════════════════
+     以下两段是**原样照抄**自 views/admin/index.vue，用于 1:1 复现
+     ══════════════════════════════════════════════════════════ */
+  .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .card-head h3{margin:0;font-size:14px;font-weight:700;color:#1f2937}
+  .card-head span{color:#9ca3af;font-size:12px}
+
+  /* 正确写法：带 .card-head 前缀 */
+  .card-head .cursor-readout{display:inline-flex;align-items:baseline;gap:6px;color:var(--uj-text-secondary-strong,#55706b);transition:color .24s ease}
+  .card-head .cursor-readout .cursor-src{font-style:normal;font-size:12px;color:inherit}
+  .card-head .cursor-readout .cursor-num{font-size:16px;font-weight:500;line-height:1;color:var(--uj-text,#1f2937);font-variant-numeric:tabular-nums;letter-spacing:-.2px;transition:color .24s ease}
+  .card-head .cursor-readout .cursor-num i{font-style:normal;font-size:11px;font-weight:400;margin-left:1px;opacity:.55}
+  .card-head .cursor-readout.is-live,
+  .card-head .cursor-readout.is-live .cursor-num{color:var(--uj-brand-strong,#367469)}
+
+  /* ✗ 反例：去掉 .card-head 前缀 → (0,1,0) 打不过 .card-head span (0,1,1) */
+  .cursor-readout--naive{display:inline-flex;align-items:baseline;gap:6px;color:var(--uj-text-secondary-strong,#55706b)}
+  .cursor-readout--naive .cursor-src{font-style:normal;font-size:12px;color:inherit}
+  .cursor-readout--naive .cursor-num{font-size:16px;font-weight:500;line-height:1;color:var(--uj-text,#1f2937);font-variant-numeric:tabular-nums}
+  /* ══════════════════════════════════════════════════════════ */
+
+  .panel{border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;background:var(--surface)}
+  .panel.is-bad{border-color:var(--danger-border);background:#FFFCFC}
+  .panelhead{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);margin-bottom:10px}
+  .panelhead .t{font-weight:500;color:var(--text)}
+
+  .chartbox{position:relative;height:150px;margin-top:6px;cursor:crosshair}
+  .chartbox svg{display:block;width:100%;height:100%}
+  .readout-note{font-size:11.5px;color:var(--text-3);margin-top:8px}
+
+  .measure{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+  .m{flex:1 1 210px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;background:var(--surface-2)}
+  .m .k{font-size:11.5px;color:var(--text-3);margin-bottom:3px}
+  .m .v{font-size:13.5px;font-family:ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;word-break:break-all}
+  .m .v.ok{color:var(--ok)}
+  .m .v.bad{color:var(--danger)}
+  .m .v.warn{color:var(--warn)}
+
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  button{font-family:inherit;font-size:12.5px;font-weight:500;border-radius:var(--radius-sm);padding:8px 13px;min-height:38px;
+    border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;
+    transition:all .28s cubic-bezier(.34,1.56,.64,1)}
+  button:hover{border-color:var(--brand);background:var(--mint-100)}
+  button:active{transform:scale(.96);box-shadow:inset 0 2px 6px rgba(31,74,66,.18)}
+  button.primary{background:var(--brand-strong);border-color:var(--brand-strong);color:#fff}
+  button.primary:hover{background:var(--brand);border-color:var(--brand)}
+
+  pre{margin:0;background:#F7FBFA;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 15px;
+    overflow-x:auto;font-size:12px;line-height:1.75;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;color:#24443E}
+  pre .c{color:#8AA5A0}
+  pre .k{color:#62509B}
+  pre .v{color:var(--brand-strong)}
+  pre .bad{color:var(--danger)}
+
+  .note{display:flex;gap:11px;padding:13px 15px;border-radius:var(--radius-sm);font-size:13px;
+    border:1px solid var(--border);background:var(--surface-2);margin-top:14px}
+  .note .ico{flex:none;margin-top:1px}
+  .note p{margin:0}
+  .note p+p{margin-top:5px}
+  .note.danger{background:var(--danger-bg);border-color:var(--danger-border)}
+  .note.danger b{color:var(--danger)}
+  .note.ok{background:var(--ok-bg);border-color:#C9EADF}
+  .note.ok b{color:var(--ok)}
+  .list{margin:0;padding-left:18px;color:var(--text-2);font-size:13px}
+  .list li{margin-bottom:5px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  footer{margin-top:30px;color:var(--text-3);font-size:12px;text-align:center}
+
+  @media (max-width:860px){
+    .g2{grid-template-columns:1fr}
+    .wrap{padding:18px 14px 56px}
+    h1{font-size:20px}
+    table{font-size:12.5px}
+    th,td{padding:8px 8px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    button{transition:none}
+    button:active{transform:none;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <span class="eyebrow">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 5-8"/><path d="M3 21h18"/></svg>
+      B3 实施验证 · 超管工作台首屏 F1
+    </span>
+    <h1>读数联动（游标滑动 → KPI 码表）</h1>
+    <p class="sub">
+      联动本身不难，难的是 <strong>每页都要重拍三个设计决策</strong>；另外它藏着两处「写错了也不报错」的陷阱——
+      选择器特异性与等宽数字。本页把这两处用<strong>实测计算值</strong>钉死。
+    </p>
+    <div class="chips">
+      <span class="chip">样板页 <b>views/admin/index.vue</b></span>
+      <span class="chip">接线断言 <b>26/26 PASS</b></span>
+      <span class="chip">vue-tsc <b>exit 0</b></span>
+      <span class="chip">空白前缀的读数会被<b>染灰</b></span>
+    </div>
+  </header>
+
+  <!-- 01 三个决策 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">01</span><h2>三个必须逐页拍板的决策</h2></div>
+      <p class="sec-d">「联动哪条 series」抄不来——每页的数据结构、布局、基准值都不同。以下是 F1 的答案，其余 5 页需各自重拍。</p>
+      <table>
+        <thead><tr><th style="width:150px">决策</th><th style="width:210px">F1 的答案</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>联动哪条 series</b></td>
+            <td>本页只有 1 条「活跃度」折线 → 取它的 y 值</td>
+            <td>多 series 页面必须先指定「主 series」，否则读数随 tooltip 条目顺序漂移，看起来像随机跳数</td>
+          </tr>
+          <tr>
+            <td><b>读数放哪</b></td>
+            <td>卡片头部右侧（原「来自 analytics/traffic」静态提示位）</td>
+            <td>原位置信息价值低且白占位；改后把数据源降级为 hover 的 <code>title</code>，<b>零布局改动</b>，也不与图内 tooltip 打架</td>
+          </tr>
+          <tr>
+            <td><b>离开图表后显示什么</b></td>
+            <td>回到「近 7 日均值」，<b>不留空</b></td>
+            <td>数字区始终有含义；且能看见码表往回收，而不是数字突然消失</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 02 实景 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">02</span><h2>实景：游标滑到哪里，数字就滚到哪里</h2></div>
+      <p class="sec-d">
+        把鼠标移到图上（或点下面按钮）。读数区会切到品牌色，标签换成当天日期，数字由码表从<strong>当前值</strong>补间——
+        不是从 0 重爬。松手离开后回落到 7 日均值。
+      </p>
+
+      <div class="panel">
+        <div class="card-head">
+          <h3>模块活跃趋势</h3>
+          <span class="cursor-readout" id="readout" title="近 7 日活跃度均值 · 数据源：analytics/traffic">
+            <em class="cursor-src" id="roLabel">近 7 日均值</em>
+            <b class="cursor-num" id="roNum">0<i>%</i></b>
+          </span>
+        </div>
+        <div class="chartbox" id="chartbox">
+          <svg id="chart" viewBox="0 0 700 150" preserveAspectRatio="none" aria-label="近 7 日活跃度折线">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(74,155,140,.28)"/>
+                <stop offset="100%" stop-color="rgba(74,155,140,.02)"/>
+              </linearGradient>
+            </defs>
+            <path id="areaPath" fill="url(#areaGrad)" stroke="none"/>
+            <polyline id="line" fill="none" stroke="#4a9b8c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <g id="markers"></g>
+            <line id="cursorLine" x1="0" y1="0" x2="0" y2="0" stroke="#4a9b8c" stroke-width="1" stroke-dasharray="4 3" opacity="0"/>
+            <circle id="cursorDot" r="6" fill="#fff" stroke="#4a9b8c" stroke-width="2.5" opacity="0"/>
+          </svg>
+        </div>
+        <div class="readout-note" id="liveState">当前：静止（显示 7 日均值）</div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="btnP5">定格 9/19（峰值 100）</button>
+        <button id="btnP0">定格 9/14（谷值 40）</button>
+        <button id="btnReset">回到均值</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 特异性陷阱 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">03</span><h2>陷阱一：选择器特异性（实测计算色）</h2></div>
+      <p class="sec-d">
+        真实页面里 <code>.card-head span</code> 会把该容器内<strong>所有 span</strong> 染成灰色提示色（0,1,1）。
+        读数区如果只写 <code>.cursor-readout</code>（0,1,0），<strong>颜色会被直接吃掉，而且不报任何错</strong>。
+        下面左右两块是同一份逻辑，只有选择器前缀不同。
+      </p>
+      <div class="g2">
+        <div class="panel">
+          <div class="panelhead"><span class="t">✓ 正确写法</span><span>带 <code>.card-head</code> 前缀</span></div>
+          <div class="card-head">
+            <h3>模块活跃趋势</h3>
+            <span class="cursor-readout is-live" id="okReadout">
+              <em class="cursor-src" id="okLabel">9/19</em>
+              <b class="cursor-num" id="okNum">100<i>%</i></b>
+            </span>
+          </div>
+          <div class="readout-note">
+            标签实测色 <b class="mono" id="okColor">—</b>
+          </div>
+        </div>
+        <div class="panel is-bad">
+          <div class="panelhead"><span class="t">✗ 反例</span><span>无前缀，被 <code>.card-head span</code> 压过</span></div>
+          <div class="card-head">
+            <h3>模块活跃趋势</h3>
+            <span class="cursor-readout--naive" id="badReadout">
+              <em class="cursor-src" id="badLabel">9/19</em>
+              <b class="cursor-num" id="badNum">100<i>%</i></b>
+            </span>
+          </div>
+          <div class="readout-note">
+            标签实测色 <b class="mono" id="badColor">—</b>
+          </div>
+        </div>
+      </div>
+      <div class="measure" id="specMeasure"></div>
+    </div>
+  </section>
+
+  <!-- 04 等宽数字 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">04</span><h2>陷阱二：等宽数字（实测宽度差）</h2></div>
+      <p class="sec-d">
+        码表每帧改数字，若字形宽度不等宽，数字块会<strong>左右抖动</strong>。
+        <code>font-variant-numeric: tabular-nums</code> 就是为这件事存在的。下面用同一字体实测「11」与「88」的宽度。
+      </p>
+      <div class="measure" id="tnumMeasure"></div>
+      <div class="note ok">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#24705A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <p><b>判据</b>：开启 <code>tabular-nums</code> 时，两组数字（等宽对等宽）宽度差应为 <b>0</b>。
+        若关掉后出现非零差值，就说明这个属性是必需的——这正是「码表丝滑」的隐性前提。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 接线 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">05</span><h2>接线与两个已修缺陷</h2></div>
+      <pre><span class="c">// ① 模板 ref：注意 vue-echarts 上 r.chart 才是 ECharts 实例，r 本身不是</span>
+&lt;v-chart ref=<span class="k">"trendChartRef"</span> :option=<span class="k">"trendChartOption"</span> autoresize /&gt;
+
+<span class="c">// ② 取哪条 series 的值 —— 这是业务问题，助手不猜</span>
+const { activeIndex, activeValue, bindWhenReady } = <span class="v">useChartCursor</span>&lt;number&gt;((info) =&gt; {
+  const v = trendData.value[info.dataIndex];
+  return typeof v === <span class="k">'number'</span> ? v : <span class="k">null</span>;
+});
+
+<span class="c">// ③ 绑定：图表被骨架屏 v-if 包着 + 实例初始化晚一帧 → 有界重试（上限 30 帧）</span>
+watch(trendChartRef, (el) =&gt; {
+  if (el) void <span class="v">bindWhenReady</span>(() =&gt; trendChartRef.value);
+}, { flush: <span class="k">'post'</span> });
+
+<span class="c">// ④ 码表：有游标读游标，无游标读均值 —— 两者共用一个码表，切换时才看得到翻滚</span>
+const readoutTarget = computed(() =&gt; cursorValue.value ?? trendAverage.value);
+const readoutText = <span class="v">useCountUp</span>(() =&gt; readoutTarget.value, { changeDuration: <span class="v">220</span>, decimals: <span class="v">0</span> });</pre>
+
+      <table style="margin-top:16px">
+        <thead><tr><th style="width:220px">本轮修掉的缺陷</th><th>问题</th><th>修法</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>useCountUp</code> 的 <code>enabled</code> 语义</td>
+            <td>旧写 <code>if (!enabled) return;</code> → 不仅不动画，<b>连数值都不更新</b>（首次永久停在 0）。语义应为「不做动画」而非「不更新数字」</td>
+            <td>改为直接落值并置 <code>started</code></td>
+          </tr>
+          <tr>
+            <td><code>useChartCursor</code> 的 <code>ChartLike.on</code></td>
+            <td>声明为可选属性 → <code>chart.on(...)</code> 被判可能 undefined（TS2722）。而 <code>resolveChart()</code> 本就只在 <code>on</code> 是函数时返回对象</td>
+            <td>把接口的 <code>on</code> 改成<b>必需</b>（修声明，而不是到处加断言）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note danger">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AE3830" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        </span>
+        <p><b>刻意不做</b>：数字翻滚的 <code>prefers-reduced-motion</code> 降级。
+        理由是数字翻滚属于「原地换值」、<strong>无空间位移</strong>，不触发前庭不适；降级反而会丢掉「读数已变化」这一提示。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 边界 -->
+  <section>
+    <div class="card">
+      <div class="sec-h"><span class="sec-n">06</span><h2>未做与已知边界</h2></div>
+      <table>
+        <thead><tr><th>事项</th><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>剩余 5 页联动</td><td><span class="tag warn">未做</span></td>
+              <td>模板已固化（每页只改 3 处），但需先各自拍板 §01 的三个决策</td></tr>
+          <tr><td><code>seo/keyword-ranking.vue</code></td><td><span class="tag info">建议不联动</span></td>
+              <td>该页图表在 <b>modal 内</b>，与页面 KPI 不同域，联动价值低 → 只保留磁吸</td></tr>
+          <tr><td>运行时视觉验收</td><td><span class="tag warn">待做</span></td>
+              <td>本页为同值复现（未引 echarts）。真实观感需起 dev server + 后端数据后目视一次</td></tr>
+          <tr><td><code>a-modal</code> 统一缓动</td><td><span class="tag info">另起一轮</span></td>
+              <td>弹窗缓动由 <code>ant-zoom</code> 系列 keyframes 驱动，与抽屉的 transition 改法不同</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>优丁 YouDing · 超管后台微交互批次 B3 · useChartCursor + useCountUp · 单文件零外链</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ══════════ 与真实页面一致的数据与码表语义 ══════════ */
+  var TREND = [40, 55, 62, 48, 80, 100, 71];
+  var LABELS = ['9/14', '9/15', '9/16', '9/17', '9/18', '9/19', '9/20'];
+  var AVG = Math.round(TREND.reduce(function (a, b) { return a + b; }, 0) / TREND.length);
+
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+  /* 与 useCountUp 同语义：首次从 0 起；后续从「当前显示值」补间，绝不跳回 0 */
+  function makeCounter(el, duration, changeDuration) {
+    var raf = 0, current = 0, started = false;
+    return function run(to) {
+      var from = started ? current : 0;
+      var dur = started ? changeDuration : duration;
+      cancelAnimationFrame(raf);
+      if (from === to) { current = to; el.textContent = String(to); started = true; return; }
+      started = true;
+      var t0 = performance.now();
+      function loop(now) {
+        var t = Math.min(1, (now - t0) / dur);
+        var v = from + (to - from) * easeOutCubic(t);
+        current = v;
+        el.textContent = String(Math.round(v));
+        if (t < 1) raf = requestAnimationFrame(loop); else current = to;
+      }
+      raf = requestAnimationFrame(loop);
+    };
+  }
+
+  /* ══════════ 折线图 ══════════ */
+  var W = 700, H = 150, PADX = 34, PADY = 22;
+  var box = document.getElementById('chartbox');
+  var line = document.getElementById('line');
+  var area = document.getElementById('areaPath');
+  var markers = document.getElementById('markers');
+  var cursorLine = document.getElementById('cursorLine');
+  var cursorDot = document.getElementById('cursorDot');
+
+  function px(i) { return PADX + (W - PADX * 2) * (i / (TREND.length - 1)); }
+  function py(v) { return H - PADY - ((v - 30) / 75) * (H - PADY * 2); }
+
+  var pts = TREND.map(function (v, i) { return [px(i), py(v)]; });
+  line.setAttribute('points', pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '));
+  area.setAttribute('d',
+    'M' + pts[0][0] + ',' + (H - PADY) +
+    ' L' + pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' L') +
+    ' L' + pts[pts.length - 1][0] + ',' + (H - PADY) + ' Z');
+
+  markers.innerHTML = pts.map(function (p, i) {
+    return '<circle class="mk" data-i="' + i + '" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) +
+      '" r="4" fill="#fff" stroke="#4a9b8c" stroke-width="2"/>';
+  }).join('');
+  var mks = Array.prototype.slice.call(markers.querySelectorAll('.mk'));
+
+  /* ══════════ 读数区 ══════════ */
+  var readout = document.getElementById('readout');
+  var roLabel = document.getElementById('roLabel');
+  var roNum = document.getElementById('roNum');
+  var liveState = document.getElementById('liveState');
+  var counter = makeCounter(roNum, 900, 220);
+
+  var active = -1;
+  function render() {
+    var on = active >= 0;
+    readout.classList.toggle('is-live', on);
+    roLabel.textContent = on ? LABELS[active] : '近 7 日均值';
+    readout.setAttribute('title', on
+      ? '游标停在 ' + LABELS[active] + ' · ' + TREND[active] + '% 活跃度'
+      : '近 7 日活跃度均值 · 数据源：analytics/traffic');
+    counter(on ? TREND[active] : AVG);
+    liveState.textContent = on
+      ? '当前：游标停在 ' + LABELS[active] + '（' + TREND[active] + '%）'
+      : '当前：静止（显示 7 日均值 ' + AVG + '%）';
+
+    cursorLine.setAttribute('opacity', on ? '1' : '0');
+    cursorDot.setAttribute('opacity', on ? '1' : '0');
+    if (on) {
+      cursorLine.setAttribute('x1', px(active).toFixed(1));
+      cursorLine.setAttribute('x2', px(active).toFixed(1));
+      cursorLine.setAttribute('y1', 6);
+      cursorLine.setAttribute('y2', H - PADY);
+      cursorDot.setAttribute('cx', px(active).toFixed(1));
+      cursorDot.setAttribute('cy', py(TREND[active]).toFixed(1));
+    }
+    mks.forEach(function (m, i) {
+      var on2 = i === active;
+      m.setAttribute('r', on2 ? '6' : '4');
+      m.setAttribute('stroke-width', on2 ? '2.5' : '2');
+      m.setAttribute('fill', on2 ? '#4a9b8c' : '#fff');
+    });
+  }
+
+  /* 磁吸：按 x 找最近数据点 */
+  function snapFromX(clientX) {
+    var r = box.getBoundingClientRect();
+    var vx = ((clientX - r.left) / r.width) * W;
+    var best = 0, bestD = Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      var d = Math.abs(pts[i][0] - vx);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+
+  box.addEventListener('pointermove', function (e) {
+    var i = snapFromX(e.clientX);
+    if (i !== active) { active = i; render(); }
+  });
+  box.addEventListener('pointerleave', function () {
+    if (active !== -1) { active = -1; render(); }
+  });
+
+  document.getElementById('btnP5').addEventListener('click', function () { active = 5; render(); });
+  document.getElementById('btnP0').addEventListener('click', function () { active = 0; render(); });
+  document.getElementById('btnReset').addEventListener('click', function () { active = -1; render(); });
+
+  render();
+
+  /* ══════════ 实测 1：特异性 ══════════ */
+  function rgb(el) {
+    return getComputedStyle(el).color.replace(/\s/g, '');
+  }
+  var okC = rgb(document.getElementById('okLabel'));
+  var badC = rgb(document.getElementById('badLabel'));
+  var okN = rgb(document.getElementById('okNum'));
+  var badN = rgb(document.getElementById('badNum'));
+
+  document.getElementById('okColor').textContent = okC;
+  document.getElementById('badColor').textContent = badC;
+
+  var specRows = [
+    ['正确写法 · 标签色', okC, okC === 'rgb(85,112,107)' ? 'ok' : 'warn', '期望 rgb(85,112,107) = --uj-text-secondary-strong'],
+    ['反例 · 标签色', badC, badC === 'rgb(156,163,175)' ? 'bad' : 'warn', '被 .card-head span 吃掉 → 变成提示灰 rgb(156,163,175)'],
+    ['正确写法 · 数字色', okN, okN === 'rgb(54,116,105)' ? 'ok' : 'warn', '激活态切到 --uj-brand-strong'],
+    ['反例 · 数字色', badN, badN === 'rgb(31,41,55)' ? 'warn' : 'warn', '数字是 <b> 不受 span 规则影响 → 仍是 --uj-text（反差暴露问题）'],
+  ];
+  document.getElementById('specMeasure').innerHTML = specRows.map(function (r) {
+    return '<div class="m"><div class="k">' + r[0] + '</div><div class="v ' + r[2] + '">' + r[1] +
+      '</div><div class="k" style="margin-top:5px">' + r[3] + '</div></div>';
+  }).join('');
+
+  /* ══════════ 实测 2：等宽数字 ══════════ */
+  var probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;left:-9999px;top:0;white-space:pre;font-size:16px;font-weight:500';
+  document.body.appendChild(probe);
+
+  function widthOf(text, tabular) {
+    probe.style.fontVariantNumeric = tabular ? 'tabular-nums' : 'normal';
+    probe.textContent = text;
+    return probe.getBoundingClientRect().width;
+  }
+
+  var tOn = { a: widthOf('11', true), b: widthOf('88', true) };
+  var tOff = { a: widthOf('11', false), b: widthOf('88', false) };
+  var dOn = Math.abs(tOn.a - tOn.b);
+  var dOff = Math.abs(tOff.a - tOff.b);
+  var tnumSupported = dOn < dOff - 0.01;
+
+  document.getElementById('tnumMeasure').innerHTML =
+    '<div class="m"><div class="k">tabular-nums 开启 · 「11」宽</div><div class="v">' + tOn.a.toFixed(2) + ' px</div></div>' +
+    '<div class="m"><div class="k">tabular-nums 开启 · 「88」宽</div><div class="v">' + tOn.b.toFixed(2) + ' px</div></div>' +
+    '<div class="m"><div class="k">开启时两者宽度差</div><div class="v ' + (dOn < 0.01 ? 'ok' : 'bad') + '">' + dOn.toFixed(2) + ' px</div></div>' +
+    '<div class="m"><div class="k">关闭时两者宽度差（对照）</div><div class="v ' + (dOff > dOn ? 'warn' : '') + '">' + dOff.toFixed(2) + ' px</div></div>' +
+    '<div class="m"><div class="k">该字体是否真支持 tnum</div><div class="v ' + (tnumSupported ? 'ok' : 'warn') + '">' +
+      (tnumSupported ? '是（开启后差值更小）' : '未测出差异 —— 说明该环境字体本已等宽，属性为跨环境兜底') + '</div></div>';
+
+  probe.remove();
+
+  /* 暴露给自动化：便于确定性截图 */
+  window.__setIdx = function (i) { active = i; render(); };
+  window.__state = function () {
+    return JSON.stringify({
+      label: roLabel.textContent,
+      num: roNum.textContent.replace(/\D/g, ''),
+      isLive: readout.classList.contains('is-live'),
+      okLabelColor: okC,
+      badLabelColor: badC,
+      tnumDeltaOn: Number(dOn.toFixed(2)),
+      tnumDeltaOff: Number(dOff.toFixed(2)),
+    });
+  };
+})();
+</script>
+</body>
+</html>

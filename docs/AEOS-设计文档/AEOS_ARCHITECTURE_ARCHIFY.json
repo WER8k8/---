@@ -1,0 +1,653 @@
+{
+  "version": "2.17.0",
+  "type": "architecture",
+  "title": "AEOS全域企业级AI操作系统架构全景图",
+  "description": "优丁YouDing多租户B2B外贸SaaS系统 - 八大子系统全景架构",
+  "theme": "dark",
+  "preset": "blueprint",
+  "nodes": [
+    {
+      "id": "web-frontend",
+      "label": "官网 Frontend",
+      "type": "frontend",
+      "description": "Vite运行源，暖米白#f5f4f0/砖橙主题，端口3000",
+      "ports": [3000],
+      "metadata": {
+        "tech_stack": "Vite + Vue3",
+        "path": "主要备份/上线网站/frontend",
+        "status": "active"
+      }
+    },
+    {
+      "id": "admin-frontend", 
+      "label": "超管后台",
+      "type": "frontend",
+      "description": "Nuxt3开发源，薄荷绿#4a9b8c主题，端口5174",
+      "ports": [5174],
+      "metadata": {
+        "tech_stack": "Nuxt3",
+        "path": "上线网站.worktrees/.../frontend/admin",
+        "status": "active"
+      }
+    },
+    {
+      "id": "seo-admin",
+      "label": "SEO管理后台",
+      "type": "frontend", 
+      "description": "独立Node系统，端口5173",
+      "ports": [5173],
+      "metadata": {
+        "tech_stack": "Node.js",
+        "status": "active"
+      }
+    },
+    {
+      "id": "nginx",
+      "label": "负载均衡",
+      "type": "infrastructure",
+      "description": "Nginx反向代理，生产环境80/443",
+      "ports": [80, 443],
+      "metadata": {
+        "tech_stack": "Nginx",
+        "status": "production"
+      }
+    },
+    {
+      "id": "tenant-middleware",
+      "label": "租户中间件",
+      "type": "middleware",
+      "description": "Host子域解析，租户隔离，JWT同步",
+      "metadata": {
+        "path": "backend/app/core/tenant_middleware.py",
+        "features": ["子域名解析", "租户缓存", "OTel span"]
+      }
+    },
+    {
+      "id": "fastapi-backend",
+      "label": "FastAPI主服务",
+      "type": "backend",
+      "description": "核心控制面，150路由模块，1207+端点",
+      "ports": [8001],
+      "metadata": {
+        "tech_stack": "FastAPI + SQLAlchemy 2.0",
+        "path": "backend/app/main.py",
+        "workers": "dev:1, prod:4",
+        "status": "active"
+      }
+    },
+    {
+      "id": "deepseek-harness",
+      "label": "DeepSeek Harness",
+      "type": "ai-orchestrator",
+      "description": "外层认知沙箱，Cordis JSON-RPC，意图解析",
+      "metadata": {
+        "tech_stack": "Python SDK + dsh.exe",
+        "path": "deepseek-harness/",
+        "protocol": "stdio JSON-RPC",
+        "status": "integrated"
+      }
+    },
+    {
+      "id": "hermes-control-plane",
+      "label": "Hermes Control Plane",
+      "type": "orchestrator",
+      "description": "受控核心面，DAG Supervisor，JsonPath数据总线",
+      "metadata": {
+        "tech_stack": "FastAPI + Celery",
+        "path": "backend/app/services/hermes",
+        "features": ["DAG防爆", "Saga补偿", "JsonPath解析"],
+        "status": "p0_active"
+      }
+    },
+    {
+      "id": "dag-governor",
+      "label": "DAG Governor",
+      "type": "validator",
+      "description": "拓扑防爆，DFS环路检测，100节点上限",
+      "metadata": {
+        "path": "backend/app/services/hermes/task_control_supervisor.py",
+        "algorithms": ["DFS", "Kahn"],
+        "limits": {
+          "max_nodes": 100
+        }
+      }
+    },
+    {
+      "id": "trade-ai-agent",
+      "label": "Trade AI Agent",
+      "type": "business-executor",
+      "description": "全域社媒拓客，WhatsApp中枢，统一收件箱",
+      "metadata": {
+        "path": "_external/trade-ai-agent",
+        "status": "ready_for_adapter",
+        "capabilities": ["社媒爬虫", "WhatsApp API", "邮件序列", "意图分类"],
+        "adapter_status": "missing"
+      }
+    },
+    {
+      "id": "deerflow",
+      "label": "DeerFlow",
+      "type": "business-executor",
+      "description": "深度研报，内容工厂，9大意图真执行",
+      "metadata": {
+        "path": "backend/app/services/deerflow",
+        "status": "p1_target",
+        "intents": 9,
+        "adapter_key": "hermes_node:deerflow"
+      }
+    },
+    {
+      "id": "goodjob-crm",
+      "label": "GoodJob CRM",
+      "type": "business-executor",
+      "description": "7步履约，WhatsApp翻译，单证工作室",
+      "metadata": {
+        "path": "_external/goodjob-crm",
+        "status": "ready_for_adapter",
+        "capabilities": ["7步漏斗", "PI生成", "CI/PL单证"],
+        "adapter_status": "missing"
+      }
+    },
+    {
+      "id": "site-calc-engine",
+      "label": "Site/Calc Engine",
+      "type": "business-executor",
+      "description": "独立站，22参数核价，BOQ标书解析",
+      "metadata": {
+        "path": "backend/app/services/calculators",
+        "features": ["动态计算器", "Case Study库", "BOQ解析"]
+      }
+    },
+    {
+      "id": "skills-76",
+      "label": "76业务技能",
+      "type": "asset-library",
+      "description": "业务原子技能，SKILL.md frontmatter",
+      "metadata": {
+        "path": "上线网站.worktrees/.../skills",
+        "count": 76,
+        "database": "PostgreSQL skills表",
+        "status": "active"
+      }
+    },
+    {
+      "id": "agencyzh-276",
+      "label": "276 AgencyZH角色",
+      "type": "asset-library",
+      "description": "细分行业专家人设",
+      "metadata": {
+        "path": "_external/agency-agents-zh",
+        "count": 276,
+        "loader": "role_loader.py"
+      }
+    },
+    {
+      "id": "ecc-286",
+      "label": "286 ECC工程SOP",
+      "type": "asset-library",
+      "description": "质量工程门禁，防错规约",
+      "metadata": {
+        "path": "_external/ecc",
+        "count": 286,
+        "total_files": 2444
+      }
+    },
+    {
+      "id": "pssp-protocol",
+      "label": "PSSP组装协议",
+      "type": "protocol",
+      "description": "Persona⊕Skill⊕SOP⊕Context动态执行体装配",
+      "metadata": {
+        "formula": "Agent Container = Persona ⊕ Skill ⊕ SOP ⊕ Dynamic Context"
+      }
+    },
+    {
+      "id": "celery",
+      "label": "Celery分布式队列",
+      "type": "task-queue",
+      "description": "18核心任务，3队列：celery/deerflow/cross_border",
+      "metadata": {
+        "queues": ["celery", "deerflow", "cross_border"],
+        "tasks_registered": 18,
+        "beat_match": "12/12"
+      }
+    },
+    {
+      "id": "apscheduler",
+      "label": "APScheduler调度器",
+      "type": "scheduler",
+      "description": "rank/geo/hermes_patrol/ops_autopilot调度",
+      "metadata": {
+        "schedulers": ["rank", "geo", "hermes_patrol", "ops_autopilot", "daily_cycle"]
+      }
+    },
+    {
+      "id": "browser-runtime",
+      "label": "Browser Runtime",
+      "type": "evidence-collector",
+      "description": "无头浏览器沙箱，Playwright执行",
+      "metadata": {
+        "tech_stack": "Playwright",
+        "path": "backend/app/services/browser_runtime",
+        "evidence": ["Disk JSONL", "DB TaskTrace.artifacts"]
+      }
+    },
+    {
+      "id": "n8n",
+      "label": "n8n工作流引擎",
+      "type": "workflow-engine",
+      "description": "出站分发，5678容器，2 Webhook激活",
+      "ports": [5678],
+      "metadata": {
+        "webhooks": ["site-built-notify", "content-publish-dispatch"],
+        "status": "active_200"
+      }
+    },
+    {
+      "id": "postgresql",
+      "label": "PostgreSQL 15.8",
+      "type": "database",
+      "description": "229表，单head 105，端口5433",
+      "ports": [5433],
+      "metadata": {
+        "version": "15.8",
+        "tables": 229,
+        "models": 93,
+        "migration_head": "105_reconcile_model_backfill",
+        "installation": "原生安装 youding-pg"
+      }
+    },
+    {
+      "id": "redis",
+      "label": "Redis 5.0",
+      "type": "cache",
+      "description": "缓存，会话，队列，端口6379",
+      "ports": [6379],
+      "metadata": {
+        "version": "5.0",
+        "installation": "原生安装",
+        "uses": ["缓存", "会话", "Celery broker"]
+      }
+    },
+    {
+      "id": "minio",
+      "label": "MinIO对象存储",
+      "type": "storage",
+      "description": "文件，图片，单证，端口9000/9001",
+      "ports": [9000, 9001],
+      "metadata": {
+        "tech_stack": "Docker",
+        "uses": ["文件存储", "图片", "单证"]
+      }
+    },
+    {
+      "id": "qdrant",
+      "label": "Qdrant向量库",
+      "type": "vector-db",
+      "description": "AI知识库向量，端口6333",
+      "ports": [6333],
+      "metadata": {
+        "uses": ["AI知识库", "向量检索"]
+      }
+    },
+    {
+      "id": "obsidian-brain",
+      "label": "Obsidian第二大脑",
+      "type": "knowledge-base",
+      "description": "NTFS Junction直通，双向热同步",
+      "metadata": {
+        "path": "C:\\Users\\Administrator\\Documents\\Obsidian Vault\\优丁YouDing-AI智能大脑",
+        "connection": "NTFS Junction"
+      }
+    },
+    {
+      "id": "whatsapp-plugin",
+      "label": "WhatsApp Plugin",
+      "type": "external-service",
+      "description": "Node.js服务，Baileys协议，实时翻译",
+      "ports": [3100, 5193],
+      "metadata": {
+        "tech_stack": "Node.js + Baileys",
+        "api_port": 3100,
+        "ui_port": 5193,
+        "features": ["多账号", "实时翻译", "AES-256-GCM"],
+        "integration_status": "missing_event_bus"
+      }
+    },
+    {
+      "id": "inquiry-capture",
+      "label": "询盘捕获",
+      "type": "business-process",
+      "description": "外贸7步履约第1步：询盘捕获"
+    },
+    {
+      "id": "requirement-calc",
+      "label": "需求核算",
+      "type": "business-process", 
+      "description": "外贸7步履约第2步：BOQ解析，22参数核价"
+    },
+    {
+      "id": "pi-generator",
+      "label": "形式发票PI",
+      "type": "business-process",
+      "description": "外贸7步履约第3步：智能生成PI PDF/Excel"
+    },
+    {
+      "id": "deposit-verify",
+      "label": "定金核销",
+      "type": "business-process",
+      "description": "外贸7步履约第4步：支付验证"
+    },
+    {
+      "id": "production-tracking",
+      "label": "生产跟单",
+      "type": "business-process",
+      "description": "外贸7步履约第5步：订单跟踪"
+    },
+    {
+      "id": "shipping-docs",
+      "label": "发运单证",
+      "type": "business-process",
+      "description": "外贸7步履约第6步：CI/PL报关草单"
+    },
+    {
+      "id": "final-payment-logistics",
+      "label": "尾款物流",
+      "type": "business-process",
+      "description": "外贸7步履约第7步：追踪回执"
+    },
+    {
+      "id": "saas-billing",
+      "label": "SaaS订阅计费",
+      "type": "billing",
+      "description": "三轨计费第1轨：基础/专业/旗舰年费"
+    },
+    {
+      "id": "ai-token-billing",
+      "label": "AI Token计量",
+      "type": "billing",
+      "description": "三轨计费第2轨：Token Wallet Guard实时拦截"
+    },
+    {
+      "id": "ip-slot-billing",
+      "label": "静态IP槽位计费",
+      "type": "billing",
+      "description": "三轨计费第3轨：EgressEndpoint指纹租借"
+    }
+  ],
+  "edges": [
+    {
+      "from": "web-frontend",
+      "to": "nginx",
+      "label": "HTTP Cookie/Bearer",
+      "type": "request"
+    },
+    {
+      "from": "admin-frontend", 
+      "to": "nginx",
+      "label": "HTTP Cookie/Bearer",
+      "type": "request"
+    },
+    {
+      "from": "seo-admin",
+      "to": "nginx",
+      "label": "HTTP JWT mid",
+      "type": "request"
+    },
+    {
+      "from": "nginx",
+      "to": "tenant-middleware",
+      "label": "Host解析",
+      "type": "routing"
+    },
+    {
+      "from": "tenant-middleware",
+      "to": "fastapi-backend",
+      "label": "租户上下文注入",
+      "type": "context"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "deepseek-harness",
+      "label": "意图解析请求",
+      "type": "orchestration"
+    },
+    {
+      "from": "deepseek-harness",
+      "to": "hermes-control-plane",
+      "label": "TaskGraph Spec JSON",
+      "type": "orchestration"
+    },
+    {
+      "from": "hermes-control-plane",
+      "to": "dag-governor",
+      "label": "拓扑防爆检查",
+      "type": "validation"
+    },
+    {
+      "from": "dag-governor",
+      "to": "trade-ai-agent",
+      "label": "hermes_node:trade_ai_agent",
+      "type": "execution",
+      "status": "missing_adapter"
+    },
+    {
+      "from": "dag-governor",
+      "to": "deerflow",
+      "label": "hermes_node:deerflow",
+      "type": "execution"
+    },
+    {
+      "from": "dag-governor",
+      "to": "goodjob-crm",
+      "label": "hermes_node:goodjob_crm",
+      "type": "execution",
+      "status": "missing_adapter"
+    },
+    {
+      "from": "dag-governor",
+      "to": "site-calc-engine",
+      "label": "计算任务分发",
+      "type": "execution"
+    },
+    {
+      "from": "trade-ai-agent",
+      "to": "pssp-protocol",
+      "label": "执行体装配",
+      "type": "composition"
+    },
+    {
+      "from": "deerflow",
+      "to": "pssp-protocol",
+      "label": "执行体装配",
+      "type": "composition"
+    },
+    {
+      "from": "goodjob-crm",
+      "to": "pssp-protocol",
+      "label": "执行体装配",
+      "type": "composition"
+    },
+    {
+      "from": "pssp-protocol",
+      "to": "skills-76",
+      "label": "技能加载",
+      "type": "resource"
+    },
+    {
+      "from": "pssp-protocol",
+      "to": "agencyzh-276",
+      "label": "角色加载",
+      "type": "resource"
+    },
+    {
+      "from": "pssp-protocol",
+      "to": "ecc-286",
+      "label": "SOP加载",
+      "type": "resource"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "celery",
+      "label": "异步任务提交",
+      "type": "async"
+    },
+    {
+      "from": "celery",
+      "to": "apscheduler",
+      "label": "定时调度",
+      "type": "scheduling"
+    },
+    {
+      "from": "trade-ai-agent",
+      "to": "browser-runtime",
+      "label": "社媒爬取",
+      "type": "execution"
+    },
+    {
+      "from": "browser-runtime",
+      "to": "n8n",
+      "label": "证据触发",
+      "type": "event"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "n8n",
+      "label": "工作流触发",
+      "type": "event"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "postgresql",
+      "label": "数据持久化",
+      "type": "data"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "redis",
+      "label": "缓存/会话",
+      "type": "cache"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "minio",
+      "label": "文件存储",
+      "type": "storage"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "qdrant",
+      "label": "向量检索",
+      "type": "data"
+    },
+    {
+      "from": "deepseek-harness",
+      "to": "obsidian-brain",
+      "label": "知识检索",
+      "type": "knowledge"
+    },
+    {
+      "from": "goodjob-crm",
+      "to": "whatsapp-plugin",
+      "label": "Baileys协议",
+      "type": "integration",
+      "status": "missing_event_bus"
+    },
+    {
+      "from": "inquiry-capture",
+      "to": "requirement-calc",
+      "label": "询盘转核算",
+      "type": "flow"
+    },
+    {
+      "from": "requirement-calc",
+      "to": "pi-generator",
+      "label": "核算转报价",
+      "type": "flow"
+    },
+    {
+      "from": "pi-generator",
+      "to": "deposit-verify",
+      "label": "报价转定金",
+      "type": "flow"
+    },
+    {
+      "from": "deposit-verify",
+      "to": "production-tracking",
+      "label": "定金转生产",
+      "type": "flow"
+    },
+    {
+      "from": "production-tracking",
+      "to": "shipping-docs",
+      "label": "生产转发运",
+      "type": "flow"
+    },
+    {
+      "from": "shipping-docs",
+      "to": "final-payment-logistics",
+      "label": "发运转尾款",
+      "type": "flow"
+    },
+    {
+      "from": "final-payment-logistics",
+      "to": "saas-billing",
+      "label": "成交计费",
+      "type": "billing"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "ai-token-billing",
+      "label": "Token计量",
+      "type": "billing"
+    },
+    {
+      "from": "fastapi-backend",
+      "to": "ip-slot-billing",
+      "label": "IP槽位计量",
+      "type": "billing"
+    }
+  ],
+  "views": {
+    "primary": {
+      "name": "主要数据流",
+      "description": "从用户接入到外贸履约闭环的主要数据流",
+      "highlighted_nodes": ["web-frontend", "fastapi-backend", "hermes-control-plane", "goodjob-crm", "postgresql"],
+      "highlighted_edges": ["web-frontend->nginx", "nginx->tenant-middleware", "tenant-middleware->fastapi-backend"]
+    },
+    "missing-adapters": {
+      "name": "缺失适配器视图",
+      "description": "显示所有状态为missing_adapter或missing_event_bus的连接",
+      "highlighted_nodes": ["trade-ai-agent", "goodjob-crm", "whatsapp-plugin"],
+      "highlighted_edges": ["dag-governor->trade-ai-agent", "dag-governor->goodjob-crm", "goodjob-crm->whatsapp-plugin"],
+      "style": "warning"
+    },
+    "trade-flow": {
+      "name": "外贸7步履约流程",
+      "description": "完整的对外贸易履约闭环",
+      "highlighted_nodes": ["inquiry-capture", "requirement-calc", "pi-generator", "deposit-verify", "production-tracking", "shipping-docs", "final-payment-logistics"],
+      "highlighted_edges": ["inquiry-capture->requirement-calc", "requirement-calc->pi-generator", "pi-generator->deposit-verify", "deposit-verify->production-tracking", "production-tracking->shipping-docs", "shipping-docs->final-payment-logistics"],
+      "style": "flow"
+    },
+    "orchestration": {
+      "name": "编排层架构",
+      "description": "AEOS核心编排层的组件连接",
+      "highlighted_nodes": ["deepseek-harness", "hermes-control-plane", "dag-governor", "celery", "apscheduler"],
+      "highlighted_edges": ["deepseek-harness->hermes-control-plane", "hermes-control-plane->dag-governor", "fastapi-backend->celery", "celery->apscheduler"],
+      "style": "technical"
+    }
+  },
+  "metadata": {
+    "created": "2026-09-20",
+    "author": "System Architect",
+    "version": "1.0.0",
+    "project": "AEOS全域企业级AI操作系统",
+    "source_documents": [
+      "AGENTS.md",
+      "AEOS_MASTER_ARCHITECTURE_SPEC.md", 
+      "AEOS_MASTER_CODEBASE_INDEX.md",
+      "AEOS_GLOBAL_SYSTEM_REGISTRY.json",
+      "architecture.md"
+    ]
+  }
+}

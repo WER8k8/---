@@ -1,0 +1,28 @@
+﻿{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "validate",
+  "stage": "render",
+  "type": "architecture",
+  "input": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-dense-panorama-2026-09-24.architecture.json",
+  "error": "architecture schema validation failed:\n  /components/12 (id/label: \"hermes\") must NOT have additional properties {\"additionalProperty\":\"variant\"}",
+  "diagnostics": [
+    {
+      "code": "schema/additionalProperties",
+      "severity": "error",
+      "message": "/components/12 (id/label: \"hermes\") must NOT have additional properties {\"additionalProperty\":\"variant\"}",
+      "subject": {
+        "diagramType": "architecture",
+        "path": "/components/12",
+        "identity": "hermes"
+      },
+      "evidence": {
+        "keyword": "additionalProperties",
+        "additionalProperty": "variant"
+      },
+      "supportedFixes": [
+        "remove unsupported property \"variant\""
+      ]
+    }
+  ]
+}

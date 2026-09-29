@@ -1,0 +1,2833 @@
+{
+ "generated_by": "tools/capability_ledger.py",
+ "summary": {
+  "route_modules": 172,
+  "total_endpoints": 1582,
+  "service_domains": 48,
+  "registered_executors": [
+   "accio",
+   "agent_ops",
+   "ai_engine",
+   "billing",
+   "biz_bot",
+   "browser",
+   "commerce_ops",
+   "compliance_ops",
+   "content_deep",
+   "content",
+   "data_ops",
+   "deerflow",
+   "desktop_hermes",
+   "egress",
+   "engagement",
+   "forum",
+   "goodjob_crm",
+   "growth_probe",
+   "inquiry",
+   "lead",
+   "logistics",
+   "media",
+   "module_matrix",
+   "nurture",
+   "order",
+   "outreach_loop",
+   "platform_ops",
+   "portal_ops",
+   "product",
+   "publish",
+   "research",
+   "seo",
+   "site_builder",
+   "trade_ai_agent",
+   "trade_ops",
+   "ubrain",
+   "wangcai"
+  ],
+  "routers_keys": [
+   "ai_site_build",
+   "site_build",
+   "ubrain_intent",
+   "wangcai_intent",
+   "deepseek_harness",
+   "growth_loop",
+   "commercial_loop",
+   "video_publish",
+   "workflow_canvas"
+  ],
+  "wired_modules": 172,
+  "stubbed_modules": 0,
+  "wireable_modules": 0,
+  "orphan_modules": 0,
+  "wired_endpoints": 1582,
+  "wiring_rate_by_module": 100.0,
+  "wiring_rate_by_endpoint": 100.0
+ },
+ "executors": {
+  "accio": "services\\hermes\\executors\\accio_executor.py",
+  "agent_ops": "services\\hermes\\executors\\agent_ops_executor.py",
+  "ai_engine": "services\\hermes\\executors\\ai_engine_executor.py",
+  "billing": "services\\hermes\\executors\\billing_executor.py",
+  "biz_bot": "services\\hermes\\executors\\biz_bot_executor.py",
+  "browser": "services\\hermes\\executors\\browser_executor.py",
+  "commerce_ops": "services\\hermes\\executors\\commerce_ops_executor.py",
+  "compliance_ops": "services\\hermes\\executors\\compliance_ops_executor.py",
+  "content_deep": "services\\hermes\\executors\\content_deep_executor.py",
+  "content": "services\\hermes\\executors\\content_executor.py",
+  "data_ops": "services\\hermes\\executors\\data_ops_executor.py",
+  "deerflow": "services\\hermes\\executors\\deerflow_executor.py",
+  "desktop_hermes": "services\\hermes\\executors\\desktop_hermes_executor.py",
+  "egress": "services\\hermes\\executors\\egress_executor.py",
+  "engagement": "services\\hermes\\executors\\engagement_executor.py",
+  "forum": "services\\hermes\\executors\\forum_executor.py",
+  "goodjob_crm": "services\\hermes\\executors\\goodjob_crm_executor.py",
+  "growth_probe": "services\\hermes\\executors\\growth_probe_executor.py",
+  "inquiry": "services\\hermes\\executors\\inquiry_executor.py",
+  "lead": "services\\hermes\\executors\\lead_executor.py",
+  "logistics": "services\\hermes\\executors\\logistics_executor.py",
+  "media": "services\\hermes\\executors\\media_executor.py",
+  "module_matrix": "services\\hermes\\executors\\module_matrix_executor.py",
+  "nurture": "services\\hermes\\executors\\nurture_executor.py",
+  "order": "services\\hermes\\executors\\order_executor.py",
+  "outreach_loop": "services\\hermes\\executors\\outreach_loop_executor.py",
+  "platform_ops": "services\\hermes\\executors\\platform_ops_executor.py",
+  "portal_ops": "services\\hermes\\executors\\portal_ops_executor.py",
+  "product": "services\\hermes\\executors\\product_executor.py",
+  "publish": "services\\hermes\\executors\\publish_executor.py",
+  "research": "services\\hermes\\executors\\research_executor.py",
+  "seo": "services\\hermes\\executors\\seo_executor.py",
+  "site_builder": "services\\hermes\\executors\\site_builder_executor.py",
+  "trade_ai_agent": "services\\hermes\\executors\\trade_ai_agent_executor.py",
+  "trade_ops": "services\\hermes\\executors\\trade_ops_executor.py",
+  "ubrain": "services\\hermes\\executors\\ubrain_executor.py",
+  "wangcai": "services\\hermes\\executors\\wangcai_executor.py"
+ },
+ "modules": [
+  {
+   "module": "ab_test",
+   "path": "api\\v1\\routes\\ab_test.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /",
+    "GET /{test_id}",
+    "POST /",
+    "PUT /{test_id}"
+   ],
+   "loc": 111,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "acquisition",
+   "path": "api\\v1\\routes\\acquisition.py",
+   "endpoints": 68,
+   "sample": [
+    "POST /intent/preview",
+    "POST /buyers/upsert",
+    "GET /buyers/{buyer_id}",
+    "GET /buyers/by-email/{tenant_id}/{email}"
+   ],
+   "loc": 1849,
+   "status": "✅ 已串联",
+   "via": "executor:commerce_ops",
+   "executor": "commerce_ops"
+  },
+  {
+   "module": "acquisition_pipeline",
+   "path": "api\\v1\\routes\\acquisition_pipeline.py",
+   "endpoints": 6,
+   "sample": [
+    "POST /enrich-buyer",
+    "POST /generate-pitch",
+    "POST /cadence-plan",
+    "GET /objections"
+   ],
+   "loc": 293,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "agent_bff",
+   "path": "api\\v1\\routes\\agent_bff.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /summary"
+   ],
+   "loc": 60,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "agent_hub",
+   "path": "api\\v1\\routes\\agent_hub.py",
+   "endpoints": 9,
+   "sample": [
+    "GET /",
+    "GET /mcp-bridge",
+    "POST /mcp-bridge",
+    "GET /mcp-bridge/tools"
+   ],
+   "loc": 195,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "agent_portal",
+   "path": "api\\v1\\routes\\agent_portal.py",
+   "endpoints": 9,
+   "sample": [
+    "GET /dashboard",
+    "GET /clients",
+    "GET /payments",
+    "GET /trends"
+   ],
+   "loc": 311,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "agent_tree",
+   "path": "api\\v1\\routes\\agent_tree.py",
+   "endpoints": 10,
+   "sample": [
+    "POST /nodes",
+    "PUT /nodes/{node_id}",
+    "DELETE /nodes/{node_id}",
+    "GET /stats"
+   ],
+   "loc": 331,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "ai_chat",
+   "path": "api\\v1\\routes\\ai_chat.py",
+   "endpoints": 3,
+   "sample": [
+    "POST /webhook",
+    "GET /sessions/{session_id}",
+    "POST /sessions/{session_id}/email"
+   ],
+   "loc": 191,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ai_config",
+   "path": "api\\v1\\routes\\ai_config.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "PUT /",
+    "POST /provider/{provider_id}/toggle",
+    "GET /stats"
+   ],
+   "loc": 107,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "ai_generate",
+   "path": "api\\v1\\routes\\ai_generate.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /generate",
+    "POST /optimize",
+    "POST /product/generate",
+    "POST /product/polish"
+   ],
+   "loc": 183,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ai_learning",
+   "path": "api\\v1\\routes\\ai_learning.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /",
+    "GET /behavior",
+    "GET /conversion-funnel",
+    "GET /auto-ab-test"
+   ],
+   "loc": 259,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ai_scenario_models",
+   "path": "api\\v1\\routes\\ai_scenario_models.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /scenario-models",
+    "PUT /scenario-models"
+   ],
+   "loc": 61,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ai_templates",
+   "path": "api\\v1\\routes\\ai_templates.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "POST /",
+    "PUT /{tpl_id}",
+    "DELETE /{tpl_id}"
+   ],
+   "loc": 165,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "ai_usage",
+   "path": "api\\v1\\routes\\ai_usage.py",
+   "endpoints": 8,
+   "sample": [
+    "GET /overview",
+    "GET /daily",
+    "GET /models",
+    "GET /logs"
+   ],
+   "loc": 365,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "ai_visibility",
+   "path": "api\\v1\\routes\\ai_visibility.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /queries",
+    "POST /queries",
+    "POST /runs",
+    "GET /visibility"
+   ],
+   "loc": 184,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "aitoearn_hub",
+   "path": "api\\v1\\routes\\aitoearn_hub.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /capabilities",
+    "POST /engage/reply",
+    "POST /engage/comments"
+   ],
+   "loc": 155,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "analytics",
+   "path": "api\\v1\\routes\\analytics.py",
+   "endpoints": 12,
+   "sample": [
+    "GET /site-context",
+    "POST /event",
+    "GET /operations/traffic-board",
+    "GET /traffic-board"
+   ],
+   "loc": 646,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "annex",
+   "path": "api\\v1\\routes\\annex.py",
+   "endpoints": 2,
+   "sample": [
+    "POST /annex/ticket",
+    "POST /annex/redeem"
+   ],
+   "loc": 93,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "app_bff",
+   "path": "api\\v1\\routes\\app_bff.py",
+   "endpoints": 10,
+   "sample": [
+    "GET /home",
+    "POST /devices/register",
+    "POST /push/test",
+    "GET /config"
+   ],
+   "loc": 342,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "attribution",
+   "path": "api\\v1\\routes\\attribution.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /attribution",
+    "POST /attribution/email-reply"
+   ],
+   "loc": 115,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "auth",
+   "path": "api\\v1\\routes\\auth.py",
+   "endpoints": 14,
+   "sample": [
+    "POST /login",
+    "POST /refresh",
+    "POST /logout",
+    "POST /change-password"
+   ],
+   "loc": 764,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "auto_discovery",
+   "path": "api\\v1\\routes\\auto_discovery.py",
+   "endpoints": 0,
+   "sample": [],
+   "loc": 264,
+   "status": "✅ 已串联",
+   "via": "executor:desktop_hermes",
+   "executor": "desktop_hermes"
+  },
+  {
+   "module": "baidu_webmaster",
+   "path": "api\\v1\\routes\\baidu_webmaster.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /baidu/sitemap/submit",
+    "GET /baidu/index-count",
+    "GET /baidu/search-queries",
+    "POST /baidu/url-push"
+   ],
+   "loc": 76,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "building_wiki",
+   "path": "api\\v1\\routes\\building_wiki.py",
+   "endpoints": 7,
+   "sample": [
+    "POST /generate",
+    "GET /articles",
+    "GET /articles/{article_id}",
+    "PUT /articles/{article_id}"
+   ],
+   "loc": 424,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "calculator",
+   "path": "api\\v1\\routes\\calculator.py",
+   "endpoints": 3,
+   "sample": [
+    "POST /thermal",
+    "POST /fire-protection",
+    "POST /quantity"
+   ],
+   "loc": 42,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "campaign",
+   "path": "api\\v1\\routes\\campaign.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /",
+    "GET /{campaign_id}",
+    "POST /"
+   ],
+   "loc": 144,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "case_studies",
+   "path": "api\\v1\\routes\\case_studies.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /",
+    "GET /{case_id}",
+    "POST /{case_id}/images",
+    "POST /"
+   ],
+   "loc": 264,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "churn",
+   "path": "api\\v1\\routes\\churn.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /at-risk",
+    "GET /tips",
+    "POST /mark-contacted/{tenant_id}",
+    "GET /trend"
+   ],
+   "loc": 98,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "client",
+   "path": "api\\v1\\routes\\client.py",
+   "endpoints": 15,
+   "sample": [
+    "GET /dashboard",
+    "GET /publish-readiness",
+    "GET /ai-connect",
+    "GET /ai-traffic-recharge-catalog"
+   ],
+   "loc": 592,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "client_bff",
+   "path": "api\\v1\\routes\\client_bff.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /bootstrap",
+    "GET /dashboard"
+   ],
+   "loc": 70,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "code_quality",
+   "path": "api\\v1\\routes\\code_quality.py",
+   "endpoints": 13,
+   "sample": [
+    "GET /config/eslint",
+    "GET /config/prettier",
+    "GET /config/vitest",
+    "GET /config/all"
+   ],
+   "loc": 148,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "cognitive",
+   "path": "api\\v1\\routes\\cognitive.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "GET /qa-engine",
+    "GET /expert-system",
+    "GET /semantic-index"
+   ],
+   "loc": 81,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "company",
+   "path": "api\\v1\\routes\\company.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "GET /{company_id}",
+    "POST /",
+    "POST /{company_id}/signals"
+   ],
+   "loc": 307,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "compliance",
+   "path": "api\\v1\\routes\\compliance.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /",
+    "GET /security-alerts",
+    "GET /audit",
+    "GET /issues"
+   ],
+   "loc": 202,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "component_versions",
+   "path": "api\\v1\\routes\\component_versions.py",
+   "endpoints": 5,
+   "sample": [
+    "GET /",
+    "GET /{module}/history",
+    "POST /register",
+    "POST /hot-reload"
+   ],
+   "loc": 121,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "content",
+   "path": "api\\v1\\routes\\content.py",
+   "endpoints": 25,
+   "sample": [
+    "GET /",
+    "GET /",
+    "GET /pages",
+    "GET /pages/search"
+   ],
+   "loc": 586,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "content_master",
+   "path": "api\\v1\\routes\\content_master.py",
+   "endpoints": 8,
+   "sample": [
+    "GET /",
+    "POST /",
+    "POST /publish-auto-variants",
+    "GET /{master_id}"
+   ],
+   "loc": 534,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "crm_pipeline",
+   "path": "api\\v1\\routes\\crm_pipeline.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /opportunities/stages",
+    "GET /pipeline/stats",
+    "GET /opportunities",
+    "POST /opportunities"
+   ],
+   "loc": 528,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "cross_border",
+   "path": "api\\v1\\routes\\cross_border.py",
+   "endpoints": 27,
+   "sample": [
+    "GET /inquiries/bridge-status",
+    "POST /inquiries/imap-poll",
+    "GET /inquiries/pipeline/summary",
+    "PATCH /inquiries/{inquiry_id}/pipeline-stage"
+   ],
+   "loc": 831,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "cross_platform_dashboard",
+   "path": "api\\v1\\routes\\cross_platform_dashboard.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /overview",
+    "GET /nurture",
+    "GET /publish",
+    "GET /summary"
+   ],
+   "loc": 133,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "customer_support",
+   "path": "api\\v1\\routes\\customer_support.py",
+   "endpoints": 1,
+   "sample": [
+    "POST /message"
+   ],
+   "loc": 41,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "daily_report",
+   "path": "api\\v1\\routes\\daily_report.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /",
+    "GET /history"
+   ],
+   "loc": 41,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "deepseek_harness",
+   "path": "api\\v1\\routes\\deepseek_harness.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /health",
+    "POST /invoke"
+   ],
+   "loc": 100,
+   "status": "✅ 已串联",
+   "via": "executor:desktop_hermes",
+   "executor": "desktop_hermes"
+  },
+  {
+   "module": "deskcomm_bridge",
+   "path": "api\\v1\\routes\\deskcomm_bridge.py",
+   "endpoints": 10,
+   "sample": [
+    "GET /matrix",
+    "GET /mcp/tools",
+    "POST /mcp/call",
+    "GET /automation/rules"
+   ],
+   "loc": 191,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "developer",
+   "path": "api\\v1\\routes\\developer.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "GET /sdk",
+    "GET /low-code",
+    "GET /plugins"
+   ],
+   "loc": 81,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "domain",
+   "path": "api\\v1\\routes\\domain.py",
+   "endpoints": 9,
+   "sample": [
+    "GET /resolve",
+    "GET /tenants/{tenant_id}/domains",
+    "POST /tenants/{tenant_id}/domains",
+    "DELETE /tenants/{tenant_id}/domains/{domain:path}"
+   ],
+   "loc": 375,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "domain_registry",
+   "path": "api\\v1\\routes\\domain_registry.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /"
+   ],
+   "loc": 42,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "domestic_pipeline",
+   "path": "api\\v1\\routes\\domestic_pipeline.py",
+   "endpoints": 6,
+   "sample": [
+    "POST /create-inquiry",
+    "POST /advance-stage",
+    "POST /rmb-quote",
+    "POST /wecom-followup"
+   ],
+   "loc": 186,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "edge_cdn",
+   "path": "api\\v1\\routes\\edge_cdn.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /",
+    "GET /nodes",
+    "POST /nodes",
+    "GET /preheat"
+   ],
+   "loc": 103,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "egress",
+   "path": "api\\v1\\routes\\egress.py",
+   "endpoints": 26,
+   "sample": [
+    "GET /overview",
+    "GET /tenants",
+    "GET /endpoints",
+    "POST /endpoints"
+   ],
+   "loc": 895,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "email_campaigns",
+   "path": "api\\v1\\routes\\email_campaigns.py",
+   "endpoints": 8,
+   "sample": [
+    "GET /campaigns/{campaign_id}",
+    "PUT /campaigns/{campaign_id}/pause",
+    "PUT /campaigns/{campaign_id}/resume",
+    "POST /resend/{email_id}"
+   ],
+   "loc": 544,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "email_queue",
+   "path": "api\\v1\\routes\\email_queue.py",
+   "endpoints": 22,
+   "sample": [
+    "POST /enqueue",
+    "POST /enqueue/batch",
+    "POST /dequeue",
+    "GET /stats"
+   ],
+   "loc": 315,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "email_tracking",
+   "path": "api\\v1\\routes\\email_tracking.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /pixel/{message_id}.png"
+   ],
+   "loc": 82,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "evidence_analyzer",
+   "path": "api\\v1\\routes\\evidence_analyzer.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /analyze",
+    "POST /analyze/persisted",
+    "POST /analyze/jsonl",
+    "GET /analyzer/stats"
+   ],
+   "loc": 132,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "feishu",
+   "path": "api\\v1\\routes\\feishu.py",
+   "endpoints": 10,
+   "sample": [
+    "POST /webhook",
+    "POST /send",
+    "POST /send/inquiry/{inquiry_id}",
+    "GET /bind"
+   ],
+   "loc": 371,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "file_scans",
+   "path": "api\\v1\\routes\\file_scans.py",
+   "endpoints": 5,
+   "sample": [
+    "GET /",
+    "GET /",
+    "POST /",
+    "POST /"
+   ],
+   "loc": 157,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "files",
+   "path": "api\\v1\\routes\\files.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /storage-profile",
+    "POST /upload",
+    "POST /upload-multi",
+    "GET /"
+   ],
+   "loc": 462,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "finance",
+   "path": "api\\v1\\routes\\finance.py",
+   "endpoints": 20,
+   "sample": [
+    "GET /commission-rules",
+    "PUT /commission-rules/{rule_id}",
+    "GET /expiring-tenants",
+    "GET /ledger"
+   ],
+   "loc": 746,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "follow_up",
+   "path": "api\\v1\\routes\\follow_up.py",
+   "endpoints": 7,
+   "sample": [
+    "POST /sequence/build",
+    "POST /sequence/advance",
+    "POST /next-action",
+    "GET /best-send-time"
+   ],
+   "loc": 204,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "foreign_trade",
+   "path": "api\\v1\\routes\\foreign_trade.py",
+   "endpoints": 35,
+   "sample": [
+    "GET /ecosystem/overview",
+    "GET /ecosystem/catalog",
+    "GET /integrations/sidecars/status",
+    "GET /integrations/matrix-oauth-gate"
+   ],
+   "loc": 882,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "foreign_trade_skills",
+   "path": "api\\v1\\routes\\foreign_trade_skills.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /",
+    "POST /{skill_name}"
+   ],
+   "loc": 83,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "forum",
+   "path": "api\\v1\\routes\\forum.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /status",
+    "GET /config",
+    "PUT /config",
+    "GET /setup-guide"
+   ],
+   "loc": 223,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "founder_ops",
+   "path": "api\\v1\\routes\\founder_ops.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /preflight",
+    "GET /status",
+    "GET /crypto/self-test",
+    "POST /crypto/seal"
+   ],
+   "loc": 240,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "gdpr",
+   "path": "api\\v1\\routes\\gdpr.py",
+   "endpoints": 1,
+   "sample": [
+    "POST /delete-data"
+   ],
+   "loc": 242,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "gdpr_compliance",
+   "path": "api\\v1\\routes\\gdpr_compliance.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /export/{user_id}",
+    "POST /anonymize"
+   ],
+   "loc": 51,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "global_search",
+   "path": "api\\v1\\routes\\global_search.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /workspace"
+   ],
+   "loc": 133,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "globalization",
+   "path": "api\\v1\\routes\\globalization.py",
+   "endpoints": 11,
+   "sample": [
+    "GET /",
+    "GET /glossary",
+    "POST /glossary",
+    "PUT /glossary/{term_id}"
+   ],
+   "loc": 233,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "google_radar",
+   "path": "api\\v1\\routes\\google_radar.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /dork-matrix",
+    "POST /verify-email",
+    "GET /trade-flow",
+    "POST /eeat-schema"
+   ],
+   "loc": 81,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "google_search_console",
+   "path": "api\\v1\\routes\\google_search_console.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /gsc/status",
+    "GET /gsc/performance"
+   ],
+   "loc": 42,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "growth_loop",
+   "path": "api\\v1\\routes\\growth_loop.py",
+   "endpoints": 1,
+   "sample": [
+    "POST /launch"
+   ],
+   "loc": 51,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "growth_tools",
+   "path": "api\\v1\\routes\\growth_tools.py",
+   "endpoints": 16,
+   "sample": [
+    "GET /dashboard",
+    "GET /agent/presets",
+    "GET /agent/runs",
+    "GET /keywords/hot"
+   ],
+   "loc": 475,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "health",
+   "path": "api\\v1\\routes\\health.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /health",
+    "GET /health/db",
+    "GET /health/ready"
+   ],
+   "loc": 118,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "hermes",
+   "path": "api\\v1\\routes\\hermes.py",
+   "endpoints": 83,
+   "sample": [
+    "GET /plugins/catalog",
+    "POST /plugins/{plugin_id}/run",
+    "GET /agency/providers/setup-plan",
+    "POST /agency/providers/bootstrap"
+   ],
+   "loc": 1868,
+   "status": "✅ 已串联",
+   "via": "executor:desktop_hermes",
+   "executor": "desktop_hermes"
+  },
+  {
+   "module": "hub",
+   "path": "api\\v1\\routes\\hub.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /pages/{tenant_slug}/{content_id}",
+    "GET /sitemap.xml",
+    "GET /search-console/checklist",
+    "POST /search-console/ping"
+   ],
+   "loc": 162,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "inquiries",
+   "path": "api\\v1\\routes\\inquiries.py",
+   "endpoints": 17,
+   "sample": [
+    "GET /portal",
+    "GET /unified",
+    "GET /",
+    "GET /"
+   ],
+   "loc": 771,
+   "status": "✅ 已串联",
+   "via": "executor:commerce_ops",
+   "executor": "commerce_ops"
+  },
+  {
+   "module": "inquiry_channels",
+   "path": "api\\v1\\routes\\inquiry_channels.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /config",
+    "POST /wecom",
+    "POST /douyin"
+   ],
+   "loc": 144,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "integrations",
+   "path": "api\\v1\\routes\\integrations.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /status"
+   ],
+   "loc": 35,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "international",
+   "path": "api\\v1\\routes\\international.py",
+   "endpoints": 11,
+   "sample": [
+    "POST /webhook",
+    "GET /inquiries",
+    "GET /inquiries/{inquiry_id}",
+    "PUT /inquiries/{inquiry_id}"
+   ],
+   "loc": 377,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "invoice_applications",
+   "path": "api\\v1\\routes\\invoice_applications.py",
+   "endpoints": 0,
+   "sample": [],
+   "loc": 486,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "knowledge",
+   "path": "api\\v1\\routes\\knowledge.py",
+   "endpoints": 5,
+   "sample": [
+    "GET /categories",
+    "GET /search",
+    "POST /ask",
+    "GET /info"
+   ],
+   "loc": 101,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "knowledge_graph",
+   "path": "api\\v1\\routes\\knowledge_graph.py",
+   "endpoints": 11,
+   "sample": [
+    "POST /query",
+    "POST /entity-search",
+    "GET /path/{from_id}/{to_id}",
+    "POST /path"
+   ],
+   "loc": 364,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "knowledge_ingestion",
+   "path": "api\\v1\\routes\\knowledge_ingestion.py",
+   "endpoints": 9,
+   "sample": [
+    "POST /market-report",
+    "POST /buyer-persona",
+    "POST /competitor-analysis",
+    "POST /geo-strategy"
+   ],
+   "loc": 197,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "lead_enrichment",
+   "path": "api\\v1\\routes\\lead_enrichment.py",
+   "endpoints": 10,
+   "sample": [
+    "GET /status",
+    "GET /hunter/domain-search",
+    "GET /hunter/email-verify",
+    "POST /hunter/batch-verify"
+   ],
+   "loc": 192,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "lead_generation",
+   "path": "api\\v1\\routes\\lead_generation.py",
+   "endpoints": 13,
+   "sample": [
+    "POST /search",
+    "GET /verify-email",
+    "GET /scrape-website",
+    "POST /send-outreach"
+   ],
+   "loc": 684,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "lead_pipeline",
+   "path": "api\\v1\\routes\\lead_pipeline.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /pipeline/process",
+    "POST /pipeline/process-batch",
+    "POST /score",
+    "POST /score-batch"
+   ],
+   "loc": 140,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "lead_search",
+   "path": "api\\v1\\routes\\lead_search.py",
+   "endpoints": 7,
+   "sample": [
+    "POST /index",
+    "POST /index/batch",
+    "POST /index/remove",
+    "GET /search"
+   ],
+   "loc": 126,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "lead_tools",
+   "path": "api\\v1\\routes\\lead_tools.py",
+   "endpoints": 6,
+   "sample": [
+    "POST /import/csv",
+    "POST /import/csv/validate",
+    "GET /export/csv",
+    "GET /funnel"
+   ],
+   "loc": 298,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "license",
+   "path": "api\\v1\\routes\\license.py",
+   "endpoints": 14,
+   "sample": [
+    "POST /generate",
+    "POST /activate",
+    "POST /{license_id}/revoke",
+    "GET /"
+   ],
+   "loc": 509,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "linkedin_sales",
+   "path": "api\\v1\\routes\\linkedin_sales.py",
+   "endpoints": 12,
+   "sample": [
+    "GET /status",
+    "GET /auth/url",
+    "POST /auth/exchange",
+    "GET /people/search"
+   ],
+   "loc": 244,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "logistics",
+   "path": "api\\v1\\routes\\logistics.py",
+   "endpoints": 8,
+   "sample": [
+    "GET /track",
+    "POST /orders/{order_id}/sync-tracking",
+    "GET /",
+    "GET /lbs-routing"
+   ],
+   "loc": 182,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "matching",
+   "path": "api\\v1\\routes\\matching.py",
+   "endpoints": 1,
+   "sample": [
+    "POST /product-match"
+   ],
+   "loc": 91,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "mcp_sse",
+   "path": "api\\v1\\routes\\mcp_sse.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /sse",
+    "POST /messages"
+   ],
+   "loc": 89,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "media_factory",
+   "path": "api\\v1\\routes\\media_factory.py",
+   "endpoints": 27,
+   "sample": [
+    "GET /",
+    "GET /videos",
+    "POST /upload",
+    "POST /ai-write"
+   ],
+   "loc": 1435,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "metrics",
+   "path": "api\\v1\\routes\\metrics.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /metrics"
+   ],
+   "loc": 108,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "mobile_public",
+   "path": "api\\v1\\routes\\mobile_public.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /im-routing",
+    "GET /site-policy"
+   ],
+   "loc": 88,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "moss_vl_clip_publish",
+   "path": "api\\v1\\routes\\moss_vl_clip_publish.py",
+   "endpoints": 9,
+   "sample": [
+    "POST /analyze",
+    "POST /auto-clip",
+    "POST /clip-and-publish",
+    "GET /version/status"
+   ],
+   "loc": 142,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "multimodal_studio",
+   "path": "api\\v1\\routes\\multimodal_studio.py",
+   "endpoints": 2,
+   "sample": [
+    "POST /image-prompt",
+    "POST /social-post"
+   ],
+   "loc": 41,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "negotiation",
+   "path": "api\\v1\\routes\\negotiation.py",
+   "endpoints": 8,
+   "sample": [
+    "GET /settings",
+    "PUT /settings",
+    "GET /{negotiation_id}/approval-status",
+    "POST /{negotiation_id}/quote"
+   ],
+   "loc": 543,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "news",
+   "path": "api\\v1\\routes\\news.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /",
+    "GET /",
+    "GET /{news_id_or_slug}",
+    "POST /"
+   ],
+   "loc": 197,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "notifications",
+   "path": "api\\v1\\routes\\notifications.py",
+   "endpoints": 7,
+   "sample": [
+    "POST /",
+    "GET /",
+    "GET /{notification_id}",
+    "PUT /{notification_id}/read"
+   ],
+   "loc": 206,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "onboarding",
+   "path": "api\\v1\\routes\\onboarding.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /status",
+    "POST /complete-step",
+    "POST /generate-sample",
+    "GET /achievements"
+   ],
+   "loc": 65,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "opportunity",
+   "path": "api\\v1\\routes\\opportunity.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /stats",
+    "GET /",
+    "GET /{opportunity_id}",
+    "POST /"
+   ],
+   "loc": 375,
+   "status": "✅ 已串联",
+   "via": "executor:commerce_ops",
+   "executor": "commerce_ops"
+  },
+  {
+   "module": "ops_aggregate",
+   "path": "api\\v1\\routes\\ops_aggregate.py",
+   "endpoints": 5,
+   "sample": [
+    "GET /cost-summary",
+    "GET /task-board",
+    "GET /system-logs",
+    "GET /module-visibility"
+   ],
+   "loc": 117,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ops_automation",
+   "path": "api\\v1\\routes\\ops_automation.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /",
+    "GET /",
+    "POST /",
+    "POST /"
+   ],
+   "loc": 165,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ops_jobs",
+   "path": "api\\v1\\routes\\ops_jobs.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /",
+    "GET /"
+   ],
+   "loc": 39,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ops_scheduler_tasks",
+   "path": "api\\v1\\routes\\ops_scheduler_tasks.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /",
+    "GET /",
+    "POST /",
+    "POST /"
+   ],
+   "loc": 174,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "orchestration",
+   "path": "api\\v1\\routes\\orchestration.py",
+   "endpoints": 9,
+   "sample": [
+    "POST /tasks",
+    "POST /tasks/from-intent",
+    "POST /golden-path/fulfillment",
+    "POST /golden-path/outreach"
+   ],
+   "loc": 485,
+   "status": "✅ 已串联",
+   "via": "executor:desktop_hermes",
+   "executor": "desktop_hermes"
+  },
+  {
+   "module": "outreach_quality",
+   "path": "api\\v1\\routes\\outreach_quality.py",
+   "endpoints": 10,
+   "sample": [
+    "POST /evaluate",
+    "POST /ab-test/create",
+    "POST /ab-test/analyze",
+    "POST /ab-test/generate-variants"
+   ],
+   "loc": 233,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "p2_enhancement",
+   "path": "api\\v1\\routes\\p2_enhancement.py",
+   "endpoints": 28,
+   "sample": [
+    "POST /acquisition/channel-optimal",
+    "POST /acquisition/route-lead",
+    "POST /acquisition/predict-time",
+    "POST /acquisition/predict-churn"
+   ],
+   "loc": 292,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "paperclip",
+   "path": "api\\v1\\routes\\paperclip.py",
+   "endpoints": 36,
+   "sample": [
+    "POST /companies",
+    "GET /companies",
+    "GET /companies/{company_id}",
+    "PUT /companies/{company_id}"
+   ],
+   "loc": 671,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "payment",
+   "path": "api\\v1\\routes\\payment.py",
+   "endpoints": 35,
+   "sample": [
+    "GET /channels/status",
+    "GET /ops/status",
+    "POST /ops/wechat/refresh-certs",
+    "POST /ops/alipay/probe"
+   ],
+   "loc": 1012,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "payment_international",
+   "path": "api\\v1\\routes\\payment_international.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /stripe/checkout",
+    "POST /stripe/webhook",
+    "POST /paypal/create",
+    "POST /paypal/capture"
+   ],
+   "loc": 90,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "performance",
+   "path": "api\\v1\\routes\\performance.py",
+   "endpoints": 17,
+   "sample": [
+    "POST /message-bus/publish",
+    "GET /message-bus/stats",
+    "POST /message-bus/process",
+    "POST /cdn/cache-rules"
+   ],
+   "loc": 227,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "platform",
+   "path": "api\\v1\\routes\\platform.py",
+   "endpoints": 21,
+   "sample": [
+    "GET /",
+    "GET /catalog/alignment",
+    "GET /catalog",
+    "GET /rank-priority"
+   ],
+   "loc": 532,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "platform_bff",
+   "path": "api\\v1\\routes\\platform_bff.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /overview"
+   ],
+   "loc": 106,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "product_commerce",
+   "path": "api\\v1\\routes\\product_commerce.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /plans",
+    "GET /value-proposition",
+    "GET /credits/system",
+    "GET /credits/balance"
+   ],
+   "loc": 140,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "product_commercial",
+   "path": "api\\v1\\routes\\product_commercial.py",
+   "endpoints": 22,
+   "sample": [
+    "POST /agent/register",
+    "POST /agent/commission",
+    "GET /agent/report/{user_id}",
+    "GET /agent/tiers"
+   ],
+   "loc": 262,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "product_faqs",
+   "path": "api\\v1\\routes\\product_faqs.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /product/{product_id}",
+    "POST /",
+    "PUT /{faq_id}",
+    "DELETE /{faq_id}"
+   ],
+   "loc": 99,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "products",
+   "path": "api\\v1\\routes\\products.py",
+   "endpoints": 26,
+   "sample": [
+    "GET /categories",
+    "GET /categories/tree",
+    "GET /categories/{category_id}",
+    "POST /categories"
+   ],
+   "loc": 840,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "project",
+   "path": "api\\v1\\routes\\project.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "GET /stats",
+    "GET /{project_id}",
+    "POST /"
+   ],
+   "loc": 215,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "prospect_research",
+   "path": "api\\v1\\routes\\prospect_research.py",
+   "endpoints": 3,
+   "sample": [
+    "POST /research",
+    "POST /generate-email",
+    "POST /generate-email/from-research"
+   ],
+   "loc": 124,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "public_agent_storefront",
+   "path": "api\\v1\\routes\\public_agent_storefront.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /tenants/{domain}/agent/manifest",
+    "GET /tenants/{domain}/agent/catalog",
+    "POST /tenants/{domain}/agent/match",
+    "POST /tenants/{domain}/agent/inquiry"
+   ],
+   "loc": 378,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  },
+  {
+   "module": "public_forum",
+   "path": "api\\v1\\routes\\public_forum.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /tenants/{domain}/forum-embed"
+   ],
+   "loc": 53,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "public_tenant_geo",
+   "path": "api\\v1\\routes\\public_tenant_geo.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /tenants/{domain}/llms.txt",
+    "GET /tenants/{domain}/llms-full.txt",
+    "GET /tenants/{domain}/geo-score",
+    "GET /tenants/{domain}/ai-search-probes"
+   ],
+   "loc": 115,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "public_tenant_media",
+   "path": "api\\v1\\routes\\public_tenant_media.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /tenants/{domain}/videos",
+    "GET /tenants/{domain}/videos/{task_id}",
+    "GET /tenants/{domain}/videos-sitemap.xml"
+   ],
+   "loc": 67,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "public_visitor_context",
+   "path": "api\\v1\\routes\\public_visitor_context.py",
+   "endpoints": 1,
+   "sample": [
+    "GET /tenants/{domain}/visitor-context"
+   ],
+   "loc": 81,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "public_wangcai",
+   "path": "api\\v1\\routes\\public_wangcai.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /tenants/{domain}/wangcai/prompts",
+    "POST /tenants/{domain}/wangcai/ask",
+    "GET /tenants/{domain}/wangcai/customs"
+   ],
+   "loc": 260,
+   "status": "✅ 已串联",
+   "via": "executor:data_ops",
+   "executor": "data_ops"
+  },
+  {
+   "module": "publish_tasks",
+   "path": "api\\v1\\routes\\publish_tasks.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /",
+    "GET /queue/stats",
+    "GET /{task_id}",
+    "PUT /{task_id}"
+   ],
+   "loc": 269,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "rank_check",
+   "path": "api\\v1\\routes\\rank_check.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /rank/check",
+    "POST /rank/batch-check"
+   ],
+   "loc": 70,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "recycle_bin",
+   "path": "api\\v1\\routes\\recycle_bin.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "POST /{item_type}/{item_id}/restore",
+    "DELETE /{item_type}/{item_id}",
+    "POST /batch-delete"
+   ],
+   "loc": 147,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "referral",
+   "path": "api\\v1\\routes\\referral.py",
+   "endpoints": 12,
+   "sample": [
+    "GET /",
+    "GET /",
+    "GET /my-code",
+    "POST /generate"
+   ],
+   "loc": 202,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "reviews",
+   "path": "api\\v1\\routes\\reviews.py",
+   "endpoints": 9,
+   "sample": [
+    "POST /",
+    "GET /",
+    "GET /{review_id}",
+    "PUT /{review_id}"
+   ],
+   "loc": 425,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "rfq",
+   "path": "api\\v1\\routes\\rfq.py",
+   "endpoints": 6,
+   "sample": [
+    "POST /",
+    "GET /",
+    "GET /stats",
+    "GET /{rfq_id}"
+   ],
+   "loc": 509,
+   "status": "✅ 已串联",
+   "via": "executor:trade_ops",
+   "executor": "trade_ops"
+  },
+  {
+   "module": "sales_ext",
+   "path": "api\\v1\\routes\\sales_ext.py",
+   "endpoints": 12,
+   "sample": [
+    "POST /campaigns/{campaign_id}/pause",
+    "POST /campaigns/{campaign_id}/resume",
+    "GET /emails/{email_id}",
+    "POST /emails/{email_id}/resend"
+   ],
+   "loc": 287,
+   "status": "✅ 已串联",
+   "via": "executor:commerce_ops",
+   "executor": "commerce_ops"
+  },
+  {
+   "module": "sales_task",
+   "path": "api\\v1\\routes\\sales_task.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "GET /{task_id}",
+    "POST /",
+    "PUT /{task_id}/status"
+   ],
+   "loc": 229,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "search_strategy",
+   "path": "api\\v1\\routes\\search_strategy.py",
+   "endpoints": 8,
+   "sample": [
+    "POST /build",
+    "POST /google-dork",
+    "POST /linkedin-url",
+    "GET /industry-insights"
+   ],
+   "loc": 155,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "security_advanced",
+   "path": "api\\v1\\routes\\security_advanced.py",
+   "endpoints": 13,
+   "sample": [
+    "POST /gmssl/encrypt",
+    "POST /gmssl/decrypt",
+    "POST /gmssl/hash",
+    "POST /gmssl/hmac"
+   ],
+   "loc": 235,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "security_tickets",
+   "path": "api\\v1\\routes\\security_tickets.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /tickets",
+    "POST /tickets",
+    "PUT /tickets/{ticket_id}",
+    "DELETE /tickets/{ticket_id}"
+   ],
+   "loc": 141,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "seo_diagnosis",
+   "path": "api\\v1\\routes\\seo_diagnosis.py",
+   "endpoints": 2,
+   "sample": [
+    "GET /seo-diagnosis",
+    "POST /seo-diagnosis"
+   ],
+   "loc": 49,
+   "status": "✅ 已串联",
+   "via": "executor:growth_probe",
+   "executor": "growth_probe"
+  },
+  {
+   "module": "seo_matrix",
+   "path": "api\\v1\\routes\\seo_matrix.py",
+   "endpoints": 61,
+   "sample": [
+    "GET /settings",
+    "PUT /settings",
+    "GET /ai-config",
+    "POST /ai-config"
+   ],
+   "loc": 2372,
+   "status": "✅ 已串联",
+   "via": "executor:content_deep",
+   "executor": "content_deep"
+  },
+  {
+   "module": "settings",
+   "path": "api\\v1\\routes\\settings.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /",
+    "PUT /site",
+    "PUT /seo",
+    "PUT /system"
+   ],
+   "loc": 86,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "site_ai_generator",
+   "path": "api\\v1\\routes\\site_ai_generator.py",
+   "endpoints": 4,
+   "sample": [
+    "POST /generate",
+    "POST /translate",
+    "GET /locales",
+    "POST /publish"
+   ],
+   "loc": 81,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "skill_store",
+   "path": "api\\v1\\routes\\skill_store.py",
+   "endpoints": 9,
+   "sample": [
+    "GET /marketplace/summary",
+    "GET /catalog",
+    "GET /skills",
+    "GET /skills/{skill_id}"
+   ],
+   "loc": 118,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "social_interactions",
+   "path": "api\\v1\\routes\\social_interactions.py",
+   "endpoints": 9,
+   "sample": [
+    "GET /worker/config",
+    "GET /summary",
+    "GET /",
+    "GET /negotiations"
+   ],
+   "loc": 379,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "social_nurture",
+   "path": "api\\v1\\routes\\social_nurture.py",
+   "endpoints": 11,
+   "sample": [
+    "GET /rules",
+    "GET /cycles",
+    "POST /cycles",
+    "POST /cycles/{cycle_id}/transition"
+   ],
+   "loc": 376,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ssl_certificates",
+   "path": "api\\v1\\routes\\ssl_certificates.py",
+   "endpoints": 5,
+   "sample": [
+    "POST /",
+    "GET /",
+    "GET /{cert_id}",
+    "POST /{cert_id}/renew"
+   ],
+   "loc": 209,
+   "status": "✅ 已串联",
+   "via": "executor:compliance_ops",
+   "executor": "compliance_ops"
+  },
+  {
+   "module": "super_agent",
+   "path": "api\\v1\\routes\\super_agent.py",
+   "endpoints": 26,
+   "sample": [
+    "POST /research/start",
+    "GET /research/{report_id}",
+    "GET /research/{report_id}/status",
+    "POST /instructions/generate"
+   ],
+   "loc": 1407,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "system",
+   "path": "api\\v1\\routes\\system.py",
+   "endpoints": 16,
+   "sample": [
+    "GET /health",
+    "GET /info",
+    "GET /logs",
+    "POST /cache/clear"
+   ],
+   "loc": 433,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "system_health",
+   "path": "api\\v1\\routes\\system_health.py",
+   "endpoints": 9,
+   "sample": [
+    "GET /",
+    "GET /cache-stats",
+    "GET /audit-logs",
+    "GET /stress-test"
+   ],
+   "loc": 226,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "talking_stick",
+   "path": "api\\v1\\routes\\talking_stick.py",
+   "endpoints": 7,
+   "sample": [
+    "POST /scan",
+    "GET /scan/{task_id}/status",
+    "GET /scan/{task_id}/result",
+    "DELETE /scan/{task_id}"
+   ],
+   "loc": 159,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "task_control_admin",
+   "path": "api\\v1\\routes\\task_control_admin.py",
+   "endpoints": 5,
+   "sample": [
+    "GET /pending-reviews",
+    "GET /{task_id}",
+    "POST /{task_id}/resume",
+    "POST /{task_id}/cancel"
+   ],
+   "loc": 280,
+   "status": "✅ 已串联",
+   "via": "executor:desktop_hermes",
+   "executor": "desktop_hermes"
+  },
+  {
+   "module": "tech_radar",
+   "path": "api\\v1\\routes\\tech_radar.py",
+   "endpoints": 4,
+   "sample": [
+    "GET /tech-radar",
+    "GET /tech-radar/latest-techniques",
+    "GET /tech-radar/sources",
+    "POST /apply-findings"
+   ],
+   "loc": 102,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "technical_qna",
+   "path": "api\\v1\\routes\\technical_qna.py",
+   "endpoints": 1,
+   "sample": [
+    "POST /"
+   ],
+   "loc": 55,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "tenant_ai_config",
+   "path": "api\\v1\\routes\\tenant_ai_config.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /my-configs",
+    "POST /my-configs",
+    "PUT /my-configs/{config_id}",
+    "DELETE /my-configs/{config_id}"
+   ],
+   "loc": 294,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "tenants",
+   "path": "api\\v1\\routes\\tenants.py",
+   "endpoints": 40,
+   "sample": [
+    "GET /invoices",
+    "POST /invoices/generate",
+    "PUT /invoices/{invoice_id}",
+    "GET /"
+   ],
+   "loc": 1542,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "token_ledger",
+   "path": "api\\v1\\routes\\token_ledger.py",
+   "endpoints": 7,
+   "sample": [
+    "GET /balance/{tenant_id}",
+    "POST /consume",
+    "POST /topup",
+    "GET /my-quota"
+   ],
+   "loc": 276,
+   "status": "✅ 已串联",
+   "via": "executor:commerce_ops",
+   "executor": "commerce_ops"
+  },
+  {
+   "module": "trade_fulfillment_ops",
+   "path": "api\\v1\\routes\\trade_fulfillment_ops.py",
+   "endpoints": 11,
+   "sample": [
+    "POST /trade/inquiries/capture",
+    "POST /api/v1/trade/inquiries/capture",
+    "POST /orders/fulfillment/quote",
+    "POST /api/v1/orders/fulfillment/quote"
+   ],
+   "loc": 442,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "trade_intel",
+   "path": "api\\v1\\routes\\trade_intel.py",
+   "endpoints": 10,
+   "sample": [
+    "GET /feasibility",
+    "GET /blue-ocean",
+    "GET /matrix-stats",
+    "GET /market-sources"
+   ],
+   "loc": 217,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ubrain",
+   "path": "api\\v1\\routes\\ubrain.py",
+   "endpoints": 17,
+   "sample": [
+    "POST /chat",
+    "POST /geo-content-matrix",
+    "GET /inquiries/latest",
+    "GET /ops-snapshot"
+   ],
+   "loc": 577,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ubrain_analytics",
+   "path": "api\\v1\\routes\\ubrain_analytics.py",
+   "endpoints": 6,
+   "sample": [
+    "POST /track-decision",
+    "POST /track-execution",
+    "POST /track-feedback",
+    "GET /decision-chain/{decision_id}"
+   ],
+   "loc": 246,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "ubrain_commercial_os",
+   "path": "api\\v1\\routes\\ubrain_commercial_os.py",
+   "endpoints": 16,
+   "sample": [
+    "GET /gaps",
+    "GET /partial-skills",
+    "GET /gap/{skill_id}",
+    "POST /gap/{skill_id}/execute"
+   ],
+   "loc": 467,
+   "status": "✅ 已串联",
+   "via": "executor:desktop_hermes",
+   "executor": "desktop_hermes"
+  },
+  {
+   "module": "unified_publish",
+   "path": "api\\v1\\routes\\unified_publish.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /dashboard",
+    "GET /tasks",
+    "POST /tasks/batch-retry",
+    "POST /tasks/batch-cancel"
+   ],
+   "loc": 421,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "users",
+   "path": "api\\v1\\routes\\users.py",
+   "endpoints": 10,
+   "sample": [
+    "GET /",
+    "GET /me",
+    "GET /logs",
+    "GET /{user_id}"
+   ],
+   "loc": 227,
+   "status": "✅ 已串联",
+   "via": "executor:platform_ops",
+   "executor": "platform_ops"
+  },
+  {
+   "module": "vector_search",
+   "path": "api\\v1\\routes\\vector_search.py",
+   "endpoints": 6,
+   "sample": [
+    "POST /search",
+    "POST /upsert",
+    "POST /hybrid-search",
+    "DELETE /{collection}/{point_id}"
+   ],
+   "loc": 256,
+   "status": "✅ 已串联",
+   "via": "executor:agent_ops",
+   "executor": "agent_ops"
+  },
+  {
+   "module": "video_publish",
+   "path": "api\\v1\\routes\\video_publish.py",
+   "endpoints": 13,
+   "sample": [
+    "GET /video/bind-hub",
+    "GET /video/sau-check",
+    "POST /video/note-distribute",
+    "GET /video/scheduled-queue"
+   ],
+   "loc": 578,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "video_space",
+   "path": "api\\v1\\routes\\video_space.py",
+   "endpoints": 3,
+   "sample": [
+    "GET /",
+    "GET /",
+    "GET /status"
+   ],
+   "loc": 58,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "wallet",
+   "path": "api\\v1\\routes\\wallet.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /balance",
+    "POST /deposit",
+    "POST /withdraw",
+    "POST /transfer"
+   ],
+   "loc": 149,
+   "status": "✅ 已串联",
+   "via": "executor:commerce_ops",
+   "executor": "commerce_ops"
+  },
+  {
+   "module": "wangcai_marketplace",
+   "path": "api\\v1\\routes\\wangcai_marketplace.py",
+   "endpoints": 6,
+   "sample": [
+    "GET /marketplace",
+    "GET /browser-companions",
+    "GET /installed",
+    "POST /{plugin_id}/install"
+   ],
+   "loc": 228,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "whatsapp_business",
+   "path": "api\\v1\\routes\\whatsapp_business.py",
+   "endpoints": 17,
+   "sample": [
+    "POST /send/text",
+    "POST /send/template",
+    "POST /send/image",
+    "POST /send/document"
+   ],
+   "loc": 365,
+   "status": "✅ 已串联",
+   "via": "executor:outreach_loop",
+   "executor": "outreach_loop"
+  },
+  {
+   "module": "whatsapp_events",
+   "path": "api\\v1\\routes\\whatsapp_events.py",
+   "endpoints": 5,
+   "sample": [
+    "POST /inbound",
+    "POST /ack",
+    "POST /connection",
+    "GET /stats"
+   ],
+   "loc": 94,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "workflow_canvas",
+   "path": "api\\v1\\routes\\workflow_canvas.py",
+   "endpoints": 1,
+   "sample": [
+    "POST /execute"
+   ],
+   "loc": 36,
+   "status": "✅ 已串联",
+   "via": "executor:biz_bot",
+   "executor": "biz_bot"
+  },
+  {
+   "module": "workspace",
+   "path": "api\\v1\\routes\\workspace.py",
+   "endpoints": 8,
+   "sample": [
+    "POST /prospecting/search",
+    "GET /prospecting/leads",
+    "GET /prospecting/leads/{lead_id}",
+    "POST /prospecting/leads/{lead_id}/convert"
+   ],
+   "loc": 280,
+   "status": "✅ 已串联",
+   "via": "executor:portal_ops",
+   "executor": "portal_ops"
+  }
+ ],
+ "service_domains": [
+  {
+   "domain": "acquisition",
+   "files": 39,
+   "loc": 7740
+  },
+  {
+   "domain": "adapters",
+   "files": 2,
+   "loc": 276
+  },
+  {
+   "domain": "agent_loop",
+   "files": 5,
+   "loc": 952
+  },
+  {
+   "domain": "ai",
+   "files": 5,
+   "loc": 1955
+  },
+  {
+   "domain": "ai_sales_ops",
+   "files": 5,
+   "loc": 369
+  },
+  {
+   "domain": "analytics",
+   "files": 5,
+   "loc": 745
+  },
+  {
+   "domain": "annex",
+   "files": 2,
+   "loc": 240
+  },
+  {
+   "domain": "billing",
+   "files": 4,
+   "loc": 841
+  },
+  {
+   "domain": "browser_runtime",
+   "files": 8,
+   "loc": 2439
+  },
+  {
+   "domain": "calculators",
+   "files": 2,
+   "loc": 150
+  },
+  {
+   "domain": "crawlers",
+   "files": 6,
+   "loc": 1390
+  },
+  {
+   "domain": "cross_border",
+   "files": 33,
+   "loc": 7019
+  },
+  {
+   "domain": "deepseek_harness",
+   "files": 3,
+   "loc": 289
+  },
+  {
+   "domain": "deerflow",
+   "files": 7,
+   "loc": 2752
+  },
+  {
+   "domain": "deskcomm",
+   "files": 7,
+   "loc": 913
+  },
+  {
+   "domain": "domestic",
+   "files": 5,
+   "loc": 604
+  },
+  {
+   "domain": "egress",
+   "files": 5,
+   "loc": 1026
+  },
+  {
+   "domain": "evolution",
+   "files": 6,
+   "loc": 2083
+  },
+  {
+   "domain": "facade",
+   "files": 1,
+   "loc": 54
+  },
+  {
+   "domain": "feishu",
+   "files": 5,
+   "loc": 1558
+  },
+  {
+   "domain": "foreign_trade",
+   "files": 44,
+   "loc": 7195
+  },
+  {
+   "domain": "geo",
+   "files": 15,
+   "loc": 3456
+  },
+  {
+   "domain": "goodjob",
+   "files": 2,
+   "loc": 580
+  },
+  {
+   "domain": "google_intelligence",
+   "files": 5,
+   "loc": 396
+  },
+  {
+   "domain": "hermes",
+   "files": 120,
+   "loc": 31973
+  },
+  {
+   "domain": "marketing",
+   "files": 1,
+   "loc": 115
+  },
+  {
+   "domain": "matching_engine",
+   "files": 3,
+   "loc": 680
+  },
+  {
+   "domain": "media",
+   "files": 1,
+   "loc": 37
+  },
+  {
+   "domain": "model_gateway",
+   "files": 5,
+   "loc": 637
+  },
+  {
+   "domain": "moss_vl",
+   "files": 7,
+   "loc": 825
+  },
+  {
+   "domain": "n8n",
+   "files": 4,
+   "loc": 958
+  },
+  {
+   "domain": "orchestrator",
+   "files": 2,
+   "loc": 296
+  },
+  {
+   "domain": "paperclip",
+   "files": 7,
+   "loc": 2790
+  },
+  {
+   "domain": "payment_pkg",
+   "files": 4,
+   "loc": 1069
+  },
+  {
+   "domain": "pipeline",
+   "files": 7,
+   "loc": 752
+  },
+  {
+   "domain": "platforms",
+   "files": 10,
+   "loc": 3007
+  },
+  {
+   "domain": "policy",
+   "files": 2,
+   "loc": 261
+  },
+  {
+   "domain": "publish_workers",
+   "files": 9,
+   "loc": 1277
+  },
+  {
+   "domain": "registry",
+   "files": 11,
+   "loc": 2310
+  },
+  {
+   "domain": "seo",
+   "files": 9,
+   "loc": 1113
+  },
+  {
+   "domain": "site_builder",
+   "files": 3,
+   "loc": 673
+  },
+  {
+   "domain": "talking_stick",
+   "files": 19,
+   "loc": 3086
+  },
+  {
+   "domain": "tasks",
+   "files": 6,
+   "loc": 1834
+  },
+  {
+   "domain": "trace",
+   "files": 4,
+   "loc": 825
+  },
+  {
+   "domain": "tradeai",
+   "files": 2,
+   "loc": 535
+  },
+  {
+   "domain": "ubrain",
+   "files": 83,
+   "loc": 31739
+  },
+  {
+   "domain": "vault",
+   "files": 3,
+   "loc": 539
+  },
+  {
+   "domain": "wangcai",
+   "files": 8,
+   "loc": 1612
+  }
+ ]
+}

@@ -1,0 +1,3154 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "validate",
+  "stage": "render",
+  "type": "architecture",
+  "input": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-arch-v9.architecture.json",
+  "error": "Architecture layout validation failed:\n- [clean-flow/endpoint-side-direction] architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" first segment 0 [640, 347] -> [640, 583] does not honor inferred fromSide \"left\" — it must run horizontal leftward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" final segment 0 [640, 347] -> [640, 583] does not honor inferred toSide \"right\" — it must run horizontal leftward from the right; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" first segment 0 [640, 283] -> [640, 569] does not honor inferred fromSide \"left\" — it must run horizontal leftward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/endpoint-side-direction] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" final segment 0 [640, 283] -> [640, 569] does not honor inferred toSide \"right\" — it must run horizontal leftward from the right; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.\n- [clean-flow/edge-through-node] architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses component \"redis\" (unrelated to this relationship) on segment 0 [710, 55] -> [835, 55] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses component \"api\" (unrelated to this relationship) on segment 0 [830, 55] -> [515, 55] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses component \"experience\" (unrelated to this relationship) on segment 2 [515, 434] -> [200, 434] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"site\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"deerflow\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"goodjob\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"trade\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"pg\" (unrelated to this relationship) on segment 2 [690, 148] -> [1180, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"experience\" (unrelated to this relationship) on segment 0 [200, 442] -> [690, 442] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" crosses component \"browser\" (unrelated to this relationship) on segment 1 [640, 347] -> [640, 583] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" crosses component \"trade\" (unrelated to this relationship) on segment 1 [640, 283] -> [640, 569] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [clean-flow/edge-through-node] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" crosses component \"browser\" (unrelated to this relationship) on segment 1 [640, 283] -> [640, 569] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.\n- [composition/proper-crossing] showcase architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [835, 148] (segments 1 and 2) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[12] id \"hermes-site\" \"hermes\" -> \"site\" at [516, 228] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" at [516, 234] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" at [516, 240] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" at [516, 246] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" at [460, 426] (segments 2 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[18] id \"hermes-experience\" \"hermes\" -> \"experience\" at [355, 426] (segments 2 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[12] id \"hermes-site\" \"hermes\" -> \"site\" at [515, 228] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" at [515, 234] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" at [515, 240] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" at [515, 246] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" at [460, 434] (segments 2 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[8] id \"billing-pg\" \"billing\" -> \"pg\" crosses connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [1140, 148] (segments 1 and 2) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [460, 442] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses connections[28] id \"experience-pg\" \"experience\" -> \"pg\" at [460, 458] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" at [640, 442] (segments 0 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" at [640, 442] (segments 0 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" crosses connections[28] id \"experience-pg\" \"experience\" -> \"pg\" at [640, 458] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/proper-crossing] showcase architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" crosses connections[28] id \"experience-pg\" \"experience\" -> \"pg\" at [640, 458] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.\n- [composition/ambiguous-corridor] showcase architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" shares a 120px corridor with connections[7] id \"redis-celery\" \"redis\" -> \"celery\" at [710, 55] -> [830, 55] (segments 0 and 0; minimum 8px) — adjust route/via or fromSide/toSide so unrelated connections do not visually merge.\n- [composition/ambiguous-corridor] showcase architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" shares a 80px corridor with connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [800, 148] -> [880, 148] (segments 0 and 2; minimum 8px) — adjust route/via or fromSide/toSide so unrelated connections do not visually merge.\n- Label \"DAG Spec\" overlaps component \"harness\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [331, 156, 48, 14]\n  component \"harness\" rect: [270, 120, 170, 56]\n  Suggested fix: labelAt [355, 190] or labelDy +24 (below); or labelAt [355, 116] or labelDy -50 (above)\n- Label \"经验回流\" overlaps component \"hermes\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [331, 248, 48, 14]\n  component \"hermes\" rect: [270, 212, 170, 56]\n  Suggested fix: labelAt [355, 282] or labelDy +24 (below); or labelAt [355, 208] or labelDy -50 (above)\n- Label \"site_built / content_pub\" overlaps component \"goodjob\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [627, 275, 125, 14]\n  component \"goodjob\" rect: [640, 248, 160, 56]\n  Suggested fix: labelAt [690, 318] or labelDy +33 (below); or labelAt [690, 244] or labelDy -41 (above)\n- Label \"Webhook 出站\" overlaps component \"n8n\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [1236, 156, 68, 14]\n  component \"n8n\" rect: [1180, 120, 180, 56]\n  Suggested fix: labelAt [1270, 190] or labelDy +24 (below); or labelAt [1270, 116] or labelDy -50 (above)\n- Label \"evolution_experiences\" overlaps component \"pg\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [881, 368, 111, 14]\n  component \"pg\" rect: [960, 120, 140, 340]\n  Suggested fix: labelAt [936, 474] or labelDy +96 (below); or labelAt [936, 116] or labelDy -262 (above)\n- [composition/label-route-clearance] showcase architecture label \"SQL 落库\" on connections[3] id \"api-pg\" \"api\" -> \"pg\" label \"SQL 落库\" is 2.5px from connections[19] id \"site-pg\" \"site\" -> \"pg\" label \"站点 / 核价落库\" segment 0 [800, 148] -> [880, 148] (label rect [811, 132, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"SQL 落库\" on connections[3] id \"api-pg\" \"api\" -> \"pg\" label \"SQL 落库\" is 2.5px from connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" label \"site_built / content_pub\" segment 2 [690, 148] -> [1180, 148] (label rect [811, 132, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"AI 意图分解\" on connections[4] id \"api-harness\" \"api\" -> \"harness\" label \"AI 意图分解\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [459, 78, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"AI 意图分解\" on connections[4] id \"api-harness\" \"api\" -> \"harness\" label \"AI 意图分解\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [459, 78, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 0px from connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" segment 0 [440, 228] -> [540, 228] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 0px from connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" segment 0 [440, 234] -> [540, 234] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 3px from connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" segment 0 [440, 240] -> [540, 240] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 0px from connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" segment 0 [440, 228] -> [540, 228] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 0px from connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" segment 0 [440, 234] -> [540, 234] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 1.5px from connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" segment 0 [440, 240] -> [540, 240] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"PSSP 注入\" on connections[11] id \"hermes-assets\" \"hermes\" -> \"assets\" label \"PSSP 注入\" is 0px from connections[16] id \"hermes-celery\" \"hermes\" -> \"celery\" label \"执行器调度\" segment 1 [235, 252] -> [235, 450] (label rect [208, 274, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"建站 / 核价\" on connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [509, 168, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"建站 / 核价\" on connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [509, 168, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"内容生成\" on connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [516, 203, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"内容生成\" on connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" is 0.8px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [516, 203, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"内容生成\" on connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" is 0px from connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" segment 1 [540, 228] -> [540, 148] (label rect [516, 203, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0.5px from connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" segment 0 [440, 234] -> [540, 234] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0px from connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" segment 0 [440, 246] -> [540, 246] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-B 拓客\" on connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [513, 270, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-B 拓客\" on connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [513, 270, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"GP-B 拓客\" on connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" is 0.5px from connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" segment 1 [540, 240] -> [540, 269] (label rect [513, 270, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"执行器调度\" on connections[16] id \"hermes-celery\" \"hermes\" -> \"celery\" label \"执行器调度\" is 0px from connections[11] id \"hermes-assets\" \"hermes\" -> \"assets\" label \"PSSP 注入\" segment 1 [235, 240] -> [235, 348] (label rect [206, 331, 58, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"研报落库\" on connections[20] id \"deerflow-pg\" \"deerflow\" -> \"pg\" label \"研报落库\" is 0px from connections[19] id \"site-pg\" \"site\" -> \"pg\" label \"站点 / 核价落库\" segment 1 [880, 148] -> [880, 262] (label rect [856, 224, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"线索落库\" on connections[22] id \"trade-pg\" \"trade\" -> \"pg\" label \"线索落库\" is 0px from connections[21] id \"goodjob-pg\" \"goodjob\" -> \"pg\" label \"履约数据\" segment 2 [824, 306] -> [936, 306] (label rect [856, 302, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"site_built / content_pub\" on connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" label \"site_built / content_pub\" is 0px from connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" label \"实时翻译\" segment 0 [640, 283] -> [640, 569] (label rect [627, 275, 125, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"矩阵消息\" on connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" is 3px from connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" label \"site_built / content_pub\" segment 0 [200, 442] -> [690, 442] (label rect [616, 445, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"矩阵消息\" on connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" is 0px from connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" label \"实时翻译\" segment 0 [640, 283] -> [640, 569] (label rect [616, 445, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"矩阵消息\" on connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" is 0px from connections[28] id \"experience-pg\" \"experience\" -> \"pg\" label \"evolution_experiences\" segment 0 [440, 458] -> [936, 458] (label rect [616, 445, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"实时翻译\" on connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" label \"实时翻译\" is 0px from connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" segment 0 [640, 347] -> [640, 583] (label rect [616, 406, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"双轨取证\" on connections[27] id \"browser-pg\" \"browser\" -> \"pg\" label \"双轨取证\" is 0px from connections[28] id \"experience-pg\" \"experience\" -> \"pg\" label \"evolution_experiences\" segment 1 [936, 458] -> [936, 318] (label rect [912, 395, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.\n- [composition/label-route-clearance] showcase architecture label \"evolution_experiences\" on connections[28] id \"experience-pg\" \"experience\" -> \"pg\" label \"evolution_experiences\" is 0px from connections[27] id \"browser-pg\" \"browser\" -> \"pg\" label \"双轨取证\" segment 1 [936, 498] -> [936, 332] (label rect [881, 368, 111, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+  "diagnostics": [
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" first segment 0 [640, 347] -> [640, 583] does not honor inferred fromSide \"left\" — it must run horizontal leftward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "endpoint": "source",
+        "authoredField": "fromSide",
+        "sideOrigin": "inferred",
+        "side": "left",
+        "segmentIndex": 0,
+        "from": [
+          640,
+          347
+        ],
+        "to": [
+          640,
+          583
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "leftward"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" final segment 0 [640, 347] -> [640, 583] does not honor inferred toSide \"right\" — it must run horizontal leftward from the right; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "endpoint": "target",
+        "authoredField": "toSide",
+        "sideOrigin": "inferred",
+        "side": "right",
+        "segmentIndex": 0,
+        "from": [
+          640,
+          347
+        ],
+        "to": [
+          640,
+          583
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "leftward from the right"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" first segment 0 [640, 283] -> [640, 569] does not honor inferred fromSide \"left\" — it must run horizontal leftward; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 25,
+        "id": "goodjob-whatsapp",
+        "from": "goodjob",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "endpoint": "source",
+        "authoredField": "fromSide",
+        "sideOrigin": "inferred",
+        "side": "left",
+        "segmentIndex": 0,
+        "from": [
+          640,
+          283
+        ],
+        "to": [
+          640,
+          569
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "leftward"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/endpoint-side-direction",
+      "severity": "error",
+      "message": "[clean-flow/endpoint-side-direction] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" final segment 0 [640, 283] -> [640, 569] does not honor inferred toSide \"right\" — it must run horizontal leftward from the right; keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 25,
+        "id": "goodjob-whatsapp",
+        "from": "goodjob",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "endpoint": "target",
+        "authoredField": "toSide",
+        "sideOrigin": "inferred",
+        "side": "right",
+        "segmentIndex": 0,
+        "from": [
+          640,
+          283
+        ],
+        "to": [
+          640,
+          569
+        ],
+        "expectedAxis": "horizontal",
+        "expectedDirection": "leftward from the right"
+      },
+      "supportedFixes": [
+        "keep automatic routing so the renderer can use a side-aware bridge, or set truthful fromSide/toSide with perpendicular via segments"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses component \"redis\" (unrelated to this relationship) on segment 0 [710, 55] -> [835, 55] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "redis",
+        "segmentIndex": 0,
+        "from": [
+          710,
+          55
+        ],
+        "to": [
+          835,
+          55
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses component \"api\" (unrelated to this relationship) on segment 0 [830, 55] -> [515, 55] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "api",
+        "segmentIndex": 0,
+        "from": [
+          830,
+          55
+        ],
+        "to": [
+          515,
+          55
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses component \"experience\" (unrelated to this relationship) on segment 2 [515, 434] -> [200, 434] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "experience",
+        "segmentIndex": 2,
+        "from": [
+          515,
+          434
+        ],
+        "to": [
+          200,
+          434
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"site\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "site",
+        "segmentIndex": 1,
+        "from": [
+          690,
+          442
+        ],
+        "to": [
+          690,
+          148
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"deerflow\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "deerflow",
+        "segmentIndex": 1,
+        "from": [
+          690,
+          442
+        ],
+        "to": [
+          690,
+          148
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"goodjob\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "goodjob",
+        "segmentIndex": 1,
+        "from": [
+          690,
+          442
+        ],
+        "to": [
+          690,
+          148
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"trade\" (unrelated to this relationship) on segment 1 [690, 442] -> [690, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "trade",
+        "segmentIndex": 1,
+        "from": [
+          690,
+          442
+        ],
+        "to": [
+          690,
+          148
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"pg\" (unrelated to this relationship) on segment 2 [690, 148] -> [1180, 148] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "pg",
+        "segmentIndex": 2,
+        "from": [
+          690,
+          148
+        ],
+        "to": [
+          1180,
+          148
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses component \"experience\" (unrelated to this relationship) on segment 0 [200, 442] -> [690, 442] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "experience",
+        "segmentIndex": 0,
+        "from": [
+          200,
+          442
+        ],
+        "to": [
+          690,
+          442
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" crosses component \"browser\" (unrelated to this relationship) on segment 1 [640, 347] -> [640, 583] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "browser",
+        "segmentIndex": 1,
+        "from": [
+          640,
+          347
+        ],
+        "to": [
+          640,
+          583
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" crosses component \"trade\" (unrelated to this relationship) on segment 1 [640, 283] -> [640, 569] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 25,
+        "id": "goodjob-whatsapp",
+        "from": "goodjob",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "trade",
+        "segmentIndex": 1,
+        "from": [
+          640,
+          283
+        ],
+        "to": [
+          640,
+          569
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "clean-flow/edge-through-node",
+      "severity": "error",
+      "message": "[clean-flow/edge-through-node] architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" crosses component \"browser\" (unrelated to this relationship) on segment 1 [640, 283] -> [640, 569] (2px clearance) — adjust fromSide/toSide, set route/via, or move the component.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 25,
+        "id": "goodjob-whatsapp",
+        "from": "goodjob",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "obstacleKind": "component",
+        "obstacleId": "browser",
+        "segmentIndex": 1,
+        "from": [
+          640,
+          283
+        ],
+        "to": [
+          640,
+          569
+        ],
+        "clearancePx": 2
+      },
+      "supportedFixes": [
+        "adjust fromSide/toSide, set route/via, or move the component"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" crosses connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [835, 148] (segments 1 and 2) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 23,
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n"
+        },
+        "point": [
+          835,
+          148
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 2
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[12] id \"hermes-site\" \"hermes\" -> \"site\" at [516, 228] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 12,
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site"
+        },
+        "point": [
+          516,
+          228
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" at [516, 234] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 13,
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow"
+        },
+        "point": [
+          516,
+          234
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" at [516, 240] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 14,
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob"
+        },
+        "point": [
+          516,
+          240
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" at [516, 246] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 15,
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade"
+        },
+        "point": [
+          516,
+          246
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" at [460, 426] (segments 2 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 17,
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser"
+        },
+        "point": [
+          460,
+          426
+        ],
+        "segmentIndex": 2,
+        "otherSegmentIndex": 1
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[5] id \"api-celery\" \"api\" -> \"celery\" crosses connections[18] id \"hermes-experience\" \"hermes\" -> \"experience\" at [355, 426] (segments 2 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 18,
+          "id": "hermes-experience",
+          "from": "hermes",
+          "to": "experience"
+        },
+        "point": [
+          355,
+          426
+        ],
+        "segmentIndex": 2,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[12] id \"hermes-site\" \"hermes\" -> \"site\" at [515, 228] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 12,
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site"
+        },
+        "point": [
+          515,
+          228
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" at [515, 234] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 13,
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow"
+        },
+        "point": [
+          515,
+          234
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" at [515, 240] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 14,
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob"
+        },
+        "point": [
+          515,
+          240
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" at [515, 246] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 15,
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade"
+        },
+        "point": [
+          515,
+          246
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[7] id \"redis-celery\" \"redis\" -> \"celery\" crosses connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" at [460, 434] (segments 2 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 17,
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser"
+        },
+        "point": [
+          460,
+          434
+        ],
+        "segmentIndex": 2,
+        "otherSegmentIndex": 1
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[8] id \"billing-pg\" \"billing\" -> \"pg\" crosses connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [1140, 148] (segments 1 and 2) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 8,
+        "id": "billing-pg",
+        "from": "billing",
+        "to": "pg"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 23,
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n"
+        },
+        "point": [
+          1140,
+          148
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 2
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [460, 442] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 17,
+        "id": "hermes-browser",
+        "from": "hermes",
+        "to": "browser"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 23,
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n"
+        },
+        "point": [
+          460,
+          442
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[17] id \"hermes-browser\" \"hermes\" -> \"browser\" crosses connections[28] id \"experience-pg\" \"experience\" -> \"pg\" at [460, 458] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 17,
+        "id": "hermes-browser",
+        "from": "hermes",
+        "to": "browser"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 28,
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg"
+        },
+        "point": [
+          460,
+          458
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" at [640, 442] (segments 0 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 24,
+          "id": "trade-whatsapp",
+          "from": "trade",
+          "to": "whatsapp"
+        },
+        "point": [
+          640,
+          442
+        ],
+        "segmentIndex": 0,
+        "otherSegmentIndex": 1
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" crosses connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" at [640, 442] (segments 0 and 1) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 25,
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp"
+        },
+        "point": [
+          640,
+          442
+        ],
+        "segmentIndex": 0,
+        "otherSegmentIndex": 1
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" crosses connections[28] id \"experience-pg\" \"experience\" -> \"pg\" at [640, 458] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 28,
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg"
+        },
+        "point": [
+          640,
+          458
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/proper-crossing",
+      "severity": "error",
+      "message": "[composition/proper-crossing] showcase architecture connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" crosses connections[28] id \"experience-pg\" \"experience\" -> \"pg\" at [640, 458] (segments 1 and 0) — adjust route/via or fromSide/toSide so the connections use separate corridors.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 25,
+        "id": "goodjob-whatsapp",
+        "from": "goodjob",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 28,
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg"
+        },
+        "point": [
+          640,
+          458
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so the connections use separate corridors"
+      ]
+    },
+    {
+      "code": "composition/ambiguous-corridor",
+      "severity": "error",
+      "message": "[composition/ambiguous-corridor] showcase architecture connections[3] id \"api-pg\" \"api\" -> \"pg\" shares a 120px corridor with connections[7] id \"redis-celery\" \"redis\" -> \"celery\" at [710, 55] -> [830, 55] (segments 0 and 0; minimum 8px) — adjust route/via or fromSide/toSide so unrelated connections do not visually merge.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "overlapLengthPx": 120,
+        "minimumPx": 8,
+        "from": [
+          710,
+          55
+        ],
+        "to": [
+          830,
+          55
+        ],
+        "segmentIndex": 0,
+        "otherSegmentIndex": 0
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so unrelated connections do not visually merge"
+      ]
+    },
+    {
+      "code": "composition/ambiguous-corridor",
+      "severity": "error",
+      "message": "[composition/ambiguous-corridor] showcase architecture connections[19] id \"site-pg\" \"site\" -> \"pg\" shares a 80px corridor with connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" at [800, 148] -> [880, 148] (segments 0 and 2; minimum 8px) — adjust route/via or fromSide/toSide so unrelated connections do not visually merge.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 19,
+        "id": "site-pg",
+        "from": "site",
+        "to": "pg"
+      },
+      "evidence": {
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 23,
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n"
+        },
+        "overlapLengthPx": 80,
+        "minimumPx": 8,
+        "from": [
+          800,
+          148
+        ],
+        "to": [
+          880,
+          148
+        ],
+        "segmentIndex": 0,
+        "otherSegmentIndex": 2
+      },
+      "supportedFixes": [
+        "adjust route/via or fromSide/toSide so unrelated connections do not visually merge"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"SQL 落库\" on connections[3] id \"api-pg\" \"api\" -> \"pg\" label \"SQL 落库\" is 2.5px from connections[19] id \"site-pg\" \"site\" -> \"pg\" label \"站点 / 核价落库\" segment 0 [800, 148] -> [880, 148] (label rect [811, 132, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "label": "SQL 落库",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 19,
+          "id": "site-pg",
+          "from": "site",
+          "to": "pg"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 2.5,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-pg",
+            "from": "api",
+            "to": "pg",
+            "label": "SQL 落库",
+            "variant": "emphasis"
+          },
+          "relationIndex": 3,
+          "label": "SQL 落库",
+          "x": 810.8,
+          "y": 131.5,
+          "width": 48.4,
+          "height": 14,
+          "lx": 835,
+          "ly": 141.5
+        },
+        "from": [
+          800,
+          148
+        ],
+        "to": [
+          880,
+          148
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"SQL 落库\" on connections[3] id \"api-pg\" \"api\" -> \"pg\" label \"SQL 落库\" is 2.5px from connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" label \"site_built / content_pub\" segment 2 [690, 148] -> [1180, 148] (label rect [811, 132, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 3,
+        "id": "api-pg",
+        "from": "api",
+        "to": "pg"
+      },
+      "evidence": {
+        "label": "SQL 落库",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 23,
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n"
+        },
+        "segmentIndex": 2,
+        "clearancePx": 2.5,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-pg",
+            "from": "api",
+            "to": "pg",
+            "label": "SQL 落库",
+            "variant": "emphasis"
+          },
+          "relationIndex": 3,
+          "label": "SQL 落库",
+          "x": 810.8,
+          "y": 131.5,
+          "width": 48.4,
+          "height": 14,
+          "lx": 835,
+          "ly": 141.5
+        },
+        "from": [
+          690,
+          148
+        ],
+        "to": [
+          1180,
+          148
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"AI 意图分解\" on connections[4] id \"api-harness\" \"api\" -> \"harness\" label \"AI 意图分解\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [459, 78, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 4,
+        "id": "api-harness",
+        "from": "api",
+        "to": "harness"
+      },
+      "evidence": {
+        "label": "AI 意图分解",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 5,
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-harness",
+            "from": "api",
+            "to": "harness",
+            "label": "AI 意图分解",
+            "variant": "security"
+          },
+          "relationIndex": 4,
+          "label": "AI 意图分解",
+          "x": 458.6,
+          "y": 78,
+          "width": 62.8,
+          "height": 14,
+          "lx": 490,
+          "ly": 88
+        },
+        "from": [
+          516,
+          60
+        ],
+        "to": [
+          516,
+          426
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"AI 意图分解\" on connections[4] id \"api-harness\" \"api\" -> \"harness\" label \"AI 意图分解\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [459, 78, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 4,
+        "id": "api-harness",
+        "from": "api",
+        "to": "harness"
+      },
+      "evidence": {
+        "label": "AI 意图分解",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-harness",
+            "from": "api",
+            "to": "harness",
+            "label": "AI 意图分解",
+            "variant": "security"
+          },
+          "relationIndex": 4,
+          "label": "AI 意图分解",
+          "x": 458.6,
+          "y": 78,
+          "width": 62.8,
+          "height": 14,
+          "lx": 490,
+          "ly": 88
+        },
+        "from": [
+          515,
+          55
+        ],
+        "to": [
+          515,
+          434
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "异步投递",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-celery",
+            "from": "api",
+            "to": "celery",
+            "label": "异步投递",
+            "variant": "dashed"
+          },
+          "relationIndex": 5,
+          "label": "异步投递",
+          "x": 491.8,
+          "y": 223,
+          "width": 48.4,
+          "height": 14,
+          "lx": 516,
+          "ly": 233
+        },
+        "from": [
+          515,
+          55
+        ],
+        "to": [
+          515,
+          434
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 0px from connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" segment 0 [440, 228] -> [540, 228] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "异步投递",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 12,
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-celery",
+            "from": "api",
+            "to": "celery",
+            "label": "异步投递",
+            "variant": "dashed"
+          },
+          "relationIndex": 5,
+          "label": "异步投递",
+          "x": 491.8,
+          "y": 223,
+          "width": 48.4,
+          "height": 14,
+          "lx": 516,
+          "ly": 233
+        },
+        "from": [
+          440,
+          228
+        ],
+        "to": [
+          540,
+          228
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 0px from connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" segment 0 [440, 234] -> [540, 234] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "异步投递",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 13,
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-celery",
+            "from": "api",
+            "to": "celery",
+            "label": "异步投递",
+            "variant": "dashed"
+          },
+          "relationIndex": 5,
+          "label": "异步投递",
+          "x": 491.8,
+          "y": 223,
+          "width": 48.4,
+          "height": 14,
+          "lx": 516,
+          "ly": 233
+        },
+        "from": [
+          440,
+          234
+        ],
+        "to": [
+          540,
+          234
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"异步投递\" on connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" is 3px from connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" segment 0 [440, 240] -> [540, 240] (label rect [492, 223, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 5,
+        "id": "api-celery",
+        "from": "api",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "异步投递",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 14,
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 3,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "api-celery",
+            "from": "api",
+            "to": "celery",
+            "label": "异步投递",
+            "variant": "dashed"
+          },
+          "relationIndex": 5,
+          "label": "异步投递",
+          "x": 491.8,
+          "y": 223,
+          "width": 48.4,
+          "height": 14,
+          "lx": 516,
+          "ly": 233
+        },
+        "from": [
+          440,
+          240
+        ],
+        "to": [
+          540,
+          240
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "broker / 结果回写",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 5,
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "redis-celery",
+            "from": "redis",
+            "to": "celery",
+            "label": "broker / 结果回写",
+            "variant": "dashed"
+          },
+          "relationIndex": 7,
+          "label": "broker / 结果回写",
+          "x": 469.2,
+          "y": 224.5,
+          "width": 91.6,
+          "height": 14,
+          "lx": 515,
+          "ly": 234.5
+        },
+        "from": [
+          516,
+          60
+        ],
+        "to": [
+          516,
+          426
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 0px from connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" segment 0 [440, 228] -> [540, 228] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "broker / 结果回写",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 12,
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "redis-celery",
+            "from": "redis",
+            "to": "celery",
+            "label": "broker / 结果回写",
+            "variant": "dashed"
+          },
+          "relationIndex": 7,
+          "label": "broker / 结果回写",
+          "x": 469.2,
+          "y": 224.5,
+          "width": 91.6,
+          "height": 14,
+          "lx": 515,
+          "ly": 234.5
+        },
+        "from": [
+          440,
+          228
+        ],
+        "to": [
+          540,
+          228
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 0px from connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" segment 0 [440, 234] -> [540, 234] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "broker / 结果回写",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 13,
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "redis-celery",
+            "from": "redis",
+            "to": "celery",
+            "label": "broker / 结果回写",
+            "variant": "dashed"
+          },
+          "relationIndex": 7,
+          "label": "broker / 结果回写",
+          "x": 469.2,
+          "y": 224.5,
+          "width": 91.6,
+          "height": 14,
+          "lx": 515,
+          "ly": 234.5
+        },
+        "from": [
+          440,
+          234
+        ],
+        "to": [
+          540,
+          234
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"broker / 结果回写\" on connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" is 1.5px from connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" segment 0 [440, 240] -> [540, 240] (label rect [469, 225, 92, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 7,
+        "id": "redis-celery",
+        "from": "redis",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "broker / 结果回写",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 14,
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 1.5,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "redis-celery",
+            "from": "redis",
+            "to": "celery",
+            "label": "broker / 结果回写",
+            "variant": "dashed"
+          },
+          "relationIndex": 7,
+          "label": "broker / 结果回写",
+          "x": 469.2,
+          "y": 224.5,
+          "width": 91.6,
+          "height": 14,
+          "lx": 515,
+          "ly": 234.5
+        },
+        "from": [
+          440,
+          240
+        ],
+        "to": [
+          540,
+          240
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"PSSP 注入\" on connections[11] id \"hermes-assets\" \"hermes\" -> \"assets\" label \"PSSP 注入\" is 0px from connections[16] id \"hermes-celery\" \"hermes\" -> \"celery\" label \"执行器调度\" segment 1 [235, 252] -> [235, 450] (label rect [208, 274, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 11,
+        "id": "hermes-assets",
+        "from": "hermes",
+        "to": "assets"
+      },
+      "evidence": {
+        "label": "PSSP 注入",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 16,
+          "id": "hermes-celery",
+          "from": "hermes",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-assets",
+            "from": "hermes",
+            "to": "assets",
+            "label": "PSSP 注入",
+            "variant": "emphasis"
+          },
+          "relationIndex": 11,
+          "label": "PSSP 注入",
+          "x": 208.4,
+          "y": 274,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 235,
+          "ly": 284
+        },
+        "from": [
+          235,
+          252
+        ],
+        "to": [
+          235,
+          450
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"建站 / 核价\" on connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [509, 168, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 12,
+        "id": "hermes-site",
+        "from": "hermes",
+        "to": "site"
+      },
+      "evidence": {
+        "label": "建站 / 核价",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 5,
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-site",
+            "from": "hermes",
+            "to": "site",
+            "label": "建站 / 核价",
+            "variant": "emphasis"
+          },
+          "relationIndex": 12,
+          "label": "建站 / 核价",
+          "x": 508.6,
+          "y": 168,
+          "width": 62.8,
+          "height": 14,
+          "lx": 540,
+          "ly": 178
+        },
+        "from": [
+          516,
+          60
+        ],
+        "to": [
+          516,
+          426
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"建站 / 核价\" on connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [509, 168, 63, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 12,
+        "id": "hermes-site",
+        "from": "hermes",
+        "to": "site"
+      },
+      "evidence": {
+        "label": "建站 / 核价",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-site",
+            "from": "hermes",
+            "to": "site",
+            "label": "建站 / 核价",
+            "variant": "emphasis"
+          },
+          "relationIndex": 12,
+          "label": "建站 / 核价",
+          "x": 508.6,
+          "y": 168,
+          "width": 62.8,
+          "height": 14,
+          "lx": 540,
+          "ly": 178
+        },
+        "from": [
+          515,
+          55
+        ],
+        "to": [
+          515,
+          434
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"内容生成\" on connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [516, 203, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 13,
+        "id": "hermes-deerflow",
+        "from": "hermes",
+        "to": "deerflow"
+      },
+      "evidence": {
+        "label": "内容生成",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 5,
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-deerflow",
+            "from": "hermes",
+            "to": "deerflow",
+            "label": "内容生成"
+          },
+          "relationIndex": 13,
+          "label": "内容生成",
+          "x": 515.8,
+          "y": 203,
+          "width": 48.4,
+          "height": 14,
+          "lx": 540,
+          "ly": 213
+        },
+        "from": [
+          516,
+          60
+        ],
+        "to": [
+          516,
+          426
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"内容生成\" on connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" is 0.8px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [516, 203, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 13,
+        "id": "hermes-deerflow",
+        "from": "hermes",
+        "to": "deerflow"
+      },
+      "evidence": {
+        "label": "内容生成",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0.8,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-deerflow",
+            "from": "hermes",
+            "to": "deerflow",
+            "label": "内容生成"
+          },
+          "relationIndex": 13,
+          "label": "内容生成",
+          "x": 515.8,
+          "y": 203,
+          "width": 48.4,
+          "height": 14,
+          "lx": 540,
+          "ly": 213
+        },
+        "from": [
+          515,
+          55
+        ],
+        "to": [
+          515,
+          434
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"内容生成\" on connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" is 0px from connections[12] id \"hermes-site\" \"hermes\" -> \"site\" label \"建站 / 核价\" segment 1 [540, 228] -> [540, 148] (label rect [516, 203, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 13,
+        "id": "hermes-deerflow",
+        "from": "hermes",
+        "to": "deerflow"
+      },
+      "evidence": {
+        "label": "内容生成",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 12,
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-deerflow",
+            "from": "hermes",
+            "to": "deerflow",
+            "label": "内容生成"
+          },
+          "relationIndex": 13,
+          "label": "内容生成",
+          "x": 515.8,
+          "y": 203,
+          "width": 48.4,
+          "height": 14,
+          "lx": 540,
+          "ly": 213
+        },
+        "from": [
+          540,
+          228
+        ],
+        "to": [
+          540,
+          148
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 14,
+        "id": "hermes-goodjob",
+        "from": "hermes",
+        "to": "goodjob"
+      },
+      "evidence": {
+        "label": "GP-A 履约",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 5,
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-goodjob",
+            "from": "hermes",
+            "to": "goodjob",
+            "label": "GP-A 履约",
+            "variant": "emphasis"
+          },
+          "relationIndex": 14,
+          "label": "GP-A 履约",
+          "x": 513.4,
+          "y": 234.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 244.5
+        },
+        "from": [
+          516,
+          60
+        ],
+        "to": [
+          516,
+          426
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 14,
+        "id": "hermes-goodjob",
+        "from": "hermes",
+        "to": "goodjob"
+      },
+      "evidence": {
+        "label": "GP-A 履约",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-goodjob",
+            "from": "hermes",
+            "to": "goodjob",
+            "label": "GP-A 履约",
+            "variant": "emphasis"
+          },
+          "relationIndex": 14,
+          "label": "GP-A 履约",
+          "x": 513.4,
+          "y": 234.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 244.5
+        },
+        "from": [
+          515,
+          55
+        ],
+        "to": [
+          515,
+          434
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0.5px from connections[13] id \"hermes-deerflow\" \"hermes\" -> \"deerflow\" label \"内容生成\" segment 0 [440, 234] -> [540, 234] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 14,
+        "id": "hermes-goodjob",
+        "from": "hermes",
+        "to": "goodjob"
+      },
+      "evidence": {
+        "label": "GP-A 履约",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 13,
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0.5,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-goodjob",
+            "from": "hermes",
+            "to": "goodjob",
+            "label": "GP-A 履约",
+            "variant": "emphasis"
+          },
+          "relationIndex": 14,
+          "label": "GP-A 履约",
+          "x": 513.4,
+          "y": 234.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 244.5
+        },
+        "from": [
+          440,
+          234
+        ],
+        "to": [
+          540,
+          234
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-A 履约\" on connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" is 0px from connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" segment 0 [440, 246] -> [540, 246] (label rect [513, 235, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 14,
+        "id": "hermes-goodjob",
+        "from": "hermes",
+        "to": "goodjob"
+      },
+      "evidence": {
+        "label": "GP-A 履约",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 15,
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-goodjob",
+            "from": "hermes",
+            "to": "goodjob",
+            "label": "GP-A 履约",
+            "variant": "emphasis"
+          },
+          "relationIndex": 14,
+          "label": "GP-A 履约",
+          "x": 513.4,
+          "y": 234.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 244.5
+        },
+        "from": [
+          440,
+          246
+        ],
+        "to": [
+          540,
+          246
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-B 拓客\" on connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" is 0px from connections[5] id \"api-celery\" \"api\" -> \"celery\" label \"异步投递\" segment 1 [516, 60] -> [516, 426] (label rect [513, 270, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 15,
+        "id": "hermes-trade",
+        "from": "hermes",
+        "to": "trade"
+      },
+      "evidence": {
+        "label": "GP-B 拓客",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 5,
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-trade",
+            "from": "hermes",
+            "to": "trade",
+            "label": "GP-B 拓客",
+            "variant": "emphasis"
+          },
+          "relationIndex": 15,
+          "label": "GP-B 拓客",
+          "x": 513.4,
+          "y": 269.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 279.5
+        },
+        "from": [
+          516,
+          60
+        ],
+        "to": [
+          516,
+          426
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-B 拓客\" on connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" is 0px from connections[7] id \"redis-celery\" \"redis\" -> \"celery\" label \"broker / 结果回写\" segment 1 [515, 55] -> [515, 434] (label rect [513, 270, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 15,
+        "id": "hermes-trade",
+        "from": "hermes",
+        "to": "trade"
+      },
+      "evidence": {
+        "label": "GP-B 拓客",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 7,
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-trade",
+            "from": "hermes",
+            "to": "trade",
+            "label": "GP-B 拓客",
+            "variant": "emphasis"
+          },
+          "relationIndex": 15,
+          "label": "GP-B 拓客",
+          "x": 513.4,
+          "y": 269.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 279.5
+        },
+        "from": [
+          515,
+          55
+        ],
+        "to": [
+          515,
+          434
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"GP-B 拓客\" on connections[15] id \"hermes-trade\" \"hermes\" -> \"trade\" label \"GP-B 拓客\" is 0.5px from connections[14] id \"hermes-goodjob\" \"hermes\" -> \"goodjob\" label \"GP-A 履约\" segment 1 [540, 240] -> [540, 269] (label rect [513, 270, 53, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 15,
+        "id": "hermes-trade",
+        "from": "hermes",
+        "to": "trade"
+      },
+      "evidence": {
+        "label": "GP-B 拓客",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 14,
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0.5,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-trade",
+            "from": "hermes",
+            "to": "trade",
+            "label": "GP-B 拓客",
+            "variant": "emphasis"
+          },
+          "relationIndex": 15,
+          "label": "GP-B 拓客",
+          "x": 513.4,
+          "y": 269.5,
+          "width": 53.199999999999996,
+          "height": 14,
+          "lx": 540,
+          "ly": 279.5
+        },
+        "from": [
+          540,
+          240
+        ],
+        "to": [
+          540,
+          269
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"执行器调度\" on connections[16] id \"hermes-celery\" \"hermes\" -> \"celery\" label \"执行器调度\" is 0px from connections[11] id \"hermes-assets\" \"hermes\" -> \"assets\" label \"PSSP 注入\" segment 1 [235, 240] -> [235, 348] (label rect [206, 331, 58, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 16,
+        "id": "hermes-celery",
+        "from": "hermes",
+        "to": "celery"
+      },
+      "evidence": {
+        "label": "执行器调度",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 11,
+          "id": "hermes-assets",
+          "from": "hermes",
+          "to": "assets"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "hermes-celery",
+            "from": "hermes",
+            "to": "celery",
+            "label": "执行器调度"
+          },
+          "relationIndex": 16,
+          "label": "执行器调度",
+          "x": 206,
+          "y": 331,
+          "width": 58,
+          "height": 14,
+          "lx": 235,
+          "ly": 341
+        },
+        "from": [
+          235,
+          240
+        ],
+        "to": [
+          235,
+          348
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"研报落库\" on connections[20] id \"deerflow-pg\" \"deerflow\" -> \"pg\" label \"研报落库\" is 0px from connections[19] id \"site-pg\" \"site\" -> \"pg\" label \"站点 / 核价落库\" segment 1 [880, 148] -> [880, 262] (label rect [856, 224, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 20,
+        "id": "deerflow-pg",
+        "from": "deerflow",
+        "to": "pg"
+      },
+      "evidence": {
+        "label": "研报落库",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 19,
+          "id": "site-pg",
+          "from": "site",
+          "to": "pg"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "deerflow-pg",
+            "from": "deerflow",
+            "to": "pg",
+            "label": "研报落库",
+            "variant": "dashed"
+          },
+          "relationIndex": 20,
+          "label": "研报落库",
+          "x": 855.8,
+          "y": 224,
+          "width": 48.4,
+          "height": 14,
+          "lx": 880,
+          "ly": 234
+        },
+        "from": [
+          880,
+          148
+        ],
+        "to": [
+          880,
+          262
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"线索落库\" on connections[22] id \"trade-pg\" \"trade\" -> \"pg\" label \"线索落库\" is 0px from connections[21] id \"goodjob-pg\" \"goodjob\" -> \"pg\" label \"履约数据\" segment 2 [824, 306] -> [936, 306] (label rect [856, 302, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 22,
+        "id": "trade-pg",
+        "from": "trade",
+        "to": "pg"
+      },
+      "evidence": {
+        "label": "线索落库",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 21,
+          "id": "goodjob-pg",
+          "from": "goodjob",
+          "to": "pg"
+        },
+        "segmentIndex": 2,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "trade-pg",
+            "from": "trade",
+            "to": "pg",
+            "label": "线索落库",
+            "variant": "dashed"
+          },
+          "relationIndex": 22,
+          "label": "线索落库",
+          "x": 855.8,
+          "y": 302,
+          "width": 48.4,
+          "height": 14,
+          "lx": 880,
+          "ly": 312
+        },
+        "from": [
+          824,
+          306
+        ],
+        "to": [
+          936,
+          306
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"site_built / content_pub\" on connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" label \"site_built / content_pub\" is 0px from connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" label \"实时翻译\" segment 0 [640, 283] -> [640, 569] (label rect [627, 275, 125, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 23,
+        "id": "celery-n8n",
+        "from": "celery",
+        "to": "n8n"
+      },
+      "evidence": {
+        "label": "site_built / content_pub",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 25,
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "celery-n8n",
+            "from": "celery",
+            "to": "n8n",
+            "label": "site_built / content_pub",
+            "variant": "dashed"
+          },
+          "relationIndex": 23,
+          "label": "site_built / content_pub",
+          "x": 627.4,
+          "y": 275,
+          "width": 125.19999999999999,
+          "height": 14,
+          "lx": 690,
+          "ly": 285
+        },
+        "from": [
+          640,
+          283
+        ],
+        "to": [
+          640,
+          569
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"矩阵消息\" on connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" is 3px from connections[23] id \"celery-n8n\" \"celery\" -> \"n8n\" label \"site_built / content_pub\" segment 0 [200, 442] -> [690, 442] (label rect [616, 445, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "label": "矩阵消息",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 23,
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 3,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "trade-whatsapp",
+            "from": "trade",
+            "to": "whatsapp",
+            "label": "矩阵消息"
+          },
+          "relationIndex": 24,
+          "label": "矩阵消息",
+          "x": 615.8,
+          "y": 445,
+          "width": 48.4,
+          "height": 14,
+          "lx": 640,
+          "ly": 455
+        },
+        "from": [
+          200,
+          442
+        ],
+        "to": [
+          690,
+          442
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"矩阵消息\" on connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" is 0px from connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" label \"实时翻译\" segment 0 [640, 283] -> [640, 569] (label rect [616, 445, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "label": "矩阵消息",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 25,
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "trade-whatsapp",
+            "from": "trade",
+            "to": "whatsapp",
+            "label": "矩阵消息"
+          },
+          "relationIndex": 24,
+          "label": "矩阵消息",
+          "x": 615.8,
+          "y": 445,
+          "width": 48.4,
+          "height": 14,
+          "lx": 640,
+          "ly": 455
+        },
+        "from": [
+          640,
+          283
+        ],
+        "to": [
+          640,
+          569
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"矩阵消息\" on connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" is 0px from connections[28] id \"experience-pg\" \"experience\" -> \"pg\" label \"evolution_experiences\" segment 0 [440, 458] -> [936, 458] (label rect [616, 445, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 24,
+        "id": "trade-whatsapp",
+        "from": "trade",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "label": "矩阵消息",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 28,
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "trade-whatsapp",
+            "from": "trade",
+            "to": "whatsapp",
+            "label": "矩阵消息"
+          },
+          "relationIndex": 24,
+          "label": "矩阵消息",
+          "x": 615.8,
+          "y": 445,
+          "width": 48.4,
+          "height": 14,
+          "lx": 640,
+          "ly": 455
+        },
+        "from": [
+          440,
+          458
+        ],
+        "to": [
+          936,
+          458
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"实时翻译\" on connections[25] id \"goodjob-whatsapp\" \"goodjob\" -> \"whatsapp\" label \"实时翻译\" is 0px from connections[24] id \"trade-whatsapp\" \"trade\" -> \"whatsapp\" label \"矩阵消息\" segment 0 [640, 347] -> [640, 583] (label rect [616, 406, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 25,
+        "id": "goodjob-whatsapp",
+        "from": "goodjob",
+        "to": "whatsapp"
+      },
+      "evidence": {
+        "label": "实时翻译",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 24,
+          "id": "trade-whatsapp",
+          "from": "trade",
+          "to": "whatsapp"
+        },
+        "segmentIndex": 0,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "goodjob-whatsapp",
+            "from": "goodjob",
+            "to": "whatsapp",
+            "label": "实时翻译"
+          },
+          "relationIndex": 25,
+          "label": "实时翻译",
+          "x": 615.8,
+          "y": 406,
+          "width": 48.4,
+          "height": 14,
+          "lx": 640,
+          "ly": 416
+        },
+        "from": [
+          640,
+          347
+        ],
+        "to": [
+          640,
+          583
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"双轨取证\" on connections[27] id \"browser-pg\" \"browser\" -> \"pg\" label \"双轨取证\" is 0px from connections[28] id \"experience-pg\" \"experience\" -> \"pg\" label \"evolution_experiences\" segment 1 [936, 458] -> [936, 318] (label rect [912, 395, 48, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 27,
+        "id": "browser-pg",
+        "from": "browser",
+        "to": "pg"
+      },
+      "evidence": {
+        "label": "双轨取证",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 28,
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "browser-pg",
+            "from": "browser",
+            "to": "pg",
+            "label": "双轨取证",
+            "variant": "security"
+          },
+          "relationIndex": 27,
+          "label": "双轨取证",
+          "x": 911.8,
+          "y": 395,
+          "width": 48.4,
+          "height": 14,
+          "lx": 936,
+          "ly": 405
+        },
+        "from": [
+          936,
+          458
+        ],
+        "to": [
+          936,
+          318
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "composition/label-route-clearance",
+      "severity": "error",
+      "message": "[composition/label-route-clearance] showcase architecture label \"evolution_experiences\" on connections[28] id \"experience-pg\" \"experience\" -> \"pg\" label \"evolution_experiences\" is 0px from connections[27] id \"browser-pg\" \"browser\" -> \"pg\" label \"双轨取证\" segment 1 [936, 498] -> [936, 332] (label rect [881, 368, 111, 14]; minimum 4px) — adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel.",
+      "subject": {
+        "diagramType": "architecture",
+        "collection": "connections",
+        "index": 28,
+        "id": "experience-pg",
+        "from": "experience",
+        "to": "pg"
+      },
+      "evidence": {
+        "label": "evolution_experiences",
+        "otherRelationship": {
+          "diagramType": "architecture",
+          "collection": "connections",
+          "index": 27,
+          "id": "browser-pg",
+          "from": "browser",
+          "to": "pg"
+        },
+        "segmentIndex": 1,
+        "clearancePx": 0,
+        "minimumPx": 4,
+        "labelRect": {
+          "relation": {
+            "id": "experience-pg",
+            "from": "experience",
+            "to": "pg",
+            "label": "evolution_experiences",
+            "variant": "dashed"
+          },
+          "relationIndex": 28,
+          "label": "evolution_experiences",
+          "x": 880.6,
+          "y": 368,
+          "width": 110.8,
+          "height": 14,
+          "lx": 936,
+          "ly": 378
+        },
+        "from": [
+          936,
+          498
+        ],
+        "to": [
+          936,
+          332
+        ]
+      },
+      "supportedFixes": [
+        "adjust labelAt, labelDx, labelDy, or labelSegment; otherwise adjust the other relationship route/via/channel"
+      ]
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"DAG Spec\" overlaps component \"harness\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [331, 156, 48, 14]\n  component \"harness\" rect: [270, 120, 170, 56]\n  Suggested fix: labelAt [355, 190] or labelDy +24 (below); or labelAt [355, 116] or labelDy -50 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"经验回流\" overlaps component \"hermes\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [331, 248, 48, 14]\n  component \"hermes\" rect: [270, 212, 170, 56]\n  Suggested fix: labelAt [355, 282] or labelDy +24 (below); or labelAt [355, 208] or labelDy -50 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"site_built / content_pub\" overlaps component \"goodjob\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [627, 275, 125, 14]\n  component \"goodjob\" rect: [640, 248, 160, 56]\n  Suggested fix: labelAt [690, 318] or labelDy +33 (below); or labelAt [690, 244] or labelDy -41 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"Webhook 出站\" overlaps component \"n8n\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [1236, 156, 68, 14]\n  component \"n8n\" rect: [1180, 120, 180, 56]\n  Suggested fix: labelAt [1270, 190] or labelDy +24 (below); or labelAt [1270, 116] or labelDy -50 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    },
+    {
+      "code": "layout/constraint",
+      "severity": "error",
+      "message": "Label \"evolution_experiences\" overlaps component \"pg\" — adjust labelDx/labelDy/labelSegment or set labelAt.\n  label rect: [881, 368, 111, 14]\n  component \"pg\" rect: [960, 120, 140, 340]\n  Suggested fix: labelAt [936, 474] or labelDy +96 (below); or labelAt [936, 116] or labelDy -262 (above)",
+      "subject": {
+        "diagramType": "architecture"
+      },
+      "evidence": {},
+      "supportedFixes": []
+    }
+  ]
+}

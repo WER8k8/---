@@ -1,0 +1,1578 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "validate",
+  "type": "architecture",
+  "input": "C:\\Users\\Administrator\\Documents\\上线网站开发完成\\docs\\archify\\youding-aeos-arch-v9.architecture.json",
+  "checks": [
+    {
+      "name": "single_svg",
+      "ok": true,
+      "details": [
+        "found 1 <svg> block(s)"
+      ]
+    },
+    {
+      "name": "finite_svg",
+      "ok": true,
+      "details": []
+    },
+    {
+      "name": "orthogonal_arrows",
+      "ok": true,
+      "details": []
+    },
+    {
+      "name": "label_route_clearance",
+      "ok": true,
+      "details": [
+        "[composition/label-route-clearance] standard label \"异步投递\" on relationship id \"api-celery\" (\"api\" -> \"celery\") is 0px from relationship id \"hermes-site\" (\"hermes\" -> \"site\") segment 1 [540, 228] -> [540, 148] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"broker / 结果回写\" on relationship id \"redis-celery\" (\"redis\" -> \"celery\") is 0px from relationship id \"api-celery\" (\"api\" -> \"celery\") segment 1 [625, 380] -> [120, 380] with 91.6px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"broker / 结果回写\" on relationship id \"redis-celery\" (\"redis\" -> \"celery\") is 0px from relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") segment 1 [460, 252] -> [460, 498] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"broker / 结果回写\" on relationship id \"redis-celery\" (\"redis\" -> \"celery\") is 0px from relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") segment 1 [460, 276] -> [460, 576] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"账本落库\" on relationship id \"billing-pg\" (\"billing\" -> \"pg\") is 0px from relationship id \"celery-n8n\" (\"celery\" -> \"n8n\") segment 2 [1140, 620] -> [1140, 148] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"PSSP 注入\" on relationship id \"hermes-assets\" (\"hermes\" -> \"assets\") is 0px from relationship id \"hermes-celery\" (\"hermes\" -> \"celery\") segment 1 [235, 252] -> [235, 438] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"内容生成\" on relationship id \"hermes-deerflow\" (\"hermes\" -> \"deerflow\") is 0px from relationship id \"hermes-site\" (\"hermes\" -> \"site\") segment 1 [540, 228] -> [540, 148] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"GP-A 履约\" on relationship id \"hermes-goodjob\" (\"hermes\" -> \"goodjob\") is 0px from relationship id \"hermes-trade\" (\"hermes\" -> \"trade\") segment 0 [440, 246] -> [540, 246] with 26.6px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"GP-B 拓客\" on relationship id \"hermes-trade\" (\"hermes\" -> \"trade\") is 0px from relationship id \"hermes-goodjob\" (\"hermes\" -> \"goodjob\") segment 1 [540, 240] -> [540, 276] with 3px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"GP-B 拓客\" on relationship id \"hermes-trade\" (\"hermes\" -> \"trade\") is 0px from relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") segment 0 [640, 276] -> [460, 276] with 53.2px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"执行器调度\" on relationship id \"hermes-celery\" (\"hermes\" -> \"celery\") is 0px from relationship id \"hermes-assets\" (\"hermes\" -> \"assets\") segment 1 [235, 240] -> [235, 348] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"Browser 执行器\" on relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") is 0px from relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") segment 1 [460, 276] -> [460, 576] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"站点 / 核价落库\" on relationship id \"site-pg\" (\"site\" -> \"pg\") is 0px from relationship id \"redis-celery\" (\"redis\" -> \"celery\") segment 0 [900, 76] -> [900, 390] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"研报落库\" on relationship id \"deerflow-pg\" (\"deerflow\" -> \"pg\") is 0px from relationship id \"redis-celery\" (\"redis\" -> \"celery\") segment 0 [900, 76] -> [900, 390] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"研报落库\" on relationship id \"deerflow-pg\" (\"deerflow\" -> \"pg\") is 0px from relationship id \"site-pg\" (\"site\" -> \"pg\") segment 1 [880, 148] -> [880, 262] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"线索落库\" on relationship id \"trade-pg\" (\"trade\" -> \"pg\") is 0px from relationship id \"redis-celery\" (\"redis\" -> \"celery\") segment 0 [900, 76] -> [900, 390] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"线索落库\" on relationship id \"trade-pg\" (\"trade\" -> \"pg\") is 0px from relationship id \"goodjob-pg\" (\"goodjob\" -> \"pg\") segment 2 [824, 306] -> [936, 306] with 48.4px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"矩阵消息\" on relationship id \"trade-whatsapp\" (\"trade\" -> \"whatsapp\") is 0px from relationship id \"experience-pg\" (\"experience\" -> \"pg\") segment 0 [440, 458] -> [936, 458] with 48.4px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"实时翻译\" on relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") is 0px from relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") segment 1 [460, 252] -> [460, 498] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"双轨取证\" on relationship id \"browser-pg\" (\"browser\" -> \"pg\") is 0px from relationship id \"experience-pg\" (\"experience\" -> \"pg\") segment 1 [936, 458] -> [936, 290] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"evolution_experiences\" on relationship id \"experience-pg\" (\"experience\" -> \"pg\") is 0px from relationship id \"redis-celery\" (\"redis\" -> \"celery\") segment 0 [900, 76] -> [900, 390] with 14px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel.",
+        "[composition/label-route-clearance] standard label \"evolution_experiences\" on relationship id \"experience-pg\" (\"experience\" -> \"pg\") is 0px from relationship id \"trade-pg\" (\"trade\" -> \"pg\") segment 0 [800, 340] -> [880, 340] with 65.4px hidden by the mask (minimum 2px) — use renderer-supported label controls (message y for sequence; otherwise labelAt, labelDx, labelDy, or labelSegment), or adjust the other relationship route/via/channel."
+      ]
+    },
+    {
+      "name": "relationship_crossings",
+      "ok": true,
+      "details": [
+        "[composition/proper-crossing] standard relationship id \"api-pg\" (\"api\" -> \"pg\") crosses relationship id \"redis-billing\" (\"redis\" -> \"billing\") at [1030, 41]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"hermes-site\" (\"hermes\" -> \"site\") at [625, 148]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"hermes-deerflow\" (\"hermes\" -> \"deerflow\") at [625, 212]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"hermes-goodjob\" (\"hermes\" -> \"goodjob\") at [625, 276]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"hermes-trade\" (\"hermes\" -> \"trade\") at [625, 340]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") at [460, 380]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"hermes-experience\" (\"hermes\" -> \"experience\") at [355, 380]",
+        "[composition/proper-crossing] standard relationship id \"api-celery\" (\"api\" -> \"celery\") crosses relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") at [625, 276]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") at [460, 390]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"hermes-experience\" (\"hermes\" -> \"experience\") at [355, 390]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"site-pg\" (\"site\" -> \"pg\") at [900, 262]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"deerflow-pg\" (\"deerflow\" -> \"pg\") at [900, 276]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"goodjob-pg\" (\"goodjob\" -> \"pg\") at [900, 306]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"trade-pg\" (\"trade\" -> \"pg\") at [900, 304]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"trade-whatsapp\" (\"trade\" -> \"whatsapp\") at [720, 390]",
+        "[composition/proper-crossing] standard relationship id \"redis-celery\" (\"redis\" -> \"celery\") crosses relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") at [460, 390]",
+        "[composition/proper-crossing] standard relationship id \"hermes-trade\" (\"hermes\" -> \"trade\") crosses relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") at [540, 276]",
+        "[composition/proper-crossing] standard relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") crosses relationship id \"experience-pg\" (\"experience\" -> \"pg\") at [460, 458]",
+        "[composition/proper-crossing] standard relationship id \"trade-whatsapp\" (\"trade\" -> \"whatsapp\") crosses relationship id \"browser-pg\" (\"browser\" -> \"pg\") at [720, 498]",
+        "[composition/proper-crossing] standard relationship id \"trade-whatsapp\" (\"trade\" -> \"whatsapp\") crosses relationship id \"experience-pg\" (\"experience\" -> \"pg\") at [720, 458]",
+        "[composition/proper-crossing] standard relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") crosses relationship id \"experience-pg\" (\"experience\" -> \"pg\") at [460, 458]"
+      ]
+    },
+    {
+      "name": "relationship_corridors",
+      "ok": true,
+      "details": [
+        "[composition/ambiguous-corridor] standard relationship id \"billing-pg\" (\"billing\" -> \"pg\") shares a 142px corridor with relationship id \"celery-n8n\" (\"celery\" -> \"n8n\") at [1140, 148] -> [1140, 290]",
+        "[composition/ambiguous-corridor] standard relationship id \"hermes-browser\" (\"hermes\" -> \"browser\") shares a 222px corridor with relationship id \"goodjob-whatsapp\" (\"goodjob\" -> \"whatsapp\") at [460, 276] -> [460, 498]"
+      ]
+    },
+    {
+      "name": "container_border_runs",
+      "ok": true,
+      "details": []
+    },
+    {
+      "name": "route_rhythm",
+      "ok": true,
+      "details": []
+    },
+    {
+      "name": "legend_clearance",
+      "ok": true,
+      "details": []
+    }
+  ],
+  "composition": {
+    "schemaVersion": 1,
+    "profile": "standard",
+    "status": "pass",
+    "summary": {
+      "errors": 0,
+      "warnings": 46
+    },
+    "metrics": {
+      "properCrossings": 21,
+      "ambiguousCorridors": 2,
+      "containerBorderRuns": 0,
+      "labelRouteClearanceIssues": 22,
+      "minLabelRouteClearance": 0,
+      "desktopReadabilityIssues": 1,
+      "minProjectedNodeTextPx": 5.978571428571429,
+      "maxBends": 4,
+      "routesOverSuggestedBends": 2,
+      "maxStretch": 2.2,
+      "routesOverSuggestedStretch": 1,
+      "minSegmentPx": 10,
+      "minInteriorSegmentPx": 16,
+      "shortSegmentCount": 1,
+      "shortEndpointSegmentCount": 1,
+      "shortInteriorSegmentCount": 0,
+      "microSegmentCount": 0
+    },
+    "suggestedLimits": {
+      "bendsPerRelationship": 2,
+      "stretch": 1.35,
+      "segmentPx": 16,
+      "microSegmentPx": 8
+    },
+    "issues": [
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "异步投递",
+        "labelRelationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site",
+          "label": "建站 / 核价",
+          "collectionIndex": 12,
+          "artifactIndex": 13
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 515.8,
+          "y": 190,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          540,
+          228
+        ],
+        "to": [
+          540,
+          148
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "broker / 结果回写",
+        "labelRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 424.2,
+          "y": 372,
+          "width": 91.6,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 91.6,
+        "threshold": 2,
+        "from": [
+          625,
+          380
+        ],
+        "to": [
+          120,
+          380
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "broker / 结果回写",
+        "labelRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 424.2,
+          "y": 372,
+          "width": 91.6,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          460,
+          252
+        ],
+        "to": [
+          460,
+          498
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "broker / 结果回写",
+        "labelRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 424.2,
+          "y": 372,
+          "width": 91.6,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          460,
+          276
+        ],
+        "to": [
+          460,
+          576
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "账本落库",
+        "labelRelationship": {
+          "id": "billing-pg",
+          "from": "billing",
+          "to": "pg",
+          "label": "账本落库",
+          "collectionIndex": 8,
+          "artifactIndex": 9
+        },
+        "otherRelationship": {
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n",
+          "label": "site_built / content_pub",
+          "collectionIndex": 23,
+          "artifactIndex": 24
+        },
+        "segmentIndex": 2,
+        "labelRect": {
+          "x": 1115.8,
+          "y": 152.5,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          1140,
+          620
+        ],
+        "to": [
+          1140,
+          148
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "PSSP 注入",
+        "labelRelationship": {
+          "id": "hermes-assets",
+          "from": "hermes",
+          "to": "assets",
+          "label": "PSSP 注入",
+          "collectionIndex": 11,
+          "artifactIndex": 12
+        },
+        "otherRelationship": {
+          "id": "hermes-celery",
+          "from": "hermes",
+          "to": "celery",
+          "label": "执行器调度",
+          "collectionIndex": 16,
+          "artifactIndex": 17
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 208.4,
+          "y": 274,
+          "width": 53.2,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          235,
+          252
+        ],
+        "to": [
+          235,
+          438
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "内容生成",
+        "labelRelationship": {
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow",
+          "label": "内容生成",
+          "collectionIndex": 13,
+          "artifactIndex": 14
+        },
+        "otherRelationship": {
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site",
+          "label": "建站 / 核价",
+          "collectionIndex": 12,
+          "artifactIndex": 13
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 515.8,
+          "y": 203,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          540,
+          228
+        ],
+        "to": [
+          540,
+          148
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "GP-A 履约",
+        "labelRelationship": {
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob",
+          "label": "GP-A 履约",
+          "collectionIndex": 14,
+          "artifactIndex": 15
+        },
+        "otherRelationship": {
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade",
+          "label": "GP-B 拓客",
+          "collectionIndex": 15,
+          "artifactIndex": 16
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 513.4,
+          "y": 238,
+          "width": 53.2,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 26.6,
+        "threshold": 2,
+        "from": [
+          440,
+          246
+        ],
+        "to": [
+          540,
+          246
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "GP-B 拓客",
+        "labelRelationship": {
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade",
+          "label": "GP-B 拓客",
+          "collectionIndex": 15,
+          "artifactIndex": 16
+        },
+        "otherRelationship": {
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob",
+          "label": "GP-A 履约",
+          "collectionIndex": 14,
+          "artifactIndex": 15
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 513.4,
+          "y": 273,
+          "width": 53.2,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 3,
+        "threshold": 2,
+        "from": [
+          540,
+          240
+        ],
+        "to": [
+          540,
+          276
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "GP-B 拓客",
+        "labelRelationship": {
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade",
+          "label": "GP-B 拓客",
+          "collectionIndex": 15,
+          "artifactIndex": 16
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 513.4,
+          "y": 273,
+          "width": 53.2,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 53.2,
+        "threshold": 2,
+        "from": [
+          640,
+          276
+        ],
+        "to": [
+          460,
+          276
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "执行器调度",
+        "labelRelationship": {
+          "id": "hermes-celery",
+          "from": "hermes",
+          "to": "celery",
+          "label": "执行器调度",
+          "collectionIndex": 16,
+          "artifactIndex": 17
+        },
+        "otherRelationship": {
+          "id": "hermes-assets",
+          "from": "hermes",
+          "to": "assets",
+          "label": "PSSP 注入",
+          "collectionIndex": 11,
+          "artifactIndex": 12
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 206,
+          "y": 325,
+          "width": 58,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          235,
+          240
+        ],
+        "to": [
+          235,
+          348
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "Browser 执行器",
+        "labelRelationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 421.4,
+          "y": 355,
+          "width": 77.2,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          460,
+          276
+        ],
+        "to": [
+          460,
+          576
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "站点 / 核价落库",
+        "labelRelationship": {
+          "id": "site-pg",
+          "from": "site",
+          "to": "pg",
+          "label": "站点 / 核价落库",
+          "collectionIndex": 19,
+          "artifactIndex": 20
+        },
+        "otherRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 839,
+          "y": 185,
+          "width": 82,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          900,
+          76
+        ],
+        "to": [
+          900,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "研报落库",
+        "labelRelationship": {
+          "id": "deerflow-pg",
+          "from": "deerflow",
+          "to": "pg",
+          "label": "研报落库",
+          "collectionIndex": 20,
+          "artifactIndex": 21
+        },
+        "otherRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 855.8,
+          "y": 224,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          900,
+          76
+        ],
+        "to": [
+          900,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "研报落库",
+        "labelRelationship": {
+          "id": "deerflow-pg",
+          "from": "deerflow",
+          "to": "pg",
+          "label": "研报落库",
+          "collectionIndex": 20,
+          "artifactIndex": 21
+        },
+        "otherRelationship": {
+          "id": "site-pg",
+          "from": "site",
+          "to": "pg",
+          "label": "站点 / 核价落库",
+          "collectionIndex": 19,
+          "artifactIndex": 20
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 855.8,
+          "y": 224,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          880,
+          148
+        ],
+        "to": [
+          880,
+          262
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "线索落库",
+        "labelRelationship": {
+          "id": "trade-pg",
+          "from": "trade",
+          "to": "pg",
+          "label": "线索落库",
+          "collectionIndex": 22,
+          "artifactIndex": 23
+        },
+        "otherRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 855.8,
+          "y": 302,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          900,
+          76
+        ],
+        "to": [
+          900,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "线索落库",
+        "labelRelationship": {
+          "id": "trade-pg",
+          "from": "trade",
+          "to": "pg",
+          "label": "线索落库",
+          "collectionIndex": 22,
+          "artifactIndex": 23
+        },
+        "otherRelationship": {
+          "id": "goodjob-pg",
+          "from": "goodjob",
+          "to": "pg",
+          "label": "履约数据",
+          "collectionIndex": 21,
+          "artifactIndex": 22
+        },
+        "segmentIndex": 2,
+        "labelRect": {
+          "x": 855.8,
+          "y": 302,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 48.4,
+        "threshold": 2,
+        "from": [
+          824,
+          306
+        ],
+        "to": [
+          936,
+          306
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "矩阵消息",
+        "labelRelationship": {
+          "id": "trade-whatsapp",
+          "from": "trade",
+          "to": "whatsapp",
+          "label": "矩阵消息",
+          "collectionIndex": 24,
+          "artifactIndex": 25
+        },
+        "otherRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 705.8,
+          "y": 450,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 48.4,
+        "threshold": 2,
+        "from": [
+          440,
+          458
+        ],
+        "to": [
+          936,
+          458
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "实时翻译",
+        "labelRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "otherRelationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 445.8,
+          "y": 400,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          460,
+          252
+        ],
+        "to": [
+          460,
+          498
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "双轨取证",
+        "labelRelationship": {
+          "id": "browser-pg",
+          "from": "browser",
+          "to": "pg",
+          "label": "双轨取证",
+          "collectionIndex": 27,
+          "artifactIndex": 28
+        },
+        "otherRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "segmentIndex": 1,
+        "labelRect": {
+          "x": 911.8,
+          "y": 388,
+          "width": 48.4,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          936,
+          458
+        ],
+        "to": [
+          936,
+          290
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "evolution_experiences",
+        "labelRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "otherRelationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 814.6,
+          "y": 330,
+          "width": 110.8,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 14,
+        "threshold": 2,
+        "from": [
+          900,
+          76
+        ],
+        "to": [
+          900,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/label-route-clearance",
+        "label": "evolution_experiences",
+        "labelRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "otherRelationship": {
+          "id": "trade-pg",
+          "from": "trade",
+          "to": "pg",
+          "label": "线索落库",
+          "collectionIndex": 22,
+          "artifactIndex": 23
+        },
+        "segmentIndex": 0,
+        "labelRect": {
+          "x": 814.6,
+          "y": 330,
+          "width": 110.8,
+          "height": 14
+        },
+        "clearance": 0,
+        "intersectionLength": 65.4,
+        "threshold": 2,
+        "from": [
+          800,
+          340
+        ],
+        "to": [
+          880,
+          340
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-pg",
+          "from": "api",
+          "to": "pg",
+          "label": "SQL 落库",
+          "collectionIndex": 3,
+          "artifactIndex": 4
+        },
+        "otherRelationship": {
+          "id": "redis-billing",
+          "from": "redis",
+          "to": "billing",
+          "label": "计量事件",
+          "collectionIndex": 6,
+          "artifactIndex": 7
+        },
+        "point": [
+          1030,
+          41
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-site",
+          "from": "hermes",
+          "to": "site",
+          "label": "建站 / 核价",
+          "collectionIndex": 12,
+          "artifactIndex": 13
+        },
+        "point": [
+          625,
+          148
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-deerflow",
+          "from": "hermes",
+          "to": "deerflow",
+          "label": "内容生成",
+          "collectionIndex": 13,
+          "artifactIndex": 14
+        },
+        "point": [
+          625,
+          212
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-goodjob",
+          "from": "hermes",
+          "to": "goodjob",
+          "label": "GP-A 履约",
+          "collectionIndex": 14,
+          "artifactIndex": 15
+        },
+        "point": [
+          625,
+          276
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade",
+          "label": "GP-B 拓客",
+          "collectionIndex": 15,
+          "artifactIndex": 16
+        },
+        "point": [
+          625,
+          340
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "point": [
+          460,
+          380
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "hermes-experience",
+          "from": "hermes",
+          "to": "experience",
+          "label": "经验回流",
+          "collectionIndex": 18,
+          "artifactIndex": 19
+        },
+        "point": [
+          355,
+          380
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "api-celery",
+          "from": "api",
+          "to": "celery",
+          "label": "异步投递",
+          "collectionIndex": 5,
+          "artifactIndex": 6
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "point": [
+          625,
+          276
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "point": [
+          460,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "hermes-experience",
+          "from": "hermes",
+          "to": "experience",
+          "label": "经验回流",
+          "collectionIndex": 18,
+          "artifactIndex": 19
+        },
+        "point": [
+          355,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "site-pg",
+          "from": "site",
+          "to": "pg",
+          "label": "站点 / 核价落库",
+          "collectionIndex": 19,
+          "artifactIndex": 20
+        },
+        "point": [
+          900,
+          262
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "deerflow-pg",
+          "from": "deerflow",
+          "to": "pg",
+          "label": "研报落库",
+          "collectionIndex": 20,
+          "artifactIndex": 21
+        },
+        "point": [
+          900,
+          276
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "goodjob-pg",
+          "from": "goodjob",
+          "to": "pg",
+          "label": "履约数据",
+          "collectionIndex": 21,
+          "artifactIndex": 22
+        },
+        "point": [
+          900,
+          306
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "trade-pg",
+          "from": "trade",
+          "to": "pg",
+          "label": "线索落库",
+          "collectionIndex": 22,
+          "artifactIndex": 23
+        },
+        "point": [
+          900,
+          304
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "trade-whatsapp",
+          "from": "trade",
+          "to": "whatsapp",
+          "label": "矩阵消息",
+          "collectionIndex": 24,
+          "artifactIndex": 25
+        },
+        "point": [
+          720,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "redis-celery",
+          "from": "redis",
+          "to": "celery",
+          "label": "broker / 结果回写",
+          "collectionIndex": 7,
+          "artifactIndex": 8
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "point": [
+          460,
+          390
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "hermes-trade",
+          "from": "hermes",
+          "to": "trade",
+          "label": "GP-B 拓客",
+          "collectionIndex": 15,
+          "artifactIndex": 16
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "point": [
+          540,
+          276
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "otherRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "point": [
+          460,
+          458
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "trade-whatsapp",
+          "from": "trade",
+          "to": "whatsapp",
+          "label": "矩阵消息",
+          "collectionIndex": 24,
+          "artifactIndex": 25
+        },
+        "otherRelationship": {
+          "id": "browser-pg",
+          "from": "browser",
+          "to": "pg",
+          "label": "双轨取证",
+          "collectionIndex": 27,
+          "artifactIndex": 28
+        },
+        "point": [
+          720,
+          498
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "trade-whatsapp",
+          "from": "trade",
+          "to": "whatsapp",
+          "label": "矩阵消息",
+          "collectionIndex": 24,
+          "artifactIndex": 25
+        },
+        "otherRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "point": [
+          720,
+          458
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/proper-crossing",
+        "relationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "otherRelationship": {
+          "id": "experience-pg",
+          "from": "experience",
+          "to": "pg",
+          "label": "evolution_experiences",
+          "collectionIndex": 28,
+          "artifactIndex": 29
+        },
+        "point": [
+          460,
+          458
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/ambiguous-corridor",
+        "relationship": {
+          "id": "billing-pg",
+          "from": "billing",
+          "to": "pg",
+          "label": "账本落库",
+          "collectionIndex": 8,
+          "artifactIndex": 9
+        },
+        "otherRelationship": {
+          "id": "celery-n8n",
+          "from": "celery",
+          "to": "n8n",
+          "label": "site_built / content_pub",
+          "collectionIndex": 23,
+          "artifactIndex": 24
+        },
+        "segmentIndex": 1,
+        "otherSegmentIndex": 2,
+        "overlapLength": 142,
+        "from": [
+          1140,
+          148
+        ],
+        "to": [
+          1140,
+          290
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/ambiguous-corridor",
+        "relationship": {
+          "id": "hermes-browser",
+          "from": "hermes",
+          "to": "browser",
+          "label": "Browser 执行器",
+          "collectionIndex": 17,
+          "artifactIndex": 18
+        },
+        "otherRelationship": {
+          "id": "goodjob-whatsapp",
+          "from": "goodjob",
+          "to": "whatsapp",
+          "label": "实时翻译",
+          "collectionIndex": 25,
+          "artifactIndex": 26
+        },
+        "segmentIndex": 1,
+        "otherSegmentIndex": 1,
+        "overlapLength": 222,
+        "from": [
+          460,
+          276
+        ],
+        "to": [
+          460,
+          498
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "composition/desktop-readability",
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "availableDiagramWidth": 930,
+        "viewBoxWidth": 1400,
+        "scale": 0.6642857142857143,
+        "text": "访客 / 外贸客户",
+        "detail": "context",
+        "sourceFontPx": 9,
+        "projectedFontPx": 5.978571428571429,
+        "minimumProjectedFontPx": 6
+      }
+    ]
+  }
+}
