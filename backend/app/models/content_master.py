@@ -37,5 +37,11 @@ class ContentMaster(Base):
     preflight_checklist_json = Column(Text, nullable=True)
     preflight_approved_at = Column(DateTime(timezone=True), nullable=True)
     preflight_approved_by = Column(UUID_TYPE, ForeignKey("users.id"), nullable=True)
+    # 软删除时间（物理列早已存在，此前 ORM 未声明 → 读不到；本模块4 archived 派生需要）
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
     # 一核多形的事实内核快照（母版级唯一真源，发布/投影时落库；缺硬事实时如实存降级值）
     fact_kernel_json = Column(JSON, nullable=True)
+    # ContentAsset 6 个净新增溯源/上下文字段（模块4 契约 §5.1 路线B 裁-1）：
+    # {product_id, market, language, source_refs, prompt_version, model_version}
+    # 迁移 132_w5_content_asset_meta；NULL = 尚未回填（诚实降级，不伪造）
+    asset_meta = Column(JSON, nullable=True)

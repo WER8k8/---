@@ -15,9 +15,11 @@ import json
 import os
 import time
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
 
 import httpx
+from sqlalchemy import func
 
 # TODO: 高频场景改用共享 httpx.AsyncClient 实例复用连接池
 
@@ -1239,3 +1241,650 @@ class PublishService:
         publisher_class = PUBLISHER_MAP[platform_id]
         publisher = publisher_class(platform_config)
         return await publisher.validate_credentials()
+
+    # ══════════════════════════════════════════════════════════════════
+    # 模块5 · M1 五个发布面方法（契约 §3.1-3.5）
+    #
+    # 总原则（裁-6 / §3）：**禁止新造第三套发布机制**。
+    #   · 本组方法**只建任务**（写 publish_tasks = publish_jobs），**不真发**；
+    #   · 真发一律委托 §2.4 既有执行机（app.workers.publish_worker），严禁另起炉灶。
+    #   · 不复用 content_master_publish_service._publish_single_platform：其形参耦合
+    #     调用方的 drafts/gate_cache/tenant 对象，语义是「草稿→平台匹配」，与 M1
+    #     「指定平台+账号建任务」不同；强行复用需重构既有发布路径（风险高于收益）。
+    #     UTM/gate 属真发时机逻辑，由执行机侧既有链路处理，本组不复制。
+    # R6：发布域 tenant_id 为 varchar(36)、内容域为 uuid → 跨域比较一律显式 str()/cast 归一。
+    # R7：content_id 双解析（content_masters.id → generated_contents.id 回溯）；
+    #     content_asset_id 一律落 content_masters.id。
+    # R8：ORM 无 finished_at → 复用既有 published_at，不加新列。
+    # ══════════════════════════════════════════════════════════════════
+
+    @staticmethod
+    def _serialize_publish_task(t: Any) -> Dict[str, Any]:
+        """与 routes/unified_publish._serialize_task 字段对齐，并补 publish_jobs 新列。"""
+
+        def _iso(v: Any) -> Optional[str]:
+            return v.isoformat() if v else None
+
+        return {
+            "id": t.id,
+            "content_master_id": t.content_master_id,
+            "content_asset_id": getattr(t, "content_asset_id", None),
+            "platform_id": t.platform_id,
+            "account_id": t.account_id,
+            "region": t.region,
+            "status": t.status,
+            "publish_type": t.publish_type,
+            "primary_url": t.primary_url,
+            "secondary_url": t.secondary_url,
+            "published_url": t.published_url,
+            "error_message": t.error_message,
+            "error_code": getattr(t, "error_code", None),
+            "external_id": getattr(t, "external_id", None),
+            "idempotency_key": getattr(t, "idempotency_key", None),
+            "retry_count": t.retry_count,
+            "scheduled_time": _iso(t.scheduled_time),
+            "created_at": _iso(t.created_at),
+            "published_at": _iso(t.published_at),
+        }
+
+    def _resolve_content_asset_id(self, content_id: str) -> str:
+        """R7 双解析：① content_masters.id；② generated_contents.id → 回溯其所属 master。
+
+        :raises ValueError: 两条路径都解析不到（端点已 except ValueError → 400）。
+        """
+        from app.models.content import GeneratedContent
+        from app.models.content_master import ContentMaster
+
+        db = self.db
+        cid = str(content_id or "").strip()
+        if not cid:
+            raise ValueError("内容不存在或不可发布")
+
+        # ① 直接命中 content_masters.id
+        if db.query(ContentMaster).filter(ContentMaster.id == cid).first() is not None:
+            return cid
+
+        # ② 按 generated_contents.id 回溯所属 master
+        gen = db.query(GeneratedContent).filter(GeneratedContent.id == cid).first()
+        if gen is not None:
+            for attr in ("content_master_id", "master_id"):
+                master_id = getattr(gen, attr, None)
+                if master_id:
+                    return str(master_id)
+
+        raise ValueError("内容不存在或不可发布")
+
+    def resolve_publish_credential(self, tenant_id: str, platform_id: str,
+                                   account_id: Optional[str] = None) -> Dict[str, Any]:
+        """发布凭据唯一出口（契约 §4 · M2/M5，fail-closed 收口）。
+
+        优先级（§4.3 四级）：
+          ① ``platform_accounts.credential_ref`` 非空 →
+             ``CredentialVaultService.resolve_credential``（M5 接线）
+          ② ``platform_accounts.token_data / cookie_data`` → ``tenant_account``
+          ③ ``platform_configs`` 键值表 ``operator_account=true`` →
+             ``platform_operator``（默认关；缺行即关）
+          ④ 都空 → ``source="none"`` + ``error_code="credential_missing"``
+
+        **fail-closed（裁-5 硬规则）**：租户作用域**严禁 env 兜底**——
+        本方法返回空时，调用方必须把该平台判为 ``credential_missing`` 并跳过，
+        不得回落 ``os.getenv``。
+        """
+        from app.models.content import PlatformAccount, PlatformConfig
+
+        db = self.db
+        tid = str(tenant_id or "").strip()
+
+        q = db.query(PlatformAccount).filter(
+            PlatformAccount.platform_id == str(platform_id),
+            PlatformAccount.is_active.is_(True),
+        )
+        if tid:
+            # 同域比较：platform_accounts.tenant_id 与 content_masters.tenant_id **同为 uuid**，
+            # 交给 UUID_TYPE TypeDecorator 归一参数即可。
+            # ⚠ 禁止 cast(... AS VARCHAR)：实测会暴露底层存储形态（sqlite 为 32hex），
+            #   与 36 字符带横线串永不相等 → 查询恒 0（曾致 M1 正向用例全 fail）。
+            q = q.filter(PlatformAccount.tenant_id == tid)
+        if account_id:
+            q = q.filter(PlatformAccount.id == str(account_id))
+        account = q.first()
+
+        if account is None:
+            return {"source": "none", "values": {}, "account_id": None,
+                    "credential_ref": None, "error_code": "credential_missing"}
+
+        # ── 优先级 ①：credential_ref → Vault（M5 接线，契约 §4.3）────────
+        # R9：credential_ref 列由迁移 133 并入建立；非空即走 Vault 解密。
+        # AAD 四元绑定按 §4.3：owner_type="tenant" / owner_id=tenant_id /
+        # connection_type="platform" / connection_id=platform_id。
+        cred_ref = getattr(account, "credential_ref", None)
+        if cred_ref:
+            try:
+                from app.services.vault.credential_service import CredentialVaultService
+
+                vault = CredentialVaultService(db)
+                plaintext = vault.resolve_credential(
+                    str(cred_ref),
+                    tenant_id=tid or None,
+                    owner_type="tenant",
+                    owner_id=tid,
+                    connection_type="platform",
+                    connection_id=str(platform_id),
+                    # 2026-09-28 修正：原值 "platform_credential" 不在 vault ARTIFACT_TYPES
+                    # 词表（resolve 恒抛 VaultError→fail-closed），M5 测试因全程 mock
+                    # 未触雷。统一两侧为合法词 "api_token"（M6 connect 同源），AAD 才能匹配。
+                    artifact_type="api_token",
+                )
+                return {"source": "vault", "values": {"_vault_resolved": plaintext},
+                        "account_id": str(account.id),
+                        "credential_ref": str(cred_ref),
+                        "error_code": None}
+            except Exception as exc:  # 含 CredentialNotFoundError / Revoked / AAD Mismatch
+                # fail-closed：Vault 解析失败**不回退**明文列，直接 credential_missing
+                logger.warning(
+                    "Vault credential_ref 解析失败（fail-closed 不回退）"
+                    " ref=%s platform=%s: %s", cred_ref, platform_id, exc,
+                )
+                return {"source": "none", "values": {}, "account_id": str(account.id),
+                        "credential_ref": str(cred_ref),
+                        "error_code": "credential_missing"}
+
+        values: Dict[str, Any] = {}
+        token_data = getattr(account, "token_data", None) or {}
+        if isinstance(token_data, dict):
+            values.update({k: v for k, v in token_data.items() if v})
+        cookie_data = getattr(account, "cookie_data", None)
+        if cookie_data:
+            values["cookie_data"] = cookie_data
+
+        if values:
+            return {"source": "tenant_account", "values": values,
+                    "account_id": str(account.id),
+                    "credential_ref": getattr(account, "credential_ref", None),
+                    "error_code": None}
+
+        # 优先级 ③：platform_configs 键值表（R3 零迁移：缺行即关）
+        cfg = (
+            db.query(PlatformConfig)
+            .filter(
+                PlatformConfig.platform_id == str(platform_id),
+                PlatformConfig.config_key == "operator_account",
+            )
+            .first()
+        )
+        raw = str((cfg.config_value if cfg else "") or "").strip().lower()
+        if raw in ("true", "1", "yes", "on"):
+            return {"source": "platform_operator", "values": {},
+                    "account_id": str(account.id),
+                    "credential_ref": getattr(account, "credential_ref", None),
+                    "error_code": None}
+
+        return {"source": "none", "values": {}, "account_id": str(account.id),
+                "credential_ref": getattr(account, "credential_ref", None),
+                "error_code": "credential_missing"}
+
+    def publish_content(
+        self,
+        *,
+        content_id: str,
+        platform_ids: list,
+        account_ids: list,
+        publish_type: str = "immediate",
+        scheduled_time: Any = None,
+    ) -> Dict[str, Any]:
+        """为一篇内容在多个平台各建一条发布任务（1 Content → N Platform Attempts）。
+
+        只建任务不真发；幂等键同键重提复用既有行且 task_count 不增。
+        :raises ValueError: 内容解析失败 / 平台未登记或未启用（端点 → 400）。
+        """
+        from app.models.content import Platform, PublishTask
+        from app.models.content_master import ContentMaster
+
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+
+        asset_id = self._resolve_content_asset_id(content_id)
+        master = db.query(ContentMaster).filter(ContentMaster.id == asset_id).first()
+        if master is None:
+            raise ValueError("内容不存在或不可发布")
+        tenant_id = str(master.tenant_id) if getattr(master, "tenant_id", None) else ""
+
+        task_ids: list = []
+        skipped: list = []
+        created_count = 0
+
+        for idx, platform_id in enumerate(platform_ids or []):
+            pid = str(platform_id)
+            plat = (
+                db.query(Platform)
+                .filter(Platform.id == pid, Platform.is_active.is_(True))
+                .first()
+            )
+            if plat is None:
+                raise ValueError(f"平台不可用或未登记: {pid}")
+
+            account_id = account_ids[idx] if idx < len(account_ids or []) else None
+            if not account_id:
+                skipped.append({"platform_id": pid, "reason": "account_missing"})
+                continue
+
+            cred = self.resolve_publish_credential(tenant_id, pid, str(account_id))
+            if cred.get("error_code") == "credential_missing" or not cred.get("values"):
+                # 裁-5 fail-closed：凭据缺失进 skipped，**不用 env 顶上**
+                skipped.append({"platform_id": pid, "reason": "credential_missing"})
+                continue
+
+            key = f"pub:{tenant_id}:{asset_id}:{pid}:{account_id}:v1"
+            existing = (
+                db.query(PublishTask)
+                .filter(PublishTask.idempotency_key == key)
+                .first()
+            )
+            if existing is not None:
+                task_ids.append(str(existing.id))  # 幂等：复用既有行，task_count 不增
+                continue
+
+            task = PublishTask(
+                content_master_id=asset_id,
+                content_asset_id=asset_id,
+                platform_id=pid,
+                account_id=str(account_id),
+                tenant_id=tenant_id or None,   # R6：发布域 varchar(36)，存 uuid 字符串形式
+                status="pending",
+                publish_type=publish_type or "immediate",
+                scheduled_time=scheduled_time,
+                idempotency_key=key,
+            )
+            db.add(task)
+            db.commit()
+            db.refresh(task)
+            task_ids.append(str(task.id))
+            created_count += 1
+
+        return {"task_count": created_count, "task_ids": task_ids, "skipped": skipped}
+
+    def batch_publish(self, tasks: list) -> list:
+        """批量发布：内部循环调 publish_content（契约 §3.2）。"""
+        results: list = []
+        for item in tasks or []:
+            if not isinstance(item, dict):
+                continue
+            results.append(
+                self.publish_content(
+                    content_id=item.get("content_id"),
+                    platform_ids=item.get("platform_ids") or [],
+                    account_ids=item.get("account_ids") or [],
+                    publish_type=item.get("publish_type", "immediate"),
+                    scheduled_time=item.get("scheduled_time"),
+                )
+            )
+        return results
+
+    async def schedule_publish(
+        self,
+        *,
+        content_id: str,
+        platform_ids: list,
+        account_ids: list,
+        scheduled_time: Any,
+    ) -> Dict[str, Any]:
+        """定时发布：建 pending + publish_type=scheduled 的任务，到期由执行机真发。"""
+        return self.publish_content(
+            content_id=content_id,
+            platform_ids=platform_ids,
+            account_ids=account_ids,
+            publish_type="scheduled",
+            scheduled_time=scheduled_time,
+        )
+
+    def get_publish_tasks(
+        self,
+        *,
+        status: Optional[str] = None,
+        platform_id: Optional[str] = None,
+        account_id: Optional[str] = None,
+        content_id: Optional[str] = None,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> Tuple[list, int]:
+        """查询发布任务（按传入条件过滤 + 分页），返回 (items, total)。"""
+        from app.models.content import PublishTask
+
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+
+        q = db.query(PublishTask)
+        if status:
+            q = q.filter(PublishTask.status == status)
+        if platform_id:
+            q = q.filter(PublishTask.platform_id == str(platform_id))
+        if account_id:
+            q = q.filter(PublishTask.account_id == str(account_id))
+        if content_id:
+            # R7：同一 content_id 可能是 master / generated / content_asset → 三个落点都认。
+            # 同域 uuid 比较，直接交给 TypeDecorator 归一（禁止 cast，原因同 resolve_publish_credential）。
+            q = q.filter(
+                (PublishTask.content_master_id == str(content_id))
+                | (PublishTask.content_id == str(content_id))
+                | (PublishTask.content_asset_id == str(content_id))
+            )
+
+        total = q.count()
+        page = max(int(page or 1), 1)
+        page_size = max(int(page_size or 20), 1)
+        items = (
+            q.order_by(PublishTask.created_at.desc())
+            .offset((page - 1) * page_size)
+            .limit(page_size)
+            .all()
+        )
+        return [self._serialize_publish_task(t) for t in items], total
+
+    def _execute_publish_tasks(self, task_ids: list) -> None:
+        """触发真实执行机（契约 §3.5）：仅"触发"，**禁止新造执行器**。
+
+        端点已在调用前置 task.status='pending'、retry_count+=1 并 commit；
+        此处委托既有同步入口 run_process_pending_tasks（ops_jobs.py:70 同一用法）。
+        """
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+        try:
+            from app.workers.publish_worker import run_process_pending_tasks
+
+            run_process_pending_tasks(db, limit=max(len(task_ids or []), 1))
+        except Exception:  # noqa: BLE001 —— 执行机内部已自行记账失败态；此处不阻断端点返回
+            logger.exception("发布执行机触发失败（不阻断） task_ids=%s", task_ids)
+
+    # ── 模块5 · M6 凭据面（docs/模块5-凭据面收口契约-2026-09-28.md）──────────
+    # 红线：明文只在 vault（AAD 四元绑定）；platform_accounts.cookie_data/token_data
+    # 恒 NULL；「凭据已存 ≠ 会话已验证」（login_status 恒 logged_out，无平台侧探测）。
+
+    _CREDENTIAL_ARTIFACT_TYPE = "api_token"  # vault 词表合法值；真实种类由信封 kind 诚实标注
+
+    def connect_platform(
+        self,
+        *,
+        tenant_id: str,
+        platform_id: str,
+        account_name: str,
+        username: Optional[str] = None,
+        email: Optional[str] = None,
+        cookie_data: Optional[str] = None,
+        token_data: Optional[dict] = None,
+        token_expire_at: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+        from app.models.content import Platform, PlatformAccount
+        from app.services.vault.credential_service import (
+            CredentialVaultService,
+            make_vault_ref,
+        )
+
+        platform = (
+            db.query(Platform)
+            .filter(Platform.id == str(platform_id), Platform.is_active.is_(True))
+            .first()
+        )
+        if platform is None:
+            raise LookupError("platform_not_found")
+        if not cookie_data and not token_data:
+            raise ValueError("credential_payload_required")
+
+        kind = "cookie" if cookie_data else "token"
+        envelope = json.dumps(
+            {"kind": kind, "payload": cookie_data if cookie_data else token_data},
+            ensure_ascii=False,
+        )
+        expires_at = None
+        if token_expire_at:
+            try:
+                expires_at = datetime.fromisoformat(str(token_expire_at).replace("Z", "+00:00"))
+            except (ValueError, TypeError):
+                expires_at = None
+
+        vault = CredentialVaultService(db)
+        cred = vault.store_credential(
+            secret=envelope,
+            tenant_id=str(tenant_id),
+            owner_type="tenant",
+            owner_id=str(tenant_id),
+            connection_type="platform",
+            connection_id=str(platform_id),
+            artifact_type=self._CREDENTIAL_ARTIFACT_TYPE,
+            name=(account_name or f"platform-{platform_id}")[:100],
+            expires_at=expires_at,
+        )
+
+        tid = str(tenant_id)
+        acct = (
+            db.query(PlatformAccount)
+            .filter(
+                PlatformAccount.tenant_id == tid,
+                PlatformAccount.platform_id == str(platform_id),
+                PlatformAccount.account_name == (account_name or "")[:100],
+            )
+            .first()
+        )
+        if acct is None:
+            acct = PlatformAccount(
+                tenant_id=tid,
+                platform_id=str(platform_id),
+                account_name=(account_name or "")[:100],
+            )
+        acct.username = username
+        acct.email = email
+        # 明文不落库：信封只进 vault；cookie_data/token_data 保持 NULL
+        acct.cookie_data = None
+        acct.token_data = None
+        acct.token_expire_at = expires_at
+        acct.credential_ref = make_vault_ref(str(cred.id))
+        acct.login_status = "logged_out"  # 凭据已存 ≠ 会话已验证
+        acct.is_active = True
+        db.add(acct)
+        db.commit()
+        db.refresh(acct)
+        return {
+            "account_id": str(acct.id),
+            "platform_id": str(platform_id),
+            "account_name": acct.account_name,
+            "credential_ref": acct.credential_ref,
+            "login_status": acct.login_status,
+            "session_verified": False,
+            "credential_kind": kind,
+        }
+
+    def disconnect_platform(self, *, tenant_id: str, account_id: str) -> Dict[str, Any]:
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+        from app.models.content import PlatformAccount
+
+        acct = (
+            db.query(PlatformAccount)
+            .filter(
+                PlatformAccount.id == str(account_id),
+                PlatformAccount.tenant_id == str(tenant_id),
+            )
+            .first()
+        )
+        if acct is None:
+            raise LookupError("account_not_found")
+        if acct.credential_ref:
+            try:
+                from app.services.vault.credential_service import CredentialVaultService
+
+                CredentialVaultService(db).revoke_credential(str(acct.credential_ref))
+            except Exception:  # noqa: BLE001 —— 吊销失败不阻断断开（ref 会被清除）
+                logger.warning(
+                    "vault revoke failed on disconnect ref=%s", acct.credential_ref
+                )
+        acct.credential_ref = None
+        acct.login_status = "logged_out"
+        db.add(acct)
+        db.commit()
+        return {"account_id": str(acct.id), "login_status": acct.login_status,
+                "credential_ref": None}
+
+    def list_accounts(
+        self, *, tenant_ids: list, platform_id: Optional[str] = None
+    ) -> list:
+        """租户内账号列表（零明文：has_credential 布尔，不出 ref/cookie/token）。"""
+        db = self.db
+        if db is None or not tenant_ids:
+            return []
+        from app.models.content import PlatformAccount
+
+        q = db.query(PlatformAccount).filter(
+            PlatformAccount.tenant_id.in_([str(t) for t in tenant_ids])
+        )
+        if platform_id:
+            q = q.filter(PlatformAccount.platform_id == str(platform_id))
+        rows = q.order_by(PlatformAccount.created_at.desc()).limit(200).all()
+        return [
+            {
+                "id": str(r.id),
+                "platform_id": str(r.platform_id),
+                "account_name": r.account_name,
+                "username": r.username,
+                "email": r.email,
+                "login_status": r.login_status,
+                "is_active": bool(r.is_active),
+                "has_credential": bool(r.credential_ref),
+                "token_expire_at": r.token_expire_at.isoformat() if r.token_expire_at else None,
+            }
+            for r in rows
+        ]
+
+    def check_session(self, *, tenant_id: str, account_id: str) -> Dict[str, Any]:
+        """凭据可解密性探测（诚实语义：不是平台侧会话验证）。"""
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+        from app.models.content import PlatformAccount
+
+        acct = (
+            db.query(PlatformAccount)
+            .filter(
+                PlatformAccount.id == str(account_id),
+                PlatformAccount.tenant_id == str(tenant_id),
+            )
+            .first()
+        )
+        if acct is None:
+            raise LookupError("account_not_found")
+        if not acct.credential_ref:
+            return {"account_id": str(acct.id), "credential_resolvable": False,
+                    "reason": "no_credential", "session_verified": False}
+        try:
+            from app.services.vault.credential_service import CredentialVaultService
+
+            CredentialVaultService(db).resolve_credential(
+                str(acct.credential_ref),
+                tenant_id=str(tenant_id),
+                owner_type="tenant",
+                owner_id=str(tenant_id),
+                connection_type="platform",
+                connection_id=str(acct.platform_id),
+                artifact_type=self._CREDENTIAL_ARTIFACT_TYPE,
+            )
+            return {"account_id": str(acct.id), "credential_resolvable": True,
+                    "reason": None, "session_verified": False}
+        except Exception as exc:  # noqa: BLE001 —— 探测失败给 reason，不泄漏明文
+            return {"account_id": str(acct.id), "credential_resolvable": False,
+                    "reason": type(exc).__name__, "session_verified": False}
+
+    def get_publish_logs(
+        self,
+        *,
+        tenant_ids: list,
+        task_id: Optional[str] = None,
+        level: Optional[str] = None,
+        page: int = 1,
+        page_size: int = 50,
+    ) -> Dict[str, Any]:
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+        from app.models.content import PublishLog, PublishTask
+
+        q = (
+            db.query(PublishLog)
+            .join(PublishTask, PublishLog.task_id == PublishTask.id)
+            .filter(PublishTask.tenant_id.in_([str(t) for t in tenant_ids or []]))
+        )
+        if task_id:
+            q = q.filter(PublishLog.task_id == str(task_id))
+        if level:
+            q = q.filter(PublishLog.level == str(level))
+        total = q.count()
+        rows = (
+            q.order_by(PublishLog.created_at.desc())
+            .offset((max(1, page) - 1) * page_size)
+            .limit(page_size)
+            .all()
+        )
+        return {
+            "total": total,
+            "items": [
+                {
+                    "id": str(r.id),
+                    "task_id": str(r.task_id),
+                    "level": r.level,
+                    "message": r.message,
+                    "created_at": r.created_at.isoformat() if r.created_at else None,
+                }
+                for r in rows
+            ],
+        }
+
+    def get_publish_stats(self, *, tenant_ids: list) -> Dict[str, Any]:
+        db = self.db
+        if db is None:
+            raise ValueError("缺少数据库会话")
+        from app.models.content import PlatformAccount, PublishTask
+
+        tids = [str(t) for t in tenant_ids or []]
+        tasks_by_status: Dict[str, int] = {}
+        if tids:
+            rows = (
+                db.query(PublishTask.status, func.count(PublishTask.id))
+                .filter(PublishTask.tenant_id.in_(tids))
+                .group_by(PublishTask.status)
+                .all()
+            )
+            tasks_by_status = {str(k): int(v) for k, v in rows}
+        accounts_total = 0
+        accounts_with_credential = 0
+        if tids:
+            accounts_total = int(
+                db.query(func.count(PlatformAccount.id))
+                .filter(PlatformAccount.tenant_id.in_(tids))
+                .scalar()
+                or 0
+            )
+            accounts_with_credential = int(
+                db.query(func.count(PlatformAccount.id))
+                .filter(
+                    PlatformAccount.tenant_id.in_(tids),
+                    PlatformAccount.credential_ref.isnot(None),
+                )
+                .scalar()
+                or 0
+            )
+        try:
+            from app.services.publish_capability_registry import admitted_platform_count
+
+            admitted = int(admitted_platform_count())
+        except Exception:  # noqa: BLE001 —— 注册表异常时诚实给 0 并标注
+            admitted = 0
+        return {
+            "tasks_by_status": tasks_by_status,
+            "accounts_total": accounts_total,
+            "accounts_with_credential": accounts_with_credential,
+            "admitted_platform_count": admitted,
+        }

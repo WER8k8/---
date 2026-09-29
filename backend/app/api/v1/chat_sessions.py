@@ -46,7 +46,7 @@ def create_chat_session(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/{session_id}", response_model=dict)
+@router.get("/{session_id}", response_model=dict, operation_id="get_chat_session")
 def get_chat_session(session_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """获取对话会话详情"""
     session = db.query(ChatSession).filter(ChatSession.id == uuid.UUID(session_id)).first()

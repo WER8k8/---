@@ -165,6 +165,10 @@ class PlatformAccount(Base):
     login_status = Column(String(20), default="logged_out")
     is_active = Column(Boolean, default=True)
     last_login_at = Column(DateTime(timezone=True))
+    # ── 模块5 · M5 凭据 Vault 接线（迁移 133 已建列；此处补 ORM 映射，零迁移）──
+    # 契约 §4.3 优先级①：credential_ref 非空 → CredentialVaultService.resolve_credential
+    # R9 裁定：credential_ref 并入迁移 133，严禁拆分。
+    credential_ref = Column(String(200), nullable=True)
     created_at = Column(
         DateTime(
             timezone=True), default=lambda: datetime.now(
@@ -258,6 +262,17 @@ class PublishTask(Base):
             timezone.utc), onupdate=lambda: datetime.now(
                 timezone.utc))
     published_at = Column(DateTime(timezone=True))
+    # ── 模块5 · publish_jobs 统一（迁移 133 已建物理列；此处补 ORM 映射，零迁移）──
+    # 契约 §6.2：publish_jobs = publish_tasks 升格；R8 复用既有 published_at，不加 finished_at。
+    content_asset_id = Column(
+        UUID_TYPE,
+        ForeignKey("content_masters.id"),
+        nullable=True,
+        index=True,
+    )
+    idempotency_key = Column(String(128), nullable=True)   # 部分唯一索引见迁移 133
+    external_id = Column(String(200), nullable=True)
+    error_code = Column(String(64), nullable=True)
     content = relationship("GeneratedContent")
     platform = relationship("Platform")
     account = relationship("PlatformAccount")

@@ -150,8 +150,8 @@ def _invoke_ai_rag_reply(message: str, country: str, msg_count: int) -> str:
     )
 
 
-@router.get("/sessions/{session_id}")
-async def get_chat_session(session_id: str, db: Session = Depends(get_db)):
+@router.get("/sessions/{session_id}", operation_id="get_ai_chat_session")
+async def get_ai_chat_session(session_id: str, db: Session = Depends(get_db)):
     """获取聊天会话历史"""
     session = db.query(AiChatSession).filter(AiChatSession.id == session_id).first()
     if not session:
