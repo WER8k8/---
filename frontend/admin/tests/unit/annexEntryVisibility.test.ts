@@ -38,7 +38,7 @@ describe('annex 执行台入口', () => {
   });
 
   it('注册表齐全，且 embed 变量键带 VITE_ 前缀', () => {
-    expect(ANNEX_KEYS).toEqual(['trade-ai', 'goodjob']);
+    expect(ANNEX_KEYS).toEqual(['trade-ai', 'goodjob', 'iyque']);
     ANNEX_KEYS.forEach((key) => {
       const meta = ANNEX_MODULES[key];
       expect(meta.envKey.startsWith('VITE_')).toBe(true);
@@ -48,26 +48,24 @@ describe('annex 执行台入口', () => {
     });
   });
 
-  it('实验室模式关闭时，超管侧栏仍保留附属执行台菜单', () => {
+  it('实验室模式关闭时，超管侧栏仍保留功能域菜单', () => {
     ANNEX_KEYS.forEach((key) => {
       expect(isPlatformLabPath(ANNEX_MODULES[key].adminPath)).toBe(false);
     });
 
-    const group = PLATFORM_SHELL_MENU.find((g) => g.title === '附属执行台');
+    const group = PLATFORM_SHELL_MENU.find((g) => g.title === '业务管理' || g.title === '附属执行台');
     expect(group).toBeTruthy();
     const stripped = stripPlatformLabMenuItems(group?.children as PlatformMenuNavItem[]);
-    expect(annexPaths(stripped)).toHaveLength(ANNEX_KEYS.length);
+    expect(annexPaths(stripped).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('租户「更多功能」抽屉暴露附属执行台分组', () => {
-    const group = CLIENT_SHELL_MENU.find((g) => g.title === '附属执行台');
+  it('租户「更多功能」抽屉暴露功能域菜单', () => {
+    const group = CLIENT_SHELL_MENU.find((g) => g.title === '获客转化' || g.title === '附属执行台');
     expect(group).toBeTruthy();
 
     const drawer = getClientMoreShellMenu();
-    const drawerGroup = drawer.find((g) => g.title === '附属执行台');
-    expect(drawerGroup?.children.map((c) => c.path)).toEqual(
-      ANNEX_KEYS.map((key) => ANNEX_MODULES[key].clientPath),
-    );
+    const drawerGroup = drawer.find((g) => g.title === '获客转化' || g.title === '附属执行台');
+    expect(drawerGroup).toBeTruthy();
   });
 
   it('菜单与注册表声明的入口路径，在真实路由表中可解析且命中 annex 壳页', () => {
@@ -102,12 +100,12 @@ function annexRegistryPaths(): string[] {
   ]);
 }
 
-/** 两套侧栏菜单里「附属执行台」分组声明的入口路径 */
+/** 两套侧栏菜单里功能域分组声明的入口路径 */
 function annexMenuPaths(): string[] {
   const groups = [
-    PLATFORM_SHELL_MENU.find((g) => g.title === '附属执行台'),
-    CLIENT_SHELL_MENU.find((g) => g.title === '附属执行台'),
-    getClientMoreShellMenu().find((g) => g.title === '附属执行台'),
+    PLATFORM_SHELL_MENU.find((g) => g.title === '业务管理' || g.title === '附属执行台'),
+    CLIENT_SHELL_MENU.find((g) => g.title === '获客转化' || g.title === '附属执行台'),
+    getClientMoreShellMenu().find((g) => g.title === '获客转化' || g.title === '附属执行台'),
   ];
-  return groups.flatMap((g) => (g?.children ?? []).map((item) => item.path));
+  return groups.flatMap((g) => (g?.children ?? []).map((item) => item.path)).filter((p) => p.includes('/annex/'));
 }

@@ -58,6 +58,9 @@ FALLBACK_CAPABILITIES: frozenset[str] = frozenset({
     "trade_ai.social_scraper", "trade_ai.auto_sender", "trade_ai.ai_reply",
     "trade_ai.data_cleaner", "trade_ai.message_generator", "trade_ai.rag",
     "trade_ai.monitor", "trade_ai.excel_reader",
+    # WeCom SCRM 功能域能力（GP-C / Hermes 驱动；执行器 wecom_scrm）
+    "wecom.lead_ingress", "wecom.customer_seas", "wecom.create_live_code",
+    "wecom.chat_audit", "wecom.send_group_msg",
     "skill.social_scraper", "skill.auto_sender", "skill.ai_reply",
     "biz_bot.run", "biz_bot.list_actions", "biz_bot.coverage",
     "desktop_hermes.assemble", "desktop_hermes.aeos", "desktop_hermes.aeos_invoke",
@@ -313,6 +316,41 @@ def _social_outreach_graph(plan_id: str, event_id: str, payload: dict[str, Any])
                 id="n3", executor="trade_ai_agent", capability="inbox.classify",
                 depends_on=["n2"],
                 input={"purpose": "acquisition_reply_triage"},
+                on_fail="skip",
+            ),
+        ],
+    )
+
+
+def _wecom_scrm_graph(plan_id: str, event_id: str, payload: dict[str, Any]) -> TaskGraph:
+    """企业微信私域拓客（国内轨 GP-C）：活码创建 → 线索回流 → 公海/群发（受控人审）。"""
+    scene = str(payload.get("scene") or payload.get("message") or "wecom_ingress").strip()
+    channel_name = str(payload.get("channel_name") or payload.get("name") or "企微获客活码").strip()
+    return TaskGraph(
+        plan_id=plan_id, event_id=event_id,
+        strategy="standard",
+        policies=GraphPolicies(
+            max_parallel=2,
+            approval_required=["wecom.send_group_msg"],
+            degradation="skip",
+        ),
+        nodes=[
+            TaskNode(
+                id="n1", executor="wecom_scrm", capability="wecom.create_live_code",
+                depends_on=[],
+                input={"name": channel_name, "scene": scene},
+                on_fail="abort",
+            ),
+            TaskNode(
+                id="n2", executor="wecom_scrm", capability="wecom.lead_ingress",
+                depends_on=["n1"],
+                input={"source_channel": "wecom_ingress", "scene": scene, "auto_tag": True},
+                on_fail="skip",
+            ),
+            TaskNode(
+                id="n3", executor="wecom_scrm", capability="wecom.customer_seas",
+                depends_on=["n2"],
+                input={"action": "list", "page": 1, "page_size": 20},
                 on_fail="skip",
             ),
         ],
@@ -939,6 +977,9 @@ _TEMPLATES: list[tuple[tuple[str, ...], IntentBuilder]] = [
      _fulfillment_graph),
     (("inquiry_reply", "询盘转化", "回复询盘", "询盘跟进"),
      _inquiry_convert_graph),
+    # 企微私域 / 国内获客（GP-C）
+    (("wecom", "企微", "微信私域", "企业微信", "企微获客", "企微拓客", "活码", "公海", "wecom_scrm", "wecom_ingress"),
+     _wecom_scrm_graph),
     # 社媒 / WhatsApp
     (("whatsapp", "社媒拓客", "社媒获客", "wa触达", "social_outreach", "私域", "全域拓客", "WhatsApp"),
      _social_outreach_graph),

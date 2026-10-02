@@ -18,6 +18,7 @@ import logging
 import os
 import uuid
 from collections import deque
+from datetime import datetime, timezone
 from typing import Any, Optional
 
 from sqlalchemy.orm import Session
@@ -308,6 +309,22 @@ def generate_trade_document(
                     currency=currency,
                     status="draft",
                 )
+        if db is not None and order_id:
+            try:
+                from app.models.order import Order
+                ord_obj = db.query(Order).filter(Order.id == str(order_id)).first()
+                if not ord_obj:
+                    ord_obj = db.query(Order).filter(Order.order_number == str(order_id)).first()
+                if ord_obj:
+                    if doc_type == "PI":
+                        ord_obj.document_stage = "pi_issued"
+                    elif doc_type == "CI":
+                        ord_obj.document_stage = "ci_issued"
+                    elif doc_type == "PL":
+                        ord_obj.document_stage = "pl_issued"
+                    db.commit()
+            except Exception as stage_err:
+                logger.warning("generate_trade_document: order document_stage update skipped: %s", stage_err)
     except Exception as exc:  # noqa: BLE001
         logger.exception("native generate_trade_document failed type=%s", doc_type)
         return {"success": False, "error": f"{type(exc).__name__}: {exc}", "native": True, "doc_type": doc_type}
@@ -383,6 +400,98 @@ def sync_fulfillment_stage(
             else:
                 try:
                     order.status = target
+
+                    # ── 外贸 7 步履约实体联动落盘 ──
+                    try:
+                        from sqlalchemy import inspect
+                        insp = inspect(db.connection())
+                        now_utc = datetime.now(timezone.utc)
+
+                        if target == "deposit_received":
+                            order.payment_stage = "deposit_verified"
+                            dep_ratio = float(params.get("deposit_ratio") or getattr(order, "deposit_ratio", None) or 30.0)
+                            order.deposit_ratio = dep_ratio
+                            dep_amt = float(params.get("deposit_amount") or getattr(order, "deposit_amount", None) or (float(getattr(order, "total_amount", 0) or 0) * (dep_ratio / 100.0)))
+                            order.deposit_amount = dep_amt
+                            if insp.has_table("payments"):
+                                from app.services.trade_fulfillment_store import persist_business_payment
+                                persist_business_payment(
+                                    db,
+                                    amount=dep_amt,
+                                    tenant_id=str(getattr(order, "tenant_id", "") or tenant_id or "") or None,
+                                    order_id=oid,
+                                    currency=str(getattr(order, "currency", "USD") or "USD"),
+                                    method=str(params.get("payment_method") or "tt"),
+                                    status="confirmed",
+                                    reference_no=str(params.get("payment_ref") or params.get("reference_no") or f"DEP-{order.order_number}"),
+                                    notes=f"外贸7步履约第4步定金核销 ({dep_ratio}%)",
+                                    paid_at=now_utc,
+                                )
+
+                        elif target == "in_production":
+                            order.fulfillment_stage = "in_production"
+                            if insp.has_table("purchase_orders"):
+                                from app.services.trade_fulfillment_store import persist_purchase_order
+                                persist_purchase_order(
+                                    db,
+                                    po_number=str(params.get("po_number") or f"PO-{order.order_number}"),
+                                    tenant_id=str(getattr(order, "tenant_id", "") or tenant_id or "") or None,
+                                    order_id=oid,
+                                    supplier_name=str(params.get("supplier_name") or "YouDing Certified Plant"),
+                                    product_desc=str(params.get("product_desc") or getattr(order, "shipping_marks", None) or "Building Materials Custom Production"),
+                                    quantity=float(params.get("quantity") or 1),
+                                    unit=str(params.get("unit") or "pcs"),
+                                    unit_price=float(params.get("unit_price") or getattr(order, "total_amount", 0) or 0),
+                                    currency=str(getattr(order, "currency", "USD") or "USD"),
+                                    status="producing",
+                                    notes="外贸7步履约第5步生产排期与跟单",
+                                )
+
+                        elif target == "shipped":
+                            order.fulfillment_stage = "ready_to_ship"
+                            if params.get("tracking_number"):
+                                order.tracking_number = str(params["tracking_number"]).strip()
+                            if insp.has_table("logistics_shipments"):
+                                from app.services.trade_fulfillment_store import persist_logistics_shipment
+                                carrier = str(params.get("carrier") or getattr(order, "shipping_method", None) or "OceanFreight")
+                                origin_port = str(params.get("port_of_loading") or getattr(order, "port_of_loading", None) or "Shenzhen Port")
+                                dest_port = str(params.get("port_of_discharge") or getattr(order, "port_of_discharge", None) or "Destination Port")
+                                persist_logistics_shipment(
+                                    db,
+                                    tenant_id=str(getattr(order, "tenant_id", "") or tenant_id or "") or None,
+                                    order_id=oid,
+                                    tracking_no=order.tracking_number or f"TRK-{order.order_number}",
+                                    carrier=carrier,
+                                    origin_port=origin_port,
+                                    dest_port=dest_port,
+                                    status="booked",
+                                )
+
+                        elif target == "final_payment_received":
+                            order.payment_stage = "paid"
+                            order.payment_status = "paid"
+                            bal_amt = max(0.0, float(getattr(order, "total_amount", 0) or 0) - float(getattr(order, "deposit_amount", 0) or 0))
+                            if insp.has_table("payments"):
+                                from app.services.trade_fulfillment_store import persist_business_payment
+                                persist_business_payment(
+                                    db,
+                                    amount=bal_amt,
+                                    tenant_id=str(getattr(order, "tenant_id", "") or tenant_id or "") or None,
+                                    order_id=oid,
+                                    currency=str(getattr(order, "currency", "USD") or "USD"),
+                                    method=str(params.get("payment_method") or "tt"),
+                                    status="confirmed",
+                                    reference_no=str(params.get("payment_ref") or params.get("reference_no") or f"BAL-{order.order_number}"),
+                                    notes="外贸7步履约第7步尾款核销",
+                                    paid_at=now_utc,
+                                )
+
+                        elif target == "completed":
+                            order.fulfillment_stage = "completed"
+                            order.payment_stage = "paid"
+                    except Exception as ent_err:
+                        logger.warning("7-step entity persist error (non-blocking): %s", ent_err)
+
                     db.commit()
                     db.refresh(order)
                     result["transition_path"] = path

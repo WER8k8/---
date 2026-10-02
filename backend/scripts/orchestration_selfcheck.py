@@ -616,6 +616,36 @@ def check_goodjob_catalog_drift() -> None:
     record("19. GoodJob 能力目录双端一致", ok, detail)
 
 
+# ---------------------------------------------------------------------------
+# 20. 企微侧车与国内轨回流通道（Path A · wecom_ingress）
+# ---------------------------------------------------------------------------
+def check_wecom_scrm_sidecar() -> None:
+    """验证国内轨企微 SCRM 侧车与 UJ 主链桥接闭环：
+    1. 票据支持：SUPPORTED_ANNEXES 含 iyque
+    2. 回流服务与路由：wecom_lead_ingress_service 与 /wecom-leads/ingest 就绪
+    3. 侧车运行态探针：8085 / 2024 端口与容器连通
+    """
+    import urllib.request
+    from app.services.annex import ticket_service
+    from app.services import wecom_lead_ingress_service
+
+    annex_ok = "iyque" in ticket_service.SUPPORTED_ANNEXES
+    svc_ok = hasattr(wecom_lead_ingress_service, "ingest_wecom_lead")
+
+    sidecar_online = False
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8085/", headers={"User-Agent": "selfcheck"})
+        with urllib.request.urlopen(req, timeout=1.0) as resp:
+            sidecar_online = resp.status in (200, 401)
+    except Exception:
+        sidecar_online = False
+
+    ok = annex_ok and svc_ok
+    status_str = "ONLINE (8085响应)" if sidecar_online else "STANDBY"
+    detail = f"SSO票据={annex_ok} | 回流服务={svc_ok} | 侧车运行态={status_str} (source_channel=wecom_ingress)"
+    record("20. 企微侧车与国内轨回流通道", ok, detail)
+
+
 def main() -> int:
     for fn in (
         check_database,
@@ -637,6 +667,7 @@ def main() -> int:
         check_system_registry_and_lock,
         check_multi_executor_registry,
         check_goodjob_catalog_drift,
+        check_wecom_scrm_sidecar,
     ):
         try:
             fn()

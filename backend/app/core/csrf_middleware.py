@@ -28,8 +28,17 @@ from app.core.security_tools import generate_csrf_token, validate_csrf_token
 logger = logging.getLogger("uj-admin.csrf")
 
 # Paths that are always public (no CSRF check needed).
-_PUBLIC_PREFIXES: tuple[str, ...] = ("/health", "/docs", "/openapi.json", "/redoc",
-                                    "/uploads", "/static", "/favicon")
+_PUBLIC_PREFIXES: tuple[str, ...] = (
+    "/health",
+    "/api/v1/health",
+    "/api/v1/system/health",
+    "/docs",
+    "/openapi.json",
+    "/redoc",
+    "/uploads",
+    "/static",
+    "/favicon",
+)
 
 # Paths that already use Bearer/JWT exclusively -- skip CSRF.
 _API_EXEMPT_PREFIXES: tuple[str, ...] = (
@@ -47,17 +56,21 @@ _API_EXEMPT_PREFIXES: tuple[str, ...] = (
     "/api/v1/admin-bff/logout",
     # 附属项目票据换取与核销（GoodJob / Trade AI）— 跨系统票据协议跳过 CSRF
     "/api/v1/annex",
+    # 企微侧车线索回流 — 机器 webhook，走 x-bridge-token
+    "/api/v1/wecom-leads",
+    "/api/v1/website-leads",
     # WhatsApp Plugin 入站事件总线 — 机器 webhook，走共享密钥而非 CSRF
     "/api/v1/whatsapp-events",
+    # 公开联系我们表单（官网/租户站访客无状态提交）— 跳过 CSRF (G-11/G-12)
+    "/api/v1/system/contact",
     # 公开找产品端点（Product Finder）— 无需登录，跳过 CSRF
     "/api/v1/matching",
     # 公开 RFQ 提交端点 — 无需登录，跳过 CSRF
     "/api/v1/rfq",
     # 租户独立域上的匿名公开端点（旺财问答 / agent 可撮合出口的目录·筛货·询盘）。
-    # 这一族没有 Cookie 会话可劫持：按 domain 定位租户、只写入公开线索，
-    # 防滥用靠各自的限流与幂等键（见 public_agent_storefront），不靠 CSRF。
-    # 同时修正既有 POST /public/tenants/{domain}/wangcai/ask 匿名调用会被 403 的问题。
     "/api/v1/public/tenants/",
+    "/api/v1/public",
+    "/api/v1/wangcai",
     # 公开工程计算器端点 — 无需登录，跳过 CSRF
     "/api/v1/calculator",
     # 公开技术问答（基于批准知识库）— 无需登录，跳过 CSRF

@@ -8,10 +8,14 @@ import string
 
 from sqlalchemy.orm import Session
 
-from app.models.referral import ReferralCode, ReferralRecord
+from app.models.referral import REFERRAL_TRANSITIONS, ReferralCode, ReferralRecord
 from app.models.tenant import Tenant
 
 logger = logging.getLogger(__name__)
+
+# 轨6 计量键（幂等）：同一邀请记录只计一次收入确认；冲回另起 :reversal 行（append-only）
+REF_EVENT_KEY_REWARDED = "referral:{id}:rewarded"
+REF_EVENT_KEY_REVERSAL = "referral:{id}:rewarded:reversal"
 
 
 class ReferralService:

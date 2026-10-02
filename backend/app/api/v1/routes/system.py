@@ -6,6 +6,8 @@ import logging
 import os
 from datetime import datetime, timezone
 
+logger = logging.getLogger(__name__)
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import desc
@@ -291,28 +293,57 @@ def submit_contact(req: InquiryCreate, db: Session = Depends(get_db), request: R
     cols = {c.name for c in Inquiry.__table__.columns}
     if "tenant_id" in cols:
         inquiry_kwargs["tenant_id"] = tenant_id
+
+    # 兼容 PostgreSQL FORCE ROW LEVEL SECURITY (RLS) 注入 (G-12 根因防护)
+    if tenant_id:
+        try:
+            from sqlalchemy import text
+            db.execute(text("SET LOCAL app.current_tenant_id = :tid"), {"tid": str(tenant_id)})
+        except Exception:
+            pass
+
     inquiry = Inquiry(**inquiry_kwargs)
     db.add(inquiry)
+
     # 修正设计稿 模块17（Outbox）：业务事务内追加事件，与本询盘同 commit/rollback；
     # 消费者经 services.outbox_service.register_consumer 注册后由派发器异步投递。
-    db.flush()
-    from app.services.outbox_service import record_outbox_event
-    record_outbox_event(
-        db,
-        event_type="inquiry.created",
-        tenant_id=tenant_id,
-        aggregate_type="inquiry",
-        aggregate_id=str(inquiry.id),
-        payload={
-            "name": req.name,
-            "email": req.email,
-            "phone": req.phone,
-            "product": inquiry_kwargs.get("product"),
-            "source": "public_contact",
-        },
-    )
-    db.commit()
-    db.refresh(inquiry)
+    try:
+        db.flush()
+        try:
+            from sqlalchemy import inspect
+            if inspect(db.connection()).has_table("outbox_events"):
+                from app.services.outbox_service import record_outbox_event
+                record_outbox_event(
+                    db,
+                    event_type="inquiry.created",
+                    tenant_id=tenant_id,
+                    aggregate_type="inquiry",
+                    aggregate_id=str(inquiry.id),
+                    payload={
+                        "name": req.name,
+                        "email": req.email,
+                        "phone": req.phone,
+                        "product": inquiry_kwargs.get("product"),
+                        "source": "public_contact",
+                    },
+                )
+        except Exception as outbox_err:
+            logger.warning("submit_contact: outbox event recording skipped: %s", outbox_err)
+
+        db.commit()
+        db.refresh(inquiry)
+    except Exception as exc:
+        db.rollback()
+        logger.exception("submit_contact: 提交线索写入失败: %s", exc)
+        return JSONResponse(
+            status_code=500,
+            content={
+                "code": 500,
+                "message": "提交失败，请稍后重试",
+                "data": {"error": "contact_submission_failed"},
+            },
+        )
+
     body = success_response(data=InquiryResponse.model_validate(inquiry))
     return JSONResponse(status_code=201, content=body.model_dump(mode="json"))
 

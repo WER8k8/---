@@ -59,7 +59,7 @@ def test_work_mode_seamless_s7_no_privilege_menu():
     domains = SEAMLESS_BODY["function_domains"]
     assert all(d["privileged"] is False for d in domains)
     labels = {d["label"] for d in domains}
-    assert labels == {"社媒拓客", "外贸履约"}
+    assert labels == {"社媒拓客", "外贸履约", "企微私域"}
     score = seamless_gap_score({i: True for i in ids})
     assert score["total"] == len(ids) and score["seamless"] is True
 

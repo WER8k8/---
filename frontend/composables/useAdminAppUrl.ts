@@ -19,10 +19,12 @@ export function useAdminAppUrl() {
     return '';
   });
 
-  function login(portal?: 'tenant' | 'agent' | 'partner' | 'platform') {
+  function login(_portal?: 'tenant' | 'agent' | 'partner' | 'platform') {
+    // LOGIN-LOCK-01：唯一登录页固定平台门面（data-portal="platform"），admin 端不解析
+    // ?portal= 多门户参数 —— 历史遗留的生成端已拆除（2026-10-01 审计残留清理），
+    // 保留形参以兼容既有调用方（pages/platform/index.vue 的 admin.login(...)）。
     const root = base.value || '/';
-    if (!portal) return `${root}/login`;
-    return `${root}/login?portal=${portal}`;
+    return `${root}/login`;
   }
 
   return {

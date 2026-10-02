@@ -47,6 +47,15 @@ export const ANNEX_MODULES: Record<string, AnnexModuleMeta> = {
     domain: '履约与账户',
     privileged: false,
   },
+  iyque: {
+    label: '企微私域',
+    envKey: 'VITE_IYQUE_EMBED_URL',
+    desc: '国内获客 · 企微活码与线索公海',
+    adminPath: '/admin/annex/iyque',
+    clientPath: '/client/annex/iyque',
+    domain: '获客转化',
+    privileged: false,
+  },
 };
 
 export function annexMeta(key: string): AnnexModuleMeta | null {

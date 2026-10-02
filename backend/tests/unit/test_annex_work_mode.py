@@ -12,6 +12,7 @@ from app.services.hermes import planner_service
 from app.services.hermes.annex_work_mode import (
     GOLDEN_PATH_A,
     GOLDEN_PATH_B,
+    GOLDEN_PATH_C,
     PLANE_INTERACTIVE,
     PLANE_TASK,
     SEAMLESS_BODY,
@@ -45,7 +46,7 @@ def test_layer_stack_places_annex_under_hermes():
     layers = [x["layer"] for x in report["layer_stack"]]
     assert layers.index("dsh_optional") < layers.index("hermes")
     assert layers.index("hermes") < layers.index("executors_parallel")
-    assert set(report["annex_executors"]) == {"trade_ai_agent", "goodjob_crm"}
+    assert set(report["annex_executors"]) == {"trade_ai_agent", "goodjob_crm", "wecom_scrm"}
 
 
 def test_golden_path_coverage_helper():
@@ -53,6 +54,8 @@ def test_golden_path_coverage_helper():
     assert gp and gp["id"] == GOLDEN_PATH_A["id"]
     gp_b = golden_path_for_executors(["trade_ai_agent", "lead"])
     assert gp_b and gp_b["id"] == GOLDEN_PATH_B["id"]
+    gp_c = golden_path_for_executors(["wecom_scrm"])
+    assert gp_c and gp_c["id"] == GOLDEN_PATH_C["id"]
     assert golden_path_for_executors(["deerflow"]) is None
 
 

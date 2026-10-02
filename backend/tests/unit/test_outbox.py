@@ -215,11 +215,10 @@ class TestContactProducerWiring:
 
 
 class TestProductionConsumer:
-    def test_beat_task_dispatches_with_ops_trail_consumer(self, db_session, monkeypatch):
+    def test_beat_task_dispatches_with_ops_trail_consumer(self, monkeypatch, request):
         """T17-b2：beat 任务接线——生产消费者 ops_trail 注册后，派发把事件落到 contact_events。
 
-        beat 任务经独立连接访问测试库（file db），故播种/断言也用落盘会话
-        （conftest 的 db_session 在外部事务里，commit 不落盘）。
+        beat 任务经独立连接访问测试库，故播种/断言也用落盘会话。
         """
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
@@ -227,25 +226,45 @@ class TestProductionConsumer:
         from app.models.trade_fulfillment import ContactEvent
         from app.tasks import outbox_tasks
 
-        # P0-3：复用 conftest 的「按运行隔离」测试库（env 注入），不得再写死 ./test.db，
-        # 否则与并发/其它运行的 drop_all 互相打架 → no such table 假失败。
+        # P0-3 修订（2026-09-28）：不再复用 conftest 共享文件库——实测存在
+        # 「共享临时 .db 运行中途被清理 → 新连接拿到空文件 → no such table」的
+        # 组合敏感偶发（长跑触发、短组合不复现，且 create_all 也救不回中途删除）。
+        # 本用例改用**私有临时库** + 显式 create_all 所需四表，与其它测试彻底解耦。
         import os as _os
-
+        import tempfile as _tempfile
         from pathlib import Path as _Path
 
-        _db_path = _os.environ.get("PYTEST_TEST_DB_PATH")
-        _test_db_url = (
-            f"sqlite:///{_Path(_db_path).as_posix()}"
-            if _db_path
-            else "sqlite:///./test.db"
+        from app.models import Base as _Base
+        from app.models.outbox import (
+            DeadLetterEvent as _DLE,
+            InboxEvent as _IE,
+            OutboxEvent as _OE,
         )
+
+        _fd, _db_path = _tempfile.mkstemp(prefix="uj_outbox_beat_", suffix=".db")
+        _os.close(_fd)
         _test_engine = create_engine(
-            _test_db_url, connect_args={"check_same_thread": False}
+            f"sqlite:///{_Path(_db_path).as_posix()}",
+            connect_args={"check_same_thread": False},
         )
-        from app.models import Base
-        Base.metadata.create_all(bind=_test_engine)
+        _Base.metadata.create_all(
+            _test_engine,
+            tables=[_OE.__table__, _IE.__table__, _DLE.__table__, ContactEvent.__table__],
+        )
         _TestSession = sessionmaker(bind=_test_engine)
         monkeypatch.setattr("app.core.database.SessionLocal", _TestSession)
+
+        def _cleanup_private_db():
+            try:
+                _test_engine.dispose()
+            except Exception:  # noqa: BLE001
+                pass
+            try:
+                _os.remove(_db_path)
+            except OSError:
+                pass
+
+        request.addfinalizer(_cleanup_private_db)
 
 
         # 播种：落盘会话写入 inquiry.created 事件

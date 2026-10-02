@@ -140,6 +140,9 @@ const routes: RouteRecordRaw[] = [
       { path: 'video-studio-project-panel', redirect: '/client/video-studio', meta: { title: '视频项目面板' } },
       { path: 'dashboard', name: 'ClientDashboard', component: () => import('@/views/client/dashboard.vue'), meta: { title: '工作台' } },
       { path: 'tasks', name: 'ClientHermesTasks', component: () => import('@/views/client/hermes-tasks.vue'), meta: { title: 'Hermes 任务', privileged: false } },
+      { path: 'annex/trade-ai', name: 'ClientAnnexTradeAi', redirect: '/client/trade-tools', meta: { title: '社媒拓客', annexKey: 'trade-ai', privileged: false } },
+      { path: 'annex/goodjob', name: 'ClientAnnexGoodJob', redirect: '/client/queues/fulfillment', meta: { title: '外贸履约', annexKey: 'goodjob', privileged: false } },
+      { path: 'annex/iyque', name: 'ClientWecomScrm', component: () => import('@/views/annex/wecom-scrm.vue'), meta: { title: '企微私域', annexKey: 'iyque', privileged: false } },
      { path: 'traffic', name: 'ClientTrafficBoard', component: () => import('@/views/client/traffic-board.vue'), meta: { title: '流量看板' } },
       { path: 'assistant', name: 'ClientAssistant', component: () => import('@/views/client/assistant.vue'), meta: { title: '卖货智能助手' } },
       { path: 'copilot', name: 'ClientCopilot', component: () => import('@/views/client/copilot.vue'), meta: { title: '卖货飞轮' } },
@@ -573,6 +576,24 @@ const routes: RouteRecordRaw[] = [
           // 即 /admin/annex/*。此前误挂在 system 子级下（实际解析成
           // /admin/system/annex/*），导致菜单点进去渲染 NotFound「无入口」。
           // 功能域菜单（无特权）：业务名，与其它 biz 模块同级
+          {
+            path: 'annex/trade-ai',
+            name: 'AdminAnnexTradeAi',
+            redirect: '/sales/customer-finder',
+            meta: { title: '社媒拓客', annexKey: 'trade-ai', privileged: false },
+          },
+          {
+            path: 'annex/goodjob',
+            name: 'AdminAnnexGoodJob',
+            redirect: '/admin/queues/fulfillment',
+            meta: { title: '外贸履约', annexKey: 'goodjob', privileged: false },
+          },
+          {
+            path: 'annex/iyque',
+            name: 'AdminWecomScrm',
+            component: () => import('@/views/annex/wecom-scrm.vue'),
+            meta: { title: '企微私域', icon: 'WechatOutlined', annexKey: 'iyque', privileged: false },
+          },
           {
             path: 'demo-rehearsal',
             name: 'AdminDemoRehearsal',

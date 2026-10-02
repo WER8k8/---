@@ -1,8 +1,8 @@
 {
   "source": "agent-api-contracts.ts (GoodJob)",
-  "total_operations": 232,
-  "total_families": 45,
-  "approval_families": 25,
+  "total_operations": 265,
+  "total_families": 48,
+  "approval_families": 27,
   "task_types": [
     "customer_pool.sync",
     "trade_document.generate",
@@ -13,7 +13,7 @@
     {
       "family": "agent",
       "capability": "agent.object",
-      "desc": "Agent 内核：业务对象/记忆/触发器/技能的启停与发布",
+      "desc": "Agent 内核：业务对象/记忆/触发器/技能的启停与发布；含客户维护任务（预览/运行）",
       "risk": "high",
       "needs_approval": true,
       "ops": [
@@ -128,6 +128,18 @@
         {
           "method": "POST",
           "path": "/api/agent/tuning/inspect"
+        },
+        {
+          "method": "POST",
+          "path": "/api/agent/customer-maintenance"
+        },
+        {
+          "method": "POST",
+          "path": "/api/agent/customer-maintenance/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/agent/customer-maintenance/{id}/run"
         }
       ]
     },
@@ -404,13 +416,17 @@
         {
           "method": "PATCH",
           "path": "/api/deals/{id}/stage"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/deals/{id}"
         }
       ]
     },
     {
       "family": "development-email",
       "capability": "outreach.email",
-      "desc": "开发信草稿/发送（外联，需审批）",
+      "desc": "开发信草稿/发送/旅程触达（外联，需审批；CRM 经营期触达——拓客期冷触达走 UJ acquisition_outreach，禁止跨域双发）",
       "risk": "high",
       "needs_approval": true,
       "ops": [
@@ -421,6 +437,10 @@
         {
           "method": "POST",
           "path": "/api/development-email/send"
+        },
+        {
+          "method": "POST",
+          "path": "/api/outreach-journey/send"
         }
       ]
     },
@@ -604,6 +624,10 @@
         {
           "method": "POST",
           "path": "/api/internal-messages/{id}/read"
+        },
+        {
+          "method": "POST",
+          "path": "/api/internal-messages/read-all"
         }
       ]
     },
@@ -658,6 +682,10 @@
         {
           "method": "POST",
           "path": "/api/lead-finder/search"
+        },
+        {
+          "method": "POST",
+          "path": "/api/lead-finder/lfind-tasks"
         }
       ]
     },
@@ -736,6 +764,88 @@
         {
           "method": "POST",
           "path": "/api/memos/{id}/restore"
+        }
+      ]
+    },
+    {
+      "family": "outreach-batches",
+      "capability": "outreach.batch",
+      "desc": "开发信外发批次：计划/预览/冻结放行/暂停恢复取消（外联，需审批；CRM 经营期触达，拓客期冷触达走 UJ acquisition_outreach，禁止跨域双发）",
+      "risk": "high",
+      "needs_approval": true,
+      "ops": [
+        {
+          "method": "POST",
+          "path": "/api/outreach-plans"
+        },
+        {
+          "method": "POST",
+          "path": "/api/outreach-plans/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/outreach-plans/{id}/control"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/outreach-plans/{id}"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches/{id}/approve"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches/{id}/items/{itemId}"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches/{id}/pause"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches/{id}/resume"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches/{id}/cancel"
+        },
+        {
+          "method": "POST",
+          "path": "/api/prospect-outreach-batches/{id}/{action}"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/prospect-outreach-batches/{id}"
+        }
+      ]
+    },
+    {
+      "family": "peers",
+      "capability": "peer.manage",
+      "desc": "同行协作档案 CRUD/导入",
+      "risk": "medium",
+      "needs_approval": false,
+      "ops": [
+        {
+          "method": "POST",
+          "path": "/api/peers"
+        },
+        {
+          "method": "POST",
+          "path": "/api/peers/import"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/peers/{id}"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/peers/{id}"
         }
       ]
     },
@@ -1068,15 +1178,48 @@
       ]
     },
     {
+      "family": "sender-mailboxes",
+      "capability": "sender.mailbox",
+      "desc": "发信邮箱绑定/验证/启停（外联凭据，需审批）",
+      "risk": "high",
+      "needs_approval": true,
+      "ops": [
+        {
+          "method": "POST",
+          "path": "/api/sender-mailboxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/sender-mailboxes/{id}"
+        },
+        {
+          "method": "POST",
+          "path": "/api/sender-mailboxes/{id}/test"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/sender-mailboxes/{id}"
+        }
+      ]
+    },
+    {
       "family": "system-settings",
       "capability": "system.settings",
-      "desc": "系统/团队设置（治理，需审批）",
+      "desc": "系统/团队设置（治理，需审批）；含单证 OCR 供应商与开发信追踪公网地址",
       "risk": "high",
       "needs_approval": true,
       "ops": [
         {
           "method": "PUT",
           "path": "/api/system-settings"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/system-settings/ocr"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/email-tracking/config"
         }
       ]
     },
@@ -1205,7 +1348,7 @@
     {
       "family": "trade-document-imports",
       "capability": "trade-doc.import",
-      "desc": "单证导入任务",
+      "desc": "单证导入任务：分析/OCR/确认/识别模板沉淀与归档恢复",
       "risk": "high",
       "needs_approval": true,
       "ops": [
@@ -1220,6 +1363,22 @@
         {
           "method": "POST",
           "path": "/api/trade-document-imports/{id}/confirm"
+        },
+        {
+          "method": "POST",
+          "path": "/api/trade-document-imports/analyze-ocr"
+        },
+        {
+          "method": "POST",
+          "path": "/api/trade-document-imports/{id}/recognition-template"
+        },
+        {
+          "method": "POST",
+          "path": "/api/trade-document-recognition-templates/{id}/archive"
+        },
+        {
+          "method": "POST",
+          "path": "/api/trade-document-recognition-templates/{id}/restore"
         }
       ]
     },

@@ -34,7 +34,7 @@ from typing import Any, Mapping
 TICKET_PURPOSE = "annex_ticket"
 TICKET_ISSUER = "uj-master"
 TICKET_TTL_SECONDS = 300
-SUPPORTED_ANNEXES = frozenset({"goodjob", "trade-ai"})
+SUPPORTED_ANNEXES = frozenset({"goodjob", "trade-ai", "iyque"})
 
 # 附属角色映射：UJ 角色 → 附属本地角色（附属侧按 email 匹配已有账号优先，
 # 本映射仅作自动建号时的默认角色；GoodJob 的 super_admin 是平台运维身份
@@ -42,6 +42,7 @@ SUPPORTED_ANNEXES = frozenset({"goodjob", "trade-ai"})
 ANNEX_ROLE_MAP: dict[str, dict[str, str]] = {
     "goodjob": {"super_admin": "admin", "*": "sales"},
     "trade-ai": {"super_admin": "admin", "*": "agent"},
+    "iyque": {"super_admin": "admin", "*": "employee"},
 }
 
 # 一次性 jti 存储：优先 Redis（跨进程一致），降级进程内存（带过期清扫）

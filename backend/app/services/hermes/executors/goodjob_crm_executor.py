@@ -238,6 +238,35 @@ class GoodJobCrmExecutor(BaseExecutor):
             )
 
         # 单证族（PI / CI / PL …）
+        docs_list = params.get("docs")
+        if isinstance(docs_list, list) and len(docs_list) > 1:
+            multi_docs = {}
+            for dt in docs_list:
+                sub_out = native.generate_trade_document(
+                    doc_type=str(dt).upper(),
+                    tenant_id=context.tenant_id,
+                    params=params,
+                    db=db,
+                    order_id=str(params.get("order_id") or params.get("order") or "").strip() or None,
+                    inquiry_id=str(params.get("inquiry_id") or params.get("inquiry") or "").strip() or None,
+                )
+                multi_docs[str(dt).upper()] = sub_out
+            all_ok = all(d.get("success") for d in multi_docs.values())
+            return ExecutorResult(
+                node_id=node.id,
+                status="succeeded" if all_ok else "failed",
+                output={
+                    "documents": multi_docs,
+                    "doc_types": list(multi_docs.keys()),
+                    "doc_no": multi_docs.get("CI", {}).get("doc_no") or multi_docs.get("PL", {}).get("doc_no"),
+                    "ci_number": multi_docs.get("CI", {}).get("ci_number"),
+                    "pl_number": multi_docs.get("PL", {}).get("doc_no"),
+                    "executor": self.get_executor_name(),
+                    "capability": capability,
+                },
+                error=None if all_ok else "some_documents_failed",
+            )
+
         doc_type = str(params.get("doc_type") or _CAP_DEFAULT_DOCTYPE.get(capability, "PI")).upper()
         out = native.generate_trade_document(
             doc_type=doc_type,

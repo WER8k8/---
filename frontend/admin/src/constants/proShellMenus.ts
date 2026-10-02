@@ -44,9 +44,10 @@ export const CLIENT_SHELL_MENU: ProShellMenuGroup[] = [
   {
     title: '获客转化',
     children: [
-      // 功能域（无特权）：社媒拓客 / 外贸履约 = 普通业务菜单，非附属特权入口
+      // 功能域（无特权）：社媒拓客 / 外贸履约 / 企微私域 = 普通业务菜单，非附属特权入口
       { name: 'ClientSocialOutreach', path: '/client/trade-tools', title: '社媒拓客', icon: 'GlobalOutlined' },
       { name: 'ClientTradeFulfillment', path: '/client/queues/fulfillment', title: '外贸履约', icon: 'CarryOutOutlined' },
+      { name: 'ClientWecomPrivateDomain', path: '/client/annex/iyque', title: '企微私域', icon: 'WechatOutlined' },
       { name: 'ClientInquiries', path: '/client/inquiries', title: '询盘管理', icon: 'MessageOutlined' },
       { name: 'ClientAcquisitionOps', path: '/client/acquisition-ops', title: '获客作战台', icon: 'AimOutlined' },
       { name: 'ClientInquiryQueue', path: '/client/queues/inquiries', title: '询盘队列', icon: 'OrderedListOutlined' },

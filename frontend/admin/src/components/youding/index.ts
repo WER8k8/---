@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2026 吕博旺 (131025199403304817). All rights reserved.
  */
-export { default as TenantLoginPanel } from './TenantLoginPanel.vue';
+// TenantLoginPanel 已删除（2026-10-01 审计：死代码，无任何视图挂载，与 LOGIN-LOCK-01 唯一登录相悖）
 export { default as LoginOAuthButtons } from './LoginOAuthButtons.vue';
 export { default as YdDataTable } from './YdDataTable.vue';
 export { default as YdEmptyState } from './YdEmptyState.vue';

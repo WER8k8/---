@@ -39,7 +39,7 @@ LAYER_STACK: tuple[tuple[str, str], ...] = (
     ("truth", "优丁 PG 真相 + 证据 + 经验反哺"),
 )
 
-ANNEX_EXECUTORS: FrozenSet[str] = frozenset({"trade_ai_agent", "goodjob_crm"})
+ANNEX_EXECUTORS: FrozenSet[str] = frozenset({"trade_ai_agent", "goodjob_crm", "wecom_scrm"})
 
 # ── 黄金路径 ────────────────────────────────────────────
 GOLDEN_PATH_A = {
@@ -83,7 +83,27 @@ GOLDEN_PATH_B = {
     ),
 }
 
-GOLDEN_PATHS: tuple[dict[str, Any], ...] = (GOLDEN_PATH_A, GOLDEN_PATH_B)
+GOLDEN_PATH_C = {
+    "id": "GP-C",
+    "name": "企微私域与线索回流（国内轨 SCRM）",
+    "priority": "P1",
+    "plane": PLANE_TASK,
+    "default_source": "L1_template",
+    "intent_hints": ("企微", "微信", "私域", "活码", "公海", "国内", "wecom", "scrm"),
+    "required_executors": ("wecom_scrm",),
+    "required_capabilities": (
+        "wecom.create_live_code",
+        "wecom.lead_ingress",
+        "wecom.customer_seas",
+    ),
+    "acceptance": (
+        "仅从优丁发起，Hermes 原生直驱（无外挂独立登录）",
+        "企微线索自动重写 source_channel=wecom_ingress 回流优丁 PG inquiries",
+        "未配置企微凭证时诚实 pending_config/degraded，禁止假成功",
+    ),
+}
+
+GOLDEN_PATHS: tuple[dict[str, Any], ...] = (GOLDEN_PATH_A, GOLDEN_PATH_B, GOLDEN_PATH_C)
 
 # 常见交互动作（不应强制进任务平面）
 INTERACTIVE_ACTION_HINTS: FrozenSet[str] = frozenset(
@@ -188,6 +208,7 @@ SEAMLESS_BODY: dict[str, Any] = {
     "function_domains": [
         {"key": "trade-ai", "label": "社媒拓客", "menu_group": "获客转化", "privileged": False},
         {"key": "goodjob", "label": "外贸履约", "menu_group": "履约与账户", "privileged": False},
+        {"key": "iyque", "label": "企微私域", "menu_group": "获客转化", "privileged": False},
     ],
     "standards": [
         {"id": "S1", "name": "身份与壳", "rule": "唯一 UJ 登录与角色壳；禁 iframe 附属产品台"},

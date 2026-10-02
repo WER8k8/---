@@ -82,8 +82,8 @@
               <span class="ff-dot">·</span>
               <span class="ff-muted">{{ formatDate(row.created_at) }}</span>
             </div>
-            <div class="ff-steps" :aria-label="'进度 ' + progressLabel(row)">
-              <span v-for="(st, si) in stepList" :key="st.key" class="ff-step" :class="stepClass(row, si)">
+            <div class="ff-steps" :aria-label="'外贸7步进度 ' + progressLabel(row)">
+              <span v-for="(st, si) in stepList" :key="st.key" class="ff-step" :class="stepClass(row, si)" :title="st.hint">
                 <i></i>{{ st.label }}
               </span>
             </div>
@@ -98,9 +98,10 @@
               <a-button size="large">更多</a-button>
               <template #overlay>
                 <a-menu @click="({ key }: any) => onMore(key as string, row)">
-                  <a-menu-item key="pi">生成形式发票</a-menu-item>
-                  <a-menu-item key="pl">装箱单</a-menu-item>
-                  <a-menu-item key="co">原产地证草案</a-menu-item>
+                  <a-menu-item key="pi">形式发票 (PI)</a-menu-item>
+                  <a-menu-item key="ci">商业发票 (CI)</a-menu-item>
+                  <a-menu-item key="pl">装箱单 (Packing List)</a-menu-item>
+                  <a-menu-item key="co">原产地证草案 (CO)</a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -109,22 +110,22 @@
       </div>
     </a-spin>
 
-    <!-- ③ 详情 / 单证（浮层，仍只留主按钮） -->
+    <!-- ③ 详情 / 单证（浮层，全闭环操作台） -->
     <a-drawer
       v-model:open="drawerOpen"
-      :width="560"
-      :title="activeOrder?.order_number || '订单详情'"
+      :width="640"
+      :title="activeOrder?.order_number ? `订单履约工作台 · ${activeOrder.order_number}` : '订单详情'"
       placement="right"
     >
       <div v-if="activeOrder" class="ff-drawer">
         <div class="ff-kv">
           <div><span>客户</span><b>{{ (activeOrder as any).customer_name || '—' }}</b></div>
-          <div><span>金额</span><b>{{ formatMoney((activeOrder as any).total_amount) }}</b></div>
-          <div><span>阶段</span><b>{{ formatStatusLabel(activeOrder.status) }}</b></div>
-          <div><span>提单/运单</span><b>{{ (activeOrder as any).tracking_number || '—' }}</b></div>
+          <div><span>订单总额</span><b>{{ formatMoney((activeOrder as any).total_amount) }} {{ (activeOrder as any).currency || 'USD' }}</b></div>
+          <div><span>履约阶段</span><b><span class="ff-badge" :class="statusLevel(activeOrder.status)">{{ formatStatusLabel(activeOrder.status) }}</span></b></div>
+          <div><span>提单/运单</span><b>{{ (activeOrder as any).tracking_number || (activeOrder as any).bl_number || '—' }}</b></div>
         </div>
 
-        <a-alert type="info" show-icon class="ff-alert" message="下一步做什么" :description="nextHint(activeOrder)" />
+        <a-alert type="info" show-icon class="ff-alert" message="下一步建议" :description="nextHint(activeOrder)" />
 
         <div class="ff-primary-row">
           <a-button
@@ -134,47 +135,183 @@
             :loading="hermesLoading"
             @click="dispatchGoldenPathFulfillment(activeOrder)"
           >
-            推进这一步（Hermes）
+            爱马仕（Hermes L2）智能推进这一步
           </a-button>
         </div>
 
-        <a-divider orientation="left" plain>单证（要出再点）</a-divider>
-        <div class="ff-docs">
-          <a-button size="large" :loading="docLoading==='pi'" @click="handleDocumentAction(activeOrder, 'pi')">形式发票 PI</a-button>
-          <a-button size="large" :loading="docLoading==='packing-list'" @click="handleDocumentAction(activeOrder, 'pl')">装箱单</a-button>
-          <a-button size="large" :loading="docLoading==='certificate-of-origin'" @click="handleDocumentAction(activeOrder, 'co')">原产地证草案</a-button>
-        </div>
-
-        <div v-if="currentDocResult" class="ff-doc-result">
-          <div class="ff-doc-title">{{ currentDocTitle }}</div>
-          <pre class="code-block">{{ currentDocFormatted }}</pre>
-          <div class="ff-doc-actions">
-            <a-button @click="exportDocFile('html')">导出网页</a-button>
-            <a-button @click="exportDocFile('docx')">导出 Word</a-button>
+        <!-- 外贸 7 步履约专属推进器 -->
+        <a-divider orientation="left" plain>外贸 7 步状态跃迁推进</a-divider>
+        <div class="ff-stepper-box">
+          <div class="ff-stepper-header">
+            <span>当前步：<b>{{ progressLabel(activeOrder) }}</b></span>
+          </div>
+          <div class="ff-verify golden-actions-grid">
+            <a-button size="large" :loading="docLoading==='pi'" @click="handleDocumentAction(activeOrder, 'pi')">
+              1 · 出具形式发票 (PI)
+            </a-button>
+            <a-button size="large" :loading="actionLoading==='deposit'" @click="markDeposit">
+              2 · 记定金已收 (30%)
+            </a-button>
+            <a-button size="large" :loading="actionLoading==='production'" @click="markProduction">
+              3 · 下达排产生产 (PO)
+            </a-button>
+            <a-button size="large" :loading="actionLoading==='ship'" @click="markShipped">
+              4 · 登记已发货 (B/L)
+            </a-button>
+            <a-button size="large" :loading="docLoading==='ci'" @click="handleDocumentAction(activeOrder, 'ci')">
+              5 · 出具商业发票 (CI)
+            </a-button>
+            <a-button size="large" :loading="actionLoading==='balance'" @click="markBalance">
+              6 · 记尾款已收 (70%)
+            </a-button>
+            <a-button type="primary" size="large" :loading="actionLoading==='win'" style="grid-column: span 2;" @click="markWon">
+              7 · 结案成单（沉淀至经验库与经营看板）
+            </a-button>
           </div>
         </div>
 
-        <a-divider orientation="left" plain>状态推进（黄金单）</a-divider>
-        <div class="ff-verify golden-actions">
-          <a-button size="large" :loading="actionLoading==='deposit'" @click="markDeposit">1 · 记定金已收</a-button>
-          <a-button size="large" :loading="actionLoading==='ship'" @click="markShipped">2 · 登记已发货</a-button>
-          <a-button size="large" :loading="actionLoading==='balance'" @click="markBalance">3 · 记尾款已收</a-button>
-          <a-button type="primary" size="large" :loading="actionLoading==='win'" @click="markWon">4 · 结案成单</a-button>
+        <!-- 单证自动化套打中心 -->
+        <a-divider orientation="left" plain>外贸单证套打中心</a-divider>
+        <div class="ff-docs">
+          <a-button size="middle" :type="currentDocType==='pi' ? 'primary' : 'default'" :loading="docLoading==='pi'" @click="handleDocumentAction(activeOrder, 'pi')">
+            形式发票 (PI)
+          </a-button>
+          <a-button size="middle" :type="currentDocType==='ci' ? 'primary' : 'default'" :loading="docLoading==='ci'" @click="handleDocumentAction(activeOrder, 'ci')">
+            商业发票 (CI)
+          </a-button>
+          <a-button size="middle" :type="currentDocType==='packing-list' ? 'primary' : 'default'" :loading="docLoading==='packing-list'" @click="handleDocumentAction(activeOrder, 'pl')">
+            装箱单 (Packing List)
+          </a-button>
+          <a-button size="middle" :type="currentDocType==='certificate-of-origin' ? 'primary' : 'default'" :loading="docLoading==='certificate-of-origin'" @click="handleDocumentAction(activeOrder, 'co')">
+            原产地证草案 (CO)
+          </a-button>
         </div>
 
-        <a-divider orientation="left" plain>核销登记（可选）</a-divider>
+        <!-- 单证可视化卡片展示 -->
+        <div v-if="currentDocResult" class="ff-doc-result">
+          <div class="ff-doc-header">
+            <div class="ff-doc-title">
+              <span class="ff-doc-badge">{{ currentDocTitle }}</span>
+              <span class="ff-doc-no">{{ (currentDocResult as any).document_number || (currentDocResult as any).invoice_number || (currentDocResult as any).co_number || '' }}</span>
+            </div>
+            <div class="ff-doc-view-toggle">
+              <a-radio-group v-model:value="docViewMode" size="small">
+                <a-radio-button value="card">单据卡片</a-radio-button>
+                <a-radio-button value="json">数据源</a-radio-button>
+              </a-radio-group>
+            </div>
+          </div>
+
+          <!-- 卡片视图 -->
+          <div v-if="docViewMode === 'card'" class="ff-doc-card-view">
+            <!-- 双方信息 -->
+            <div class="ff-doc-parties">
+              <div class="ff-party-box">
+                <div class="ff-party-tag">SELLER / 出口方</div>
+                <div class="ff-party-name">{{ (currentDocResult as any).seller?.name || (currentDocResult as any).exporter?.name || '优丁出海供应链' }}</div>
+                <div class="ff-party-sub">{{ (currentDocResult as any).seller?.address || (currentDocResult as any).exporter?.address || 'Guangdong, China' }}</div>
+              </div>
+              <div class="ff-party-box">
+                <div class="ff-party-tag">BUYER / 进口方</div>
+                <div class="ff-party-name">{{ (currentDocResult as any).buyer?.name || (currentDocResult as any).consignee?.name || (currentDocResult as any).buyer?.company || '海外买家' }}</div>
+                <div class="ff-party-sub">{{ (currentDocResult as any).buyer?.address || (currentDocResult as any).consignee?.address || 'Overseas Port' }}</div>
+              </div>
+            </div>
+
+            <!-- 条款行 -->
+            <div class="ff-doc-terms">
+              <span><b>贸易术语:</b> {{ (currentDocResult as any).terms?.delivery_terms || (currentDocResult as any).incoterms || 'FOB Shenzhen' }}</span>
+              <span><b>付款条款:</b> {{ (currentDocResult as any).terms?.payment_terms || (currentDocResult as any).payment_terms || '30% Deposit, 70% before Shipment' }}</span>
+              <span v-if="(currentDocResult as any).shipping?.port_of_loading"><b>起运港:</b> {{ (currentDocResult as any).shipping?.port_of_loading }}</span>
+              <span v-if="(currentDocResult as any).shipping?.port_of_discharge"><b>目的港:</b> {{ (currentDocResult as any).shipping?.port_of_discharge }}</span>
+            </div>
+
+            <!-- 明细表格 -->
+            <div class="ff-doc-table-wrap">
+              <table class="ff-doc-table">
+                <thead>
+                  <tr>
+                    <th>品名 Description</th>
+                    <th style="text-align: right;">数量</th>
+                    <th style="text-align: right;">单价</th>
+                    <th style="text-align: right;">金额</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(it, lidx) in ((currentDocResult as any).line_items || (currentDocResult as any).lines || (currentDocResult as any).items || [])" :key="lidx">
+                    <td>{{ it.description || it.product_name || '外贸定制商品' }}</td>
+                    <td style="text-align: right;">{{ it.quantity }} {{ it.unit || 'pcs' }}</td>
+                    <td style="text-align: right;">{{ formatMoney(it.unit_price) }}</td>
+                    <td style="text-align: right;"><b>{{ formatMoney(it.amount || ((it.quantity || 1) * (it.unit_price || 0))) }}</b></td>
+                  </tr>
+                  <tr v-if="!((currentDocResult as any).line_items || (currentDocResult as any).lines || (currentDocResult as any).items)?.length">
+                    <td colspan="4" style="text-align: center; color: #888;">详见单据货物总则清单</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 汇总与印章 -->
+            <div class="ff-doc-footer-row">
+              <div class="ff-doc-stamp-box">
+                <div class="ff-stamp-circle">
+                  <span>YOUDING</span>
+                  <b>CERTIFIED</b>
+                  <small>OFFICIAL SEAL</small>
+                </div>
+              </div>
+              <div class="ff-doc-amounts">
+                <div v-if="(currentDocResult as any).financials?.total_amount || (currentDocResult as any).total_amount">
+                  <span>总金额:</span>
+                  <b>{{ formatMoney((currentDocResult as any).financials?.total_amount || (currentDocResult as any).total_amount) }} {{ (currentDocResult as any).currency || 'USD' }}</b>
+                </div>
+                <div v-if="(currentDocResult as any).financials?.deposit_paid || (currentDocResult as any).deposit_paid">
+                  <span>已收定金:</span>
+                  <span class="text-green">- {{ formatMoney((currentDocResult as any).financials?.deposit_paid || (currentDocResult as any).deposit_paid) }}</span>
+                </div>
+                <div v-if="(currentDocResult as any).financials?.balance_due || (currentDocResult as any).balance_due">
+                  <span>待付尾款:</span>
+                  <b class="text-red">{{ formatMoney((currentDocResult as any).financials?.balance_due || (currentDocResult as any).balance_due) }}</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 源码视图 -->
+          <pre v-else class="code-block">{{ currentDocFormatted }}</pre>
+
+          <div class="ff-doc-actions">
+            <a-button type="primary" @click="exportDocFile('html')">在独立窗口打印 / 预览 (HTML)</a-button>
+            <a-button @click="exportDocFile('docx')">导出 Word 格式 (.docx)</a-button>
+          </div>
+        </div>
+
+        <a-divider orientation="left" plain>排产与核销信息登记</a-divider>
         <div class="ff-verify">
-          <a-input v-model:value="verifyForm.deposit_ref" placeholder="定金水单号（可选）" />
-          <a-input-number
-            v-model:value="verifyForm.deposit_ref_amount"
-            placeholder="定金金额（默认 30%）"
-            :min="0"
-            style="width: 100%"
-          />
-          <a-input v-model:value="verifyForm.bl_number" placeholder="提单号" />
-          <a-input v-model:value="verifyForm.container_no" placeholder="柜号" />
-          <a-input v-model:value="verifyForm.settle_ref" placeholder="尾款凭证号" />
-          <a-button size="large" :loading="actionLoading==='verify'" @click="verifyFulfillment">保存核销信息</a-button>
+          <div class="ff-verify-row">
+            <a-input v-model:value="verifyForm.deposit_ref" placeholder="定金水单号（电汇参考号）" />
+            <a-input-number
+              v-model:value="verifyForm.deposit_ref_amount"
+              placeholder="定金金额（默认 30%）"
+              :min="0"
+              style="width: 100%"
+            />
+          </div>
+          <div class="ff-verify-row">
+            <a-date-picker
+              v-model:value="productionForm.estimated_delivery_date"
+              placeholder="预计工厂交期"
+              value-format="YYYY-MM-DD"
+              style="width: 100%"
+            />
+            <a-input v-model:value="productionForm.production_notes" placeholder="生产批次/排产备注" />
+          </div>
+          <div class="ff-verify-row">
+            <a-input v-model:value="verifyForm.bl_number" placeholder="海运提单号 (B/L)" />
+            <a-input v-model:value="verifyForm.container_no" placeholder="集装箱柜号" />
+          </div>
+          <a-input v-model:value="verifyForm.settle_ref" placeholder="尾款水单凭证号" />
+          <a-button size="large" :loading="actionLoading==='verify'" @click="verifyFulfillment">统一保存核销与调度信息</a-button>
         </div>
       </div>
     </a-drawer>
@@ -200,6 +337,7 @@ const currentDocTitle = ref('');
 const currentDocResult = ref<Record<string, unknown> | null>(null);
 const currentDocType = ref('');
 const hermesLoading = ref(false);
+const docViewMode = ref<'card' | 'json'>('card');
 
 const verifyForm = ref({
   deposit_ref: '',
@@ -207,6 +345,11 @@ const verifyForm = ref({
   bl_number: '',
   container_no: '',
   settle_ref: '',
+});
+
+const productionForm = ref({
+  estimated_delivery_date: '',
+  production_notes: '',
 });
 
 const baseColumns = [
@@ -252,7 +395,7 @@ const summaryHeadline = computed(() => {
 });
 const summarySub = computed(() =>
   needActionCount.value > 0
-    ? '点「下一步」系统会自动推：核价、形式发票、单证、状态。'
+    ? '外贸 7 步全自动化推进：询盘、核价、PI发票、定金核销、排产、CI/PL单证、尾款结案。'
     : '出问题会标红；正常会标绿。',
 );
 
@@ -289,11 +432,11 @@ function formatDate(v: unknown): string {
 function formatStatusLabel(status: unknown): string {
   const s = String(status || '').toLowerCase();
   const map: Record<string, string> = {
-    pending: '待处理',
-    deposit_received: '定金已收',
-    in_production: '生产中',
-    shipped: '已出运',
-    completed: '已结清',
+    pending: '待处理/待定金',
+    deposit_received: '定金已收(30%)',
+    in_production: '工厂生产中',
+    shipped: '已出运(提单生效)',
+    completed: '已结清成单',
     cancelled: '已取消',
   };
   return map[s] || '待确认';
@@ -311,32 +454,35 @@ function statusLevel(status: unknown): string {
 
 function nextHint(row: Record<string, unknown> | null): string {
   const s = String(row?.status || '').toLowerCase();
-  if (s === 'pending') return '下一步：确认定金或收款，然后生成形式发票。';
-  if (s === 'deposit_received') return '下一步：排产跟进；需要时可出装箱单。';
-  if (s === 'in_production') return '下一步：盯交期；出运前补齐提单与装箱单。';
-  if (s === 'shipped') return '下一步：登记尾款，做结清。';
-  if (s === 'completed') return '这单已结清，可点「结案成单」写入经营结果。';
+  if (s === 'pending') return '下一步：确认定金核销，或出具 PI 形式发票发送给买方。';
+  if (s === 'deposit_received') return '下一步：定金已到账，请点击「下达排产生产 (PO)」启动工厂备料。';
+  if (s === 'in_production') return '下一步：产线完工，出具商业发票 (CI) 与装箱单 (PL)，登记发货出运。';
+  if (s === 'shipped') return '下一步：提单已交割，登记 70% 尾款核销流水，完成全单结案。';
+  if (s === 'completed') return '这单已全额结清，经验库沉淀完毕，经营概览可见。';
   return '点「下一步」让系统自动推进当前阶段。';
 }
 
 const stepList = [
-  { key: 'deposit', label: '定金' },
-  { key: 'ship', label: '出运' },
-  { key: 'balance', label: '尾款' },
-  { key: 'win', label: '成单' },
+  { key: 'inquiry', label: '1·询盘', hint: '商机捕获' },
+  { key: 'quote', label: '2·核价', hint: 'BOQ算料成单' },
+  { key: 'pi', label: '3·发票', hint: '形式发票出具' },
+  { key: 'deposit', label: '4·定金', hint: '30%首款核销' },
+  { key: 'production', label: '5·生产', hint: '工厂排产跟单' },
+  { key: 'shipping', label: '6·发运', hint: '提单/装箱单 CI+PL' },
+  { key: 'settled', label: '7·尾款', hint: '70%尾款与结案' },
 ];
 
 function stepClass(row: Record<string, unknown> | null, idx: number): string {
   const s = String(row?.status || '').toLowerCase();
   const map: Record<string, number> = {
-    pending: 0,
-    deposit_received: 1,
-    in_production: 1,
-    shipped: 2,
-    completed: 3,
+    pending: 2,           // 待定金/形式发票
+    deposit_received: 3,  // 第4步定金已核销，待排产
+    in_production: 4,     // 第5步生产中
+    shipped: 5,           // 第6步已出运
+    completed: 6,         // 第7步尾款已结清成单
     cancelled: -1,
   };
-  const stage = map[s] ?? 0;
+  const stage = map[s] ?? 1;
   if (s === 'cancelled') return 'is-bad';
   if (idx < stage) return 'is-done';
   if (idx === stage) return 'is-active';
@@ -346,14 +492,14 @@ function stepClass(row: Record<string, unknown> | null, idx: number): string {
 function progressLabel(row: Record<string, unknown> | null): string {
   const s = String(row?.status || '').toLowerCase();
   const map: Record<string, string> = {
-    pending: '1/4 待定金',
-    deposit_received: '2/4 已定金',
-    in_production: '2/4 生产中',
-    shipped: '3/4 已出运',
-    completed: '4/4 已结清',
+    pending: '3/7 待形式发票 / 待付定金',
+    deposit_received: '4/7 定金已收 / 待下达生产',
+    in_production: '5/7 工厂排产中',
+    shipped: '6/7 货物出运装船 / 提单在途',
+    completed: '7/7 尾款全额结清 / 履约结案',
     cancelled: '已取消',
   };
-  return map[s] || '1/4';
+  return map[s] || '2/7 推进中';
 }
 
 async function dispatchGoldenPathFulfillment(record?: Record<string, unknown>) {
@@ -406,7 +552,13 @@ async function openOrderDetail(record: Record<string, unknown>) {
 async function handleDocumentAction(record: Record<string, unknown>, docType: string) {
   if (docType === 'pi') void dispatchGoldenPathFulfillment(record);
   await openOrderDetail(record);
-  await fetchOrderDoc(docType === 'co' ? 'certificate-of-origin' : docType === 'pl' ? 'packing-list' : docType);
+  const endpointMap: Record<string, string> = {
+    pi: 'pi',
+    ci: 'ci',
+    pl: 'packing-list',
+    co: 'certificate-of-origin',
+  };
+  await fetchOrderDoc(endpointMap[docType] || docType);
 }
 
 async function fetchOrderDoc(endpointDoc: string) {
@@ -418,8 +570,14 @@ async function fetchOrderDoc(endpointDoc: string) {
     const res = await apiPost<Record<string, unknown>>(`/orders/${id}/documents/${endpointDoc}`);
     const data = (res as { data?: Record<string, unknown> })?.data || res;
     currentDocResult.value = data;
-    currentDocTitle.value = `${String(data.doc_type || endpointDoc.toUpperCase())} 单据`;
-    message.success(`${currentDocTitle.value} 已生成`);
+    const nameMap: Record<string, string> = {
+      pi: 'PROFORMA INVOICE 形式发票',
+      ci: 'COMMERCIAL INVOICE 商业发票',
+      'packing-list': 'PACKING LIST 装箱单',
+      'certificate-of-origin': 'CERTIFICATE OF ORIGIN 原产地证',
+    };
+    currentDocTitle.value = nameMap[endpointDoc] || `${String(data.doc_type || endpointDoc.toUpperCase())} 单据`;
+    message.success(`${currentDocTitle.value} 已成功生成并准备就绪`);
   } catch (err: unknown) {
     message.error(err instanceof Error ? err.message : '单据生成失败');
   } finally {
@@ -450,7 +608,7 @@ async function verifyFulfillment() {
     await apiPost(`/orders/${String(activeOrder.value.id)}/fulfillment/verify`, {
       ...verifyForm.value,
     });
-    message.success('已登记');
+    message.success('核销与调度信息已统一登记');
     void reload();
   } catch (e) {
     message.error(e instanceof Error ? e.message : '登记失败');
@@ -458,7 +616,6 @@ async function verifyFulfillment() {
     actionLoading.value = '';
   }
 }
-
 
 function inquiryIdOf(row: Record<string, unknown> | null): string {
   return String(row?.inquiry_id || row?.lead_id || '');
@@ -486,14 +643,33 @@ async function markDeposit() {
       await apiPost(`/acquisition/ops-card/${inquiryId}/payment`, {
         deposit_amount: depositAmount,
         deposit_paid_at: new Date().toISOString(),
-        note: verifyForm.value.deposit_ref || '定金已收（制单后履约推进）',
+        note: verifyForm.value.deposit_ref || '定金已收（30%首款核销完成）',
       });
     }
-    message.success('已记定金 → 进入生产/备货');
+    message.success('已记定金(30%) → 进入生产/备料阶段');
     await reload();
     if (activeOrder.value?.id) await openOrderDetail(activeOrder.value as Record<string, unknown>);
   } catch (e) {
     message.error(e instanceof Error ? e.message : '定金登记失败');
+  } finally {
+    actionLoading.value = '';
+  }
+}
+
+async function markProduction() {
+  const orderId = orderIdOf(activeOrder.value);
+  if (!orderId) return message.warning('缺少订单编号');
+  actionLoading.value = 'production';
+  try {
+    await apiPost(`/orders/${orderId}/start-production`, {
+      estimated_delivery: productionForm.value.estimated_delivery_date || undefined,
+      production_notes: productionForm.value.production_notes || undefined,
+    });
+    message.success('工厂排产已下达 (Step 5) → 进入生产跟单');
+    await reload();
+    if (activeOrder.value?.id) await openOrderDetail(activeOrder.value as Record<string, unknown>);
+  } catch (e) {
+    message.error(e instanceof Error ? e.message : '下达排产失败');
   } finally {
     actionLoading.value = '';
   }
@@ -519,7 +695,7 @@ async function markShipped() {
         milestone: 'shipped',
       });
     }
-    message.success('已登记发货');
+    message.success('已登记发货出运 (Step 6) → 提单与集装箱号已绑定');
     await reload();
     if (activeOrder.value?.id) await openOrderDetail(activeOrder.value as Record<string, unknown>);
   } catch (e) {
@@ -793,18 +969,190 @@ function onMore(key: string, row: Record<string, unknown>) {
   background: #f7fbfa;
   border: 1px solid #e3efea;
   border-radius: 12px;
-  padding: 12px;
+  padding: 14px;
   margin-bottom: 16px;
 }
+.ff-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e3efea;
+}
 .ff-doc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 500;
-  margin-bottom: 8px;
   color: #122622;
 }
+.ff-doc-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #24705a;
+  background: #eaf7f2;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.ff-doc-no {
+  font-family: var(--font-num, ui-monospace, Consolas, monospace);
+  font-size: 0.88rem;
+  color: #55706b;
+}
+
+.ff-doc-card-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e3efea;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(31, 74, 66, 0.04);
+}
+.ff-doc-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ff-party-box {
+  background: #fafcfb;
+  border: 1px dashed #d5e5e0;
+  border-radius: 8px;
+  padding: 10px;
+}
+.ff-party-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #55706b;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.ff-party-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #122622;
+}
+.ff-party-sub {
+  font-size: 0.78rem;
+  color: #7a918d;
+  margin-top: 2px;
+}
+
+.ff-doc-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #f3faf7;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #2f6a5f;
+}
+.ff-doc-terms span b {
+  color: #122622;
+}
+
+.ff-doc-table-wrap {
+  overflow-x: auto;
+}
+.ff-doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.ff-doc-table th {
+  background: #fafcfb;
+  color: #55706b;
+  font-weight: 500;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e3efea;
+  text-align: left;
+}
+.ff-doc-table td {
+  padding: 8px;
+  border-bottom: 1px solid #f0f6f4;
+  color: #1c322d;
+}
+
+.ff-doc-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #e3efea;
+}
+.ff-doc-stamp-box {
+  display: flex;
+  align-items: center;
+}
+.ff-stamp-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: 2px dashed #b83c30;
+  color: #b83c30;
+  border-radius: 50%;
+  transform: rotate(-10deg);
+  opacity: 0.82;
+  font-family: var(--font-num, ui-monospace, Consolas, monospace);
+  font-size: 0.65rem;
+  line-height: 1.1;
+  text-align: center;
+}
+.ff-stamp-circle b {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+.ff-doc-amounts {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+  font-size: 0.85rem;
+}
+.ff-doc-amounts b {
+  font-family: var(--font-num, ui-monospace, Consolas, monospace);
+  margin-left: 6px;
+}
+.text-green { color: #24705a; }
+.text-red { color: #b83c30; }
+
+.ff-stepper-box {
+  background: #f9fdfb;
+  border: 1px solid #e3efea;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.ff-stepper-header {
+  font-size: 0.85rem;
+  color: #55706b;
+  margin-bottom: 8px;
+}
+.golden-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ff-verify-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
 .ff-doc-actions {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 .ff-verify {
   display: grid;
@@ -824,12 +1172,14 @@ function onMore(key: string, row: Record<string, unknown>) {
 /* 按压微反馈（#8） */
 .ff-card-actions .ant-btn,
 .ff-primary-row .ant-btn,
-.ff-docs .ant-btn {
+.ff-docs .ant-btn,
+.golden-actions-grid .ant-btn {
   transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 160ms ease;
 }
 .ff-card-actions .ant-btn:active,
 .ff-primary-row .ant-btn:active,
-.ff-docs .ant-btn:active {
+.ff-docs .ant-btn:active,
+.golden-actions-grid .ant-btn:active {
   transform: scale(0.96);
   box-shadow: inset 0 2px 6px rgba(31, 74, 66, 0.12);
 }
@@ -839,5 +1189,9 @@ function onMore(key: string, row: Record<string, unknown>) {
   .ff-stat { flex: 1; }
   .ff-card-actions { width: 100%; }
   .ff-card-actions .ant-btn { flex: 1; }
+  .golden-actions-grid { grid-template-columns: 1fr; }
+  .golden-actions-grid .ant-btn { grid-column: span 1 !important; }
+  .ff-doc-parties { grid-template-columns: 1fr; }
+  .ff-verify-row { grid-template-columns: 1fr; }
 }
 </style>

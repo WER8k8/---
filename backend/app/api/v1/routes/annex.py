@@ -33,7 +33,7 @@ router = APIRouter()
 
 
 class AnnexTicketBody(BaseModel):
-    annex: str = Field(..., description="目标附属：goodjob / trade-ai")
+    annex: str = Field(..., description="目标附属：goodjob / trade-ai / iyque")
 
 
 class AnnexRedeemBody(BaseModel):

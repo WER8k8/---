@@ -27,6 +27,7 @@ export const PLATFORM_SHELL_MENU: ShellMenuGroup[] = [
     // 功能域（无特权）：与其它业务项同级，非「附属执行台」
     { name:'SocialOutreach',path:'/sales/customer-finder',title:'社媒拓客',icon:'GlobalOutlined' },
     { name:'TradeFulfillment',path:'/admin/queues/fulfillment',title:'外贸履约',icon:'CarryOutOutlined' },
+    { name:'WecomPrivateDomain',path:'/admin/annex/iyque',title:'企微私域',icon:'WechatOutlined' },
     { name:'Products',path:'/products',title:'产品管理',icon:'ShoppingOutlined' },
     { name:'VideoSpace',path:'/admin/video-space',title:'视频空间',icon:'VideoCameraOutlined' },
     { name:'Categories',path:'/products/categories',title:'分类管理',icon:'FolderOpenOutlined' },

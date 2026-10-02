@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-28T12:34:55.064157+00:00",
+  "generated_at": "2026-10-01T07:00:38.913184+00:00",
   "database": "postgresql://youding:***@localhost:5433/youding_dev",
   "physical_table_count": 274,
-  "orm_mapped_count": 234,
-  "orm_declared_count": 234,
+  "orm_mapped_count": 242,
+  "orm_declared_count": 242,
   "orm_without_physical_table": [],
   "category_counts": {
-    "orm_mapped": 234,
+    "orm_mapped": 242,
     "rls_pilot": 0,
     "migration_infra": 1,
-    "runtime_only": 39,
+    "runtime_only": 31,
     "unknown": 0
   },
   "tables": [
@@ -105,8 +105,8 @@
     },
     {
       "physical_table": "agent_commission_rules",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "agent_commission_rules",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -207,8 +207,8 @@
     },
     {
       "physical_table": "ai_templates",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "ai_templates",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -261,8 +261,8 @@
     },
     {
       "physical_table": "app_devices",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "app_devices",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -837,8 +837,8 @@
     },
     {
       "physical_table": "invoice_applications",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "invoice_applications",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -1143,8 +1143,8 @@
     },
     {
       "physical_table": "platform_invoice_configs",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "platform_invoice_configs",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -1155,8 +1155,8 @@
     },
     {
       "physical_table": "platform_tenant_origins",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "platform_tenant_origins",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -1479,8 +1479,8 @@
     },
     {
       "physical_table": "tenant_invoice_profiles",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "tenant_invoice_profiles",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
@@ -1539,8 +1539,8 @@
     },
     {
       "physical_table": "trade_country_category",
-      "orm_model": null,
-      "category": "runtime_only",
+      "orm_model": "trade_country_category",
+      "category": "orm_mapped",
       "rls_enabled": false
     },
     {
